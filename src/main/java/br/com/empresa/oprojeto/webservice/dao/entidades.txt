@@ -28,7 +28,6 @@ CheckList
 	Insert por placa e por colaborador
 
 Relato
-	
 	Insert por colaborador
 	Busca todos por colaborador
 
