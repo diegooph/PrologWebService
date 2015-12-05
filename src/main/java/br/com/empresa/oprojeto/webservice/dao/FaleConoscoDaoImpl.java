@@ -63,7 +63,11 @@ public boolean save(Object object) throws SQLException {
 
 @Override
 public boolean delete() throws SQLException {
-	// TODO Auto-generated method stub
+	
+	Connection conn = null;
+	PreparedStatement stmt = null;
+	FaleConosco faleConosco = (FaleConosco) object;
+	
 	return false;
 }
 

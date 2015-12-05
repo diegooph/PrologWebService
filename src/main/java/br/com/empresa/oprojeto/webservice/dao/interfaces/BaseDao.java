@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface BaseDao {
 	boolean save(Object object) throws SQLException;
-	boolean delete() throws SQLException;
-	Object getByCod(long cod) throws SQLException;
+	boolean delete(Long codigo) throws SQLException;
+	Object getByCod(Long codigo) throws SQLException;
 	List<Object> getAll() throws SQLException;
 }
