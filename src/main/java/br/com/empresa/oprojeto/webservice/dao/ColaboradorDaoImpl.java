@@ -4,68 +4,79 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
+import br.com.empresa.oprojeto.webservice.domain.Colaborador;
 
-public class ColaboradorDaoImpl extends ConnectionFactory  implements BaseDao{
-	
-	public void getCarroById(long id) throws SQLException {
+public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
+
+	@Override
+	public boolean save(Object object) throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
+	}
+
+	@Override
+	public boolean delete(Long codigo) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public Object getByCod(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
+		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("select * from colaborador where cpf=?");
-			stmt.setLong(1, id);
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				createColaborador(rs);
-				rs.close();
+			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR WHERE "
+					+ "CPF = ?");
+			stmt.setLong(1, codigo);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				Colaborador c = createColaborador(rSet);
+				return c;
 			}
 		} finally {
-			closeConnection(conn, stmt, rs);
+			closeConnection(conn, stmt, rSet);
 		}
-	}
-	
-	public void createColaborador(ResultSet rs) throws SQLException {
-		System.out.println(rs.getLong("cpf"));
-		System.out.println(rs.getString("nome"));
-		System.out.println(rs.getString("equipe"));
-		System.out.println(rs.getString("setor"));
-		System.out.println(rs.getString("cod_funcao"));
-		System.out.println(rs.getString("cod_unidade"));
-		System.out.println(rs.getString("matricula_ambev"));
-		System.out.println(rs.getString("status_ativo"));
-	}
-
-	@Override
-	public boolean insert(Object... objects) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public boolean update(Object object) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public boolean saveOrUpdate(Object object) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public boolean delete() throws SQLException {
-		return false;
-	}
-
-	@Override
-	public Object getByCod(long cod) throws SQLException {
 		return null;
 	}
 
 	@Override
 	public List<Object> getAll() throws SQLException {
-		return null;
+		List<Object> list = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Colaborador c = createColaborador(rSet);
+				list.add(c);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return list;
+	}
+	
+	private Colaborador createColaborador(ResultSet rSet) throws SQLException {
+		Colaborador c = new Colaborador();
+		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
+		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
+		c.setCpf(rSet.getLong("CPF"));
+		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
+		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+		c.setNome(rSet.getString("NOME"));
+		c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
+		c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
+		c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
+		c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
+		c.setEquipe(rSet.getString("EQUIPE"));
+		c.setSetor(rSet.getString("SETOR"));
+		return c;
 	}
 }
