@@ -4,7 +4,8 @@ package br.com.empresa.oprojeto.webservice.domain;
 import java.util.Date;
 
 public class FaleConosco {
-	private int cpfColaborador;
+	private Long codigo;
+	private long cpfColaborador;
 	private Date data;
 	private String categoria;
 	private String descricao;
@@ -13,19 +14,29 @@ public class FaleConosco {
 		
 	}
 
-	public FaleConosco(int cpfColaborador, Date data, String categoria, String descricao) {
+	public FaleConosco(Long codigo,long cpfColaborador, Date data, String categoria, String descricao) {
 		super();
+		this.codigo = codigo;
 		this.cpfColaborador = cpfColaborador;
 		this.data = data;
 		this.categoria = categoria;
 		this.descricao = descricao;
 	}
+	
 
-	public int getCpfColaborador() {
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public long getCpfColaborador() {
 		return cpfColaborador;
 	}
 
-	public void setCpfColaborador(int cpfColaborador) {
+	public void setCpfColaborador(long cpfColaborador) {
 		this.cpfColaborador = cpfColaborador;
 	}
 
