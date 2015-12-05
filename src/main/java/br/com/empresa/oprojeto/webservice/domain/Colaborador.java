@@ -3,12 +3,13 @@ package br.com.empresa.oprojeto.webservice.domain;
 import java.util.Date;
 
 public class Colaborador {
-	private int cpf;
+	private Long cpf;
 	private Date dataNascimento;
 	private long codFuncao;
 	private long codUnidade;
 	private String nome;
 	private int matriculaAmbev;
+	private int matriculaTrans; 
 	private Date dataAdmissao;
 	private Date dataDemissao;
 	private boolean ativo;
@@ -19,8 +20,9 @@ public class Colaborador {
 		
 	}
 	
-	public Colaborador(int cpf, Date dataNascimento, int codFuncao, int codUnidade, String nome, int matriculaAmbev,
-			Date dataAdmissao, Date dataDemissao, boolean ativo, String equipe, String setor) {
+	public Colaborador(Long cpf, Date dataNascimento, int codFuncao, int codUnidade, String nome, int matriculaAmbev,
+			Date dataAdmissao, Date dataDemissao, boolean ativo, String equipe,
+			String setor, int matriculaTrans) {
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
 		this.codFuncao = codFuncao;
@@ -32,12 +34,21 @@ public class Colaborador {
 		this.ativo = ativo;
 		this.equipe = equipe;
 		this.setor = setor;
+		this.matriculaTrans = matriculaAmbev;
 	}
 	
-	public int getCpf() {
+	public int getMatriculaTrans() {
+		return matriculaTrans;
+	}
+
+	public void setMatriculaTrans(int matriculaTrans) {
+		this.matriculaTrans = matriculaTrans;
+	}
+
+	public Long getCpf() {
 		return cpf;
 	}
-	public void setCpf(int cpf) {
+	public void setCpf(Long cpf) {
 		this.cpf = cpf;
 	}
 	public Date getDataNascimento() {
