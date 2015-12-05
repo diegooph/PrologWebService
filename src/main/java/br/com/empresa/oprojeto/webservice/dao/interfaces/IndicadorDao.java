@@ -7,6 +7,16 @@ import java.util.List;
 import br.com.empresa.oprojeto.webservice.domain.indicadores.Indicador;
 
 public interface IndicadorDao {
-	List<Indicador> getByMes (long cpf, Date dataInicial, Date dataFinal) 
+	List<Indicador> getJornadaByPeriodo(long cpf, Date dataInicial, Date dataFinal) 
+			throws SQLException;
+	List<Indicador> getTempoInternoByPeriod(long cpf, Date dataInicial, Date dataFinal) 
+			throws SQLException;
+	List<Indicador> getTempoRotaByPeriod(long cpf, Date dataInicial, Date dataFinal) 
+			throws SQLException;
+	List<Indicador> getDevCxByPeriod(long cpf, Date dataInicial, Date dataFinal) 
+			throws SQLException;
+	List<Indicador> getDevNfByPeriod(long cpf, Date dataInicial, Date dataFinal) 
+			throws SQLException;
+	List<Indicador> getTrackingByPeriod(long cpf, Date dataInicial, Date dataFinal) 
 			throws SQLException;
 }

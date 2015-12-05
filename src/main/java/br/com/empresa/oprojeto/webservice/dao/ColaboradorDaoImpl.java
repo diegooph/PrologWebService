@@ -19,7 +19,7 @@ public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
 
 	@Override
 	public boolean delete(Long codigo) throws SQLException {
-		return false;
+		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
