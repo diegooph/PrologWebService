@@ -10,23 +10,18 @@ public class ColaboradorDao extends ConnectionFactory {
 	public void getCarroById(long id) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("select * from colaborador where cpf=?");
 			stmt.setLong(1, id);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			if (rs.next()) {
 				createColaborador(rs);
 				rs.close();
 			}
 		} finally {
-			
-			if (stmt != null) {
-				stmt.close();
-			}
-			if (conn != null) {
-				conn.close();
-			}
+			closeConnection(conn, stmt, rs);
 		}
 
 	}
