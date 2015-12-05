@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-public class ColaboradorDao extends ConnectionFactory {
+import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
+
+public class ColaboradorDaoImpl extends ConnectionFactory  implements BaseDao{
 	
 	public void getCarroById(long id) throws SQLException {
 		Connection conn = null;
@@ -23,7 +26,6 @@ public class ColaboradorDao extends ConnectionFactory {
 		} finally {
 			closeConnection(conn, stmt, rs);
 		}
-
 	}
 	
 	public void createColaborador(ResultSet rs) throws SQLException {
@@ -37,4 +39,33 @@ public class ColaboradorDao extends ConnectionFactory {
 		System.out.println(rs.getString("status_ativo"));
 	}
 
+	@Override
+	public boolean insert(Object... objects) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public boolean update(Object object) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public boolean saveOrUpdate(Object object) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public boolean delete() throws SQLException {
+		return false;
+	}
+
+	@Override
+	public Object getByCod(long cod) throws SQLException {
+		return null;
+	}
+
+	@Override
+	public List<Object> getAll() throws SQLException {
+		return null;
+	}
 }
