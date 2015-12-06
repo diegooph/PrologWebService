@@ -1,30 +1,26 @@
 Base:
-	
 	Insert
 	Delete
 	Update
 	ListAll
 
 Treinamento:
-
 	Busca treinamentos não vistos por colaborador
 	Busca treinamentos ja vistos por colaborador
 
 Fale Conosco:
-	
 	Buscar formulários enviados por colaborador
 	Insert por colaborador
 
 Produtividade:
-
 	Busca produtividade por dia/mês e colaborador, resultado diário
 	 
 Indicadores:
-	
 	Busca cada indicador por mês, resultado acumulado
 
+-- Não precisa de DaoProprio pode usar o Base pois o save do base irá receber
+-- um objeto Checklist que contem id do colaborador e da placa
 CheckList
-	
 	Insert por placa e por colaborador
 
 Relato
@@ -32,7 +28,6 @@ Relato
 	Busca todos por colaborador
 
 Veiculo
-	
 	Busca placas por unidade (placas ativas)
 
 
