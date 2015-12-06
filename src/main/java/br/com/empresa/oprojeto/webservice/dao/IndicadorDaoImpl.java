@@ -4,8 +4,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.empresa.oprojeto.models.indicadores.Indicador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
-import br.com.empresa.oprojeto.webservice.domain.indicadores.Indicador;
 
 public class IndicadorDaoImpl extends ConnectionFactory implements IndicadorDao {
 

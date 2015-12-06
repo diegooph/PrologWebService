@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.empresa.oprojeto.models.FaleConosco;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.FaleConoscoDao;
-import br.com.empresa.oprojeto.webservice.domain.FaleConosco;
 import br.com.empresa.oprojeto.webservice.util.DateUtil;
 
 

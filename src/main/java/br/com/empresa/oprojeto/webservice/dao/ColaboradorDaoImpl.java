@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
-import br.com.empresa.oprojeto.webservice.domain.Colaborador;
 
 public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
 

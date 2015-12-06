@@ -4,7 +4,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.empresa.oprojeto.webservice.domain.Produtividade;
+import br.com.empresa.oprojeto.models.Produtividade;
+
 
 public interface ProdutividadeDao {
 	List<Produtividade> getByColaboradorByDia (long cpf, Date dataInicial, 
