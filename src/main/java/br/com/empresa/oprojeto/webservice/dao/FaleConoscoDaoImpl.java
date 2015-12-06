@@ -28,11 +28,9 @@ public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConosco
 
 	@Override
 	public boolean save(Object object) throws SQLException {
-
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		FaleConosco faleConosco = (FaleConosco) object;
-
 		try {
 			conn = getConnection();
 			if(faleConosco.getCodigo() == null){

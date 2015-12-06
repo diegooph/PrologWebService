@@ -7,5 +7,5 @@ import br.com.empresa.oprojeto.models.Relato;
 
 
 public interface RelatoDao {
-	List<Relato> getRelatosByColaborador(long cpf) throws SQLException;
+	List<Relato> getRelatosByColaborador(Long cpf) throws SQLException;
 }
