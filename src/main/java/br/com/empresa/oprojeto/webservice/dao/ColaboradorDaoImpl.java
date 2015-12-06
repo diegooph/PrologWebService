@@ -10,10 +10,11 @@ import java.util.List;
 import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 
-public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
+public class ColaboradorDaoImpl extends ConnectionFactory implements 
+		BaseDao<Colaborador> {
 
 	@Override
-	public boolean save(Object object) throws SQLException {
+	public boolean save(Colaborador object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
@@ -23,7 +24,7 @@ public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
 	}
 
 	@Override
-	public Object getByCod(Long codigo) throws SQLException {
+	public Colaborador getByCod(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -44,8 +45,8 @@ public class ColaboradorDaoImpl extends ConnectionFactory implements BaseDao {
 	}
 
 	@Override
-	public List<Object> getAll() throws SQLException {
-		List<Object> list = new ArrayList<>();
+	public List<Colaborador> getAll() throws SQLException {
+		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

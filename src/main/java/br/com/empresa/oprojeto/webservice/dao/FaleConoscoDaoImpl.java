@@ -24,13 +24,13 @@ import br.com.empresa.oprojeto.webservice.util.DateUtil;
 		  REFERENCES COLABORADOR(CPF)
 		);*/
 
-public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConoscoDao, BaseDao  {
+public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConoscoDao, 
+		BaseDao<FaleConosco>  {
 
 	@Override
-	public boolean save(Object object) throws SQLException {
+	public boolean save(FaleConosco faleConosco) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		FaleConosco faleConosco = (FaleConosco) object;
 		try {
 			conn = getConnection();
 			if(faleConosco.getCodigo() == null){
@@ -78,12 +78,10 @@ public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConosco
 	}
 
 	@Override
-	public Object getByCod(Long codigo) throws SQLException {
-
+	public FaleConosco getByCod(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(" SELECT * FROM FALE_CONOSCO "
@@ -101,7 +99,7 @@ public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConosco
 		return null;
 	}
 
-	public FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
+	private FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
 		FaleConosco faleConosco = new FaleConosco();
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));
 		faleConosco.setData(rSet.getTimestamp("DATA")); //TODO: VERIFICAR SAPORRA
@@ -112,17 +110,12 @@ public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConosco
 	}
 
 	@Override
-	public List<Object> getAll() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<FaleConosco> getAll() throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
 	public List<FaleConosco> getPorColaborador(long cpf) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Operation not supported yet");
 	}
-
-
-
 }

@@ -30,13 +30,13 @@ CREATE TABLE IF NOT EXISTS RELATO (
   REFERENCES COLABORADOR(CPF)
 );
 */
-public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao, BaseDao {
+public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao, 
+		BaseDao<Relato> {
 
 	@Override
-	public boolean save(Object object) throws SQLException {
+	public boolean save(Relato relato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		Relato relato = (Relato) object;
 		try {
 			conn = getConnection();
 			if(relato.getCodigo() == null){
@@ -88,7 +88,7 @@ public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao, BaseD
 	}
 
 	@Override
-	public Object getByCod(Long codigo) throws SQLException {
+	public Relato getByCod(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -108,8 +108,8 @@ public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao, BaseD
 	}
 
 	@Override
-	public List<Object> getAll() throws SQLException {
-		List<Object> relatos = new ArrayList<>();
+	public List<Relato> getAll() throws SQLException {
+		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
