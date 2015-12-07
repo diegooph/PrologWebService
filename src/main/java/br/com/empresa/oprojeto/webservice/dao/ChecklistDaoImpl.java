@@ -23,6 +23,15 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	
 	private Map<Pergunta, Resposta> perguntaRespostaMap = new HashMap<>();
 
+	/**
+	 * Salva um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
+	 * 
+	 * @return boolean
+	 * @version 1.0
+	 * @since 7 de dez de 2015 13:52:18
+	 * @author Luiz Felipe
+	 */
 	@Override
 	public boolean save(Checklist checklist) throws SQLException {
 		Connection conn = null;
@@ -110,6 +119,17 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		return checklists;
 	}
 	
+	/**
+	 * Método responsável por salvar as respostas de um checklist na tabela
+	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
+	 * map<pergunta, resposta> então precisamos percorrer todo esse map para
+	 * adicionar todas as respostas de um checklist ao BD.
+	 * 
+	 * @return void
+	 * @version 1.0
+	 * @since 7 de dez de 2015 14:01:03
+	 * @author Luiz Felipe
+	 */
 	private void saveRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -118,25 +138,27 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS "
 					+ "(COD_CHECKLIST, COD_PERGUNTA, RESPOSTA) VALUES "
 					+ "(?, ?, ?)");
-			for (Map.Entry<Pergunta, Resposta> entry : 
-				checklist.getPerguntaRespostaMap().entrySet()) {
+			for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
 			    Pergunta pergunta = entry.getKey();
 			    Resposta resposta = entry.getValue();
 			    stmt.setLong(1, checklist.getCodigo());
 			    stmt.setLong(2, pergunta.getCodigo());
-			    //stmt.setString(3, resposta.isResposta());
+			    stmt.setString(3, resposta.getResposta());
+			    stmt.execute();
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
-		for (Map.Entry<Pergunta, Resposta> entry : 
-			checklist.getPerguntaRespostaMap().entrySet()) {
-		    Pergunta key = entry.getKey();
-		    Resposta value = entry.getValue();   
-		}
 	}
 	
-	// Id gerado com o campo auto incremento
+	/**
+	 * Retorna o ID gerado com o função de auto incremento do postgres.
+	 * 
+	 * @return Long
+	 * @version 1.0
+	 * @since 7 de dez de 2015 14:05:30
+	 * @author Luiz Felipe
+	 */
 	private static Long getGeneratedId(Statement stmt) throws SQLException {
 		ResultSet rs = stmt.getGeneratedKeys();
 		if (rs.next()) {
