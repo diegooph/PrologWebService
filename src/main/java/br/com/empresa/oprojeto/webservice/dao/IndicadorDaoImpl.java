@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.models.indicadores.DevolucaoCaixa;
 import br.com.empresa.oprojeto.models.indicadores.Indicador;
+import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
 public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao {
@@ -51,6 +53,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR");
+			BaseDao<Colaborador> colaboradorDao = new ColaboradorDaoImpl();
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Indicador c = createDevCx(rSet);
