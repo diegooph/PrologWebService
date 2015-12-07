@@ -54,6 +54,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR");
 			BaseDao<Colaborador> colaboradorDao = new ColaboradorDaoImpl();
+			Colaborador colaborador = colaboradorDao.getByCod(cpf); 
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Indicador c = createDevCx(rSet);
@@ -89,8 +90,36 @@ finally{
 		return dev;		
 	}
 	
-	private void getMeta (Indicador i, int cod_meta){
+	private void getMeta (int cod_unidade, Indicador i, int cod_meta) throws SQLException{
 		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Indicador indicador = i;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT MU.VALOR FROM META_UNIDADE MU"
+					+ "JOIN UNIDADE U ON U.CODIGO = MU.COD_UNIDADE"
+					+ "WHERE MU.CODMETA = ?"
+					+ "AND U.CODIGO = ?");
+			stmt.setInt(1, cod_meta);
+			stmt.setInt(2, cod_unidade);
+			rSet = stmt.executeQuery();
+			
+			while(rSet.next()){
+				//i.setMeta(rSet.getString("MU_VALOR"));
+			}
+				
+			
+			return;
+			
+		}
+			
+			finally {
+				closeConnection(conn, stmt, rSet);
+			}
+			
+					
 	}
 	
 	

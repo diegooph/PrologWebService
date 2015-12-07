@@ -117,5 +117,6 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 	@Override
 	public List<FaleConosco> getPorColaborador(long cpf) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
+		//TODO: implementar
 	}
 }
