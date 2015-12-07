@@ -124,7 +124,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			    Resposta resposta = entry.getValue();
 			    stmt.setLong(1, checklist.getCodigo());
 			    stmt.setLong(2, pergunta.getCodigo());
-			    stmt.setString(3, resposta.isResposta());
+			    //stmt.setString(3, resposta.isResposta());
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
