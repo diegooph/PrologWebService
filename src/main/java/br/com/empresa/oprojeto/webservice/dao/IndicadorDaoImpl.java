@@ -8,14 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.models.indicadores.DevolucaoCaixa;
 import br.com.empresa.oprojeto.models.indicadores.Indicador;
-import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
 public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao {
-	
+
 	private static final int COD_DEVCX = 1;
 	private static final int COD_DEVNF = 2;
 	private static final int COD_JORNADA = 3;
@@ -23,7 +21,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 	private static final int COD_TEMPO_EM_ROTA = 5;
 	private static final int COD_TEMPO_LARGADA = 6;
 	private static final int COD_TRACKING = 7;
-	
+
 
 	@Override
 	public List<Indicador> getJornadaByPeriodo(long cpf, Date dataInicial, 
@@ -50,25 +48,43 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Indicador> lIndicador = new ArrayList<>();
+		
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR");
-			BaseDao<Colaborador> colaboradorDao = new ColaboradorDaoImpl();
-			Colaborador colaborador = colaboradorDao.getByCod(cpf); 
+			stmt = conn.prepareStatement("SELECT M.DATA, SUM(M.CXCARREG) AS CAIXAS_CARREGADAS,"
+					+ "SUM(M.CXENTREG) AS CAIXAS_ENTREGUES,"
+					+ "(SUM(M.CXCARREG)-SUM(M.CXENTREG)) AS CAIXAS_DEVOLVIDAS,"
+					+ "MU.VALOR AS META "
+					+ "FROM MAPA_COLABORADOR MC JOIN COLABORADOR C "
+					+ "ON C.MATRICULA_AMBEV = MC.COD_AMBEV "
+					+ "JOIN MAPA M ON M.MAPA = MC.MAPA "
+					+ "JOIN META_UNIDADE MU ON MU.COD_UNIDADE = M.COD_UNIDADE "
+					+ "WHERE C.CPF = ? AND MU.COD_META=1 "
+					+ "AND M.DATA BETWEEN ? AND  ? "
+					+ "GROUP BY M.DATA, MU.VALOR "
+					+ "ORDER BY M.DATA ");
+			stmt.setLong(1, cpf);
+			stmt.setDate(2, dataInicial);
+			stmt.setDate(3, dataFinal);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Indicador c = createDevCx(rSet);
-				lIndicador.add(c);
+				DevolucaoCaixa dev = createDevCx(rSet);
+				lIndicador.add(dev);
 			}
+		}finally{
+			closeConnection(conn, stmt, rSet);
 		}
+		return lIndicador;
+	}
 
-finally{
-	
-}
-
-
-
-		return null;
+	private DevolucaoCaixa createDevCx(ResultSet rSet) throws SQLException{
+		DevolucaoCaixa dev = new DevolucaoCaixa();
+		dev.setCxCarregadas(rSet.getDouble("CAIXAS_CARREGADAS"));
+		dev.setCxDevolvidas(rSet.getDouble("CAIXAS_DEVOLVIDAS"));
+		dev.setCxEntregues(rSet.getDouble("CAIXAS_DEVOLVIDAS"));
+		dev.setMeta(Double.parseDouble(rSet.getString("META")));
+		System.out.println(rSet.getDouble("CAIXAS_CARREGADAS"));
+		return dev;		
 	}
 
 	@Override
@@ -82,55 +98,5 @@ finally{
 			Date dataFinal) throws SQLException {
 		return null;
 	}
-	
-	private Indicador createDevCx (ResultSet rSet) throws SQLException{
-		Indicador dev = new DevolucaoCaixa();
-			
-		
-		return dev;		
 	}
-	
-	private void getMeta (int cod_unidade, Indicador i, int cod_meta) throws SQLException{
-		
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		Indicador indicador = i;
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT MU.VALOR FROM META_UNIDADE MU"
-					+ "JOIN UNIDADE U ON U.CODIGO = MU.COD_UNIDADE"
-					+ "WHERE MU.CODMETA = ?"
-					+ "AND U.CODIGO = ?");
-			stmt.setInt(1, cod_meta);
-			stmt.setInt(2, cod_unidade);
-			rSet = stmt.executeQuery();
-			
-			while(rSet.next()){
-				//i.setMeta(rSet.getString("MU_VALOR"));
-			}
-				
-			
-			return;
-			
-		}
-			
-			finally {
-				closeConnection(conn, stmt, rSet);
-			}
-			
-					
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
+
