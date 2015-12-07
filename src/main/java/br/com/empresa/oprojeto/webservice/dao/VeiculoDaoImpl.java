@@ -10,7 +10,7 @@ import java.util.List;
 import br.com.empresa.oprojeto.models.Veiculo;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.VeiculoDao;
 
-public class VeiculoDaoImpl extends ConnectionFactory implements VeiculoDao {
+public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 

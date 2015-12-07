@@ -10,7 +10,7 @@ import java.util.List;
 import br.com.empresa.oprojeto.models.treinamento.Treinamento;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.TreinamentoDao;
 
-public class TreinamentoDaoImpl extends ConnectionFactory implements 
+public class TreinamentoDaoImpl extends DataBaseConnection implements 
 	TreinamentoDao {
 	
 	private static final String TREINAMENTOS_VISTOS_COLABORADOR_QUERY = 

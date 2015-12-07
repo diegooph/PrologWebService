@@ -24,7 +24,7 @@ import br.com.empresa.oprojeto.webservice.util.DateUtil;
 		  REFERENCES COLABORADOR(CPF)
 		);*/
 
-public class FaleConoscoDaoImpl extends ConnectionFactory implements FaleConoscoDao, 
+public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConoscoDao, 
 		BaseDao<FaleConosco>  {
 
 	@Override

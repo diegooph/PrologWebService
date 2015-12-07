@@ -10,7 +10,7 @@ import java.util.List;
 import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 
-public class ColaboradorDaoImpl extends ConnectionFactory implements 
+public class ColaboradorDaoImpl extends DataBaseConnection implements 
 		BaseDao<Colaborador> {
 
 	@Override
