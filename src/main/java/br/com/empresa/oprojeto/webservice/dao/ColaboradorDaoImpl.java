@@ -12,7 +12,9 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 
 public class ColaboradorDaoImpl extends DataBaseConnection implements 
 		BaseDao<Colaborador> {
-
+	
+	// TODO: método para verificar o login do colaborador
+	
 	@Override
 	public boolean save(Colaborador object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
