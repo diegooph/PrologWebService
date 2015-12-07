@@ -21,8 +21,6 @@ public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			// TODO: se a nova tabela unidade_veiculo for feita, isso terá que
-			// mudar. Precisará usar Join.
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
 					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
 			rSet = stmt.executeQuery();

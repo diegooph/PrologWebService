@@ -13,6 +13,7 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.TreinamentoDao;
 public class TreinamentoDaoImpl extends DataBaseConnection implements 
 	TreinamentoDao {
 	
+	// TODO: arrumar query
 	private static final String TREINAMENTOS_VISTOS_COLABORADOR_QUERY = 
 			"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
 			+ "T.CODIGO = TC.COD_TREINAMENTO WHERE CPF_COLABORADOR = ?";
