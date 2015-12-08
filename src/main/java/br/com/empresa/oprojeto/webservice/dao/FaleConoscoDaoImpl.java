@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.FaleConosco;
+import br.com.empresa.oprojeto.models.util.DateUtil;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.FaleConoscoDao;
-import br.com.empresa.oprojeto.webservice.util.DateUtil;
-
 
 
 /*CREATE TABLE IF NOT EXISTS FALE_CONOSCO (

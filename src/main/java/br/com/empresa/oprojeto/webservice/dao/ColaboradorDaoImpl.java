@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Colaborador;
+import br.com.empresa.oprojeto.models.util.DateUtil;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
-import br.com.empresa.oprojeto.webservice.util.DateUtil;
 	
 public class ColaboradorDaoImpl extends DataBaseConnection implements 
 		BaseDao<Colaborador>, ColaboradorDao {

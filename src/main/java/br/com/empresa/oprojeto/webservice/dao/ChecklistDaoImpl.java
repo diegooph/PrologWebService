@@ -14,8 +14,9 @@ import br.com.empresa.oprojeto.models.Resposta;
 import br.com.empresa.oprojeto.models.checklist.Checklist;
 import br.com.empresa.oprojeto.models.checklist.ChecklistRetorno;
 import br.com.empresa.oprojeto.models.checklist.ChecklistSaida;
+import br.com.empresa.oprojeto.models.util.DateUtil;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
-import br.com.empresa.oprojeto.webservice.util.DateUtil;
+
 
 // TODO: implementar método buscar todos os checklist por colaborador
 public class ChecklistDaoImpl extends DataBaseConnection implements 
