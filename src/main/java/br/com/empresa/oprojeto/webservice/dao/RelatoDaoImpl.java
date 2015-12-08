@@ -64,7 +64,7 @@ public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao,
 			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir o formulário");
+				throw new SQLException("Erro ao inserir o re");
 			}	
 		}
 		finally {
@@ -81,7 +81,7 @@ public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao,
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM RELATO WHERE CODIGO = ?");
 			stmt.setLong(1, codigo);
-			return stmt.execute();
+			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
 		}

@@ -7,5 +7,5 @@ import br.com.empresa.oprojeto.models.FaleConosco;
 
 
 public interface FaleConoscoDao {
-	List<FaleConosco> getPorColaborador(long cpf) throws SQLException;
+	List<FaleConosco> getByColaborador(long cpf) throws SQLException;
 }

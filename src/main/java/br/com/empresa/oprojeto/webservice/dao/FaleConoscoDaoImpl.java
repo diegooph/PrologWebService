@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.FaleConosco;
@@ -51,7 +52,7 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir o formulário");
+				throw new SQLException("Erro ao inserir o fale conosco");
 			}	
 		}
 		finally {
@@ -69,12 +70,11 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 			stmt = conn.prepareStatement("DELETE FROM FALE_CONOSCO "
 					+ "WHERE CODIGO = ?");
 			stmt.setLong(1, codigo);
-			stmt.executeQuery();
+			return (stmt.executeUpdate() > 0);
 		}
 		finally {
 			closeConnection(conn, stmt, null);
 		}	
-		return true;
 	}
 
 	@Override
@@ -99,6 +99,48 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 		return null;
 	}
 
+	@Override
+	public List<FaleConosco> getAll() throws SQLException {
+		List<FaleConosco> list  = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM FALE_CONOSCO");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				FaleConosco faleConosco = createFaleConosco(rSet);
+				list.add(faleConosco);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return list;
+	}
+
+	@Override
+	public List<FaleConosco> getByColaborador(long cpf) throws SQLException {
+		List<FaleConosco> list  = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM FALE_CONOSCO WHERE "
+					+ "CPF = ?");
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				FaleConosco faleConosco = createFaleConosco(rSet);
+				list.add(faleConosco);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return list;
+	}
+	
 	private FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
 		FaleConosco faleConosco = new FaleConosco();
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));
@@ -107,16 +149,5 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 		faleConosco.setCategoria(rSet.getString("CATEGORIA"));
 		faleConosco.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
 		return faleConosco;
-	}
-
-	@Override
-	public List<FaleConosco> getAll() throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
-	}
-
-	@Override
-	public List<FaleConosco> getPorColaborador(long cpf) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
-		//TODO: implementar
 	}
 }

@@ -6,10 +6,9 @@ import java.util.List;
 
 import br.com.empresa.oprojeto.models.checklist.Checklist;
 import br.com.empresa.oprojeto.webservice.dao.ChecklistDaoImpl;
-import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 
 public class ChecklistService {
-	private BaseDao<Checklist> dao = new ChecklistDaoImpl();
+	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
 	
 	public boolean save(Checklist checklist) {
 		try {
@@ -39,10 +38,8 @@ public class ChecklistService {
 	}
 	
 	public List<Checklist> getAll() {
-		List<Checklist> checklists;
 		try {
-			checklists = dao.getAll();
-			return checklists;
+			return dao.getAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();

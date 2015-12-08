@@ -13,9 +13,12 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
 import br.com.empresa.oprojeto.webservice.util.DateUtil;
 	
-	// TODO: criar método para autenticar o colaborador por CPF e data de nascimento.
-	// Adicionar classes para encriptar o CPF na hora de enviar do Android para cá.
-
+// TODO: Adicionar classes para encriptar o CPF na hora de enviar do Android para cá.
+// Talvez seja melhor mudar a base dao para ter insert e update pois no caso
+// do colaborador não podemos saber se é um insert ou um update já que não temos
+// um código para verificar se é nulo. Nosso código será o cpf e ele nunca 
+// será nulo
+// Ou então, adicionar os métodos insert e update no dao colaborador.
 public class ColaboradorDaoImpl extends DataBaseConnection implements 
 		BaseDao<Colaborador>, ColaboradorDao {
 	
@@ -25,8 +28,17 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+	public boolean delete(Long cpf) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("DELETE FROM COLABORADOR WHERE CPF = ?");
+			stmt.setLong(1, cpf);
+			return (stmt.executeUpdate() > 0);
+		} finally {
+			closeConnection(conn, stmt, null);
+		}
 	}
 
 	@Override
@@ -69,23 +81,6 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		}
 		return list;
 	}
-	
-	private Colaborador createColaborador(ResultSet rSet) throws SQLException {
-		Colaborador c = new Colaborador();
-		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
-		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
-		c.setCpf(rSet.getLong("CPF"));
-		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
-		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-		c.setNome(rSet.getString("NOME"));
-		c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
-		c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
-		c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
-		c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
-		c.setEquipe(rSet.getString("EQUIPE"));
-		c.setSetor(rSet.getString("SETOR"));
-		return c;
-	}
 
 	@Override
 	public boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException {
@@ -106,5 +101,22 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 			closeConnection(conn, stmt, rSet);
 		}
 		return false;
+	}
+	
+	private Colaborador createColaborador(ResultSet rSet) throws SQLException {
+		Colaborador c = new Colaborador();
+		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
+		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
+		c.setCpf(rSet.getLong("CPF"));
+		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
+		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+		c.setNome(rSet.getString("NOME"));
+		c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
+		c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
+		c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
+		c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
+		c.setEquipe(rSet.getString("EQUIPE"));
+		c.setSetor(rSet.getString("SETOR"));
+		return c;
 	}
 }

@@ -55,13 +55,14 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 				stmt.setLong(5, checklist.getCodigo());
 				int count = stmt.executeUpdate();
 				if(count == 0){
-					throw new SQLException("Erro ao inserir o formulário");
+					throw new SQLException("Erro ao inserir o checklist");
 				}
-			}
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				checklist.setCodigo(rSet.getLong("CODIGO"));
-				saveRespostas(checklist);
+			} else {
+				rSet = stmt.executeQuery();
+				if (rSet.next()) {
+					checklist.setCodigo(rSet.getLong("CODIGO"));
+					saveRespostas(checklist);
+				}
 			}
 		}
 		finally {
@@ -78,7 +79,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM CHECKLIST WHERE CODIGO = ?");
 			stmt.setLong(1, codigo);
-			return stmt.execute();
+			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
@@ -149,11 +150,10 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
 			    Pergunta pergunta = entry.getKey();
 			    Resposta resposta = entry.getValue();
-			    System.out.println(checklist.getCodigo());
 			    stmt.setLong(1, checklist.getCodigo());
 			    stmt.setLong(2, pergunta.getCodigo());
 			    stmt.setString(3, resposta.getResposta());
-			    stmt.execute();
+			    stmt.executeUpdate();
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -169,7 +169,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		}
 		checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
 		checklist.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		checklist.setData(rSet.getDate("DATA"));
+		checklist.setData(rSet.getTimestamp("DATA"));
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		do {
