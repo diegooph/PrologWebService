@@ -29,27 +29,20 @@ CREATE TABLE IF NOT EXISTS RELATO (
   CONSTRAINT FK_RELATO_COLABORADOR FOREIGN KEY (CPF_COLABORADOR)
   REFERENCES COLABORADOR(CPF)
 );
-*/
+ */
 public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao, 
-		BaseDao<Relato> {
+BaseDao<Relato> {
 
 	@Override
-	public boolean save(Relato relato) throws SQLException {
+	public boolean insert(Relato relato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			if(relato.getCodigo() == null){
-				stmt = conn.prepareStatement("INSERT INTO RELATOS "
-						+ "(DATA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
-						+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR)"
-						+ " VALUES (?,?,?,?,?,?,?,?,?)");						
-			}else{
-				stmt = conn.prepareStatement("UPDATE RELATO SET DATA = ?, "
-						+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
-						+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
-						+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-			}
+			stmt = conn.prepareStatement("INSERT INTO RELATOS "
+					+ "(DATA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
+					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR) "
+					+ "VALUES (?,?,?,?,?,?,?,?,?)");						
 			stmt.setTimestamp(1, DateUtil.toTimestamp(relato.getData()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
@@ -59,12 +52,40 @@ public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao,
 			stmt.setString(7, relato.getUrlFoto2());
 			stmt.setString(8, relato.getUrlFoto3());
 			stmt.setLong(9, relato.getCpfColaborador());
-			if(relato.getCodigo() != null){		
-				stmt.setLong(10, relato.getCodigo());
-			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir o re");
+				throw new SQLException("Erro ao inserir o relato");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
+	@Override
+	public boolean update(Relato relato) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE RELATO SET DATA = ?, "
+					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
+					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
+					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
+			stmt.setTimestamp(1, DateUtil.toTimestamp(relato.getData()));
+			stmt.setString(2, relato.getAssunto());
+			stmt.setString(3, relato.getDescricao());
+			stmt.setString(4, relato.getLatitude());
+			stmt.setString(5, relato.getLongitude());
+			stmt.setString(6, relato.getUrlFoto1());
+			stmt.setString(7, relato.getUrlFoto2());
+			stmt.setString(8, relato.getUrlFoto3());
+			stmt.setLong(9, relato.getCpfColaborador());
+			stmt.setLong(10, relato.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar o relato");
 			}	
 		}
 		finally {
@@ -147,7 +168,7 @@ public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao,
 		}
 		return relatos;
 	}
-	
+
 	private Relato createRelato(ResultSet rSet) throws SQLException{
 		Relato relato = new Relato();
 		relato.setCodigo(rSet.getLong("CODIGO"));

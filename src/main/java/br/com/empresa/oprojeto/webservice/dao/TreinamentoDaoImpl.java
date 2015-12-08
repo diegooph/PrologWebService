@@ -13,27 +13,22 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.TreinamentoDao;
 public class TreinamentoDaoImpl extends DataBaseConnection implements 
 	TreinamentoDao {
 	
-	// TODO: arrumar query
-	private static final String TREINAMENTOS_VISTOS_COLABORADOR_QUERY = 
-			"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
-			+ "T.CODIGO = TC.COD_TREINAMENTO WHERE CPF_COLABORADOR = ?";
-	
 	@Override
 	public List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+		String treinamentosNaoVistosQuery = 
+				"SELECT * FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON "
+				+ "RT.COD_TREINAMENTO = T.CODIGO JOIN COLABORADOR C ON "
+				+ "C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF= ? WHERE T.CODIGO NOT IN "
+				+ "(SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+				+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
+				+ "C.CPF=?)";
 		try {
 			conn = getConnection();
-			/**
-			 * Essa query seleciona todos os treinamentos e depois remove usando o 
-			 * operador de conjunto da diferença (except) os treinamentos já vistos 
-			 * por um colaborador especifico;
-			 */
-			stmt = conn.prepareStatement("SELECT * FROM TREINAMENTO "
-					+ "EXCEPT "
-					+ TREINAMENTOS_VISTOS_COLABORADOR_QUERY);
+			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -52,9 +47,12 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+		String treinamentosVistosQuery = 
+				"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
+				+ "T.CODIGO = TC.COD_TREINAMENTO WHERE CPF_COLABORADOR = ?";
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(TREINAMENTOS_VISTOS_COLABORADOR_QUERY);
+			stmt = conn.prepareStatement(treinamentosVistosQuery);
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {

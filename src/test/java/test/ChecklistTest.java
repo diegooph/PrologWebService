@@ -24,7 +24,7 @@ public class ChecklistTest extends TestCase {
 		// Valida se encontrou algo
 		assertTrue(checklists.size() > 0);
 		// Valida se encontrou um checklist
-		Checklist check_1 = service.getByCod(1L);
+		Checklist check_1 = service.getByCod(2L);
 		Long cpf = 12345678987L;
 		assertEquals(cpf, check_1.getCpfColaborador());
 		assertEquals("MKE2501", check_1.getPlacaVeiculo());
@@ -48,7 +48,7 @@ public class ChecklistTest extends TestCase {
 		c.setPerguntaRespostaMap(map);
 		
 		// Salva
-		service.save(c);
+		service.insert(c);
 		// Verifica se salvou consultando o id
 		Long id = c.getCodigo();
 		assertNotNull(id);
@@ -70,7 +70,7 @@ public class ChecklistTest extends TestCase {
 
 		// Atualiza o carro
 		c.setTipo('r');
-		service.save(c);
+		service.update(c);
 		
 		// Busca o checklist novamente (deve estar atualizado)
 		c = service.getByCod(id);

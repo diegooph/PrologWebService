@@ -10,9 +10,18 @@ import br.com.empresa.oprojeto.webservice.dao.FaleConoscoDaoImpl;
 public class FaleConoscoService {
 	private FaleConoscoDaoImpl dao = new FaleConoscoDaoImpl();
 	
-	public boolean save(FaleConosco faleConosco) {
+	public boolean insert(FaleConosco faleConosco) {
 		try {
-			return dao.save(faleConosco);
+			return dao.insert(faleConosco);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean update(FaleConosco faleConosco) {
+		try {
+			return dao.update(faleConosco);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

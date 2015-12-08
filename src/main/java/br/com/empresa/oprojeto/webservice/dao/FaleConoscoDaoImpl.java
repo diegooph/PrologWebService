@@ -26,33 +26,49 @@ import br.com.empresa.oprojeto.webservice.util.DateUtil;
 		);*/
 
 public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConoscoDao, 
-		BaseDao<FaleConosco>  {
+BaseDao<FaleConosco>  {
 
 	@Override
-	public boolean save(FaleConosco faleConosco) throws SQLException {
+	public boolean insert(FaleConosco faleConosco) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			if(faleConosco.getCodigo() == null){
-				stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
-						+ "(DATA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
-						+ "(?,?,?,?) ");						
-			}else{
-				stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
-						+ "DATA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
-						+ "WHERE CODIGO = ? ");
-			}
+			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
+					+ "(DATA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
+					+ "(?,?,?,?) ");						
 			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
 			stmt.setString(3, faleConosco.getCategoria());
 			stmt.setLong(4, faleConosco.getCpfColaborador());
-			if(faleConosco.getCodigo() != null){		
-				stmt.setLong(5, faleConosco.getCodigo());
-			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o fale conosco");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
+	@Override
+	public boolean update(FaleConosco faleConosco) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
+					+ "DATA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
+					+ "WHERE CODIGO = ? ");
+			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
+			stmt.setString(2, faleConosco.getDescricao());
+			stmt.setString(3, faleConosco.getCategoria());
+			stmt.setLong(4, faleConosco.getCpfColaborador());		
+			stmt.setLong(5, faleConosco.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar o fale conosco");
 			}	
 		}
 		finally {
@@ -140,7 +156,7 @@ public class FaleConoscoDaoImpl extends DataBaseConnection implements FaleConosc
 		}
 		return list;
 	}
-	
+
 	private FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
 		FaleConosco faleConosco = new FaleConosco();
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));

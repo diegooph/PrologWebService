@@ -13,17 +13,16 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
 import br.com.empresa.oprojeto.webservice.util.DateUtil;
 	
-// TODO: Adicionar classes para encriptar o CPF na hora de enviar do Android para cá.
-// Talvez seja melhor mudar a base dao para ter insert e update pois no caso
-// do colaborador não podemos saber se é um insert ou um update já que não temos
-// um código para verificar se é nulo. Nosso código será o cpf e ele nunca 
-// será nulo
-// Ou então, adicionar os métodos insert e update no dao colaborador.
 public class ColaboradorDaoImpl extends DataBaseConnection implements 
 		BaseDao<Colaborador>, ColaboradorDao {
 	
 	@Override
-	public boolean save(Colaborador object) throws SQLException {
+	public boolean insert(Colaborador object) throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
+	}
+	
+	@Override
+	public boolean update(Colaborador object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 

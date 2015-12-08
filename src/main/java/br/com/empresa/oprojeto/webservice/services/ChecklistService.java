@@ -10,9 +10,18 @@ import br.com.empresa.oprojeto.webservice.dao.ChecklistDaoImpl;
 public class ChecklistService {
 	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
 	
-	public boolean save(Checklist checklist) {
+	public boolean insert(Checklist checklist) {
 		try {
-			return dao.save(checklist);
+			return dao.insert(checklist);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean update(Checklist checklist) {
+		try {
+			return dao.update(checklist);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
