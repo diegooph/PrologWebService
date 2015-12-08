@@ -8,12 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.indicadores.DevolucaoCaixa;
 import br.com.empresa.oprojeto.models.indicadores.Indicador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
 public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao {
-
+//Códigos das metas no BD
 	private static final int COD_DEVCX = 1;
 	private static final int COD_DEVNF = 2;
 	private static final int COD_JORNADA = 3;
@@ -68,8 +67,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			stmt.setDate(3, dataFinal);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				DevolucaoCaixa dev = createDevCx(rSet);
-				lIndicador.add(dev);
+				//DevolucaoCaixa dev = createDevCx(rSet);
+				//lIndicador.add(dev);
 			}
 		}finally{
 			closeConnection(conn, stmt, rSet);
@@ -77,15 +76,15 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		return lIndicador;
 	}
 
-	private DevolucaoCaixa createDevCx(ResultSet rSet) throws SQLException{
-		DevolucaoCaixa dev = new DevolucaoCaixa();
-		dev.setCxCarregadas(rSet.getDouble("CAIXAS_CARREGADAS"));
-		dev.setCxDevolvidas(rSet.getDouble("CAIXAS_DEVOLVIDAS"));
-		dev.setCxEntregues(rSet.getDouble("CAIXAS_DEVOLVIDAS"));
-		dev.setMeta(Double.parseDouble(rSet.getString("META")));
-		System.out.println(rSet.getDouble("CAIXAS_CARREGADAS"));
-		return dev;		
-	}
+	//private DevolucaoCaixa createDevCx(ResultSet rSet) throws SQLException{
+	//	DevolucaoCaixa dev = new DevolucaoCaixa();
+	//	dev.setCxCarregadas(rSet.getDouble("CAIXAS_CARREGADAS"));
+	////	dev.setCxDevolvidas(rSet.getDouble("CAIXAS_DEVOLVIDAS"));
+	//	dev.setCxEntregues(rSet.getDouble("CAIXAS_ENTREGUES"));
+	//	dev.setMeta(Double.parseDouble(rSet.getString("META")));
+	//	System.out.println(rSet.getDouble("CAIXAS_CARREGADAS"));
+	//	return dev;		
+	//}
 
 	@Override
 	public List<Indicador> getDevNfByPeriod(long cpf, Date dataInicial, 

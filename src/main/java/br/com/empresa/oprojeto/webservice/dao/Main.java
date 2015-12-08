@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.indicadores.DevolucaoCaixa;
 import br.com.empresa.oprojeto.models.indicadores.Indicador;
 
 public class Main {
@@ -22,6 +21,6 @@ public class Main {
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
-		System.out.println(((DevolucaoCaixa)lista.get(0)).getCxCarregadas());
+		
 	}
 }
