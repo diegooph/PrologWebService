@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
+import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
+import br.com.empresa.oprojeto.webservice.util.DateUtil;
 
 public class ColaboradorDaoImpl extends ConnectionFactory implements 
 		BaseDao<Colaborador> {
@@ -16,6 +19,9 @@ public class ColaboradorDaoImpl extends ConnectionFactory implements
 	// TODO: criar método para autenticar o colaborador por CPF e data de nascimento.
 	// Adicionar classes para encriptar o CPF na hora de enviar do Android para cá.
 
+public class ColaboradorDaoImpl extends DataBaseConnection implements 
+		BaseDao<Colaborador>, ColaboradorDao {
+	
 	@Override
 	public boolean save(Colaborador object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
@@ -82,5 +88,26 @@ public class ColaboradorDaoImpl extends ConnectionFactory implements
 		c.setEquipe(rSet.getString("EQUIPE"));
 		c.setSetor(rSet.getString("SETOR"));
 		return c;
+	}
+
+	@Override
+	public boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.EQUIPE FROM "
+					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ?)");
+			stmt.setLong(1, cpf);
+			stmt.setDate(2, DateUtil.toSqlDate(dataNascimento));
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return rSet.getBoolean("EXISTS");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return false;
 	}
 }

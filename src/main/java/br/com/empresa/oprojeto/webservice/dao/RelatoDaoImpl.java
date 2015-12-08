@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS RELATO (
   REFERENCES COLABORADOR(CPF)
 );
 */
-public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao, 
+public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao, 
 		BaseDao<Relato> {
 
 	@Override
@@ -43,12 +43,12 @@ public class RelatoDaoImpl extends ConnectionFactory implements RelatoDao,
 				stmt = conn.prepareStatement("INSERT INTO RELATOS "
 						+ "(DATA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
 						+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR)"
-						+ " VALUES (?,?,?,?,?,?,?,?,?) ");						
+						+ " VALUES (?,?,?,?,?,?,?,?,?)");						
 			}else{
-				stmt = conn.prepareStatement(" UPDATE RELATO SET DATA = ?, "
+				stmt = conn.prepareStatement("UPDATE RELATO SET DATA = ?, "
 						+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 						+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
-						+ "CPF_COLABORADOR = ? WHERE CODIGO = ? ");
+						+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
 			}
 			stmt.setTimestamp(1, DateUtil.toTimestamp(relato.getData()));
 			stmt.setString(2, relato.getAssunto());

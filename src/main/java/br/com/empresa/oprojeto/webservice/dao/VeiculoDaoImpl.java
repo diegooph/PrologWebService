@@ -10,7 +10,7 @@ import java.util.List;
 import br.com.empresa.oprojeto.models.Veiculo;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.VeiculoDao;
 
-public class VeiculoDaoImpl extends ConnectionFactory implements VeiculoDao {
+public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
@@ -21,8 +21,6 @@ public class VeiculoDaoImpl extends ConnectionFactory implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			// TODO: se a nova tabela unidade_veiculo for feita, isso terá que
-			// mudar. Precisará usar Join.
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
 					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
 			rSet = stmt.executeQuery();
