@@ -131,9 +131,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST C JOIN "
 					+ "CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST");
 			rSet = stmt.executeQuery();
-			int count = 0;
 			while (rSet.next()) {
-				System.out.println(count++);
 				Checklist checklist = createChecklist(rSet);
 				checklists.add(checklist);
 			}
