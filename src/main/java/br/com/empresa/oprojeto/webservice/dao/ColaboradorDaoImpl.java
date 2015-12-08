@@ -12,9 +12,6 @@ import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
 import br.com.empresa.oprojeto.webservice.util.DateUtil;
-
-public class ColaboradorDaoImpl extends ConnectionFactory implements 
-		BaseDao<Colaborador> {
 	
 	// TODO: criar método para autenticar o colaborador por CPF e data de nascimento.
 	// Adicionar classes para encriptar o CPF na hora de enviar do Android para cá.

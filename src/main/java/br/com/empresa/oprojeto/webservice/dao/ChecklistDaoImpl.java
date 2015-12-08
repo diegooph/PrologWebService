@@ -178,17 +178,6 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		checklist.setPerguntaRespostaMap(perguntaRespostaMap);
 		return checklist;
 	}
-	
-	// TODO: precisa verificar pois apenas é adicionado uma pergunta e resposta
-	// ao HashMap. Sendo que serão várias retornadas. Dúvida: como percorrer o
-	// ResultSet? As respostas (e perguntas) retornam por linha ou por coluna na consulta após
-	// o Join das três tabelas (checklist, checklist_perguntas, checklist_respostas)?
-	// É preciso arranjar um jeito de percorrer o ResultSet sem tirar ele da 
-	// posição atual! Talvez passar a outro objeto ResultSet. E também, percorrer
-	// e adicionar no HashMap todas as perguntas e resposta de um checklist antes
-	// de trocar de checklist. Pois a partir da troca ele é adicionado ao List e 
-	// perdemos a referência. :/
-	private void getPerguntaResposta(ResultSet rSet) throws SQLException {
 
 	private void createPerguntaResposta(ResultSet rSet) throws SQLException {
 		Pergunta pergunta = new Pergunta();
