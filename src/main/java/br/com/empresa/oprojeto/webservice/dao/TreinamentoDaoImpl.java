@@ -30,6 +30,7 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
 			stmt.setLong(1, cpf);
+			stmt.setLong(2, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Treinamento treinamento = createTreinamento(rSet);

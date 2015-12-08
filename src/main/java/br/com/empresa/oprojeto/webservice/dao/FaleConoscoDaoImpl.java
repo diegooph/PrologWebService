@@ -143,7 +143,7 @@ BaseDao<FaleConosco>  {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM FALE_CONOSCO WHERE "
-					+ "CPF = ?");
+					+ "CPF_COLABORADOR = ?");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
