@@ -49,7 +49,7 @@ public class ChecklistDaoImpl implements BaseDao<Checklist> {
 	
 	// TODO: precisa verificar pois apenas é adicionado uma pergunta e resposta
 	// ao HashMap. Sendo que serão várias retornadas. Dúvida: como percorrer o
-	// ResultSet? As respostas retornam por linha ou por coluna na consulta após
+	// ResultSet? As respostas (e perguntas) retornam por linha ou por coluna na consulta após
 	// o Join das três tabelas (checklist, checklist_perguntas, checklist_respostas)?
 	// É preciso arranjar um jeito de percorrer o ResultSet sem tirar ele da 
 	// posição atual! Talvez passar a outro objeto ResultSet. E também, percorrer
