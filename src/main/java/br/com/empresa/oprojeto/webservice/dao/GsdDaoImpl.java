@@ -18,6 +18,7 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.GsdDao;
 
 public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdDao {
+	private Map<Long, Gsd.PerguntaRespostaHolder> map = new HashMap<>();
 
 	@Override
 	public boolean insert(Gsd gsd) throws SQLException {
@@ -25,6 +26,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
+			conn = getConnection();
 			// Query para inserir um GSD e retornar seu ID AUTO INCREMENTO
 			stmt = conn.prepareStatement("INSERT INTO GSD (DATA_HORA, "
 					+ "URL_ASSINATURA, CPF_AVALIADOR, CPF_MOTORISTA, "
@@ -36,6 +38,9 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 				// Seta o código no objeto GSD para poder fazer a inserir na 
 				// tabela GSD_RESPOSTAS já que lá pede o código do GSD.
 				gsd.setCodigo(rSet.getLong("CODIGO"));
+				// Insere os PDVs agora pois já tem o código do GSD inserido
+				PdvDaoImpl pdvDao = new PdvDaoImpl();
+				pdvDao.insertList(gsd.getPdvs(), gsd.getCodigo());
 				insertRespostas(gsd);
 			}
 		} finally {
@@ -51,7 +56,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		try {
 			// Atualiza os PDVs
 			PdvDaoImpl pdvDao = new PdvDaoImpl();
-			pdvDao.updateList(gsd.getPdvs());
+			pdvDao.updateList(gsd.getPdvs(), gsd.getCodigo());
 			// Atualiza as respostas.
 			updateRespostas(gsd);
 			
@@ -76,12 +81,49 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 
 	@Override
 	public Gsd getByCod(Long codigo) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM GSD WHERE CODIGO = ?");
+			stmt.setLong(1, codigo);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				Gsd gsd = createGsd(rSet);
+				// Insere no map cada um dos tres colaboradores
+				createPerguntasRespostas(gsd.getCpfMotorista(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante1(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante2(), gsd);
+				return gsd;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
 	}
 
 	@Override
 	public List<Gsd> getAll() throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+		List<Gsd> listGsd = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM GSD");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Gsd gsd = createGsd(rSet);
+				createPerguntasRespostas(gsd.getCpfMotorista(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante1(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante2(), gsd);
+				listGsd.add(gsd);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listGsd;
 	}
 
 	@Override
@@ -101,7 +143,9 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Gsd gsd = createGsd(rSet);
-				createPerguntasRespostas(cpf, gsd);
+				createPerguntasRespostas(gsd.getCpfMotorista(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante1(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante2(), gsd);
 				listGsd.add(gsd);
 			}
 		} finally {
@@ -112,7 +156,27 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 
 	@Override
 	public List<Gsd> getByAvaliador(Long cpf) throws SQLException {
-		return null;
+		List<Gsd> listGsd = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM GSD G WHERE "
+					+ "G.CPF_AVALIADOR = ?");
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Gsd gsd = createGsd(rSet);
+				createPerguntasRespostas(gsd.getCpfMotorista(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante1(), gsd);
+				createPerguntasRespostas(gsd.getCpfAjudante2(), gsd);
+				listGsd.add(gsd);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listGsd;
 	}
 	
 	private Gsd createGsd(ResultSet rSet) throws SQLException {
@@ -129,7 +193,6 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 	}
 	
 	private void createPerguntasRespostas(Long cpf, Gsd gsd) throws SQLException {
-		Map<Long, Gsd.PerguntaRespostaHolder> map = new HashMap<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -152,6 +215,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 				resposta.setResposta(rSet.getString("RESPOSTA"));
 				map.put(cpf, holder);
 			}
+			// Seta o novo map no gsd
 			gsd.setColaboradorMap(map);
 		} finally {
 			closeConnection(conn, stmt, rSet);
