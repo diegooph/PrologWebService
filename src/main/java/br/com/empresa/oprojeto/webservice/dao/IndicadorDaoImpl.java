@@ -1,14 +1,5 @@
 package br.com.empresa.oprojeto.webservice.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import br.com.empresa.oprojeto.models.indicadores.Indicador;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
 public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao {
@@ -21,7 +12,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 	private static final int COD_TEMPO_LARGADA = 6;
 	private static final int COD_TRACKING = 7;
 
-
+ /*
 	@Override
 	public List<Indicador> getJornadaByPeriodo(long cpf, Date dataInicial, 
 			Date dataFinal) throws SQLException {
@@ -97,5 +88,6 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			Date dataFinal) throws SQLException {
 		return null;
 	}
+	*/
 	}
 

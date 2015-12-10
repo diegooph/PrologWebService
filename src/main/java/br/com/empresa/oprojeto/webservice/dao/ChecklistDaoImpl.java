@@ -175,7 +175,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	 * @since 7 de dez de 2015 14:01:03
 	 * @author Luiz Felipe
 	 */
-	private void insertRespostas(Checklist checklist) throws SQLException {
+	@Override
+	public void insertRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {

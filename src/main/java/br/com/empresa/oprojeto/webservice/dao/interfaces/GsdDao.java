@@ -8,4 +8,5 @@ import br.com.empresa.oprojeto.models.gsd.Gsd;
 public interface GsdDao {
 	List<Gsd> getByColaborador(Long cpf) throws SQLException;
 	List<Gsd> getByAvaliador(Long cpf) throws SQLException;
+	void insertRespostas(Gsd gsd) throws SQLException;
 }

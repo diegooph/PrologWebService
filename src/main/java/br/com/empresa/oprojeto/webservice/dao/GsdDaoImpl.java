@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.models.gsd.Gsd;
-import br.com.empresa.oprojeto.models.gsd.PerguntaRespostaHolder;
+import br.com.empresa.oprojeto.models.gsd.Gsd.PerguntaRespostaHolder;
 import br.com.empresa.oprojeto.models.util.DateUtil;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.GsdDao;
@@ -45,7 +44,8 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		return true;
 	}
 
-	private void insertRespostas(Gsd gsd) throws SQLException {
+	@Override
+	public void insertRespostas(Gsd gsd) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -55,11 +55,11 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 			// Cada colaborador possui um objeto PerguntaRespostaHolder que 
 			// contém uma Pergunta e uma Resposta dentro. Ou seja, cada colaborador
 			// irá vir associado a uma pergunta e uma resposta.
-			for (Map.Entry<Colaborador, PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
-				Colaborador colaborador = entry.getKey();
+			for (Map.Entry<Long, Gsd.PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
+				//Colaborador colaborador = entry.getKey();
 				PerguntaRespostaHolder holder = entry.getValue();
 				stmt.setLong(1, gsd.getCodigo());
-				stmt.setLong(2, colaborador.getCpf());
+				//stmt.setLong(2, colaborador.getCpf());
 				stmt.setLong(3, holder.getPergunta().getCodigo());
 				stmt.setString(4, holder.getResposta().getResposta());
 				stmt.executeUpdate();
