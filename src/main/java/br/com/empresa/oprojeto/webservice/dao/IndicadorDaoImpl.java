@@ -267,6 +267,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		int mapasNok = 0;
 
 		while(rSet.next()){
+			
 			ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 			itemTempoLargada.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
