@@ -55,9 +55,9 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getRelatosByColaborador(Long cpf) {
+	public List<Relato> getByColaborador(Long cpf) {
 		try {
-			return dao.getRelatosByColaborador(cpf);
+			return dao.getByColaborador(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

@@ -19,13 +19,13 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 	
 	@GET
-	@Path("/vistosByColaborador/{cpf}")
+	@Path("/vistosColaborador/{cpf}")
 	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getVistosByColaborador(cpf);
 	}
 	
 	@GET
-	@Path("/naoVistosByColaborador/{cpf}")
+	@Path("/naoVistosColaborador/{cpf}")
 	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getNaoVistosByColaborador(cpf);
 	}

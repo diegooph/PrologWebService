@@ -7,5 +7,4 @@ import br.com.empresa.oprojeto.models.checklist.Checklist;
 
 public interface ChecklistDao {
 	List<Checklist> getByColaborador(Long cpf) throws SQLException;
-	void insertRespostas(Checklist checklist) throws SQLException;
 }
