@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Colaborador;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
 	
@@ -128,7 +128,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.EQUIPE FROM "
 					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ?)");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtil.toSqlDate(dataNascimento));
+			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				return rSet.getBoolean("EXISTS");
@@ -160,9 +160,9 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		stmt.setLong(1, c.getCpf());
 		stmt.setInt(2, c.getMatriculaAmbev());
 		stmt.setInt(3, c.getMatriculaTrans());
-		stmt.setDate(4, DateUtil.toSqlDate(c.getDataNascimento()));
-		stmt.setDate(5, DateUtil.toSqlDate(c.getDataAdmissao()));
-		stmt.setDate(6, DateUtil.toSqlDate(c.getDataDemissao()));
+		stmt.setDate(4, DateUtils.toSqlDate(c.getDataNascimento()));
+		stmt.setDate(5, DateUtils.toSqlDate(c.getDataAdmissao()));
+		stmt.setDate(6, DateUtils.toSqlDate(c.getDataDemissao()));
 		stmt.setBoolean(7, c.isAtivo());
 		stmt.setString(8, c.getNome());
 		stmt.setString(9, c.getEquipe());

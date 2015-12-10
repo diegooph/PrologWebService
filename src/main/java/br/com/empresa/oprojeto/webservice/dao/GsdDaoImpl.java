@@ -13,7 +13,7 @@ import br.com.empresa.oprojeto.models.Pergunta;
 import br.com.empresa.oprojeto.models.Resposta;
 import br.com.empresa.oprojeto.models.gsd.Gsd;
 import br.com.empresa.oprojeto.models.gsd.Gsd.PerguntaRespostaHolder;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.GsdDao;
 
@@ -269,7 +269,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 	}
 	
 	private void setStatementItems(PreparedStatement stmt, Gsd gsd) throws SQLException {
-		stmt.setTimestamp(1, DateUtil.toTimestamp(gsd.getDataHora()));
+		stmt.setTimestamp(1, DateUtils.toTimestamp(gsd.getDataHora()));
 		stmt.setString(2, gsd.getUrlFoto());
 		stmt.setLong(3, gsd.getCpfAvaliador());
 		stmt.setLong(4, gsd.getCpfMotorista());

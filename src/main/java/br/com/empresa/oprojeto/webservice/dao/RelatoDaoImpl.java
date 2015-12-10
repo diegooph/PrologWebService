@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Relato;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.RelatoDao;
 
@@ -43,7 +43,7 @@ BaseDao<Relato> {
 					+ "(DATA_HORA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
 					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?)");						
-			stmt.setTimestamp(1, DateUtil.toTimestamp(relato.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getData()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
 			stmt.setString(4, relato.getLatitude());
@@ -73,7 +73,7 @@ BaseDao<Relato> {
 					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
 					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-			stmt.setTimestamp(1, DateUtil.toTimestamp(relato.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getData()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
 			stmt.setString(4, relato.getLatitude());

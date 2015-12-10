@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.FaleConosco;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.FaleConoscoDao;
 
@@ -36,7 +36,7 @@ BaseDao<FaleConosco>  {
 			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
 					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
 					+ "(?,?,?,?) ");						
-			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
 			stmt.setString(3, faleConosco.getCategoria());
 			stmt.setLong(4, faleConosco.getCpfColaborador());
@@ -60,7 +60,7 @@ BaseDao<FaleConosco>  {
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
 					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
 					+ "WHERE CODIGO = ? ");
-			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
 			stmt.setString(3, faleConosco.getCategoria());
 			stmt.setLong(4, faleConosco.getCpfColaborador());		

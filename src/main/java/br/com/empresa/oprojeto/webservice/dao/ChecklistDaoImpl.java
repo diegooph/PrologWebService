@@ -14,7 +14,7 @@ import br.com.empresa.oprojeto.models.Resposta;
 import br.com.empresa.oprojeto.models.checklist.Checklist;
 import br.com.empresa.oprojeto.models.checklist.ChecklistRetorno;
 import br.com.empresa.oprojeto.models.checklist.ChecklistSaida;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ChecklistDao;
 
@@ -42,7 +42,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
 					+ "(DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO) "
 					+ "VALUES (?,?,?,?) RETURNING CODIGO");						
-			stmt.setTimestamp(1, DateUtil.toTimestamp(checklist.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
 			stmt.setLong(2, checklist.getCpfColaborador());
 			stmt.setString(3, checklist.getPlacaVeiculo());
 			stmt.setString(4, String.valueOf(checklist.getTipo()));
@@ -67,7 +67,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA_HORA = ?, "
 					+ "CPF_COLABORADOR = ?, PLACA_VEICULO = ?, TIPO = ? "
 					+ "WHERE CODIGO = ?");
-			stmt.setTimestamp(1, DateUtil.toTimestamp(checklist.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
 			stmt.setLong(2, checklist.getCpfColaborador());
 			stmt.setString(3, checklist.getPlacaVeiculo());
 			stmt.setString(4, String.valueOf(checklist.getTipo()));

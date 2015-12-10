@@ -24,7 +24,7 @@ import br.com.empresa.oprojeto.models.indicador.JornadaLiquidaHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoInternoHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoLargadaHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoRotaHolder;
-import br.com.empresa.oprojeto.models.util.DateUtil;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.models.util.TimeUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
@@ -73,8 +73,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_INDICADORES);
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtil.toSqlDate(dataInicial));
-			stmt.setDate(3, DateUtil.toSqlDate(dataFinal));
+			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
 
 			createDevCx(rSet);
@@ -142,7 +142,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 			ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
 
-			itemDevolucaoCx.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemDevolucaoCx.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
 			itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
 			itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
@@ -176,7 +176,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 			ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
 
-			itemDevolucaoNf.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemDevolucaoNf.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemDevolucaoNf.setCarregadas(rSet.getDouble("CXCARREG"));
 			itemDevolucaoNf.setEntregues(rSet.getDouble("CXENTREG"));
 			itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
@@ -212,7 +212,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 		while(rSet.next()){
 			ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
-			itemTempoInterno.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemTempoInterno.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoInterno.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
 			hrSaida = TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA"));
 			tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
@@ -240,7 +240,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 		while(rSet.next()){
 			ItemTempoRota itemTempoRota = new ItemTempoRota();
-			itemTempoRota.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemTempoRota.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoRota.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
 			itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA")));
 			// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
@@ -268,7 +268,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 		while(rSet.next()){
 			ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
-			itemTempoLargada.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemTempoLargada.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
 			itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA")));
 			itemTempoLargada.setResultado(calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
@@ -303,7 +303,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			matinal = calculaTempoLargada(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")),
 					TimeUtils.toLocalTime(rSet.getTime("HRMATINAL")));
 			ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
-			itemJornadaLiquida.setData(DateUtil.toLocalDate(rSet.getDate("DATA")));
+			itemJornadaLiquida.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemJornadaLiquida.setTempoInterno(tempoInterno);
 			itemJornadaLiquida.setTempoRota(rota);
 			itemJornadaLiquida.setTempoLargada(matinal);
