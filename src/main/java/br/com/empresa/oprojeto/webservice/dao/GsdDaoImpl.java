@@ -25,10 +25,6 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
-			// Insere os PDVs
-			PdvDaoImpl pdvDao = new PdvDaoImpl();
-			pdvDao.insertList(gsd.getPdvs());
-			conn = getConnection();
 			// Query para inserir um GSD e retornar seu ID AUTO INCREMENTO
 			stmt = conn.prepareStatement("INSERT INTO GSD (DATA_HORA, "
 					+ "URL_ASSINATURA, CPF_AVALIADOR, CPF_MOTORISTA, "
