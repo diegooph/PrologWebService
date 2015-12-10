@@ -37,6 +37,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		/*
+		 * 
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_INDICADORES);
