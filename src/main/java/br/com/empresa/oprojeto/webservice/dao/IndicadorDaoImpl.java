@@ -243,7 +243,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemTempoRota.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoRota.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
 			itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA")));
-			// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
+			// saber o tempo que o caminhão ficou na rua, porisso hora de entrada(volta da rota) = hora de saída( saída para rota)
 			itemTempoRota.setResultado(TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
 			listTempoRota.add(itemTempoRota);
 			totalMapas = totalMapas + 1;
