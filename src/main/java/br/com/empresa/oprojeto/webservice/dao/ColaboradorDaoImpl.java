@@ -17,13 +17,50 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		BaseDao<Colaborador>, ColaboradorDao {
 	
 	@Override
-	public boolean insert(Colaborador object) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+	public boolean insert(Colaborador colaborador) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
+					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
+					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
+					+ "SETOR, COD_FUNCAO, COD_UNIDADE) VALUES "
+					+ "(?,?,?,?,?,?,?,?,?,?,?,?) ");
+			setStatementItems(stmt, colaborador);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o colaborador");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
 	}
-	
+
 	@Override
-	public boolean update(Colaborador object) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+	public boolean update(Colaborador colaborador) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
+					+ "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
+					+ "DATA_NASCIMENTO = ? DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
+					+ "STATUS_ATIVO = ?, NOME = ?, EQUIPE = ?, SETOR = ?, "
+					+ "COD_FUNCAO = ?, COD_UNIDADE = ? WHERE CPF = ?");
+			setStatementItems(stmt, colaborador);
+			stmt.setLong(13, colaborador.getCpf());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar o colaborador");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
 	}
 
 	@Override
@@ -117,5 +154,20 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		c.setEquipe(rSet.getString("EQUIPE"));
 		c.setSetor(rSet.getString("SETOR"));
 		return c;
+	}
+	
+	private void setStatementItems(PreparedStatement stmt, Colaborador c) throws SQLException {
+		stmt.setLong(1, c.getCpf());
+		stmt.setInt(2, c.getMatriculaAmbev());
+		stmt.setInt(3, c.getMatriculaTrans());
+		stmt.setDate(4, DateUtil.toSqlDate(c.getDataNascimento()));
+		stmt.setDate(5, DateUtil.toSqlDate(c.getDataAdmissao()));
+		stmt.setDate(6, DateUtil.toSqlDate(c.getDataDemissao()));
+		stmt.setBoolean(7, c.isAtivo());
+		stmt.setString(8, c.getNome());
+		stmt.setString(9, c.getEquipe());
+		stmt.setString(10, c.getSetor());
+		stmt.setLong(11, c.getCodFuncao());
+		stmt.setLong(12, c.getCodUnidade());
 	}
 }

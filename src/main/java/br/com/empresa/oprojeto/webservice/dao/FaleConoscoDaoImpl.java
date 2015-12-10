@@ -34,7 +34,7 @@ BaseDao<FaleConosco>  {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
-					+ "(DATA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
+					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
 					+ "(?,?,?,?) ");						
 			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
@@ -58,7 +58,7 @@ BaseDao<FaleConosco>  {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
-					+ "DATA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
+					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
 					+ "WHERE CODIGO = ? ");
 			stmt.setTimestamp(1, DateUtil.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
@@ -159,7 +159,7 @@ BaseDao<FaleConosco>  {
 	private FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
 		FaleConosco faleConosco = new FaleConosco();
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));
-		faleConosco.setData(rSet.getTimestamp("DATA")); //TODO: VERIFICAR SAPORRA
+		faleConosco.setData(rSet.getTimestamp("DATA_HORA"));
 		faleConosco.setDescricao(rSet.getString("DESCRICAO"));
 		faleConosco.setCategoria(rSet.getString("CATEGORIA"));
 		faleConosco.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));

@@ -22,10 +22,10 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 		String treinamentosNaoVistosQuery = 
 				"SELECT * FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON "
 				+ "RT.COD_TREINAMENTO = T.CODIGO JOIN COLABORADOR C ON "
-				+ "C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF= ? WHERE T.CODIGO NOT IN "
+				+ "C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF = ? WHERE T.CODIGO NOT IN "
 				+ "(SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
 				+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-				+ "C.CPF=?)";
+				+ "C.CPF = ?)";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);

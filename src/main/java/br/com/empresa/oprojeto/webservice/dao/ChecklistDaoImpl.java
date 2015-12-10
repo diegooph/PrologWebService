@@ -16,11 +16,10 @@ import br.com.empresa.oprojeto.models.checklist.ChecklistRetorno;
 import br.com.empresa.oprojeto.models.checklist.ChecklistSaida;
 import br.com.empresa.oprojeto.models.util.DateUtil;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
+import br.com.empresa.oprojeto.webservice.dao.interfaces.ChecklistDao;
 
-
-// TODO: implementar método buscar todos os checklist por colaborador
 public class ChecklistDaoImpl extends DataBaseConnection implements 
-		BaseDao<Checklist> {
+		BaseDao<Checklist>, ChecklistDao {
 	
 	private Map<Pergunta, Resposta> perguntaRespostaMap = new HashMap<>();
 
@@ -41,7 +40,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
-					+ "(DATA, CPF_COLABORADOR, PLACA_VEICULO, TIPO) "
+					+ "(DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO) "
 					+ "VALUES (?,?,?,?) RETURNING CODIGO");						
 			stmt.setTimestamp(1, DateUtil.toTimestamp(checklist.getData()));
 			stmt.setLong(2, checklist.getCpfColaborador());
@@ -65,7 +64,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA = ?, "
+			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA_HORA = ?, "
 					+ "CPF_COLABORADOR = ?, PLACA_VEICULO = ?, TIPO = ? "
 					+ "WHERE CODIGO = ?");
 			stmt.setTimestamp(1, DateUtil.toTimestamp(checklist.getData()));
@@ -142,6 +141,29 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		return checklists;
 	}
 	
+	@Override
+	public List<Checklist> getByColaborador(Long cpf) throws SQLException {
+		List<Checklist> checklists = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST C JOIN "
+					+ "CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST "
+					+ "WHERE C.CPF_COLABORADOR = ?");
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Checklist checklist = createChecklist(rSet);
+				checklists.add(checklist);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return checklists;
+	}
+	
 	/**
 	 * Método responsável por salvar as respostas de um checklist na tabela
 	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
@@ -196,7 +218,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	
 	private Checklist createChecklist(ResultSet rSet) throws SQLException {
 		Checklist checklist = null;
-		// Não posso percorrer o mesmo result set senão não vou pegar
+		// Não posso percorrer o mesmo result set senão não vou pegar os próximos
+		// checklists.
 		ResultSet respostas = rSet;
 		if (rSet.getString("TIPO").charAt(0) == 'S') {
 			checklist = new ChecklistSaida();
@@ -205,11 +228,13 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		}
 		checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
 		checklist.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		checklist.setData(rSet.getTimestamp("DATA"));
+		checklist.setData(rSet.getTimestamp("DATA_HORA"));
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		do {
 			createPerguntaResposta(rSet);
+			// Só posso percorrer (e pegar) as respostas que são desse checklist
+			// por isso o: checklist.getCodigo() == respostas.getLong("COD_CHECKLIST")
 		} while (respostas.next() && 
 				checklist.getCodigo() == respostas.getLong("COD_CHECKLIST"));
 		checklist.setPerguntaRespostaMap(perguntaRespostaMap);

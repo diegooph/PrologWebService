@@ -21,7 +21,6 @@ public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			System.out.println("TESTE");
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
 					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
 			stmt.setLong(1, codUnidade);
