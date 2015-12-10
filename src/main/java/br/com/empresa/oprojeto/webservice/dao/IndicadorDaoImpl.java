@@ -269,11 +269,13 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemJornadaLiquida.setTempoRota(rota);
 			itemJornadaLiquida.setTempoLargada(matinal);
 			itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota),tempoInterno));
+			listJornadaLiquida.add(itemJornadaLiquida);
 			totalMapas = totalMapas + 1;
 			if(bateuMeta(metaJornadaLiquidaHoras, itemJornadaLiquida.getResultado())){
 				mapasOk = mapasOk + 1;
 			}else{ mapasNok = mapasNok + 1;}
 		}
+		
 		
 
 
