@@ -174,7 +174,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 			// irá vir associado a uma pergunta e uma resposta.
 			for (Map.Entry<Long, Gsd.PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
 				Long cpf = entry.getKey();
-				PerguntaRespostaHolder holder = entry.getValue();gsd
+				PerguntaRespostaHolder holder = entry.getValue();
 				stmt.setLong(1, gsd.getCodigo());
 				stmt.setLong(2, cpf);
 				stmt.setLong(3, holder.getPergunta().getCodigo());
