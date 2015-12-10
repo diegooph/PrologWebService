@@ -256,6 +256,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		int mapasNok = 0;
 
 		while (rSet.next()){
+			 
 			
 			tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
 			rota = TimeUtils.differenceBetween(TimeUtils.toLocalTime(rSet.getTimestamp("HRENTR")),
