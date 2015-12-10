@@ -175,8 +175,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	 * @since 7 de dez de 2015 14:01:03
 	 * @author Luiz Felipe
 	 */
-	@Override
-	public void insertRespostas(Checklist checklist) throws SQLException {
+	private void insertRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -233,7 +232,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		do {
-			createPerguntaResposta(rSet);
+			createPerguntasRespostas(rSet);
 			// Só posso percorrer (e pegar) as respostas que são desse checklist
 			// por isso o: checklist.getCodigo() == respostas.getLong("COD_CHECKLIST")
 		} while (respostas.next() && 
@@ -242,7 +241,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		return checklist;
 	}
 
-	private void createPerguntaResposta(ResultSet rSet) throws SQLException {
+	private void createPerguntasRespostas(ResultSet rSet) throws SQLException {
 		Pergunta pergunta = new Pergunta();
 		pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
 		Resposta resposta = new Resposta();

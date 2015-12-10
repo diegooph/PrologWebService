@@ -39,4 +39,9 @@ public class PdvDaoImpl extends DataBaseConnection implements BaseDao<Pdv>, PdvD
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
+	@Override
+	public boolean updateList(List<Pdv> pdvs) throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
+	}
+
 }
