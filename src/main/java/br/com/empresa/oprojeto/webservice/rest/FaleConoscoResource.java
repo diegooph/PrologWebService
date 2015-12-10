@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -16,6 +18,7 @@ public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
 	
 	// TODO: testar insert e update
+	@POST
 	public Response insert(FaleConosco faleConosco) {
 		if (service.insert(faleConosco)) {
 			return Response.Ok("Fale conosco inserido com sucesso");
@@ -24,6 +27,7 @@ public class FaleConoscoResource {
 		}
 	}
 	
+	@PUT
 	public Response update(FaleConosco faleConosco) {
 		if (service.update(faleConosco)) {
 			return Response.Ok("Fale conosco atualizado com sucesso");
@@ -44,7 +48,7 @@ public class FaleConoscoResource {
 	}
 	
 	@GET
-	@Path("/byColaborador/{cpf}")
+	@Path("/colaborador/{cpf}")
 	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getByColaborador(cpf);
 	}

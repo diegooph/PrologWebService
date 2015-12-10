@@ -51,6 +51,12 @@ public class ChecklistResource {
 		return service.getAll();
 	}
 	
+	@GET
+	@Path("/colaborador/{cpf}")
+	public List<Checklist> getByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getByColaborador(cpf);
+	}
+	
 	@DELETE
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {

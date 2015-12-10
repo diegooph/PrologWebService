@@ -54,4 +54,13 @@ public class ChecklistService {
 			return new ArrayList<Checklist>();
 		}
 	}
+	
+	public List<Checklist> getByColaborador(Long cpf) {
+		try {
+			return dao.getByColaborador(cpf);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Checklist>();
+		}
+	}
 }

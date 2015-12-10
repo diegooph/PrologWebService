@@ -11,6 +11,24 @@ import br.com.empresa.oprojeto.webservice.dao.ColaboradorDaoImpl;
 public class ColaboradorService {
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
 	
+	public boolean insert(Colaborador colaborador) {
+		try {
+			return dao.insert(colaborador);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean update(Colaborador colaborador) {
+		try {
+			return dao.update(colaborador);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean delete(Long cpf) {
 		try {
 			return dao.delete(cpf);
@@ -20,7 +38,7 @@ public class ColaboradorService {
 		}
 	}
 	
-	public Colaborador getByCpf(Long cpf) {
+	public Colaborador getByCod(Long cpf) {
 		try {
 			return dao.getByCod(cpf);
 		} catch (SQLException e) {

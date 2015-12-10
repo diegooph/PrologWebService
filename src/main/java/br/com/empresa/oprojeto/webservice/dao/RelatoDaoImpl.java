@@ -149,15 +149,16 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public List<Relato> getRelatosByColaborador(Long cpf) throws SQLException {
+	public List<Relato> getByColaborador(Long cpf) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF");
+			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE "
+					+ "CPF_COLABORADOR = ?");
+			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
