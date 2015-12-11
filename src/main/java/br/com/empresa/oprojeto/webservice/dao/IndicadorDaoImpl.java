@@ -103,12 +103,20 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
+				// TODO: não entra nesse if e nem no próximo pois no bd
+				// está como DevCX e não DevCx
+				// Também não da pra converter para double numeros com virgula, 
+				// só com ponto
+				// Tem que dar o replace de virgula por ponto igual eu fiz no
+				// terceiro if
 				if(rSet.getString("NOME").equals("DevCx")){
 					metaDevCx = Double.parseDouble(rSet.getString("VALOR"));
+					System.out.println(metaDevCx);
 				}else if(rSet.getString("NOME").equals("DevNf")){
 					metaDevNf = Double.parseDouble(rSet.getString("VALOR"));
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_mapas")){
-					metaJornadaLiquidaMapas = Double.parseDouble(rSet.getString("VALOR"));
+					metaJornadaLiquidaMapas = Double.parseDouble(rSet.getString("VALOR").replace(',', '.'));
+					System.out.println(metaJornadaLiquidaMapas);
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_hora")){
 					metaJornadaLiquidaHoras = LocalTime.parse(rSet.getString("VALOR"));
 				}else if(rSet.getString("NOME").equals("Tempo_interno_mapas")){

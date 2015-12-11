@@ -3,6 +3,7 @@ package br.com.empresa.oprojeto.webservice.dao;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Month;
 
 public class Main {
 
@@ -12,11 +13,16 @@ public class Main {
 		
 		IndicadorDaoImpl indicadorDaoImpl = new IndicadorDaoImpl();
 		
-		LocalDate dataInicial = LocalDate.of(2015, 06, 01);
+		LocalDate dataInicial = LocalDate.of(2000, Month.MARCH, 01);
 		Date datainicial = Date.valueOf(dataInicial);
-		LocalDate dataFinal = LocalDate.of(2015, 06, 29);
+		LocalDate dataFinal = LocalDate.now();
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
+		
+		IndicadorDaoImpl impl = new IndicadorDaoImpl();
+		impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf);
+		
+	
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
 		
 	}
