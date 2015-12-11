@@ -71,7 +71,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_INDICADORES);
+			stmt = conn.prepareStatement(BUSCA_INDICADORES, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -103,20 +103,13 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
-				// TODO: não entra nesse if e nem no próximo pois no bd
-				// está como DevCX e não DevCx
-				// Também não da pra converter para double numeros com virgula, 
-				// só com ponto
-				// Tem que dar o replace de virgula por ponto igual eu fiz no
-				// terceiro if
-				if(rSet.getString("NOME").equals("DevCx")){
+			
+				if(rSet.getString("NOME").equals("DevCX")){
 					metaDevCx = Double.parseDouble(rSet.getString("VALOR"));
-					System.out.println(metaDevCx);
-				}else if(rSet.getString("NOME").equals("DevNf")){
+				}else if(rSet.getString("NOME").equals("DevNF")){
 					metaDevNf = Double.parseDouble(rSet.getString("VALOR"));
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_mapas")){
-					metaJornadaLiquidaMapas = Double.parseDouble(rSet.getString("VALOR").replace(',', '.'));
-					System.out.println(metaJornadaLiquidaMapas);
+					metaJornadaLiquidaMapas = Double.parseDouble(rSet.getString("VALOR"));
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_hora")){
 					metaJornadaLiquidaHoras = LocalTime.parse(rSet.getString("VALOR"));
 				}else if(rSet.getString("NOME").equals("Tempo_interno_mapas")){
@@ -170,7 +163,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		devCaixa.setMeta(metaDevCx);
 
 		indicadorHolder.setDevCaixa(devCaixa);
-		rSet.first();
+		rSet.beforeFirst();
 	}
 
 	public void createDevNf (ResultSet rSet) throws SQLException{
@@ -185,8 +178,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
 
 			itemDevolucaoNf.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-			itemDevolucaoNf.setCarregadas(rSet.getDouble("CXCARREG"));
-			itemDevolucaoNf.setEntregues(rSet.getDouble("CXENTREG"));
+			itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
+			itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
 			itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
 			itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
 			listDevNf.add(itemDevolucaoNf);
@@ -194,7 +187,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			carregadasTotal = carregadasTotal + itemDevolucaoNf.getCarregadas();
 			entreguesTotal = entreguesTotal + itemDevolucaoNf.getEntregues();
 			devolvidasTotal = devolvidasTotal + itemDevolucaoNf.getDevolvidas();		
-		}
+		
+	}
 
 		devNf.setListItemDevolucao(listDevNf);
 		devNf.setCarregadasTotal(carregadasTotal);
@@ -204,7 +198,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		devNf.setMeta(metaDevNf);
 
 		indicadorHolder.setDevNf(devNf);
-		rSet.first();
+		rSet.beforeFirst();
 
 	}
 
@@ -222,20 +216,25 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 			itemTempoInterno.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoInterno.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
-			hrSaida = TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA"));
+			hrSaida = TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI"));
 			tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
-			itemTempoInterno.setHrFechamento( TimeUtils.somaHoras(hrSaida, tempoInterno));
-			itemTempoInterno.setResultado(TimeUtils.differenceBetween(itemTempoInterno.getHrEntrada(), itemTempoInterno.getHrFechamento()));
+			// entrada + tempo interno = horario do fechamento
+			itemTempoInterno.setHrFechamento( TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
+			itemTempoInterno.setResultado(tempoInterno);
 			listTempoInterno.add(itemTempoInterno);
 			totalMapas = totalMapas + 1;
 			if(bateuMeta(metaTempoInternoHoras, itemTempoInterno.getResultado())){
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
+		tempoInternoHolder.setTotalMapas(totalMapas);
+		tempoInternoHolder.setMapasOk(mapasOk);
+		tempoInternoHolder.setMapasNok(mapasNok);
 		tempoInternoHolder.setListItemTempoInterno(listTempoInterno);
-		tempoInternoHolder.setResultado(tempoInternoHolder.getMapasOk() / tempoInternoHolder.getTotalMapas());
+		tempoInternoHolder.setResultado((double)tempoInternoHolder.getMapasOk() / (double)tempoInternoHolder.getTotalMapas());
 		tempoInternoHolder.setMeta(metaTempoInternoMapas);
-		rSet.first();
+		indicadorHolder.setTempoInterno(tempoInternoHolder);
+		rSet.beforeFirst();
 	}
 
 	public void createTempoRota(ResultSet rSet) throws SQLException{
@@ -250,7 +249,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			ItemTempoRota itemTempoRota = new ItemTempoRota();
 			itemTempoRota.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoRota.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
-			itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA")));
+			itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 			// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
 			itemTempoRota.setResultado(TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
 			listTempoRota.add(itemTempoRota);
@@ -259,10 +258,14 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
+		tempoRotaHolder.setTotalMapas(totalMapas);
+		tempoRotaHolder.setMapasOk(mapasOk);
+		tempoRotaHolder.setMapasNok(mapasNok);
 		tempoRotaHolder.setListTempoRota(listTempoRota);
-		tempoRotaHolder.setResultado(tempoRotaHolder.getMapasOk() / tempoRotaHolder.getTotalMapas());
+		tempoRotaHolder.setResultado((double)tempoRotaHolder.getMapasOk() / (double)tempoRotaHolder.getTotalMapas());
 		tempoRotaHolder.setMeta(metaTempoRotaMapas);
-		rSet.first();
+		indicadorHolder.setTempoRota(tempoRotaHolder);
+		rSet.beforeFirst();
 
 	}
 
@@ -279,7 +282,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 			itemTempoLargada.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
-			itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAIDA")));
+			itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 			itemTempoLargada.setResultado(calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
 			listTempoLargada.add(itemTempoLargada);
 			totalMapas = totalMapas + 1;
@@ -287,10 +290,14 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
+		tempoLargadaHolder.setTotalMapas(totalMapas);
+		tempoLargadaHolder.setMapasOk(mapasOk);
+		tempoLargadaHolder.setMapasNok(mapasNok);
 		tempoLargadaHolder.setListTempoLargada(listTempoLargada);
-		tempoLargadaHolder.setResultado(tempoLargadaHolder.getMapasOk() / tempoLargadaHolder.getTotalMapas());
+		tempoLargadaHolder.setResultado((double)tempoLargadaHolder.getMapasOk() / (double)tempoLargadaHolder.getTotalMapas());
 		tempoLargadaHolder.setMeta(metaTempoLargadaMapas);
-		rSet.first();
+		indicadorHolder.setTempoLargada(tempoLargadaHolder);
+		rSet.beforeFirst();
 	}		
 
 
@@ -323,19 +330,22 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 				mapasOk = mapasOk + 1;
 			}else{ mapasNok = mapasNok + 1;}
 		}
+		jornadaLiquidaHolder.setTotalMapas(totalMapas);
+		jornadaLiquidaHolder.setMapasOk(mapasOk);
+		jornadaLiquidaHolder.setMapasNok(mapasNok);
 		jornadaLiquidaHolder.setListJornadaLiquida(listJornadaLiquida);
-		jornadaLiquidaHolder.setResultado(jornadaLiquidaHolder.getMapasOk() / jornadaLiquidaHolder.getTotalMapas());
+		jornadaLiquidaHolder.setResultado((double)jornadaLiquidaHolder.getMapasOk() / (double)jornadaLiquidaHolder.getTotalMapas());
 		jornadaLiquidaHolder.setMeta(metaJornadaLiquidaMapas);
-		rSet.first();
+		indicadorHolder.setJornadaLiquida(jornadaLiquidaHolder);
+		rSet.beforeFirst();
 	}
 
 	private boolean bateuMeta (LocalTime meta, LocalTime resultado){
-		//TODO: IMPLEMENTAR!
-		//if(resultado<=meta){
-		//return true;
-		//} else {
-		return false;
-	}
+		if(resultado.isBefore(meta) || resultado.equals(meta)){
+		return true;
+		} else {
+		return false;}
+		}
 
 
 	private LocalTime calculaTempoLargada (LocalTime hrSaida, LocalTime hrMatinal){
