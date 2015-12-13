@@ -14,6 +14,7 @@ public class Main {
 		//long cpf = Long.parseLong("12345678987");
 		
 		IndicadorDaoImpl indicadorDaoImpl = new IndicadorDaoImpl();
+		ProdutividadeDaoImpl produtividadeDaoImpl = new ProdutividadeDaoImpl();
 		
 		LocalDate dataInicial = LocalDate.of(2015, Month.MARCH, 01);
 		Date datainicial = Date.valueOf(dataInicial);
@@ -24,7 +25,9 @@ public class Main {
 		IndicadorDaoImpl impl = new IndicadorDaoImpl();
 		IndicadorHolder holder = impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf);
 		
-		System.out.println(holder);
+		System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
+		
+		//System.out.println(holder);
 	
 		
 	
