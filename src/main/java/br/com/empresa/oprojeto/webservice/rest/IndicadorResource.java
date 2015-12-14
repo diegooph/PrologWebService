@@ -1,6 +1,6 @@
 package br.com.empresa.oprojeto.webservice.rest;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.empresa.oprojeto.models.indicador.IndicadorHolder;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.services.IndicadorService;
 
 @Path("/indicadores")
@@ -22,11 +23,9 @@ public class IndicadorResource {
 	@Path("/byPeriodo")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public IndicadorHolder getIndicadoresByPeriodo(@FormParam("dataInicial") 
-		String dataInicial, @FormParam("dataFinal") String dataFinal, 
+		Date dataInicial, @FormParam("dataFinal") Date dataFinal, 
 		@FormParam("cpf") long cpf) {
-		System.out.println(LocalDate.parse(dataInicial));
-		System.out.println(LocalDate.parse(dataFinal));
-		return service.getIndicadoresByPeriodo(LocalDate.parse(dataInicial), 
-				LocalDate.parse(dataFinal), cpf);
+		return service.getIndicadoresByPeriodo(DateUtils.toLocalDate(dataInicial), 
+				DateUtils.toLocalDate(dataFinal), cpf);
 	}
 }
