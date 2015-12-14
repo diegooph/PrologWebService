@@ -25,12 +25,16 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {
 
-	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG, "
-			+ "M.CXENTREG, M.QTNFCARREGADAS, M.QTNFENTREGUES, M.HRSAI, M.HRENTR,"
-			+ " M.TEMPOINTERNO, M.HRMATINAL FROM MAPA_COLABORADOR MC JOIN "
-			+ "COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV "
-			+ "= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA WHERE C.CPF = "
-			+ "? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";
+	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, M.QTNFCARREGADAS, "
+			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL, "
+			+ "C.COD_FUNCAO AS FUNCAO_ATUAL, HC.COD_FUNCAO AS FUNCAO_ANTIGA, "
+			+ "M.VlBateuJornMot, M.VlNaoBateuJornMot, M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju "
+			+ "FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE "
+			+ "AND MC.COD_AMBEV= C.MATRICULA_AMBEV"
+			+ " JOIN MAPA M ON M.MAPA = MC.MAPA LEFT "
+			+ "JOIN HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO "
+			+ "AND HC.DATA_FIM WHERE C.CPF = ? AND DATA BETWEEN ? AND ? "
+			+ "ORDER BY M.DATA";
 
 
 
@@ -77,9 +81,31 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 
 
-	private double createValor(ResultSet rSet) {
-		// TODO Implement
-		return 0;
+	private double createValor(ResultSet rSet) throws NumberFormatException, SQLException {
+		
+		double valor = 0;
+		int funcao = 0;
+		
+		if(rSet.getString("FUNCAO_ANTIGA") == null){
+			funcao = Integer.parseInt(rSet.getString("FUNCAO_ATUAL"));
+		} else {funcao = Integer.parseInt(rSet.getString("FUNCAO_ANTIGA"));}
+
+		switch(funcao){
+		//caso a função seja cod = 1 = motorista
+		case(1):
+			valor = rSet.getDouble("VlBateuJornMot");
+			valor = valor + rSet.getDouble("VlNaoBateuJornMot");
+			valor = valor + rSet.getDouble("VlRecargaMot");
+			break;
+		// função cod = 2 = ajudante
+		case(2):
+			valor = rSet.getDouble("VlBateuJornAju");
+			valor = valor + rSet.getDouble("VlNaoBateuJornAju");
+			valor = valor + rSet.getDouble("VlRecargaAju");
+			valor = valor/2;
+			break;
+		}
+		return valor;
 	}
 
 
@@ -126,54 +152,54 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		return itemTempoInterno;
 	}
 
-private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
-	
-	LocalTime tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
-	LocalTime rota = TimeUtils.differenceBetween(TimeUtils.toLocalTime(rSet.getTimestamp("HRENTR")),
-			TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
-	LocalTime matinal = calculaTempoLargada(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")),
-			TimeUtils.toLocalTime(rSet.getTime("HRMATINAL")));
-	ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
-	itemJornadaLiquida.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-	itemJornadaLiquida.setTempoInterno(tempoInterno);
-	itemJornadaLiquida.setTempoRota(rota);
-	itemJornadaLiquida.setTempoLargada(matinal);
-	itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota),tempoInterno));
-	return itemJornadaLiquida;
-}
+	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
 
-private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException {
-	ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
-	itemDevolucaoCx.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-	itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
-	itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
-	itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
-	itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
-	return itemDevolucaoCx;
-}
-
-
-
-private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException {
-	ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
-	itemDevolucaoNf.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-	itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
-	itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
-	itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
-	itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
-	return itemDevolucaoNf;
-}
-
-private LocalTime calculaTempoLargada (LocalTime hrSaida, LocalTime hrMatinal){
-
-	LocalTime matinal = LocalTime.of(00, 30, 00);
-
-	if(hrMatinal.isAfter(hrSaida)){
-		return matinal;
-	} else {
-		return hrSaida.minus(hrMatinal.getLong(ChronoField.MILLI_OF_DAY),ChronoUnit.MILLIS);
+		LocalTime tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
+		LocalTime rota = TimeUtils.differenceBetween(TimeUtils.toLocalTime(rSet.getTimestamp("HRENTR")),
+				TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
+		LocalTime matinal = calculaTempoLargada(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")),
+				TimeUtils.toLocalTime(rSet.getTime("HRMATINAL")));
+		ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
+		itemJornadaLiquida.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemJornadaLiquida.setTempoInterno(tempoInterno);
+		itemJornadaLiquida.setTempoRota(rota);
+		itemJornadaLiquida.setTempoLargada(matinal);
+		itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota),tempoInterno));
+		return itemJornadaLiquida;
 	}
-}
+
+	private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException {
+		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
+		itemDevolucaoCx.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
+		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
+		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
+		itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
+		return itemDevolucaoCx;
+	}
+
+
+
+	private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException {
+		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
+		itemDevolucaoNf.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
+		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
+		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
+		itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
+		return itemDevolucaoNf;
+	}
+
+	private LocalTime calculaTempoLargada (LocalTime hrSaida, LocalTime hrMatinal){
+
+		LocalTime matinal = LocalTime.of(00, 30, 00);
+
+		if(hrMatinal.isAfter(hrSaida)){
+			return matinal;
+		} else {
+			return hrSaida.minus(hrMatinal.getLong(ChronoField.MILLI_OF_DAY),ChronoUnit.MILLIS);
+		}
+	}
 
 
 
