@@ -38,6 +38,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 
 
+	
 	@Override
 	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, long cpf)
 			throws SQLException {
