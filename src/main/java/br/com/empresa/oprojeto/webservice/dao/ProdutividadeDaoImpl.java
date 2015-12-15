@@ -70,6 +70,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 				ItemProdutividade itemProdutividade = new ItemProdutividade(data, valor,
 						jornadaLiquida, devolucaoCx, devolucaoNf, tempoLargada, 
 						tempoRota, tempoInterno, tracking);
+				
 
 				listItemProdutividade.add(itemProdutividade);
 			}
