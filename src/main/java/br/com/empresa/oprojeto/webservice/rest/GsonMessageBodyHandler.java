@@ -32,7 +32,11 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 
 	private Gson getGson() {
 		if (gson == null) {
-			gson = new GsonBuilder().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
+			gson = new GsonBuilder()
+					.setPrettyPrinting()
+					.serializeSpecialFloatingPointValues()
+					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+					.create();
 		}
 		return gson;
 	}

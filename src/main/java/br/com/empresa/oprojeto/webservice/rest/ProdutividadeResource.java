@@ -26,6 +26,7 @@ public class ProdutividadeResource{
 	public List<ItemProdutividade> getProdutividadeByPeriodo(@FormParam("dataInicial")
 	Date dataInicial, @FormParam("dataFinal") Date dataFinal,
 	@FormParam("cpf") long cpf){
+		System.out.print("entrou no periodo");
 		return service.getProdutividadeByPeriodo(DateUtils.toLocalDate(dataInicial),
 				DateUtils.toLocalDate(dataFinal), cpf);
 
