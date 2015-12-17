@@ -21,10 +21,12 @@ import br.com.empresa.oprojeto.models.indicador.ItemTempoInterno;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoLargada;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoRota;
 import br.com.empresa.oprojeto.models.indicador.JornadaLiquidaHolder;
+import br.com.empresa.oprojeto.models.indicador.Meta;
 import br.com.empresa.oprojeto.models.indicador.TempoInternoHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoLargadaHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoRotaHolder;
 import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.empresa.oprojeto.models.util.MetaUtils;
 import br.com.empresa.oprojeto.models.util.TimeUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.IndicadorDao;
 
@@ -39,27 +41,10 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			+ "= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA WHERE C.CPF = "
 			+ "? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";
 
-	private static final String BUSCA_METAS = "SELECT M.CODIGO, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO"
-			+ " JOIN COLABORADOR C ON C.COD_UNIDADE = MU.COD_UNIDADE "
-			+ "WHERE C.CPF = ? ORDER BY M.CODIGO";
-
+	
+	private Meta meta;
 	private IndicadorHolder indicadorHolder = new IndicadorHolder();
-	//TODO: IMPLEMENTAR METODO PARA METAS.
-	private LocalTime metaTempoInternoHoras;
-	private LocalTime metaTempoRotaHoras;
-	private LocalTime metaTempoLargadaHoras;
-	private LocalTime metaJornadaLiquidaHoras;
-	private double metaTempoLargadaMapas;
-	private double metaTempoInternoMapas;
-	private double metaTempoRotaMapas;
-	private double metaJornadaLiquidaMapas;
-	private double metaDevCx;
-	private double metaDevNf;
-
-
-
-
+	
 	@Override
 	public IndicadorHolder getIndicadoresByPeriodo(LocalDate dataInicial, LocalDate dataFinal, long cpf)
 			throws SQLException {
@@ -67,7 +52,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		preencheMetas(cpf);
+		MetasDao metasDao = new MetasDao();
+		meta = metasDao.getMetas(cpf);
 
 		try {
 			conn = getConnection();
@@ -92,46 +78,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		return indicadorHolder;
 	}
 	
-	private void preencheMetas(long cpf) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_METAS);
-			stmt.setLong(1, cpf);
-			rSet = stmt.executeQuery();
-
-			while(rSet.next()){
-			
-				if(rSet.getString("NOME").equals("DevCX")){
-					metaDevCx = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("DevNF")){
-					metaDevNf = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Jornada_liquida_mapas")){
-					metaJornadaLiquidaMapas = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Jornada_liquida_hora")){
-					metaJornadaLiquidaHoras = LocalTime.parse(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_interno_mapas")){
-					metaTempoInternoMapas = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_interno_hora")){
-					metaTempoInternoHoras = LocalTime.parse(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_rota_mapas")){
-					metaTempoRotaMapas = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_rota_hora")){
-					metaTempoRotaHoras = LocalTime.parse(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_largada_mapas")){
-					metaTempoLargadaMapas = Double.parseDouble(rSet.getString("VALOR"));
-				}else if(rSet.getString("NOME").equals("Tempo_largada_hora")){
-					metaTempoLargadaHoras = LocalTime.parse(rSet.getString("VALOR"));
-				}}}
-
-		finally {
-			closeConnection(conn, stmt, rSet);
-		}	}
-
-
-
+	
 	public void createDevCx (ResultSet rSet) throws SQLException{
 		DevolucaoCxHolder devCaixa = new DevolucaoCxHolder();
 		List<ItemDevolucaoCx> listDevCx = new ArrayList<>();
@@ -148,6 +95,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
 			itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
 			itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
+			itemDevolucaoCx.setMeta(meta.getMetaDevCx());
+			itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
 			listDevCx.add(itemDevolucaoCx);
 
 			carregadasTotal = carregadasTotal + itemDevolucaoCx.getCarregadas();
@@ -160,7 +109,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		devCaixa.setDevolvidasTotal(devolvidasTotal);
 		devCaixa.setEntreguesTotal(entreguesTotal);
 		devCaixa.setResultadoTotal(devolvidasTotal / carregadasTotal);
-		devCaixa.setMeta(metaDevCx);
+		devCaixa.setMeta(meta.getMetaDevCx());
+		devCaixa.setBateuMeta(MetaUtils.bateuMeta(devCaixa.getResultadoTotal(), meta.getMetaDevCx()));
 
 		indicadorHolder.setDevCaixa(devCaixa);
 		rSet.beforeFirst();
@@ -182,6 +132,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
 			itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
 			itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
+			itemDevolucaoNf.setMeta(meta.getMetaDevNf());
+			itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
 			listDevNf.add(itemDevolucaoNf);
 
 			carregadasTotal = carregadasTotal + itemDevolucaoNf.getCarregadas();
@@ -195,7 +147,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		devNf.setDevolvidasTotal(devolvidasTotal);
 		devNf.setEntreguesTotal(entreguesTotal);
 		devNf.setResultadoTotal(devolvidasTotal / carregadasTotal);
-		devNf.setMeta(metaDevNf);
+		devNf.setMeta(meta.getMetaDevNf());
+		devNf.setBateuMeta(MetaUtils.bateuMeta(devNf.getResultadoTotal(), meta.getMetaDevNf()));
 
 		indicadorHolder.setDevNf(devNf);
 		rSet.beforeFirst();
@@ -209,21 +162,21 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		int totalMapas = 0;
 		int mapasOk = 0;
 		int mapasNok = 0;
-		LocalTime hrSaida;
 		LocalTime tempoInterno;
 
 		while(rSet.next()){
 			ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 			itemTempoInterno.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
 			itemTempoInterno.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
-			hrSaida = TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI"));
 			tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
 			// entrada + tempo interno = horario do fechamento
 			itemTempoInterno.setHrFechamento( TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
 			itemTempoInterno.setResultado(tempoInterno);
+			itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+			itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
 			listTempoInterno.add(itemTempoInterno);
 			totalMapas = totalMapas + 1;
-			if(bateuMeta(metaTempoInternoHoras, itemTempoInterno.getResultado())){
+			if(MetaUtils.bateuMeta(itemTempoInterno.getResultado(),meta.getMetaTempoInternoHoras())){
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
@@ -232,7 +185,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		tempoInternoHolder.setMapasNok(mapasNok);
 		tempoInternoHolder.setListItemTempoInterno(listTempoInterno);
 		tempoInternoHolder.setResultado((double)tempoInternoHolder.getMapasOk() / (double)tempoInternoHolder.getTotalMapas());
-		tempoInternoHolder.setMeta(metaTempoInternoMapas);
+		tempoInternoHolder.setMeta(meta.getMetaTempoInternoMapas());
+		tempoInternoHolder.setBateuMeta(MetaUtils.bateuMetaMapas(tempoInternoHolder.getResultado(), meta.getMetaTempoInternoMapas()));
 		indicadorHolder.setTempoInterno(tempoInternoHolder);
 		rSet.beforeFirst();
 	}
@@ -252,9 +206,11 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 			// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
 			itemTempoRota.setResultado(TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
+			itemTempoRota.setMeta(meta.getMetaTempoRotaHoras());
+			itemTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
 			listTempoRota.add(itemTempoRota);
 			totalMapas = totalMapas + 1;
-			if(bateuMeta(metaTempoRotaHoras, itemTempoRota.getResultado())){
+			if(MetaUtils.bateuMeta(itemTempoRota.getResultado(),meta.getMetaTempoRotaHoras())){
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
@@ -263,7 +219,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		tempoRotaHolder.setMapasNok(mapasNok);
 		tempoRotaHolder.setListTempoRota(listTempoRota);
 		tempoRotaHolder.setResultado((double)tempoRotaHolder.getMapasOk() / (double)tempoRotaHolder.getTotalMapas());
-		tempoRotaHolder.setMeta(metaTempoRotaMapas);
+		tempoRotaHolder.setMeta(meta.getMetaTempoRotaMapas());
+		tempoRotaHolder.setBateuMeta(MetaUtils.bateuMetaMapas(tempoRotaHolder.getResultado(), meta.getMetaTempoRotaMapas()));
 		indicadorHolder.setTempoRota(tempoRotaHolder);
 		rSet.beforeFirst();
 
@@ -284,9 +241,11 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
 			itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 			itemTempoLargada.setResultado(calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
+			itemTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
+			itemTempoLargada.setBateuMeta(MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 			listTempoLargada.add(itemTempoLargada);
 			totalMapas = totalMapas + 1;
-			if(bateuMeta(metaTempoLargadaHoras, itemTempoLargada.getResultado())){
+			if(MetaUtils.bateuMeta(itemTempoLargada.getResultado(),meta.getMetaTempoLargadaHoras())){
 				mapasOk = mapasOk + 1;
 			}else{mapasNok = mapasNok + 1;}
 		}
@@ -295,7 +254,8 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		tempoLargadaHolder.setMapasNok(mapasNok);
 		tempoLargadaHolder.setListTempoLargada(listTempoLargada);
 		tempoLargadaHolder.setResultado((double)tempoLargadaHolder.getMapasOk() / (double)tempoLargadaHolder.getTotalMapas());
-		tempoLargadaHolder.setMeta(metaTempoLargadaMapas);
+		tempoLargadaHolder.setMeta(meta.getMetaTempoLargadaMapas());
+		tempoLargadaHolder.setBateuMeta(MetaUtils.bateuMetaMapas(tempoLargadaHolder.getResultado(), meta.getMetaTempoLargadaMapas()));
 		indicadorHolder.setTempoLargada(tempoLargadaHolder);
 		rSet.beforeFirst();
 	}		
@@ -324,9 +284,11 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemJornadaLiquida.setTempoRota(rota);
 			itemJornadaLiquida.setTempoLargada(matinal);
 			itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota),tempoInterno));
+			itemJornadaLiquida.setMeta(meta.getMetaJornadaLiquidaHoras());
+			itemJornadaLiquida.setBateuMeta(MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(), meta.getMetaJornadaLiquidaHoras()));
 			listJornadaLiquida.add(itemJornadaLiquida);
 			totalMapas = totalMapas + 1;
-			if(bateuMeta(metaJornadaLiquidaHoras, itemJornadaLiquida.getResultado())){
+			if(MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(),meta.getMetaJornadaLiquidaHoras())){
 				mapasOk = mapasOk + 1;
 			}else{ mapasNok = mapasNok + 1;}
 		}
@@ -335,18 +297,11 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		jornadaLiquidaHolder.setMapasNok(mapasNok);
 		jornadaLiquidaHolder.setListJornadaLiquida(listJornadaLiquida);
 		jornadaLiquidaHolder.setResultado((double)jornadaLiquidaHolder.getMapasOk() / (double)jornadaLiquidaHolder.getTotalMapas());
-		jornadaLiquidaHolder.setMeta(metaJornadaLiquidaMapas);
+		jornadaLiquidaHolder.setMeta(meta.getMetaJornadaLiquidaMapas());
+		jornadaLiquidaHolder.setBateuMeta(MetaUtils.bateuMetaMapas(jornadaLiquidaHolder.getResultado(), meta.getMetaJornadaLiquidaMapas()));
 		indicadorHolder.setJornadaLiquida(jornadaLiquidaHolder);
 		rSet.beforeFirst();
 	}
-
-	private boolean bateuMeta (LocalTime meta, LocalTime resultado){
-		if(resultado.isBefore(meta) || resultado.equals(meta)){
-		return true;
-		} else {
-		return false;}
-		}
-
 
 	private LocalTime calculaTempoLargada (LocalTime hrSaida, LocalTime hrMatinal){
 

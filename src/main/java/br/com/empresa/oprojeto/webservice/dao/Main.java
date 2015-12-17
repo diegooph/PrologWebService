@@ -25,9 +25,9 @@ public class Main {
 		IndicadorDaoImpl impl = new IndicadorDaoImpl();
 		IndicadorHolder holder = impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf);
 		
-		System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
+		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
 		
-		//System.out.println(holder);
+		System.out.println(holder);
 	
 		
 	

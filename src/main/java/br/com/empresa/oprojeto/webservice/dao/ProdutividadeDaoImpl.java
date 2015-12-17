@@ -18,8 +18,10 @@ import br.com.empresa.oprojeto.models.indicador.ItemTempoInterno;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoLargada;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoRota;
 import br.com.empresa.oprojeto.models.indicador.ItemTracking;
+import br.com.empresa.oprojeto.models.indicador.Meta;
 import br.com.empresa.oprojeto.models.produtividade.ItemProdutividade;
 import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.empresa.oprojeto.models.util.MetaUtils;
 import br.com.empresa.oprojeto.models.util.TimeUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ProdutividadeDao;
 
@@ -37,7 +39,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 			+ "ORDER BY M.DATA";
 
 
-
+	Meta meta;
 	
 	@Override
 	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, long cpf)
@@ -55,6 +57,10 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();	
+			
+			MetasDao metasDao = new MetasDao();
+			meta = metasDao.getMetas(cpf);
+			
 
 			while(rSet.next()){
 				LocalDate data = (DateUtils.toLocalDate(rSet.getDate("DATA")));
@@ -126,6 +132,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 		// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
 		itemTempoRota.setResultado(TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
+		itemTempoRota.setMeta(meta.getMetaTempoRotaHoras());
+		itemTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
 		return itemTempoRota;
 	}
 
@@ -137,6 +145,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
 		itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
 		itemTempoLargada.setResultado(calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
+		itemTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
+		itemTempoLargada.setBateuMeta(MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 		return itemTempoLargada;
 	}
 
@@ -150,6 +160,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		LocalTime tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
 		// entrada + tempo interno = horario do fechamento
 		itemTempoInterno.setHrFechamento( TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
+		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(itemTempoInterno.getResultado(), meta.getMetaTempoInternoHoras()));
 		itemTempoInterno.setResultado(tempoInterno);
 		return itemTempoInterno;
 	}
@@ -167,6 +179,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemJornadaLiquida.setTempoRota(rota);
 		itemJornadaLiquida.setTempoLargada(matinal);
 		itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota),tempoInterno));
+		itemJornadaLiquida.setMeta(meta.getMetaJornadaLiquidaHoras());
+		itemJornadaLiquida.setBateuMeta(MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(), meta.getMetaJornadaLiquidaHoras()));
 		return itemJornadaLiquida;
 	}
 
@@ -177,6 +191,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
 		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
 		itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
+		itemDevolucaoCx.setMeta(meta.getMetaDevCx());
+		itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
 		return itemDevolucaoCx;
 	}
 
@@ -189,6 +205,8 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
 		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
 		itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
+		itemDevolucaoNf.setMeta(meta.getMetaDevNf());
+		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
 		return itemDevolucaoNf;
 	}
 
