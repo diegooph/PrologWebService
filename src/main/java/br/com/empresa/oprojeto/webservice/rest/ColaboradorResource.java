@@ -33,6 +33,7 @@ public class ColaboradorResource {
 		}
 	}
 	
+	
 	@PUT
 	public Response update(Colaborador colaborador) {
 		if (service.update(colaborador)) {
