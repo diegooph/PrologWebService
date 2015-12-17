@@ -27,6 +27,7 @@ public class ProdutividadeResource{
 			@FormParam("dataInicial") long dataInicial, 
 			@FormParam("dataFinal") long dataFinal,
 			@FormParam("cpf") long cpf){
+		System.out.println("PERIODO");
 		return service.getProdutividadeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), cpf);
 

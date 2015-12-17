@@ -152,7 +152,6 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 
 	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException {
-
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 		itemTempoInterno.setData(rSet.getDate("DATA"));
 		itemTempoInterno.setHrEntrada(rSet.getTime("HRENTR"));
@@ -161,14 +160,14 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(
 				itemTempoInterno.getHrEntrada(), 
 				tempoInterno));
-		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
-		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(itemTempoInterno.getResultado(), meta.getMetaTempoInternoHoras()));
 		itemTempoInterno.setResultado(tempoInterno);
+		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(itemTempoInterno.getResultado(), 
+				meta.getMetaTempoInternoHoras()));
 		return itemTempoInterno;
 	}
 
 	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
-
 		Time tempoInterno = rSet.getTime("TEMPOINTERNO");
 		Time rota = TimeUtils.differenceBetween(
 				TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
