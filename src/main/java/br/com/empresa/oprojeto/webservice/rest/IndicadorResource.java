@@ -22,9 +22,10 @@ public class IndicadorResource {
 	@POST
 	@Path("/byPeriodo")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public IndicadorHolder getIndicadoresByPeriodo(@FormParam("dataInicial") 
-		Date dataInicial, @FormParam("dataFinal") Date dataFinal, 
-		@FormParam("cpf") long cpf) {
+	public IndicadorHolder getIndicadoresByPeriodo(
+			@FormParam("dataInicial") Date dataInicial, 
+			@FormParam("dataFinal") Date dataFinal, 
+			@FormParam("cpf") long cpf) {
 		return service.getIndicadoresByPeriodo(DateUtils.toLocalDate(dataInicial), 
 				DateUtils.toLocalDate(dataFinal), cpf);
 	}

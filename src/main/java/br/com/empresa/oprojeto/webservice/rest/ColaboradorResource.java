@@ -72,7 +72,6 @@ public class ColaboradorResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response verifyLogin(@FormParam("cpf") Long cpf, 
 			@FormParam("dataNascimento") Date dataNascimento) {
-		System.out.println("TESTANDO");
 		if (service.verifyLogin(cpf, dataNascimento)) {
 			return Response.Ok("Login liberado");
 		} else {
