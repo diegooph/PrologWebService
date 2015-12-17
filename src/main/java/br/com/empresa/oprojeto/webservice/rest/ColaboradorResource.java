@@ -72,8 +72,8 @@ public class ColaboradorResource {
 	@Path("/verifyLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response verifyLogin(@FormParam("cpf") Long cpf, 
-			@FormParam("dataNascimento") Date dataNascimento) {
-		if (service.verifyLogin(cpf, dataNascimento)) {
+			@FormParam("dataNascimento") long dataNascimento) {
+		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
 			return Response.Ok("Login liberado");
 		} else {
 			return Response.Error("Erro de autenticação");
