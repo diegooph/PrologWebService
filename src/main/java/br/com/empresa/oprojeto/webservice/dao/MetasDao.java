@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalTime;
 
 import br.com.empresa.oprojeto.models.indicador.Meta;
+import br.com.empresa.oprojeto.models.util.TimeUtils;
 
 public class MetasDao extends DataBaseConnection{
 	
@@ -35,19 +35,19 @@ public class MetasDao extends DataBaseConnection{
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_mapas")){
 					meta.setMetaJornadaLiquidaMapas(Double.parseDouble(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Jornada_liquida_hora")){
-					meta.setMetaJornadaLiquidaHoras(LocalTime.parse(rSet.getString("VALOR")));
+					meta.setMetaJornadaLiquidaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_interno_mapas")){
 					meta.setMetaTempoInternoMapas(Double.parseDouble(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_interno_hora")){
-					meta.setMetaTempoInternoHoras(LocalTime.parse(rSet.getString("VALOR")));
+					meta.setMetaTempoInternoHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_rota_mapas")){
 					meta.setMetaTempoRotaMapas(Double.parseDouble(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_rota_hora")){
-					meta.setMetaTempoRotaHoras(LocalTime.parse(rSet.getString("VALOR")));
+					meta.setMetaTempoRotaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_largada_mapas")){
 					meta.setMetaTempoLargadaMapas(Double.parseDouble(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_largada_hora")){
-					meta.setMetaTempoLargadaHoras(LocalTime.parse(rSet.getString("VALOR")));
+					meta.setMetaTempoLargadaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
 				}}}
 
 		finally {

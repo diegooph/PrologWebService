@@ -4,11 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoCx;
@@ -63,7 +62,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 			
 
 			while(rSet.next()){
-				LocalDate data = (DateUtils.toLocalDate(rSet.getDate("DATA")));
+				Date data = rSet.getDate("DATA");
 				double valor = createValor(rSet);
 				ItemDevolucaoNf devolucaoNf = createDevNf(rSet);
 				ItemDevolucaoCx devolucaoCx = createDevCx(rSet);
@@ -127,9 +126,9 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 	private ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException {
 		ItemTempoRota itemTempoRota = new ItemTempoRota();
-		itemTempoRota.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-		itemTempoRota.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
-		itemTempoRota.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
+		itemTempoRota.setData(rSet.getDate("DATA"));
+		itemTempoRota.setHrEntrada(rSet.getTime("HRENTR"));
+		itemTempoRota.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
 		// saber o tempo que o caminhão ficou na rua, por isso hora de entrada(volta da rota) = hora de saída( saída para rota)
 		itemTempoRota.setResultado(TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
 		itemTempoRota.setMeta(meta.getMetaTempoRotaHoras());
@@ -141,10 +140,10 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 	private ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException {
 		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
-		itemTempoLargada.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-		itemTempoLargada.setHrMatinal(TimeUtils.toLocalTime((rSet.getTime("HRMATINAL"))));
-		itemTempoLargada.setHrSaida(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
-		itemTempoLargada.setResultado(calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
+		itemTempoLargada.setData(rSet.getDate("DATA"));
+		itemTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
+		itemTempoLargada.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
+		itemTempoLargada.setResultado(MetaUtils.calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
 		itemTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
 		itemTempoLargada.setBateuMeta(MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 		return itemTempoLargada;
@@ -155,11 +154,13 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException {
 
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
-		itemTempoInterno.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
-		itemTempoInterno.setHrEntrada(TimeUtils.toLocalTime((rSet.getTime("HRENTR"))));
-		LocalTime tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
+		itemTempoInterno.setData(rSet.getDate("DATA"));
+		itemTempoInterno.setHrEntrada(rSet.getTime("HRENTR"));
+		Time tempoInterno = rSet.getTime("TEMPOINTERNO");
 		// entrada + tempo interno = horario do fechamento
-		itemTempoInterno.setHrFechamento( TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
+		itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(
+				itemTempoInterno.getHrEntrada(), 
+				tempoInterno));
 		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
 		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(itemTempoInterno.getResultado(), meta.getMetaTempoInternoHoras()));
 		itemTempoInterno.setResultado(tempoInterno);
@@ -168,13 +169,15 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
 
-		LocalTime tempoInterno = TimeUtils.toLocalTime(rSet.getTime("TEMPOINTERNO"));
-		LocalTime rota = TimeUtils.differenceBetween(TimeUtils.toLocalTime(rSet.getTimestamp("HRENTR")),
-				TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")));
-		LocalTime matinal = calculaTempoLargada(TimeUtils.toLocalTime(rSet.getTimestamp("HRSAI")),
-				TimeUtils.toLocalTime(rSet.getTime("HRMATINAL")));
+		Time tempoInterno = rSet.getTime("TEMPOINTERNO");
+		Time rota = TimeUtils.differenceBetween(
+				TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
+				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
+		Time matinal = MetaUtils.calculaTempoLargada(
+				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),
+				rSet.getTime("HRMATINAL"));
 		ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
-		itemJornadaLiquida.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemJornadaLiquida.setData(rSet.getDate("DATA"));
 		itemJornadaLiquida.setTempoInterno(tempoInterno);
 		itemJornadaLiquida.setTempoRota(rota);
 		itemJornadaLiquida.setTempoLargada(matinal);
@@ -186,7 +189,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 
 	private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException {
 		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
-		itemDevolucaoCx.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemDevolucaoCx.setData(rSet.getDate("DATA"));
 		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
 		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
 		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
@@ -196,11 +199,9 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		return itemDevolucaoCx;
 	}
 
-
-
 	private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException {
 		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
-		itemDevolucaoNf.setData(DateUtils.toLocalDate(rSet.getDate("DATA")));
+		itemDevolucaoNf.setData(rSet.getDate("DATA"));
 		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
 		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
 		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
@@ -209,27 +210,4 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
 		return itemDevolucaoNf;
 	}
-
-	private LocalTime calculaTempoLargada (LocalTime hrSaida, LocalTime hrMatinal){
-
-		LocalTime matinal = LocalTime.of(00, 30, 00);
-
-		if(hrMatinal.isAfter(hrSaida)){
-			return matinal;
-		} else {
-			return hrSaida.minus(hrMatinal.getLong(ChronoField.MILLI_OF_DAY),ChronoUnit.MILLIS);
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
 }
