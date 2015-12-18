@@ -59,8 +59,8 @@ public class FaleConoscoResource {
 	}
 	
 	@DELETE
-	@Path("{cpf}")
-	public Response delete(@PathParam("cpf") Long codigo) {
+	@Path("{codigo}")
+	public Response delete(@PathParam("codigo") Long codigo) {
 		if (service.delete(codigo)) {
 			return Response.Ok("Fale conosco deletado com sucesso");
 		} else {
