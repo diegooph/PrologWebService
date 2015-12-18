@@ -149,7 +149,6 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM FUNCAO F JOIN "
 					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO");
-			stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Funcao f = createFuncao(rSet);
