@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.empresa.oprojeto.models.Colaborador;
+import br.com.empresa.oprojeto.models.Funcao;
 import br.com.empresa.oprojeto.models.Response;
 import br.com.empresa.oprojeto.webservice.services.ColaboradorService;
 
@@ -63,6 +64,12 @@ public class ColaboradorResource {
 		} else {
 			return Response.Error("Falha ao deletar colaborador");
 		}
+	}
+	
+	@GET
+	@Path("/funcao/{codigo}")
+	public Funcao getFuncaoByCod(@PathParam("codigo") Long codigo) {
+		return service.getFuncaoByCod(codigo);
 	}
 	
 	// TODO: deveria ser feito com get, porém os dados da pessoa (usando get) 

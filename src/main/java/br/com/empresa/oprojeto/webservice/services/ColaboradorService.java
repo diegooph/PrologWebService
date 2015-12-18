@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Colaborador;
+import br.com.empresa.oprojeto.models.Funcao;
 import br.com.empresa.oprojeto.webservice.dao.ColaboradorDaoImpl;
 
 public class ColaboradorService {
@@ -53,6 +54,15 @@ public class ColaboradorService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Colaborador>();
+		}
+	}
+	
+	public Funcao getFuncaoByCod(Long codigo) {
+		try {
+			return dao.getFuncaoByCod(codigo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

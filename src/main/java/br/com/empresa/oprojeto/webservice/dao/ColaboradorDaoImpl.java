@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Colaborador;
+import br.com.empresa.oprojeto.models.Funcao;
 import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.BaseDao;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.ColaboradorDao;
@@ -139,6 +140,34 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		return false;
 	}
 	
+	@Override
+	public Funcao getFuncaoByCod(Long codigo) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM FUNCAO F JOIN "
+					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO");
+			stmt.setLong(1, codigo);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				Funcao f = createFuncao(rSet);
+				return f;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+	
+	private Funcao createFuncao(ResultSet rSet) throws SQLException {
+		Funcao f = new Funcao();
+		f.setCodigo(rSet.getLong("CODIGO"));
+		f.setNome(rSet.getString("NOME"));
+		return f;
+	}
+
 	private Colaborador createColaborador(ResultSet rSet) throws SQLException {
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
