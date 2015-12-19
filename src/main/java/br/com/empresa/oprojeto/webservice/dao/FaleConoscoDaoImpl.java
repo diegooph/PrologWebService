@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.FaleConosco;
@@ -35,8 +36,11 @@ BaseDao<FaleConosco>  {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
 					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR) VALUES "
-					+ "(?,?,?,?) ");						
-			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
+					+ "(?,?,?,?) ");
+			// A data do fale conosco é pegada com System.currentTimeMillis()
+			// pois assim a data vem do servidor, que sempre estará certa 
+			// o que não poderíamos garantir caso viesse do lado do cliente.
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(2, faleConosco.getDescricao());
 			stmt.setString(3, faleConosco.getCategoria());
 			stmt.setLong(4, faleConosco.getCpfColaborador());
