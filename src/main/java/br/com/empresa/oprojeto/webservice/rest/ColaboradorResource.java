@@ -52,7 +52,6 @@ public class ColaboradorResource {
 	@GET
 	@Path("{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
-		System.out.println("GET BY COD");
 		return service.getByCod(cpf);
 	}
 	

@@ -1,5 +1,6 @@
 package br.com.empresa.oprojeto.webservice.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,6 +25,7 @@ public class RelatoResource {
 	
 	@POST
 	public Response insert(Relato relato) {
+		relato.setData(new Date(System.currentTimeMillis()));
 		if (service.insert(relato)) {
 			return Response.Ok("Relato inserido com sucesso");
 		} else {

@@ -19,8 +19,14 @@ public class VeiculoResource {
 	private VeiculoService service = new VeiculoService();
 	
 	@GET
-	@Path("{codUnidade}")
+	@Path("/unidade/{codUnidade}")
 	public List<Veiculo> getVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getVeiculosAtivosByUnidade(codUnidade);
+	}
+	
+	@GET
+	@Path("/unidade/colaborador/{cpf}")
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
 	}
 }

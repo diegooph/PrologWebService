@@ -7,6 +7,9 @@ import br.com.empresa.oprojeto.models.Veiculo;
 
 
 public interface VeiculoDao {
-	List<Veiculo> getVeiculosAtivosByUnidade (Long codUnidade) 
+	List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
+			throws SQLException;
+	
+	List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) 
 			throws SQLException;
 }

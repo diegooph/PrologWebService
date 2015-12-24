@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.empresa.oprojeto.models.Colaborador;
 import br.com.empresa.oprojeto.models.Veiculo;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.VeiculoDao;
 
@@ -34,6 +35,30 @@ public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 		}
 		return veiculos;
 	}
+
+	@Override
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
+		List<Veiculo> veiculos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			Colaborador colaborador = new ColaboradorDaoImpl().getByCod(cpf); 
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
+					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, colaborador.getCodUnidade());
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Veiculo veiculo = createVeiculo(rSet);
+				veiculos.add(veiculo);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return veiculos;
+	}
+	
 	
 	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
 		Veiculo veiculo = new Veiculo();

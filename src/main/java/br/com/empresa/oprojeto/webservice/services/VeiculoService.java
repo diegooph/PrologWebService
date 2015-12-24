@@ -18,4 +18,13 @@ public class VeiculoService {
 			return new ArrayList<Veiculo>();
 		}
 	}
+	
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
+		try {
+			return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Veiculo>();
+		}
+	}
 }

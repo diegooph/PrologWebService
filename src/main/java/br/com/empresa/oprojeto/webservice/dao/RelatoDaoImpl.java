@@ -39,7 +39,7 @@ BaseDao<Relato> {
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO RELATOS "
+			stmt = conn.prepareStatement("INSERT INTO RELATO "
 					+ "(DATA_HORA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
 					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?)");						
