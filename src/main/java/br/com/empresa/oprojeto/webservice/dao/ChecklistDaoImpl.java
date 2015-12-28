@@ -20,8 +20,6 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.ChecklistDao;
 
 public class ChecklistDaoImpl extends DataBaseConnection implements 
 		BaseDao<Checklist>, ChecklistDao {
-	
-	private Map<Pergunta, Resposta> perguntaRespostaMap = new HashMap<>();
 
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
@@ -105,8 +103,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST C JOIN "
-					+ "CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST "
+			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
+					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
 					+ "WHERE C.CODIGO = ?");
 			stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
@@ -128,8 +126,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST C JOIN "
-					+ "CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST");
+			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
+					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST");
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
@@ -149,8 +147,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST C JOIN "
-					+ "CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST "
+			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
+					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
 					+ "WHERE C.CPF_COLABORADOR = ?");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
@@ -218,34 +216,46 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	
 	private Checklist createChecklist(ResultSet rSet) throws SQLException {
 		Checklist checklist = null;
-		// Não posso percorrer o mesmo result set senão não vou pegar os próximos
-		// checklists.
-		ResultSet respostas = rSet;
-		if (rSet.getString("TIPO").charAt(0) == 'S') {
+		if (rSet.getString("TIPO").toUpperCase().charAt(0) == 'S') {
 			checklist = new ChecklistSaida();
 		} else {
 			checklist = new ChecklistRetorno();
 		}
-		checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
+		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
 		checklist.setData(rSet.getTimestamp("DATA_HORA"));
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
-		do {
-			createPerguntasRespostas(rSet);
-			// Só posso percorrer (e pegar) as respostas que são desse checklist
-			// por isso o: checklist.getCodigo() == respostas.getLong("COD_CHECKLIST")
-		} while (respostas.next() && 
-				checklist.getCodigo() == respostas.getLong("COD_CHECKLIST"));
-		checklist.setPerguntaRespostaMap(perguntaRespostaMap);
+		createPerguntasRespostas(checklist);
 		return checklist;
 	}
-
-	private void createPerguntasRespostas(ResultSet rSet) throws SQLException {
-		Pergunta pergunta = new Pergunta();
-		pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-		Resposta resposta = new Resposta();
-		resposta.setResposta(rSet.getString("RESPOSTA"));
-		perguntaRespostaMap.put(pergunta, resposta);
+	
+	private void createPerguntasRespostas(Checklist checklist) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<Pergunta, Resposta> map = new HashMap<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(" SELECT CR.COD_PERGUNTA, CR.RESPOSTA "
+					+ "FROM CHECKLIST_RESPOSTAS CR JOIN CHECKLIST_PERGUNTAS CP "
+					+ "ON CR.COD_PERGUNTA = CP.CODIGO JOIN CHECKLIST C ON "
+					+ "C.CODIGO = CR.COD_CHECKLIST WHERE C.CPF_COLABORADOR = ? "
+					+ "AND CR.COD_CHECKLIST = ?");
+			stmt.setLong(1, checklist.getCpfColaborador());
+			stmt.setLong(2, checklist.getCodigo());
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Pergunta pergunta = new Pergunta();
+				Resposta resposta = new Resposta();
+				pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
+				resposta.setResposta(rSet.getString("RESPOSTA"));
+				map.put(pergunta, resposta);
+			}
+			// Seta o novo map no checklist
+			checklist.setPerguntaRespostaMap(map);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
 	}
 }

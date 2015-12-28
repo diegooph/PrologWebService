@@ -36,6 +36,7 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 					.setPrettyPrinting()
 					.serializeSpecialFloatingPointValues()
 					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+					.enableComplexMapKeySerialization()
 					.create();
 		}
 		return gson;
