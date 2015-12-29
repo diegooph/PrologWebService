@@ -237,11 +237,12 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		Map<Pergunta, Resposta> map = new HashMap<>();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(" SELECT CR.COD_PERGUNTA, CR.RESPOSTA "
+			stmt = conn.prepareStatement(" SELECT CR.COD_PERGUNTA, CP.PERGUNTA, "
+					+ "CP.ORDEM, CR.RESPOSTA "
 					+ "FROM CHECKLIST_RESPOSTAS CR JOIN CHECKLIST_PERGUNTAS CP "
 					+ "ON CR.COD_PERGUNTA = CP.CODIGO JOIN CHECKLIST C ON "
 					+ "C.CODIGO = CR.COD_CHECKLIST WHERE C.CPF_COLABORADOR = ? "
-					+ "AND CR.COD_CHECKLIST = ?");
+					+ "AND CR.COD_CHECKLIST = ? AND CP.ORDEM > 0");
 			stmt.setLong(1, checklist.getCpfColaborador());
 			stmt.setLong(2, checklist.getCodigo());
 			rSet = stmt.executeQuery();
@@ -249,6 +250,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 				Pergunta pergunta = new Pergunta();
 				Resposta resposta = new Resposta();
 				pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
+				pergunta.setPergunta(rSet.getString("PERGUNTA"));
+				pergunta.setOrdemExibicao(rSet.getInt("ORDEM"));
 				resposta.setResposta(rSet.getString("RESPOSTA"));
 				map.put(pergunta, resposta);
 			}
