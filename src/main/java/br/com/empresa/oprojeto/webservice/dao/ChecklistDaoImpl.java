@@ -162,6 +162,30 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		return checklists;
 	}
 	
+	@Override
+	public List<Pergunta> getPerguntas() throws SQLException {
+		List<Pergunta> perguntas = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_PERGUNTAS "
+					+ "ORDER BY ORDEM");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Pergunta pergunta = new Pergunta();
+				pergunta.setCodigo(rSet.getLong("CODIGO"));
+				pergunta.setOrdemExibicao(rSet.getInt("ORDEM"));
+				pergunta.setPergunta(rSet.getString("PERGUNTA"));
+				perguntas.add(pergunta);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return perguntas;
+	}
+	
 	/**
 	 * Método responsável por salvar as respostas de um checklist na tabela
 	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
@@ -237,7 +261,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		Map<Pergunta, Resposta> map = new HashMap<>();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(" SELECT CR.COD_PERGUNTA, CP.PERGUNTA, "
+			stmt = conn.prepareStatement("SELECT CR.COD_PERGUNTA, CP.PERGUNTA, "
 					+ "CP.ORDEM, CR.RESPOSTA "
 					+ "FROM CHECKLIST_RESPOSTAS CR JOIN CHECKLIST_PERGUNTAS CP "
 					+ "ON CR.COD_PERGUNTA = CP.CODIGO JOIN CHECKLIST C ON "

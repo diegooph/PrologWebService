@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.empresa.oprojeto.models.Pergunta;
 import br.com.empresa.oprojeto.models.Response;
 import br.com.empresa.oprojeto.models.checklist.Checklist;
 import br.com.empresa.oprojeto.webservice.services.ChecklistService;
@@ -55,6 +56,12 @@ public class ChecklistResource {
 	@Path("/colaborador/{cpf}")
 	public List<Checklist> getByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getByColaborador(cpf);
+	}
+	
+	@GET
+	@Path("/perguntas")
+	public List<Pergunta> getPerguntas() {
+		return service.getPerguntas();
 	}
 	
 	@DELETE
