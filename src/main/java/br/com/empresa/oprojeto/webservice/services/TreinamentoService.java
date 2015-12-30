@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.treinamento.Treinamento;
+import br.com.empresa.oprojeto.models.treinamento.TreinamentoColaborador;
 import br.com.empresa.oprojeto.webservice.dao.TreinamentoDaoImpl;
 
 public class TreinamentoService {
@@ -25,6 +26,15 @@ public class TreinamentoService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Treinamento>();
+		}
+	}
+	
+	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) {
+		try {
+			return dao.marcarTreinamentoComoVisto(treinamentoColaborador);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 

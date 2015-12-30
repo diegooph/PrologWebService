@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.treinamento.Treinamento;
+import br.com.empresa.oprojeto.models.treinamento.TreinamentoColaborador;
+import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.webservice.dao.interfaces.TreinamentoDao;
 
 public class TreinamentoDaoImpl extends DataBaseConnection implements 
@@ -65,6 +67,30 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 		}
 		return treinamentos;
 	}
+	
+	@Override
+	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO_COLABORADOR "
+					+ "(COD_TREINAMENTO, CPF_COLABORADOR, DATA_VISUALIZACAO) VALUES "
+					+ "(?, ?, ?)");
+			stmt.setLong(1, treinamentoColaborador.getCodTreinamento());
+			stmt.setLong(2, treinamentoColaborador.getCpfColaborador());
+			stmt.setDate(3, DateUtils.toSqlDate(treinamentoColaborador.getDataVisualizacao()));
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o fale conosco");
+			}
+			
+		} finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
 
 	private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
 		Treinamento treinamento = new Treinamento();
@@ -76,5 +102,4 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 		treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
 		return treinamento;
 	}
-
 }
