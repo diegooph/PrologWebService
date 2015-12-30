@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -258,7 +258,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<Pergunta, Resposta> map = new HashMap<>();
+		LinkedHashMap<Pergunta, Resposta> map = new LinkedHashMap<>();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CR.COD_PERGUNTA, CP.PERGUNTA, "
@@ -266,7 +266,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 					+ "FROM CHECKLIST_RESPOSTAS CR JOIN CHECKLIST_PERGUNTAS CP "
 					+ "ON CR.COD_PERGUNTA = CP.CODIGO JOIN CHECKLIST C ON "
 					+ "C.CODIGO = CR.COD_CHECKLIST WHERE C.CPF_COLABORADOR = ? "
-					+ "AND CR.COD_CHECKLIST = ? AND CP.ORDEM > 0");
+					+ "AND CR.COD_CHECKLIST = ? AND CP.ORDEM > 0 "
+					+ "ORDER BY CP.ORDEM");
 			stmt.setLong(1, checklist.getCpfColaborador());
 			stmt.setLong(2, checklist.getCodigo());
 			rSet = stmt.executeQuery();
@@ -280,6 +281,9 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 				map.put(pergunta, resposta);
 			}
 			// Seta o novo map no checklist
+			for (Map.Entry<Pergunta, Resposta> entry : map.entrySet()) {
+				System.out.println("P: " + entry.getKey().getOrdemExibicao() + " " + entry.getKey().getPergunta());
+	        }
 			checklist.setPerguntaRespostaMap(map);
 		} finally {
 			closeConnection(conn, stmt, rSet);

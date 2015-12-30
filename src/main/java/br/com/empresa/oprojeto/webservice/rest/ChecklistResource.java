@@ -1,5 +1,6 @@
 package br.com.empresa.oprojeto.webservice.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -25,6 +26,7 @@ public class ChecklistResource {
 	
 	@POST
 	public Response insert(Checklist checklist) {
+		checklist.setData(new Date(System.currentTimeMillis()));
 		if (service.insert(checklist)) {
 			return Response.Ok("Checklist inserido com sucesso");
 		} else {
