@@ -59,6 +59,12 @@ public class RelatoResource {
 		return service.getByColaborador(cpf);
 	}
 	
+	@GET
+	@Path("/exceto/colaborador/{cpf}")
+	public List<Relato> getAllExcetoColaborador(@PathParam("cpf") Long cpf) {
+		return service.getAllExcetoColaborador(cpf);
+	}
+	
 	@DELETE
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {

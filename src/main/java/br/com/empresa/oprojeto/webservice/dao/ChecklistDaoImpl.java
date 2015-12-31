@@ -280,10 +280,6 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 				resposta.setResposta(rSet.getString("RESPOSTA"));
 				map.put(pergunta, resposta);
 			}
-			// Seta o novo map no checklist
-			for (Map.Entry<Pergunta, Resposta> entry : map.entrySet()) {
-				System.out.println("P: " + entry.getKey().getOrdemExibicao() + " " + entry.getKey().getPergunta());
-	        }
 			checklist.setPerguntaRespostaMap(map);
 		} finally {
 			closeConnection(conn, stmt, rSet);

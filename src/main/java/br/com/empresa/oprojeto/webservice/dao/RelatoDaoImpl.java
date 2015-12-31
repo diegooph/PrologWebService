@@ -169,6 +169,28 @@ BaseDao<Relato> {
 		}
 		return relatos;
 	}
+	
+	@Override
+	public List<Relato> getAllExcetoColaborador(Long cpf) throws SQLException {
+		List<Relato> relatos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE "
+					+ "CPF_COLABORADOR != ?");
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Relato relato = createRelato(rSet);
+				relatos.add(relato);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return relatos;
+	}
 
 	private Relato createRelato(ResultSet rSet) throws SQLException{
 		Relato relato = new Relato();
@@ -184,5 +206,4 @@ BaseDao<Relato> {
 		relato.setUrlFoto3(rSet.getString("URL_FOTO_3"));
 		return relato;
 	}
-
 }

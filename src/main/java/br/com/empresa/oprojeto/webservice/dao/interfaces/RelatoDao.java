@@ -8,4 +8,5 @@ import br.com.empresa.oprojeto.models.Relato;
 
 public interface RelatoDao {
 	List<Relato> getByColaborador(Long cpf) throws SQLException;
+	List<Relato> getAllExcetoColaborador(Long cpf) throws SQLException;
 }
