@@ -127,7 +127,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
-					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST");
+					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
+					+ "ORDER BY DATA_HORA DESC");
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
@@ -149,7 +150,8 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
 					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
-					+ "WHERE C.CPF_COLABORADOR = ?");
+					+ "WHERE C.CPF_COLABORADOR = ?"
+					+ "ORDER BY DATA_HORA DESC");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
