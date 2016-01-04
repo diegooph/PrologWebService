@@ -48,6 +48,10 @@ public class MetasDao extends DataBaseConnection{
 					meta.setMetaTempoLargadaMapas(Double.parseDouble(rSet.getString("VALOR")));
 				}else if(rSet.getString("NOME").equals("Tempo_largada_hora")){
 					meta.setMetaTempoLargadaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
+				}else if(rSet.getString("NOME").equals("Tracking")){
+					meta.setMetaTracking(Double.parseDouble(rSet.getString("VALOR")));
+				}else if(rSet.getString("NOME").equals("DevHL")){
+					meta.setMetaDevHl(Double.parseDouble(rSet.getString("VALOR")));
 				}}}
 
 		finally {

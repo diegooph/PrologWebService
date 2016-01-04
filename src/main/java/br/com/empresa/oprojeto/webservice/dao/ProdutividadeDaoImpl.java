@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoCx;
+import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoHl;
 import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoNf;
 import br.com.empresa.oprojeto.models.indicador.ItemJornadaLiquida;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoInterno;
@@ -26,16 +27,7 @@ import br.com.empresa.oprojeto.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {
 
-	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, M.QTNFCARREGADAS, "
-			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL, "
-			+ "C.COD_FUNCAO AS FUNCAO_ATUAL, HC.COD_FUNCAO AS FUNCAO_ANTIGA, "
-			+ "M.VlBateuJornMot, M.VlNaoBateuJornMot, M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju "
-			+ "FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE "
-			+ "AND MC.COD_AMBEV= C.MATRICULA_AMBEV"
-			+ " JOIN MAPA M ON M.MAPA = MC.MAPA LEFT "
-			+ "JOIN HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO "
-			+ "AND HC.DATA_FIM WHERE C.CPF = ? AND DATA BETWEEN ? AND ? "
-			+ "ORDER BY M.DATA";
+	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS,M.QTNFENTREGUES, M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,C.COD_FUNCAO AS FUNCAO_ATUAL, HC.COD_FUNCAO AS FUNCAO_ANTIGA,M.VlBateuJornMot, M.VlNaoBateuJornMot, M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju, TRACKING.TOTAL as TOTAL_TRACKING, TRACKING.SEQUENCIA_OK, TRACKING.JANELA_OK	FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE	AND MC.COD_AMBEV= C.MATRICULA_AMBEV	 JOIN MAPA M ON M.MAPA = MC.MAPA LEFT	JOIN HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO	AND HC.DATA_FIM LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, sequencia.sequencia_ok AS SEQUENCIA_OK, janela.janela_ok AS JANELA_OK from tracking t join mapa_colaborador mc on mc.mapa = t.mapa join (SELECT t.mapa as mapa_sequencia, count(t.aderência_sequencia_entrega) as sequencia_ok	from tracking t 	where t.aderência_sequencia_entrega = 'Sim'	group by t.mapa) as sequencia on mapa_sequencia = t.mapa join (SELECT t.mapa as mapa_janela, count(t.aderência_janela_entrega) as janela_ok	from tracking t 	where t.aderência_janela_entrega = 'Sim' group by t.mapa) as janela on mapa_janela = t.mapa join (SELECT t.mapa as total_entregas, count(t.pdv_lacrado) as total	from tracking t	group by t.mapa) as total on total_entregas = t.mapa join colaborador c on c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, sequencia.sequencia_ok, janela.janela_ok, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA	WHERE C.CPF = ? AND DATA BETWEEN ? AND ?	ORDER BY M.DATA ";
 
 
 	Meta meta;
@@ -66,6 +58,7 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 				double valor = createValor(rSet);
 				ItemDevolucaoNf devolucaoNf = createDevNf(rSet);
 				ItemDevolucaoCx devolucaoCx = createDevCx(rSet);
+				ItemDevolucaoHl devolucaoHl = createDevHl(rSet);
 				ItemJornadaLiquida jornadaLiquida = createJornadaLiquida(rSet);
 				ItemTempoInterno tempoInterno = createTempoInterno(rSet);
 				ItemTempoLargada tempoLargada = createTempoLargada(rSet);
@@ -73,10 +66,9 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 				ItemTracking tracking = createTracking(rSet);
 
 				ItemProdutividade itemProdutividade = new ItemProdutividade(data, valor,
-						jornadaLiquida, devolucaoCx, devolucaoNf, tempoLargada, 
+						jornadaLiquida, devolucaoCx, devolucaoNf, devolucaoHl, tempoLargada, 
 						tempoRota, tempoInterno, tracking);
 				
-
 				listItemProdutividade.add(itemProdutividade);
 			}
 			return listItemProdutividade;
@@ -86,7 +78,17 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		}
 	}
 
-
+	private ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException {
+		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
+		itemDevolucaoHl.setData(rSet.getDate("DATA"));
+		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
+		itemDevolucaoHl.setEntregues(rSet.getDouble("QTHLENTREGUES"));
+		itemDevolucaoHl.setDevolvidas(itemDevolucaoHl.getCarregadas() - itemDevolucaoHl.getEntregues());
+		itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());
+		itemDevolucaoHl.setMeta(meta.getMetaDevHl());
+		itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
+		return itemDevolucaoHl;
+	}
 
 	private double createValor(ResultSet rSet) throws NumberFormatException, SQLException {
 		
@@ -115,14 +117,17 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		return valor;
 	}
 
-
-
-	private ItemTracking createTracking(ResultSet rSet) {
-		// TODO Implement
-		return null;
+	private ItemTracking createTracking(ResultSet rSet) throws SQLException {
+		ItemTracking itemTracking = new ItemTracking();
+		itemTracking.setData(rSet.getDate("DATA"));
+		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
+		itemTracking.setOk(rSet.getDouble("SEQUENCIA_OK"));
+		itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
+		itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+		itemTracking.setMeta(meta.getMetaTracking());
+		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), meta.getMetaTracking())));
+		return itemTracking;
 	}
-
-
 
 	private ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException {
 		ItemTempoRota itemTempoRota = new ItemTempoRota();
@@ -136,8 +141,6 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		return itemTempoRota;
 	}
 
-
-
 	private ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException {
 		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 		itemTempoLargada.setData(rSet.getDate("DATA"));
@@ -148,8 +151,6 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		itemTempoLargada.setBateuMeta(MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 		return itemTempoLargada;
 	}
-
-
 
 	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException {
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();

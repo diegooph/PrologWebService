@@ -10,19 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.indicador.DevolucaoCxHolder;
+import br.com.empresa.oprojeto.models.indicador.DevolucaoHlHolder;
 import br.com.empresa.oprojeto.models.indicador.DevolucaoNfHolder;
 import br.com.empresa.oprojeto.models.indicador.IndicadorHolder;
 import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoCx;
+import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoHl;
 import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoNf;
 import br.com.empresa.oprojeto.models.indicador.ItemJornadaLiquida;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoInterno;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoLargada;
 import br.com.empresa.oprojeto.models.indicador.ItemTempoRota;
+import br.com.empresa.oprojeto.models.indicador.ItemTracking;
 import br.com.empresa.oprojeto.models.indicador.JornadaLiquidaHolder;
 import br.com.empresa.oprojeto.models.indicador.Meta;
 import br.com.empresa.oprojeto.models.indicador.TempoInternoHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoLargadaHolder;
 import br.com.empresa.oprojeto.models.indicador.TempoRotaHolder;
+import br.com.empresa.oprojeto.models.indicador.TrackingHolder;
 import br.com.empresa.oprojeto.models.util.DateUtils;
 import br.com.empresa.oprojeto.models.util.MetaUtils;
 import br.com.empresa.oprojeto.models.util.TimeUtils;
@@ -32,13 +36,22 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 	//Códigos das metas no BD
 
 
-	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, "
-			+ "M.CXENTREG, M.QTNFCARREGADAS, M.QTNFENTREGUES, M.HRSAI, M.HRENTR,"
-			+ " M.TEMPOINTERNO, M.HRMATINAL FROM MAPA_COLABORADOR MC JOIN "
-			+ "COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV "
-			+ "= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA WHERE C.CPF = "
-			+ "? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";
-
+	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS,"
+			+ " M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL, "
+			+ " TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.SEQUENCIA_OK, "
+			+ " TRACKING.JANELA_OK FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV "
+			+ " JOIN MAPA M ON M.MAPA = MC.MAPA "
+			+ " LEFT JOIN ( "
+			+ "SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, sequencia.sequencia_ok AS SEQUENCIA_OK, janela.janela_ok AS JANELA_OK "
+			+ "from tracking t join mapa_colaborador mc on mc.mapa = t.mapa "
+			+ "join ( SELECT t.mapa as mapa_sequencia, count(t.aderência_sequencia_entrega) as sequencia_ok "
+			+ "from tracking t where t.aderência_sequencia_entrega = 'Sim'	group by t.mapa) as sequencia on mapa_sequencia = t.mapa join(  "
+			+ "SELECT t.mapa as mapa_janela, count(t.aderência_janela_entrega) as janela_ok"
+			+ "	from tracking t	where t.aderência_janela_entrega = 'Sim' group by t.mapa) as janela on mapa_janela = t.mapa "
+			+ " JOIN( SELECT t.mapa as total_entregas, count(t.pdv_lacrado) as total from tracking t group by t.mapa) as total on total_entregas = t.mapa "
+			+ "join colaborador c on c.matricula_ambev = mc.cod_ambev	"
+			+ "GROUP BY t.mapa, sequencia.sequencia_ok, janela.janela_ok, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA"
+			+ "	WHERE C.CPF = ? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";			
 	
 	private Meta meta;
 	private IndicadorHolder indicadorHolder = new IndicadorHolder();
@@ -56,17 +69,19 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_INDICADORES, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+		stmt.setLong(1, cpf);
+		stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+		stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
 
 			createDevCx(rSet);
 			createDevNf(rSet);
+			createDevHl(rSet);
 			createTempoInterno(rSet);
 			createTempoRota(rSet);
 			createTempoLargada(rSet);
 			createJornadaLiquida(rSet);
+			createTracking(rSet);
 
 		}
 		finally {
@@ -77,6 +92,81 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 	}
 	
 	
+	private void createDevHl(ResultSet rSet) throws SQLException {
+		DevolucaoHlHolder devHl = new DevolucaoHlHolder();
+		List<ItemDevolucaoHl> listDevHl = new ArrayList<>();
+		double carregadasTotal = 0;
+		double entreguesTotal = 0;
+		double devolvidasTotal = 0;
+
+		while(rSet.next()){
+
+			ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
+
+			itemDevolucaoHl.setData(rSet.getDate("DATA"));
+			itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
+			itemDevolucaoHl.setEntregues(rSet.getDouble("QTHLENTREGUES"));
+			itemDevolucaoHl.setDevolvidas(itemDevolucaoHl.getCarregadas() - itemDevolucaoHl.getEntregues());
+			itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());
+			itemDevolucaoHl.setMeta(meta.getMetaDevHl());
+			itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
+			listDevHl.add(itemDevolucaoHl);
+
+			carregadasTotal = carregadasTotal + itemDevolucaoHl.getCarregadas();
+			entreguesTotal = entreguesTotal + itemDevolucaoHl.getEntregues();
+			devolvidasTotal = devolvidasTotal + itemDevolucaoHl.getDevolvidas();		
+		}
+
+		devHl.setListItemDevolucao(listDevHl);
+		devHl.setCarregadasTotal(carregadasTotal);
+		devHl.setDevolvidasTotal(devolvidasTotal);
+		devHl.setEntreguesTotal(entreguesTotal);
+		devHl.setResultadoTotal(devolvidasTotal / carregadasTotal);
+		devHl.setMeta(meta.getMetaDevHl());
+		devHl.setBateuMeta(MetaUtils.bateuMeta(devHl.getResultadoTotal(), meta.getMetaDevHl()));
+
+		indicadorHolder.setDevHl(devHl);
+		rSet.beforeFirst();
+		
+	}
+
+
+	private void createTracking(ResultSet rSet) throws SQLException {
+		TrackingHolder trackingHolder = new TrackingHolder();
+		List<ItemTracking> listTracking = new ArrayList<>();
+		double total = 0;
+		double okTotal = 0;
+		double nokTotal = 0;
+
+		while(rSet.next()){
+
+			
+			ItemTracking itemTracking = new ItemTracking();
+			itemTracking.setData(rSet.getDate("DATA"));
+			itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
+			itemTracking.setOk(rSet.getDouble("SEQUENCIA_OK"));
+			itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
+			itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+			itemTracking.setMeta(meta.getMetaTracking());
+			itemTracking.setBateuMeta(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta()));
+			listTracking.add(itemTracking);
+
+			total = total + itemTracking.getTotal();
+			okTotal = okTotal + itemTracking.getOk();
+			nokTotal = nokTotal + itemTracking.getNok();
+		}
+		trackingHolder.setListTracking(listTracking);
+		trackingHolder.setTotal(total);
+		trackingHolder.setOk(okTotal);
+		trackingHolder.setNok(nokTotal);
+		trackingHolder.setResultado(okTotal/total);
+		trackingHolder.setMeta(meta.getMetaTracking());
+		trackingHolder.setBateuMeta(MetaUtils.bateuMeta(trackingHolder.getResultado(), trackingHolder.getMeta()));
+		indicadorHolder.setTracking(trackingHolder);
+		rSet.beforeFirst();
+		}
+
+
 	public void createDevCx (ResultSet rSet) throws SQLException{
 		DevolucaoCxHolder devCaixa = new DevolucaoCxHolder();
 		List<ItemDevolucaoCx> listDevCx = new ArrayList<>();
