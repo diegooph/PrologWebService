@@ -17,7 +17,9 @@ public class AppDaoImpl extends DataBaseConnection implements AppDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT MAX(VERSION_CODE) FROM APP_VERSION");
+			// Precisa do "AS VERSION_CODE" por que senão retorna com o nome MAX
+			stmt = conn.prepareStatement("SELECT MAX(VERSION_CODE) "
+					+ "AS VERSION_CODE FROM APP_VERSION");
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				int versionCode = rSet.getInt("VERSION_CODE");

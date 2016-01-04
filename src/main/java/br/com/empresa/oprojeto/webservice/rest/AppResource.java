@@ -1,7 +1,6 @@
 package br.com.empresa.oprojeto.webservice.rest;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,8 +18,7 @@ public class AppResource {
 	
 	@POST
 	@Path("/version")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response isCurrentVersion(@FormParam("appVersion") AppVersion appVersion) {		
+	public Response isCurrentVersion(AppVersion appVersion) {		
 		if (service.isCurrentVersion(appVersion)) {
 			return Response.Ok("Você está com a versão mais atualizada");
 		} else {
