@@ -25,7 +25,7 @@ public class RelatoResource {
 	
 	@POST
 	public Response insert(Relato relato) {
-		relato.setData(new Date(System.currentTimeMillis()));
+		relato.setDataDatabase(new Date(System.currentTimeMillis()));
 		if (service.insert(relato)) {
 			return Response.Ok("Relato inserido com sucesso");
 		} else {

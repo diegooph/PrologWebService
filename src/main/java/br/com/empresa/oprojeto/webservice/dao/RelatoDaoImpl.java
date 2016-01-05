@@ -40,10 +40,10 @@ BaseDao<Relato> {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO RELATO "
-					+ "(DATA_HORA, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
+					+ "(DATA_HORA_LOCAL, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
 					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?)");						
-			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
 			stmt.setString(4, relato.getLatitude());
@@ -69,11 +69,11 @@ BaseDao<Relato> {
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE RELATO SET DATA_HORA = ?, "
+			stmt = conn.prepareStatement("UPDATE RELATO SET DATA_HORA_LOCAL = ?, "
 					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
 					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getData()));
+			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
 			stmt.setString(4, relato.getLatitude());
@@ -196,7 +196,8 @@ BaseDao<Relato> {
 		Relato relato = new Relato();
 		relato.setCodigo(rSet.getLong("CODIGO"));
 		relato.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		relato.setData(rSet.getTimestamp("DATA_HORA"));
+		relato.setDataLocal(rSet.getTimestamp("DATA_HORA_LOCAL"));
+		relato.setDataDatabase(rSet.getTimestamp("DATA_HORA_DATABASE"));
 		relato.setAssunto(rSet.getString("ASSUNTO"));
 		relato.setDescricao(rSet.getString("DESCRICAO"));
 		relato.setLatitude(rSet.getString("LATITUDE"));
