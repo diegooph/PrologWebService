@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 
 import br.com.empresa.oprojeto.models.checklist.Checklist;
-import br.com.empresa.oprojeto.webservice.services.ChecklistService;
+import br.com.zalf.oprojeto.webservice.services.ChecklistService;
 import junit.framework.TestCase;
 
 public class ChecklistTest extends TestCase {
