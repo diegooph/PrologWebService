@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.empresa.oprojeto.models.Relato;
@@ -41,8 +42,8 @@ BaseDao<Relato> {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO RELATO "
 					+ "(DATA_HORA_LOCAL, ASSUNTO, DESCRICAO, LATITUDE, LONGITUDE, "
-					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR) "
-					+ "VALUES (?,?,?,?,?,?,?,?,?)");						
+					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR, DATA_HORA_DATABASE) "
+					+ "VALUES (?,?,?,?,?,?,?,?,?,?)");						
 			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
 			stmt.setString(2, relato.getAssunto());
 			stmt.setString(3, relato.getDescricao());
@@ -52,6 +53,7 @@ BaseDao<Relato> {
 			stmt.setString(7, relato.getUrlFoto2());
 			stmt.setString(8, relato.getUrlFoto3());
 			stmt.setLong(9, relato.getCpfColaborador());
+			stmt.setTimestamp(10, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o relato");
@@ -196,7 +198,8 @@ BaseDao<Relato> {
 		Relato relato = new Relato();
 		relato.setCodigo(rSet.getLong("CODIGO"));
 		relato.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		relato.setDataLocal(rSet.getTimestamp("DATA_HORA_LOCAL"));
+		// A hora que será mostrada no android deve ser a Data_Hora_Database
+		relato.setDataLocal(rSet.getTimestamp("DATA_HORA_DATABASE"));
 		relato.setDataDatabase(rSet.getTimestamp("DATA_HORA_DATABASE"));
 		relato.setAssunto(rSet.getString("ASSUNTO"));
 		relato.setDescricao(rSet.getString("DESCRICAO"));
