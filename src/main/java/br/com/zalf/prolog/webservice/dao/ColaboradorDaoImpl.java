@@ -52,7 +52,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 					+ "STATUS_ATIVO = ?, NOME = ?, EQUIPE = ?, SETOR = ?, "
 					+ "COD_FUNCAO = ?, COD_UNIDADE = ? WHERE CPF = ?");
 			setStatementItems(stmt, colaborador);
-			stmt.setLong(13, colaborador.getCpf());
+			stmt.setString(13, String.valueOf(colaborador.getCpf()));
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
@@ -71,7 +71,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM COLABORADOR WHERE CPF = ?");
-			stmt.setLong(1, cpf);
+			stmt.setString(1, String.valueOf(cpf));
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -79,7 +79,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 	}
 
 	@Override
-	public Colaborador getByCod(Long codigo) throws SQLException {
+	public Colaborador getByCod(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -87,7 +87,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR WHERE "
 					+ "CPF = ?");
-			stmt.setLong(1, codigo);
+			stmt.setString(1, String.valueOf(cpf));
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -129,7 +129,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.EQUIPE FROM "
 					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
 					+ "AND STATUS_ATIVO = TRUE)");
-			stmt.setLong(1, cpf);
+			stmt.setString(1, String.valueOf(cpf));
 			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
@@ -172,7 +172,7 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
-		c.setCpf(rSet.getLong("CPF"));
+		c.setCpf(Long.parseLong(rSet.getString("CPF")));
 		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
 		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
 		c.setNome(rSet.getString("NOME"));
@@ -186,7 +186,12 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 	}
 	
 	private void setStatementItems(PreparedStatement stmt, Colaborador c) throws SQLException {
-		stmt.setLong(1, c.getCpf());
+//				INSERT INTO COLABORADOR "
+//			+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
+//			+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
+//			+ "SETOR, COD_FUNCAO, COD_UNIDADE) VALUES "
+//			+ "(?,?,?,?,?,?,?,?,?,?,?,?)
+		stmt.setString(1, String.valueOf(c.getCpf()));
 		stmt.setInt(2, c.getMatriculaAmbev());
 		stmt.setInt(3, c.getMatriculaTrans());
 		stmt.setDate(4, DateUtils.toSqlDate(c.getDataNascimento()));
