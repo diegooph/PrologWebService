@@ -23,8 +23,10 @@ public class MyApplication extends Application {
 	public Map<String, Object> getProperties() {
 		Map<String, Object> properties = new HashMap<>();
 		// Configura o pacote para fazer scan das classes com anotações REST.
+		// FIXME: Se mudar o nome do pacote do projeto além de alterar aqui, alterar
+		// no arquivo web.xml também
 		properties.put("jersey.config.server.provider.packages", 
-						"br.com.empresa.oprojeto.webservice");
+						"br.com.zalf.oprojeto.webservice");
 		return properties;
 	}
 }
