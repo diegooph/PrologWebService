@@ -36,22 +36,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 	//Códigos das metas no BD
 
 
-	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS,"
-			+ " M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL, "
-			+ " TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.SEQUENCIA_OK, "
-			+ " TRACKING.JANELA_OK FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV "
-			+ " JOIN MAPA M ON M.MAPA = MC.MAPA "
-			+ " LEFT JOIN ( "
-			+ "SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, sequencia.sequencia_ok AS SEQUENCIA_OK, janela.janela_ok AS JANELA_OK "
-			+ "from tracking t join mapa_colaborador mc on mc.mapa = t.mapa "
-			+ "join ( SELECT t.mapa as mapa_sequencia, count(t.aderência_sequencia_entrega) as sequencia_ok "
-			+ "from tracking t where t.aderência_sequencia_entrega = 'Sim'	group by t.mapa) as sequencia on mapa_sequencia = t.mapa join(  "
-			+ "SELECT t.mapa as mapa_janela, count(t.aderência_janela_entrega) as janela_ok"
-			+ "	from tracking t	where t.aderência_janela_entrega = 'Sim' group by t.mapa) as janela on mapa_janela = t.mapa "
-			+ " JOIN( SELECT t.mapa as total_entregas, count(t.pdv_lacrado) as total from tracking t group by t.mapa) as total on total_entregas = t.mapa "
-			+ "join colaborador c on c.matricula_ambev = mc.cod_ambev	"
-			+ "GROUP BY t.mapa, sequencia.sequencia_ok, janela.janela_ok, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA"
-			+ "	WHERE C.CPF = ? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";			
+	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL, TRACKING.TOTAL as TOTAL_TRACKING, TRACKING.APONTAMENTO_OK FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK from tracking t join mapa_colaborador mc on mc.mapa = t.mapa join (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as apontamentos_ok from tracking t	where t.disp_apont_cadastrado <= '0.3' group by t.mapa) as ok on mapa_ok = t.mapa join (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total	from tracking t group by t.mapa) as total on total_entregas = t.mapa join colaborador c on c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA WHERE C.CPF = ? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";		
 	
 	private Meta meta;
 	private IndicadorHolder indicadorHolder = new IndicadorHolder();
@@ -144,11 +129,11 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			ItemTracking itemTracking = new ItemTracking();
 			itemTracking.setData(rSet.getDate("DATA"));
 			itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
-			itemTracking.setOk(rSet.getDouble("SEQUENCIA_OK"));
+			itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
 			itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
 			itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
 			itemTracking.setMeta(meta.getMetaTracking());
-			itemTracking.setBateuMeta(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta()));
+			itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
 			listTracking.add(itemTracking);
 
 			total = total + itemTracking.getTotal();
@@ -161,7 +146,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 		trackingHolder.setNok(nokTotal);
 		trackingHolder.setResultado(okTotal/total);
 		trackingHolder.setMeta(meta.getMetaTracking());
-		trackingHolder.setBateuMeta(MetaUtils.bateuMeta(trackingHolder.getResultado(), trackingHolder.getMeta()));
+		trackingHolder.setBateuMeta(!(MetaUtils.bateuMeta(trackingHolder.getResultado(), trackingHolder.getMeta())));
 		indicadorHolder.setTracking(trackingHolder);
 		rSet.beforeFirst();
 		}
