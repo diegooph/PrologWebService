@@ -152,6 +152,7 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
 					+ "WHERE CPF_COLABORADOR != ? "
 					+ "ORDER BY DATA_HORA DESC");
+			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
