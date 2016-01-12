@@ -141,6 +141,29 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	}
 	
 	@Override
+	public List<Checklist> getAllExcetoColaborador(Long cpf) throws SQLException {
+		List<Checklist> checklists = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
+					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
+					+ "WHERE CPF_COLABORADOR != ? "
+					+ "ORDER BY DATA_HORA DESC");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Checklist checklist = createChecklist(rSet);
+				checklists.add(checklist);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return checklists;
+	}
+	
+	@Override
 	public List<Checklist> getByColaborador(Long cpf) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;

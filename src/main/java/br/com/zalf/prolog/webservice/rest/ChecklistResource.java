@@ -55,6 +55,12 @@ public class ChecklistResource {
 	}
 	
 	@GET
+	@Path("/exceto/colaborador/{cpf}")
+	public List<Checklist> getAllExcetoColaborador(Long cpf) {
+		return service.getAllExcetoColaborador(cpf);
+	}
+	
+	@GET
 	@Path("/colaborador/{cpf}")
 	public List<Checklist> getByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getByColaborador(cpf);

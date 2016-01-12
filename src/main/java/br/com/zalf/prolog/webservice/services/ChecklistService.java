@@ -56,6 +56,16 @@ public class ChecklistService {
 		}
 	}
 	
+
+	public List<Checklist> getAllExcetoColaborador(Long cpf) {
+		try {
+			return dao.getAllExcetoColaborador(cpf);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Checklist>();
+		}
+	}
+	
 	public List<Checklist> getByColaborador(Long cpf) {
 		try {
 			return dao.getByColaborador(cpf);
