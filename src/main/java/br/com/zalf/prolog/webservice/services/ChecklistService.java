@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.Pergunta;
-import br.com.empresa.oprojeto.models.checklist.Checklist;
+import br.com.zalf.prolog.models.Pergunta;
+import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 
 public class ChecklistService {

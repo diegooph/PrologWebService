@@ -11,9 +11,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.Response;
-import br.com.empresa.oprojeto.models.treinamento.Treinamento;
-import br.com.empresa.oprojeto.models.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.treinamento.Treinamento;
+import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 import br.com.zalf.prolog.webservice.services.TreinamentoService;
 
 @Path("/treinamentos")

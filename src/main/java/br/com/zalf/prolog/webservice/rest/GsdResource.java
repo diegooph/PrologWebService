@@ -12,8 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.Response;
-import br.com.empresa.oprojeto.models.gsd.Gsd;
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.webservice.services.GsdService;
 
 @Path("/gsd")

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.services;
 
 import java.sql.SQLException;
 
-import br.com.empresa.oprojeto.models.AppVersion;
+import br.com.zalf.prolog.models.AppVersion;
 import br.com.zalf.prolog.webservice.dao.AppDaoImpl;
 
 public class AppService {

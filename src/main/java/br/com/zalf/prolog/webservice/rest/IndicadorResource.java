@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.indicador.IndicadorHolder;
-import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.zalf.prolog.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.services.IndicadorService;
 
 @Path("/indicadores")

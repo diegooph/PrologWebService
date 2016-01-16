@@ -12,8 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.FaleConosco;
-import br.com.empresa.oprojeto.models.Response;
+import br.com.zalf.prolog.models.FaleConosco;
+import br.com.zalf.prologo.models.Response;
 import br.com.zalf.prolog.webservice.services.FaleConoscoService;
 
 @Path("/faleConosco")

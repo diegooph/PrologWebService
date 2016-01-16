@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.AppVersion;
-import br.com.empresa.oprojeto.models.Response;
+import br.com.zalf.prolog.models.AppVersion;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.services.AppService;
 
 @Path("/app")

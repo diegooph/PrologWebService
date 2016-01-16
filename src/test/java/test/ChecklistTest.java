@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import br.com.empresa.oprojeto.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
 import junit.framework.TestCase;
 

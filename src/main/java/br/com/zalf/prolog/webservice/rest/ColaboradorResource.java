@@ -14,8 +14,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.Colaborador;
-import br.com.empresa.oprojeto.models.Funcao;
+import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.Funcao;
 import br.com.empresa.oprojeto.models.Response;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 

@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.zalf.prologo.models.Pergunta;
+import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.Resposta;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.ChecklistRetorno;

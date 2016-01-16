@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.Veiculo;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.services.VeiculoService;
 
 @Path("veiculos")

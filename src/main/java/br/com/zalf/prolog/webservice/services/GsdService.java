@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.gsd.Gsd;
+import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.webservice.dao.GsdDaoImpl;
 
 public class GsdService {

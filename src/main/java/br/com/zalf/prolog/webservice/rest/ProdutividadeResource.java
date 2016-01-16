@@ -10,8 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.produtividade.ItemProdutividade;
-import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.services.ProdutividadeService;
 
 @Path("/produtividade")

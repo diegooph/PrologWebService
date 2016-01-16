@@ -13,8 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.empresa.oprojeto.models.Relato;
-import br.com.empresa.oprojeto.models.Response;
+import br.com.zalf.prolog.models.Relato;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.services.RelatoService;
 
 @Path("/relatos")
