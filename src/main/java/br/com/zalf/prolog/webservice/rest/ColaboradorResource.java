@@ -14,9 +14,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.services.AutenticacaoService;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
 @Path("/colaboradores")
@@ -71,18 +73,18 @@ public class ColaboradorResource {
 		return service.getFuncaoByCod(codigo);
 	}
 	
-	// TODO: deveria ser feito com get, porém os dados da pessoa (usando get) 
-	// ficariam explícitos no link da requisição e não em seu corpo como é com 
-	// post e put
 	@POST
 	@Path("/verifyLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response verifyLogin(@FormParam("cpf") Long cpf, 
+	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf, 
 			@FormParam("dataNascimento") long dataNascimento) {
 		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
-			return Response.Ok("Login liberado");
+			AutenticacaoService autenticacaoService = new AutenticacaoService();
+			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
+			System.out.println(autenticacao.getToken());
+			return autenticacao;
 		} else {
-			return Response.Error("Erro de autenticação");
+			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
 		}
 	}
 }
