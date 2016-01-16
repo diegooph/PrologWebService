@@ -55,9 +55,9 @@ public class AutenticacaoDaoImpl extends DataBaseConnection implements Autentica
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE TOKEN_AUTENTICACAO SET "
-					+ "CPF_COLABORADOR = ? WHERE TOKEN = ?;");
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
+					+ "TOKEN = ? WHERE CPF_COLABORADOR = ?;");
+			stmt.setString(1, token);
+			stmt.setLong(2, cpf);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				return false;				

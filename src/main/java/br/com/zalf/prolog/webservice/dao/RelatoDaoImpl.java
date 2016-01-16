@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS RELATO (
  */
 public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao, 
 BaseDao<Relato> {
-
 	@Override
 	public boolean insert(Relato relato) throws SQLException {
 		Connection conn = null;
@@ -158,8 +157,9 @@ BaseDao<Relato> {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE "
-					+ "CPF_COLABORADOR = ?");
+			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF WHERE "
+					+ "R.CPF_COLABORADOR = ?");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -180,8 +180,9 @@ BaseDao<Relato> {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE "
-					+ "CPF_COLABORADOR != ?");
+			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF WHERE "
+					+ "R.CPF_COLABORADOR != ?");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -196,6 +197,7 @@ BaseDao<Relato> {
 
 	private Relato createRelato(ResultSet rSet) throws SQLException{
 		Relato relato = new Relato();
+		relato.setNomeColaborador(rSet.getString("NOME"));
 		relato.setCodigo(rSet.getLong("CODIGO"));
 		relato.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
 		// A hora que será mostrada no android deve ser a Data_Hora_Database
