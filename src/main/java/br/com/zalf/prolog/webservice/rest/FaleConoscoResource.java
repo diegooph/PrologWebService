@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.FaleConosco;
-import br.com.zalf.prologo.models.Response;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.services.FaleConoscoService;
 
 @Path("/faleConosco")

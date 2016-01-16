@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
-import br.com.empresa.oprojeto.models.Response;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
 @Path("/colaboradores")
