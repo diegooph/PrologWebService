@@ -9,12 +9,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.empresa.oprojeto.models.Pergunta;
-import br.com.empresa.oprojeto.models.Resposta;
-import br.com.empresa.oprojeto.models.checklist.Checklist;
-import br.com.empresa.oprojeto.models.checklist.ChecklistRetorno;
-import br.com.empresa.oprojeto.models.checklist.ChecklistSaida;
-import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.zalf.prologo.models.Pergunta;
+import br.com.zalf.prolog.models.Resposta;
+import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.ChecklistRetorno;
+import br.com.zalf.prolog.models.checklist.ChecklistSaida;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 

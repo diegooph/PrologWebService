@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 
-import br.com.empresa.oprojeto.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 
 public class Main {
 

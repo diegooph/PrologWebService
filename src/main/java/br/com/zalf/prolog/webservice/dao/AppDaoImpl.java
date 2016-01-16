@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import br.com.empresa.oprojeto.models.AppVersion;
+import br.com.zalf.prolog.models.AppVersion;
 import br.com.zalf.prolog.webservice.dao.interfaces.AppDao;
 
 public class AppDaoImpl extends DataBaseConnection implements AppDao {

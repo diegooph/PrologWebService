@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.dao.interfaces;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import br.com.empresa.oprojeto.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 
 
 public interface IndicadorDao {

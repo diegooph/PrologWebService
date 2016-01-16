@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.FaleConosco;
-import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.zalf.prolog.models.FaleConosco;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.FaleConoscoDao;
 

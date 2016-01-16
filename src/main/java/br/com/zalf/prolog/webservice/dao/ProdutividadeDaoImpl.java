@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoCx;
-import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoHl;
-import br.com.empresa.oprojeto.models.indicador.ItemDevolucaoNf;
-import br.com.empresa.oprojeto.models.indicador.ItemJornadaLiquida;
-import br.com.empresa.oprojeto.models.indicador.ItemTempoInterno;
-import br.com.empresa.oprojeto.models.indicador.ItemTempoLargada;
-import br.com.empresa.oprojeto.models.indicador.ItemTempoRota;
-import br.com.empresa.oprojeto.models.indicador.ItemTracking;
-import br.com.empresa.oprojeto.models.indicador.Meta;
-import br.com.empresa.oprojeto.models.produtividade.ItemProdutividade;
-import br.com.empresa.oprojeto.models.util.DateUtils;
-import br.com.empresa.oprojeto.models.util.MetaUtils;
-import br.com.empresa.oprojeto.models.util.TimeUtils;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
+import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
+import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
+import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
+import br.com.zalf.prolog.models.indicador.ItemTempoRota;
+import br.com.zalf.prolog.models.indicador.ItemTracking;
+import br.com.zalf.prolog.models.indicador.Meta;
+import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.models.util.MetaUtils;
+import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {

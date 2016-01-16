@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.empresa.oprojeto.models.Pergunta;
-import br.com.empresa.oprojeto.models.Resposta;
-import br.com.empresa.oprojeto.models.gsd.Gsd;
-import br.com.empresa.oprojeto.models.gsd.Gsd.PerguntaRespostaHolder;
-import br.com.empresa.oprojeto.models.util.DateUtils;
+import br.com.zalf.prolog.models.Pergunta;
+import br.com.zalf.prolog.models.Resposta;
+import br.com.zalf.prolog.models.gsd.Gsd;
+import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostaHolder;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
 

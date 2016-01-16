@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import br.com.empresa.oprojeto.models.indicador.Meta;
-import br.com.empresa.oprojeto.models.util.TimeUtils;
+import br.com.zalf.prolog.models.indicador.Meta;
+import br.com.zalf.prolog.models.util.TimeUtils;
 
 public class MetasDao extends DataBaseConnection{
 	

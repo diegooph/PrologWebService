@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.dao.interfaces;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.treinamento.Treinamento;
-import br.com.empresa.oprojeto.models.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.models.treinamento.Treinamento;
+import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 
 
 public interface TreinamentoDao {

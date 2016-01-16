@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.gsd.Pdv;
+import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.PdvDao;
 
