@@ -18,11 +18,11 @@ import br.com.zalf.prolog.webservice.services.VeiculoService;
 public class VeiculoResource {
 	private VeiculoService service = new VeiculoService();
 	
-	@GET
-	@Path("/unidade/{codUnidade}")
-	public List<Veiculo> getVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
-		return service.getVeiculosAtivosByUnidade(codUnidade);
-	}
+//	@GET
+//	@Path("/unidade/{codUnidade}")
+//	public List<Veiculo> getVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
+//		return service.getVeiculosAtivosByUnidade(codUnidade);
+//	}
 	
 	@GET
 	@Path("/unidade/colaborador/{cpf}")

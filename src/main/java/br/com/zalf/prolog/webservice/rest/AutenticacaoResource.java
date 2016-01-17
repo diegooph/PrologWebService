@@ -26,10 +26,10 @@ public class AutenticacaoResource {
 		}
 	}
 	
-	@POST
-	@Path("/insertOrUpdate")
-	public Autenticacao insertOrUpdate(Long cpf) {
-		return service.insertOrUpdate(cpf);
-	}
+//	@POST
+//	@Path("/insertOrUpdate")
+//	public Autenticacao insertOrUpdate(Long cpf) {
+//		return service.insertOrUpdate(cpf);
+//	}
 
 }

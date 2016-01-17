@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,31 +32,31 @@ public class ChecklistResource {
 		}
 	}
 	
-	@PUT
-	public Response update(Checklist checklist) {
-		if (service.update(checklist)) {
-			return Response.Ok("Checklist atualizado com sucesso");
-		} else {
-			return Response.Error("Erro ao atualizar o checklist");
-		}
-	}
+//	@PUT
+//	public Response update(Checklist checklist) {
+//		if (service.update(checklist)) {
+//			return Response.Ok("Checklist atualizado com sucesso");
+//		} else {
+//			return Response.Error("Erro ao atualizar o checklist");
+//		}
+//	}
+//	
+//	@GET
+//	@Path("{codigo}")
+//	public Checklist getByCod(@PathParam("codigo") Long codigo) {
+//		return service.getByCod(codigo);
+//	}
+//	
+//	@GET
+//	public List<Checklist> getAll() {
+//		return service.getAll();
+//	}
 	
-	@GET
-	@Path("{codigo}")
-	public Checklist getByCod(@PathParam("codigo") Long codigo) {
-		return service.getByCod(codigo);
-	}
-	
-	@GET
-	public List<Checklist> getAll() {
-		return service.getAll();
-	}
-	
-	@GET
-	@Path("/exceto/colaborador/{cpf}")
-	public List<Checklist> getAllExcetoColaborador(Long cpf) {
-		return service.getAllExcetoColaborador(cpf);
-	}
+//	@GET
+//	@Path("/exceto/colaborador/{cpf}")
+//	public List<Checklist> getAllExcetoColaborador(Long cpf) {
+//		return service.getAllExcetoColaborador(cpf);
+//	}
 	
 	@GET
 	@Path("/colaborador/{cpf}")
@@ -72,13 +70,13 @@ public class ChecklistResource {
 		return service.getPerguntas();
 	}
 	
-	@DELETE
-	@Path("{codigo}")
-	public Response delete(@PathParam("codigo") Long codigo) {
-		if (service.delete(codigo)) {
-			return Response.Ok("Checklist deletado com sucesso");
-		} else {
-			return Response.Error("Erro ao deletar checklist");
-		}
-	}
+//	@DELETE
+//	@Path("{codigo}")
+//	public Response delete(@PathParam("codigo") Long codigo) {
+//		if (service.delete(codigo)) {
+//			return Response.Ok("Checklist deletado com sucesso");
+//		} else {
+//			return Response.Error("Erro ao deletar checklist");
+//		}
+//	}
 }
