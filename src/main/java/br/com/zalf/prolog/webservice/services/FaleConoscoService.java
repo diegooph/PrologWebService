@@ -37,9 +37,9 @@ public class FaleConoscoService {
 		}
 	}
 	
-	public FaleConosco getByCod(Long codigo) {
+	public FaleConosco getByCod(Long codigo, String token) {
 		try {
-			return dao.getByCod(codigo);
+			return dao.getByCod(codigo, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

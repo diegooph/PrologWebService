@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.rest;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -24,9 +24,11 @@ public class VeiculoResource {
 //		return service.getVeiculosAtivosByUnidade(codUnidade);
 //	}
 	
-	@GET
-	@Path("/unidade/colaborador/{cpf}")
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
+	@POST
+	@Path("/unidade/colaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
+		return service.getVeiculosAtivosByUnidadeByColaborador(cpf, token);
 	}
 }

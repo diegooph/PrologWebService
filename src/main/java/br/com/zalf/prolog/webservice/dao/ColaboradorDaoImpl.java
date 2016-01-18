@@ -79,15 +79,18 @@ public class ColaboradorDaoImpl extends DataBaseConnection implements
 	}
 
 	@Override
-	public Colaborador getByCod(Long codigo) throws SQLException {
+	public Colaborador getByCod(Long codigo, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR WHERE "
-					+ "CPF = ?");
+			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR C JOIN "
+					+ "TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
+					+ "? = TA.TOKEN WHERE CPF = ?");
 			stmt.setLong(1, codigo);
+			stmt.setString(2, token);
+			stmt.setLong(3, codigo);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);

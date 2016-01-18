@@ -27,13 +27,32 @@ import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {
 
-	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,C.COD_FUNCAO AS FUNCAO_ATUAL, HC.COD_FUNCAO AS FUNCAO_ANTIGA,	M.VlBateuJornMot, M.VlNaoBateuJornMot, M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju, TRACKING.TOTAL as TOTAL_TRACKING, TRACKING.apontamento_ok	FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA LEFT	JOIN HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO AND HC.DATA_FIM LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total_entregas AS TOTAL, ok.apontamento_ok AS APONTAMENTO_OK from tracking t join mapa_colaborador mc on mc.mapa = t.mapa join (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as apontamento_ok from tracking t where t.disp_apont_cadastrado <= '0.3'	group by t.mapa) as ok on mapa_ok = t.mapa join (SELECT t.mapa as total, count(t.COD_CLIENTE) as total_entregas	from tracking t	group by t.mapa) as total on total = t.mapa	join colaborador c on c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, ok.mapa_ok, total.total_entregas, ok.apontamento_ok) AS TRACKING ON TRACKING_MAPA = M.MAPA	WHERE C.CPF = ? AND DATA BETWEEN ? AND ? ORDER BY M.DATA";
+	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, "
+			+ "M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, "
+			+ "M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,C.COD_FUNCAO AS FUNCAO_ATUAL, "
+			+ "HC.COD_FUNCAO AS FUNCAO_ANTIGA,	M.VlBateuJornMot, M.VlNaoBateuJornMot, "
+			+ "M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju, "
+			+ "TRACKING.TOTAL as TOTAL_TRACKING, TRACKING.apontamento_ok "
+			+ "FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND "
+			+ "MC.COD_AMBEV= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA JOIN TOKEN_AUTENTICACAO "
+			+ "TA ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN LEFT	JOIN "
+			+ "HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO AND "
+			+ "HC.DATA_FIM LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total_entregas AS TOTAL, "
+			+ "ok.apontamento_ok AS APONTAMENTO_OK from tracking t join mapa_colaborador mc on "
+			+ "mc.mapa = t.mapa join (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as "
+			+ "apontamento_ok from tracking t where t.disp_apont_cadastrado <= '0.3' group by t.mapa) as "
+			+ "ok on mapa_ok = t.mapa join (SELECT t.mapa as total, count(t.COD_CLIENTE) as total_entregas "
+			+ "from tracking t	group by t.mapa) as total on total = t.mapa	join colaborador c on "
+			+ "c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, ok.mapa_ok, total.total_entregas, "
+			+ "ok.apontamento_ok) AS TRACKING ON TRACKING_MAPA = M.MAPA	WHERE C.CPF = ? AND DATA BETWEEN ? "
+			+ "AND ? ORDER BY M.DATA;";
 
 
 	Meta meta;
 	
 	@Override
-	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, long cpf)
+	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, 
+			Long cpf, String token)
 			throws SQLException {
 
 		Connection conn = null;
@@ -44,9 +63,14 @@ public class ProdutividadeDaoImpl extends DataBaseConnection implements Produtiv
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_PRODUTIVIDADE, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
+			// Token autenticação
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+			stmt.setString(2, token);
+			
+			stmt.setLong(3, cpf);
+			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();	
 			
 			MetasDao metasDao = new MetasDao();

@@ -23,7 +23,7 @@ public class Main {
 		Long cpf = 12345678987L;
 		
 		IndicadorDaoImpl impl = new IndicadorDaoImpl();
-		IndicadorHolder holder = impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf);
+		IndicadorHolder holder = impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf, "fkdfjd");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
 		

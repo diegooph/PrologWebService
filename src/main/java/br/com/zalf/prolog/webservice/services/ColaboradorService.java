@@ -39,9 +39,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public Colaborador getByCod(Long cpf) {
+	public Colaborador getByCod(Long cpf, String token) {
 		try {
-			return dao.getByCod(cpf);
+			return dao.getByCod(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

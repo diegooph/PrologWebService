@@ -37,9 +37,9 @@ public class RelatoService {
 		}
 	}
 	
-	public Relato getByCod(Long codigo) {
+	public Relato getByCod(Long codigo, String token) {
 		try {
-			return dao.getByCod(codigo);
+			return dao.getByCod(codigo, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -55,9 +55,9 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getByColaborador(Long cpf) {
+	public List<Relato> getByColaborador(Long cpf, String token) {
 		try {
-			return dao.getByColaborador(cpf);
+			return dao.getByColaborador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

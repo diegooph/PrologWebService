@@ -96,8 +96,9 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 		}
 	}
 
+	// TODO: Fazer join token
 	@Override
-	public Checklist getByCod(Long codigo) throws SQLException {
+	public Checklist getByCod(Long codigo, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -165,18 +166,21 @@ public class ChecklistDaoImpl extends DataBaseConnection implements
 	}
 	
 	@Override
-	public List<Checklist> getByColaborador(Long cpf) throws SQLException {
+	public List<Checklist> getByColaborador(Long cpf, String token) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
-					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
-					+ "WHERE C.CPF_COLABORADOR = ?"
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO FROM CHECKLIST C "
+					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
+					+ "? = TA.TOKEN WHERE C.CPF_COLABORADOR = ? "
 					+ "ORDER BY DATA_HORA DESC");
 			stmt.setLong(1, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);

@@ -25,8 +25,9 @@ public class IndicadorResource {
 	public IndicadorHolder getIndicadoresByPeriodo(
 			@FormParam("dataInicial") long dataInicial, 
 			@FormParam("dataFinal") long dataFinal, 
-			@FormParam("cpf") long cpf) {
+			@FormParam("cpf") Long cpf,
+			@FormParam("token") String token) {
 		return service.getIndicadoresByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
-				DateUtils.toLocalDate(new Date(dataFinal)), cpf);
+				DateUtils.toLocalDate(new Date(dataFinal)), cpf, token);
 	}
 }

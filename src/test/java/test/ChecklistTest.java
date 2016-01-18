@@ -18,7 +18,7 @@ public class ChecklistTest extends TestCase {
 		// Valida se encontrou algo
 		assertTrue(checklists.size() > 0);
 		// Valida se encontrou um checklist
-		Checklist check_1 = service.getByCod(2L);
+		Checklist check_1 = service.getByCod(2L, "jsds");
 		Long cpf = 12345678987L;
 		assertEquals(cpf, check_1.getCpfColaborador());
 		assertEquals("MKE2501", check_1.getPlacaVeiculo());

@@ -28,9 +28,9 @@ public class GsdService {
 		}
 	}
 	
-	public Gsd getByCod(Long codigo) {
+	public Gsd getByCod(Long codigo, String token) {
 		try {
-			return dao.getByCod(codigo);
+			return dao.getByCod(codigo, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

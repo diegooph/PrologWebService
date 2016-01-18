@@ -47,10 +47,11 @@ public class ColaboradorResource {
 //		return service.getAll();
 //	}
 	
-	@GET
-	@Path("{cpf}")
-	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
-		return service.getByCod(cpf);
+	@POST
+	@Path("/getByCod")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Colaborador getByCod(@FormParam("cpf") Long cpf, @FormParam("token") String token) {
+		return service.getByCod(cpf, token);
 	}
 	
 //	@DELETE

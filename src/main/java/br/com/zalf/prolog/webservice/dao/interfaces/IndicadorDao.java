@@ -10,7 +10,7 @@ public interface IndicadorDao {
 	
 	
 IndicadorHolder getIndicadoresByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
-								long cpf) throws SQLException;
+								Long cpf, String token) throws SQLException;
 
 			
 }

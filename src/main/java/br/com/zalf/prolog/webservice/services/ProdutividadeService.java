@@ -14,9 +14,9 @@ public class ProdutividadeService {
 	public List<ItemProdutividade> getProdutividadeByPeriodo(
 			LocalDate dataInicial, 
 			LocalDate dataFinal, 
-			long cpf) {
+			Long cpf, String token) {
 		try {
-			return dao.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf);
+			return dao.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<ItemProdutividade>();

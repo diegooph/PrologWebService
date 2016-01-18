@@ -38,9 +38,9 @@ public class ChecklistService {
 		}
 	}
 	
-	public Checklist getByCod(Long codigo) {
+	public Checklist getByCod(Long codigo, String token) {
 		try {
-			return dao.getByCod(codigo);
+			return dao.getByCod(codigo, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -66,9 +66,9 @@ public class ChecklistService {
 		}
 	}
 	
-	public List<Checklist> getByColaborador(Long cpf) {
+	public List<Checklist> getByColaborador(Long cpf, String token) {
 		try {
-			return dao.getByColaborador(cpf);
+			return dao.getByColaborador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();

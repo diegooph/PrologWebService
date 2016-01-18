@@ -40,11 +40,11 @@ public class GsdResource {
 		}
 	}
 	
-	@GET
-	@Path("{codigo}")
-	public Gsd getByCod(@PathParam("codigo") Long codigo) {
-		return service.getByCod(codigo);
-	}
+//	@GET
+//	@Path("{codigo}")
+//	public Gsd getByCod(@PathParam("codigo") Long codigo) {
+//		return service.getByCod(codigo);
+//	}
 	
 	@GET
 	public List<Gsd> getAll() {

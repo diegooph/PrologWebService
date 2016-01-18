@@ -4,10 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -32,15 +31,19 @@ public class TreinamentoResource {
 		}
 	}
 	
-	@GET
-	@Path("/vistosColaborador/{cpf}")
-	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getVistosByColaborador(cpf);
+	@POST
+	@Path("/vistosColaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Treinamento> getVistosByColaborador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
+		return service.getVistosByColaborador(cpf, token);
 	}
 	
-	@GET
-	@Path("/naoVistosColaborador/{cpf}")
-	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getNaoVistosByColaborador(cpf);
+	@POST
+	@Path("/naoVistosColaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Treinamento> getNaoVistosByColaborador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
+		return service.getNaoVistosByColaborador(cpf, token);
 	}
 }

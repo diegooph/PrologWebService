@@ -19,9 +19,9 @@ public class VeiculoService {
 		}
 	}
 	
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf, String token) {
 		try {
-			return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
+			return dao.getVeiculosAtivosByUnidadeByColaborador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Veiculo>();

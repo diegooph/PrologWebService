@@ -36,14 +36,15 @@ public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
 		return veiculos;
 	}
 
+	// TODO: Fazer join token
 	@Override
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf, String token) throws SQLException {
 		List<Veiculo> veiculos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
-			Colaborador colaborador = new ColaboradorDaoImpl().getByCod(cpf); 
+			Colaborador colaborador = new ColaboradorDaoImpl().getByCod(cpf, token); 
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
 					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");

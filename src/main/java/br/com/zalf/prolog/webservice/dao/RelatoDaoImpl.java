@@ -109,8 +109,9 @@ BaseDao<Relato> {
 		}
 	}
 
+	// TODO: Fazer join token
 	@Override
-	public Relato getByCod(Long codigo) throws SQLException {
+	public Relato getByCod(Long codigo, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -150,7 +151,7 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public List<Relato> getByColaborador(Long cpf) throws SQLException {
+	public List<Relato> getByColaborador(Long cpf, String token) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -158,9 +159,12 @@ BaseDao<Relato> {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF WHERE "
-					+ "R.CPF_COLABORADOR = ?");
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
+					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
+					+ "? = TA.TOKEN WHERE R.CPF_COLABORADOR = ?");
 			stmt.setLong(1, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);

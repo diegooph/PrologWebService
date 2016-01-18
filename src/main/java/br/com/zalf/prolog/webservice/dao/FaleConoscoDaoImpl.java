@@ -96,8 +96,9 @@ BaseDao<FaleConosco>  {
 		}	
 	}
 
+	// TODO: Fazer join token 
 	@Override
-	public FaleConosco getByCod(Long codigo) throws SQLException {
+	public FaleConosco getByCod(Long codigo, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

@@ -6,36 +6,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.gsd.Pdv;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.PdvDao;
 
-public class PdvDaoImpl extends DataBaseConnection implements PdvDao, BaseDao<Pdv> {
+public class PdvDaoImpl extends DataBaseConnection implements PdvDao {
 
-	@Override
-	public boolean insert(Pdv object) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public boolean update(Pdv object) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public boolean delete(Long codigo) throws SQLException {
-		return false;
-	}
-
-	@Override
-	public Pdv getByCod(Long codigo) throws SQLException {
-		return null;
-	}
-
-	@Override
-	public List<Pdv> getAll() throws SQLException {
-		return null;
-	}
-	
 	@Override
 	public boolean insertList(List<Pdv> pdvs, Long codigoGsd) throws SQLException {
 		Connection conn = null;

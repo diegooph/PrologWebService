@@ -10,6 +10,6 @@ public interface VeiculoDao {
 	List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
 			throws SQLException;
 	
-	List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) 
+	List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf, String token) 
 			throws SQLException;
 }

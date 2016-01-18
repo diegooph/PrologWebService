@@ -8,7 +8,7 @@ import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 
 
 public interface TreinamentoDao {
-	List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException;
-	List<Treinamento> getVistosColaborador(Long cpf) throws SQLException;
+	List<Treinamento> getNaoVistosColaborador(Long cpf, String token) throws SQLException;
+	List<Treinamento> getVistosColaborador(Long cpf, String token) throws SQLException;
 	boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException;
 }

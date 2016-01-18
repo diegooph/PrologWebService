@@ -16,23 +16,26 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 	TreinamentoDao {
 	
 	@Override
-	public List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException {
+	public List<Treinamento> getNaoVistosColaborador(Long cpf, String token) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		String treinamentosNaoVistosQuery = 
-				"SELECT * FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON "
-				+ "RT.COD_TREINAMENTO = T.CODIGO JOIN COLABORADOR C ON "
-				+ "C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF = ? WHERE T.CODIGO NOT IN "
-				+ "(SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+				"SELECT * FROM TREINAMENTO T JOIN TOKEN_AUTENTICACAO TA "
+				+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN "
+				+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
+				+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
+				+ "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
 				+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-				+ "C.CPF = ?)";
+				+ "C.CPF = ?);";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
 			stmt.setLong(1, cpf);
-			stmt.setLong(2, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, cpf);
+			stmt.setLong(4, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Treinamento treinamento = createTreinamento(rSet);
@@ -45,18 +48,21 @@ public class TreinamentoDaoImpl extends DataBaseConnection implements
 	}
 	
 	@Override
-	public List<Treinamento> getVistosColaborador(Long cpf) throws SQLException {
+	public List<Treinamento> getVistosColaborador(Long cpf, String token) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		String treinamentosVistosQuery = 
-				"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
-				+ "T.CODIGO = TC.COD_TREINAMENTO WHERE CPF_COLABORADOR = ?";
+				"SELECT * FROM TREINAMENTO T JOIN TOKEN_AUTENTICACAO TA ON ? = "
+				+ "TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN TREINAMENTO_COLABORADOR TC ON "
+				+ "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?;";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosVistosQuery);
 			stmt.setLong(1, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Treinamento treinamento = createTreinamento(rSet);

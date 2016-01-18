@@ -5,10 +5,8 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -52,16 +50,19 @@ public class RelatoResource {
 //		return service.getByCod(codigo);
 //	}
 	
-	@GET
-	@Path("/colaborador/{cpf}")
-	public List<Relato> getByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getByColaborador(cpf);
+	@POST
+	@Path("/colaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Relato> getByColaborador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
+		return service.getByColaborador(cpf, token);
 	}
 	
 	@POST
 	@Path("/exceto/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Relato> getAllExcetoColaborador(@FormParam("cpf") Long cpf, @FormParam("token") String token) {
+	public List<Relato> getAllExcetoColaborador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
 		return service.getAllExcetoColaborador(cpf, token);
 	}
 	

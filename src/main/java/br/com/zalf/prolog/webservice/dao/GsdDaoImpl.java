@@ -79,8 +79,9 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
+	// TODO: Fazer join token
 	@Override
-	public Gsd getByCod(Long codigo) throws SQLException {
+	public Gsd getByCod(Long codigo, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
