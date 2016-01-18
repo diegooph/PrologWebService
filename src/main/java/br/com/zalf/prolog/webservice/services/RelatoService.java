@@ -64,9 +64,9 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getAllExcetoColaborador(Long cpf) {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token) {
 		try {
-			return dao.getAllExcetoColaborador(cpf);
+			return dao.getAllExcetoColaborador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

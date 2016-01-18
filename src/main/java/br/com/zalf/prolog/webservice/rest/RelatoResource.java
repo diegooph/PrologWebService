@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -57,10 +58,11 @@ public class RelatoResource {
 		return service.getByColaborador(cpf);
 	}
 	
-	@GET
-	@Path("/exceto/colaborador/{cpf}")
-	public List<Relato> getAllExcetoColaborador(@PathParam("cpf") Long cpf) {
-		return service.getAllExcetoColaborador(cpf);
+	@POST
+	@Path("/exceto/colaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Relato> getAllExcetoColaborador(@FormParam("cpf") Long cpf, @FormParam("token") String token) {
+		return service.getAllExcetoColaborador(cpf, token);
 	}
 	
 //	@DELETE

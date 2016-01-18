@@ -173,7 +173,7 @@ BaseDao<Relato> {
 	}
 	
 	@Override
-	public List<Relato> getAllExcetoColaborador(Long cpf) throws SQLException {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -181,9 +181,13 @@ BaseDao<Relato> {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF WHERE "
-					+ "R.CPF_COLABORADOR != ?");
-			stmt.setLong(1, cpf);
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
+					+ "TOKEN_AUTENTICACAO TA ON ? = TA.TOKEN AND "
+					+ "? = TA.CPF_COLABORADOR WHERE "
+					+ "R.CPF_COLABORADOR != ?;");
+			stmt.setString(1, token);
+			stmt.setLong(2, cpf);
+			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
