@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import br.com.zalf.prolog.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 
 public class Main {
 

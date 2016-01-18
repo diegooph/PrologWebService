@@ -1,0 +1,124 @@
+package br.com.zalf.prolog.webservice.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+
+import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.imports.Mapa;
+
+public class MapaDaoImpl extends DataBaseConnection{
+
+	public boolean insertList (List<Mapa> listMapa) throws SQLException{
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO MAPA VALUES(?, ?,	?,	?,	"
+					+ " ?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?)");
+
+			for(Mapa mapa : listMapa){
+				stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
+				stmt.setInt(2, mapa.transp);
+				stmt.setString(3, mapa.entrega);
+				stmt.setString(4, mapa.cargaAtual);
+				stmt.setString(5, mapa.frota);
+				stmt.setDouble(6, mapa.custoSpot);
+				stmt.setInt(7, mapa.regiao);
+				stmt.setInt(8, mapa.veiculo);
+				stmt.setString(9, mapa.placa);
+				stmt.setDouble(10, mapa.veiculoIndisp);
+				stmt.setDouble(11, mapa.placaIndisp);
+				stmt.setDouble(12, mapa.frotaIndisp);
+				stmt.setInt(13, mapa.tipoIndisp);
+				stmt.setInt(14, mapa.mapa);
+				stmt.setInt(15, mapa.entregas);
+				stmt.setDouble(16, mapa.cxCarreg);
+				stmt.setDouble(17, mapa.cxEntreg);
+				stmt.setDouble(18, mapa.ocupacao);
+				stmt.setDouble(19, mapa.cxRota);
+				stmt.setDouble(20, mapa.cxAs);
+				stmt.setDouble(21, mapa.veicBM);
+				stmt.setInt(22, mapa.rShow);
+				stmt.setString(23, mapa.entrVol);
+				stmt.setTimestamp(24, DateUtils.toTimestamp(mapa.hrSai));
+				stmt.setTimestamp(25, DateUtils.toTimestamp(mapa.hrEntr));
+				stmt.setInt(26, mapa.kmSai);
+				stmt.setInt(27, mapa.kmEntr);
+				stmt.setDouble(28, mapa.custoVariavel);
+				stmt.setDouble(29, mapa.lucro);
+				stmt.setDouble(30, mapa.lucroUnit);
+				stmt.setDouble(31, mapa.valorFrete);
+				stmt.setString(32, mapa.tipoImposto);
+				stmt.setDouble(33, mapa.percImposto);
+				stmt.setDouble(34, mapa.valorImposto);
+				stmt.setDouble(35, mapa.valorFaturado);
+				stmt.setDouble(36, mapa.valorUnitCxEntregue);
+				stmt.setDouble(37, mapa.valorPgCxEntregSemImp);
+				stmt.setDouble(38, mapa.valorPgCxEntregComImp);
+				stmt.setTime(39, mapa.tempoPrevistoRoad);
+				stmt.setDouble(40, mapa.kmPrevistoRoad);
+				stmt.setDouble(41, mapa.valorUnitPontoMot);
+				stmt.setDouble(42, mapa.valorUnitPontoAjd);
+				stmt.setDouble(43, mapa.valorEquipeEntrMot);
+				stmt.setDouble(44, mapa.valorEquipeEntrAjd);
+				stmt.setDouble(45, mapa.custoVLC);
+				stmt.setDouble(46, mapa.lucroUnitCEDBZ);
+				stmt.setDouble(47,	mapa.CustoVlcCxEntr);
+				stmt.setTime(48,mapa.tempoInterno);
+				stmt.setDouble(49, mapa.valorDropDown);
+				stmt.setString(50, mapa.veicCadDD);
+				stmt.setDouble(51, mapa.kmLaco);
+				stmt.setDouble(52, mapa.kmDeslocamento);
+				stmt.setTime(53, mapa.tempoLaco);
+				stmt.setTime(54, mapa.tempoDeslocamento);
+				stmt.setDouble(55, mapa.sitMultiCDD);
+				stmt.setInt(56, mapa.unbOrigem);
+				stmt.setInt(57, mapa.matricMotorista);
+				stmt.setInt(58, mapa.matricAjud1);
+				stmt.setInt(59, mapa.matricAjud2);
+				stmt.setString(60, mapa.valorCTEDifere);
+				stmt.setInt(61, mapa.qtNfCarregadas);
+				stmt.setInt(62, mapa.qtNfEntregues);
+				stmt.setDouble(63, mapa.indDevCx);
+				stmt.setDouble(64, mapa.indDevNf);
+				stmt.setDouble(65, mapa.fator);
+				stmt.setString(66, mapa.recarga);
+				stmt.setTime(67, mapa.hrMatinal);
+				stmt.setTime(68, mapa.hrJornadaLiq);
+				stmt.setTime(69, mapa.hrMetaJornada);
+				stmt.setDouble(70, mapa.vlBateuJornMot);
+				stmt.setDouble(71, mapa.vlNaoBateuJornMot);
+				stmt.setDouble(72, mapa.vlRecargaMot);
+				stmt.setDouble(73, mapa.vlBateuJornAju);
+				stmt.setDouble(74, mapa.vlNaoBateuJornAju);
+				stmt.setDouble(75, mapa.vlRecargaAju);
+				stmt.setDouble(76, mapa.vlTotalMapa);
+				stmt.setDouble(77, mapa.qtHlCarregados);
+				stmt.setDouble(78, mapa.qtHlEntregues);
+				stmt.setDouble(79, mapa.indiceDevHl);
+				stmt.setString(80, mapa.regiao2);
+				stmt.setInt(81, mapa.qtNfCarregGeral);
+				stmt.setInt(82, mapa.qtNfEntregGeral);
+				stmt.setDouble(83, mapa.capacidadeVeiculoKg);
+				stmt.setDouble(84, mapa.pesoCargaKg);
+				stmt.setInt(85, 1);
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					throw new SQLException("Erro ao inserir a tabela");
+				}
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+}

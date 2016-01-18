@@ -17,6 +17,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.imports.Import;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -48,6 +49,7 @@ public class ImportResource {
 					IOUtils.copy(in, out);
 					IOUtils.closeQuietly(out);
 					System.out.println("Arquivo: " + file);
+					Import.mapa(file.getPath());					
 					return Response.Ok("Arquivo recebido com sucesso.");
 				} catch (IOException e) {
 					e.printStackTrace();
