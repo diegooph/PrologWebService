@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -15,18 +16,25 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.imports.Import;
+import br.com.zalf.prolog.webservice.imports.Mapa;
+import br.com.zalf.prolog.webservice.services.MapaService;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ImportResource {
-	
+
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response postMapa(FormDataMultiPart multiPart) {
+	public Response postMapa(FormDataMultiPart multiPart, @FormDataParam ("colaborador") FormDataBodyPart jsonPart) {
+		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
+		System.out.println(colaborador.getCpf());
 		if (multiPart != null && multiPart.getFields() != null) {
 			Set<String> keys = multiPart.getFields().keySet();
 			for (String key : keys) {
@@ -49,8 +57,11 @@ public class ImportResource {
 					IOUtils.copy(in, out);
 					IOUtils.closeQuietly(out);
 					System.out.println("Arquivo: " + file);
-					Import.mapa(file.getPath());					
-					return Response.Ok("Arquivo recebido com sucesso.");
+					List<Mapa> mapas = Import.mapa(file.getPath());
+					MapaService mapaService = new MapaService();
+					if(mapaService.insertOrUpdate(mapas, colaborador)){
+						return Response.Ok("Arquivo recebido com sucesso.");
+					}else{ Response.Error("Erro ao inserir dados.");}
 				} catch (IOException e) {
 					e.printStackTrace();
 					return Response.Error("Erro ao enviar o arquivo.");
