@@ -13,7 +13,7 @@ public class MapaService {
 	
 	public boolean insertOrUpdate(List<Mapa> listMapas, Colaborador colaborador) {
 		try {
-			return dao.insertOrUpdate(listMapas, colaborador);
+			return dao.insertOrUpdateMapa(listMapas, colaborador);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

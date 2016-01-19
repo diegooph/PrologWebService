@@ -5,10 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import br.com.zalf.prolog.models.Colaborador;
@@ -43,7 +40,7 @@ public class ImportResource {
 				// Salva o arquivo
 			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
 			  	// ser que substitua enquanto está ainda usando o arquivo
-				String fileName =  String.valueOf(System.currentTimeMillis()) + String.valueOf(colaborador.getCpf()) + fileDetail.getFileName();
+				String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
 				System.out.println("fileName: " + fileName);
 				System.out.println("Colaborador:");
 				System.out.println("CPF: " + colaborador.getCpf());
@@ -60,7 +57,11 @@ public class ImportResource {
 				IOUtils.copy(fileInputStream, out);
 				IOUtils.closeQuietly(out);
 				System.out.println("Arquivo: " + file);
+				
+				
 				List<Mapa> mapas = Import.mapa(file.getPath());
+				
+				
 				MapaService mapaService = new MapaService();
 				if(mapaService.insertOrUpdate(mapas, colaborador)){
 					return Response.Ok("Arquivo recebido com sucesso.");

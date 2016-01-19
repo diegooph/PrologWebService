@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import br.com.zalf.prolog.webservice.imports.Mapa;
 
 public class MapaDaoImpl extends DataBaseConnection{
 
-	public boolean insertOrUpdate (List<Mapa> listMapas, Colaborador colaborador) throws SQLException {
+	public boolean insertOrUpdateMapa (List<Mapa> listMapas, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdate");
 		//System.out.println(listMapas.get(0));
 		for(Mapa mapa : listMapas){
@@ -25,7 +26,24 @@ public class MapaDaoImpl extends DataBaseConnection{
 				// Mapa não existia e foi inserido na base
 				insertMapa(mapa, colaborador);
 			}
+			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricMotorista);
+			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud1);
+			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud2);
 		}
+		return true;
+	}
+
+	public boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula) throws SQLException {
+		System.out.println("Entrou no insertOrUpdateMapaColaborador");
+		//System.out.println(listMapas.get(0));
+
+		if(matricula > 0){
+		if(updateMapaColaborador(mapa, codUnidade, matricula)){
+			System.out.println("update mapa");
+		}else{
+			System.out.println("insert mapa");
+			insertMapaColaborador(mapa, codUnidade, matricula);
+		}}
 		return true;
 	}
 
@@ -140,6 +158,49 @@ public class MapaDaoImpl extends DataBaseConnection{
 		return true;
 	}
 
+	public boolean insertMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
+
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			try {
+				conn = getConnection();
+				stmt = conn.prepareStatement("INSERT INTO MAPA_COLABORADOR VALUES(?, ?,	?);");
+				stmt.setInt(1, mapa);
+				stmt.setLong(2, codUnidade);
+				stmt.setInt(3, matricula);
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					throw new SQLException("Erro ao inserir a tabela");
+				}
+			}
+			finally {
+				closeConnection(conn, stmt, null);
+			}		
+			return true;
+		}
+
+	public boolean updateMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
+
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			ResultSet rSet = null;
+			try {
+				conn = getConnection();
+				stmt = conn.prepareStatement("SELECT EXISTS(SELECT MC.MAPA FROM "
+					+ "MAPA_COLABORADOR MC WHERE MC.MAPA = ? AND MC.COD_AMBEV = ? AND MC.COD_UNIDADE = ?);");
+				stmt.setInt(1, mapa);
+				stmt.setInt(2, matricula);
+				stmt.setLong(3, codUnidade);
+				rSet = stmt.executeQuery();
+				if (rSet.next()) {
+					return rSet.getBoolean("EXISTS");
+				}
+			}
+			finally{
+				closeConnection(conn, stmt, rSet);
+			}
+		return true;
+	}
 
 	private boolean updateMapa(Mapa mapa, Colaborador colaborador) throws SQLException{
 		Connection conn = null;
