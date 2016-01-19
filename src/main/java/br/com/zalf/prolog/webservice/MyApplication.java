@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice;
 
 import java.util.HashMap;
 import java.util.HashSet;

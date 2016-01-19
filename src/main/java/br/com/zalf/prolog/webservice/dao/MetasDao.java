@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.indicador.Meta;
 import br.com.zalf.prolog.models.util.TimeUtils;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 
 public class MetasDao extends DataBaseConnection{
 	

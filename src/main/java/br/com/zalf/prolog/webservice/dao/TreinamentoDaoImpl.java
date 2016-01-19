@@ -10,6 +10,7 @@ import java.util.List;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.TreinamentoDao;
 
 public class TreinamentoDaoImpl extends DataBaseConnection implements 

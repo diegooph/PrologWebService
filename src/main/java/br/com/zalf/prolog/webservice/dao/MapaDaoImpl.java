@@ -7,19 +7,23 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 import br.com.zalf.prolog.webservice.imports.Mapa;
 
 public class MapaDaoImpl extends DataBaseConnection{
 
-	public boolean insertOrUpdate (List<Mapa> listMapas, Colaborador colaborador) throws SQLException{
-
+	public boolean insertOrUpdate (List<Mapa> listMapas, Colaborador colaborador) throws SQLException {
+		System.out.println("Entrou no insertOrUpdate");
+		//System.out.println(listMapas.get(0));
 		for(Mapa mapa : listMapas){
 
 			if(updateMapa(mapa, colaborador)){
 				// Mapa ja existia e foi atualizado
+				System.out.println("update mapa");
 			}else{
-				insertMapa(mapa, colaborador);
+				System.out.println("insert mapa");
 				// Mapa não existia e foi inserido na base
+				insertMapa(mapa, colaborador);
 			}
 		}
 		return true;
@@ -38,7 +42,7 @@ public class MapaDaoImpl extends DataBaseConnection{
 					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
 					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
 					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?)");
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, ?)");
 
 			stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
 			stmt.setInt(2, mapa.transp);
@@ -227,7 +231,8 @@ public class MapaDaoImpl extends DataBaseConnection{
 					+"QtNfEntregGeral= ?, "
 					+"CapacidadeVeiculoKG= ?, "
 					+"PesoCargaKG= ?, "
-					+"cod_unidade= ? "
+					+"cod_unidade= ?, "
+					+ "data_hora_import = CURRENT_TIMESTAMP "
 					+" WHERE Mapa = ? AND cod_unidade = ?;");
 
 			stmt.setDate(1, DateUtils.toSqlDate(mapa.data));

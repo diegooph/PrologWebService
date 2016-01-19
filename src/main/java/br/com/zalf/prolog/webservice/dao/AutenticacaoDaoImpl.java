@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.Autenticacao;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 import br.com.zalf.prolog.webservice.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 

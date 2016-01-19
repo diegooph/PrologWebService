@@ -23,6 +23,7 @@ import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {

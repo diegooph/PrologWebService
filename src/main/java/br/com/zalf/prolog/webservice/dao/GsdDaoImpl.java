@@ -14,6 +14,7 @@ import br.com.zalf.prolog.models.Resposta;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostaHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.DataBaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
 
