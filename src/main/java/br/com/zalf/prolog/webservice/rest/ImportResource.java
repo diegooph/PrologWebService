@@ -21,7 +21,9 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.imports.Import;
 import br.com.zalf.prolog.webservice.imports.Mapa;
+import br.com.zalf.prolog.webservice.imports.Tracking;
 import br.com.zalf.prolog.webservice.services.MapaService;
+import br.com.zalf.prolog.webservice.services.TrackingService;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -29,8 +31,9 @@ import br.com.zalf.prolog.webservice.services.MapaService;
 public class ImportResource {
 	
 	  	@POST
+	  	@Path("/mapa")
 	    @Consumes({MediaType.MULTIPART_FORM_DATA})
-	    public Response uploadFileWithData(
+	    public Response uploadMapa(
 	    		@FormDataParam("file") InputStream fileInputStream,
 	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
 	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
@@ -57,13 +60,55 @@ public class ImportResource {
 				IOUtils.copy(fileInputStream, out);
 				IOUtils.closeQuietly(out);
 				System.out.println("Arquivo: " + file);
-				
-				
+								
 				List<Mapa> mapas = Import.mapa(file.getPath());
-				
-				
+								
 				MapaService mapaService = new MapaService();
 				if(mapaService.insertOrUpdate(mapas, colaborador)){
+					return Response.Ok("Arquivo recebido com sucesso.");
+				}else{ Response.Error("Erro ao inserir dados.");}
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Response.Error("Erro ao enviar o arquivo.");
+			}
+		  
+		  return Response.Error("Requisição inválida");
+	    } 
+	  	
+	  	@POST
+	  	@Path("/tracking")
+	    @Consumes({MediaType.MULTIPART_FORM_DATA})
+	    public Response uploadTracking(
+	    		@FormDataParam("file") InputStream fileInputStream,
+	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
+	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
+		  try {
+				// Salva o arquivo
+			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
+			  	// ser que substitua enquanto está ainda usando o arquivo
+				String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
+				System.out.println("fileName: " + fileName);
+				System.out.println("Colaborador:");
+				System.out.println("CPF: " + colaborador.getCpf());
+				System.out.println("CodUnidade: " + colaborador.getCodUnidade());
+				// Pasta temporária da JVM
+				File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
+				if (!tmpDir.exists()) {
+					// Cria a pasta carros se não existe
+					tmpDir.mkdir();
+				}
+				// Cria o arquivo
+				File file = new File(tmpDir, fileName);
+				FileOutputStream out = new FileOutputStream(file);
+				IOUtils.copy(fileInputStream, out);
+				IOUtils.closeQuietly(out);
+				System.out.println("Arquivo: " + file);
+				List<Tracking> tracking = Import.tracking(file.getPath());
+											
+				TrackingService trackingService = new TrackingService();
+				if(trackingService.insertOrUpdate(tracking, colaborador)){
 					return Response.Ok("Arquivo recebido com sucesso.");
 				}else{ Response.Error("Erro ao inserir dados.");}
 			} catch (IOException e) {

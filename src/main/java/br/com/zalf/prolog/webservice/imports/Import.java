@@ -21,6 +21,7 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class Import {
 
+	public static final String NAO_RELATADO = "N.R."; 
 
 	public static List<Mapa> mapa (String path){
 
@@ -151,7 +152,136 @@ public class Import {
 		return listMapa;
 
 	}
-		
+
+	public static List<Tracking> tracking (String path){
+
+		List<Tracking> listTracking = new ArrayList<>();
+
+		try {
+			Reader in = new FileReader(path);
+
+
+			List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+
+			for (int i = 1; i < tabela.size(); i++) {
+				Tracking tracking = new Tracking();
+				CSVRecord linha = tabela.get(i);
+				try {
+
+					if(!String.valueOf(linha.get(0)).trim().isEmpty()){
+						tracking.mapa = Integer.parseInt(linha.get(0));
+					}
+					tracking.data = toTimestamp(linha.get(1));
+					tracking.mapa = Integer.parseInt(linha.get(2));
+					tracking.placa = String.valueOf(linha.get(3));
+					tracking.codCliente = Integer.parseInt(linha.get(4));
+					if(!String.valueOf(linha.get(5)).trim().isEmpty()){
+						tracking.seqReal = Integer.parseInt(linha.get(5));
+					}
+					if(!String.valueOf(linha.get(6)).trim().isEmpty()){
+						tracking.seqPlan = Integer.parseInt(linha.get(6));
+					}
+					if(!String.valueOf(linha.get(7)).trim().equals(NAO_RELATADO)){
+						tracking.inicioRota = toTime(linha.get(7));
+					}
+					if(!String.valueOf(linha.get(8)).trim().isEmpty()){
+						tracking.horarioMatinal = toTime(linha.get(8));
+					}
+					tracking.saidaCDD = toTime(linha.get(9));
+					if(!String.valueOf(linha.get(10)).trim().equals(NAO_RELATADO)){
+						tracking.chegadaPDV = toTime(linha.get(10));
+					}
+					if(!String.valueOf(linha.get(11)).trim().equals(NAO_RELATADO)){
+						tracking.tempoPrevRetorno = toTime(linha.get(11));
+					}
+					if(!String.valueOf(linha.get(12)).trim().equals(NAO_RELATADO)){
+						tracking.tempoRetorno = toTime(linha.get(12));
+					}
+					if(!String.valueOf(linha.get(13)).trim().equals(NAO_RELATADO)){
+						tracking.distPrevRetorno = Double.parseDouble(linha.get(13).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(14)).trim().equals(NAO_RELATADO)){
+						tracking.distPercRetorno = Double.parseDouble(linha.get(14).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(15)).trim().equals(NAO_RELATADO)){
+						tracking.inicioEntrega = toTime(linha.get(15));
+					}
+					if(!String.valueOf(linha.get(16)).trim().equals(NAO_RELATADO)){
+						tracking.fimEntrega = toTime(linha.get(16));
+					}
+					if(!String.valueOf(linha.get(17)).trim().equals(NAO_RELATADO)){
+						tracking.fimRota = toTime(linha.get(17));
+					}
+					if(!String.valueOf(linha.get(18)).trim().equals(NAO_RELATADO)){
+						tracking.entradaCDD = toTime(linha.get(18));
+					}
+					tracking.caixasCarregadas = Double.parseDouble(linha.get(19).replace(",", "."));
+					tracking.caixasDevolvidas = Double.parseDouble(linha.get(20).replace(",", "."));
+					tracking.repasse = Double.parseDouble(linha.get(21).replace(",", "."));
+					if(!String.valueOf(linha.get(22)).trim().isEmpty()){
+						tracking.tempoEntrega = toTime(linha.get(22));
+					}
+					if(!String.valueOf(linha.get(23)).trim().isEmpty()){
+						tracking.tempoDescarga = toTime(linha.get(23));
+					}
+					if(!String.valueOf(linha.get(24)).trim().isEmpty()){
+						tracking.tempoEspera = toTime(linha.get(24));
+					}
+					if(!String.valueOf(linha.get(25)).trim().isEmpty()){
+						tracking.tempoAlmoco = toTime(linha.get(25));
+					}
+					if(!String.valueOf(linha.get(26)).trim().isEmpty()){
+						tracking.tempoTotalRota = toTime(linha.get(26));
+					}
+					if(!String.valueOf(linha.get(27)).trim().equals(NAO_RELATADO)){
+						tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(28)).trim().isEmpty()){
+						tracking.latEntrega = linha.get(28).replace(",", ".");
+					}
+					if(!String.valueOf(linha.get(29)).trim().isEmpty()){
+						tracking.lonEntrega = linha.get(29).replace(",", ".");
+					}
+					tracking.unidadeNegocio = Integer.parseInt(linha.get(30));
+					tracking.transportadora = linha.get(31).trim();
+					if(!String.valueOf(linha.get(32)).trim().isEmpty()){
+						tracking.latClienteApontamento = linha.get(32).replace(",", ".");
+					}
+					if(!String.valueOf(linha.get(33)).trim().isEmpty()){
+						tracking.lonClienteApontamento = linha.get(33).replace(",", ".");
+					}
+					if(!String.valueOf(linha.get(34)).trim().isEmpty()){
+						tracking.latAtualCliente = linha.get(34).replace(",", ".");
+					}
+					if(!String.valueOf(linha.get(35)).trim().isEmpty()){
+						tracking.lonAtualCliente = linha.get(35).replace(",", ".");
+					}
+					tracking.distanciaPrev = Double.parseDouble(linha.get(36).replace(",", "."));
+					if(!String.valueOf(linha.get(37)).trim().equals(NAO_RELATADO)){
+						tracking.tempoDeslocamento = toTime(linha.get(37));
+					}
+					tracking.velMedia = Double.parseDouble(linha.get(38).replace(",", "."));
+					tracking.distanciaPercApontamento = Double.parseDouble(linha.get(39).replace(",", "."));
+					tracking.aderenciaSequenciaEntrega = linha.get(40).trim();
+					tracking.aderenciaJanelaEntrega = linha.get(41).trim();
+					tracking.pdvLacrado = linha.get(42).trim();
+					listTracking.add(tracking);
+				}catch (NumberFormatException ex){
+					ex.printStackTrace();
+				}
+			}
+		}
+
+		catch (FileNotFoundException ex){
+			ex.printStackTrace();
+		}
+		catch (IOException ex){
+			ex.printStackTrace();
+		}
+		return listTracking;
+
+	}
+
 	public static Date toDate(String data){
 
 		String date = String.valueOf(data);
@@ -196,11 +326,18 @@ public class Import {
 		//// FIXME: 18/01/16
 		//fazer replace de espaço e aspas simples por vazio
 		// verificar zero adicional
+
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+
 		hora = hora.replace(" ","");
+		// verifica quando tem 2 espaços extras na hora (tabela mapa)
 		if(hora.length() == 6){
 			hora = hora.substring(1,6);
+			dateFormat = new SimpleDateFormat("HH:mm");
 		}
-		DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+		if(hora.length() == 4 || hora.length() == 5){
+			dateFormat = new SimpleDateFormat("HH:mm");
+		}
 		Time time = null;
 		try {
 			Date date = dateFormat.parse(hora);
