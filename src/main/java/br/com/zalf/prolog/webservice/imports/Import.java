@@ -171,10 +171,18 @@ public class Import {
 					if(!String.valueOf(linha.get(0)).trim().isEmpty()){
 						tracking.mapa = Integer.parseInt(linha.get(0));
 					}
-					tracking.data = toTimestamp(linha.get(1));
-					tracking.mapa = Integer.parseInt(linha.get(2));
-					tracking.placa = String.valueOf(linha.get(3));
-					tracking.codCliente = Integer.parseInt(linha.get(4));
+					if(!String.valueOf(linha.get(1)).trim().isEmpty()){
+						tracking.data = toTimestamp(linha.get(1));
+					}
+					if(!String.valueOf(linha.get(2)).trim().isEmpty()){
+						tracking.mapa = Integer.parseInt(linha.get(2));
+					}
+					if(!String.valueOf(linha.get(3)).trim().isEmpty()){
+						tracking.placa = String.valueOf(linha.get(3));
+					}
+					if(!String.valueOf(linha.get(4)).trim().isEmpty()){
+						tracking.codCliente = Integer.parseInt(linha.get(4));
+					}
 					if(!String.valueOf(linha.get(5)).trim().isEmpty()){
 						tracking.seqReal = Integer.parseInt(linha.get(5));
 					}
@@ -187,7 +195,9 @@ public class Import {
 					if(!String.valueOf(linha.get(8)).trim().isEmpty()){
 						tracking.horarioMatinal = toTime(linha.get(8));
 					}
-					tracking.saidaCDD = toTime(linha.get(9));
+					if(!String.valueOf(linha.get(9)).trim().isEmpty()){
+						tracking.saidaCDD = toTime(linha.get(9));
+					}
 					if(!String.valueOf(linha.get(10)).trim().equals(NAO_RELATADO)){
 						tracking.chegadaPDV = toTime(linha.get(10));
 					}
@@ -215,9 +225,15 @@ public class Import {
 					if(!String.valueOf(linha.get(18)).trim().equals(NAO_RELATADO)){
 						tracking.entradaCDD = toTime(linha.get(18));
 					}
-					tracking.caixasCarregadas = Double.parseDouble(linha.get(19).replace(",", "."));
-					tracking.caixasDevolvidas = Double.parseDouble(linha.get(20).replace(",", "."));
-					tracking.repasse = Double.parseDouble(linha.get(21).replace(",", "."));
+					if(!String.valueOf(linha.get(19)).trim().isEmpty()){
+						tracking.caixasCarregadas = Double.parseDouble(linha.get(19).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(20)).trim().isEmpty()){
+						tracking.caixasDevolvidas = Double.parseDouble(linha.get(20).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(21)).trim().isEmpty()){
+						tracking.repasse = Double.parseDouble(linha.get(21).replace(",", "."));
+					}
 					if(!String.valueOf(linha.get(22)).trim().isEmpty()){
 						tracking.tempoEntrega = toTime(linha.get(22));
 					}
@@ -242,8 +258,12 @@ public class Import {
 					if(!String.valueOf(linha.get(29)).trim().isEmpty()){
 						tracking.lonEntrega = linha.get(29).replace(",", ".");
 					}
-					tracking.unidadeNegocio = Integer.parseInt(linha.get(30));
-					tracking.transportadora = linha.get(31).trim();
+					if(!String.valueOf(linha.get(30)).trim().isEmpty()){
+						tracking.unidadeNegocio = Integer.parseInt(linha.get(30));
+					}
+					if(!String.valueOf(linha.get(31)).trim().isEmpty()){
+						tracking.transportadora = linha.get(31).trim();
+					}
 					if(!String.valueOf(linha.get(32)).trim().isEmpty()){
 						tracking.latClienteApontamento = linha.get(32).replace(",", ".");
 					}
@@ -256,15 +276,27 @@ public class Import {
 					if(!String.valueOf(linha.get(35)).trim().isEmpty()){
 						tracking.lonAtualCliente = linha.get(35).replace(",", ".");
 					}
-					tracking.distanciaPrev = Double.parseDouble(linha.get(36).replace(",", "."));
+					if(!String.valueOf(linha.get(36)).trim().isEmpty()){
+						tracking.distanciaPrev = Double.parseDouble(linha.get(36).replace(",", "."));
+					}
 					if(!String.valueOf(linha.get(37)).trim().equals(NAO_RELATADO)){
 						tracking.tempoDeslocamento = toTime(linha.get(37));
 					}
-					tracking.velMedia = Double.parseDouble(linha.get(38).replace(",", "."));
-					tracking.distanciaPercApontamento = Double.parseDouble(linha.get(39).replace(",", "."));
-					tracking.aderenciaSequenciaEntrega = linha.get(40).trim();
-					tracking.aderenciaJanelaEntrega = linha.get(41).trim();
-					tracking.pdvLacrado = linha.get(42).trim();
+					if(!String.valueOf(linha.get(38)).trim().isEmpty()){
+						tracking.velMedia = Double.parseDouble(linha.get(38).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(39)).trim().isEmpty()){
+						tracking.distanciaPercApontamento = Double.parseDouble(linha.get(39).replace(",", "."));
+					}
+					if(!String.valueOf(linha.get(40)).trim().isEmpty()){
+						tracking.aderenciaSequenciaEntrega = linha.get(40).trim();
+					}
+					if(!String.valueOf(linha.get(41)).trim().isEmpty()){
+						tracking.aderenciaJanelaEntrega = linha.get(41).trim();
+					}
+					if(!String.valueOf(linha.get(42)).trim().isEmpty()){
+						tracking.pdvLacrado = linha.get(42).trim();
+					}
 					listTracking.add(tracking);
 				}catch (NumberFormatException ex){
 					ex.printStackTrace();
@@ -314,6 +346,8 @@ public class Import {
 		try {
 			if(data.trim().replace(" ", "").length() == 13){
 				dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm");
+			}else if(data.trim().length() == 10){
+				dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			}else{ dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");}
 			date = dateFormat.parse(data);
 		} catch (ParseException e) {
@@ -335,7 +369,7 @@ public class Import {
 			hora = hora.substring(1,6);
 			dateFormat = new SimpleDateFormat("HH:mm");
 		}
-		if(hora.length() == 4 || hora.length() == 5){
+		if(hora.length() == 4 || hora.length() == 5 || hora.length() == 8){
 			dateFormat = new SimpleDateFormat("HH:mm");
 		}
 		Time time = null;

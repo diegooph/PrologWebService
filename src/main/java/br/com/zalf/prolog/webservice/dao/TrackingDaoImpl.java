@@ -71,6 +71,7 @@ public class TrackingDaoImpl extends DataBaseConnection {
 			stmt.setTime(25, tracking.tempoEspera);
 			stmt.setTime(26, tracking.tempoAlmoco);
 			stmt.setTime(27, tracking.tempoTotalRota);
+			System.out.println(tracking.tempoTotalRota);
 			stmt.setDouble(28, tracking.dispApontCadastrado);
 			stmt.setString(29, tracking.latEntrega);
 			stmt.setString(30, tracking.lonEntrega);
