@@ -10,7 +10,7 @@ public interface RelatorioDao {
 	IndicadorHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
 			String equipe,Long cpf, String token) throws SQLException;
 	
-	IndicadorHolder getIndicadoresEquipeByUnidade(LocalDate dataInicial, LocalDate dataFinal,
+	IndicadorHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
 			int codUnidade, Long cpf, String token) throws SQLException;
 	
 }
