@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.rest;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -52,6 +53,13 @@ public class ColaboradorResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Colaborador getByCod(@FormParam("cpf") Long cpf, @FormParam("token") String token) {
 		return service.getByCod(cpf, token);
+	}
+	
+	@POST
+	@Path("/getAtivosByUnidade")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Colaborador> getAtivosByUnidade(@FormParam("codUnidade") Long codUnidade, @FormParam("token") String token, @FormParam("cpf") Long cpf) {
+		return service.getAtivosByUnidade(codUnidade, token, cpf);
 	}
 	
 //	@DELETE

@@ -15,11 +15,11 @@ import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.ChecklistRetorno;
 import br.com.zalf.prolog.models.checklist.ChecklistSaida;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 
-public class ChecklistDaoImpl extends DataBaseConnection implements 
+public class ChecklistDaoImpl extends DatabaseConnection implements 
 		BaseDao<Checklist>, ChecklistDao {
 
 	/**

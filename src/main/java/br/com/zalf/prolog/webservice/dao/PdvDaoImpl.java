@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.gsd.Pdv;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.PdvDao;
 
-public class PdvDaoImpl extends DataBaseConnection implements PdvDao {
+public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 
 	@Override
 	public boolean insertList(List<Pdv> pdvs, Long codigoGsd) throws SQLException {

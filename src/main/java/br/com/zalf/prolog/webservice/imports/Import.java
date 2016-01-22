@@ -139,6 +139,7 @@ public class Import {
 					listMapa.add(mapa);
 				}catch (NumberFormatException ex){
 					ex.printStackTrace();
+					return null;
 				}
 			}
 		}

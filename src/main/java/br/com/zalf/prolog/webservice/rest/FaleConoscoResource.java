@@ -19,6 +19,7 @@ public class FaleConoscoResource {
 	// TODO: testar insert e update
 	@POST
 	public Response insert(FaleConosco faleConosco) {
+		System.out.println("CAlled");
 		if (service.insert(faleConosco)) {
 			return Response.Ok("Fale conosco inserido com sucesso");
 		} else {

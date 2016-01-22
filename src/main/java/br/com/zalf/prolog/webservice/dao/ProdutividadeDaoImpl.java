@@ -23,10 +23,10 @@ import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
 
-public class ProdutividadeDaoImpl extends DataBaseConnection implements ProdutividadeDao {
+public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
 
 	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, "
 			+ "M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, "

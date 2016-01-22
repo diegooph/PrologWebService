@@ -14,11 +14,11 @@ import br.com.zalf.prolog.models.Resposta;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostaHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
 
-public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdDao {
+public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>, GsdDao {
 	private Map<Long, Gsd.PerguntaRespostaHolder> map = new HashMap<>();
 
 	@Override
@@ -200,7 +200,7 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT GR.COD_PERGUNTA, GR.RESPOSTA "
+			stmt = conn.prepareStatement("SELECT GR.COD_PERGUNTA, GR.RESPOSTA, GP.TIPO "
 					+ "FROM GSD_RESPOSTAS GR JOIN GSD_PERGUNTAS GP ON "
 					+ "GR.COD_PERGUNTA = GP.CODIGO WHERE GR.CPF_COLABORADOR = ? "
 					+ "AND GR.COD_GSD = ?");
@@ -212,9 +212,10 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 			while (rSet.next()) {
 				Pergunta pergunta = new Pergunta();
 				Resposta resposta = new Resposta();
-				Gsd.PerguntaRespostaHolder holder = new Gsd.PerguntaRespostaHolder(pergunta, resposta);
 				pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
-				resposta.setResposta(rSet.getString("RESPOSTA"));
+				resposta.setResposta(rSet.getString("RESPOSTA"));				
+				String tipoPergunta = rSet.getString("TIPO");
+				Gsd.PerguntaRespostaHolder holder = new Gsd.PerguntaRespostaHolder(pergunta, resposta, tipoPergunta);
 				map.put(cpf, holder);
 			}
 			// Seta o novo map no gsd
@@ -223,6 +224,36 @@ public class GsdDaoImpl extends DataBaseConnection implements BaseDao<Gsd>, GsdD
 			closeConnection(conn, stmt, rSet);
 		}
 	}
+
+//	private void setTipoPergunta(String tipo) {
+//		String tipoPergunta = null;
+//		switch (tipo) {
+//			case Gsd.PerguntaRespostaHolder.ITENS_ROTA:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.ITENS_ROTA; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_EPIS:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_EPIS; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_EPIS_OBSERVACOES:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_EPIS_OBSERVACOES; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_PDVS:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_PDVS; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_PDVS_BALDEIO:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_PDVS_BALDEIO; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.OUTROS_ESPECIFICAR:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.OUTROS_ESPECIFICAR; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_VEICULO:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_VEICULO; 
+//				break;
+//			case Gsd.PerguntaRespostaHolder.CONDICOES_VIA:
+//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_VIA; 
+//				break;
+//		}
+//	}
 
 	private void insertRespostas(Gsd gsd) throws SQLException {
 		Connection conn = null;

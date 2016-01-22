@@ -9,10 +9,10 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.VeiculoDao;
 
-public class VeiculoDaoImpl extends DataBaseConnection implements VeiculoDao {
+public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 

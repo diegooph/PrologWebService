@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.Autenticacao;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 
-public class AutenticacaoDaoImpl extends DataBaseConnection implements AutenticacaoDao {
+public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
 	@Override
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {

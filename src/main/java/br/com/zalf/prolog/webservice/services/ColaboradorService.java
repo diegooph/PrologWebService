@@ -48,6 +48,15 @@ public class ColaboradorService {
 		}
 	}
 	
+	public List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) {
+		try {
+			return dao.getAtivosByUnidade(codUnidade, token, cpf);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Colaborador>();
+		}
+	}
+	
 	public List<Colaborador> getAll() {
 		try {
 			return dao.getAll();

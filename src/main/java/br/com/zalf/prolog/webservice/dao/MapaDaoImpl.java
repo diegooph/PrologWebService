@@ -8,10 +8,10 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.imports.Mapa;
 
-public class MapaDaoImpl extends DataBaseConnection{
+public class MapaDaoImpl extends DatabaseConnection{
 
 	public boolean insertOrUpdateMapa (List<Mapa> listMapas, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdate");

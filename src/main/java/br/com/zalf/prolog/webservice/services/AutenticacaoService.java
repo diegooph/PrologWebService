@@ -13,7 +13,7 @@ public class AutenticacaoService {
 			return dao.insertOrUpdate(cpf);					
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new Autenticacao(Autenticacao.ERROR, 0L, "-1");
+			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
 		}
 	}
 	

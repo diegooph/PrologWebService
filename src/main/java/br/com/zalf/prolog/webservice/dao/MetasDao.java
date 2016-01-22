@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.indicador.Meta;
 import br.com.zalf.prolog.models.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 
-public class MetasDao extends DataBaseConnection{
+public class MetasDao extends DatabaseConnection{
 	
 	private static final String BUSCA_METAS = "SELECT M.CODIGO, M.NOME, MU.VALOR "
 			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO"

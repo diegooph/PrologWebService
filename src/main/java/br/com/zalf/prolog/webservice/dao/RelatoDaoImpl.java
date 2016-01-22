@@ -10,7 +10,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.RelatoDao;
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS RELATO (
   REFERENCES COLABORADOR(CPF)
 );
  */
-public class RelatoDaoImpl extends DataBaseConnection implements RelatoDao, 
+public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao, 
 BaseDao<Relato> {
 	@Override
 	public boolean insert(Relato relato) throws SQLException {

@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.AppVersion;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.AppDao;
 
-public class AppDaoImpl extends DataBaseConnection implements AppDao {
+public class AppDaoImpl extends DatabaseConnection implements AppDao {
 
 	@Override
 	public boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException {

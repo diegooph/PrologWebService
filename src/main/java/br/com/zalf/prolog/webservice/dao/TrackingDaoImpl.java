@@ -7,10 +7,10 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.imports.Tracking;
 
-public class TrackingDaoImpl extends DataBaseConnection {
+public class TrackingDaoImpl extends DatabaseConnection {
 
 	public boolean insertOrUpdateTracking (List<Tracking> listTracking, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdateTracking");
