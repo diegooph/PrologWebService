@@ -8,6 +8,7 @@ import java.time.Month;
 import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
 
 public class Main {
 
@@ -17,15 +18,15 @@ public class Main {
 		
 		IndicadorDaoImpl indicadorDaoImpl = new IndicadorDaoImpl();
 		ProdutividadeDaoImpl produtividadeDaoImpl = new ProdutividadeDaoImpl();
-		
+		RelatorioDaoImpl relatorioDaoImpl = new RelatorioDaoImpl();
+				
 		LocalDate dataInicial = LocalDate.of(2015, Month.MARCH, 01);
 		Date datainicial = Date.valueOf(dataInicial);
 		LocalDate dataFinal = LocalDate.now();
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		
-		IndicadorDaoImpl impl = new IndicadorDaoImpl();
-		IndicadorHolder holder = impl.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf, "fkdfjd");
+		IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
 		

@@ -88,7 +88,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			createTracking(rSet);
 
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}
 
 		return indicadorHolder;
@@ -340,7 +340,7 @@ public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao
 			itemTempoLargada.setBateuMeta(
 					MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 			listTempoLargada.add(itemTempoLargada);
-			totalMapas = totalMapas + 1;
+			totalMapas = totalMapas + 1; 
 			if (MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras())) {
 				mapasOk = mapasOk + 1;
 			} else {
