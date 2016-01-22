@@ -30,10 +30,10 @@ import br.com.zalf.prolog.models.indicador.TrackingHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DataBaseConnection;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.IndicadorDao;
 
-public class IndicadorDaoImpl extends DataBaseConnection implements IndicadorDao {
+public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
 	// Códigos das metas no BD
 
 	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, "

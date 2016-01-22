@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
@@ -26,11 +25,11 @@ public class Main {
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		
-		IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
+		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
+		relatorioDaoImpl.getIndicadoresEquipeByPeriodo(dataInicial, dataFinal, "Sala1", cpf, "1234");
 		
-		System.out.println(holder);
 	
 		
 	
