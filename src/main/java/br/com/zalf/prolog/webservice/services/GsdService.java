@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.webservice.dao.GsdDaoImpl;
 
@@ -70,6 +71,15 @@ public class GsdService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public List<Pergunta> getPerguntas() {
+		try {
+			return dao.getPerguntas();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Pergunta>();
 		}
 	}
 	

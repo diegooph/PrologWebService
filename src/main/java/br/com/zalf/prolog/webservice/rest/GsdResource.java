@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.rest;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -12,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.webservice.services.GsdService;
@@ -47,9 +47,16 @@ public class GsdResource {
 //	}
 	
 	@GET
-	public List<Gsd> getAll() {
-		return service.getAll();
+	@Path("/perguntas")
+	public List<Pergunta> getPerguntas() {
+		return service.getPerguntas();
 	}
+	
+	
+//	@GET
+//	public List<Gsd> getAll() {
+//		return service.getAll();
+//	}
 	
 	@GET
 	@Path("/colaborador/{cpf}")
@@ -63,13 +70,13 @@ public class GsdResource {
 		return service.getByAvaliador(cpf);
 	}
 	
-	@DELETE
-	@Path("{codigo}")
-	public Response delete(@PathParam("codigo") Long codigo) {
-		if (service.delete(codigo)) {
-			return Response.Ok("Gsd deletado com sucesso");
-		} else {
-			return Response.Error("Falha ao deletar gsd");
-		}
-	}
+//	@DELETE
+//	@Path("{codigo}")
+//	public Response delete(@PathParam("codigo") Long codigo) {
+//		if (service.delete(codigo)) {
+//			return Response.Ok("Gsd deletado com sucesso");
+//		} else {
+//			return Response.Error("Falha ao deletar gsd");
+//		}
+//	}
 }

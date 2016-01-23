@@ -181,6 +181,29 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>, GsdD
 		return listGsd;
 	}
 	
+	@Override
+	public List<Pergunta> getPerguntas() throws SQLException {
+		List<Pergunta> perguntas = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM GSD_PERGUNTAS;");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Pergunta pergunta = new Pergunta();
+				pergunta.setCodigo(rSet.getLong("CODIGO"));
+				pergunta.setPergunta(rSet.getString("PERGUNTA"));
+				pergunta.setTipo(rSet.getString("TIPO"));
+				perguntas.add(pergunta);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return perguntas;
+	}
+	
 	private Gsd createGsd(ResultSet rSet) throws SQLException {
 		Gsd gsd = new Gsd();
 		gsd.setCodigo(rSet.getLong("CODIGO"));
@@ -224,36 +247,6 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>, GsdD
 			closeConnection(conn, stmt, rSet);
 		}
 	}
-
-//	private void setTipoPergunta(String tipo) {
-//		String tipoPergunta = null;
-//		switch (tipo) {
-//			case Gsd.PerguntaRespostaHolder.ITENS_ROTA:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.ITENS_ROTA; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_EPIS:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_EPIS; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_EPIS_OBSERVACOES:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_EPIS_OBSERVACOES; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_PDVS:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_PDVS; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_PDVS_BALDEIO:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_PDVS_BALDEIO; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.OUTROS_ESPECIFICAR:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.OUTROS_ESPECIFICAR; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_VEICULO:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_VEICULO; 
-//				break;
-//			case Gsd.PerguntaRespostaHolder.CONDICOES_VIA:
-//				tipoPergunta = Gsd.PerguntaRespostaHolder.CONDICOES_VIA; 
-//				break;
-//		}
-//	}
 
 	private void insertRespostas(Gsd gsd) throws SQLException {
 		Connection conn = null;
