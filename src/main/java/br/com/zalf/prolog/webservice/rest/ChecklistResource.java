@@ -49,6 +49,7 @@ public class ChecklistResource {
 //	
 //	@GET
 //	public List<Checklist> getAll() {
+//		System.out.println("CHAMOU");
 //		return service.getAll();
 //	}
 	
