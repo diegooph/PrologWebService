@@ -346,7 +346,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			} else {
 				mapasNok = mapasNok + 1;
 			}
-		}
+		} 
 		tempoLargadaHolder.setTotalMapas(totalMapas);
 		tempoLargadaHolder.setMapasOk(mapasOk);
 		tempoLargadaHolder.setMapasNok(mapasNok);
