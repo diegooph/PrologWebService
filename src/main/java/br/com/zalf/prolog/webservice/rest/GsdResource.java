@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,6 +25,7 @@ public class GsdResource {
 	
 	@POST
 	public Response insert(Gsd gsd) {
+		gsd.setDataHora(new Date(System.currentTimeMillis()));
 		if (service.insert(gsd)) {
 			return Response.Ok("Gsd inserido com sucesso");
 		} else {
