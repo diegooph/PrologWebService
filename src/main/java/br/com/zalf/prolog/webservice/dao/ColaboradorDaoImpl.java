@@ -139,7 +139,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 					+ "C.NOME AS NOME_COLABORADOR, C.EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
 					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
-					+ "WHERE C.COD_UNIDADE = ? AND C.STATUS_ATIVO = TRUE ");
+					+ "WHERE C.COD_UNIDADE = ? AND C.STATUS_ATIVO = TRUE ORDER BY C.NOME; ");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
 			stmt.setLong(3, codUnidade);
