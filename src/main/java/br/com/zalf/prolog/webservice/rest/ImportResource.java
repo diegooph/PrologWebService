@@ -22,7 +22,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.imports.Import;
-import br.com.zalf.prolog.webservice.imports.Mapa;
+import br.com.zalf.prolog.webservice.imports.MapaImport;
 import br.com.zalf.prolog.webservice.imports.Tracking;
 import br.com.zalf.prolog.webservice.services.MapaService;
 import br.com.zalf.prolog.webservice.services.TrackingService;
@@ -64,7 +64,7 @@ public class ImportResource {
 				IOUtils.closeQuietly(out);
 				System.out.println("Arquivo: " + file);
 								
-				List<Mapa> mapas = Import.mapa(file.getPath());
+				List<MapaImport> mapas = Import.mapa(file.getPath());
 				if (mapas == null) {
 					Response.Error("Erro ao processar dados.");
 				} else {

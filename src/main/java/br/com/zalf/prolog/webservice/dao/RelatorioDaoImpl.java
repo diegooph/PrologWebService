@@ -3,28 +3,30 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import br.com.empresa.oprojeto.models.util.TimeUtils;
 import br.com.zalf.prolog.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
+import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
+import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
+import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
+import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
+import br.com.zalf.prolog.models.indicador.ItemTempoRota;
+import br.com.zalf.prolog.models.indicador.ItemTracking;
 import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoDiaDev;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoDiaTempoInterno;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoDiaTempoLargada;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoDiaTempoRota;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoIndicador;
-import br.com.zalf.prolog.models.relatorios.ItemExtratoDiaDev;
-import br.com.zalf.prolog.models.relatorios.ItemExtratoDiaJornadaLiquida;
-import br.com.zalf.prolog.models.relatorios.ItemExtratoDiaTempoInterno;
-import br.com.zalf.prolog.models.relatorios.ItemExtratoDiaTempoLargada;
-import br.com.zalf.prolog.models.relatorios.ItemExtratoDiaTempoRota;
+import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
+import br.com.zalf.prolog.models.relatorios.ConsolidadoMapasDia;
+import br.com.zalf.prolog.models.relatorios.Mapa;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
+import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.RelatorioDao;
+import br.com.zalf.prolog.webservice.imports.MapaImport;
 
 public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
@@ -52,7 +54,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 
 	private Meta meta;
-	private ConsolidadoIndicador consolidadoIndicador;
+	private ConsolidadoHolder consolidadoHolder;
 
 
 	@Override
@@ -75,541 +77,147 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
-			consolidadoIndicador = new ConsolidadoIndicador();			
-			List<ItemExtratoDiaDev> listExtratoTemp = createDevCx(rSet);// recebe uma lista com todos os resultados do rSet, de todos os dias
-			List<ConsolidadoDiaDev> listConsolidadoTemp = getConsolidadoDiaDev(listExtratoTemp);//recebe uma lista dos consolidados de cada dia, dentro de cada consolidado tem uma lista com o extrato de cada dia, ou seja, todos os itens.
-			//consolidadoIndicador.setListDevCx(listConsolidadoTemp); // atribui a lista do consolidado de devCx ao atributo do objeto consolidadoIndicador
-			listExtratoTemp = createDevNf(rSet);// cria uma lista extraindo apenas os itens de DevNf do rSet.
-			listConsolidadoTemp = getConsolidadoDiaDev(listExtratoTemp); // recebe uma lista com os consolidados dos dias da DevNf
-			//consolidadoIndicador.setListDevNf(listConsolidadoTemp);
-			listExtratoTemp = createDevHl(rSet);
-			listConsolidadoTemp = getConsolidadoDiaDev(listExtratoTemp);
-			//consolidadoIndicador.setListDevHl(listConsolidadoTemp);
-			List<ItemExtratoDiaTempoLargada> listTempoLargada = createTempoLargada(rSet);
-			List<ConsolidadoDiaTempoLargada> listConsolidadoTempoLargada = getConsolidadoTempoLargada(listTempoLargada);
-			//consolidadoIndicador.setListTempoLargada(listConsolidadoTempoLargada);
-			List<ItemExtratoDiaTempoRota> listTempoRota = createTempoRota(rSet);
-			List<ConsolidadoDiaTempoRota> listConsolidadoTempoRota = getConsolidadoTempoRota(listTempoRota);
-			//consolidadoIndicador.setListTempoRota(listConsolidadoTempoRota);
-			List<ItemExtratoDiaTempoInterno> listTempoInterno = createTempoInterno(rSet);
-			List<ConsolidadoDiaTempoInterno> listConsolidadoTempoInterno = getConsolidadoTempoInterno(listTempoInterno);
-			consolidadoIndicador.setListTempoInterno(listConsolidadoTempoInterno);
-			List<ItemExtratoDiaJornadaLiquida> listJornadaLiquida = createJornadaLiquida(rSet);
-			System.out.println(consolidadoIndicador);
+			
+			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
+			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
+			List<MapaImport> listMapas = new ArrayList<>();
+			Mapa mapa = new Mapa();
+			mapa = createMapa(rSet);
+			
+			
+			
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-
 		return  new IndicadorHolder();
 	}
-
-	private List<ItemExtratoDiaDev> createDevCx(ResultSet rSet) throws SQLException{
-		// percorre o rSet e cria uma lista com os objetos da devolução em caixas
-		List<ItemExtratoDiaDev> listDev = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaDev devCx = new ItemExtratoDiaDev();
-			devCx.setData(rSet.getDate("DATA"));
-			devCx.setPlaca(rSet.getString("PLACA"));
-			devCx.setMapa(rSet.getInt("MAPA"));
-			devCx.setColab1(rSet.getString("NOMEMOTORISTA"));
-			devCx.setColab2(rSet.getString("NOMEAJUD1"));
-			devCx.setColab3(rSet.getString("NOMEAJUD2"));
-			devCx.setEquipe(rSet.getString("EQUIPE"));
-			devCx.setCarreg(rSet.getDouble("CXCARREG"));
-			devCx.setEntreg(rSet.getDouble("CXENTREG"));
-			devCx.setDev(rSet.getDouble("DEVCX"));
-			devCx.setResultado(devCx.getDev() / devCx.getCarreg());
-			devCx.setMeta(meta.getMetaDevCx());
-			devCx.setBateuMeta(MetaUtils.bateuMeta(devCx.getResultado(), devCx.getMeta()));
-			listDev.add(devCx);
-		}	
-		rSet.beforeFirst();
-		return listDev;
+	
+	private Mapa createMapa(ResultSet rSet) throws SQLException{
+		Mapa mapa = new Mapa();
+		mapa.setNumeroMapa(rSet.getInt("MAPA"));
+		mapa.setData(rSet.getDate("DATA"));
+		mapa.setEquipe(rSet.getString("EQUIPE"));
+		mapa.setMotorista(rSet.getString("NOMEMOTORISTA"));
+		mapa.setAjudante1(rSet.getString("NOMEAJUD1"));
+		mapa.setAjudante2(rSet.getString("NOMEAJUD2"));
+		mapa.setPlaca(rSet.getString("PLACA"));
+		mapa.setDevCx(createDevCx(rSet));
+		mapa.setDevNf(createDevNf(rSet));
+		mapa.setDevHl(createDevHl(rSet));
+	    mapa.setTempoInterno(createTempoInterno(rSet));
+	    mapa.setTempoRota(createTempoRota(rSet));
+	    mapa.setTempoLargada(createTempoLargada(rSet));
+	    mapa.setJornadaLiquida(createJornadaLiquida(rSet));
+		mapa.setTracking(createTracking(rSet));
+		
+		return mapa;
 	}
-
-	private List<ItemExtratoDiaDev> createDevNf(ResultSet rSet) throws SQLException{
-		//percorre o rSet e cria uma lista com os objetos da devolução em Nota Fiscal
-		List<ItemExtratoDiaDev> listDev = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaDev devNf = new ItemExtratoDiaDev();
-			devNf.setData(rSet.getDate("DATA"));
-			devNf.setPlaca(rSet.getString("PLACA"));
-			devNf.setMapa(rSet.getInt("MAPA"));
-			devNf.setColab1(rSet.getString("NOMEMOTORISTA"));
-			devNf.setColab2(rSet.getString("NOMEAJUD1"));
-			devNf.setColab3(rSet.getString("NOMEAJUD2"));
-			devNf.setEquipe(rSet.getString("EQUIPE"));
-			devNf.setCarreg(rSet.getDouble("QTNFCARREGADAS"));
-			devNf.setEntreg(rSet.getDouble("QTNFENTREGUES"));
-			devNf.setDev(rSet.getDouble("DEVNF"));
-			devNf.setResultado(devNf.getDev() / devNf.getCarreg());
-			devNf.setMeta(meta.getMetaDevNf());
-			devNf.setBateuMeta(MetaUtils.bateuMeta(devNf.getResultado(), devNf.getMeta()));
-			listDev.add(devNf);
-		}
-		rSet.beforeFirst();
-		return listDev;
+	
+	private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException{
+		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
+		itemDevolucaoCx.setData(rSet.getDate("DATA"));
+		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
+		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
+		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
+		itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
+		itemDevolucaoCx.setMeta(meta.getMetaDevCx());
+		itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
+		return itemDevolucaoCx;
 	}
-
-	private List<ItemExtratoDiaDev> createDevHl(ResultSet rSet) throws SQLException{
-		//percorre o rSet e cria uma lista com os objetos da devolução em Hectolitro
-		List<ItemExtratoDiaDev> listDev = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaDev devHl = new ItemExtratoDiaDev();
-			devHl.setData(rSet.getDate("DATA"));
-			devHl.setPlaca(rSet.getString("PLACA"));
-			devHl.setMapa(rSet.getInt("MAPA"));
-			devHl.setColab1(rSet.getString("NOMEMOTORISTA"));
-			devHl.setColab2(rSet.getString("NOMEAJUD1"));
-			devHl.setColab3(rSet.getString("NOMEAJUD2"));
-			devHl.setEquipe(rSet.getString("EQUIPE"));
-			devHl.setCarreg(rSet.getDouble("QTHLCARREGADOS"));
-			devHl.setEntreg(rSet.getDouble("QTHLENTREGUES"));
-			devHl.setDev(rSet.getDouble("DEVHL"));
-			devHl.setResultado(devHl.getDev() / devHl.getCarreg());
-			devHl.setMeta(meta.getMetaDevHl());
-			devHl.setBateuMeta(MetaUtils.bateuMeta(devHl.getResultado(), devHl.getMeta()));
-			listDev.add(devHl);
-		}	
-		rSet.beforeFirst();
-		return listDev;
+	
+	private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException{
+		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
+		itemDevolucaoNf.setData(rSet.getDate("DATA"));
+		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
+		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
+		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
+		itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
+		itemDevolucaoNf.setMeta(meta.getMetaDevNf());
+		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
+		return itemDevolucaoNf;
 	}
-
-	private List<ItemExtratoDiaTempoLargada> createTempoLargada (ResultSet rSet) throws SQLException{
-		List<ItemExtratoDiaTempoLargada> listTempoLargada = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaTempoLargada itemExtratoDiaTempoLargada = new ItemExtratoDiaTempoLargada();
-			itemExtratoDiaTempoLargada.setData(rSet.getDate("DATA"));
-			itemExtratoDiaTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
-			itemExtratoDiaTempoLargada.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
-			itemExtratoDiaTempoLargada.setResultado(
-					MetaUtils.calculaTempoLargada(itemExtratoDiaTempoLargada.getHrSaida(), itemExtratoDiaTempoLargada.getHrMatinal()));
-			itemExtratoDiaTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
-			itemExtratoDiaTempoLargada.setBateuMeta(
-					MetaUtils.bateuMeta(itemExtratoDiaTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
-			itemExtratoDiaTempoLargada.setPlaca(rSet.getString("PLACA"));
-			itemExtratoDiaTempoLargada.setMapa(rSet.getInt("MAPA"));
-			itemExtratoDiaTempoLargada.setColab1(rSet.getString("NOMEMOTORISTA"));
-			itemExtratoDiaTempoLargada.setColab2(rSet.getString("NOMEAJUD1"));
-			itemExtratoDiaTempoLargada.setColab3(rSet.getString("NOMEAJUD2"));
-			itemExtratoDiaTempoLargada.setEquipe(rSet.getString("EQUIPE"));			
-			listTempoLargada.add(itemExtratoDiaTempoLargada);			
-		}
-		rSet.beforeFirst();
-		return listTempoLargada;
+	
+	private ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException{
+		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
+		itemDevolucaoHl.setData(rSet.getDate("DATA"));
+		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
+		itemDevolucaoHl.setEntregues(rSet.getDouble("QTHLENTREGUES"));
+		itemDevolucaoHl.setDevolvidas(itemDevolucaoHl.getCarregadas() - itemDevolucaoHl.getEntregues());
+		itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());
+		itemDevolucaoHl.setMeta(meta.getMetaDevHl());
+		itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
+		return itemDevolucaoHl;
 	}
-
-	private List<ItemExtratoDiaTempoRota> createTempoRota (ResultSet rSet) throws SQLException{ 
-		List<ItemExtratoDiaTempoRota> listTempoRota = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaTempoRota itemExtratoDiaTempoRota = new ItemExtratoDiaTempoRota();
-			itemExtratoDiaTempoRota.setData(rSet.getDate("DATA"));
-			itemExtratoDiaTempoRota.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
-			itemExtratoDiaTempoRota.setHrEntrada(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")));
-			itemExtratoDiaTempoRota.setResultado(
-					TimeUtils.differenceBetween(itemExtratoDiaTempoRota.getHrEntrada(), itemExtratoDiaTempoRota.getHrSaida()));		    
-			itemExtratoDiaTempoRota.setMeta(meta.getMetaTempoRotaHoras());
-			itemExtratoDiaTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemExtratoDiaTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
-			itemExtratoDiaTempoRota.setPlaca(rSet.getString("PLACA"));
-			itemExtratoDiaTempoRota.setMapa(rSet.getInt("MAPA"));
-			itemExtratoDiaTempoRota.setColab1(rSet.getString("NOMEMOTORISTA"));
-			itemExtratoDiaTempoRota.setColab2(rSet.getString("NOMEAJUD1"));
-			itemExtratoDiaTempoRota.setColab3(rSet.getString("NOMEAJUD2"));
-			itemExtratoDiaTempoRota.setEquipe(rSet.getString("EQUIPE"));
-			listTempoRota.add(itemExtratoDiaTempoRota);
-		}
-		rSet.beforeFirst();
-		return listTempoRota;
-	}
-
-	private List<ItemExtratoDiaTempoInterno> createTempoInterno (ResultSet rSet) throws SQLException{
-	List<ItemExtratoDiaTempoInterno> listTempoInterno = new ArrayList<>();
-	while(rSet.next()){
-		ItemExtratoDiaTempoInterno itemTempoInterno = new ItemExtratoDiaTempoInterno();
+	
+	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException{
+		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
+		Time tempoInterno;
 		itemTempoInterno.setData(rSet.getDate("DATA"));
-		itemTempoInterno.setPlaca(rSet.getString("PLACA"));
-		itemTempoInterno.setMapa(rSet.getInt("MAPA"));
-		itemTempoInterno.setColab1(rSet.getString("NOMEMOTORISTA"));
-		itemTempoInterno.setColab2(rSet.getString("NOMEAJUD1"));
-		itemTempoInterno.setColab3(rSet.getString("NOMEAJUD2"));
-		itemTempoInterno.setEquipe(rSet.getString("EQUIPE"));
-		itemTempoInterno.setHrEntrada(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")));
-	    itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), rSet.getTime("TEMPOINTERNO")));
-	    itemTempoInterno.setResultado(rSet.getTime("TEMPOINTERNO"));
-	    itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
-	    itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(itemTempoInterno.getResultado(), meta.getMetaTempoInternoHoras()));
-	    listTempoInterno.add(itemTempoInterno);
-	}
-		rSet.beforeFirst();
-		return listTempoInterno;
+		itemTempoInterno.setHrEntrada((rSet.getTime("HRENTR")));
+		tempoInterno = rSet.getTime("TEMPOINTERNO");
+		// entrada + tempo interno = horario do fechamento
+		itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
+		itemTempoInterno.setResultado(tempoInterno);
+		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
+		return itemTempoInterno;
 	}
 	
-	private List<ItemExtratoDiaJornadaLiquida> createJornadaLiquida (ResultSet rSet) throws SQLException{
-		List<ItemExtratoDiaJornadaLiquida> listJornadaLiquida = new ArrayList<>();
-		while(rSet.next()){
-			ItemExtratoDiaJornadaLiquida itemJornadaLiquida = new ItemExtratoDiaJornadaLiquida();
-			itemJornadaLiquida.setData(rSet.getDate("DATA"));
-			itemJornadaLiquida.setPlaca(rSet.getString("PLACA"));
-			itemJornadaLiquida.setMapa(rSet.getInt("MAPA"));
-			itemJornadaLiquida.setColab1(rSet.getString("NOMEMOTORISTA"));
-			itemJornadaLiquida.setColab2(rSet.getString("NOMEAJUD1"));
-			itemJornadaLiquida.setColab3(rSet.getString("NOMEAJUD2"));
-			itemJornadaLiquida.setEquipe(rSet.getString("EQUIPE"));
-			itemJornadaLiquida.setTempoInterno(rSet.getTime("TEMPOINTERNO"));		    
-		    itemJornadaLiquida.setTempoRota(TimeUtils.differenceBetween(
-		    		TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")), TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI"))));
-		    itemJornadaLiquida.setTempoLargada(MetaUtils.calculaTempoLargada(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),
-					rSet.getTime("HRMATINAL")));
-		    itemJornadaLiquida.setMeta(meta.getMetaJornadaLiquidaHoras());				    
-		    
-		    
-		   // private double meta;
-		    //private Time resultado;
-		    //private boolean bateuMeta;
-
-			
-			
-			
-			
-			
-			
-			listJornadaLiquida.add(itemJornadaLiquida);
-		}
-		rSet.beforeFirst();
-		return listJornadaLiquida;
+	private ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException{
+		ItemTempoRota itemTempoRota = new ItemTempoRota();
+		itemTempoRota.setData(rSet.getDate("DATA"));
+		itemTempoRota.setHrEntrada(rSet.getTime("HRENTR"));
+		itemTempoRota.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
+		// saber o tempo que o caminhão ficou na rua, por isso hora de
+		// entrada(volta da rota) - hora de saída( saída para rota)
+		itemTempoRota.setResultado(
+				TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
+		itemTempoRota.setMeta(meta.getMetaTempoRotaHoras());
+		itemTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
+		return itemTempoRota;
 	}
 	
-	private List<ConsolidadoDiaDev> getConsolidadoDiaDev (List<ItemExtratoDiaDev> listaTotal){
-		// recebe uma lista com todos os itens de algum tipo de devolução (cx, nf ou hl), consolida por dia.
-		List<ConsolidadoDiaDev> listConsolidadoDia = new ArrayList<>(); // Lista do consolidado dos dias, cada elemento contem uma lista com dias sem repetição
-		ConsolidadoDiaDev consolidadoDia = new ConsolidadoDiaDev(); // contem uma lista com elementos do mesmo dia
-		List<ItemExtratoDiaDev> listaDia = new ArrayList<>(); // contem itens do mesmo dia
-		double totalCarreg = 0;
-		double totalEntreg = 0;
-		for(int itemAtual =1; itemAtual < listaTotal.size(); itemAtual++){
-			// verifica se o item atual da lista é igual ao anterior, ex: compara a pos 2 com a pos 1
-			if(listaTotal.get(itemAtual).getData().getTime() == listaTotal.get(itemAtual - 1).getData().getTime()){
-				// adiciona o item de posição anterior à lista temporaria				
-				listaDia.add(listaTotal.get(itemAtual-1));
-				totalCarreg = totalCarreg + listaTotal.get(itemAtual - 1).getCarreg();
-				totalEntreg = totalEntreg + listaTotal.get(itemAtual - 1).getEntreg();
-				if(listaTotal.size()-1 == itemAtual){
-					listaDia.add(listaTotal.get(itemAtual));
-					totalCarreg = totalCarreg + listaTotal.get(itemAtual).getCarreg();
-					totalEntreg = totalEntreg + listaTotal.get(itemAtual).getEntreg();
-					consolidadoDia.setDevolucaoRelList(listaDia);
-					// setar acumulados
-					setTotaisConsolidadoDiaDev(consolidadoDia, totalCarreg, totalEntreg, listaTotal.get(itemAtual).getMeta(), 
-							listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-					listConsolidadoDia.add(consolidadoDia);
-					break;
-				}
-			}else{
-				listaDia.add(listaTotal.get(itemAtual-1));
-				totalCarreg = totalCarreg + listaTotal.get(itemAtual - 1).getCarreg();
-				totalEntreg = totalEntreg + listaTotal.get(itemAtual - 1).getEntreg();
-				consolidadoDia.setDevolucaoRelList(listaDia);
-				// setar acumulados
-				setTotaisConsolidadoDiaDev(consolidadoDia, totalCarreg, totalEntreg, listaTotal.get(itemAtual-1).getMeta(), 
-						listaTotal.get(itemAtual-1).getEquipe(), listaTotal.get(itemAtual-1).getData());
-				listConsolidadoDia.add(consolidadoDia);
-				consolidadoDia = new ConsolidadoDiaDev();
-				listaDia = new ArrayList<>();
-				totalCarreg = 0;
-				totalEntreg = 0;
-				if(listaTotal.size() -1 == itemAtual ){
-					listaDia.add(listaTotal.get(itemAtual));
-					totalCarreg = totalCarreg + listaTotal.get(itemAtual).getCarreg();
-					totalEntreg = totalEntreg + listaTotal.get(itemAtual).getEntreg();
-					consolidadoDia.setDevolucaoRelList(listaDia);
-					// setar acumulados
-					setTotaisConsolidadoDiaDev(consolidadoDia, totalCarreg, totalEntreg, listaTotal.get(itemAtual).getMeta(), 
-							listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-					listConsolidadoDia.add(consolidadoDia);
-					break;
-				}
-			}
-		}
-		return listConsolidadoDia;
-	}
-
-	private List<ConsolidadoDiaTempoLargada> getConsolidadoTempoLargada (List<ItemExtratoDiaTempoLargada> listaTotal){
-		// recebe uma lista com todos os itens de algum tipo de devolução (cx, nf ou hl), consolida por dia.
-		List<ConsolidadoDiaTempoLargada> listConsolidadoDia = new ArrayList<>(); // Lista do consolidado dos dias, cada elemento contem uma lista com dias sem repetição
-		ConsolidadoDiaTempoLargada consolidadoDia = new ConsolidadoDiaTempoLargada(); // contem uma lista com elementos do mesmo dia
-		List<ItemExtratoDiaTempoLargada> listaDia = new ArrayList<>(); // contem itens do mesmo dia
-		int totalMapas = 0;
-		int mapasOk = 0;
-		int mapasNok = 0;
-		for(int itemAtual =1; itemAtual < listaTotal.size(); itemAtual++){
-			// verifica se o item atual da lista é igual ao anterior, ex: compara a pos 2 com a pos 1
-			if(listaTotal.get(itemAtual).getData().getTime() == listaTotal.get(itemAtual - 1).getData().getTime()){
-				// adiciona o item de posição anterior à lista temporaria				
-				listaDia.add(listaTotal.get(itemAtual-1));
-				if(listaTotal.get(itemAtual - 1).isBateuMeta()){
-					mapasOk = mapasOk + 1;
-				}else{
-					mapasNok = mapasNok + 1;
-				}
-				totalMapas = totalMapas + 1;
-				if(listaTotal.size()-1 == itemAtual){
-					listaDia.add(listaTotal.get(itemAtual));
-					if(listaTotal.get(itemAtual).isBateuMeta()){
-						mapasOk = mapasOk + 1;
-					}else{
-						mapasNok = mapasNok + 1;
-					}
-					totalMapas = totalMapas + 1;
-					consolidadoDia.setListTempoLargada(listaDia);
-					// setar acumulados
-					consolidadoDia.setTotalMapas(totalMapas);
-					setTotaisConsolidadoDiaTempoLargada(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-							meta.getMetaTempoLargadaMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-					listConsolidadoDia.add(consolidadoDia);
-					break;
-				}
-			}else{
-				listaDia.add(listaTotal.get(itemAtual-1));
-				if(listaTotal.get(itemAtual-1).isBateuMeta()){
-					mapasOk = mapasOk + 1;
-				}else{
-					mapasNok = mapasNok + 1;
-				}
-				totalMapas = totalMapas + 1;
-				consolidadoDia.setListTempoLargada(listaDia);
-				// setar acumulados
-				setTotaisConsolidadoDiaTempoLargada(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-						meta.getMetaTempoLargadaMapas(), listaTotal.get(itemAtual-1).getEquipe(), listaTotal.get(itemAtual-1).getData());
-				listConsolidadoDia.add(consolidadoDia);
-				consolidadoDia = new ConsolidadoDiaTempoLargada();
-				listaDia = new ArrayList<>();
-				totalMapas = 0;
-				mapasOk = 0;
-				mapasNok = 0;
-				if(listaTotal.size() -1 == itemAtual ){
-					listaDia.add(listaTotal.get(itemAtual));
-					if(listaTotal.get(itemAtual-1).isBateuMeta()){
-						mapasOk = mapasOk + 1;
-					}else{
-						mapasNok = mapasNok + 1;
-					}
-					totalMapas = totalMapas + 1;
-					consolidadoDia.setListTempoLargada(listaDia);
-					// setar acumulados
-					setTotaisConsolidadoDiaTempoLargada(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-							meta.getMetaTempoLargadaMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-					listConsolidadoDia.add(consolidadoDia);
-					break;
-				}
-			}
-		}
-		return listConsolidadoDia;
-	}
-
-	private List<ConsolidadoDiaTempoRota> getConsolidadoTempoRota (List<ItemExtratoDiaTempoRota> listaTotal){
-		// recebe uma lista com todos os itens de algum tipo de devolução (cx, nf ou hl), consolida por dia.
-				List<ConsolidadoDiaTempoRota> listConsolidadoDia = new ArrayList<>(); // Lista do consolidado dos dias, cada elemento contem uma lista com dias sem repetição
-				ConsolidadoDiaTempoRota consolidadoDia = new ConsolidadoDiaTempoRota(); // contem uma lista com elementos do mesmo dia
-				List<ItemExtratoDiaTempoRota> listaDia = new ArrayList<>(); // contem itens do mesmo dia
-				int totalMapas = 0;
-				int mapasOk = 0;
-				int mapasNok = 0;
-				for(int itemAtual =1; itemAtual < listaTotal.size(); itemAtual++){
-					// verifica se o item atual da lista é igual ao anterior, ex: compara a pos 2 com a pos 1
-					if(listaTotal.get(itemAtual).getData().getTime() == listaTotal.get(itemAtual - 1).getData().getTime()){
-						// adiciona o item de posição anterior à lista temporaria				
-						listaDia.add(listaTotal.get(itemAtual-1));
-						if(listaTotal.get(itemAtual - 1).isBateuMeta()){
-							mapasOk = mapasOk + 1;
-						}else{
-							mapasNok = mapasNok + 1;
-						}
-						totalMapas = totalMapas + 1;
-						if(listaTotal.size()-1 == itemAtual){
-							listaDia.add(listaTotal.get(itemAtual));
-							if(listaTotal.get(itemAtual).isBateuMeta()){
-								mapasOk = mapasOk + 1;
-							}else{
-								mapasNok = mapasNok + 1;
-							}
-							totalMapas = totalMapas + 1;
-							consolidadoDia.setListTempoRota(listaDia);
-							// setar acumulados
-							consolidadoDia.setTotalMapas(totalMapas);
-							setTotaisConsolidadoDiaTempoRota(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-									meta.getMetaTempoRotaMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-							listConsolidadoDia.add(consolidadoDia);
-							break;
-						}
-					}else{
-						listaDia.add(listaTotal.get(itemAtual-1));
-						if(listaTotal.get(itemAtual-1).isBateuMeta()){
-							mapasOk = mapasOk + 1;
-						}else{
-							mapasNok = mapasNok + 1;
-						}
-						totalMapas = totalMapas + 1;
-						consolidadoDia.setListTempoRota(listaDia);
-						// setar acumulados
-						setTotaisConsolidadoDiaTempoRota(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-								meta.getMetaTempoRotaMapas(), listaTotal.get(itemAtual-1).getEquipe(), listaTotal.get(itemAtual-1).getData());
-						listConsolidadoDia.add(consolidadoDia);
-						consolidadoDia = new ConsolidadoDiaTempoRota();
-						listaDia = new ArrayList<>();
-						totalMapas = 0;
-						mapasOk = 0;
-						mapasNok = 0;
-						if(listaTotal.size() -1 == itemAtual ){
-							listaDia.add(listaTotal.get(itemAtual));
-							if(listaTotal.get(itemAtual-1).isBateuMeta()){
-								mapasOk = mapasOk + 1;
-							}else{
-								mapasNok = mapasNok + 1;
-							}
-							totalMapas = totalMapas + 1;
-							consolidadoDia.setListTempoRota(listaDia);
-							// setar acumulados
-							setTotaisConsolidadoDiaTempoRota(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-									meta.getMetaTempoRotaMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-							listConsolidadoDia.add(consolidadoDia);
-							break;
-						}
-					}
-				}
-				return listConsolidadoDia;
-			}
-	
-	private List<ConsolidadoDiaTempoInterno> getConsolidadoTempoInterno (List<ItemExtratoDiaTempoInterno> listaTotal){
-		// recebe uma lista com todos os itens de algum tipo de devolução (cx, nf ou hl), consolida por dia.
-				List<ConsolidadoDiaTempoInterno> listConsolidadoDia = new ArrayList<>(); // Lista do consolidado dos dias, cada elemento contem uma lista com dias sem repetição
-				ConsolidadoDiaTempoInterno consolidadoDia = new ConsolidadoDiaTempoInterno(); // contem uma lista com elementos do mesmo dia
-				List<ItemExtratoDiaTempoInterno> listaDia = new ArrayList<>(); // contem itens do mesmo dia
-				int totalMapas = 0;
-				int mapasOk = 0;
-				int mapasNok = 0;
-				for(int itemAtual =1; itemAtual < listaTotal.size(); itemAtual++){
-					// verifica se o item atual da lista é igual ao anterior, ex: compara a pos 2 com a pos 1
-					if(listaTotal.get(itemAtual).getData().getTime() == listaTotal.get(itemAtual - 1).getData().getTime()){
-						// adiciona o item de posição anterior à lista temporaria				
-						listaDia.add(listaTotal.get(itemAtual-1));
-						if(listaTotal.get(itemAtual - 1).isBateuMeta()){
-							mapasOk = mapasOk + 1;
-						}else{
-							mapasNok = mapasNok + 1;
-						}
-						totalMapas = totalMapas + 1;
-						if(listaTotal.size()-1 == itemAtual){
-							listaDia.add(listaTotal.get(itemAtual));
-							if(listaTotal.get(itemAtual).isBateuMeta()){
-								mapasOk = mapasOk + 1;
-							}else{
-								mapasNok = mapasNok + 1;
-							}
-							totalMapas = totalMapas + 1;
-							consolidadoDia.setListTempoInterno(listaDia);
-							// setar acumulados
-							consolidadoDia.setTotalMapas(totalMapas);
-							setTotaisConsolidadoDiaTempoInterno(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-									meta.getMetaTempoInternoMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-							listConsolidadoDia.add(consolidadoDia);
-							break;
-						}
-					}else{
-						listaDia.add(listaTotal.get(itemAtual-1));
-						if(listaTotal.get(itemAtual-1).isBateuMeta()){
-							mapasOk = mapasOk + 1;
-						}else{
-							mapasNok = mapasNok + 1;
-						}
-						totalMapas = totalMapas + 1;
-						consolidadoDia.setListTempoInterno(listaDia);
-						// setar acumulados
-						setTotaisConsolidadoDiaTempoInterno(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-								meta.getMetaTempoInternoMapas(), listaTotal.get(itemAtual-1).getEquipe(), listaTotal.get(itemAtual-1).getData());
-						listConsolidadoDia.add(consolidadoDia);
-						consolidadoDia = new ConsolidadoDiaTempoInterno();
-						listaDia = new ArrayList<>();
-						totalMapas = 0;
-						mapasOk = 0;
-						mapasNok = 0;
-						if(listaTotal.size() -1 == itemAtual ){
-							listaDia.add(listaTotal.get(itemAtual));
-							if(listaTotal.get(itemAtual-1).isBateuMeta()){
-								mapasOk = mapasOk + 1;
-							}else{
-								mapasNok = mapasNok + 1;
-							}
-							totalMapas = totalMapas + 1;
-							consolidadoDia.setListTempoInterno(listaDia);
-							// setar acumulados
-							setTotaisConsolidadoDiaTempoInterno(consolidadoDia, totalMapas, mapasOk, mapasNok, 
-									meta.getMetaTempoInternoMapas(), listaTotal.get(itemAtual).getEquipe(), listaTotal.get(itemAtual).getData());
-							listConsolidadoDia.add(consolidadoDia);
-							break;
-						}
-					}
-				}
-				return listConsolidadoDia;
-			}
-	
-	private void setTotaisConsolidadoDiaDev (ConsolidadoDiaDev consolidadoDiaDev, double carregadas, double entregues,double meta, String equipe, Date data){
-		consolidadoDiaDev.setData(data);
-		consolidadoDiaDev.setTotalCarreg(carregadas);
-		consolidadoDiaDev.setTotalEntreg(entregues);
-		consolidadoDiaDev.setTotalDev(carregadas - entregues);
-		consolidadoDiaDev.setResultado(consolidadoDiaDev.getTotalDev() / carregadas);
-		consolidadoDiaDev.setMeta(meta);
-		consolidadoDiaDev.setBateuMeta(MetaUtils.bateuMeta(consolidadoDiaDev.getResultado(), meta));
-		consolidadoDiaDev.setEquipe(equipe);
-	}
-
-	private void setTotaisConsolidadoDiaTempoLargada (ConsolidadoDiaTempoLargada consolidadoDiaTempoLargada, 
-			int totalMapas, int mapasOk, int mapasNok,  double meta, String equipe, Date data){
-
-		consolidadoDiaTempoLargada.setData(data);
-		consolidadoDiaTempoLargada.setEquipe(equipe);
-		consolidadoDiaTempoLargada.setMeta(meta);
-		consolidadoDiaTempoLargada.setTotalMapas(totalMapas);
-		consolidadoDiaTempoLargada.setMapasOk(mapasOk);
-		consolidadoDiaTempoLargada.setMapasNok(mapasNok);
-		consolidadoDiaTempoLargada.setResultado((double) mapasOk / (double) totalMapas);
-		consolidadoDiaTempoLargada.setBateuMeta(MetaUtils.bateuMetaMapas(consolidadoDiaTempoLargada.getResultado(), meta));
-
+	private ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException{
+		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
+		itemTempoLargada.setData(rSet.getDate("DATA"));
+		itemTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
+		itemTempoLargada.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
+		itemTempoLargada.setResultado(
+				MetaUtils.calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
+		itemTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
+		itemTempoLargada.setBateuMeta(
+				MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
+		return itemTempoLargada;
 	}
 	
-	private void setTotaisConsolidadoDiaTempoRota (ConsolidadoDiaTempoRota consolidadoDiaTempoRota, 
-			int totalMapas, int mapasOk, int mapasNok,  double meta, String equipe, Date data){
-
-		consolidadoDiaTempoRota.setData(data);
-		consolidadoDiaTempoRota.setEquipe(equipe);
-		consolidadoDiaTempoRota.setMeta(meta);
-		consolidadoDiaTempoRota.setTotalMapas(totalMapas);
-		consolidadoDiaTempoRota.setMapasOk(mapasOk);
-		consolidadoDiaTempoRota.setMapasNok(mapasNok);
-		consolidadoDiaTempoRota.setResultado((double) mapasOk / (double) totalMapas);
-		consolidadoDiaTempoRota.setBateuMeta(MetaUtils.bateuMetaMapas(consolidadoDiaTempoRota.getResultado(), meta));
-
+	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException{
+		Time matinal;
+		Time rota;
+		Time tempoInterno;
+		tempoInterno = rSet.getTime("TEMPOINTERNO");
+		rota = TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
+				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
+		matinal = MetaUtils.calculaTempoLargada(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),
+				rSet.getTime("HRMATINAL"));
+		ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
+		itemJornadaLiquida.setData(rSet.getDate("DATA"));
+		itemJornadaLiquida.setTempoInterno(tempoInterno);
+		itemJornadaLiquida.setTempoRota(rota);
+		itemJornadaLiquida.setTempoLargada(matinal);
+		itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota), tempoInterno));
+		itemJornadaLiquida.setMeta(meta.getMetaJornadaLiquidaHoras());
+		itemJornadaLiquida.setBateuMeta(
+				MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(), meta.getMetaJornadaLiquidaHoras()));
+		return itemJornadaLiquida;
 	}
-
-	private void setTotaisConsolidadoDiaTempoInterno (ConsolidadoDiaTempoInterno consolidadoDiaTempoInterno, 
-			int totalMapas, int mapasOk, int mapasNok,  double meta, String equipe, Date data){
-		
-		consolidadoDiaTempoInterno.setData(data);
-		consolidadoDiaTempoInterno.setEquipe(equipe);
-		consolidadoDiaTempoInterno.setMeta(meta);
-		consolidadoDiaTempoInterno.setTotalMapas(totalMapas);
-		consolidadoDiaTempoInterno.setMapasOk(mapasOk);
-		consolidadoDiaTempoInterno.setMapasNok(mapasNok);
-		consolidadoDiaTempoInterno.setResultado((double) mapasOk / (double) totalMapas);
-		consolidadoDiaTempoInterno.setBateuMeta(MetaUtils.bateuMetaMapas(consolidadoDiaTempoInterno.getResultado(), meta));
+	
+	private ItemTracking createTracking (ResultSet rSet) throws SQLException{
 		
 	}
 	
-	@Override
-	public IndicadorHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, int codUnidade,
-			Long cpf, String token) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	
+	
 
+	
 }

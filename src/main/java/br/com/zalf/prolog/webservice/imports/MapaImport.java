@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Created by jean on 18/01/16.
  */
-public class Mapa {
+public class MapaImport {
 
     public Date data;
     public int transp;

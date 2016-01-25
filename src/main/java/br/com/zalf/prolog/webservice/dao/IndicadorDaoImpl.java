@@ -165,7 +165,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		indicadorHolder.setTracking(trackingHolder);
 		rSet.beforeFirst();
 	}
-
+	
 	public void createDevCx(ResultSet rSet) throws SQLException {
 		DevolucaoCxHolder devCaixa = new DevolucaoCxHolder();
 		List<ItemDevolucaoCx> listDevCx = new ArrayList<>();

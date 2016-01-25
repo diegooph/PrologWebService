@@ -9,14 +9,14 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.imports.Mapa;
+import br.com.zalf.prolog.webservice.imports.MapaImport;
 
 public class MapaDaoImpl extends DatabaseConnection{
 
-	public boolean insertOrUpdateMapa (List<Mapa> listMapas, Colaborador colaborador) throws SQLException {
+	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdate");
 		//System.out.println(listMapas.get(0));
-		for(Mapa mapa : listMapas){
+		for(MapaImport mapa : listMapas){
 
 			if(updateMapa(mapa, colaborador)){
 				// Mapa ja existia e foi atualizado
@@ -47,7 +47,7 @@ public class MapaDaoImpl extends DatabaseConnection{
 		return true;
 	}
 
-	public boolean insertMapa (Mapa mapa, Colaborador colaborador) throws SQLException{
+	public boolean insertMapa (MapaImport mapa, Colaborador colaborador) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -202,7 +202,7 @@ public class MapaDaoImpl extends DatabaseConnection{
 		return true;
 	}
 
-	private boolean updateMapa(Mapa mapa, Colaborador colaborador) throws SQLException{
+	private boolean updateMapa(MapaImport mapa, Colaborador colaborador) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {

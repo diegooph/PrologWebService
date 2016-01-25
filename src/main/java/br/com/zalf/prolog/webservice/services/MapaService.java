@@ -5,13 +5,13 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.webservice.dao.MapaDaoImpl;
-import br.com.zalf.prolog.webservice.imports.Mapa;
+import br.com.zalf.prolog.webservice.imports.MapaImport;
 
 public class MapaService {
 	
 	private MapaDaoImpl dao = new MapaDaoImpl();
 	
-	public boolean insertOrUpdate(List<Mapa> listMapas, Colaborador colaborador) {
+	public boolean insertOrUpdate(List<MapaImport> listMapas, Colaborador colaborador) {
 		try {
 			return dao.insertOrUpdateMapa(listMapas, colaborador);
 		} catch (SQLException e) {

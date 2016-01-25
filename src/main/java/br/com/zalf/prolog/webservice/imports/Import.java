@@ -23,10 +23,10 @@ public class Import {
 
 	public static final String NAO_RELATADO = "N.R."; 
 
-	public static List<Mapa> mapa (String path){
+	public static List<MapaImport> mapa (String path){
 
 
-		List<Mapa> listMapa = new ArrayList<>();
+		List<MapaImport> listMapa = new ArrayList<>();
 
 		try {
 			Reader in = new FileReader(path);
@@ -35,7 +35,7 @@ public class Import {
 			List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
 
 			for (int i = 1; i < tabela.size(); i++) {
-				Mapa mapa = new Mapa();
+				MapaImport mapa = new MapaImport();
 				CSVRecord linha = tabela.get(i);
 				try {
 					mapa.data = toDate(linha.get(0));
