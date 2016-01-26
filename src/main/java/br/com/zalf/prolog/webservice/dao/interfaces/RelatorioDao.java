@@ -7,10 +7,7 @@ import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
 
 public interface RelatorioDao {
 
-	public ConsolidadoHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			int codUnidade, Long cpf, String token) throws SQLException;
-	
-	public ConsolidadoHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
-			int codUnidade, Long cpf, String token) throws SQLException;
-	
+		
 }

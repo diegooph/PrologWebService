@@ -28,7 +28,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.RelatorioDao;
 
 public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
-	public static final String BUSCA_INDICADORES_EQUIPE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
+	public static final String BUSCA_RELATORIO = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
 			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, C.EQUIPE, "
 			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
 			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
@@ -47,35 +47,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
 			+ "group by t.mapa) as total on total_entregas = t.mapa "
 			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE C.EQUIPE = ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
-			+ "ORDER BY M.DATA ";
-
-	public static final String BUSCA_INDICADORES_UNIDADE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
-			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, C.EQUIPE, "
-			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
-			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
-			+ "M.QTNFCARREGADAS, M.QTNFENTREGUES, (M.QTNFCARREGADAS - M.QTNFENTREGUES) AS DEVNF, "
-			+ "M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,M.COD_UNIDADE, TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.APONTAMENTO_OK "
-			+ " FROM MAPA M join token_autenticacao ta on ? = ta.cpf_colaborador and ? = ta.token "
-			+ "JOIN VEICULO V ON V.PLACA = M.PLACA "
-			+ "JOIN COLABORADOR C ON M.MATRICMOTORISTA = C.MATRICULA_AMBEV "
-			+ "JOIN COLABORADOR C1 ON M.MATRICAJUD1 = C1.MATRICULA_AMBEV "
-			+ "JOIN COLABORADOR C2 ON M.MATRICAJUD2 = C2.MATRICULA_AMBEV "
-			+ "LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK "
-			+ "FROM tracking t join MAPA M on m.mapa = t.mapa "
-			+ "JOIN (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as apontamentos_ok "
-			+ "FROM tracking t	WHERE t.disp_apont_cadastrado <= '0.3' "
-			+ "GROUP BY t.mapa) as ok on mapa_ok = t.mapa "
-			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
-			+ "group by t.mapa) as total on total_entregas = t.mapa "
-			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
-			+ "ORDER BY M.DATA ";
-
+			+ "WHERE C.EQUIPE LIKE ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
+			+ "ORDER BY M.DATA, C.EQUIPE ";
+	
 	private Meta meta;
 
 	@Override
-	public ConsolidadoHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			int codUnidade, Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
@@ -87,7 +65,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_INDICADORES_EQUIPE, ResultSet.TYPE_SCROLL_SENSITIVE,
+			stmt = conn.prepareStatement(BUSCA_RELATORIO, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf); 
 			stmt.setString(2, token); 
@@ -123,67 +101,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			consolidadoHolder.codUnidade = codUnidade;
 			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
 			setTotaisHolder(consolidadoHolder);
-
+			
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return  consolidadoHolder;
 	}
-
-	@Override
-	public ConsolidadoHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
-			int codUnidade, Long cpf, String token) throws SQLException {
-
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		MetasDao metasDao = new MetasDao();
-		meta = metasDao.getMetasByUnidade(codUnidade);
-		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
-
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_INDICADORES_UNIDADE, ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf); 
-			stmt.setString(2, token); 
-			stmt.setInt(3, codUnidade);
-			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
-			rSet = stmt.executeQuery();
-
-			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
-			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
-			List<Mapa> listMapas = new ArrayList<>();
-			Mapa mapa;
-			if(rSet.first()){
-				mapa = createMapa(rSet);
-				listMapas.add(mapa);
-			}
-			while(rSet.next()){
-				if(rSet.getDate("DATA").getTime() == listMapas.get(listMapas.size()-1).getData().getTime()){
-					mapa = createMapa(rSet);
-					listMapas.add(mapa);
-				}else{
-					consolidadoMapasDia.data = listMapas.get(0).getData();
-					consolidadoMapasDia.mapas = listMapas;
-					setTotaisConsolidadoDia(consolidadoMapasDia);
-					listConsolidadoMapasDia.add(consolidadoMapasDia);
-					consolidadoMapasDia = new ConsolidadoMapasDia();
-					listMapas = new ArrayList<>();
-					mapa = new Mapa();
-					mapa = createMapa(rSet);
-					listMapas.add(mapa);
-				}
-			}
-			consolidadoHolder.codUnidade = codUnidade;
-			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return  consolidadoHolder;
-	}
-
+		
 	private Mapa createMapa(ResultSet rSet) throws SQLException{
 		Mapa mapa = new Mapa();
 		mapa.setNumeroMapa(rSet.getInt("MAPA"));
@@ -385,7 +309,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
 
 	}
-
 
 	private void setTotaisHolder (ConsolidadoHolder consolidadoHolder){
 		List<ConsolidadoMapasDia> listConsolidados = consolidadoHolder.listConsolidadoMapasDia;
