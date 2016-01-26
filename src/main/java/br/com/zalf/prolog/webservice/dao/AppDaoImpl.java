@@ -13,6 +13,7 @@ public class AppDaoImpl extends DatabaseConnection implements AppDao {
 
 	@Override
 	public boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException {
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
