@@ -56,6 +56,15 @@ public class GsdService {
 		}
 	}
 	
+	public List<Gsd> getAllExcetoAvaliador(Long cpf, String token) {
+		try {
+			return dao.getAllExcetoAvaliador(cpf, token);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Gsd>();
+		}
+	}
+	
 	public List<Gsd> getAll() {
 		try {
 			return dao.getAll();

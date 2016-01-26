@@ -10,4 +10,5 @@ public interface GsdDao {
 	List<Gsd> getByColaborador(Long cpf, String token) throws SQLException;
 	List<Gsd> getByAvaliador(Long cpf, String token) throws SQLException;
 	List<Pergunta> getPerguntas() throws SQLException;
+	List<Gsd> getAllExcetoAvaliador(Long cpf, String token) throws SQLException;
 }

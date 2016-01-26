@@ -70,9 +70,18 @@ public class GsdResource {
 	
 	@POST
 	@Path("/avaliador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Gsd> getByAvaliador(@FormParam("cpf") Long cpf,
 			@FormParam("token") String token) {
 		return service.getByAvaliador(cpf, token);
+	}
+	
+	@POST
+	@Path("/exceto/avaliador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Gsd> getAllExcetoAvaliador(@FormParam("cpf") Long cpf, 
+			@FormParam("token") String token) {
+		return service.getAllExcetoAvaliador(cpf, token);
 	}
 	
 //	@DELETE
