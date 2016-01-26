@@ -10,20 +10,10 @@ public class RelatorioService {
 
 	private RelatorioDaoImpl dao = new RelatorioDaoImpl();
 
-	public ConsolidadoHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			int codUnidade, Long cpf, String token){
 		try{
-			return dao.getIndicadoresEquipeByPeriodo(dataInicial, dataFinal, equipe, codUnidade, cpf, token);
-		}catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public ConsolidadoHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
-			int codUnidade, Long cpf, String token){
-		try{
-			return dao.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal, codUnidade, cpf, token);
+			return dao.getRelatorioByPeriodo(dataInicial, dataFinal, equipe, codUnidade, cpf, token);
 		}catch (SQLException e) {
 			e.printStackTrace();
 			return null;

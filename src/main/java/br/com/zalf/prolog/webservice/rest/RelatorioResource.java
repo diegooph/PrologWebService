@@ -19,42 +19,19 @@ import br.com.zalf.prolog.webservice.services.RelatorioService;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
 	private RelatorioService service = new RelatorioService();
-	
+
 	@POST
 	@Path("/byEquipe")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public ConsolidadoHolder getIndicadoresEquipeByPeriodo(
+	public ConsolidadoHolder getRelatorioByPeriodo(
 			@FormParam("dataInicial") long dataInicial, 
 			@FormParam("dataFinal") long dataFinal, 
 			@FormParam("equipe") String equipe,
 			@FormParam("codUnidade") int codUnidade,
 			@FormParam("cpf") Long cpf,
 			@FormParam("token") String token) {
-		return service.getIndicadoresEquipeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
+		return service.getRelatorioByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
 				DateUtils.toLocalDate(new Date(dataFinal)),equipe, codUnidade, cpf, token);
 	}
-	
-	@POST
-	@Path("/byUnidade")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public ConsolidadoHolder getIndicadoresUnidadaeByPeriodo(
-			@FormParam("dataInicial") long dataInicial, 
-			@FormParam("dataFinal") long dataFinal, 
-			@FormParam("codUnidade") int codUnidade,
-			@FormParam("cpf") Long cpf,
-			@FormParam("token") String token) {
-		return service.getIndicadoresUnidadeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
-				DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, cpf, token);
-	}
-	
-	
-		
-		
-
-	
-	
-	
-	
-	
-
 }
+
