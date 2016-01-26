@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
@@ -25,8 +24,9 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dao.interfaces.RelatorioDao;
 
-public class RelatorioDaoImpl extends DatabaseConnection{
+public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
 	public static final String BUSCA_INDICADORES_EQUIPE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
 			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, C.EQUIPE, "
@@ -47,7 +47,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
 			+ "group by t.mapa) as total on total_entregas = t.mapa "
 			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE C.EQUIPE = ? AND DATA BETWEEN ? AND ? "
+			+ "WHERE C.EQUIPE = ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
 			+ "ORDER BY M.DATA ";
 
 	public static final String BUSCA_INDICADORES_UNIDADE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
@@ -74,8 +74,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private Meta meta;
 
-	//	@Override
-	public IndicadorHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	@Override
+	public ConsolidadoHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			int codUnidade, Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
@@ -83,6 +83,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		ResultSet rSet = null;
 		MetasDao metasDao = new MetasDao();
 		meta = metasDao.getMetasByUnidade(codUnidade);
+		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 
 		try {
 			conn = getConnection();
@@ -91,10 +92,10 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			stmt.setLong(1, cpf); 
 			stmt.setString(2, token); 
 			stmt.setString(3, equipe);
-			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
+			stmt.setInt(4, codUnidade);
+			stmt.setDate(5, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
-
 			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
 			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
 			List<Mapa> listMapas = new ArrayList<>();
@@ -119,19 +120,18 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 					listMapas.add(mapa);
 				}
 			}
-			ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 			consolidadoHolder.codUnidade = codUnidade;
 			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
 			setTotaisHolder(consolidadoHolder);
-			System.out.println(consolidadoHolder);
 
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return  new IndicadorHolder();
+		return  consolidadoHolder;
 	}
 
-	public IndicadorHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	@Override
+	public ConsolidadoHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
 			int codUnidade, Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
@@ -139,6 +139,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		ResultSet rSet = null;
 		MetasDao metasDao = new MetasDao();
 		meta = metasDao.getMetasByUnidade(codUnidade);
+		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 
 		try {
 			conn = getConnection();
@@ -146,7 +147,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf); 
 			stmt.setString(2, token); 
-			stmt.setString(3, equipe);
+			stmt.setInt(3, codUnidade);
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
@@ -175,15 +176,12 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 					listMapas.add(mapa);
 				}
 			}
-			ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 			consolidadoHolder.codUnidade = codUnidade;
 			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
-			System.out.println(consolidadoHolder);
-
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return  new IndicadorHolder();
+		return  consolidadoHolder;
 	}
 
 	private Mapa createMapa(ResultSet rSet) throws SQLException{
@@ -422,7 +420,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			consolidadoHolder.mapasNokJornadaLiquida += consolidado.mapasNokJornadaLiquida;
 			consolidadoHolder.totalMapasJornadaLiquida += consolidado.totalMapasJornadaLiquida;
 		}
-		
+
 		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
 		consolidadoHolder.metaDevCx = meta.getMetaDevCx();
 		consolidadoHolder.bateuDevCx = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevCx, meta.getMetaDevCx());

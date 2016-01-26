@@ -59,6 +59,7 @@ public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 			stmt = conn.prepareStatement("SELECT * FROM PDV P WHERE "
 					+ "LOWER(P.NOME) = LOWER(?)");
 			stmt.setString(1, nomePdv);
+			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				pdv = new Pdv();
 				pdv.setNome(rSet.getString("NOME"));
