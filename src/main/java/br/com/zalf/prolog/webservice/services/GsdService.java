@@ -38,18 +38,18 @@ public class GsdService {
 		}
 	}
 	
-	public List<Gsd> getByColaborador(Long cpf) {
+	public List<Gsd> getByColaborador(Long cpf, String token) {
 		try {
-			return dao.getByColaborador(cpf);
+			return dao.getByColaborador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<>();
 		}
 	}
 	
-	public List<Gsd> getByAvaliador(Long cpf) {
+	public List<Gsd> getByAvaliador(Long cpf, String token) {
 		try {
-			return dao.getByAvaliador(cpf);
+			return dao.getByAvaliador(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Gsd>();

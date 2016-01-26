@@ -4,11 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -33,14 +32,14 @@ public class GsdResource {
 		}
 	}
 	
-	@PUT
-	public Response update(Gsd gsd) {
-		if (service.update(gsd)) {
-			return Response.Ok("Gsd atualizado com sucesso");
-		} else {
-			return Response.Error("Erro ao atualizar o gsd");
-		}
-	}
+//	@PUT
+//	public Response update(Gsd gsd) {
+//		if (service.update(gsd)) {
+//			return Response.Ok("Gsd atualizado com sucesso");
+//		} else {
+//			return Response.Error("Erro ao atualizar o gsd");
+//		}
+//	}
 	
 //	@GET
 //	@Path("{codigo}")
@@ -60,16 +59,20 @@ public class GsdResource {
 //		return service.getAll();
 //	}
 	
-	@GET
-	@Path("/colaborador/{cpf}")
-	public List<Gsd> getByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getByColaborador(cpf);
-	}
+
+//	@POST
+//	@Path("/colaborador")
+//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//	public List<Gsd> getByColaborador(@FormParam("cpf") Long cpf,
+//			@FormParam("token") String token) {
+//		return service.getByColaborador(cpf, token);
+//	}
 	
-	@GET
-	@Path("/avaliador/{cpf}")
-	public List<Gsd> getByAvaliador(@PathParam("cpf") Long cpf) {
-		return service.getByAvaliador(cpf);
+	@POST
+	@Path("/avaliador")
+	public List<Gsd> getByAvaliador(@FormParam("cpf") Long cpf,
+			@FormParam("token") String token) {
+		return service.getByAvaliador(cpf, token);
 	}
 	
 //	@DELETE

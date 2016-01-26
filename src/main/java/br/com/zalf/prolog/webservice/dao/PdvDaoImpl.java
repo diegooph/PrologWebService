@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,40 +13,60 @@ import br.com.zalf.prolog.webservice.dao.interfaces.PdvDao;
 public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 
 	@Override
-	public boolean insertList(List<Pdv> pdvs, Long codigoGsd) throws SQLException {
+	public List<Pdv> insertList(List<Pdv> pdvs) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		 try {
-			 conn = getConnection();
-			 stmt = conn.prepareStatement("INSERT INTO PDV_GSD (COD_GSD, "
-			 		+ "COD_PDV) VALUES (?, ?)");
-			 for (Pdv pdv : pdvs) {
-				 stmt.setLong(1, codigoGsd);
-				 stmt.setLong(2, pdv.getCodigo());
-				 stmt.executeUpdate();
-			 }
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO PDV (NOME) VALUES "
+					+ "(?) RETURNING CODIGO;");
+			for (Pdv pdv : pdvs) {
+				Pdv p = selectPdvByNome(pdv.getNome());
+				if (p != null) {
+					// Já existe PDV com esse nome no banco, 
+					// não precisa inserir, seta apenas o código dele
+					pdv.setCodigo(p.getCodigo());
+				} else {
+					// Não existe na tabela de PDV então precisa inserir
+					stmt.setString(1, pdv.getNome());
+					rSet = stmt.executeQuery();
+					if (rSet.next()) {
+						pdv.setCodigo(rSet.getLong("CODIGO"));
+					} else {
+						throw new SQLException("Erro ao inserir PDV");
+					}
+				}
+			}
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}
-		 return true;
+		return pdvs;
 	}
 
 	@Override
-	public boolean updateList(List<Pdv> pdvs, Long codigoGsd) throws SQLException {
+	public boolean updateList(List<Pdv> pdvs) throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
+	}
+
+	private Pdv selectPdvByNome(String nomePdv) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		 try {
-			 conn = getConnection();
-			 stmt = conn.prepareStatement("UPDATE PDV_GSD SET COD_PDV = ? WHERE "
-			 		+ "COD_GSD = ?");
-			 for (Pdv pdv : pdvs) {
-				 stmt.setLong(1, pdv.getCodigo());
-				 stmt.setLong(2, codigoGsd);
-				 stmt.executeUpdate();
-			 }
+		ResultSet rSet = null;
+		Pdv pdv = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM PDV P WHERE "
+					+ "LOWER(P.NOME) = LOWER(?)");
+			stmt.setString(1, nomePdv);
+			if (rSet.next()) {
+				pdv = new Pdv();
+				pdv.setNome(rSet.getString("NOME"));
+				pdv.setCodigo(rSet.getLong("CODIGO"));
+			}
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}
-		 return false;
+		return pdv;
 	}
 }

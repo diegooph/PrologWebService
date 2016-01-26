@@ -28,7 +28,7 @@ public class Main {
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
-		relatorioDaoImpl.getIndicadoresEquipeByPeriodo(dataInicial, dataFinal, "Sala1", cpf, "1234");
+		relatorioDaoImpl.getIndicadoresEquipeByPeriodo(dataInicial, dataFinal, "Sala1",1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
 			
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
 		

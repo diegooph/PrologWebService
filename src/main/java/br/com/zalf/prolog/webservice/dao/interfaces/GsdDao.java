@@ -7,7 +7,7 @@ import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.gsd.Gsd;
 
 public interface GsdDao {
-	List<Gsd> getByColaborador(Long cpf) throws SQLException;
-	List<Gsd> getByAvaliador(Long cpf) throws SQLException;
+	List<Gsd> getByColaborador(Long cpf, String token) throws SQLException;
+	List<Gsd> getByAvaliador(Long cpf, String token) throws SQLException;
 	List<Pergunta> getPerguntas() throws SQLException;
 }
