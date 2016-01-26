@@ -63,7 +63,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		MetasDao metasDao = new MetasDao();
-		meta = metasDao.getMetas(cpf);
+		meta = metasDao.getMetasByCpf(cpf);
 
 		try {
 			conn = getConnection();

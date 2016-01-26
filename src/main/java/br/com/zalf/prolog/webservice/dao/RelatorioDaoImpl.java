@@ -25,17 +25,15 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.RelatorioDao;
-import br.com.zalf.prolog.webservice.imports.MapaImport;
 
-public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
+public class RelatorioDaoImpl extends DatabaseConnection{
 
 	public static final String BUSCA_INDICADORES_EQUIPE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
 			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, C.EQUIPE, "
 			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
 			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
 			+ "M.QTNFCARREGADAS, M.QTNFENTREGUES, (M.QTNFCARREGADAS - M.QTNFENTREGUES) AS DEVNF, "
-			+ "M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.APONTAMENTO_OK "
+			+ "M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,M.COD_UNIDADE, TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.APONTAMENTO_OK "
 			+ " FROM MAPA M join token_autenticacao ta on ? = ta.cpf_colaborador and ? = ta.token "
 			+ "JOIN VEICULO V ON V.PLACA = M.PLACA "
 			+ "JOIN COLABORADOR C ON M.MATRICMOTORISTA = C.MATRICULA_AMBEV "
@@ -49,23 +47,42 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
 			+ "group by t.mapa) as total on total_entregas = t.mapa "
 			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE c.equipe = ? AND DATA BETWEEN ? AND ? "
+			+ "WHERE C.EQUIPE = ? AND DATA BETWEEN ? AND ? "
 			+ "ORDER BY M.DATA ";
 
+	public static final String BUSCA_INDICADORES_UNIDADE = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
+			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, C.EQUIPE, "
+			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
+			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
+			+ "M.QTNFCARREGADAS, M.QTNFENTREGUES, (M.QTNFCARREGADAS - M.QTNFENTREGUES) AS DEVNF, "
+			+ "M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,M.COD_UNIDADE, TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.APONTAMENTO_OK "
+			+ " FROM MAPA M join token_autenticacao ta on ? = ta.cpf_colaborador and ? = ta.token "
+			+ "JOIN VEICULO V ON V.PLACA = M.PLACA "
+			+ "JOIN COLABORADOR C ON M.MATRICMOTORISTA = C.MATRICULA_AMBEV "
+			+ "JOIN COLABORADOR C1 ON M.MATRICAJUD1 = C1.MATRICULA_AMBEV "
+			+ "JOIN COLABORADOR C2 ON M.MATRICAJUD2 = C2.MATRICULA_AMBEV "
+			+ "LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK "
+			+ "FROM tracking t join MAPA M on m.mapa = t.mapa "
+			+ "JOIN (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as apontamentos_ok "
+			+ "FROM tracking t	WHERE t.disp_apont_cadastrado <= '0.3' "
+			+ "GROUP BY t.mapa) as ok on mapa_ok = t.mapa "
+			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
+			+ "group by t.mapa) as total on total_entregas = t.mapa "
+			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
+			+ "WHERE M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
+			+ "ORDER BY M.DATA ";
 
 	private Meta meta;
-	private ConsolidadoHolder consolidadoHolder;
 
-
-	@Override
+	//	@Override
 	public IndicadorHolder getIndicadoresEquipeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long cpf, String token) throws SQLException {
+			int codUnidade, Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		MetasDao metasDao = new MetasDao();
-		meta = metasDao.getMetas(cpf);
+		meta = metasDao.getMetasByUnidade(codUnidade);
 
 		try {
 			conn = getConnection();
@@ -77,21 +94,98 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
-			
+
 			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
 			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
-			List<MapaImport> listMapas = new ArrayList<>();
-			Mapa mapa = new Mapa();
-			mapa = createMapa(rSet);
-			
-			
-			
+			List<Mapa> listMapas = new ArrayList<>();
+			Mapa mapa;
+			if(rSet.first()){
+				mapa = createMapa(rSet);
+				listMapas.add(mapa);
+			}
+			while(rSet.next()){
+				if(rSet.getDate("DATA").getTime() == listMapas.get(listMapas.size()-1).getData().getTime()){
+					mapa = createMapa(rSet);
+					listMapas.add(mapa);
+				}else{
+					consolidadoMapasDia.data = listMapas.get(0).getData();
+					consolidadoMapasDia.mapas = listMapas;
+					setTotaisConsolidadoDia(consolidadoMapasDia);
+					listConsolidadoMapasDia.add(consolidadoMapasDia);
+					consolidadoMapasDia = new ConsolidadoMapasDia();
+					listMapas = new ArrayList<>();
+					mapa = new Mapa();
+					mapa = createMapa(rSet);
+					listMapas.add(mapa);
+				}
+			}
+			ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
+			consolidadoHolder.codUnidade = codUnidade;
+			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
+			setTotaisHolder(consolidadoHolder);
+			System.out.println(consolidadoHolder);
+
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return  new IndicadorHolder();
 	}
-	
+
+	public IndicadorHolder getIndicadoresUnidadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			int codUnidade, Long cpf, String token) throws SQLException {
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		MetasDao metasDao = new MetasDao();
+		meta = metasDao.getMetasByUnidade(codUnidade);
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_INDICADORES_UNIDADE, ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, cpf); 
+			stmt.setString(2, token); 
+			stmt.setString(3, equipe);
+			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
+			rSet = stmt.executeQuery();
+
+			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
+			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
+			List<Mapa> listMapas = new ArrayList<>();
+			Mapa mapa;
+			if(rSet.first()){
+				mapa = createMapa(rSet);
+				listMapas.add(mapa);
+			}
+			while(rSet.next()){
+				if(rSet.getDate("DATA").getTime() == listMapas.get(listMapas.size()-1).getData().getTime()){
+					mapa = createMapa(rSet);
+					listMapas.add(mapa);
+				}else{
+					consolidadoMapasDia.data = listMapas.get(0).getData();
+					consolidadoMapasDia.mapas = listMapas;
+					setTotaisConsolidadoDia(consolidadoMapasDia);
+					listConsolidadoMapasDia.add(consolidadoMapasDia);
+					consolidadoMapasDia = new ConsolidadoMapasDia();
+					listMapas = new ArrayList<>();
+					mapa = new Mapa();
+					mapa = createMapa(rSet);
+					listMapas.add(mapa);
+				}
+			}
+			ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
+			consolidadoHolder.codUnidade = codUnidade;
+			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
+			System.out.println(consolidadoHolder);
+
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return  new IndicadorHolder();
+	}
+
 	private Mapa createMapa(ResultSet rSet) throws SQLException{
 		Mapa mapa = new Mapa();
 		mapa.setNumeroMapa(rSet.getInt("MAPA"));
@@ -104,15 +198,16 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		mapa.setDevCx(createDevCx(rSet));
 		mapa.setDevNf(createDevNf(rSet));
 		mapa.setDevHl(createDevHl(rSet));
-	    mapa.setTempoInterno(createTempoInterno(rSet));
-	    mapa.setTempoRota(createTempoRota(rSet));
-	    mapa.setTempoLargada(createTempoLargada(rSet));
-	    mapa.setJornadaLiquida(createJornadaLiquida(rSet));
+		mapa.setTempoInterno(createTempoInterno(rSet));
+		mapa.setTempoRota(createTempoRota(rSet));
+		mapa.setTempoLargada(createTempoLargada(rSet));
+		mapa.setJornadaLiquida(createJornadaLiquida(rSet));
 		mapa.setTracking(createTracking(rSet));
-		
+		mapa.setCodUnidade(rSet.getInt("COD_UNIDADE"));
+
 		return mapa;
 	}
-	
+
 	private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException{
 		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
 		itemDevolucaoCx.setData(rSet.getDate("DATA"));
@@ -124,7 +219,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
 		return itemDevolucaoCx;
 	}
-	
+
 	private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException{
 		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
 		itemDevolucaoNf.setData(rSet.getDate("DATA"));
@@ -136,7 +231,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
 		return itemDevolucaoNf;
 	}
-	
+
 	private ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException{
 		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
 		itemDevolucaoHl.setData(rSet.getDate("DATA"));
@@ -148,7 +243,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
 		return itemDevolucaoHl;
 	}
-	
+
 	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException{
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 		Time tempoInterno;
@@ -162,7 +257,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
 		return itemTempoInterno;
 	}
-	
+
 	private ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException{
 		ItemTempoRota itemTempoRota = new ItemTempoRota();
 		itemTempoRota.setData(rSet.getDate("DATA"));
@@ -176,7 +271,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
 		return itemTempoRota;
 	}
-	
+
 	private ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException{
 		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 		itemTempoLargada.setData(rSet.getDate("DATA"));
@@ -189,7 +284,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
 		return itemTempoLargada;
 	}
-	
+
 	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException{
 		Time matinal;
 		Time rota;
@@ -210,14 +305,151 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(), meta.getMetaJornadaLiquidaHoras()));
 		return itemJornadaLiquida;
 	}
-	
-	private ItemTracking createTracking (ResultSet rSet) throws SQLException{
-		
-	}
-	
-	
-	
-	
 
-	
+	private ItemTracking createTracking (ResultSet rSet) throws SQLException{
+		ItemTracking itemTracking = new ItemTracking();
+		itemTracking.setData(rSet.getDate("DATA"));
+		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
+		itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
+		itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
+		itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+		itemTracking.setMeta(meta.getMetaTracking());
+		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
+		return itemTracking;
+	}
+
+	private void setTotaisConsolidadoDia (ConsolidadoMapasDia consolidadoMapasDia){
+		List<Mapa> listMapas = consolidadoMapasDia.mapas;
+		consolidadoMapasDia.data = listMapas.get(0).getData();
+
+		for(Mapa mapa : listMapas){
+			consolidadoMapasDia.cxCarregadas += mapa.getDevCx().getCarregadas();
+			consolidadoMapasDia.cxEntregues += mapa.getDevCx().getEntregues();
+			consolidadoMapasDia.cxDevolvidas += mapa.getDevCx().getDevolvidas();
+
+			consolidadoMapasDia.nfCarregadas += mapa.getDevNf().getCarregadas();
+			consolidadoMapasDia.nfEntregues += mapa.getDevNf().getEntregues();
+			consolidadoMapasDia.nfDevolvidas += mapa.getDevNf().getDevolvidas();
+
+			consolidadoMapasDia.hlCarregadas += mapa.getDevHl().getCarregadas();
+			consolidadoMapasDia.hlEntregues += mapa.getDevHl().getEntregues();
+			consolidadoMapasDia.hlDevolvidas += mapa.getDevHl().getDevolvidas();
+
+			if(mapa.getTempoLargada().isBateuMeta()){
+				consolidadoMapasDia.mapasOkLargada += 1;
+			}else{consolidadoMapasDia.mapasNokLargada += 1;}
+			consolidadoMapasDia.totalMapasLargada += 1;
+
+			if(mapa.getTempoRota().isBateuMeta()){
+				consolidadoMapasDia.mapasOkRota += 1;
+			}else{consolidadoMapasDia.mapasNokRota += 1;}
+			consolidadoMapasDia.totalMapasRota += 1;
+
+			if(mapa.getTempoInterno().isBateuMeta()){
+				consolidadoMapasDia.mapasOkInterno += 1;
+			}else{consolidadoMapasDia.mapasNokInterno += 1;}
+			consolidadoMapasDia.totalMapasInterno += 1;
+
+			if(mapa.getJornadaLiquida().isBateuMeta()){
+				consolidadoMapasDia.mapasOkJornadaLiquida += 1;
+			}else{consolidadoMapasDia.mapasNokJornadaLiquida += 1;}
+			consolidadoMapasDia.totalMapasJornadaLiquida += 1;
+		}
+		consolidadoMapasDia.codUnidade = consolidadoMapasDia.mapas.get(0).getCodUnidade();
+
+		consolidadoMapasDia.resultadoDevCx = (double)consolidadoMapasDia.cxDevolvidas / (double)consolidadoMapasDia.cxCarregadas;
+		consolidadoMapasDia.metaDevCx = meta.getMetaDevCx();
+		consolidadoMapasDia.bateuDevCx = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevCx, meta.getMetaDevCx());
+
+
+		consolidadoMapasDia.resultadoDevNf = (double)consolidadoMapasDia.nfDevolvidas / (double)consolidadoMapasDia.nfCarregadas;
+		consolidadoMapasDia.metaDevNf = meta.getMetaDevNf();
+		consolidadoMapasDia.bateuDevNf = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevNf, meta.getMetaDevNf());
+
+		consolidadoMapasDia.resultadoDevHl = (double)consolidadoMapasDia.hlDevolvidas / (double)consolidadoMapasDia.hlCarregadas;
+		consolidadoMapasDia.metaDevHl = meta.getMetaDevHl();
+		consolidadoMapasDia.bateuDevHl = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevHl, meta.getMetaDevHl());
+
+		consolidadoMapasDia.resultadoLargada = (double)consolidadoMapasDia.mapasOkLargada / (double)consolidadoMapasDia.totalMapasLargada;
+		consolidadoMapasDia.metaTempoLargada = meta.getMetaTempoLargadaMapas();
+		consolidadoMapasDia.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoLargada, meta.getMetaTempoLargadaMapas());
+
+		consolidadoMapasDia.resultadoRota = (double)consolidadoMapasDia.mapasOkRota / (double)consolidadoMapasDia.totalMapasRota;
+		consolidadoMapasDia.metaTempoRota = meta.getMetaTempoRotaMapas();
+		consolidadoMapasDia.bateuRota = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoRota, meta.getMetaTempoRotaMapas());
+
+		consolidadoMapasDia.resultadoInterno = (double)consolidadoMapasDia.mapasOkInterno / (double)consolidadoMapasDia.totalMapasInterno;
+		consolidadoMapasDia.metaTempoInterno = meta.getMetaTempoInternoMapas();
+		consolidadoMapasDia.bateuInterno = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoInterno, meta.getMetaTempoInternoMapas());
+
+		consolidadoMapasDia.resultadoJornada = (double)consolidadoMapasDia.mapasOkJornadaLiquida / (double)consolidadoMapasDia.totalMapasJornadaLiquida;
+		consolidadoMapasDia.metaJornada = meta.getMetaJornadaLiquidaMapas();
+		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
+
+	}
+
+
+	private void setTotaisHolder (ConsolidadoHolder consolidadoHolder){
+		List<ConsolidadoMapasDia> listConsolidados = consolidadoHolder.listConsolidadoMapasDia;
+
+		for(ConsolidadoMapasDia consolidado : listConsolidados){
+
+			consolidadoHolder.cxCarregadas += consolidado.cxCarregadas;
+			consolidadoHolder.cxEntregues += consolidado.cxEntregues;
+			consolidadoHolder.cxDevolvidas += consolidado.cxDevolvidas;
+
+			consolidadoHolder.nfCarregadas += consolidado.nfCarregadas;
+			consolidadoHolder.nfEntregues += consolidado.nfEntregues;
+			consolidadoHolder.nfDevolvidas += consolidado.nfDevolvidas;
+
+			consolidadoHolder.hlCarregadas += consolidado.hlCarregadas;
+			consolidadoHolder.hlEntregues += consolidado.hlEntregues;
+			consolidadoHolder.hlDevolvidas += consolidado.hlDevolvidas;
+
+			consolidadoHolder.mapasOkLargada += consolidado.mapasOkLargada;
+			consolidadoHolder.mapasNokLargada += consolidado.mapasNokLargada;
+			consolidadoHolder.totalMapasLargada += consolidado.totalMapasLargada;
+
+			consolidadoHolder.mapasOkRota += consolidado.mapasOkRota;
+			consolidadoHolder.mapasNokRota += consolidado.mapasNokRota;
+			consolidadoHolder.totalMapasRota += consolidado.totalMapasRota;
+
+			consolidadoHolder.mapasOkInterno += consolidado.mapasOkInterno;
+			consolidadoHolder.mapasNokInterno += consolidado.mapasNokInterno;
+			consolidadoHolder.totalMapasInterno += consolidado.totalMapasInterno;
+
+			consolidadoHolder.mapasOkJornadaLiquida += consolidado.mapasOkJornadaLiquida;
+			consolidadoHolder.mapasNokJornadaLiquida += consolidado.mapasNokJornadaLiquida;
+			consolidadoHolder.totalMapasJornadaLiquida += consolidado.totalMapasJornadaLiquida;
+		}
+		
+		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
+		consolidadoHolder.metaDevCx = meta.getMetaDevCx();
+		consolidadoHolder.bateuDevCx = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevCx, meta.getMetaDevCx());
+
+		consolidadoHolder.resultadoDevNf = (double)consolidadoHolder.nfDevolvidas / (double)consolidadoHolder.nfCarregadas;
+		consolidadoHolder.metaDevNf = meta.getMetaDevNf();
+		consolidadoHolder.bateuDevNf = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevNf, meta.getMetaDevNf());
+
+		consolidadoHolder.resultadoDevHl = (double)consolidadoHolder.hlDevolvidas / (double)consolidadoHolder.hlCarregadas;
+		consolidadoHolder.metaDevHl = meta.getMetaDevHl();
+		consolidadoHolder.bateuDevHl = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevHl, meta.getMetaDevHl());
+
+		consolidadoHolder.resultadoLargada = (double)consolidadoHolder.mapasOkLargada / (double)consolidadoHolder.totalMapasLargada;
+		consolidadoHolder.metaTempoLargada = meta.getMetaTempoLargadaMapas();
+		consolidadoHolder.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoLargada, meta.getMetaTempoLargadaMapas());
+
+		consolidadoHolder.resultadoRota = (double)consolidadoHolder.mapasOkRota / (double)consolidadoHolder.totalMapasRota;
+		consolidadoHolder.metaTempoRota = meta.getMetaTempoRotaMapas();
+		consolidadoHolder.bateuRota = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoRota, meta.getMetaTempoRotaMapas());
+
+		consolidadoHolder.resultadoInterno = (double)consolidadoHolder.mapasOkInterno / (double)consolidadoHolder.totalMapasInterno;
+		consolidadoHolder.metaTempoInterno = meta.getMetaTempoInternoMapas();
+		consolidadoHolder.bateuInterno = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoInterno, meta.getMetaTempoInternoMapas());
+
+		consolidadoHolder.resultadoJornada = (double)consolidadoHolder.mapasOkJornadaLiquida / (double)consolidadoHolder.totalMapasJornadaLiquida;
+		consolidadoHolder.metaJornada = meta.getMetaJornadaLiquidaMapas();
+		consolidadoHolder.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
+	}
+
 }

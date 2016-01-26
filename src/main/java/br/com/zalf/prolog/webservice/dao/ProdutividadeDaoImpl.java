@@ -75,7 +75,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			rSet = stmt.executeQuery();	
 			
 			MetasDao metasDao = new MetasDao();
-			meta = metasDao.getMetas(cpf);
+			meta = metasDao.getMetasByCpf(cpf);
 			
 
 			while(rSet.next()){
