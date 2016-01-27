@@ -116,7 +116,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM GSD G WHERE "
 					+ "G.CPF_MOTORISTA = ? OR G.CPF_AJUDANTE_1 = ? OR "
-					+ "G.CPF_AJUDANTE_2 = ?");
+					+ "G.CPF_AJUDANTE_2 = ?;");
 			stmt.setLong(1, cpf);
 			stmt.setLong(2, cpf);
 			stmt.setLong(3, cpf);
@@ -150,7 +150,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 					+ "G.CPF_AJUDANTE_1 JOIN COLABORADOR C4 ON C4.CPF = "
 					+ "G.CPF_AJUDANTE_2 JOIN TOKEN_AUTENTICACAO TA ON ? = "
 					+ "TA.CPF_COLABORADOR AND ? = TA.TOKEN WHERE "
-					+ "G.CPF_AVALIADOR = ?;");
+					+ "G.CPF_AVALIADOR = ? ORDER BY G.DATA_HORA DESC;");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
 			stmt.setLong(3, cpf);
