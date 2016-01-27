@@ -16,10 +16,8 @@ import br.com.zalf.prolog.webservice.services.FaleConoscoService;
 public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
 	
-	// TODO: testar insert e update
 	@POST
 	public Response insert(FaleConosco faleConosco) {
-		System.out.println("CAlled");
 		if (service.insert(faleConosco)) {
 			return Response.Ok("Fale conosco inserido com sucesso");
 		} else {
