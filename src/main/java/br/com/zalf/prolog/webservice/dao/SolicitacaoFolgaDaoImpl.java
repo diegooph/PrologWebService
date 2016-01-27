@@ -42,6 +42,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements
 		finally {
 			closeConnection(conn, stmt, null);
 		}		
+		
 		return true;
 	}
 
