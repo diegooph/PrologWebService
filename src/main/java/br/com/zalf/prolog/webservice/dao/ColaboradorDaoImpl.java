@@ -24,6 +24,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
+			
 			stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
 					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
 					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
