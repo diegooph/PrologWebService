@@ -29,7 +29,7 @@ public class Main {
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
 		//relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1, cpf, "smc9aksqlel92b0hn3s1settpl");
-		relatorioDaoImpl.getPermissao2(cpf, "smc9aksqlel92b0hn3s1settpl");
+		relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
 		//relatorioDaoImpl.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal,1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
 			
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);

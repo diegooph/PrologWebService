@@ -64,13 +64,14 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	public static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
 			+ " FROM UNIDADE U JOIN REGIONAL REG ON REG.CODIGO = U.COD_REGIONAL "
-			+ " WHERE REG.CODIGO = ? ORDER BY 2 ";
-	
+			+ " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
+			+ " WHERE REG.CODIGO = ? AND E.CODIGO = ? ORDER BY 2 ";
+
 	public static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME "
 			+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
 			+ "WHERE U.CODIGO = ?"
 			+ "ORDER BY 1";
-	
+
 	public static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
 			+ "from regional reg "
 			+ "left join unidade u on u.cod_regional = reg.codigo "
@@ -81,7 +82,71 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "join regional r on r.codigo = u.cod_regional	"
 			+ "where c.cpf=?)";
 
+	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome nome_empresa,"
+			+ " reg.codigo as cod_regional, reg.regiao nome_regional,"
+			+ " u.codigo as cod_unidade, u.nome as nome_unidade "
+			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
+			+ "join empresa emp on emp.codigo = u.cod_empresa "
+			+ "join regional reg on reg.codigo = u.cod_regional "
+			+ "where c.cpf = ?";
+
+	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF = ""
+			+ "select emp.codigo as cod_empresa, emp.nome nome_empresa, "
+			+ "reg.codigo as cod_regional, reg.regiao nome_regional, "
+			+ "u.codigo as cod_unidade, u.nome as nome_unidade, "
+			+ "e.codigo as cod_equipe, e.nome as nome_equipe "
+			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
+			+ "join empresa emp on emp.codigo = u.cod_empresa "
+			+ "join regional reg on reg.codigo = u.cod_regional "
+			+ "join equipe e on e.codigo = c.cod_equipe where c.cpf = ?";	
+
+	public static final String BUSCA_CODIGO_PERMISSAO_BY_CPF = "select c.cod_permissao "
+			+ "from colaborador c "
+			+ "where c.cpf = ?";
+
 	private Meta meta;
+
+	//busca de permissao, identifica a permissao e executa o metodo adequado
+	public List<Empresa> getFiltros(Long cpf, String token) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		List<Empresa> listEmpresa = new ArrayList<>();
+		int cod_permissao = 0;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_CODIGO_PERMISSAO_BY_CPF);
+			stmt.setLong(1, cpf); 
+			rSet = stmt.executeQuery();
+
+			while(rSet.next()){ // rset com os codigos e nomes da regionais
+				cod_permissao = rSet.getInt("COD_PERMISSAO");
+			}
+			switch (cod_permissao) {
+			case 0:
+				listEmpresa = getPermissao0(cpf, token);
+				break;
+			case 1:
+				listEmpresa = getPermissao1(cpf, token);
+				break;
+			case 2:
+				listEmpresa = getPermissao2(cpf, token);
+				break;
+			case 3:
+				listEmpresa = getPermissao3(cpf, token);
+				break;
+			default:
+				break;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+
+		System.out.print(listEmpresa);
+		return listEmpresa;
+	}
 	// buscar permisões para colaboradores com permissão = 3 = tudo
 	public List<Empresa> getPermissao3(Long cpf, String token) throws SQLException{
 		List<Empresa> listEmpresa = new ArrayList<>();
@@ -103,7 +168,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				empresa.setCodigo(rSet.getInt("CODIGO_EMPRESA"));
 				regional.setCodigo(rSet.getInt("CODIGO"));
 				regional.setNome(rSet.getString("REGIAO"));
-				setUnidadesByRegional(regional);
+				setUnidadesByRegional(regional, empresa.getCodigo());
 				listRegional.add(regional);
 			}
 		} finally {
@@ -111,10 +176,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		empresa.setListRegional(listRegional);
 		listEmpresa.add(empresa);
-		System.out.print(listEmpresa);
 		return listEmpresa;
 	}
-
+	// burcar permissoes para colaboradores com permissao = 2 = regional
 	public List<Empresa> getPermissao2(Long cpf, String token) throws SQLException{
 		List<Empresa> listEmpresa = new ArrayList<>();
 		Empresa empresa = new Empresa();
@@ -136,7 +200,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				empresa.setNome(rSet.getString("NOME_EMPRESA"));
 				regional.setCodigo(rSet.getInt("CODIGO"));
 				regional.setNome(rSet.getString("REGIAO"));
-				setUnidadesByRegional(regional);
+				setUnidadesByRegional(regional, empresa.getCodigo());
 				listRegional.add(regional);
 			}
 		} finally {
@@ -144,11 +208,92 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		empresa.setListRegional(listRegional);
 		listEmpresa.add(empresa);
-		System.out.print(listEmpresa);
 		return listEmpresa;
 	}
-	
-	public void setUnidadesByRegional(Regional regional) throws SQLException{
+	// buscar permissoes para colaboradores com permissao = 1 = local, gerente
+	public List<Empresa> getPermissao1(Long cpf, String token) throws SQLException{
+		List<Empresa> listEmpresa = new ArrayList<>();
+		List<Regional> listRegional = new ArrayList<>();
+		List<Unidade> listUnidade = new ArrayList<>();
+		Empresa empresa = new Empresa();
+		Regional regional = new Regional();
+		Unidade unidade = new Unidade();
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF);
+			stmt.setLong(1, cpf); 
+			rSet = stmt.executeQuery();
+
+			while(rSet.next()){ // rset com os codigos e nomes da regionais
+
+				empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+				empresa.setNome(rSet.getString("NOME_EMPRESA"));
+				regional.setCodigo(rSet.getInt("COD_REGIONAL"));
+				regional.setNome(rSet.getString("NOME_REGIONAL"));
+				unidade.setCodigo(rSet.getInt("COD_UNIDADE"));
+				unidade.setNome(rSet.getString("NOME_UNIDADE"));
+				setEquipesByUnidade(unidade);
+				listEmpresa.add(empresa);
+				listUnidade.add(unidade);
+				listRegional.add(regional);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		empresa.setListRegional(listRegional);
+		regional.setListUnidade(listUnidade);
+		return listEmpresa;
+	}
+	// buscar permissoes para colaboradores com permissao = 0 = local, supervisor, busca apenas a sala que o cpf pertence
+	public List<Empresa> getPermissao0(Long cpf, String token) throws SQLException{
+		List<Empresa> listEmpresa = new ArrayList<>();
+		List<Regional> listRegional = new ArrayList<>();
+		List<Unidade> listUnidade = new ArrayList<>();
+		List<String> listEquipe = new ArrayList<>();
+		Empresa empresa = new Empresa();
+		Regional regional = new Regional();
+		Unidade unidade = new Unidade();
+		String equipe = "";
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF);
+			stmt.setLong(1, cpf); 
+			rSet = stmt.executeQuery();
+
+			while(rSet.next()){ // rset com os codigos e nomes da regionais
+
+				empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+				empresa.setNome(rSet.getString("NOME_EMPRESA"));
+				regional.setCodigo(rSet.getInt("COD_REGIONAL"));
+				regional.setNome(rSet.getString("NOME_REGIONAL"));
+				unidade.setCodigo(rSet.getInt("COD_UNIDADE"));
+				unidade.setNome(rSet.getString("NOME_UNIDADE"));
+				equipe = rSet.getString("NOME_EQUIPE");
+				listEmpresa.add(empresa);
+				listUnidade.add(unidade);
+				listRegional.add(regional);
+				listEquipe.add(equipe);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		empresa.setListRegional(listRegional);
+		regional.setListUnidade(listUnidade);
+		unidade.setListEquipe(listEquipe);
+		return listEmpresa;
+	}
+
+	public void setUnidadesByRegional(Regional regional, int codEmpresa) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -159,6 +304,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_UNIDADE_BY_REGIONAL);
 			stmt.setInt(1, regional.getCodigo()); 
+			stmt.setInt(2, codEmpresa);
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
@@ -174,9 +320,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		regional.setListUnidade(listUnidades);
 
 	}
-	
+
 	public void setEquipesByUnidade (Unidade unidade) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -197,8 +343,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		unidade.setListEquipe(listEquipes);
 	}
-
-	@Override
+	
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			int codUnidade, Long cpf, String token) throws SQLException {
 
