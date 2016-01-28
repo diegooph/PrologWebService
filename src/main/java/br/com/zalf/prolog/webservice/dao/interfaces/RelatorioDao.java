@@ -8,6 +8,6 @@ import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
 public interface RelatorioDao {
 
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			int codUnidade, Long cpf, String token) throws SQLException;
+			Long codUnidade, Long cpf, String token) throws SQLException;
 		
 }

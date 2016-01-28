@@ -200,7 +200,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	@Override
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			int codUnidade, Long cpf, String token) throws SQLException {
+			Long codUnidade, Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -216,7 +216,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setLong(1, cpf); 
 			stmt.setString(2, token); 
 			stmt.setString(3, equipe);
-			stmt.setInt(4, codUnidade);
+			stmt.setLong(4, codUnidade);
 			stmt.setDate(5, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
@@ -271,7 +271,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		mapa.setTempoLargada(createTempoLargada(rSet));
 		mapa.setJornadaLiquida(createJornadaLiquida(rSet));
 		mapa.setTracking(createTracking(rSet));
-		mapa.setCodUnidade(rSet.getInt("COD_UNIDADE"));
+		mapa.setCodUnidade(rSet.getLong("COD_UNIDADE"));
 
 		return mapa;
 	}
