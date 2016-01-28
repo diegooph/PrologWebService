@@ -22,7 +22,7 @@ public class RelatorioService {
 	}
 
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			int codUnidade, Long cpf, String token){
+			Long codUnidade, Long cpf, String token){
 		try{
 			return dao.getRelatorioByPeriodo(dataInicial, dataFinal, equipe, codUnidade, cpf, token);
 		}catch (SQLException e) {

@@ -37,7 +37,7 @@ public class MetasDao extends DatabaseConnection{
 		return meta;
 	}
 	
-	public Meta getMetasByUnidade(int codUnidade) throws SQLException{
+	public Meta getMetasByUnidade(Long codUnidade) throws SQLException{
 		Meta meta = new Meta();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -45,7 +45,7 @@ public class MetasDao extends DatabaseConnection{
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_METAS_UNIDADE);
-			stmt.setInt(1, codUnidade);
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			meta = createMeta(rSet);
 		}finally {

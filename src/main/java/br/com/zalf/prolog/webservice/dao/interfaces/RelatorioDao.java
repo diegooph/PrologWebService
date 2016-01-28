@@ -13,6 +13,6 @@ public interface RelatorioDao {
 	public List<Empresa> getFiltros(Long cpf, String token) throws SQLException;
 	
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			int codUnidade, Long cpf, String token) throws SQLException;
+			Long codUnidade, Long cpf, String token) throws SQLException;
 		
 }
