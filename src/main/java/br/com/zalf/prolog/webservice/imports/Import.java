@@ -330,9 +330,7 @@ public class Import {
 		//// FIXME: 18/01/16
 		//fazer replace de espaço e aspas simples por vazio
 		// verificar zero adicional
-
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-
 		hora = hora.replace(" ","");
 		// verifica quando tem 2 espaços extras na hora (tabela mapa)
 		if(hora.length() == 6){
