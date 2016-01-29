@@ -377,6 +377,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				if(rSet.getDate("DATA").getTime() == listMapas.get(listMapas.size()-1).getData().getTime()){
 					mapa = createMapa(rSet);
 					listMapas.add(mapa);
+					if(rSet.isLast()){
+						consolidadoMapasDia.data = listMapas.get(0).getData();
+						consolidadoMapasDia.mapas = listMapas;
+						setTotaisConsolidadoDia(consolidadoMapasDia);
+						listConsolidadoMapasDia.add(consolidadoMapasDia);						
+					}
 				}else{
 					consolidadoMapasDia.data = listMapas.get(0).getData();
 					consolidadoMapasDia.mapas = listMapas;

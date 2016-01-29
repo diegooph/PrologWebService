@@ -19,7 +19,7 @@ public class Main {
 		ProdutividadeDaoImpl produtividadeDaoImpl = new ProdutividadeDaoImpl();
 		RelatorioDaoImpl relatorioDaoImpl = new RelatorioDaoImpl();
 				
-		LocalDate dataInicial = LocalDate.of(2015, Month.MARCH, 01);
+		LocalDate dataInicial = LocalDate.of(2015, Month.DECEMBER, 22);
 		Date datainicial = Date.valueOf(dataInicial);
 		LocalDate dataFinal = LocalDate.now();
 		Date datafinal = Date.valueOf(dataFinal);
@@ -28,7 +28,7 @@ public class Main {
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
-		relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1L, cpf, "fnh4kqpjo6f6hqqje4ag21oigm");
+		System.out.print(relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataInicial, "%",1L, cpf, "pa64t2q07hlbg9ed93kh3fd660"));
 		//relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
 		//relatorioDaoImpl.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal,1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
 			
