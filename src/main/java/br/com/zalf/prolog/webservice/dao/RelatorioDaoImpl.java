@@ -166,7 +166,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				Regional regional = new Regional();
 				empresa.setNome(rSet.getString("NOME_EMPRESA"));
 				empresa.setCodigo(rSet.getInt("CODIGO_EMPRESA"));
-				regional.setCodigo(rSet.getInt("CODIGO"));
+				regional.setCodigo(rSet.getLong("CODIGO"));
 				regional.setNome(rSet.getString("REGIAO"));
 				setUnidadesByRegional(regional, empresa.getCodigo());
 				listRegional.add(regional);
@@ -198,7 +198,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				Regional regional = new Regional();
 				empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
 				empresa.setNome(rSet.getString("NOME_EMPRESA"));
-				regional.setCodigo(rSet.getInt("CODIGO"));
+				regional.setCodigo(rSet.getLong("CODIGO"));
 				regional.setNome(rSet.getString("REGIAO"));
 				setUnidadesByRegional(regional, empresa.getCodigo());
 				listRegional.add(regional);
@@ -233,9 +233,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 				empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
 				empresa.setNome(rSet.getString("NOME_EMPRESA"));
-				regional.setCodigo(rSet.getInt("COD_REGIONAL"));
+				regional.setCodigo(rSet.getLong("COD_REGIONAL"));
 				regional.setNome(rSet.getString("NOME_REGIONAL"));
-				unidade.setCodigo(rSet.getInt("COD_UNIDADE"));
+				unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
 				unidade.setNome(rSet.getString("NOME_UNIDADE"));
 				setEquipesByUnidade(unidade);
 				listEmpresa.add(empresa);
@@ -273,12 +273,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			while(rSet.next()){ // rset com os codigos e nomes da regionais
 
 				empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
-				empresa.setNome(rSet.getString("NOME_EMPRESA"));
-				regional.setCodigo(rSet.getInt("COD_REGIONAL"));
+				regional.setCodigo(rSet.getLong("COD_REGIONAL"));
 				regional.setNome(rSet.getString("NOME_REGIONAL"));
-				unidade.setCodigo(rSet.getInt("COD_UNIDADE"));
+				unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
 				unidade.setNome(rSet.getString("NOME_UNIDADE"));
 				equipe = rSet.getString("NOME_EQUIPE");
+				empresa.setNome(rSet.getString("NOME_EMPRESA"));
 				listEmpresa.add(empresa);
 				listUnidade.add(unidade);
 				listRegional.add(regional);
@@ -303,13 +303,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_UNIDADE_BY_REGIONAL);
-			stmt.setInt(1, regional.getCodigo()); 
+			stmt.setLong(1, regional.getCodigo()); 
 			stmt.setInt(2, codEmpresa);
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
 				Unidade unidade = new Unidade();
-				unidade.setCodigo(rSet.getInt("CODIGO"));
+				unidade.setCodigo(rSet.getLong("CODIGO"));
 				unidade.setNome(rSet.getString("NOME"));
 				setEquipesByUnidade(unidade);
 				listUnidades.add(unidade);
@@ -331,7 +331,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EQUIPE_BY_UNIDADE);
-			stmt.setInt(1, unidade.getCodigo()); 
+			stmt.setLong(1, unidade.getCodigo()); 
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
@@ -567,6 +567,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				consolidadoMapasDia.mapasOkJornadaLiquida += 1;
 			}else{consolidadoMapasDia.mapasNokJornadaLiquida += 1;}
 			consolidadoMapasDia.totalMapasJornadaLiquida += 1;
+			
+			if(mapa.getTracking().isBateuMeta()){
+				consolidadoMapasDia.mapasOkTracking += 1;
+			}else{consolidadoMapasDia.mapasNokTracking += 1;}
+			consolidadoMapasDia.totalMapasTracking += 1;
 		}
 		consolidadoMapasDia.codUnidade = consolidadoMapasDia.mapas.get(0).getCodUnidade();
 
@@ -598,6 +603,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoMapasDia.resultadoJornada = (double)consolidadoMapasDia.mapasOkJornadaLiquida / (double)consolidadoMapasDia.totalMapasJornadaLiquida;
 		consolidadoMapasDia.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
+		
+		consolidadoMapasDia.resultadoTracking = (double)consolidadoMapasDia.mapasOkTracking / (double)consolidadoMapasDia.totalMapasTracking;
+		consolidadoMapasDia.metaTracking = meta.getMetaTracking();
+		consolidadoMapasDia.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoTracking, meta.getMetaTracking());
 
 	}
 
@@ -633,6 +642,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			consolidadoHolder.mapasOkJornadaLiquida += consolidado.mapasOkJornadaLiquida;
 			consolidadoHolder.mapasNokJornadaLiquida += consolidado.mapasNokJornadaLiquida;
 			consolidadoHolder.totalMapasJornadaLiquida += consolidado.totalMapasJornadaLiquida;
+			
+			consolidadoHolder.mapasOkTracking += consolidado.mapasOkTracking;
+			consolidadoHolder.mapasNokTracking += consolidado.mapasNokTracking;
+			consolidadoHolder.totalMapasTracking += consolidado.totalMapasTracking;
 		}
 
 		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
@@ -662,6 +675,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoHolder.resultadoJornada = (double)consolidadoHolder.mapasOkJornadaLiquida / (double)consolidadoHolder.totalMapasJornadaLiquida;
 		consolidadoHolder.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoHolder.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
+		
+		consolidadoHolder.resultadoTracking = (double)consolidadoHolder.mapasOkTracking / (double)consolidadoHolder.totalMapasTracking;
+		consolidadoHolder.metaTracking = meta.getMetaTracking();
+		consolidadoHolder.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoTracking, meta.getMetaTracking());
 	}
 
 }

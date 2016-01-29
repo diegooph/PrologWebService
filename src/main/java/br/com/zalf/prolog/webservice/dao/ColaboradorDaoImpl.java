@@ -89,10 +89,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, C.EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
 					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON C.COD_FUNCAO = "
-					+ "F.CODIGO WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
+					+ "F.CODIGO "
+					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
 			stmt.setLong(3, cpf);
@@ -137,9 +139,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, C.EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
 					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ "WHERE C.COD_UNIDADE = ? AND C.STATUS_ATIVO = TRUE ORDER BY C.NOME; ");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
@@ -162,7 +165,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.EQUIPE FROM "
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
 					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ?)");
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
