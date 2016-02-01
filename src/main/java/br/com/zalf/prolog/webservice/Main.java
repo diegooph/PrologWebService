@@ -7,6 +7,7 @@ import java.time.Month;
 
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
 
 public class Main {
@@ -18,17 +19,19 @@ public class Main {
 		IndicadorDaoImpl indicadorDaoImpl = new IndicadorDaoImpl();
 		ProdutividadeDaoImpl produtividadeDaoImpl = new ProdutividadeDaoImpl();
 		RelatorioDaoImpl relatorioDaoImpl = new RelatorioDaoImpl();
+		RankingDaoImpl rankingDaoImpl = new RankingDaoImpl();
 				
-		LocalDate dataInicial = LocalDate.of(2015, Month.DECEMBER, 22);
+		LocalDate dataInicial = LocalDate.of(2015, Month.DECEMBER, 01);
 		Date datainicial = Date.valueOf(dataInicial);
 		LocalDate dataFinal = LocalDate.now();
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		
+		System.out.print(rankingDaoImpl.getRanking(dataInicial, dataFinal, "%", 1L, 12345678987L, "uc6192htmssk468kkjduebk77"));
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
-		System.out.print(relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataInicial, "%",1L, cpf, "pa64t2q07hlbg9ed93kh3fd660"));
+		//System.out.print(relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataInicial, "%",1L, cpf, "pa64t2q07hlbg9ed93kh3fd660"));
 		//relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
 		//relatorioDaoImpl.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal,1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
 			

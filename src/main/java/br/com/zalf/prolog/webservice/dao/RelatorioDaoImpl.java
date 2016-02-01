@@ -105,6 +105,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "where c.cpf = ?";
 
 	private Meta meta;
+	
+	public RelatorioDaoImpl(){}
+	
+	public RelatorioDaoImpl (Meta meta){
+		this.meta = meta;
+	}
 
 	//busca de permissao, identifica a permissao e executa o metodo adequado
 	public List<Empresa> getFiltros(Long cpf, String token) throws SQLException{
@@ -405,7 +411,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return  consolidadoHolder;
 	}
 
-	private Mapa createMapa(ResultSet rSet) throws SQLException{
+	public Mapa createMapa(ResultSet rSet) throws SQLException{
 		Mapa mapa = new Mapa();
 		mapa.setNumeroMapa(rSet.getInt("MAPA"));
 		mapa.setData(rSet.getDate("DATA"));
@@ -427,7 +433,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return mapa;
 	}
 
-	private ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException{
+	public ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException{
 		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
 		itemDevolucaoCx.setData(rSet.getDate("DATA"));
 		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
@@ -439,7 +445,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoCx;
 	}
 
-	private ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException{
+	public ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException{
 		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
 		itemDevolucaoNf.setData(rSet.getDate("DATA"));
 		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
@@ -451,7 +457,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoNf;
 	}
 
-	private ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException{
+	public ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException{
 		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
 		itemDevolucaoHl.setData(rSet.getDate("DATA"));
 		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
@@ -463,7 +469,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoHl;
 	}
 
-	private ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException{
+	public ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException{
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 		Time tempoInterno;
 		itemTempoInterno.setData(rSet.getDate("DATA"));
@@ -477,7 +483,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoInterno;
 	}
 
-	private ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException{
+	public ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException{
 		ItemTempoRota itemTempoRota = new ItemTempoRota();
 		itemTempoRota.setData(rSet.getDate("DATA"));
 		itemTempoRota.setHrEntrada(rSet.getTime("HRENTR"));
@@ -491,7 +497,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoRota;
 	}
 
-	private ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException{
+	public ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException{
 		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 		itemTempoLargada.setData(rSet.getDate("DATA"));
 		itemTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
@@ -504,7 +510,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoLargada;
 	}
 
-	private ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException{
+	public ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException{
 		Time matinal;
 		Time rota;
 		Time tempoInterno;
@@ -525,7 +531,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemJornadaLiquida;
 	}
 
-	private ItemTracking createTracking (ResultSet rSet) throws SQLException{
+	public ItemTracking createTracking (ResultSet rSet) throws SQLException{
 		ItemTracking itemTracking = new ItemTracking();
 		itemTracking.setData(rSet.getDate("DATA"));
 		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));

@@ -29,8 +29,8 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 			// Query para inserir um GSD e retornar seu ID AUTO INCREMENTO
 			stmt = conn.prepareStatement("INSERT INTO GSD (DATA_HORA, "
 					+ "URL_FOTO, CPF_AVALIADOR, CPF_MOTORISTA, "
-					+ "CPF_AJUDANTE_1, CPF_AJUDANTE_2, PLACA_VEICULO) VALUES "
-					+ "(?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+					+ "CPF_AJUDANTE_1, CPF_AJUDANTE_2, PLACA_VEICULO, LATITUDE, LONGITUDE) VALUES "
+					+ "(?, ?, ?, ?, ?, ?, ?,?,?) RETURNING CODIGO");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(gsd.getDataHora()));
 			stmt.setString(2, gsd.getUrlFoto());
 			stmt.setLong(3, gsd.getCpfAvaliador());
@@ -38,6 +38,8 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 			stmt.setLong(5, gsd.getCpfAjudante1());
 			stmt.setLong(6, gsd.getCpfAjudante2());
 			stmt.setString(7, gsd.getPlacaVeiculo());
+			stmt.setString(8, gsd.getLatitude());
+			stmt.setString(8, gsd.getLongitude());
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				// Seta o código no objeto GSD para podeR inserir na 
@@ -247,6 +249,8 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 		gsd.setNomeMotorista(rSet.getString("NOME_MOTORISTA"));
 		gsd.setNomeAjudante1(rSet.getString("NOME_AJUDANTE_1"));
 		gsd.setNomeAjudante2(rSet.getString("NOME_AJUDANTE_2"));
+		gsd.setLatitude(rSet.getString("LATITUDE"));
+		gsd.setLongitude(rSet.getString("LONGITUDE"));
 		return gsd;
 	}
 	
