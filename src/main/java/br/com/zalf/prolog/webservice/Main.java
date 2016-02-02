@@ -27,7 +27,8 @@ public class Main {
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		
-		System.out.print(rankingDaoImpl.getRanking(dataInicial, dataFinal, "%", 1L, 12345678987L, "uc6192htmssk468kkjduebk77"));
+		System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));
+		//System.out.print(rankingDaoImpl.getRanking(dataInicial, dataFinal, "%", 1L, 12345678987L, "gsmta0im38ancb30qkikeqp36o"));
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
 		
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));

@@ -559,6 +559,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			consolidadoMapasDia.hlCarregadas += mapa.getDevHl().getCarregadas();
 			consolidadoMapasDia.hlEntregues += mapa.getDevHl().getEntregues();
 			consolidadoMapasDia.hlDevolvidas += mapa.getDevHl().getDevolvidas();
+			
+			consolidadoMapasDia.OkTracking += mapa.getTracking().getOk();
+			consolidadoMapasDia.NokTracking += mapa.getTracking().getNok();
+			consolidadoMapasDia.totalTracking += mapa.getTracking().getTotal();
 
 			if(mapa.getTempoLargada().isBateuMeta()){
 				consolidadoMapasDia.mapasOkLargada += 1;
@@ -579,11 +583,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				consolidadoMapasDia.mapasOkJornadaLiquida += 1;
 			}else{consolidadoMapasDia.mapasNokJornadaLiquida += 1;}
 			consolidadoMapasDia.totalMapasJornadaLiquida += 1;
-			
-			if(mapa.getTracking().isBateuMeta()){
-				consolidadoMapasDia.mapasOkTracking += 1;
-			}else{consolidadoMapasDia.mapasNokTracking += 1;}
-			consolidadoMapasDia.totalMapasTracking += 1;
+						
 		}
 		consolidadoMapasDia.codUnidade = consolidadoMapasDia.mapas.get(0).getCodUnidade();
 
@@ -616,7 +616,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoMapasDia.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
 		
-		consolidadoMapasDia.resultadoTracking = (double)consolidadoMapasDia.mapasOkTracking / (double)consolidadoMapasDia.totalMapasTracking;
+		consolidadoMapasDia.resultadoTracking = (double)consolidadoMapasDia.OkTracking / (double)consolidadoMapasDia.totalTracking;
 		consolidadoMapasDia.metaTracking = meta.getMetaTracking();
 		consolidadoMapasDia.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoTracking, meta.getMetaTracking());
 
@@ -655,9 +655,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			consolidadoHolder.mapasNokJornadaLiquida += consolidado.mapasNokJornadaLiquida;
 			consolidadoHolder.totalMapasJornadaLiquida += consolidado.totalMapasJornadaLiquida;
 			
-			consolidadoHolder.mapasOkTracking += consolidado.mapasOkTracking;
-			consolidadoHolder.mapasNokTracking += consolidado.mapasNokTracking;
-			consolidadoHolder.totalMapasTracking += consolidado.totalMapasTracking;
+			consolidadoHolder.OkTracking += consolidado.OkTracking;
+			consolidadoHolder.NokTracking += consolidado.NokTracking;
+			consolidadoHolder.totalTracking += consolidado.totalTracking;
 		}
 
 		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
@@ -688,7 +688,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoHolder.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoHolder.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
 		
-		consolidadoHolder.resultadoTracking = (double)consolidadoHolder.mapasOkTracking / (double)consolidadoHolder.totalMapasTracking;
+		consolidadoHolder.resultadoTracking = (double)consolidadoHolder.OkTracking / (double)consolidadoHolder.totalTracking;
 		consolidadoHolder.metaTracking = meta.getMetaTracking();
 		consolidadoHolder.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoTracking, meta.getMetaTracking());
 	}

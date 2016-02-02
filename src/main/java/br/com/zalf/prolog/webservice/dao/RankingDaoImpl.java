@@ -403,6 +403,13 @@ public class RankingDaoImpl extends DatabaseConnection {
 	private void setPosicao (List<ItemPosicao> list){
 
 		Collections.sort(list, new CustomComparator());
+		Collections.reverse(list);
+		
+		int posicao = 1;
+		for(ItemPosicao item : list){
+			item.setPosicao(posicao);
+			posicao ++;
+		}
 
 	}
 
@@ -412,7 +419,12 @@ public class RankingDaoImpl extends DatabaseConnection {
 		@Override
 		public int compare(ItemPosicao o1, ItemPosicao o2) {
 			Integer valor1 = Double.compare(o1.getPontuacao(), o2.getPontuacao());
-			return valor1;
+			if(valor1!=0){
+				return valor1;
+			}
+			Integer valor2 = Double.compare(o2.getDevNf().getResultadoTotal(), o1.getDevNf().getResultadoTotal());
+			return valor2;
+			
 		}
 	}
 }

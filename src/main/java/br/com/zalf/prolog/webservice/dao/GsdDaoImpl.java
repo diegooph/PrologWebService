@@ -39,7 +39,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 			stmt.setLong(6, gsd.getCpfAjudante2());
 			stmt.setString(7, gsd.getPlacaVeiculo());
 			stmt.setString(8, gsd.getLatitude());
-			stmt.setString(8, gsd.getLongitude());
+			stmt.setString(9, gsd.getLongitude());
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				// Seta o código no objeto GSD para podeR inserir na 
@@ -142,6 +142,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT G.CODIGO, G.DATA_HORA, "
+					+ "G.LATITUDE, G.LONGITUDE, "
 					+ "G.URL_FOTO, G.CPF_AVALIADOR, G.CPF_MOTORISTA, "
 					+ "G.CPF_AJUDANTE_1, G.CPF_AJUDANTE_2, G.PLACA_VEICULO, "
 					+ "C1.NOME AS NOME_AVALIADOR, C2.NOME AS NOME_MOTORISTA, "
@@ -187,6 +188,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT G.CODIGO, G.DATA_HORA, "
+					+ "G.LATITUDE, G.LONGITUDE, "
 					+ "G.URL_FOTO, G.CPF_AVALIADOR, G.CPF_MOTORISTA, "
 					+ "G.CPF_AJUDANTE_1, G.CPF_AJUDANTE_2, G.PLACA_VEICULO, "
 					+ "C1.NOME AS NOME_AVALIADOR, C2.NOME AS NOME_MOTORISTA, "
