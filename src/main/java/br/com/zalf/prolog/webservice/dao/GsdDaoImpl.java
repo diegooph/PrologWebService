@@ -206,6 +206,13 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Gsd gsd = createGsd(rSet);
+				// Cria a lista de PDV's desse GSD
+				List<Pdv> pdvs = createPdvs(gsd.getCodigo());
+				gsd.setPdvs(pdvs);
+								// Cria a lista de PerguntasRespostas desse GSD
+				List<Gsd.PerguntaRespostasGsd> perguntaRespostasGsds = 
+						createPerguntasRespostas(gsd.getCodigo());
+				gsd.setPerguntaRespostasList(perguntaRespostasGsds);
 				listGsd.add(gsd);
 			}
 		} finally {
