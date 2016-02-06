@@ -353,6 +353,14 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade, Long cpf, String token) throws SQLException {
 
+		System.out.println(dataInicial);
+		System.out.println(dataFinal);
+		System.out.println(equipe);
+		System.out.println(codUnidade);
+		System.out.println(cpf);
+		System.out.println(token);
+		
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

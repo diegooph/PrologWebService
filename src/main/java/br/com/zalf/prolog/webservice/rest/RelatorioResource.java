@@ -21,7 +21,6 @@ import br.com.zalf.prolog.webservice.services.RelatorioService;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
 	private RelatorioService service = new RelatorioService();
-
 	
 	@POST
 	@Path("/getFiltros")

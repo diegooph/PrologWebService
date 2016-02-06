@@ -90,7 +90,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
 					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
-					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
+					+ "F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+					+ "FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON C.COD_FUNCAO = "
 					+ "F.CODIGO "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
@@ -138,7 +139,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
 					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
 					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
@@ -221,6 +222,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		c.setEquipe(rSet.getString("EQUIPE"));
 		c.setSetor(rSet.getString("SETOR"));
 		c.setNomeFuncao(rSet.getString("NOME_FUNCAO"));
+		c.setCodPermissao(rSet.getLong("PERMISSAO"));
 		return c;
 	}
 	
