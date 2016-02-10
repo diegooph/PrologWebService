@@ -409,8 +409,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			}
 			consolidadoHolder.codUnidade = codUnidade;
 			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
-			setTotaisHolder(consolidadoHolder);
-
+			if(!listConsolidadoMapasDia.isEmpty()){
+				setTotaisHolder(consolidadoHolder);	
+			}
+			
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
@@ -543,7 +545,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
 		itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
 		itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
-		itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+		if(itemTracking.getTotal() == 0){
+			itemTracking.setResultado(0);
+		}else{itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());}
 		itemTracking.setMeta(meta.getMetaTracking());
 		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
 		return itemTracking;
