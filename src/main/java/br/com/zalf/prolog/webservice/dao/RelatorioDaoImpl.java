@@ -149,8 +149,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-
-		System.out.print(listEmpresa);
 		return listEmpresa;
 	}
 	// buscar permisões para colaboradores com permissão = 3 = tudo
