@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Evento;
-import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.CalendarioDao;
 
@@ -60,7 +59,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				Evento evento = new Evento();
-				evento.setData(DateUtils.toSqlDate(rSet.getDate("DATA")));
+				evento.setData(rSet.getTimestamp("DATA"));
 				evento.setDescricao(rSet.getString("DESCRICAO"));
 				evento.setCodigo(rSet.getLong("CODIGO"));
 				System.out.println(evento.getCodigo());
