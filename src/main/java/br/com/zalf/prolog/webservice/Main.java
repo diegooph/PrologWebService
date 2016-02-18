@@ -23,7 +23,7 @@ public class Main {
 		RankingDaoImpl rankingDaoImpl = new RankingDaoImpl();
 		CalendarioDaoImpl calendarioDaoImpl = new CalendarioDaoImpl();
 				
-		LocalDate dataInicial = LocalDate.of(2015, Month.DECEMBER, 01);
+		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
 		Date datainicial = Date.valueOf(dataInicial);
 		LocalDate dataFinal = LocalDate.now();
 		Date datafinal = Date.valueOf(dataFinal);
@@ -33,9 +33,9 @@ public class Main {
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));
 		//System.out.print(rankingDaoImpl.getRanking(dataFinal, dataFinal, "%", 1L, 12345678987L, "8nkv0v78tlqdliaefdi8j07ob0"));
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
-		calendarioDaoImpl.getEventosByCpf(cpf, token);
-		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf));
-		//System.out.print(relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1L, cpf, "jnu390t2o6re9vgu8a8v51uf74"));
+		//calendarioDaoImpl.getEventosByCpf(cpf, token);
+		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf, "k6qd4tp5prsjt5tus9shjiudj9"));
+		//relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1L, cpf, "o5e0u2hs3slacoas2omeek0g2t");
 		//relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
 		//relatorioDaoImpl.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal,1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
 			

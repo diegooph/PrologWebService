@@ -14,7 +14,7 @@ import br.com.zalf.prolog.webservice.imports.MapaImport;
 public class MapaDaoImpl extends DatabaseConnection{
 
 	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException {
-		System.out.println("Entrou no insertOrUpdate");
+		//System.out.println("Entrou no insertOrUpdate");
 		//System.out.println(listMapas.get(0));
 		for(MapaImport mapa : listMapas){
 
@@ -34,7 +34,7 @@ public class MapaDaoImpl extends DatabaseConnection{
 	}
 
 	public boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula) throws SQLException {
-		System.out.println("Entrou no insertOrUpdateMapaColaborador");
+		//System.out.println("Entrou no insertOrUpdateMapaColaborador");
 		//System.out.println(listMapas.get(0));
 
 		if(matricula > 0){

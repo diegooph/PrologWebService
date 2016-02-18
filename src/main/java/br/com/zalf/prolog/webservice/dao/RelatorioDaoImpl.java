@@ -416,6 +416,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
+		System.out.print(consolidadoHolder);
 		return  consolidadoHolder;
 	}
 
@@ -626,10 +627,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoMapasDia.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
 		
+		if(consolidadoMapasDia.totalTracking > 0){
 		consolidadoMapasDia.resultadoTracking = (double)consolidadoMapasDia.OkTracking / (double)consolidadoMapasDia.totalTracking;
 		consolidadoMapasDia.metaTracking = meta.getMetaTracking();
 		consolidadoMapasDia.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoTracking, meta.getMetaTracking());
-
+		}
 	}
 
 	private void setTotaisHolder (ConsolidadoHolder consolidadoHolder){
