@@ -34,6 +34,9 @@ CREATE TABLE IF NOT EXISTS RELATO (
  */
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao, 
 BaseDao<Relato> {
+	
+	private static final int LIMIT = 10;
+		
 	@Override
 	public boolean insert(Relato relato) throws SQLException {
 		Connection conn = null;
@@ -152,20 +155,27 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public List<Relato> getByColaborador(Long cpf, String token) throws SQLException {
+	public List<Relato> getByColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
+			stmt = conn.prepareStatement("SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+					+ " FROM RELATO R JOIN "
 					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
 					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
-					+ "? = TA.TOKEN WHERE R.CPF_COLABORADOR = ?");
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
+					+ "? = TA.TOKEN WHERE R.CPF_COLABORADOR = ? "
+					+ "ORDER BY DISTANCIA "
+					+ "LIMIT ? OFFSET ? ");
+			stmt.setDouble(1, longitude);
+			stmt.setDouble(2, latitude);
 			stmt.setLong(3, cpf);
+			stmt.setString(4, token);
+			stmt.setLong(5, cpf);
+			stmt.setInt(6, LIMIT);
+			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
@@ -178,21 +188,31 @@ BaseDao<Relato> {
 	}
 	
 	@Override
-	public List<Relato> getAllExcetoColaborador(Long cpf, String token) throws SQLException {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+		
+		System.out.println("offset:  " + offset);
+		
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO R JOIN "
+			stmt = conn.prepareStatement("SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+					+ " FROM RELATO R JOIN "
 					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
 					+ "TOKEN_AUTENTICACAO TA ON ? = TA.TOKEN AND "
 					+ "? = TA.CPF_COLABORADOR WHERE "
-					+ "R.CPF_COLABORADOR != ?;");
-			stmt.setString(1, token);
-			stmt.setLong(2, cpf);
-			stmt.setLong(3, cpf);
+					+ "R.CPF_COLABORADOR != ? "
+					+ "ORDER BY DISTANCIA "
+					+ "LIMIT ? OFFSET ? ");
+			stmt.setDouble(1, longitude);
+			stmt.setDouble(2, latitude);
+			stmt.setString(3, token);
+			stmt.setLong(4, cpf);
+			stmt.setLong(5, cpf);
+			stmt.setInt(6, LIMIT);
+			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
@@ -219,6 +239,7 @@ BaseDao<Relato> {
 		relato.setUrlFoto1(rSet.getString("URL_FOTO_1"));
 		relato.setUrlFoto2(rSet.getString("URL_FOTO_2"));
 		relato.setUrlFoto3(rSet.getString("URL_FOTO_3"));
+		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
 		return relato;
 	}
 }

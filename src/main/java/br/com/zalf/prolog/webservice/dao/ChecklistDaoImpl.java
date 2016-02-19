@@ -22,6 +22,9 @@ import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 public class ChecklistDaoImpl extends DatabaseConnection implements 
 		BaseDao<Checklist>, ChecklistDao {
 
+	// Limit usado nas buscas para limitar a quantidade de resultados.
+	private static final int LIMIT = 10;
+	
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
 	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
@@ -143,7 +146,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 	
 	@Override
-	public List<Checklist> getAllExcetoColaborador(Long cpf) throws SQLException {
+	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -153,8 +156,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
 					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
 					+ "WHERE CPF_COLABORADOR != ? "
-					+ "ORDER BY DATA_HORA DESC");
+					+ "ORDER BY DATA_HORA DESC "
+					+ "LIMIT ? OFFSET ? ");
 			stmt.setLong(1, cpf);
+			stmt.setInt(2, LIMIT);
+			stmt.setLong(3, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
@@ -167,7 +173,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 	
 	@Override
-	public List<Checklist> getByColaborador(Long cpf, String token) throws SQLException {
+	public List<Checklist> getByColaborador(Long cpf, String token, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -178,10 +184,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO FROM CHECKLIST C "
 					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
 					+ "? = TA.TOKEN WHERE C.CPF_COLABORADOR = ? "
-					+ "ORDER BY DATA_HORA DESC");
+					+ "ORDER BY DATA_HORA DESC "
+					+ "LIMIT ? OFFSET ?");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
 			stmt.setLong(3, cpf);
+			stmt.setInt(4, LIMIT);
+			stmt.setLong(5, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);

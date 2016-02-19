@@ -55,18 +55,18 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getByColaborador(Long cpf, String token) {
+	public List<Relato> getByColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
 		try {
-			return dao.getByColaborador(cpf, token);
+			return dao.getByColaborador(cpf, token, offSet, latitude, longitude);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();
 		}
 	}
 	
-	public List<Relato> getAllExcetoColaborador(Long cpf, String token) {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
 		try {
-			return dao.getAllExcetoColaborador(cpf, token);
+			return dao.getAllExcetoColaborador(cpf, token, offSet, latitude, longitude);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

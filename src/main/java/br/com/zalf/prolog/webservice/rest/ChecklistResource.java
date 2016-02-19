@@ -55,16 +55,17 @@ public class ChecklistResource {
 	
 //	@GET
 //	@Path("/exceto/colaborador/{cpf}")
-//	public List<Checklist> getAllExcetoColaborador(Long cpf) {
-//		return service.getAllExcetoColaborador(cpf);
+//	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) {
+//		return service.getAllExcetoColaborador(cpf, offset);
 //	}
 	
 	@POST
 	@Path("/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Checklist> getByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getByColaborador(cpf, token);
+			@FormParam("token") String token,
+			@FormParam("offset") long offset) {
+		return service.getByColaborador(cpf, token, offset);
 	}
 	
 	@GET

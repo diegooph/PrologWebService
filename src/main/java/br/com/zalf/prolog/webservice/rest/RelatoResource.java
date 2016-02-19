@@ -54,16 +54,22 @@ public class RelatoResource {
 	@Path("/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Relato> getByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getByColaborador(cpf, token);
+			@FormParam("token") String token,
+			@FormParam("offset") long offset,
+			@FormParam("latitude") double latitude,
+			@FormParam("longitude") double longitude) {
+		return service.getByColaborador(cpf, token, offset, latitude, longitude);
 	}
 	
 	@POST
 	@Path("/exceto/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Relato> getAllExcetoColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getAllExcetoColaborador(cpf, token);
+			@FormParam("token") String token,
+			@FormParam("offset") long offset,
+			@FormParam("latitude") double latitude,
+			@FormParam("longitude") double longitude) {
+		return service.getAllExcetoColaborador(cpf, token, offset, latitude, longitude);
 	}
 	
 //	@DELETE

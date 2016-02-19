@@ -57,18 +57,18 @@ public class ChecklistService {
 	}
 	
 
-	public List<Checklist> getAllExcetoColaborador(Long cpf) {
+	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) {
 		try {
-			return dao.getAllExcetoColaborador(cpf);
+			return dao.getAllExcetoColaborador(cpf, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();
 		}
 	}
 	
-	public List<Checklist> getByColaborador(Long cpf, String token) {
+	public List<Checklist> getByColaborador(Long cpf, String token, long offset) {
 		try {
-			return dao.getByColaborador(cpf, token);
+			return dao.getByColaborador(cpf, token, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();
