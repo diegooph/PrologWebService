@@ -102,6 +102,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
+				System.out.println(c.getCodFuncao());
+				System.out.println(c.getNomeFuncao());
+				System.out.println(c);
 				return c;
 			}
 		} finally {
@@ -188,7 +191,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM FUNCAO F JOIN "
-					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO");
+					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO "
+					+ "WHERE C.CPF = ?");
+			stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Funcao f = createFuncao(rSet);
@@ -203,6 +208,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
 		f.setCodigo(rSet.getLong("CODIGO"));
+		System.out.println(rSet.getString("NOME"));
 		f.setNome(rSet.getString("NOME"));
 		return f;
 	}
@@ -211,6 +217,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
+		System.out.println(rSet.getLong("COD_FUNCAO"));
 		c.setCpf(rSet.getLong("CPF"));
 		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
 		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
@@ -222,6 +229,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		c.setEquipe(rSet.getString("EQUIPE"));
 		c.setSetor(rSet.getString("SETOR"));
 		c.setNomeFuncao(rSet.getString("NOME_FUNCAO"));
+		System.out.println(rSet.getString("NOME_FUNCAO"));
 		c.setCodPermissao(rSet.getLong("PERMISSAO"));
 		return c;
 	}

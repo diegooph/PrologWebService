@@ -16,17 +16,17 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {
 		SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
 		String token = tokenGenerador.nextSessionId();
-		if (update(cpf, token)) {
+		//if (update(cpf, token)) {
 			// Já existia e atualizou, não precisa inserir
-			Autenticacao autenticacao = new Autenticacao();
-			autenticacao.setToken(token);
-			autenticacao.setCpf(cpf);
-			autenticacao.setStatus(Autenticacao.OK);
-			return autenticacao;
-		} else {
+//			Autenticacao autenticacao = new Autenticacao();
+//			autenticacao.setToken(token);
+//			autenticacao.setCpf(cpf);
+//			autenticacao.setStatus(Autenticacao.OK);
+		 //return autenticacao;
+		//} else {
 			// Deve inserir, retorna se foi sucesso ou não
 			return insert(cpf, token);
-		}
+		//}
 	}
 
 	@Override
