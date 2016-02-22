@@ -13,7 +13,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.CalendarioDao;
 
 public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao{
 
-	private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA FROM "
+	private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
 			+ "COLABORADOR C JOIN CALENDARIO CAL ON " 
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "  
 			+ "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
@@ -21,7 +21,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? "
 			+ "UNION "
-			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA FROM "
+			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
 			+ "COLABORADOR C JOIN CALENDARIO CAL ON "
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
 			+ "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
@@ -29,11 +29,19 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? "
 			+ "UNION "
-			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA FROM "
+			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
 			+ "COLABORADOR C JOIN CALENDARIO CAL ON "
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
 			+ "AND CAL.COD_FUNCAO IS NULL "
 			+ "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
+			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
+			+ "WHERE C.CPF=? "
+			+ "UNION "
+			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+			+ "COLABORADOR C JOIN CALENDARIO CAL ON "
+			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
+			+ "AND CAL.COD_FUNCAO IS NULL "
+			+ "AND CAL.COD_EQUIPE IS NULL "
 			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? ";
 
@@ -56,15 +64,20 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			stmt.setLong(7, cpf);
 			stmt.setString(8, token); 
 			stmt.setLong(9, cpf); 
+			stmt.setLong(10, cpf);
+			stmt.setString(11, token); 
+			stmt.setLong(12, cpf); 
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				Evento evento = new Evento();
 				evento.setData(rSet.getTimestamp("DATA"));
 				evento.setDescricao(rSet.getString("DESCRICAO"));
 				evento.setCodigo(rSet.getLong("CODIGO"));
+				evento.setLocal(rSet.getString("LOCAL"));
 				System.out.println(evento.getCodigo());
 				System.out.println(evento.getData());
 				System.out.println(evento.getDescricao());
+				System.out.println(evento.getLocal());
 				listEvento.add(evento);
 			}
 

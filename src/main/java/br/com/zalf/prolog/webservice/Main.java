@@ -28,12 +28,12 @@ public class Main {
 		LocalDate dataFinal = LocalDate.of(2016, Month.FEBRUARY, 28);
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
-		String token = "kvt8feaf6ui0mch4ro0vdvivf3";
+		String token = "ut9mrb367jg072gn56mif4pu29";
 		
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));
 		//System.out.print(rankingDaoImpl.getRanking(dataFinal, dataFinal, "%", 1L, 12345678987L, "8nkv0v78tlqdliaefdi8j07ob0"));
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
-		//calendarioDaoImpl.getEventosByCpf(cpf, token);
+		calendarioDaoImpl.getEventosByCpf(cpf, token);
 		//System.out.println(produtividadeDaoImpl.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf, "k6qd4tp5prsjt5tus9shjiudj9"));
 		//relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1L, cpf, "ut9mrb367jg072gn56mif4pu29");
 		//relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
