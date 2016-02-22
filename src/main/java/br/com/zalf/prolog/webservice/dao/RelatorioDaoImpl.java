@@ -700,9 +700,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		consolidadoHolder.metaJornada = meta.getMetaJornadaLiquidaMapas();
 		consolidadoHolder.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
 		
+		if(consolidadoHolder.totalTracking > 0){
 		consolidadoHolder.resultadoTracking = (double)consolidadoHolder.OkTracking / (double)consolidadoHolder.totalTracking;
 		consolidadoHolder.metaTracking = meta.getMetaTracking();
 		consolidadoHolder.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoTracking, meta.getMetaTracking());
+		}
 	}
 
 }
