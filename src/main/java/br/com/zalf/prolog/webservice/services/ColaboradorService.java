@@ -57,6 +57,15 @@ public class ColaboradorService {
 		}
 	}
 	
+	public List<Colaborador> getAll(Long codUnidade, String token, Long cpf) {
+		try {
+			return dao.getAll(codUnidade, token, cpf);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Colaborador>();
+		}
+	}
+	
 	public List<Colaborador> getAll() {
 		try {
 			return dao.getAll();

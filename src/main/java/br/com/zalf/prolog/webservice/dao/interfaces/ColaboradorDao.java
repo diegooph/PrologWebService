@@ -11,4 +11,5 @@ public interface ColaboradorDao {
 	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
 	Funcao getFuncaoByCod(Long codigo) throws SQLException;
 	List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException;
+	List<Colaborador> getAll(Long codUnidade, String token, Long cpf) throws SQLException;
 }

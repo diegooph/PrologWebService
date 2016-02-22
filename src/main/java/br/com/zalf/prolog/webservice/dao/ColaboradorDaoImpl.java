@@ -121,7 +121,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR");
+			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR C JOIN "
+					+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
+					+ "TA.TOKEN = ? WHERE C.COD_UNIDADE = ?;");
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -247,5 +249,34 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		stmt.setString(10, c.getSetor());
 		stmt.setLong(11, c.getCodFuncao());
 		stmt.setLong(12, c.getCodUnidade());
+	}
+
+	@Override
+	public List<Colaborador> getAll(Long codUnidade, String token, Long cpf) throws SQLException {
+		List<Colaborador> list = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
+					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
+					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
+			stmt.setLong(1, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Colaborador c = createColaborador(rSet);
+				list.add(c);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return list;
 	}
 }
