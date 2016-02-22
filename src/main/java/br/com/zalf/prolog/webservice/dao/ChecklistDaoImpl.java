@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.zalf.prolog.models.Pergunta;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Resposta;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.ChecklistRetorno;
@@ -20,7 +21,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements 
-		BaseDao<Checklist>, ChecklistDao {
+		BaseDao<Request<Checklist>, Checklist>, ChecklistDao {
 
 	// Limit usado nas buscas para limitar a quantidade de resultados.
 	private static final int LIMIT = 10;
@@ -61,7 +62,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public boolean update(Checklist checklist) throws SQLException {
+	public boolean update(Request<Checklist> checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -69,16 +70,16 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA_HORA = ?, "
 					+ "CPF_COLABORADOR = ?, PLACA_VEICULO = ?, TIPO = ? "
 					+ "WHERE CODIGO = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
-			stmt.setLong(2, checklist.getCpfColaborador());
-			stmt.setString(3, checklist.getPlacaVeiculo());
-			stmt.setString(4, String.valueOf(checklist.getTipo()));
-			stmt.setLong(5, checklist.getCodigo());
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao atualizar o checklist");
-			}
-			updateRespostas(checklist);
+//			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
+//			stmt.setLong(2, checklist.getCpfColaborador());
+//			stmt.setString(3, checklist.getPlacaVeiculo());
+//			stmt.setString(4, String.valueOf(checklist.getTipo()));
+//			stmt.setLong(5, checklist.getCodigo());
+//			int count = stmt.executeUpdate();
+//			if(count == 0){
+//				throw new SQLException("Erro ao atualizar o checklist");
+//			}
+//			updateRespostas(checklist);
 		}
 		finally {
 			closeConnection(conn, stmt, null);
@@ -87,13 +88,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
+	public boolean delete(Request<Checklist> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM CHECKLIST WHERE CODIGO = ?");
-			stmt.setLong(1, codigo);
+//			stmt.setLong(1, codigo);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -124,7 +125,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public List<Checklist> getAll() throws SQLException {
+	public List<Checklist> getAll(Request<Checklist> request) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

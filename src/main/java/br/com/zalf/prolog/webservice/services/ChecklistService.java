@@ -19,24 +19,24 @@ public class ChecklistService {
 			return false;
 		}
 	}
-	
-	public boolean update(Checklist checklist) {
-		try {
-			return dao.update(checklist);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean delete(Long codigo) {
-		try {
-			return dao.delete(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	
+//	public boolean update(Checklist checklist) {
+//		try {
+//			return dao.update(checklist);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
+//	
+//	public boolean delete(Long codigo) {
+//		try {
+//			return dao.delete(codigo);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public Checklist getByCod(Long codigo, String token) {
 		try {
@@ -47,14 +47,14 @@ public class ChecklistService {
 		}
 	}
 	
-	public List<Checklist> getAll() {
-		try {
-			return dao.getAll();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Checklist>();
-		}
-	}
+//	public List<Checklist> getAll() {
+//		try {
+//			return dao.getAll();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return new ArrayList<Checklist>();
+//		}
+//	}
 	
 
 	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) {

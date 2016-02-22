@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -15,7 +16,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.SolicitacaoFolgaDao;
 
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements 
-		BaseDao<SolicitacaoFolga>, SolicitacaoFolgaDao {
+		BaseDao<Request<SolicitacaoFolga>, SolicitacaoFolga>, SolicitacaoFolgaDao {
 	
 	@Override
 	public boolean insert(SolicitacaoFolga s) throws SQLException {
@@ -47,12 +48,12 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public boolean update(SolicitacaoFolga object) throws SQLException {
+	public boolean update(Request<SolicitacaoFolga> object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
+	public boolean delete(Request<SolicitacaoFolga> object) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
@@ -62,7 +63,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public List<SolicitacaoFolga> getAll() throws SQLException {
+	public List<SolicitacaoFolga> getAll(Request<SolicitacaoFolga> s) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 

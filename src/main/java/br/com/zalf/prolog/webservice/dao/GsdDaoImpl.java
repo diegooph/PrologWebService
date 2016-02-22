@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Pergunta;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostasGsd;
 import br.com.zalf.prolog.models.gsd.Pdv;
@@ -16,8 +17,8 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
 
-public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>, 
-		GsdDao {
+public class GsdDaoImpl extends DatabaseConnection implements 
+	BaseDao<Request<Gsd>, Gsd>,	GsdDao {
 
 	@Override
 	public boolean insert(Gsd gsd) throws SQLException {
@@ -88,12 +89,12 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 	}
 
 	@Override
-	public boolean update(Gsd gsd) throws SQLException {
+	public boolean update(Request<Gsd> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
+	public boolean delete(Request<Gsd> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
@@ -104,7 +105,7 @@ public class GsdDaoImpl extends DatabaseConnection implements BaseDao<Gsd>,
 	}
 
 	@Override
-	public List<Gsd> getAll() throws SQLException {
+	public List<Gsd> getAll(Request<Gsd> gsd) throws SQLException {
 		 throw new UnsupportedOperationException("Operation not supported yet");
 	}
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.dao.ColaboradorDaoImpl;
 
 public class ColaboradorService {
@@ -21,23 +22,23 @@ public class ColaboradorService {
 		}
 	}
 	
-	public boolean update(Colaborador colaborador) {
-		try {
-			return dao.update(colaborador);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean update(Colaborador colaborador) {
+//		try {
+//			return dao.update(colaborador);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
-	public boolean delete(Long cpf) {
-		try {
-			return dao.delete(cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean delete(Long cpf) {
+//		try {
+//			return dao.delete(cpf);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public Colaborador getByCod(Long cpf, String token) {
 		try {
@@ -57,18 +58,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public List<Colaborador> getAll(Long codUnidade, String token, Long cpf) {
+	public List<Colaborador> getAll(Request<Colaborador> request) {
 		try {
-			return dao.getAll(codUnidade, token, cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Colaborador>();
-		}
-	}
-	
-	public List<Colaborador> getAll() {
-		try {
-			return dao.getAll();
+			return dao.getAll(request);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Colaborador>();

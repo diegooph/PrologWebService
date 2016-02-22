@@ -10,13 +10,14 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
 	
 public class ColaboradorDaoImpl extends DatabaseConnection implements 
-		BaseDao<Colaborador>, ColaboradorDao {
+		BaseDao<Request<Colaborador>, Colaborador>, ColaboradorDao {
 	
 	@Override
 	public boolean insert(Colaborador colaborador) throws SQLException {
@@ -43,7 +44,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public boolean update(Colaborador colaborador) throws SQLException {
+	public boolean update(Request<Colaborador> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -53,8 +54,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 					+ "DATA_NASCIMENTO = ? DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
 					+ "STATUS_ATIVO = ?, NOME = ?, EQUIPE = ?, SETOR = ?, "
 					+ "COD_FUNCAO = ?, COD_UNIDADE = ? WHERE CPF = ?");
-			setStatementItems(stmt, colaborador);
-			stmt.setLong(13, colaborador.getCpf());
+//			setStatementItems(stmt, colaborador);
+//			stmt.setLong(13, colaborador.getCpf());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
@@ -67,13 +68,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public boolean delete(Long cpf) throws SQLException {
+	public boolean delete(Request<Colaborador> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM COLABORADOR WHERE CPF = ?");
-			stmt.setLong(1, cpf);
+//			stmt.setLong(1, cpf);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -114,16 +115,23 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public List<Colaborador> getAll() throws SQLException {
+	public List<Colaborador> getAll(Request<Colaborador> request) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM COLABORADOR C JOIN "
-					+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
-					+ "TA.TOKEN = ? WHERE C.COD_UNIDADE = ?;");
+			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
+					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
+					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
+			stmt.setLong(3, request.getCodUnidade());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -249,34 +257,5 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		stmt.setString(10, c.getSetor());
 		stmt.setLong(11, c.getCodFuncao());
 		stmt.setLong(12, c.getCodUnidade());
-	}
-
-	@Override
-	public List<Colaborador> getAll(Long codUnidade, String token, Long cpf) throws SQLException {
-		List<Colaborador> list = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
-					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
-					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
-					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
-					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, codUnidade);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Colaborador c = createColaborador(rSet);
-				list.add(c);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return list;
 	}
 }

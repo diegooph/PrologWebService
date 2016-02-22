@@ -20,14 +20,14 @@ public class GsdService {
 		}
 	}
 	
-	public boolean update(Gsd gsd) {
-		try {
-			return dao.update(gsd);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean update(Gsd gsd) {
+//		try {
+//			return dao.update(gsd);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public Gsd getByCod(Long codigo, String token) {
 		try {
@@ -65,23 +65,23 @@ public class GsdService {
 		}
 	}
 	
-	public List<Gsd> getAll() {
-		try {
-			return dao.getAll();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Gsd>();
-		}
-	}
-	
-	public boolean delete(Long codigo) {
-		try {
-			return dao.delete(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public List<Gsd> getAll() {
+//		try {
+//			return dao.getAll();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return new ArrayList<Gsd>();
+//		}
+//	}
+//	
+//	public boolean delete(Long codigo) {
+//		try {
+//			return dao.delete(codigo);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public List<Pergunta> getPerguntas() {
 		try {

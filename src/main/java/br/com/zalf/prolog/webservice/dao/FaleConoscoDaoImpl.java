@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.FaleConosco;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
@@ -27,7 +28,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.FaleConoscoDao;
 		);*/
 
 public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConoscoDao, 
-BaseDao<FaleConosco>  {
+	BaseDao<Request<FaleConosco>, FaleConosco>  {
 
 	@Override
 	public boolean insert(FaleConosco faleConosco) throws SQLException {
@@ -57,7 +58,7 @@ BaseDao<FaleConosco>  {
 	}
 
 	@Override
-	public boolean update(FaleConosco faleConosco) throws SQLException {
+	public boolean update(Request<FaleConosco> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -65,11 +66,11 @@ BaseDao<FaleConosco>  {
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
 					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
 					+ "WHERE CODIGO = ? ");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
-			stmt.setString(2, faleConosco.getDescricao());
-			stmt.setString(3, faleConosco.getCategoria());
-			stmt.setLong(4, faleConosco.getCpfColaborador());		
-			stmt.setLong(5, faleConosco.getCodigo());
+//			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
+//			stmt.setString(2, faleConosco.getDescricao());
+//			stmt.setString(3, faleConosco.getCategoria());
+//			stmt.setLong(4, faleConosco.getCpfColaborador());		
+//			stmt.setLong(5, faleConosco.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o fale conosco");
@@ -82,14 +83,14 @@ BaseDao<FaleConosco>  {
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
+	public boolean delete(Request<FaleConosco> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM FALE_CONOSCO "
 					+ "WHERE CODIGO = ?");
-			stmt.setLong(1, codigo);
+//			stmt.setLong(1, codigo);
 			return (stmt.executeUpdate() > 0);
 		}
 		finally {
@@ -121,7 +122,7 @@ BaseDao<FaleConosco>  {
 	}
 
 	@Override
-	public List<FaleConosco> getAll() throws SQLException {
+	public List<FaleConosco> getAll(Request<FaleConosco> request) throws SQLException {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

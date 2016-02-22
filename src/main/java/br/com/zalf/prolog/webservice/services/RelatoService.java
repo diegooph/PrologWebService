@@ -19,23 +19,23 @@ public class RelatoService {
 		}
 	}
 	
-	public boolean update(Relato relato) {
-		try {
-			return dao.update(relato);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean delete(Long codigo) {
-		try {
-			return dao.delete(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean update(Relato relato) {
+//		try {
+//			return dao.update(relato);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
+//	
+//	public boolean delete(Long codigo) {
+//		try {
+//			return dao.delete(codigo);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public Relato getByCod(Long codigo, String token) {
 		try {
@@ -46,14 +46,14 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getAll() {
-		try {
-			return dao.getAll();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Relato>();
-		}
-	}
+//	public List<Relato> getAll() {
+//		try {
+//			return dao.getAll();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return new ArrayList<Relato>();
+//		}
+//	}
 	
 	public List<Relato> getByColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
 		try {

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Relato;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS RELATO (
 );
  */
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao, 
-BaseDao<Relato> {
+	BaseDao<Request<Relato>, Relato> {
 	
 	private static final int LIMIT = 10;
 		
@@ -69,7 +70,7 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public boolean update(Relato relato) throws SQLException {
+	public boolean update(Request<Relato> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -78,16 +79,16 @@ BaseDao<Relato> {
 					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
 					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
-			stmt.setString(2, relato.getAssunto());
-			stmt.setString(3, relato.getDescricao());
-			stmt.setString(4, relato.getLatitude());
-			stmt.setString(5, relato.getLongitude());
-			stmt.setString(6, relato.getUrlFoto1());
-			stmt.setString(7, relato.getUrlFoto2());
-			stmt.setString(8, relato.getUrlFoto3());
-			stmt.setLong(9, relato.getCpfColaborador());
-			stmt.setLong(10, relato.getCodigo());
+//			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
+//			stmt.setString(2, relato.getAssunto());
+//			stmt.setString(3, relato.getDescricao());
+//			stmt.setString(4, relato.getLatitude());
+//			stmt.setString(5, relato.getLongitude());
+//			stmt.setString(6, relato.getUrlFoto1());
+//			stmt.setString(7, relato.getUrlFoto2());
+//			stmt.setString(8, relato.getUrlFoto3());
+//			stmt.setLong(9, relato.getCpfColaborador());
+//			stmt.setLong(10, relato.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o relato");
@@ -100,13 +101,13 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public boolean delete(Long codigo) throws SQLException {
+	public boolean delete(Request<Relato> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM RELATO WHERE CODIGO = ?");
-			stmt.setLong(1, codigo);
+//			stmt.setLong(1, codigo);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -135,7 +136,7 @@ BaseDao<Relato> {
 	}
 
 	@Override
-	public List<Relato> getAll() throws SQLException {
+	public List<Relato> getAll(Request<Relato> request) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

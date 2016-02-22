@@ -19,23 +19,23 @@ public class FaleConoscoService {
 		}
 	}
 	
-	public boolean update(FaleConosco faleConosco) {
-		try {
-			return dao.update(faleConosco);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean delete(Long codigo) {
-		try {
-			return dao.delete(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+//	public boolean update(FaleConosco faleConosco) {
+//		try {
+//			return dao.update(faleConosco);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
+//	
+//	public boolean delete(Long codigo) {
+//		try {
+//			return dao.delete(codigo);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
 	
 	public FaleConosco getByCod(Long codigo, String token) {
 		try {
@@ -45,15 +45,15 @@ public class FaleConoscoService {
 			return null;
 		}
 	}
-	
-	public List<FaleConosco> getAll() {
-		try {
-			return dao.getAll();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<FaleConosco>();
-		}
-	}
+//	
+//	public List<FaleConosco> getAll() {
+//		try {
+//			return dao.getAll();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return new ArrayList<FaleConosco>();
+//		}
+//	}
 	
 	public List<FaleConosco> getByColaborador(long cpf) {
 		try {
