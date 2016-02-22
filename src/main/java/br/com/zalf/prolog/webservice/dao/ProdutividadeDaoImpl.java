@@ -74,7 +74,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();	
 			
-			MetasDao metasDao = new MetasDao();
+			MetasDaoImpl metasDao = new MetasDaoImpl();
 			meta = metasDao.getMetasByCpf(cpf);
 			
 

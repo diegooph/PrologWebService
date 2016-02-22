@@ -362,7 +362,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDao metasDao = new MetasDao();
+		MetasDaoImpl metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByUnidade(codUnidade);
 		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 
