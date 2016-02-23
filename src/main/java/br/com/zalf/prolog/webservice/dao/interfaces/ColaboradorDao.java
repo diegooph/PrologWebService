@@ -9,7 +9,7 @@ import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 
 public interface ColaboradorDao {
-	boolean insert(Colaborador colaborador) throws SQLException;
+	boolean insert(Request<Colaborador> request) throws SQLException;
 	boolean update(Request<Colaborador> request) throws SQLException;
 	boolean delete(Request<Colaborador> request) throws SQLException;
 	Colaborador getByCod(Long cpf, String token) throws SQLException;

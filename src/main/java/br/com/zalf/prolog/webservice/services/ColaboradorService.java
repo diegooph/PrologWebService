@@ -13,9 +13,9 @@ import br.com.zalf.prolog.webservice.dao.ColaboradorDaoImpl;
 public class ColaboradorService {
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
 	
-	public boolean insert(Colaborador colaborador) {
+	public boolean insert(Request<Colaborador> request) {
 		try {
-			return dao.insert(colaborador);
+			return dao.insert(request);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
