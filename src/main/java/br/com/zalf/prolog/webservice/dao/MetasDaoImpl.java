@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,9 +224,17 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	}
 
 	@Override
-	public boolean updateByCod(Request<?> request) throws SQLException {
-		Metas<?> metas = (Metas<?>) request.getObject();
+	public boolean updateByCod(Request<Metas> request) throws SQLException {
 
+		Metas<?> metas = request.getObject();
+		System.out.println("Codigo meta: " + request.getObject().getCodigo());
+		System.out.println("Nome meta: " +request.getObject().getNome());
+		System.out.println("Valor meta: " +request.getObject().getValor());
+		System.out.println("Cod unidade: " + request.getCodUnidade());
+		System.out.println("CPF: " +request.getCpf());
+		System.out.println("Token: " + request.getToken());
+		
+		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -236,9 +245,12 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 
 			if(metas.getValor() instanceof Double){
 				System.out.println("Tipo double");
+				System.out.println("Entrou no double");
 				stmt.setDouble(1, (Double) metas.getValor());
 			}else{
-				stmt.setTime(1,(Time) metas.getValor());
+				System.out.println(String.valueOf(metas.getValor()));
+				System.out.println(Time.valueOf(formatTime(String.valueOf(metas.getValor()))));
+				stmt.setString(1,String.valueOf(metas.getValor()));
 				System.out.println("Tipo time");
 			}
 			stmt.setLong(2, request.getCodUnidade());
@@ -256,5 +268,9 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 			closeConnection(conn, stmt, null);
 		}		
 		return true;
+	}
+	
+	private LocalTime formatTime (String stringToFormat){
+		return LocalTime.parse(stringToFormat);
 	}
 }
