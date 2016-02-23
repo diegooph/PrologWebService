@@ -38,14 +38,14 @@ public class ChecklistService {
 //		}
 //	}
 	
-	public Checklist getByCod(Long codigo, String token) {
-		try {
-			return dao.getByCod(codigo, token);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public Checklist getByCod(Long codigo, String token) {
+//		try {
+//			return dao.getByCod(codigo, token);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
 //	public List<Checklist> getAll() {
 //		try {

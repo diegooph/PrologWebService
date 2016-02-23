@@ -29,14 +29,14 @@ public class GsdService {
 //		}
 //	}
 	
-	public Gsd getByCod(Long codigo, String token) {
-		try {
-			return dao.getByCod(codigo, token);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public Gsd getByCod(Long codigo, String token) {
+//		try {
+//			return dao.getByCod(codigo, token);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
 	public List<Gsd> getByColaborador(Long cpf, String token) {
 		try {

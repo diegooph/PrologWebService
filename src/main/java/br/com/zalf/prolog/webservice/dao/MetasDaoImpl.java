@@ -81,12 +81,12 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 		return meta;
 	}
 
-	public List<Metas> getByCpf(Long cpf, String token) throws SQLException{
+	public List<Metas<?>> getByCpf(Long cpf, String token) throws SQLException{
 
 		System.out.println(cpf);
 		System.out.println(token);
 
-		List<Metas> listMetas = new ArrayList<>();
+		List<Metas<?>> listMetas = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -223,8 +223,8 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	}
 
 	@Override
-	public boolean updateByCod(Request request) throws SQLException {
-		Metas metas = (Metas) request.getObject();
+	public boolean updateByCod(Request<?> request) throws SQLException {
+		Metas<?> metas = (Metas<?>) request.getObject();
 
 		Connection conn = null;
 		PreparedStatement stmt = null;

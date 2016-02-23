@@ -17,6 +17,15 @@ public class AutenticacaoService {
 		}
 	}
 	
+	public boolean delete(Autenticacao autenticacao) {
+	try {
+		return dao.delete(autenticacao);
+	} catch (SQLException e) {
+		e.printStackTrace();
+		return false;
+	}
+}
+	
 	public boolean verifyIfExists(Autenticacao autenticacao) {
 		try {
 			return dao.verifyIfExists(autenticacao);					

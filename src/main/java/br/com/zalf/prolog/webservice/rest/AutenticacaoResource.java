@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -26,10 +27,13 @@ public class AutenticacaoResource {
 		}
 	}
 	
-//	@POST
-//	@Path("/insertOrUpdate")
-//	public Autenticacao insertOrUpdate(Long cpf) {
-//		return service.insertOrUpdate(cpf);
-//	}
-
+	@PUT
+	public Response delete(Autenticacao autenticacao) {
+		System.out.println("chegou");
+		if (service.delete(autenticacao)) {
+			return Response.Ok("Token deletado com sucesso");
+		} else {
+			return Response.Error("Erro ao deletar token");
+		}
+	}
 }

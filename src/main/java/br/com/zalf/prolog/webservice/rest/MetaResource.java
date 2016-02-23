@@ -24,7 +24,7 @@ public class MetaResource{
 	@POST
 	@Path("/byCpf")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Metas> getByCpf(
+	public List<Metas<?>> getByCpf(
 			@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token) {
 		return service.getByCpf( cpf, token);

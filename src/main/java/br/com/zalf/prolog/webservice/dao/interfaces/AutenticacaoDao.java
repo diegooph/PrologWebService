@@ -7,4 +7,5 @@ import br.com.zalf.prolog.models.Autenticacao;
 public interface AutenticacaoDao {
 	Autenticacao insertOrUpdate(Long cpf) throws SQLException;
 	boolean verifyIfExists(Autenticacao autenticacao) throws SQLException;
+	boolean delete(Autenticacao autenticacao) throws SQLException;
 }

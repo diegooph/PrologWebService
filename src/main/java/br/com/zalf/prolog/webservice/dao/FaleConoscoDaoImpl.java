@@ -12,7 +12,6 @@ import br.com.zalf.prolog.models.FaleConosco;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.FaleConoscoDao;
 
 
@@ -27,8 +26,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.FaleConoscoDao;
 		  REFERENCES COLABORADOR(CPF)
 		);*/
 
-public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConoscoDao, 
-	BaseDao<Request<FaleConosco>, FaleConosco>  {
+public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConoscoDao  {
 
 	@Override
 	public boolean insert(FaleConosco faleConosco) throws SQLException {
@@ -100,7 +98,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 
 	// TODO: Fazer join token 
 	@Override
-	public FaleConosco getByCod(Long codigo, String token) throws SQLException {
+	public FaleConosco getByCod(Request<?> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -108,7 +106,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 			conn = getConnection();
 			stmt = conn.prepareStatement(" SELECT * FROM FALE_CONOSCO "
 					+ "WHERE CODIGO = ?" );
-			stmt.setLong(1, codigo);
+			//stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				FaleConosco c = createFaleConosco(rSet);
@@ -122,7 +120,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 	}
 
 	@Override
-	public List<FaleConosco> getAll(Request<FaleConosco> request) throws SQLException {
+	public List<FaleConosco> getAll(Request<?> request) throws SQLException {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

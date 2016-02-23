@@ -11,12 +11,12 @@ import br.com.zalf.prolog.webservice.dao.MetasDaoImpl;
 public class MetaService {
 private MetasDaoImpl dao = new MetasDaoImpl();
 	
-	public List<Metas> getByCpf(Long cpf, String token) {
+	public List<Metas<?>> getByCpf(Long cpf, String token) {
 		try {
 			return dao.getByCpf(cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<Metas>();
+			return new ArrayList<Metas<?>>();
 		}
 	}
 	public boolean updateByCod(Request<Metas> request) {

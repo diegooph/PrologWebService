@@ -12,7 +12,6 @@ import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.RelatoDao;
 
 /*
@@ -33,8 +32,7 @@ CREATE TABLE IF NOT EXISTS RELATO (
   REFERENCES COLABORADOR(CPF)
 );
  */
-public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao, 
-	BaseDao<Request<Relato>, Relato> {
+public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 	
 	private static final int LIMIT = 10;
 		
@@ -116,14 +114,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao,
 
 	// TODO: Fazer join token
 	@Override
-	public Relato getByCod(Long codigo, String token) throws SQLException {
+	public Relato getByCod(Request<?> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE CODIGO = ?");
-			stmt.setLong(1, codigo);
+			//stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Relato relato = createRelato(rSet);
@@ -136,7 +134,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao,
 	}
 
 	@Override
-	public List<Relato> getAll(Request<Relato> request) throws SQLException {
+	public List<Relato> getAll(Request<?> request) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

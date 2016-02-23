@@ -17,11 +17,9 @@ import br.com.zalf.prolog.models.checklist.ChecklistRetorno;
 import br.com.zalf.prolog.models.checklist.ChecklistSaida;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 
-public class ChecklistDaoImpl extends DatabaseConnection implements 
-		BaseDao<Request<Checklist>, Checklist>, ChecklistDao {
+public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
 	// Limit usado nas buscas para limitar a quantidade de resultados.
 	private static final int LIMIT = 10;
@@ -103,7 +101,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 
 	// TODO: Fazer join token
 	@Override
-	public Checklist getByCod(Long codigo, String token) throws SQLException {
+	public Checklist getByCod(Request<?> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -112,7 +110,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
 					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
 					+ "WHERE C.CODIGO = ?");
-			stmt.setLong(1, codigo);
+			//stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
@@ -125,7 +123,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public List<Checklist> getAll(Request<Checklist> request) throws SQLException {
+	public List<Checklist> getAll(Request<?> request) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

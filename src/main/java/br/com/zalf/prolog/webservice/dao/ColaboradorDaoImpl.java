@@ -13,11 +13,9 @@ import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
 	
-public class ColaboradorDaoImpl extends DatabaseConnection implements 
-		BaseDao<Request<Colaborador>, Colaborador>, ColaboradorDao {
+public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 	
 	@Override
 	public boolean insert(Colaborador colaborador) throws SQLException {
@@ -81,6 +79,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 		}
 	}
 
+	// TODO: mudar para receber um Request<?> request
 	@Override
 	public Colaborador getByCod(Long cpf, String token) throws SQLException {
 		Connection conn = null;
@@ -115,7 +114,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public List<Colaborador> getAll(Request<Colaborador> request) throws SQLException {
+	public List<Colaborador> getAll(Request<?> request) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

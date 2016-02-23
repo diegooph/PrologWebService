@@ -8,8 +8,8 @@ import br.com.zalf.prolog.models.Request;
 
 public interface MetasDao {
 	
-	public List<Metas> getByCpf(Long cpf, String token) throws SQLException;
+	public List<Metas<?>> getByCpf(Long cpf, String token) throws SQLException;
 	
-	public boolean updateByCod(Request request) throws SQLException;
+	public boolean updateByCod(Request<?> request) throws SQLException;
 
 }

@@ -14,11 +14,9 @@ import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostasGsd;
 import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
 
-public class GsdDaoImpl extends DatabaseConnection implements 
-	BaseDao<Request<Gsd>, Gsd>,	GsdDao {
+public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 
 	@Override
 	public boolean insert(Gsd gsd) throws SQLException {
@@ -100,12 +98,12 @@ public class GsdDaoImpl extends DatabaseConnection implements
 
 	// TODO: Fazer join token
 	@Override
-	public Gsd getByCod(Long codigo, String token) throws SQLException {
+	public Gsd getByCod(Request<?> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
-	public List<Gsd> getAll(Request<Gsd> gsd) throws SQLException {
+	public List<Gsd> getAll(Request<?> request) throws SQLException {
 		 throw new UnsupportedOperationException("Operation not supported yet");
 	}
 

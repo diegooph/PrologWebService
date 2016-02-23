@@ -12,11 +12,9 @@ import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.BaseDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.SolicitacaoFolgaDao;
 
-public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements 
-		BaseDao<Request<SolicitacaoFolga>, SolicitacaoFolga>, SolicitacaoFolgaDao {
+public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 	
 	@Override
 	public boolean insert(SolicitacaoFolga s) throws SQLException {
@@ -58,12 +56,12 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements
 	}
 
 	@Override
-	public SolicitacaoFolga getByCod(Long codigo, String token) throws SQLException {
+	public SolicitacaoFolga getByCod(Request<?> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
-	public List<SolicitacaoFolga> getAll(Request<SolicitacaoFolga> s) throws SQLException {
+	public List<SolicitacaoFolga> getAll(Request<?> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 

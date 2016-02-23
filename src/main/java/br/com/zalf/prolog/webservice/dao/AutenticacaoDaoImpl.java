@@ -51,6 +51,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		return false;
 	}
 	
+	@Deprecated
 	private boolean update(Long cpf, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -92,5 +93,21 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		}
 		autenticacao.setStatus(Autenticacao.OK);
 		return autenticacao;
+	}
+
+	@Override
+	public boolean delete(Autenticacao autenticacao) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("DELETE FROM TOKEN_AUTENTICACAO TA "
+					+ "WHERE TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
+			stmt.setLong(1, autenticacao.getCpf());
+			stmt.setString(2, autenticacao.getToken());
+			return (stmt.executeUpdate() > 0);
+		} finally {
+			closeConnection(conn, stmt, null);
+		}
 	}
 }
