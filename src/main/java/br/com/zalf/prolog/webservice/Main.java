@@ -5,8 +5,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 
+import br.com.zalf.prolog.models.Metas;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.dao.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
@@ -28,7 +31,14 @@ public class Main {
 		LocalDate dataFinal = LocalDate.of(2016, Month.FEBRUARY, 28);
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
-		String token = "ut9mrb367jg072gn56mif4pu29";
+		String token = "b820oonp8l2pm1qo2s0skike1f";
+		
+		Metas metas = new Metas<>();
+		metas.setCodigo(1);
+		metas.setNome("teste");
+		metas.setValor(0.0147);
+		Request<Metas> request = new Request<Metas>(metas, token, cpf);
+		request.setCodUnidade(1L);
 
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));
 		//System.out.print(rankingDaoImpl.getRanking(dataFinal, dataFinal, "%", 1L, 12345678987L, "8nkv0v78tlqdliaefdi8j07ob0"));
@@ -38,8 +48,9 @@ public class Main {
 		//relatorioDaoImpl.getRelatorioByPeriodo(dataInicial, dataFinal, "%",1L, cpf, "ut9mrb367jg072gn56mif4pu29");
 		//relatorioDaoImpl.getFiltros(cpf, "smc9aksqlel92b0hn3s1settpl");
 		//relatorioDaoImpl.getIndicadoresUnidadeByPeriodo(dataInicial, dataFinal,1, cpf, "7gtceldrvr49k6r86e5tbnjvi8");
-		//MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDaoImpl metasDao = new MetasDaoImpl();
 		//metasDao.getByCpf(cpf, token);
+		metasDao.updateByCod(request);
 
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
 

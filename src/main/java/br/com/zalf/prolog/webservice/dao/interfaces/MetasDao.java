@@ -10,6 +10,6 @@ public interface MetasDao {
 	
 	public List<Metas> getByCpf(Long cpf, String token) throws SQLException;
 	
-	public void updateByCod(Request request) throws SQLException;
+	public boolean updateByCod(Request request) throws SQLException;
 
 }

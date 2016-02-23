@@ -5,11 +5,14 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Metas;
+import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.services.MetaService;
 
 @Path("/meta")
@@ -25,7 +28,15 @@ public class MetaResource{
 			@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token) {
 		return service.getByCpf( cpf, token);
-
+	}
+	
+	@PUT
+	public Response updateByCod(Request<Metas> request) {
+		if (service.updateByCod(request)) {
+			return Response.Ok("Meta atualizada com sucesso");
+		} else {
+			return Response.Error("Erro ao atualizar a meta");
+		}
 	}
 
 }

@@ -120,8 +120,8 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 		}else if(rSet.getString("NOME").equals(DEV_NF)){
 			meta = new Metas<Double>();
 			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(DEV_NF);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
+					meta.setNome(DEV_NF);
+					meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
 
 		}else if(rSet.getString("NOME").equals(JORNADA_MAPAS)){
 			meta = new Metas<Double>();
@@ -223,7 +223,7 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	}
 
 	@Override
-	public void updateByCod(Request request) throws SQLException {
+	public boolean updateByCod(Request request) throws SQLException {
 		Metas metas = (Metas) request.getObject();
 
 		Connection conn = null;
@@ -235,21 +235,26 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 					+ "AND TA.CPF_COLABORADOR=? AND TA.TOKEN=?");
 
 			if(metas.getValor() instanceof Double){
+				System.out.println("Tipo double");
 				stmt.setDouble(1, (Double) metas.getValor());
 			}else{
-				stmt.setTime(1,(Time) metas.getValor()); 
+				stmt.setTime(1,(Time) metas.getValor());
+				System.out.println("Tipo time");
 			}
 			stmt.setLong(2, request.getCodUnidade());
+			System.out.println("Cod unidade: " + request.getCodUnidade());
 			stmt.setInt(3, metas.getCodigo());
+			System.out.println("Cod meta: " + metas.getCodigo());
 			stmt.setLong(4, request.getCpf());
+			System.out.println("cpf" + request.getCpf());
 			stmt.setString(5, request.getToken());
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao atualizar o relato");
+				throw new SQLException("Erro ao atualizar a meta");
 			}	
-	}finally {
-		closeConnection(conn, stmt, null);
-	}		
-
-}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
 }
