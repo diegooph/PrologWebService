@@ -37,7 +37,8 @@ public class Main {
 		metas.setCodigo(1);
 		metas.setNome("teste");
 		metas.setValor(0.0147);
-		Request<Metas> request = new Request<Metas>(metas, token, cpf);
+		Request<Metas> request = new Request<Metas>(token, cpf);
+		request.setObject(metas);
 		request.setCodUnidade(1L);
 
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));

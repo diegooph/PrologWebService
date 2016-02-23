@@ -58,7 +58,7 @@ public class ColaboradorService {
 		}
 	}
 	
-	public List<Colaborador> getAll(Request<Colaborador> request) {
+	public List<Colaborador> getAll(Request<?> request) {
 		try {
 			return dao.getAll(request);
 		} catch (SQLException e) {

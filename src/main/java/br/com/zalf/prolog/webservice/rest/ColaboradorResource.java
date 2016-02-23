@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.services.AutenticacaoService;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
@@ -55,12 +56,12 @@ public class ColaboradorResource {
 		return service.getByCod(cpf, token);
 	}
 	
-//	@POST
-//	@Path("/getAll")
-//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-//	public List<Colaborador> getAll(@FormParam("request") Request<Colaborador> request) {
-//		return service.getAll(request);
-//	}
+	@POST
+	@Path("/getAll")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Colaborador> getAll(@FormParam("request") Request<Colaborador> request) {
+		return service.getAll(request);
+	}
 	
 	@POST
 	@Path("/getAtivosByUnidade")
