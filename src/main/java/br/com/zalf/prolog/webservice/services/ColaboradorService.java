@@ -22,23 +22,23 @@ public class ColaboradorService {
 		}
 	}
 	
-//	public boolean update(Colaborador colaborador) {
-//		try {
-//			return dao.update(colaborador);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
+	public boolean update(Request<Colaborador> colaborador) {
+		try {
+			return dao.update(colaborador);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
-//	public boolean delete(Long cpf) {
-//		try {
-//			return dao.delete(cpf);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
+	public boolean delete(Request<Colaborador> request) {
+		try {
+			return dao.delete(request);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	public Colaborador getByCod(Long cpf, String token) {
 		try {

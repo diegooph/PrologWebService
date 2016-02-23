@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.dao.VeiculoDaoImpl;
 
@@ -25,6 +26,24 @@ public class VeiculoService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Veiculo>();
+		}
+	}
+	
+	public List<Veiculo> getAll(Request<?> request) {
+		try {
+			return dao.getAll(request);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Veiculo>();
+		}
+	}
+	
+	public boolean update(Request<Veiculo> request) {
+		try {
+			return dao.update(request);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

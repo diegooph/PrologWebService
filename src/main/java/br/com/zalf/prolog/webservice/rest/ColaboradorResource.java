@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,21 +36,15 @@ public class ColaboradorResource {
 			return Response.Error("Erro ao inserir colaborador");
 		}
 	}
-//	
-//	
-//	@PUT
-//	public Response update(Colaborador colaborador) {
-//		if (service.update(colaborador)) {
-//			return Response.Ok("Colaborador atualizado com sucesso");
-//		} else {
-//			return Response.Error("Erro ao atualizar o colaborador");
-//		}
-//	}
-//	
-//	@GET
-//	public List<Colaborador> getAll() {
-//		return service.getAll();
-//	}
+	
+	@PUT
+	public Response update(Request<Colaborador> request) {
+		if (service.update(request)) {
+			return Response.Ok("Colaborador atualizado com sucesso");
+		} else {
+			return Response.Error("Erro ao atualizar o colaborador");
+		}
+	}
 	
 	@POST
 	@Path("/getByCod")
@@ -70,15 +66,15 @@ public class ColaboradorResource {
 		return service.getAtivosByUnidade(codUnidade, token, cpf);
 	}
 	
-//	@DELETE
-//	@Path("{cpf}")
-//	public Response delete(@PathParam("cpf") Long cpf) {
-//		if (service.delete(cpf)) {
-//			return Response.Ok("Colaborador deletado com sucesso");
-//		} else {
-//			return Response.Error("Falha ao deletar colaborador");
-//		}
-//	}
+	@DELETE
+	@Path("/delete")
+	public Response delete(Request<Colaborador> request) {
+		if (service.delete(request)) {
+			return Response.Ok("Colaborador deletado com sucesso");
+		} else {
+			return Response.Error("Falha ao deletar colaborador");
+		}
+	}
 	
 	@GET
 	@Path("/funcao/{codigo}")

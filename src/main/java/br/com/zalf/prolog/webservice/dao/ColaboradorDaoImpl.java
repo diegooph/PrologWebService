@@ -8,37 +8,45 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
-	
+
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
-	
+
 	@Override
 	public boolean insert(Request<Colaborador> request) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			
-			stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
-					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
-					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
-					+ "SETOR, COD_FUNCAO, COD_UNIDADE) VALUES "
-					+ "(?,?,?,?,?,?,?,?,?,?,?,?) ");
-			setStatementItems(stmt, request.getObject());
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao inserir o colaborador");
-			}	
+		Autenticacao autenticacao = new Autenticacao("", request.getCpf(), 
+				request.getToken());
+		AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
+		if (autenticacaoDao.verifyIfExists(autenticacao)) {
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			try {
+				conn = getConnection();
+
+				stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
+						+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
+						+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
+						+ "SETOR, COD_FUNCAO, COD_UNIDADE) VALUES "
+						+ "(?,?,?,?,?,?,?,?,?,?,?,?) ");
+				setStatementItems(stmt, request.getObject());
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					throw new SQLException("Erro ao inserir o colaborador");
+				}	
+			}
+			finally {
+				closeConnection(conn, stmt, null);
+			}		
+			return true;
 		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
+		return false;
 	}
 
 	@Override
@@ -51,9 +59,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
 					+ "DATA_NASCIMENTO = ? DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
 					+ "STATUS_ATIVO = ?, NOME = ?, EQUIPE = ?, SETOR = ?, "
-					+ "COD_FUNCAO = ?, COD_UNIDADE = ? WHERE CPF = ?");
-//			setStatementItems(stmt, colaborador);
-//			stmt.setLong(13, colaborador.getCpf());
+					+ "COD_FUNCAO = ?, COD_UNIDADE = ? "
+					+ "FROM TOKEN_AUTENTICACAO TA WHERE CPF = ? AND "
+					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
+			setStatementItems(stmt, request.getObject());
+			stmt.setLong(13, request.getCpf());
+			stmt.setLong(14, request.getCpf());
+			stmt.setString(15, request.getToken());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
@@ -71,8 +83,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("DELETE FROM COLABORADOR WHERE CPF = ?");
-//			stmt.setLong(1, cpf);
+			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
+					+ "STATUS_ATIVO = FALSE"
+					+ "FROM TOKEN_AUTENTICACAO TA WHERE CPF = ? AND "
+					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
+			stmt.setLong(1, request.getObject().getCpf());
+			stmt.setLong(2, request.getCpf());
+			stmt.setString(3, request.getToken());
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -141,7 +158,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 		return list;
 	}
-	
+
 	@Override
 	public List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
@@ -191,7 +208,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 		return false;
 	}
-	
+
 	@Override
 	public Funcao getFuncaoByCod(Long codigo) throws SQLException {
 		Connection conn = null;
@@ -213,7 +230,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 		return null;
 	}
-	
+
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
 		f.setCodigo(rSet.getLong("CODIGO"));
@@ -242,7 +259,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		c.setCodPermissao(rSet.getLong("PERMISSAO"));
 		return c;
 	}
-	
+
 	private void setStatementItems(PreparedStatement stmt, Colaborador c) throws SQLException {
 		stmt.setLong(1, c.getCpf());
 		stmt.setInt(2, c.getMatriculaAmbev());
