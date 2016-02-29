@@ -55,7 +55,7 @@ public class ColaboradorResource {
 	
 	@POST
 	@Path("/getAll")
-	public List<Colaborador> getAll(Request<Colaborador> request) {
+	public List<Colaborador> getAll(Request request) {
 		return service.getAll(request);
 	}
 	
