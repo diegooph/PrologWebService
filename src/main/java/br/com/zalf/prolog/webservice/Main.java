@@ -8,10 +8,10 @@ import java.time.Month;
 import br.com.zalf.prolog.models.Metas;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
-import br.com.zalf.prolog.webservice.dao.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
+import br.com.zalf.prolog.webservice.dao.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
 
 public class Main {
@@ -25,10 +25,13 @@ public class Main {
 		RelatorioDaoImpl relatorioDaoImpl = new RelatorioDaoImpl();
 		RankingDaoImpl rankingDaoImpl = new RankingDaoImpl();
 		CalendarioDaoImpl calendarioDaoImpl = new CalendarioDaoImpl();
+		String equipe = "%";
+		long codUnidade = 1;
+		long offset = 0;
 
-		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 01);
+		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);
 		Date datainicial = Date.valueOf(dataInicial);
-		LocalDate dataFinal = LocalDate.of(2016, Month.FEBRUARY, 28);
+		LocalDate dataFinal = LocalDate.of(2016, Month.FEBRUARY, 20);
 		Date datafinal = Date.valueOf(dataFinal);
 		Long cpf = 12345678987L;
 		String token = "b820oonp8l2pm1qo2s0skike1f";
@@ -41,8 +44,10 @@ public class Main {
 		request.setObject(metas);
 		request.setCodUnidade(1L);
 
-		EmpresaDaoImpl empresaDaoImpl = new EmpresaDaoImpl();
-		empresaDaoImpl.getEquipesByCodUnidade(request);
+		RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
+		relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);
+		//EmpresaDaoImpl empresaDaoImpl = new EmpresaDaoImpl();
+		//empresaDaoImpl.getEquipesByCodUnidade(request);
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));
 		//System.out.print(rankingDaoImpl.getRanking(dataFinal, dataFinal, "%", 1L, 12345678987L, "8nkv0v78tlqdliaefdi8j07ob0"));
 		//IndicadorHolder holder = relatorioDaoImpl.getIndicadoresEquipeByUnidade(dataInicial, dataFinal,2, cpf, "1234");
@@ -54,7 +59,6 @@ public class Main {
 		//MetasDaoImpl metasDao = new MetasDaoImpl();
 		//metasDao.getByCpf(cpf, token);
 		//metasDao.updateByCod(request);
-
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
 
 	}

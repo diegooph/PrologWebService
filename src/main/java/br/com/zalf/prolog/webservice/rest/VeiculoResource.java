@@ -31,7 +31,7 @@ public class VeiculoResource {
 	
 	@POST
 	@Path("/unidade/getAll")
-	public List<Veiculo> getAll(Request<?> request) {
+	public List<Veiculo> getAll(Request request) {
 		return service.getAll(request);
 	}
 	

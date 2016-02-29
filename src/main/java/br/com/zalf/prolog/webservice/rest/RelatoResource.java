@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.services.RelatoService;
 
 @Path("/relatos")
@@ -59,6 +60,21 @@ public class RelatoResource {
 			@FormParam("latitude") double latitude,
 			@FormParam("longitude") double longitude) {
 		return service.getByColaborador(cpf, token, offset, latitude, longitude);
+	}
+	
+	@POST
+	@Path("/unidade")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Relato> getAllByUnidade(@FormParam("dataInicial") long dataInicial, 
+			@FormParam("dataFinal") long dataFinal, 
+			@FormParam("equipe") String equipe,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("cpf") Long cpf,
+			@FormParam("token") String token,
+			@FormParam("limit") long limit,
+	@FormParam("offset") long offset) {
+		return service.getAllByUnidade(DateUtils.toLocalDate(new Date(dataInicial)), 
+				DateUtils.toLocalDate(new Date(dataFinal)),equipe, codUnidade, cpf, token, limit, offset);
 	}
 	
 	@POST

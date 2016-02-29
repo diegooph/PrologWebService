@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.services;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,16 @@ public class RelatoService {
 	public List<Relato> getByColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
 		try {
 			return dao.getByColaborador(cpf, token, offSet, latitude, longitude);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Relato>();
+		}
+	}
+	
+	public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, Long cpf, String token,long limit, long offset) {
+		try {
+			return dao.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token, limit, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

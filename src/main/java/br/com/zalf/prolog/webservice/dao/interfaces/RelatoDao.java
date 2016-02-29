@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dao.interfaces;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Relato;
@@ -15,4 +16,6 @@ public interface RelatoDao {
 	List<Relato> getAll(Request<?> request) throws SQLException;
 	List<Relato> getByColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException;
 	List<Relato> getAllExcetoColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException;
+	List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, Long cpf, String token,long limit, long offset) throws SQLException;
 }

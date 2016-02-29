@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -222,6 +223,45 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		}
 		return relatos;
 	}
+	
+	@Override
+	public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, Long cpf, String token,long limit, long offset) throws SQLException{
+		List<Relato> relatos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+				
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT R.CODIGO, R.DATA_HORA_LOCAL, R.DATA_HORA_DATABASE, "
+					+ "R.ASSUNTO, R.DESCRICAO, R.LATITUDE, R.LONGITUDE, R.URL_FOTO_1, "
+					+ "R.URL_FOTO_2, R.URL_FOTO_3, C.NOME, R.CPF_COLABORADOR, NULL AS DISTANCIA "
+					+ "FROM RELATO R JOIN COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
+					+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? AND TA.CPF_COLABORADOR = ? "
+					+ "WHERE E.NOME LIKE ? AND "
+					+ "R.DATA_HORA_DATABASE::DATE BETWEEN ? AND ? "
+					+ "ORDER BY DATA_HORA_LOCAL LIMIT ? OFFSET ?");
+			
+			stmt.setString(1, token);
+			stmt.setLong(2, cpf);
+			stmt.setString(3, equipe);
+			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
+			stmt.setLong(6, limit);
+			stmt.setLong(7, offset);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Relato relato = createRelato(rSet);
+				System.out.println(relato);
+				relatos.add(relato);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return relatos;
+	}
 
 	private Relato createRelato(ResultSet rSet) throws SQLException{
 		Relato relato = new Relato();
@@ -229,7 +269,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		relato.setCodigo(rSet.getLong("CODIGO"));
 		relato.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
 		// A hora que será mostrada no android deve ser a Data_Hora_Database
-		relato.setDataLocal(rSet.getTimestamp("DATA_HORA_DATABASE"));
+		relato.setDataLocal(rSet.getTimestamp("DATA_HORA_LOCAL"));
 		relato.setDataDatabase(rSet.getTimestamp("DATA_HORA_DATABASE"));
 		relato.setAssunto(rSet.getString("ASSUNTO"));
 		relato.setDescricao(rSet.getString("DESCRICAO"));
