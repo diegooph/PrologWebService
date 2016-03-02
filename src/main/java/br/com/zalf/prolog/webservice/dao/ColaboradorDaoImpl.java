@@ -196,7 +196,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
-					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ?)");
+					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
+					+ "AND C.STATUS_ATIVO = TRUE)");
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
 			rSet = stmt.executeQuery();

@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS RELATO (
 );
  */
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
-	
+
 	private static final int LIMIT = 10;
-		
+
 	@Override
 	public boolean insert(Relato relato) throws SQLException {
 		Connection conn = null;
@@ -78,16 +78,16 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
 					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-//			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
-//			stmt.setString(2, relato.getAssunto());
-//			stmt.setString(3, relato.getDescricao());
-//			stmt.setString(4, relato.getLatitude());
-//			stmt.setString(5, relato.getLongitude());
-//			stmt.setString(6, relato.getUrlFoto1());
-//			stmt.setString(7, relato.getUrlFoto2());
-//			stmt.setString(8, relato.getUrlFoto3());
-//			stmt.setLong(9, relato.getCpfColaborador());
-//			stmt.setLong(10, relato.getCodigo());
+			//			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
+			//			stmt.setString(2, relato.getAssunto());
+			//			stmt.setString(3, relato.getDescricao());
+			//			stmt.setString(4, relato.getLatitude());
+			//			stmt.setString(5, relato.getLongitude());
+			//			stmt.setString(6, relato.getUrlFoto1());
+			//			stmt.setString(7, relato.getUrlFoto2());
+			//			stmt.setString(8, relato.getUrlFoto3());
+			//			stmt.setLong(9, relato.getCpfColaborador());
+			//			stmt.setLong(10, relato.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o relato");
@@ -106,7 +106,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM RELATO WHERE CODIGO = ?");
-//			stmt.setLong(1, codigo);
+			//			stmt.setLong(1, codigo);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -155,26 +155,35 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 	}
 
 	@Override
-	public List<Relato> getByColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException {
+	public List<Relato> getByColaborador(Long cpf, String token, int limit, long offset, double latitude, double longitude, boolean isOrderByDate) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		try {
+		String query = "SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+				+ " FROM RELATO R JOIN "
+				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
+				+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
+				+ "? = TA.TOKEN WHERE R.CPF_COLABORADOR = ? "
+				+ "ORDER BY %s "
+				+ "LIMIT ? OFFSET ? ";
+				try {
+					
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
-					+ " FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
-					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
-					+ "? = TA.TOKEN WHERE R.CPF_COLABORADOR = ? "
-					+ "ORDER BY DISTANCIA "
-					+ "LIMIT ? OFFSET ? ");
+			if(isOrderByDate){
+				query = String.format(query, "DATA_HORA_DATABASE DESC");
+			}else{
+				query = String.format(query, "DISTANCIA ASC");
+			}
+			System.out.print(query);
+			stmt = conn.prepareStatement(query);
 			stmt.setDouble(1, longitude);
 			stmt.setDouble(2, latitude);
 			stmt.setLong(3, cpf);
 			stmt.setString(4, token);
 			stmt.setLong(5, cpf);
-			stmt.setInt(6, LIMIT);
+			System.out.println(isOrderByDate);
+			stmt.setInt(6, limit);
 			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -186,32 +195,39 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		}
 		return relatos;
 	}
-	
+
 	@Override
-	public List<Relato> getAllExcetoColaborador(Long cpf, String token, long offset, double latitude, double longitude) throws SQLException {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token,int limit, long offset, double latitude, double longitude, boolean isOrderByDate) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		
+
 		System.out.println("offset:  " + offset);
-		
+		String query = "SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+				+ " FROM RELATO R JOIN "
+				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
+				+ "TOKEN_AUTENTICACAO TA ON ? = TA.TOKEN AND "
+				+ "? = TA.CPF_COLABORADOR WHERE "
+				+ "R.CPF_COLABORADOR != ? "
+				+ "ORDER BY %s "
+				+ "LIMIT ? OFFSET ? ";
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT *, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
-					+ " FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-					+ "TOKEN_AUTENTICACAO TA ON ? = TA.TOKEN AND "
-					+ "? = TA.CPF_COLABORADOR WHERE "
-					+ "R.CPF_COLABORADOR != ? "
-					+ "ORDER BY DISTANCIA "
-					+ "LIMIT ? OFFSET ? ");
+			if(isOrderByDate){
+				query = String.format(query, "DATA_HORA_DATABASE DESC");
+			}else{
+				query = String.format(query, "DISTANCIA ASC");
+			}
+			System.out.print(query);
+			stmt = conn.prepareStatement(query);
 			stmt.setDouble(1, longitude);
 			stmt.setDouble(2, latitude);
 			stmt.setString(3, token);
 			stmt.setLong(4, cpf);
 			stmt.setLong(5, cpf);
-			stmt.setInt(6, LIMIT);
+			System.out.println(isOrderByDate);
+			stmt.setInt(6, limit);
 			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -223,7 +239,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		}
 		return relatos;
 	}
-	
+
 	@Override
 	public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade, Long cpf, String token,long limit, long offset) throws SQLException{
@@ -231,7 +247,16 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-				
+
+		System.out.println(dataInicial);
+		System.out.println(dataFinal);
+		System.out.println(equipe);
+		System.out.println(codUnidade);
+		System.out.println(cpf);
+		System.out.println(token);
+		System.out.println(limit);
+		System.out.println(offset);
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT R.CODIGO, R.DATA_HORA_LOCAL, R.DATA_HORA_DATABASE, "
@@ -243,7 +268,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 					+ "WHERE E.NOME LIKE ? AND "
 					+ "R.DATA_HORA_DATABASE::DATE BETWEEN ? AND ? "
 					+ "ORDER BY DATA_HORA_LOCAL LIMIT ? OFFSET ?");
-			
+
 			stmt.setString(1, token);
 			stmt.setLong(2, cpf);
 			stmt.setString(3, equipe);
@@ -279,6 +304,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		relato.setUrlFoto2(rSet.getString("URL_FOTO_2"));
 		relato.setUrlFoto3(rSet.getString("URL_FOTO_3"));
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
+		
+		System.out.println(relato.getDataDatabase());
+		System.out.println(relato.getDistanciaColaborador());
 		return relato;
 	}
 }

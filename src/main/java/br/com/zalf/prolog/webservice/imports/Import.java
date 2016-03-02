@@ -166,7 +166,10 @@ public class Import {
 				if(!String.valueOf(linha.get(6)).trim().isEmpty()){
 					tracking.seqPlan = Integer.parseInt(linha.get(6));
 				}
-				if(!String.valueOf(linha.get(7)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(7)).trim().equals(NAO_RELATADO)){
+//					tracking.inicioRota = toTime(linha.get(7));
+//				}
+				if(containsNumber(linha.get(7))){
 					tracking.inicioRota = toTime(linha.get(7));
 				}
 				if(!String.valueOf(linha.get(8)).trim().isEmpty()){
@@ -175,31 +178,58 @@ public class Import {
 				if(!String.valueOf(linha.get(9)).trim().isEmpty()){
 					tracking.saidaCDD = toTime(linha.get(9));
 				}
-				if(!String.valueOf(linha.get(10)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(10)).trim().equals(NAO_RELATADO)){
+//					tracking.chegadaPDV = toTime(linha.get(10));
+//				}
+				if(containsNumber(linha.get(10))){
 					tracking.chegadaPDV = toTime(linha.get(10));
 				}
-				if(!String.valueOf(linha.get(11)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(11)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoPrevRetorno = toTime(linha.get(11));
+//				}
+				if(containsNumber(linha.get(11))){
 					tracking.tempoPrevRetorno = toTime(linha.get(11));
 				}
-				if(!String.valueOf(linha.get(12)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(12)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoRetorno = toTime(linha.get(12));
+//				}
+				if(containsNumber(linha.get(12))){
 					tracking.tempoRetorno = toTime(linha.get(12));
 				}
-				if(!String.valueOf(linha.get(13)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(13)).trim().equals(NAO_RELATADO)){
+//					tracking.distPrevRetorno = Double.parseDouble(linha.get(13).replace(",", "."));
+//				}
+				if(containsNumber(linha.get(13))){
 					tracking.distPrevRetorno = Double.parseDouble(linha.get(13).replace(",", "."));
 				}
-				if(!String.valueOf(linha.get(14)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(14)).trim().equals(NAO_RELATADO)){
+//					tracking.distPercRetorno = Double.parseDouble(linha.get(14).replace(",", "."));
+//				}
+				if(containsNumber(linha.get(14))){
 					tracking.distPercRetorno = Double.parseDouble(linha.get(14).replace(",", "."));
 				}
-				if(!String.valueOf(linha.get(15)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(15)).trim().equals(NAO_RELATADO)){
+//					tracking.inicioEntrega = toTime(linha.get(15));
+//				}
+				if(containsNumber(linha.get(15))){
 					tracking.inicioEntrega = toTime(linha.get(15));
 				}
-				if(!String.valueOf(linha.get(16)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(16)).trim().equals(NAO_RELATADO)){
+//					tracking.fimEntrega = toTime(linha.get(16));
+//				}
+				if(containsNumber(linha.get(16))){
 					tracking.fimEntrega = toTime(linha.get(16));
 				}
-				if(!String.valueOf(linha.get(17)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(17)).trim().equals(NAO_RELATADO)){
+//					tracking.fimRota = toTime(linha.get(17));
+//				}
+				if(containsNumber(linha.get(17))){
 					tracking.fimRota = toTime(linha.get(17));
 				}
-				if(!String.valueOf(linha.get(18)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(18)).trim().equals(NAO_RELATADO)){
+//					tracking.entradaCDD = toTime(linha.get(18));
+//				}
+				if(containsNumber(linha.get(18))){
 					tracking.entradaCDD = toTime(linha.get(18));
 				}
 				if(!String.valueOf(linha.get(19)).trim().isEmpty()){
@@ -226,7 +256,10 @@ public class Import {
 				if(!String.valueOf(linha.get(26)).trim().isEmpty()){
 					tracking.tempoTotalRota = toTime(linha.get(26));
 				}
-				if(!String.valueOf(linha.get(27)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(27)).trim().equals(NAO_RELATADO)){
+//					tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
+//				}
+				if(containsNumber(linha.get(27))){
 					tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
 				}
 				if(!String.valueOf(linha.get(28)).trim().isEmpty()){
@@ -256,7 +289,10 @@ public class Import {
 				if(!String.valueOf(linha.get(36)).trim().isEmpty()){
 					tracking.distanciaPrev = Double.parseDouble(linha.get(36).replace(",", "."));
 				}
-				if(!String.valueOf(linha.get(37)).trim().equals(NAO_RELATADO)){
+//				if(!String.valueOf(linha.get(37)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoDeslocamento = toTime(linha.get(37));
+//				}
+				if(containsNumber(linha.get(37))){
 					tracking.tempoDeslocamento = toTime(linha.get(37));
 				}
 				if(!String.valueOf(linha.get(38)).trim().isEmpty()){
@@ -283,6 +319,14 @@ public class Import {
 		return listTracking;
 
 	}
+	/**
+	 * Método usado para verificar se uma string contém algum número
+	 * @param str
+	 * @return
+	 */
+	public static boolean containsNumber(String str) {
+        return str.matches(".*\\d+.*");
+    }
 
 	public static Date toDate(String data){
 

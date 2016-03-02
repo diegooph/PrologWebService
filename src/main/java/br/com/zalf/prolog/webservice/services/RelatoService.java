@@ -56,9 +56,9 @@ public class RelatoService {
 //		}
 //	}
 	
-	public List<Relato> getByColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
+	public List<Relato> getByColaborador(Long cpf, String token, int limit, long offSet, double latitude, double longitude, boolean isOrderByDate) {
 		try {
-			return dao.getByColaborador(cpf, token, offSet, latitude, longitude);
+			return dao.getByColaborador(cpf, token, limit, offSet, latitude, longitude, isOrderByDate);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();
@@ -75,9 +75,9 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getAllExcetoColaborador(Long cpf, String token, long offSet, double latitude, double longitude) {
+	public List<Relato> getAllExcetoColaborador(Long cpf, String token, int limit, long offSet, double latitude, double longitude, boolean isOrderByDate) {
 		try {
-			return dao.getAllExcetoColaborador(cpf, token, offSet, latitude, longitude);
+			return dao.getAllExcetoColaborador(cpf, token, limit, offSet, latitude, longitude, isOrderByDate);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

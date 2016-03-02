@@ -42,7 +42,6 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt.setString(2, autenticacao.getToken());
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
-				
 				return rSet.getBoolean("EXISTS");
 			}
 		} finally {

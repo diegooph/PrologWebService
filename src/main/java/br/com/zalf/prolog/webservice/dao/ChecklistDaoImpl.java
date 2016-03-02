@@ -125,6 +125,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	@Override
 	public List<Checklist> getAll(Request<?> request) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
+		//TODO verificar token e buscar apenas checklists da unidade informada no request
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

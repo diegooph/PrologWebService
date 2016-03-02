@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.AppDao;
 
 public class AppDaoImpl extends DatabaseConnection implements AppDao {
 
+	
 	@Override
 	public boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException {
 		

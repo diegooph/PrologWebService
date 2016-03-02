@@ -56,10 +56,12 @@ public class RelatoResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Relato> getByColaborador(@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token,
+			@FormParam("limit") int limit,
 			@FormParam("offset") long offset,
 			@FormParam("latitude") double latitude,
-			@FormParam("longitude") double longitude) {
-		return service.getByColaborador(cpf, token, offset, latitude, longitude);
+			@FormParam("longitude") double longitude,
+			@FormParam("isOrderByDate") boolean isOrderByDate) {
+		return service.getByColaborador(cpf, token, limit, offset, latitude, longitude, isOrderByDate);
 	}
 	
 	@POST
@@ -82,10 +84,12 @@ public class RelatoResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Relato> getAllExcetoColaborador(@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token,
+			@FormParam("limit") int limit,
 			@FormParam("offset") long offset,
 			@FormParam("latitude") double latitude,
-			@FormParam("longitude") double longitude) {
-		return service.getAllExcetoColaborador(cpf, token, offset, latitude, longitude);
+			@FormParam("longitude") double longitude,
+			@FormParam("isOrderByDate") boolean isOrderByDate) {
+		return service.getAllExcetoColaborador(cpf, token, limit, offset, latitude, longitude, isOrderByDate);
 	}
 	
 //	@DELETE
