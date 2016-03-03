@@ -22,7 +22,7 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 			+ "AND TA.CPF_COLABORADOR=? "
 			+ "AND TA.TOKEN=?";
 
-	public List<Equipe> getEquipesByCodUnidade (Request<?> request) throws SQLException{
+	public List<Equipe> getEquipesByCodUnidade (Request<?> request) throws SQLException{ 
 		List<Equipe> listEquipe = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

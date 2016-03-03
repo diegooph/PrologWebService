@@ -13,6 +13,14 @@ import br.com.zalf.prolog.webservice.dao.interfaces.CalendarioDao;
 
 public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao{
 
+	/**
+	 * Busca dos eventos, foi fracionada a busca em 5 partes, sendo elas:
+	 * 1 - Busca os eventos exclusivos para uma unidade + função + equipe
+	 * 2 - Busca os eventos exclusivos para uma unidade + função, independente da equipe
+	 * 3 - Busca os eventos exclusivos para uma unidade + equipe, independente da função
+	 * 4 - Busca os eventos exclusivos para uma unidade, independente da função e da equipe
+	 * 5 - Faz um union com todos os resultados
+	 */
 	private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
 			+ "COLABORADOR C JOIN CALENDARIO CAL ON " 
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "  
