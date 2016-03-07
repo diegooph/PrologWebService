@@ -47,7 +47,12 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	private static final String JORNADA_MAPAS = "Jornada_liquida_mapas";
 	private static final String JORNADA_TEMPO = "Jornada_liquida_hora";
 
-
+/**
+ * Busca as metas de um cpf
+ * @param cpf um CPF, a ser feita a busca das metas
+ * @return objeto Meta, contendo todas as metas como atributos desse objeto
+ * @throws SQLException caso não seja possível realizar a busca
+ */
 	public Meta getMetasByCpf(long cpf) throws SQLException{
 		Meta meta = new Meta();
 		Connection conn = null;
@@ -65,6 +70,12 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 		return meta;
 	}
 
+	/**
+	 * Busca as metas de uma unidade
+	 * @param codUnidade código a ser buscadas as metas
+	 * @return objeto Meta contendo como atributo todas as metas
+	 * @throws SQLException caso não seja possível realizar a busca
+	 */
 	public Meta getMetasByUnidade(Long codUnidade) throws SQLException{
 		Meta meta = new Meta();
 		Connection conn = null;
@@ -81,12 +92,14 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 		}	
 		return meta;
 	}
-
+	 /**
+	  * Busca as metas pelo código do CPF
+	  * @param cpf um cpf a serem buscadas as metas
+	  * @param token para verificar se o solicitante esta devidamente logado
+	  * @return lista de objetos Metas, o objeto Metas contém apenas uma meta, 
+	  * podendo ser do tipo double ou time
+	  */
 	public List<Metas<?>> getByCpf(Long cpf, String token) throws SQLException{
-
-		System.out.println(cpf);
-		System.out.println(token);
-
 		List<Metas<?>> listMetas = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;

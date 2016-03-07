@@ -178,6 +178,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		return listGsd;
 	}
 	
+	//TODO: Usar request para filtrar apenas os avaliadores de uma determinada unidade
 	@Override
 	public List<Gsd> getAllExcetoAvaliador(Long cpf, String token) throws SQLException {
 		List<Gsd> listGsd = new ArrayList<>();

@@ -15,24 +15,6 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.RelatoDao;
 
-/*
--- RELATOS
-CREATE TABLE IF NOT EXISTS RELATO (
-  CODIGO BIGSERIAL NOT NULL,
-  DATA TIMESTAMP NOT NULL,
-  ASSUNTO TEXT NOT NULL,
-  DESCRICAO TEXT NOT NULL,
-  LATITUTE VARCHAR(255) NOT NULL,
-  LONGITUDE VARCHAR(255) NOT NULL,
-  URL_FOTO_1 TEXT NOT NULL,
-  URL_FOTO_2 TEXT NOT NULL,
-  URL_FOTO_3 TEXT NOT NULL,
-  CPF_COLABORADOR BIGINT NOT NULL,
-  CONSTRAINT PK_RELATO PRIMARY KEY (CODIGO),
-  CONSTRAINT FK_RELATO_COLABORADOR FOREIGN KEY (CPF_COLABORADOR)
-  REFERENCES COLABORADOR(CPF)
-);
- */
 public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
 	private static final int LIMIT = 10;
@@ -78,16 +60,16 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 					+ "ASSUNTO = ?, DESCRICAO = ?, LATITUDE = ?, LONGITUDE = ?, "
 					+ "URL_FOTO_1 = ?, URL_FOTO_2 = ?, URL_FOTO_3 = ?, "
 					+ "CPF_COLABORADOR = ? WHERE CODIGO = ?");
-			//			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
-			//			stmt.setString(2, relato.getAssunto());
-			//			stmt.setString(3, relato.getDescricao());
-			//			stmt.setString(4, relato.getLatitude());
-			//			stmt.setString(5, relato.getLongitude());
-			//			stmt.setString(6, relato.getUrlFoto1());
-			//			stmt.setString(7, relato.getUrlFoto2());
-			//			stmt.setString(8, relato.getUrlFoto3());
-			//			stmt.setLong(9, relato.getCpfColaborador());
-			//			stmt.setLong(10, relato.getCodigo());
+						stmt.setTimestamp(1, DateUtils.toTimestamp(request.getObject().getDataLocal()));
+						stmt.setString(2, request.getObject().getAssunto());
+						stmt.setString(3, request.getObject().getDescricao());
+						stmt.setString(4, request.getObject().getLatitude());
+						stmt.setString(5, request.getObject().getLongitude());
+						stmt.setString(6, request.getObject().getUrlFoto1());
+						stmt.setString(7, request.getObject().getUrlFoto2());
+						stmt.setString(8, request.getObject().getUrlFoto3());
+						stmt.setLong(9, request.getObject().getCpfColaborador());
+						stmt.setLong(10, request.getObject().getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o relato");
@@ -106,7 +88,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM RELATO WHERE CODIGO = ?");
-			//			stmt.setLong(1, codigo);
+						stmt.setLong(1, request.getObject().getCodigo());
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -115,14 +97,19 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
 	// TODO: Fazer join token
 	@Override
-	public Relato getByCod(Request<?> request) throws SQLException {
+	public Relato getByCod(Request<Relato> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM RELATO WHERE CODIGO = ?");
-			//stmt.setLong(1, codigo);
+			stmt = conn.prepareStatement("SELECT * FROM RELATO "
+					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND"
+					+ "TA.TOKEN = ? "
+					+ "WHERE CODIGO = ?");
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
+			stmt.setLong(3, request.getObject().getCodigo());
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Relato relato = createRelato(rSet);

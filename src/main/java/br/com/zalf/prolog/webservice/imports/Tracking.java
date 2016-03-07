@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by jean on 19/01/16.
+ * Contém os dados de uma linha da tabela tracking
  */
 public class Tracking {
 

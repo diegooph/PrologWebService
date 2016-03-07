@@ -89,15 +89,13 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 			stmt.setDate(3, DateUtils.toSqlDate(treinamentoColaborador.getDataVisualizacao()));
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir o fale conosco");
+				throw new SQLException("Erro ao marcar o treinamento como visto");
 			}
-			
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
 		return true;
 	}
-
 
 	private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
 		Treinamento treinamento = new Treinamento();

@@ -34,7 +34,10 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class RankingDaoImpl extends DatabaseConnection {
 
-
+/**
+ * Busca os dados da tabela mapa e tracking para montar todos os indicadores, 
+ * respeitando o período selecionado e o cod da unidade.
+ */
 	private static final String BUSCA_INDICADORES_RANKING = "SELECT C.CPF, C.NOME, F.NOME AS FUNCAO, E.NOME AS EQUIPE, M.DATA, "
 			+ " M.CXCARREG, M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS,	"
 			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL,	"
@@ -58,8 +61,11 @@ public class RankingDaoImpl extends DatabaseConnection {
 			+ "WHERE E.NOME like ? AND C.COD_UNIDADE = ?	AND "
 			+ "DATA BETWEEN ? AND ? ORDER BY C.CPF, m.data";
 
+	//Valor máximo de atingimento de uma meta de tempo (jornada, tml..)
 	private static final double MAX_META = 1;
+	//usado no calculo das faixas de atingimento para saber qual a medalha será creditada
 	private static final double FAIXAS = 3.5;
+	//pontuação de cada medalha
 	private static final int PONTOS_OURO = 3;
 	private static final int PONTOS_PRATA = 2;
 	private static final int PONTOS_BRONZE = 1;
@@ -102,7 +108,13 @@ public class RankingDaoImpl extends DatabaseConnection {
 		//System.out.print(listPosicao);
 		return listPosicao;
 	}
-
+/**
+ * Cria uma lista de objetos ItemPosicao, contendo os indicadores e resultados 
+ * de cada colaborador
+ * @param rSet um ResultSet contendo o resultado da busca
+ * @return uma lista de ItemPosicao, contendo todos os colaboradores e seus resultados
+ * @throws SQLException caso ocorra erro ao percorrer o ResultSet
+ */
 	public List<ItemPosicao> createRanking(ResultSet rSet) throws SQLException{
 		List<ItemPosicao> listPosicao = new ArrayList<>();
 		ItemPosicao itemPosicao = new ItemPosicao();
@@ -122,6 +134,12 @@ public class RankingDaoImpl extends DatabaseConnection {
 		return listPosicao;
 	}
 
+	/**
+	 * Cria o item do rankin, contém os dados do colaborador e seus indicadores
+	 * @param rSet um ResultSet, contém o resultado da busca
+	 * @return um ItemPosicao
+	 * @throws SQLException caso ocorra erro ao percorrer o ResultSet
+	 */
 	private ItemPosicao createItemPosicao(ResultSet rSet) throws SQLException{
 		ItemPosicao itemPosicao = new ItemPosicao();
 		itemPosicao.setCpf(rSet.getLong("CPF"));
@@ -234,6 +252,12 @@ public class RankingDaoImpl extends DatabaseConnection {
 		return tracking;
 	}
 
+	/**
+	 * Incrementa os totais dos indicadores
+	 * @param itemPosicao um ItemPosicao ao qual será somado os valores extraidos do ResultSet
+	 * @param rSet um ResultSet, contém o resultado da busca
+	 * @throws SQLException caso ocorra erro ao percorrer o ResultSet
+	 */
 	private void incrementaTotais(ItemPosicao itemPosicao, ResultSet rSet) throws SQLException{
 		ItemDevolucaoCx itemDevolucaoCx = create.createDevCx(rSet);
 		ItemDevolucaoNf itemDevolucaoNf = create.createDevNf(rSet);
@@ -329,7 +353,11 @@ public class RankingDaoImpl extends DatabaseConnection {
 	}
 
 
-
+	/**
+	 * Seta as medalhas de um ItemPosicao de acordo com o método específico de cálculo 
+	 * para cada indicador
+	 * @param list uma lista de ItemPosicao, ao qual serão setadas as medalhas de cada item
+	 */
 	private void setMedalhas(List<ItemPosicao> list){
 
 		for(ItemPosicao itemPosicao : list){
@@ -344,7 +372,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		}
 	}
 	/**
-	 * Calcula qual medalha sera credita com base na meta e no resultado, este serve apenas para indicadores
+	 * Calcula qual medalha sera creditada com base na meta e no resultado, este serve apenas para indicadores
 	 * em que o resultado tem que ser MENOR do que a meta.
 	 * @param resultado - recebe o resultado do indicador em questão
 	 * @param meta - recebe a meta do indicador em questão
@@ -369,7 +397,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 	}
 
 	/**
-	 * Calcula qual medalha sera credita com base na meta e no resultado, este serve apenas para indicadores
+	 * Calcula qual medalha sera creditada com base na meta e no resultado, este serve apenas para indicadores
 	 * em que o resultado tem que ser MAIOR do que a meta.
 	 * @param resultado - recebe o resultado do indicador em questão
 	 * @param meta - recebe a meta do indicador em questão
@@ -391,6 +419,10 @@ public class RankingDaoImpl extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * Converte as medalhas para uma pontuação inteira, com base no valor de cada medalha
+	 * @param list lista de ItemPosicao
+	 */
 	private void calculaPontuacao(List<ItemPosicao> list){
 		for(ItemPosicao item : list){
 			item.setPontuacao(
@@ -400,6 +432,13 @@ public class RankingDaoImpl extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * 1-compara a lista de acordo com o CustomComparator
+	 * 2-inverte a posição da lista
+	 * 3-seta o atributo posição
+	 * @param list uma Lista de ItemPosicao
+	 * @see ItemPosicao
+	 */
 	private void setPosicao (List<ItemPosicao> list){
 
 		Collections.sort(list, new CustomComparator());
@@ -410,12 +449,13 @@ public class RankingDaoImpl extends DatabaseConnection {
 			item.setPosicao(posicao);
 			posicao ++;
 		}
-
 	}
 
 	private class CustomComparator implements Comparator<ItemPosicao>{
 
-
+		/**
+		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
+		 */
 		@Override
 		public int compare(ItemPosicao o1, ItemPosicao o2) {
 			Integer valor1 = Double.compare(o1.getPontuacao(), o2.getPontuacao());

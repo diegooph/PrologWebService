@@ -14,22 +14,18 @@ public class TrackingDaoImpl extends DatabaseConnection {
 
 	public boolean insertOrUpdateTracking (List<Tracking> listTracking, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdateTracking");
-		//System.out.println(listMapas.get(0));
 		for(Tracking tracking : listTracking){
-
 			if(updateTracking(tracking, colaborador)){
-				// Mapa ja existia e foi atualizado
+				// Linha já existe e será atualizada
 				System.out.println("update tracking");
 			}else{
 				System.out.println("insert tracking");
-				// Mapa não existia e foi inserido na base
+				// Linha não existe e será inserida
 				insertTracking(tracking, colaborador);
 			}
 		}
 		return true;
 	}
-
-
 
 	public boolean insertTracking (Tracking tracking, Colaborador colaborador) throws SQLException{
 

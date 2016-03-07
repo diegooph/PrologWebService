@@ -14,18 +14,6 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.FaleConoscoDao;
 
-
-/*CREATE TABLE IF NOT EXISTS FALE_CONOSCO (
-		  CODIGO BIGSERIAL NOT NULL,
-		  DATA DATE NOT NULL,
-		  DESCRICAO TEXT NOT NULL,
-		  CATEGORIA VARCHAR(20) NOT NULL,
-		  CPF_COLABORADOR BIGINT NOT NULL,
-		  CONSTRAINT PK_FALE_CONOSCO PRIMARY KEY(CODIGO),
-		  CONSTRAINT FK_FALE_CONOSCO_COLABORADOR FOREIGN KEY(CPF_COLABORADOR)
-		  REFERENCES COLABORADOR(CPF)
-		);*/
-
 public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConoscoDao  {
 
 	@Override
@@ -64,11 +52,11 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
 					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
 					+ "WHERE CODIGO = ? ");
-//			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
-//			stmt.setString(2, faleConosco.getDescricao());
-//			stmt.setString(3, faleConosco.getCategoria());
-//			stmt.setLong(4, faleConosco.getCpfColaborador());		
-//			stmt.setLong(5, faleConosco.getCodigo());
+			stmt.setTimestamp(1, DateUtils.toTimestamp(request.getObject().getData()));
+			stmt.setString(2, request.getObject().getDescricao());
+			stmt.setString(3, request.getObject().getCategoria());
+			stmt.setLong(4, request.getCpf());		
+			stmt.setLong(5, request.getObject().getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o fale conosco");
@@ -88,7 +76,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM FALE_CONOSCO "
 					+ "WHERE CODIGO = ?");
-//			stmt.setLong(1, codigo);
+			stmt.setLong(1, request.getObject().getCodigo());
 			return (stmt.executeUpdate() > 0);
 		}
 		finally {
@@ -98,15 +86,18 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 
 	// TODO: Fazer join token 
 	@Override
-	public FaleConosco getByCod(Request<?> request) throws SQLException {
+	public FaleConosco getByCod(Request<FaleConosco> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement(" SELECT * FROM FALE_CONOSCO "
+			stmt = conn.prepareStatement(" SELECT * FROM FALE_CONOSCO JOIN "
+					+ "TOKEN_AUTANTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 					+ "WHERE CODIGO = ?" );
-			//stmt.setLong(1, codigo);
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
+			stmt.setLong(3, request.getObject().getCodigo());
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				FaleConosco c = createFaleConosco(rSet);
@@ -127,7 +118,11 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM FALE_CONOSCO");
+			stmt = conn.prepareStatement("SELECT * FROM FALE_CONOSCO "
+					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
+					+ "TA.TOKEN = ?");
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				FaleConosco faleConosco = createFaleConosco(rSet);

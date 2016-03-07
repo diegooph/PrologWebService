@@ -144,7 +144,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt.setString(6, request.getToken());
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao atualizar o colaborador");
+				throw new SQLException("Erro ao atualizar o veículo");
 			}	
 		}
 		finally {

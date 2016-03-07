@@ -20,7 +20,12 @@ import org.apache.commons.csv.CSVRecord;
 public class Import {
 
 	public static final String NAO_RELATADO = "N.R."; 
-
+/**
+ * Converte um arquivo em .csv para uma lista de objetos MapaImport
+ * @param path um arquivo em .csv (2art)
+ * @return uma lista de MapaImport
+ * @see MapaImport
+ */
 	public static List<MapaImport> mapa (String path){
 		List<MapaImport> listMapa = new ArrayList<>();
 		try {
@@ -136,7 +141,12 @@ public class Import {
 		return listMapa;
 
 	}
-
+/**
+ * Converte um arquivo e .csv para uma lista de Tracking
+ * @param path um arquivo .csv com os dados do tracking
+ * @return uma lista de Tracking
+ * @see Tracking 
+ */
 	public static List<Tracking> tracking (String path){
 		List<Tracking> listTracking = new ArrayList<>();
 		try {
@@ -321,13 +331,17 @@ public class Import {
 	}
 	/**
 	 * Método usado para verificar se uma string contém algum número
-	 * @param str
-	 * @return
+	 * @param str uma String
+	 * @return um boolean
 	 */
 	public static boolean containsNumber(String str) {
         return str.matches(".*\\d+.*");
     }
-
+	/**
+	 * Converte uma string para Date
+	 * @param data uma String contendo uma data
+	 * @return um Date
+	 */
 	public static Date toDate(String data){
 
 		String date = String.valueOf(data);
@@ -369,7 +383,11 @@ public class Import {
 		}
 		return date;
 	}
-
+	/**
+	 * Converte uma String para um Time
+	 * @param hora uma String contendo uma hora
+	 * @return um Time
+	 */
 	public static Time toTime(String hora){
 		//// FIXME: 18/01/16
 		//fazer replace de espaço e aspas simples por vazio

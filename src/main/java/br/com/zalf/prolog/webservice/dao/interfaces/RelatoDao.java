@@ -38,7 +38,7 @@ public interface RelatoDao {
 	 * @return um Relato
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	Relato getByCod(Request<?> request) throws SQLException;
+	Relato getByCod(Request<Relato> request) throws SQLException;
 	/**
 	 * Busca todos os Relatos
 	 * @param request contém os dados do solicitante

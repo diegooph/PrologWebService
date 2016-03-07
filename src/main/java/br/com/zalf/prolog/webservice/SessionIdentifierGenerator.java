@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-
+/**
+ * Gera o token
+ */
 public final class SessionIdentifierGenerator {
     private SecureRandom random = new SecureRandom();
 

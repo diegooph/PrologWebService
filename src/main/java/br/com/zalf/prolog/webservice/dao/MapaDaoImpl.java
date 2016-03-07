@@ -9,9 +9,10 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dao.interfaces.MapaDao;
 import br.com.zalf.prolog.webservice.imports.MapaImport;
 
-public class MapaDaoImpl extends DatabaseConnection{
+public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 
 	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException {
 		//System.out.println("Entrou no insertOrUpdate");
@@ -392,7 +393,4 @@ public class MapaDaoImpl extends DatabaseConnection{
 		}
 		return true;
 	}
-
-
-
 }

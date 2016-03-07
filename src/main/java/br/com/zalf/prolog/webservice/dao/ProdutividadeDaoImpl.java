@@ -28,6 +28,17 @@ import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
 
 public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
 
+	/**
+	 * Data do mapa é comparada com a tabela histórico_cargos.
+	 * 
+	 * Foi criada uma coluna FUNCAO_ANTIGA e outra FUNCAO_ATUAL, é feito o join do mapa 
+	 * com a histórico_cargos contendo as duas colunas, caso a coluna funcao_antiga 
+	 * esteja vazia, significa que o colaborador não teve mudança de cargo, sendo calculada 
+	 * a remuneração de acordo com a função descrita na coluna funcao_atual.
+	 * 
+	 * Se houver dados na coluna funcao_antiga, é usado a função descrita nela para 
+	 * calculas a remuneração deste mapa.
+	 */
 	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, "
 			+ "M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, "
 			+ "M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,C.COD_FUNCAO AS FUNCAO_ATUAL, "

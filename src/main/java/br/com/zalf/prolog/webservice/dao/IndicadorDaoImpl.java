@@ -34,8 +34,7 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.IndicadorDao;
 
 public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
-	// Códigos das metas no BD
-
+	
 	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, "
 			+ "M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS, "
 			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL, "

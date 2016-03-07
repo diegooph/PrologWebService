@@ -62,6 +62,16 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "from colaborador c	where c.cpf = ?"
 			+ " ORDER BY 1)";
 
+	public static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
+			+ "from regional reg "
+			+ "left join unidade u on u.cod_regional = reg.codigo "
+			+ "join empresa e on e.codigo = u.cod_empresa join colaborador c on c.cod_unidade = u.codigo and c.cpf=? "
+			+ "where reg.codigo in ( "
+			+ "select r.codigo "
+			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
+			+ "join regional r on r.codigo = u.cod_regional	"
+			+ "where c.cpf=?)";
+	
 	public static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
 			+ " FROM UNIDADE U JOIN REGIONAL REG ON REG.CODIGO = U.COD_REGIONAL "
 			+ " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
@@ -72,17 +82,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "WHERE U.CODIGO = ?"
 			+ "ORDER BY 1";
 
-	public static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
-			+ "from regional reg "
-			+ "left join unidade u on u.cod_regional = reg.codigo "
-			+ "join empresa e on e.codigo = u.cod_empresa join colaborador c on c.cod_unidade = u.codigo and c.cpf=? "
-			+ "where reg.codigo in ( "
-			+ "select r.codigo "
-			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
-			+ "join regional r on r.codigo = u.cod_regional	"
-			+ "where c.cpf=?)";
-
-	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome nome_empresa,"
+	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
 			+ " reg.codigo as cod_regional, reg.regiao nome_regional,"
 			+ " u.codigo as cod_unidade, u.nome as nome_unidade "
 			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
@@ -112,7 +112,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		this.meta = meta;
 	}
 
-	//busca de permissao, identifica a permissao e executa o metodo adequado
+	/**
+	 * Busca dos filtros para os relatórios a partir da permissão cadastrada.
+	 */
 	public List<Empresa> getFiltros(Long cpf, String token) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -127,7 +129,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setLong(1, cpf); 
 			rSet = stmt.executeQuery();
 
-			while(rSet.next()){ // rset com os codigos e nomes da regionais
+			while(rSet.next()){ // rset com o código da permissão
 				cod_permissao = rSet.getInt("COD_PERMISSAO");
 			}
 			switch (cod_permissao) {

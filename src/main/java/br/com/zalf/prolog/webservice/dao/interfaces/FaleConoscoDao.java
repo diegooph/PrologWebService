@@ -37,7 +37,7 @@ public interface FaleConoscoDao {
 	 * @return um FaleConosco
 	 * @throws SQLException caso não seja possível buscar 
 	 */
-	FaleConosco getByCod(Request<?> request) throws SQLException;
+	FaleConosco getByCod(Request<FaleConosco> request) throws SQLException;
 	/**
 	 * Busca todos os FaleConosco do banco de dados
 	 * @param request contendo os dados do solicitante

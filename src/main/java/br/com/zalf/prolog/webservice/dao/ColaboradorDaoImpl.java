@@ -32,9 +32,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 				stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
 						+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
-						+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, EQUIPE "
-						+ "SETOR, COD_FUNCAO, COD_UNIDADE) VALUES "
-						+ "(?,?,?,?,?,?,?,?,?,?,?,?) ");
+						+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME "
+						+ "SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
+						+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
 				setStatementItems(stmt, request.getObject());
 				int count = stmt.executeUpdate();
 				if(count == 0){
@@ -58,14 +58,15 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
 					+ "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
 					+ "DATA_NASCIMENTO = ? DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
-					+ "STATUS_ATIVO = ?, NOME = ?, EQUIPE = ?, SETOR = ?, "
-					+ "COD_FUNCAO = ?, COD_UNIDADE = ? "
+					+ "STATUS_ATIVO = ?, NOME = ?, SETOR = ?, "
+					+ "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
+					+ "COD_EMPRESA = ?, COD_EQUIPE = ? "
 					+ "FROM TOKEN_AUTENTICACAO TA WHERE CPF = ? AND "
 					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
 			setStatementItems(stmt, request.getObject());
-			stmt.setLong(13, request.getCpf());
-			stmt.setLong(14, request.getCpf());
-			stmt.setString(15, request.getToken());
+			stmt.setLong(15, request.getObject().getCpf());
+			stmt.setLong(16, request.getCpf());
+			stmt.setString(17, request.getToken());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
@@ -77,6 +78,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return true;
 	}
 
+	/**
+	 * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
+	 * setamos o status para inativo.
+	 */
 	@Override
 	public boolean delete(Request<Colaborador> request) throws SQLException {
 		Connection conn = null;
@@ -130,6 +135,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return null;
 	}
 
+	/**
+	 * Busca todos os colaboradores de uma unidade
+	 */
 	@Override
 	public List<Colaborador> getAll(Request<?> request) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
@@ -141,6 +149,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
 					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
+					+ "C.COD_EMPRESA, C.COD_EQUIPE, "
 					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
@@ -270,9 +279,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setDate(6, DateUtils.toSqlDate(c.getDataDemissao()));
 		stmt.setBoolean(7, c.isAtivo());
 		stmt.setString(8, c.getNome());
-		stmt.setString(9, c.getEquipe());
-		stmt.setString(10, c.getSetor());
-		stmt.setLong(11, c.getCodFuncao());
-		stmt.setLong(12, c.getCodUnidade());
+		stmt.setString(9, c.getSetor());
+		stmt.setLong(10, c.getCodFuncao());
+		stmt.setLong(11, c.getCodUnidade());
+		stmt.setLong(12, c.getCodPermissao());
+		stmt.setLong(13, c.getCodEmpresa());
+		stmt.setString(14, c.getEquipe());
 	}
 }
