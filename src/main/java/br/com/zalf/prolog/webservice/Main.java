@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
-import br.com.zalf.prolog.webservice.dao.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
 
 public class Main {
@@ -44,8 +43,12 @@ public class Main {
 		request.setObject(metas);
 		request.setCodUnidade(1L);
 
-		RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
-		relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);
+		
+		//FrotaDaoImpl frotaDao = new FrotaDaoImpl();
+		//frotaDao.getManutencaoHolder(request, 10, 0L, false);
+		
+		//RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
+		//relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);
 		//EmpresaDaoImpl empresaDaoImpl = new EmpresaDaoImpl();
 		//empresaDaoImpl.getEquipesByCodUnidade(request);
 		//System.out.print(relatorioDaoImpl.getFiltros(12345678987L, "a"));

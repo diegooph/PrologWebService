@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	// Limit usado nas buscas para limitar a quantidade de resultados.
 	private static final int LIMIT = 10;
-	
+
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
 	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
@@ -51,12 +52,77 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			if (rSet.next()) {
 				checklist.setCodigo(rSet.getLong("CODIGO"));
 				insertRespostas(checklist);
+				insertItemManutencao(checklist, conn);
+			}else{
+				throw new SQLException("Erro ao inserir o checklist");
 			}
 		}
 		finally {
 			closeConnection(conn, stmt, rSet);
 		}		
 		return true;
+	}
+/**
+ * Método para inserir itens com apontados como problema no chcklist em uma tabela destinada ao controle de manutenção
+ * @param checklist um Checklist
+ * @throws SQLException caso não seja possível realizar as buscas e inserts
+ */
+	public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			// verifica se já existe item em aberto na tabela manutenção
+			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
+			for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
+				Pergunta pergunta = entry.getKey();
+				Resposta resposta = entry.getValue();
+				// verifica apenas os itens cuja resposta foi negativa (tem problema)
+				if(!resposta.getResposta().equals("S")){
+					stmt.setString(1, checklist.getPlacaVeiculo());
+					stmt.setLong(2, pergunta.getCodigo());
+					rSet = stmt.executeQuery();
+					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
+						System.out.println("Item já existe e esta sendo atualizado o total de apontamentos");
+						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
+						tempApontamentos += 1;
+						updateQtApontamentos(checklist.getPlacaVeiculo(), pergunta.getCodigo(), tempApontamentos, conn);
+					}else{ //item não existe, incluir na lista de manutenção
+						System.out.println("Item não existe e esta sendo criado na tabela manutenção");
+						insertApontamento(checklist.getPlacaVeiculo(), pergunta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
+					}
+				}
+			}
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
+
+	}
+	public void insertApontamento(String placa, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES (? , ? , ? , ?)");
+		stmt.setTimestamp(1, dataApontamento);
+		stmt.setString(2, placa);
+		stmt.setLong(3, codPergunta);
+		stmt.setInt(4, 2); //prazo para resolução, ainda fixo FIXME
+		int count = stmt.executeUpdate();
+		if(count == 0){
+			throw new SQLException("Erro ao inserir item na tabela de manutenção");
+		}
+		closeConnection(null, stmt, null);
+	}
+
+	public void updateQtApontamentos(String placa, long codPergunta, int apontamentos, Connection conn) throws SQLException{
+		Connection connection = conn;
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
+		stmt.setInt(1, apontamentos);
+		stmt.setString(2, placa);
+		stmt.setLong(3, codPergunta);
+		int count = stmt.executeUpdate();
+		if(count == 0){
+			throw new SQLException("Erro ao atualizar a quantidade de apontamentos");
+		}
+		closeConnection(null, stmt, null);
 	}
 
 	@Override
@@ -68,16 +134,16 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA_HORA = ?, "
 					+ "CPF_COLABORADOR = ?, PLACA_VEICULO = ?, TIPO = ? "
 					+ "WHERE CODIGO = ?");
-//			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
-//			stmt.setLong(2, checklist.getCpfColaborador());
-//			stmt.setString(3, checklist.getPlacaVeiculo());
-//			stmt.setString(4, String.valueOf(checklist.getTipo()));
-//			stmt.setLong(5, checklist.getCodigo());
-//			int count = stmt.executeUpdate();
-//			if(count == 0){
-//				throw new SQLException("Erro ao atualizar o checklist");
-//			}
-//			updateRespostas(checklist);
+			//			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
+			//			stmt.setLong(2, checklist.getCpfColaborador());
+			//			stmt.setString(3, checklist.getPlacaVeiculo());
+			//			stmt.setString(4, String.valueOf(checklist.getTipo()));
+			//			stmt.setLong(5, checklist.getCodigo());
+			//			int count = stmt.executeUpdate();
+			//			if(count == 0){
+			//				throw new SQLException("Erro ao atualizar o checklist");
+			//			}
+			//			updateRespostas(checklist);
 		}
 		finally {
 			closeConnection(conn, stmt, null);
@@ -92,7 +158,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM CHECKLIST WHERE CODIGO = ?");
-//			stmt.setLong(1, codigo);
+			//			stmt.setLong(1, codigo);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -144,7 +210,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return checklists;
 	}
-	
+
 	@Override
 	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
@@ -171,7 +237,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return checklists;
 	}
-	
+
 	@Override
 	public List<Checklist> getByColaborador(Long cpf, String token, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
@@ -201,7 +267,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return checklists;
 	}
-	
+
 	@Override
 	public List<Pergunta> getPerguntas() throws SQLException {
 		List<Pergunta> perguntas = new ArrayList<>();
@@ -225,7 +291,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return perguntas;
 	}
-	
+
 	/**
 	 * Método responsável por salvar as respostas de um checklist na tabela
 	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
@@ -246,18 +312,20 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "(COD_CHECKLIST, COD_PERGUNTA, RESPOSTA) VALUES "
 					+ "(?, ?, ?)");
 			for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
-			    Pergunta pergunta = entry.getKey();
-			    Resposta resposta = entry.getValue();
-			    stmt.setLong(1, checklist.getCodigo());
-			    stmt.setLong(2, pergunta.getCodigo());
-			    stmt.setString(3, resposta.getResposta());
-			    stmt.executeUpdate();
+				Pergunta pergunta = entry.getKey();
+				Resposta resposta = entry.getValue();
+				stmt.setLong(1, checklist.getCodigo());
+				stmt.setLong(2, pergunta.getCodigo());
+				stmt.setString(3, resposta.getResposta());
+				stmt.executeUpdate();
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
 	}
-	
+
+
+
 	private void updateRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -266,18 +334,18 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt = conn.prepareStatement("UPDATE CHECKLIST_RESPOSTAS SET "
 					+ "COD_PERGUNTA = ?, RESPOSTA = ? WHERE COD_CHECKLIST = ?");
 			for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
-			    Pergunta pergunta = entry.getKey();
-			    Resposta resposta = entry.getValue();
-			    stmt.setLong(1, pergunta.getCodigo());
-			    stmt.setString(2, resposta.getResposta());
-			    stmt.setLong(3, checklist.getCodigo());
-			    stmt.executeUpdate();
+				Pergunta pergunta = entry.getKey();
+				Resposta resposta = entry.getValue();
+				stmt.setLong(1, pergunta.getCodigo());
+				stmt.setString(2, resposta.getResposta());
+				stmt.setLong(3, checklist.getCodigo());
+				stmt.executeUpdate();
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
 	}
-	
+
 	private Checklist createChecklist(ResultSet rSet) throws SQLException {
 		Checklist checklist = null;
 		if (rSet.getString("TIPO").toUpperCase().charAt(0) == 'S') {
@@ -293,7 +361,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		createPerguntasRespostas(checklist);
 		return checklist;
 	}
-	
+
 	private void createPerguntasRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;

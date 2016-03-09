@@ -27,6 +27,7 @@ public class MetaResource{
 	public List<Metas<?>> getByCpf(
 			@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token) {
+		System.out.println(cpf + "     " +  token);
 		return service.getByCpf( cpf, token);
 	}
 	
