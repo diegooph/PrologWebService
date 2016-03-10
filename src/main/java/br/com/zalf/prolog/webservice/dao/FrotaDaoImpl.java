@@ -1,14 +1,15 @@
 package br.com.zalf.prolog.webservice.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.frota.ItemDescricao;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
@@ -84,26 +85,35 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 		finally{
 			closeConnection(conn, stmt, rSet);
 		}
+		setDescricaoItens(listItemChecklist, listHolder);
 		System.out.print(listHolder);
-		//setDescricaoItens(listItemChecklist, listHolder);
 		return listHolder;
 	}
-	
-//	private void setDescricaoItens(List<ItemChecklist> listItemChecklist, List<ManutencaoHolder> holder){
-//		
-//		for(ManutencaoHolder itemManutencao : holder){ // item manutenção contendo a placa e a lista de itens quebrados dessa placa
-//			List<ItemManutencao> listItemManutencao = itemManutencao.getListManutencao(); // contém cada item quebrado de uma mesma placa
-//			for(ItemManutencao item : listItemManutencao){
-//				
-//				
-//					
-//				}
-//			}
-//		}
-//		
-//		
-//		
-//	}
+
+	private void setDescricaoItens(List<ItemChecklist> listItemChecklist, List<ManutencaoHolder> holder){
+
+		int i = 0;
+		for(ManutencaoHolder itemManutencao : holder){ // item manutenção contendo a placa e a lista de itens quebrados dessa placa
+			List<ItemManutencao> listItemManutencao = itemManutencao.getListManutencao(); 
+			for(ItemManutencao item : listItemManutencao){// contém cada item quebrado de uma mesma placa
+				List<ItemDescricao> tempList = new ArrayList<>();
+				while(i < listItemChecklist.size()){
+					if(listItemChecklist.get(i).placa.equals(itemManutencao.getPlaca()) && item.getCodItem() == listItemChecklist.get(i).codPergunta){
+						ItemDescricao itemDescricao = new ItemDescricao();
+						itemDescricao.setData(listItemChecklist.get(i).data);
+						itemDescricao.setCpf(listItemChecklist.get(i).cpf);
+						itemDescricao.setNome(listItemChecklist.get(i).nome);
+						itemDescricao.setDescricao(listItemChecklist.get(i).descricao);
+						tempList.add(itemDescricao);
+					}
+
+					i = i + 1;
+					item.setListDescricao(tempList);
+				}
+				i = 0;
+			}
+		}
+	}
 
 	private ItemManutencao createItemManutencao(ResultSet rSet) throws SQLException{
 		ItemManutencao item = new ItemManutencao();
@@ -167,12 +177,12 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 		try{
 			stmt = conn.prepareStatement("SELECT C.PLACA_VEICULO, CR.COD_PERGUNTA, "
-					+ "C.DATA_HORA, CO.NOME, CR.RESPOSTA  "
+					+ "C.DATA_HORA, CO.NOME, CO.CPF, CR.RESPOSTA  "
 					+ "FROM CHECKLIST_RESPOSTAS CR JOIN "
 					+ "CHECKLIST C ON C.CODIGO = CR.COD_CHECKLIST "
 					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
-					+ "JOIN CHECKLIST_MANUTENCAO CM ON CM.ITEM = CR.COD_PERGUNTA "
+					+ "JOIN CHECKLIST_MANUTENCAO CM ON CM.ITEM = CR.COD_PERGUNTA AND CM.PLACA = C.PLACA_VEICULO "
 					+ "WHERE CR.RESPOSTA <> 'S' AND V.COD_UNIDADE = ? AND "
 					+ "CM.CPF_FROTA IS NULL ORDER BY PLACA_VEICULO, COD_PERGUNTA");
 			stmt.setLong(1, codUnidade);
@@ -181,7 +191,8 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 				ItemChecklist item = new ItemChecklist();
 				item.codPergunta = rSet.getInt("COD_PERGUNTA");
 				item.placa = rSet.getString("PLACA_VEICULO");
-				item.data = DateUtils.toSqlDate(rSet.getTimestamp("DATA_HORA"));
+				item.data = rSet.getTimestamp("DATA_HORA");
+				item.cpf = rSet.getLong("CPF");
 				item.nome = rSet.getString("NOME");
 				item.descricao = rSet.getString("RESPOSTA");
 				list.add(item);
@@ -194,15 +205,23 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 	public class ItemChecklist{
 
+		@Override
+		public String toString() {
+			return "ItemChecklist [placa=" + placa + ", codPergunta=" + codPergunta + ", data=" + data + ", cpf=" + cpf
+					+ ", nome=" + nome + ", descricao=" + descricao + "]";
+		}
+
 		public String placa;
 		public int codPergunta;
 		public Date data;
+		public Long cpf;
 		public String nome;
 		public String descricao;
 
 		public ItemChecklist() {
-			// TODO Auto-generated constructor stub
 		}
+
+
 
 	}
 

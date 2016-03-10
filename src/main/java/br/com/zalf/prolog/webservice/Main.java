@@ -8,6 +8,7 @@ import java.time.Month;
 import br.com.zalf.prolog.models.Metas;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
+import br.com.zalf.prolog.webservice.dao.FrotaDaoImpl;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
@@ -44,8 +45,8 @@ public class Main {
 		request.setCodUnidade(1L);
 
 		
-		//FrotaDaoImpl frotaDao = new FrotaDaoImpl();
-		//frotaDao.getManutencaoHolder(request, 10, 0L, false);
+		FrotaDaoImpl frotaDao = new FrotaDaoImpl();
+		frotaDao.getManutencaoHolder(cpf, token, codUnidade, 10, 0L, false);
 		
 		//RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
 		//relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);
