@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +19,11 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.FrotaDao;
 
 public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
+
+	private static final String PRIORIDADE_CRITICA = "CRITICA";
+	private static final String PRIORIDADE_ALTA = "ALTA";
+	private static final String PRIORIDADE_BAIXA = "BAIXA";
+
 
 	@Override
 	public List<ManutencaoHolder> getManutencaoHolder (Long cpf, String token, Long codUnidade, int limit, long offset, boolean isAbertos) throws SQLException{
@@ -31,18 +38,19 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 		try{
 			conn = getConnection();
-			//query busca todos os itens de manutenção, independente se estão abertos ou fechados(com cpf_frota e data_fechamento)
-			String query = "SELECT CM.DATA_APONTAMENTO, CM.PLACA, CM.ITEM, CP.PERGUNTA, CM.PRAZO, CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, "
-					+ "CM.DATA_RESOLUCAO, CM.CPF_FROTA, C.NOME "
-					+ "FROM CHECKLIST_MANUTENCAO CM "
+			//query busca todos os itens de manutenção
+			String query = "SELECT CM.DATA_APONTAMENTO, CM.PLACA, CM.ITEM, CP.PERGUNTA, CP.PRIORIDADE, PG.PRAZO, "
+					+ "CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, CM.DATA_RESOLUCAO, "
+					+ "CM.CPF_FROTA, C.NOME FROM CHECKLIST_MANUTENCAO CM	"
 					+ "JOIN VEICULO V ON V.PLACA = CM.PLACA "
-					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM "
-					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
-					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA "
-					+ "WHERE V.COD_UNIDADE = ? "
-					+ "AND CM.CPF_FROTA %s "
-					+ "ORDER BY PLACA "
-					+ "LIMIT ? OFFSET ?";
+					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ?  AND TA.TOKEN = ? "
+					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
+					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
+					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
+					+ "FROM CHECKLIST_MANUTENCAO CM LIMIT ? OFFSET ?) "
+					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
+					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
+					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA  %s ORDER BY PLACA, PG.PRAZO";
 			if(isAbertos){
 				query = String.format(query, "IS NULL");
 			}else{
@@ -52,11 +60,10 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
-			stmt.setLong(3, codUnidade);
-			stmt.setInt(4, limit);
-			stmt.setLong(5, offset);
+			stmt.setInt(3, limit);
+			stmt.setLong(4, offset);
+			stmt.setLong(5, codUnidade);
 			rSet = stmt.executeQuery();
-
 			if(rSet.first()){
 				itemManutencao = createItemManutencao(rSet);
 				list.add(itemManutencao);
@@ -68,26 +75,52 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					list.add(itemManutencao);
 				}else{
 					holder.setListManutencao(list);
+					setQtItens(holder);
 					listHolder.add(holder);
-					//TODO SETAR QUANTIDADE DE ITENS PELA PRIORIDADE
 					holder = new ManutencaoHolder();
 					holder.setPlaca(rSet.getString("PLACA"));
 					itemManutencao = createItemManutencao(rSet);
 					list = new ArrayList<>();
 					list.add(itemManutencao);
+					
 				}
 			}
 			holder.setListManutencao(list);
-			//TODO SETAR QUANTIDADE DE ITENS PELA PRIORIDADE
+			setQtItens(holder);
 			listHolder.add(holder);
 			listItemChecklist = getListaDescricao(codUnidade, conn);
+			System.out.println(listItemChecklist);
 		}
 		finally{
 			closeConnection(conn, stmt, rSet);
 		}
 		setDescricaoItens(listItemChecklist, listHolder);
+		ordenaLista(listHolder);
 		System.out.print(listHolder);
 		return listHolder;
+	}
+	private void setQtItens(ManutencaoHolder holder){
+		for(ItemManutencao item : holder.getListManutencao()){
+			switch (item.getPrioridade()) {
+			case PRIORIDADE_CRITICA:
+				holder.setQtdCritica(holder.getQtdCritica() + 1);;
+				break;
+			case PRIORIDADE_ALTA:
+				holder.setQtdAlta(holder.getQtdAlta() + 1);;
+				break;
+			case PRIORIDADE_BAIXA:
+				holder.setQtdBaixa(holder.getQtdBaixa() + 1);;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	private void ordenaLista (List<ManutencaoHolder> list){
+
+		Collections.sort(list, new CustomComparator());
+		Collections.reverse(list);
 	}
 
 	private void setDescricaoItens(List<ItemChecklist> listItemChecklist, List<ManutencaoHolder> holder){
@@ -99,15 +132,18 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 				List<ItemDescricao> tempList = new ArrayList<>();
 				while(i < listItemChecklist.size()){
 					if(listItemChecklist.get(i).placa.equals(itemManutencao.getPlaca()) && item.getCodItem() == listItemChecklist.get(i).codPergunta){
+						System.out.println("ENTROU NO IF");
 						ItemDescricao itemDescricao = new ItemDescricao();
 						itemDescricao.setData(listItemChecklist.get(i).data);
 						itemDescricao.setCpf(listItemChecklist.get(i).cpf);
 						itemDescricao.setNome(listItemChecklist.get(i).nome);
 						itemDescricao.setDescricao(listItemChecklist.get(i).descricao);
 						tempList.add(itemDescricao);
+						listItemChecklist.remove(i);
+						i = i-1;
 					}
-
 					i = i + 1;
+					System.out.println(tempList);
 					item.setListDescricao(tempList);
 				}
 				i = 0;
@@ -126,6 +162,9 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 		item.setStatusResolucao(rSet.getString("STATUS_RESOLUCAO"));
 		item.setCpfFrota(rSet.getLong("CPF_FROTA"));
 		item.setNomeFrota(rSet.getString("NOME"));
+		item.setPrazo(rSet.getInt("PRAZO"));
+		item.setPrioridade(rSet.getString("PRIORIDADE"));
+
 		return item;
 	}
 	/**
@@ -184,7 +223,8 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
 					+ "JOIN CHECKLIST_MANUTENCAO CM ON CM.ITEM = CR.COD_PERGUNTA AND CM.PLACA = C.PLACA_VEICULO "
 					+ "WHERE CR.RESPOSTA <> 'S' AND V.COD_UNIDADE = ? AND "
-					+ "CM.CPF_FROTA IS NULL ORDER BY PLACA_VEICULO, COD_PERGUNTA");
+					+ "CM.CPF_FROTA IS NULL AND C.DATA_HORA > CM.DATA_APONTAMENTO "
+					+ "ORDER BY PLACA_VEICULO, COD_PERGUNTA");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
@@ -210,7 +250,6 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 			return "ItemChecklist [placa=" + placa + ", codPergunta=" + codPergunta + ", data=" + data + ", cpf=" + cpf
 					+ ", nome=" + nome + ", descricao=" + descricao + "]";
 		}
-
 		public String placa;
 		public int codPergunta;
 		public Date data;
@@ -220,9 +259,29 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 		public ItemChecklist() {
 		}
-
-
-
 	}
+	
+	private class CustomComparator implements Comparator<ManutencaoHolder>{
+
+		/**
+		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
+		 */
+		@Override
+		public int compare(ManutencaoHolder o1, ManutencaoHolder o2) {
+			Integer valor1 = Double.compare(o1.getQtdCritica(), o2.getQtdCritica());
+			if(valor1!=0){
+				return valor1;
+			}
+			Integer valor2 = Double.compare(o1.getQtdAlta(), o2.getQtdAlta());
+			if(valor2 != 0){
+			return valor2;
+			}
+			Integer valor3 = Double.compare(o1.getQtdBaixa(), o2.getQtdBaixa());
+			return valor3;
+			
+		}
+	}
+	
+	
 
 }

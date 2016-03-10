@@ -46,7 +46,7 @@ public class Main {
 
 		
 		FrotaDaoImpl frotaDao = new FrotaDaoImpl();
-		frotaDao.getManutencaoHolder(cpf, token, codUnidade, 10, 0L, false);
+		frotaDao.getManutencaoHolder(cpf, token, codUnidade, 20, 0L, true);
 		
 		//RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
 		//relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);

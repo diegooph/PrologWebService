@@ -99,11 +99,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 	public void insertApontamento(String placa, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES (? , ? , ? , ?)");
+		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES (? , ? , ?)");
 		stmt.setTimestamp(1, dataApontamento);
 		stmt.setString(2, placa);
 		stmt.setLong(3, codPergunta);
-		stmt.setInt(4, 2); //prazo para resolução, ainda fixo FIXME
 		int count = stmt.executeUpdate();
 		if(count == 0){
 			throw new SQLException("Erro ao inserir item na tabela de manutenção");

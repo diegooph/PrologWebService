@@ -1,0 +1,29 @@
+package test;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import br.com.zalf.prolog.models.frota.ManutencaoHolder;
+import br.com.zalf.prolog.webservice.services.FrotaService;
+import junit.framework.TestCase;
+
+public class FotaTest extends TestCase{
+	
+	private FrotaService service = new FrotaService();
+	
+	Long cpf = 12345678987L;
+	String token = "b820oonp8l2pm1qo2s0skike1f";
+	
+	@Test
+	public void testeFrota(){
+		
+		List<ManutencaoHolder> listHolder = service.getManutencaoHolder(cpf, token, 1L, 50, 0L, true);
+		assertNotNull(listHolder);
+		assertTrue(listHolder.size() > 0);
+		
+		
+		
+	}
+
+}
