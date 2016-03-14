@@ -223,7 +223,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
 					+ "JOIN CHECKLIST_MANUTENCAO CM ON CM.ITEM = CR.COD_PERGUNTA AND CM.PLACA = C.PLACA_VEICULO "
 					+ "WHERE CR.RESPOSTA <> 'S' AND V.COD_UNIDADE = ? AND "
-					+ "CM.CPF_FROTA IS NULL AND C.DATA_HORA > CM.DATA_APONTAMENTO "
+					+ "CM.CPF_FROTA IS NULL AND C.DATA_HORA >= CM.DATA_APONTAMENTO "
 					+ "ORDER BY PLACA_VEICULO, COD_PERGUNTA");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();

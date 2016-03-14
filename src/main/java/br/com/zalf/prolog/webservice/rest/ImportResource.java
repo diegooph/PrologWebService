@@ -36,9 +36,11 @@ public class ImportResource {
 	  	@Path("/mapa")
 	    @Consumes({MediaType.MULTIPART_FORM_DATA})
 	    public Response uploadMapa(
+	    		
 	    		@FormDataParam("file") InputStream fileInputStream,
 	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
 	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+	  		System.out.println("CHAMOU O IMPORT DO MAPAAAAAA");
 	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
 	  		System.out.println(jsonPart.toString());
 	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
