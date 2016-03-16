@@ -5,10 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.frota.ItemDescricao;
@@ -89,7 +91,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 			setQtItens(holder);
 			listHolder.add(holder);
 			listItemChecklist = getListaDescricao(codUnidade, conn);
-			System.out.println(listItemChecklist);
+			//System.out.println(listItemChecklist);
 		}
 		finally{
 			closeConnection(conn, stmt, rSet);
@@ -132,7 +134,6 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 				List<ItemDescricao> tempList = new ArrayList<>();
 				while(i < listItemChecklist.size()){
 					if(listItemChecklist.get(i).placa.equals(itemManutencao.getPlaca()) && item.getCodItem() == listItemChecklist.get(i).codPergunta){
-						System.out.println("ENTROU NO IF");
 						ItemDescricao itemDescricao = new ItemDescricao();
 						itemDescricao.setData(listItemChecklist.get(i).data);
 						itemDescricao.setCpf(listItemChecklist.get(i).cpf);
@@ -143,7 +144,6 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 						i = i-1;
 					}
 					i = i + 1;
-					System.out.println(tempList);
 					item.setListDescricao(tempList);
 				}
 				i = 0;
@@ -156,14 +156,14 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 		item.setData(rSet.getTimestamp("DATA_APONTAMENTO"));
 		item.setCodItem(rSet.getInt("ITEM"));
 		item.setItem(rSet.getString("PERGUNTA"));
-		item.setPrazo(rSet.getInt("PRAZO"));
+		item.setPrazoHoras(rSet.getInt("PRAZO"));
 		item.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
 		item.setDataResolucao(rSet.getTimestamp("DATA_RESOLUCAO"));
 		item.setStatusResolucao(rSet.getString("STATUS_RESOLUCAO"));
 		item.setCpfFrota(rSet.getLong("CPF_FROTA"));
 		item.setNomeFrota(rSet.getString("NOME"));
-		item.setPrazo(rSet.getInt("PRAZO"));
 		item.setPrioridade(rSet.getString("PRIORIDADE"));
+		setLongTempoRestante(item);
 
 		return item;
 	}
@@ -242,6 +242,19 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 		}
 		return list;
 	}
+	
+    public void setLongTempoRestante(ItemManutencao itemManutencao) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(itemManutencao.getData());
+        calendar.add(Calendar.HOUR, itemManutencao.getPrazoHoras());
+        Date dataMaxima = calendar.getTime();
+        long tempoRestante = dataMaxima.getTime() - System.currentTimeMillis();
+        System.out.println("tempoRestante long: " + tempoRestante);
+        System.out.println("\nItem: " + itemManutencao.getItem() + "\n Horas restantes: " + TimeUnit.MILLISECONDS.toHours(tempoRestante));
+        System.out.println(dataMaxima);
+
+        itemManutencao.setRestanteResolucaoMinutos(TimeUnit.MILLISECONDS.toMinutes(tempoRestante));
+    }
 
 	public class ItemChecklist{
 
