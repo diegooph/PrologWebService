@@ -209,6 +209,35 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return checklists;
 	}
+	
+	@Override
+	public List<Checklist> getAllByCodUnidade(Request<?> request) throws SQLException {
+		List<Checklist> checklists = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, TIPO FROM CHECKLIST C "
+					+ "JOIN COLABORADOR CO ON CO.CPF=C.CPF_COLABORADOR JOIN "
+					+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
+					+ "WHERE CO.COD_UNIDADE = ? "
+					+ "ORDER BY DATA_HORA DESC");
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
+			stmt.setLong(3, request.getCodUnidade());
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Checklist checklist = createChecklist(rSet);
+				System.out.println(checklist);
+				checklists.add(checklist);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return checklists;
+	}
 
 	@Override
 	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) throws SQLException {
@@ -249,7 +278,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO FROM CHECKLIST C "
 					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
 					+ "? = TA.TOKEN WHERE C.CPF_COLABORADOR = ? "
-					+ "ORDER BY DATA_HORA DESC "
+					+ "ORDER BY C.DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);

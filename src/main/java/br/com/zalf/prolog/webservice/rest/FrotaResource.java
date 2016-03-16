@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.services.FrotaService;
 
@@ -35,7 +36,7 @@ public class FrotaResource {
 	
 	@POST
 	@Path("/consertaItem")
-	public boolean consertaItem(Request<?> request){
+	public boolean consertaItem(Request<ItemManutencao> request){
 		return service.consertaItem(request);
 	}
 }

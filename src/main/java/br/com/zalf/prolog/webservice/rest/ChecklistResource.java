@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Pergunta;
+import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
@@ -58,6 +59,14 @@ public class ChecklistResource {
 //	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) {
 //		return service.getAllExcetoColaborador(cpf, offset);
 //	}
+	
+	@POST
+	@Path("/unidade")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Checklist> getAllByCodUnidade(
+			@FormParam("request") Request<?> request) {
+		return service.getAllByCodUnidade(request);
+	}	
 	
 	@POST
 	@Path("/colaborador")

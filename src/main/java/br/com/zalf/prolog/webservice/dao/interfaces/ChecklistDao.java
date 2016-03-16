@@ -40,12 +40,19 @@ public interface ChecklistDao {
 	 */
 	Checklist getByCod(Request<?> request) throws SQLException;
 	/**
+	 * Busca todos os checklists do banco de dados
+	 * @param request contendo os dados do solicitante
+	 * @return lista de checklist
+	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
+	 */
+	List<Checklist> getAll(Request<?> request) throws SQLException;
+	/**
 	 * Busca todos os checklists de uma unidade
 	 * @param request contendo o código da unidade e dados do solicitante
 	 * @return lista de checklist
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<Checklist> getAll(Request<?> request) throws SQLException;
+	public List<Checklist> getAllByCodUnidade(Request<?> request) throws SQLException;
 	/**
 	 * Busca os checklists realizados por um colaborador
 	 * @param cpf a ser consultado
