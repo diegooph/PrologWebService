@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dao.interfaces;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Pergunta;
@@ -47,14 +48,16 @@ public interface ChecklistDao {
 	 */
 	List<Checklist> getAll(Request<?> request) throws SQLException;
 	/**
-	 * Busca todos os checks de uma unidade
+	 * Busca todos os checks de uma unidade respeitando o período selecionado
 	 * @param request contém os dados do solicitante, token e cod da unidade a ser buscada
+	 * @param dataInicial uma data
+	 * @param dataFinal uma data
 	 * @param limit um limit
 	 * @param offset um offset
 	 * @return uma lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	public List<Checklist> getAllByCodUnidade(Request<?> request, int limit, long offset) throws SQLException;
+	public List<Checklist> getAllByCodUnidade(Request<?> request, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException;
 	/**
 	 * Busca os checklists realizados por um colaborador
 	 * @param cpf a ser consultado

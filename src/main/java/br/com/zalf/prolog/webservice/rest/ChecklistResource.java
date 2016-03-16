@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.rest;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -65,9 +66,11 @@ public class ChecklistResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Checklist> getAllByCodUnidade(
 			@FormParam("request") Request<?> request,
+			@FormParam("dataInicial") LocalDate dataInicial,
+			@FormParam("dataFinal") LocalDate dataFinal,
 			@FormParam("limit") int limit,
 			@FormParam("offset") long offset) {
-		return service.getAllByCodUnidade(request, limit, offset);
+		return service.getAllByCodUnidade(request, dataInicial, dataFinal, limit, offset);
 	}	
 	
 	@POST

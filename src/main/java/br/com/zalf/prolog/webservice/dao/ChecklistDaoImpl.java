@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -172,8 +173,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
-					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST C "
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
+					+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "WHERE C.CODIGO = ?");
 			//stmt.setLong(1, codigo);
 			rSet = stmt.executeQuery();
@@ -196,8 +198,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
-					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
+					+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "ORDER BY DATA_HORA DESC");
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -211,25 +214,30 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 	
 	@Override
-	public List<Checklist> getAllByCodUnidade(Request<?> request, int limit, long offset) throws SQLException {
+	public List<Checklist> getAllByCodUnidade(Request<?> request, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
-					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, TIPO FROM CHECKLIST C "
+			
+			String query = "SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, CO.NOME, C.PLACA_VEICULO, TIPO FROM CHECKLIST C "
 					+ "JOIN COLABORADOR CO ON CO.CPF=C.CPF_COLABORADOR JOIN "
 					+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
-					+ "WHERE CO.COD_UNIDADE = ? "
+					+ "WHERE CO.COD_UNIDADE = ? AND C.DATA_HORA::DATE BETWEEN ? AND ?  "
 					+ "ORDER BY DATA_HORA DESC "
-					+ "LIMIT ? OFFSET ?");
+					+ "LIMIT ? OFFSET ?";
+			conn = getConnection();
+			stmt = conn.prepareStatement(query);
 			stmt.setLong(1, request.getCpf());
 			stmt.setString(2, request.getToken());
 			stmt.setLong(3, request.getCodUnidade());
-			stmt.setInt(4, limit);
-			stmt.setLong(5, offset);
+			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
+			stmt.setInt(6, limit);
+			stmt.setLong(7, offset);
+			
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
@@ -250,8 +258,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CODIGO, DATA_HORA, "
-					+ "CPF_COLABORADOR, PLACA_VEICULO, TIPO FROM CHECKLIST"
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
+					+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "WHERE CPF_COLABORADOR != ? "
 					+ "ORDER BY DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ? ");
@@ -278,7 +287,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
-					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO FROM CHECKLIST C "
+					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO , CO.NOME FROM CHECKLIST C "
+					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR AND "
 					+ "? = TA.TOKEN WHERE C.CPF_COLABORADOR = ? "
 					+ "ORDER BY C.DATA_HORA DESC "
@@ -386,6 +396,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
+		checklist.setNomeColaborador(rSet.getString("NOME"));
 		checklist.setData(rSet.getTimestamp("DATA_HORA"));
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
