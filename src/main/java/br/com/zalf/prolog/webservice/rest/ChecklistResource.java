@@ -64,8 +64,10 @@ public class ChecklistResource {
 	@Path("/unidade")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Checklist> getAllByCodUnidade(
-			@FormParam("request") Request<?> request) {
-		return service.getAllByCodUnidade(request);
+			@FormParam("request") Request<?> request,
+			@FormParam("limit") int limit,
+			@FormParam("offset") long offset) {
+		return service.getAllByCodUnidade(request, limit, offset);
 	}	
 	
 	@POST

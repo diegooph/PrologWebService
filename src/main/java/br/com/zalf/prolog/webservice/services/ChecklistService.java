@@ -57,9 +57,9 @@ public class ChecklistService {
 //		}
 //	}
 	
-	public List<Checklist> getAllByCodUnidade(Request<?> request) {
+	public List<Checklist> getAllByCodUnidade(Request<?> request, int limit, long offset) {
 		try {
-			return dao.getAllByCodUnidade(request);
+			return dao.getAllByCodUnidade(request, limit, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();

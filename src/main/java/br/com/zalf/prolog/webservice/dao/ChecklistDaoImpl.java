@@ -211,7 +211,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 	
 	@Override
-	public List<Checklist> getAllByCodUnidade(Request<?> request) throws SQLException {
+	public List<Checklist> getAllByCodUnidade(Request<?> request, int limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -223,10 +223,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "JOIN COLABORADOR CO ON CO.CPF=C.CPF_COLABORADOR JOIN "
 					+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 					+ "WHERE CO.COD_UNIDADE = ? "
-					+ "ORDER BY DATA_HORA DESC");
+					+ "ORDER BY DATA_HORA DESC "
+					+ "LIMIT ? OFFSET ?");
 			stmt.setLong(1, request.getCpf());
 			stmt.setString(2, request.getToken());
 			stmt.setLong(3, request.getCodUnidade());
+			stmt.setInt(4, limit);
+			stmt.setLong(5, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);
