@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.rest;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Pergunta;
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
 
 @Path("/checklists")
@@ -65,12 +64,15 @@ public class ChecklistResource {
 	@Path("/unidade")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Checklist> getAllByCodUnidade(
-			@FormParam("request") Request<?> request,
-			@FormParam("dataInicial") LocalDate dataInicial,
-			@FormParam("dataFinal") LocalDate dataFinal,
+			@FormParam("cpf") Long cpf,
+			@FormParam("token") String token,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("dataInicial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
 			@FormParam("limit") int limit,
 			@FormParam("offset") long offset) {
-		return service.getAllByCodUnidade(request, dataInicial, dataFinal, limit, offset);
+		return service.getAllByCodUnidade(cpf, token, codUnidade, DateUtils.toLocalDate(new Date(dataInicial)), 
+				DateUtils.toLocalDate(new Date(dataFinal)), limit, offset);
 	}	
 	
 	@POST

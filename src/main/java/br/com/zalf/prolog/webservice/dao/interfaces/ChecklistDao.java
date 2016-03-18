@@ -57,7 +57,7 @@ public interface ChecklistDao {
 	 * @return uma lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	public List<Checklist> getAllByCodUnidade(Request<?> request, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException;
+	public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException;
 	/**
 	 * Busca os checklists realizados por um colaborador
 	 * @param cpf a ser consultado

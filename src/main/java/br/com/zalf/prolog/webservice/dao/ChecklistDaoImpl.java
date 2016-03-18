@@ -214,7 +214,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 	
 	@Override
-	public List<Checklist> getAllByCodUnidade(Request<?> request, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException {
+	public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -230,9 +230,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "LIMIT ? OFFSET ?";
 			conn = getConnection();
 			stmt = conn.prepareStatement(query);
-			stmt.setLong(1, request.getCpf());
-			stmt.setString(2, request.getToken());
-			stmt.setLong(3, request.getCodUnidade());
+			stmt.setLong(1, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, codUnidade);
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
 			stmt.setInt(6, limit);
