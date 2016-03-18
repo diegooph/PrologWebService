@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Pergunta;
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 
@@ -60,7 +59,7 @@ public class ChecklistService {
 	
 	public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade,  LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) {
 		try {
-			return dao.getAllByCodUnidade(cpf, token, codUnidade, dataInicial, dataInicial, limit, offset);
+			return dao.getAllByCodUnidade(cpf, token, codUnidade, dataInicial, dataFinal, limit, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();
