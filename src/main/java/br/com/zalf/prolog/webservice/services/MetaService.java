@@ -11,9 +11,9 @@ import br.com.zalf.prolog.webservice.dao.MetasDaoImpl;
 public class MetaService {
 private MetasDaoImpl dao = new MetasDaoImpl();
 	
-	public List<Metas<?>> getByCpf(Long cpf, String token) {
+	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) {
 		try {
-			return dao.getByCpf(cpf, token);
+			return dao.getByCodUnidade(codUnidade, cpf, token);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Metas<?>>();

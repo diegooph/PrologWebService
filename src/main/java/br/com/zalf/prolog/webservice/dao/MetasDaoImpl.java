@@ -27,12 +27,11 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO "
 			+ "WHERE MU.COD_UNIDADE = ? ORDER BY M.CODIGO";
 
-	private static final String BUSCA_METAS_BY_CPF = "SELECT M.CODIGO AS COD_META, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO"
-			+ " JOIN COLABORADOR C ON C.COD_UNIDADE = MU.COD_UNIDADE "
+	private static final String BUSCA_METAS_BY_UNIDADE = "SELECT M.CODIGO AS COD_META, M.NOME, MU.VALOR "
+			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO "
 			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
 			+ "TA.TOKEN = ? "
-			+ "WHERE C.CPF = ? ORDER BY M.CODIGO";
+			+ "WHERE MU.COD_UNIDADE = ? ORDER BY M.CODIGO";
 
 	private static final String DEV_CX = "DevCX";
 	private static final String DEV_NF = "DevNF";
@@ -99,17 +98,17 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	  * @return lista de objetos Metas, o objeto Metas contém apenas uma meta, 
 	  * podendo ser do tipo double ou time
 	  */
-	public List<Metas<?>> getByCpf(Long cpf, String token) throws SQLException{
+	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) throws SQLException{
 		List<Metas<?>> listMetas = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_METAS_BY_CPF);
+			stmt = conn.prepareStatement(BUSCA_METAS_BY_UNIDADE);
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
-			stmt.setLong(3, cpf);
+			stmt.setLong(3, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				listMetas.add(createMetas(rSet));

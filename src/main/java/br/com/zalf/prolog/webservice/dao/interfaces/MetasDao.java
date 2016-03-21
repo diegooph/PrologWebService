@@ -10,13 +10,14 @@ import br.com.zalf.prolog.models.Request;
  */
 public interface MetasDao {
 	/**
-	 * Busca metas de acordo com a unidade do colaborador solicitante
+	 * Busca metas de acordo com a unidade informada
+	 * @param codUnidade código da unidade a ser buscadas as metas
 	 * @param cpf um cpf
 	 * @param token para verificar se o usuário esta devidamente logado
 	 * @return lista de Metas (double ou time)
 	 * @throws SQLException caso não seja possível buscar
 	 */
-	public List<Metas<?>> getByCpf(Long cpf, String token) throws SQLException;
+	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) throws SQLException;
 	/**
 	 * Atualiza o valor de determinada meta
 	 * @param request contém a meta atualizada

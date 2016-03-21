@@ -22,12 +22,13 @@ public class MetaResource{
 	private MetaService service = new MetaService();
 
 	@POST
-	@Path("/byCpf")
+	@Path("/byCodUnidade")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Metas<?>> getByCpf(
+	public List<Metas<?>> getByCodUnidade(
+			@FormParam("codUnidade") Long codUnidade,
 			@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token) {
-		return service.getByCpf( cpf, token);
+		return service.getByCodUnidade(codUnidade, cpf, token);
 	}
 	
 	@PUT
