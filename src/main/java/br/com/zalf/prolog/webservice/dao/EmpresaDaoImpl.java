@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 
 public class EmpresaDaoImpl extends DatabaseConnection {
 
@@ -70,6 +72,34 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 		equipe.setNome(rset.getString("NOME"));
 		System.out.println(equipe.getNome());
 		return equipe;
+	}
+	
+	public boolean createEquipe(Request<Equipe> request) throws SQLException{
+		Autenticacao autenticacao = new Autenticacao("", request.getCpf(), 
+				request.getToken());
+		AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
+		if (autenticacaoDao.verifyIfExists(autenticacao)) {
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			try {
+				conn = getConnection();
+
+				stmt = conn.prepareStatement("INSERT INTO EQUIPE "
+						+ "(NOME, COD_UNIDADE) VALUES "
+						+ "(?,?) ");
+				stmt.setString(1, request.getObject().getNome());
+				stmt.setLong(2, request.getCodUnidade());
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					throw new SQLException("Erro ao inserir a equipe");
+				}	
+			}
+			finally {
+				closeConnection(conn, stmt, null);
+			}		
+			return true;
+		}
+		return false;
 	}
 
 }

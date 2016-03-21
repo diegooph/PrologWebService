@@ -52,7 +52,8 @@ public class Main {
 		
 		Equipe eqp = new Equipe();
 		eqp.setCodigo(1);;
-		eqp.setNome("DevCX");
+		eqp.setNome("SALATESTE");
+		eqp.setCodUnidade(1);
 				
 		Request<Equipe> request = new Request<Equipe>(token, cpf);
 		request.setObject(eqp);

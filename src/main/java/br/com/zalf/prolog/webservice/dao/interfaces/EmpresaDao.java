@@ -13,6 +13,8 @@ public interface EmpresaDao {
 	
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException;
 	
+	public boolean createEquipe (Request<Equipe> request) throws SQLException;
+	
 	public List<Veiculo> getVeiculosByCodUnidade(Request<?> request) throws SQLException;
 	
 	public boolean updateVeiculo (Request<Veiculo> request) throws SQLException;

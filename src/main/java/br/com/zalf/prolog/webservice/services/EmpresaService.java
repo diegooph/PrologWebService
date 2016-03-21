@@ -21,4 +21,23 @@ public class EmpresaService {
 		}
 	}
 	
+	public boolean updateEquipe (Request<Equipe> request){
+		
+		try{
+			return dao.updateEquipe(request);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean createEquipe (Request<Equipe> request){
+		try{
+			return dao.createEquipe(request);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 }

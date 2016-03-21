@@ -37,7 +37,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT TA.CPF_COLABORADOR FROM "
-					+ "TOKEN_AUTENTICACAO TA WHERE C.CPF = ? AND TOKEN = ?)");
+					+ "TOKEN_AUTENTICACAO TA WHERE TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?)");
 			stmt.setLong(1, autenticacao.getCpf());
 			stmt.setString(2, autenticacao.getToken());
 			rSet = stmt.executeQuery();
