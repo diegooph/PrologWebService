@@ -23,6 +23,14 @@ public interface AutenticacaoDao {
 	 */
 	boolean verifyIfExists(Autenticacao autenticacao) throws SQLException;
 	/**
+	 * Verifica a existência de um token
+	 * @param token um token
+	 * @return boolean com o resultado da requisição
+	 * @throws SQLException caso não seja possível realizar a busca
+	 */
+	public boolean verifyIfTokenExists(String token) throws SQLException;
+	
+	/**
 	 * Deleta um token da tabela, usado quando o usuário solicita logout do sistema
 	 * @param autenticacao contém o CPF e o token a ser deletado da tabela
 	 * @return resultado do delete, true ou false

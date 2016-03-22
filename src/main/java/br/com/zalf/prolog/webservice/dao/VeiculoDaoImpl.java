@@ -72,12 +72,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
-					+ "COD_UNIDADE = ? JOIN TOKEN_AUTENTICACAO TA ON "
-					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
-			stmt.setLong(1, request.getCodUnidade());
-			stmt.setLong(2, request.getCpf());
-			stmt.setString(3, request.getToken());
+			stmt = conn.prepareStatement("SELECT * FROM VEICULO V JOIN TOKEN_AUTENTICACAO TA ON "
+					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
+					+ "WHERE V.COD_UNIDADE=? ");
+			stmt.setLong(1, request.getCpf());
+			stmt.setString(2, request.getToken());
+			stmt.setLong(3, request.getCodUnidade());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);
@@ -108,11 +108,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			try {
 				conn = getConnection();
 				stmt = conn.prepareStatement("INSERT INTO VEICULO "
-						+ "(PLACA, MODELO, STATUS_ATIVO) VALUES "
-						+ "(?,?,?)");
+						+ "(PLACA, MODELO, COD_UNIDADE, STATUS_ATIVO) VALUES "
+						+ "(?,?,?,?)");
 				stmt.setString(1, request.getObject().getPlaca());
 				stmt.setString(2, request.getObject().getModelo());
-				stmt.setBoolean(3, true);
+				stmt.setLong(3, request.getCodUnidade());
+				stmt.setBoolean(4, true);
 				int count = stmt.executeUpdate();
 				if(count == 0){
 					throw new SQLException("Erro ao inserir o veículo");
@@ -127,21 +128,18 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	@Override
-	public boolean update(Request<Veiculo> request) throws SQLException {
+	public boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE VEICULO SET "
 					+ "PLACA = ?, MODELO = ?, STATUS_ATIVO = ? "
-					+ "FROM TOKEN_AUTENTICACAO TA WHERE PLACA = ? AND "
-					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
-			stmt.setString(1, request.getObject().getPlaca());
-			stmt.setString(2, request.getObject().getModelo());
-			stmt.setBoolean(3, request.getObject().isAtivo());
-			stmt.setString(4, request.getObject().getPlaca());
-			stmt.setLong(5, request.getCpf());
-			stmt.setString(6, request.getToken());
+					+ "WHERE PLACA = ?");
+			stmt.setString(1, placaEditada);
+			stmt.setString(2, modelo);
+			stmt.setBoolean(3, isAtivo);
+			stmt.setString(4, placa);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o veículo");

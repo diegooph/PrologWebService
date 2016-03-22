@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Metas;
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
@@ -54,9 +55,14 @@ public class Main {
 		eqp.setCodigo(1);;
 		eqp.setNome("SALATESTE");
 		eqp.setCodUnidade(1);
+		
+		Veiculo veiculo = new Veiculo();
+		veiculo.setAtivo(true);
+		veiculo.setModelo("Corsa");
+		veiculo.setPlaca("MDZ9952");
 				
-		Request<Equipe> request = new Request<Equipe>(token, cpf);
-		request.setObject(eqp);
+		Request<Veiculo> request = new Request<Veiculo>(token, cpf);
+		request.setObject(veiculo);
 		request.setCodUnidade(1L);
 			
 		

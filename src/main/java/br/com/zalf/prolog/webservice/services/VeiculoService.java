@@ -38,10 +38,19 @@ public class VeiculoService {
 		}
 	}
 	
-	public boolean update(Request<Veiculo> request) {
+	public boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) {
 		try {
-			return dao.update(request);
+			return dao.update(placa, placaEditada, modelo, isAtivo);
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean insert(Request<Veiculo> request) {
+		try{
+			return dao.insert(request);
+		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
 		}

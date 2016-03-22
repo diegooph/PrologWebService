@@ -22,7 +22,7 @@ public interface VeiculoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o update
 	 */
-	boolean update(Request<Veiculo> request) throws SQLException;
+	boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) throws SQLException;
 	/**
 	 * Busca todos os veiculos cadastrados em uma determinada unidade
 	 * @param request contém os dados do solicitante e código da unidade onde serõa buscados os veículos

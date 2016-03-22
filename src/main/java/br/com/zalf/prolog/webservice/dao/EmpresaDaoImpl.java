@@ -101,5 +101,8 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 		}
 		return false;
 	}
+	
+	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe, 
+	//a equipe está ligada como fk de colaborador e fk de calendário
 
 }

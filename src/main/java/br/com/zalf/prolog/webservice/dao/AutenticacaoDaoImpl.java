@@ -50,6 +50,27 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		return false;
 	}
 	
+	@Override
+	public boolean verifyIfTokenExists(String token) throws SQLException{
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT TA.TOKEN FROM "
+					+ "TOKEN_AUTENTICACAO TA WHERE TA.TOKEN = ?)");
+			stmt.setString(1, token);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return rSet.getBoolean("EXISTS");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return false;
+	}
+	
 	@Deprecated
 	private boolean update(Long cpf, String token) throws SQLException {
 		Connection conn = null;
