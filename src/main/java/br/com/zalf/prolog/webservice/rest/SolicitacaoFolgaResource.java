@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -75,6 +76,16 @@ public class SolicitacaoFolgaResource {
 			return Response.Ok("Solicitação atualizada com sucesso");
 		} else {
 			return Response.Error("Erro ao atualizar a solicitação");
+		}
+	}
+	
+	@DELETE
+	@Secured
+	public Response delete(SolicitacaoFolga solicitacaoFolga){
+		if(service.delete(solicitacaoFolga)){
+			return Response.Ok("Solicitação deletada com sucesso");
+		}else{
+			return Response.Error("Erro ao deletar a solicitação");
 		}
 	}
 		

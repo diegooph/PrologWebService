@@ -108,33 +108,25 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	}
 
 	@Override
-	public boolean delete(SolicitacaoFolga solicitacaoFolga) throws SQLException {return true;}
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//
-//		Calendar dataAtual = Calendar.getInstance();
-//		dataAtual.setTime(new Date(System.currentTimeMillis())); //data atual
-//		
-//		Calendar dataFolga = Calendar.getInstance();
-//		dataFolga.setTime(solicitacaoFolga.getDataFolga());
-//		dataFolga.add(Calendar.DAY_OF_MONTH, -2);
-//		
-//		if(dataFolga.after(dataAtual)){
-//			System.out.println("pode Editar");
-//		}
-////		try{
-////			conn = getConnection();
-////			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ?");
-////			stmt.setLong(1, solicitacaoFolga.getCodigo());
-////		}
-////		finally{
-////			closeConnection(conn, stmt, rSet);
-////		}
-//
-//
-//		return true;
-//	}
+	public boolean delete(SolicitacaoFolga solicitacaoFolga) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+			
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ?");
+			stmt.setLong(1, solicitacaoFolga.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count > 0){
+				return true;
+			}
+		}	
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		return false;
+	}
 
 	@Override
 	public SolicitacaoFolga getByCod(Request<?> request) throws SQLException {

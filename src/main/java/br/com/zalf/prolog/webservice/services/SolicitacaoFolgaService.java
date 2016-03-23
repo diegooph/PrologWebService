@@ -46,4 +46,13 @@ private SolicitacaoFolgaDaoImpl dao = new SolicitacaoFolgaDaoImpl();
 			return false;
 		}
 	}
+	
+	public boolean delete(SolicitacaoFolga solicitacaoFolga){
+		try{
+			return dao.delete(solicitacaoFolga);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
