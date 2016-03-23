@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.Secured;
+import br.com.zalf.prolog.webservice.auth.Secured;
 import br.com.zalf.prolog.webservice.services.SolicitacaoFolgaService;
 
 @Path("/solicitacaoFolga")
