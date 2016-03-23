@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

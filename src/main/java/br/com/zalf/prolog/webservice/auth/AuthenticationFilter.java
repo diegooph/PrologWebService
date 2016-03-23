@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.auth;
 
 import java.io.IOException;
 
