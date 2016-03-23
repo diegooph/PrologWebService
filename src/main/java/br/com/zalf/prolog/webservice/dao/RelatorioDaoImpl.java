@@ -450,7 +450,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
 		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
 		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
-		itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());
+		if(itemDevolucaoCx.getCarregadas() > 0){itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());}
 		itemDevolucaoCx.setMeta(meta.getMetaDevCx());
 		itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
 		return itemDevolucaoCx;
@@ -462,7 +462,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
 		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
 		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
-		itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());
+		if(itemDevolucaoNf.getCarregadas()>0){itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());}
 		itemDevolucaoNf.setMeta(meta.getMetaDevNf());
 		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
 		return itemDevolucaoNf;
@@ -474,7 +474,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
 		itemDevolucaoHl.setEntregues(rSet.getDouble("QTHLENTREGUES"));
 		itemDevolucaoHl.setDevolvidas(itemDevolucaoHl.getCarregadas() - itemDevolucaoHl.getEntregues());
-		itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());
+		if(itemDevolucaoHl.getCarregadas() > 0){itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());}
 		itemDevolucaoHl.setMeta(meta.getMetaDevHl());
 		itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
 		return itemDevolucaoHl;
@@ -600,19 +600,25 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		consolidadoMapasDia.codUnidade = consolidadoMapasDia.mapas.get(0).getCodUnidade();
 
+		
+		if(consolidadoMapasDia.cxCarregadas > 0){
 		consolidadoMapasDia.resultadoDevCx = (double)consolidadoMapasDia.cxDevolvidas / (double)consolidadoMapasDia.cxCarregadas;
 		consolidadoMapasDia.metaDevCx = meta.getMetaDevCx();
 		consolidadoMapasDia.bateuDevCx = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevCx, meta.getMetaDevCx());
-
-
+		}
+		
+		if(consolidadoMapasDia.nfCarregadas > 0){
 		consolidadoMapasDia.resultadoDevNf = (double)consolidadoMapasDia.nfDevolvidas / (double)consolidadoMapasDia.nfCarregadas;
 		consolidadoMapasDia.metaDevNf = meta.getMetaDevNf();
 		consolidadoMapasDia.bateuDevNf = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevNf, meta.getMetaDevNf());
+		}
 
+		if(consolidadoMapasDia.hlCarregadas > 0){
 		consolidadoMapasDia.resultadoDevHl = (double)consolidadoMapasDia.hlDevolvidas / (double)consolidadoMapasDia.hlCarregadas;
 		consolidadoMapasDia.metaDevHl = meta.getMetaDevHl();
 		consolidadoMapasDia.bateuDevHl = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevHl, meta.getMetaDevHl());
-
+		}
+		
 		consolidadoMapasDia.resultadoLargada = (double)consolidadoMapasDia.mapasOkLargada / (double)consolidadoMapasDia.totalMapasLargada;
 		consolidadoMapasDia.metaTempoLargada = meta.getMetaTempoLargadaMapas();
 		consolidadoMapasDia.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoLargada, meta.getMetaTempoLargadaMapas());
@@ -674,18 +680,25 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			consolidadoHolder.totalTracking += consolidado.totalTracking;
 		}
 
+		
+		if(consolidadoHolder.cxCarregadas > 0){
 		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
 		consolidadoHolder.metaDevCx = meta.getMetaDevCx();
 		consolidadoHolder.bateuDevCx = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevCx, meta.getMetaDevCx());
+		}
 
+		if(consolidadoHolder.nfCarregadas > 0){
 		consolidadoHolder.resultadoDevNf = (double)consolidadoHolder.nfDevolvidas / (double)consolidadoHolder.nfCarregadas;
 		consolidadoHolder.metaDevNf = meta.getMetaDevNf();
 		consolidadoHolder.bateuDevNf = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevNf, meta.getMetaDevNf());
+		}
 
+		if(consolidadoHolder.hlCarregadas > 0){
 		consolidadoHolder.resultadoDevHl = (double)consolidadoHolder.hlDevolvidas / (double)consolidadoHolder.hlCarregadas;
 		consolidadoHolder.metaDevHl = meta.getMetaDevHl();
 		consolidadoHolder.bateuDevHl = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevHl, meta.getMetaDevHl());
-
+		}
+		
 		consolidadoHolder.resultadoLargada = (double)consolidadoHolder.mapasOkLargada / (double)consolidadoHolder.totalMapasLargada;
 		consolidadoHolder.metaTempoLargada = meta.getMetaTempoLargadaMapas();
 		consolidadoHolder.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoLargada, meta.getMetaTempoLargadaMapas());
