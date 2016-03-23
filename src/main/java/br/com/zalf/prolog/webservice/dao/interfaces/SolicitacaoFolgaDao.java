@@ -31,7 +31,7 @@ public interface SolicitacaoFolgaDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível deletar
 	 */
-	boolean delete(Request<SolicitacaoFolga> request) throws SQLException;
+	boolean delete(SolicitacaoFolga solicitacaoFolga) throws SQLException;
 	/**
 	 * Busca uma SolicitacaoFolga pelo seu código
 	 * @param request contendo a solicitação a ser buscada e os dados do solicitante
