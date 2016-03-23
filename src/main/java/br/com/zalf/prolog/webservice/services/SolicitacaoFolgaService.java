@@ -37,4 +37,13 @@ private SolicitacaoFolgaDaoImpl dao = new SolicitacaoFolgaDaoImpl();
 			return null;
 		}
 	}
+	
+	public boolean update(SolicitacaoFolga solicitacaoFolga){
+		try{
+			return dao.update(solicitacaoFolga);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

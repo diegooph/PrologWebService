@@ -24,7 +24,7 @@ public interface SolicitacaoFolgaDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar
 	 */
-	boolean update(Request<SolicitacaoFolga> request) throws SQLException;
+	boolean update(SolicitacaoFolga solicitacaoFolga) throws SQLException;
 	/**
 	 * Delta uma solicitação de folga do banco de dados
 	 * @param request contendo a solicitação a ser deletada, além dos dados do solicitante

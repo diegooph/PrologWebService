@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -48,9 +49,33 @@ public class SolicitacaoFolgaResource {
 			@FormParam("dataFinal") long dataFinal,
 			@FormParam("codUnidade") Long codUnidade,
 			@FormParam("codEquipe") String codEquipe, 
+			@FormParam("status") String status){
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, codEquipe, status, null);
+	}
+	
+	@POST
+	@Secured
+	@Path("/getAllByColaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getAll(
+			@FormParam("dataIncial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("codEquipe") String codEquipe, 
 			@FormParam("status") String status,
 			@FormParam("cpfColaborador") Long cpfColaborador){
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, codEquipe, status, cpfColaborador);
 	}
 	
+	@PUT
+	@Path("/update")
+	@Secured
+	public Response update(SolicitacaoFolga solicitacaoFolga) {
+		if (service.update(solicitacaoFolga)) {
+			return Response.Ok("Solicitação atualizada com sucesso");
+		} else {
+			return Response.Error("Erro ao atualizar a solicitação");
+		}
+	}
+		
 }
