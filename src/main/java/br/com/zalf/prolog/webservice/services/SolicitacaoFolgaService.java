@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.services;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,15 @@ private SolicitacaoFolgaDaoImpl dao = new SolicitacaoFolgaDaoImpl();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<SolicitacaoFolga>();
+		}
+	}
+	
+	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe, String status, Long cpfColaborador){
+		try{
+			return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

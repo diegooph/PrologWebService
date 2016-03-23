@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.rest;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -11,6 +12,8 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
+import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.Secured;
 import br.com.zalf.prolog.webservice.services.SolicitacaoFolgaService;
 
 @Path("/solicitacaoFolga")
@@ -34,6 +37,20 @@ public class SolicitacaoFolgaResource {
 	public List<SolicitacaoFolga> getByColaborador(@FormParam("cpf") Long cpf, 
 			@FormParam("token") String token) {
 		return service.getByColaborador(cpf, token);
+	}
+	
+	@POST
+	@Secured
+	@Path("/getAll")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getAll(
+			@FormParam("dataIncial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("codEquipe") String codEquipe, 
+			@FormParam("status") String status,
+			@FormParam("cpfColaborador") Long cpfColaborador){
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, codEquipe, status, cpfColaborador);
 	}
 	
 }

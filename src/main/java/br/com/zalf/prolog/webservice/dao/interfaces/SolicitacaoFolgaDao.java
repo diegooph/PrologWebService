@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dao.interfaces;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Request;
@@ -39,12 +40,17 @@ public interface SolicitacaoFolgaDao {
 	 */
 	SolicitacaoFolga getByCod(Request<?> request) throws SQLException;
 	/**
-	 * Busca todas as solicitações de folga
-	 * @param request contendo os dados do solicitante
-	 * @return lista de SolicitacaoFolga
-	 * @throws SQLException caso não seja possível realizar a busca
+	 * Busca todas as solicitações, respeitando os filtros
+	 * @param dataInicial um Date
+	 * @param dataFinal um Date
+	 * @param codUnidade código da unidade a serem buscadas as solicitações
+	 * @param codEquipe código da equipe a serem buscadas as solicitações
+	 * @param status status a ser buscado
+	 * @param cpfColaborador usado para fazer uma busca de um colaborador especifico, se for null busca todos
+	 * @return ums lista de SolicitacaoFolga
+	 * @throws SQLException caso não seja possivel realizara a busca
 	 */
-	List<SolicitacaoFolga> getAll(Request<?> request) throws SQLException;
+	List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe, String status, Long cpfColaborador) throws SQLException;
 	/**
 	 * Busca as solicitações de folga de determinado colaborador
 	 * @param cpf um cpf, ao qual serão buscados suas solicitações de folga

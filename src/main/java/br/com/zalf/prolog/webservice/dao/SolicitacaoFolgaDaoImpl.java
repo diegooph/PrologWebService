@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import br.com.zalf.prolog.webservice.dao.interfaces.SolicitacaoFolgaDao;
 
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 	
+		
 	@Override
 	public boolean insert(SolicitacaoFolga s) throws SQLException {
 		Connection conn = null;
@@ -60,11 +62,48 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
-	@Override
-	public List<SolicitacaoFolga> getAll(Request<?> request) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+	
+	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe, String status, Long cpfColaborador) throws SQLException {
+		List<SolicitacaoFolga> list = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			String query = "SELECT SF.*, C.NOME FROM SOLICITACAO_FOLGA SF "
+					+ "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
+					+ "WHERE SF.DATA_SOLICITACAO BETWEEN ? AND ? "
+					+ "AND C.COD_UNIDADE = ? "
+					+ "AND C.COD_EQUIPE::TEXT LIKE ? "
+					+ "AND SF.STATUS LIKE ? "
+					+ "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
+					+ "ORDER BY SF.DATA_SOLICITACAO";
+						
+			
+			stmt = conn.prepareStatement(query);
+			stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+			stmt.setLong(3, codUnidade);
+			stmt.setString(4, codEquipe);
+			stmt.setString(5, status);
+			if(cpfColaborador != null){
+			stmt.setString(6, String.valueOf(cpfColaborador));
+			}else{
+				stmt.setString(6, "%");
+			}
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				list.add(createSolicitacaoFolga(rSet));
+			}				
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		System.out.println(list);
+		return list;
 	}
-
+	
 	@Override
 	public List<SolicitacaoFolga> getByColaborador(Long cpf, String token) throws SQLException {
 		List<SolicitacaoFolga> list  = new ArrayList<>();
