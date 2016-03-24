@@ -53,7 +53,6 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	public boolean update(SolicitacaoFolga solicitacaoFolga) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE SOLICITACAO_FOLGA SET "
@@ -75,8 +74,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			}else{
 				stmt.setNull(2, java.sql.Types.BIGINT);
 			}
-			if(solicitacaoFolga.getDataFolga() != null){
-				stmt.setDate(3, DateUtils.toSqlDate(solicitacaoFolga.getDataFolga()));
+			if(solicitacaoFolga.getDataSolicitacao() != null){
+				stmt.setDate(3, DateUtils.toSqlDate(solicitacaoFolga.getDataSolicitacao()));
 			}else{
 				stmt.setDate(3, null);
 			}
@@ -88,7 +87,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			if(solicitacaoFolga.getDataFeedback() != null){
 				stmt.setDate(5, DateUtils.toSqlDate(solicitacaoFolga.getDataFeedback()));
 			}else{
-				stmt.setDate(5, null);
+				stmt.setDate(5, new Date(System.currentTimeMillis()));
 			}
 			stmt.setString(6, solicitacaoFolga.getMotivoFolga());
 			stmt.setString(7, solicitacaoFolga.getJustificativaFeedback());

@@ -7,9 +7,10 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.webservice.dao.SolicitacaoFolgaDaoImpl;
+import br.com.zalf.prolog.webservice.dao.interfaces.SolicitacaoFolgaDao;
 
 public class SolicitacaoFolgaService {
-private SolicitacaoFolgaDaoImpl dao = new SolicitacaoFolgaDaoImpl();
+private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 	
 	public boolean insert(SolicitacaoFolga solicitacaoFolga) {
 		try {
