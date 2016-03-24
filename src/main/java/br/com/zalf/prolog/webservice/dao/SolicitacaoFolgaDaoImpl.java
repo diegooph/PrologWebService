@@ -114,7 +114,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ?");
+			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ? AND STATUS = 'PENDENTE'");
 			stmt.setLong(1, solicitacaoFolga.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count > 0){
