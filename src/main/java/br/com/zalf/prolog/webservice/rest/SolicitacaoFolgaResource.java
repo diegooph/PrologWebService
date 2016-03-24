@@ -69,7 +69,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@PUT
-	@Path("/update")
+	//@Path("/update")
 	@Secured
 	public Response update(SolicitacaoFolga solicitacaoFolga) {
 		if (service.update(solicitacaoFolga)) {
