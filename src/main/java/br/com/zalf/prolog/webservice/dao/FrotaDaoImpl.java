@@ -87,10 +87,12 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					
 				}
 			}
+			if(!listHolder.isEmpty()){
 			holder.setListManutencao(list);
 			setQtItens(holder);
 			listHolder.add(holder);
 			listItemChecklist = getListaDescricao(codUnidade, conn);
+			}
 			//System.out.println(listItemChecklist);
 		}
 		finally{
