@@ -107,7 +107,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	}
 
 	@Override
-	public boolean delete(SolicitacaoFolga solicitacaoFolga) throws SQLException {
+	public boolean delete(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -115,7 +115,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ? AND STATUS = 'PENDENTE'");
-			stmt.setLong(1, solicitacaoFolga.getCodigo());
+			stmt.setLong(1, codigo);
 			int count = stmt.executeUpdate();
 			if(count > 0){
 				return true;

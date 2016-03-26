@@ -27,11 +27,11 @@ public interface SolicitacaoFolgaDao {
 	boolean update(SolicitacaoFolga solicitacaoFolga) throws SQLException;
 	/**
 	 * Delta uma solicitação de folga do banco de dados
-	 * @param request contendo a solicitação a ser deletada, além dos dados do solicitante
+	 * @param id da solicitação de folga a ser deletada
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível deletar
 	 */
-	boolean delete(SolicitacaoFolga solicitacaoFolga) throws SQLException;
+	boolean delete(Long codigo) throws SQLException;
 	/**
 	 * Busca uma SolicitacaoFolga pelo seu código
 	 * @param request contendo a solicitação a ser buscada e os dados do solicitante

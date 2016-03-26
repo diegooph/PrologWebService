@@ -48,9 +48,9 @@ private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 		}
 	}
 	
-	public boolean delete(SolicitacaoFolga solicitacaoFolga){
+	public boolean delete(Long codigo){
 		try{
-			return dao.delete(solicitacaoFolga);
+			return dao.delete(codigo);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

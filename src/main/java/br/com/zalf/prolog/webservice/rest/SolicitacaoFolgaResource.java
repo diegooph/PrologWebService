@@ -9,6 +9,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -80,9 +81,9 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@DELETE
-	@Secured
-	public Response delete(SolicitacaoFolga solicitacaoFolga){
-		if(service.delete(solicitacaoFolga)){
+	@Path("{codigo}")
+	public Response delete(@PathParam("codigo") Long codigo) {
+		if(service.delete(codigo)){
 			return Response.Ok("Solicitação deletada com sucesso");
 		}else{
 			return Response.Error("Erro ao deletar a solicitação");
