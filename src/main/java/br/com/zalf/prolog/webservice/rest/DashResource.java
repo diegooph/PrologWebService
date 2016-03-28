@@ -4,10 +4,10 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.dashboard.DashSeguranca;
@@ -22,15 +22,15 @@ public class DashResource {
 
 	DashService service = new DashService();
 	
-	@POST
+	@GET
 	@Secured
 	@Path("/seguranca")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public DashSeguranca getDashSeguranca(
-			@FormParam("dataInicial") long dataInicial,
-			@FormParam("dataFinal") long dataFinal, 
-			@FormParam("codUnidade")Long codUnidade, 
-			@FormParam("equipe") String equipe) throws SQLException{
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal, 
+			@QueryParam("codUnidade")Long codUnidade, 
+			@QueryParam("equipe") String equipe) throws SQLException{
 		return service.getDashSeguranca(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, equipe);
 	}
 	
