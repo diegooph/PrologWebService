@@ -24,26 +24,26 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 			+ "select ("
 			+ "SELECT COUNT(CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF=R.CPF_COLABORADOR "
-			+ "WHERE DATA_HORA_DATABASE::DATE = ? AND C.COD_UNIDADE = ?) AS relatosHoje, \n "
+			+ "WHERE DATA_HORA_DATABASE::DATE = ? AND C.COD_UNIDADE = ?) AS relatos_Hoje, \n "
 			
 			+ " --public int qtRelatosTotal// total de relatos recebidos no mês \n "
 			+ "(SELECT COUNT(CODIGO) "
 			+ "FROM RELATO JOIN COLABORADOR ON CPF_COLABORADOR = CPF "
-			+ "WHERE COD_UNIDADE = ?) as relatosTotal, \n"
+			+ "WHERE COD_UNIDADE = ?) as relatos_Total, \n"
 			
 			
 			+ " --public int qtRelatosMes// total de relatos recebidos no mês \n "
 			+ "(SELECT COUNT(CODIGO) "
 			+ "FROM RELATO JOIN COLABORADOR ON CPF_COLABORADOR = CPF "
-			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <= ? AND COD_UNIDADE = ?) as relatosMes, \n"
+			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <= ? AND COD_UNIDADE = ?) as relatos_Mes, \n"
 			+ " --public int qtRelatosMesAnterior // total de relatos recebidos M-1 \n "
 			+ "(SELECT COUNT(CODIGO) "
 			+ "FROM RELATO JOIN COLABORADOR ON CPF_COLABORADOR = CPF "
-			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <= ? AND COD_UNIDADE = ?) as relatosMesAnterior, \n"
+			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <= ? AND COD_UNIDADE = ?) as relatos_Mes_Anterior, \n"
 			+ "--public int qtRelatosMesmoPeriodoMesAnterior; // total de relatos recebidos no M-1 até o mesmo dia atual\n "
 			+ "(SELECT COUNT(CODIGO) FROM "
 			+ "RELATO JOIN COLABORADOR ON CPF_COLABORADOR = CPF	"
-			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <=  ? AND COD_UNIDADE = ?) as relatosMesmoPeriodoMesAnterior";
+			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <=  ? AND COD_UNIDADE = ?) as relatos_Mesmo_Periodo_Mes_Anterior";
 
 	public static final String BUSCA_RELATOS_BY_FUNCAO ="SELECT C.COD_FUNCAO as cod_funcao, F.NOME as nome_funcao,  COUNT(R.CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF=R.CPF_COLABORADOR	"
@@ -124,21 +124,23 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 			stmt = conn.prepareStatement(BUSCA_TOTAIS);
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis()))); //data atual
 			stmt.setLong(2, codUnidade); //codUnidade
-			stmt.setDate(3, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-			stmt.setDate(4, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-			stmt.setLong(5, codUnidade);
-			stmt.setDate(6, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
-			stmt.setDate(7, getUltimoDiaMesAnterior(dataFinal)); //ultimo dia do mes anterior
-			stmt.setLong(8, codUnidade);
-			stmt.setDate(9, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
-			stmt.setDate(10, getMesmoDiaMesAnterior()); //dia atual do mês anterior
-			stmt.setLong(11, codUnidade);
+			stmt.setLong(3, codUnidade); //codUnidade
+			stmt.setDate(4, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(5, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(6, codUnidade);
+			stmt.setDate(7, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
+			stmt.setDate(8, getUltimoDiaMesAnterior(dataFinal)); //ultimo dia do mes anterior
+			stmt.setLong(9, codUnidade);
+			stmt.setDate(10, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
+			stmt.setDate(11, getMesmoDiaMesAnterior()); //dia atual do mês anterior
+			stmt.setLong(12, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				dash.qtRelatosHoje = rSet.getInt("RELATOSHOJE");
-				dash.qtRelatosMes = rSet.getInt("RELATOSMES");
-				dash.qtRelatosMesAnterior = rSet.getInt("RELATOSMESANTERIOR");
-				dash.qtRelatosMesmoPeriodoMesAnterior = rSet.getInt("RELATOSMESMOPERIODOMESANTERIOR");
+				dash.qtRelatosHoje = rSet.getInt("RELATOS_HOJE");
+				dash.qtRelatosMes = rSet.getInt("RELATOS_MES");
+				dash.qtRelatosTotal = rSet.getInt("RELATOS_TOTAL");
+				dash.qtRelatosMesAnterior = rSet.getInt("RELATOS_MES_ANTERIOR");
+				dash.qtRelatosMesmoPeriodoMesAnterior = rSet.getInt("RELATOS_MESMO_PERIODO_MES_ANTERIOR");
 			}
 
 		}
@@ -226,15 +228,15 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		Map<java.util.Date, Integer> mapRelatosByMes = new HashMap<>();
-		Calendar dataInicialMinus6Month = Calendar.getInstance();
-		dataInicialMinus6Month.setTime(DateUtils.toSqlDate(dataInicial));
-		dataInicialMinus6Month.add(Calendar.MONTH, -12);
-		dataInicialMinus6Month.set(Calendar.DAY_OF_MONTH, 1);
+		Calendar dataInicialMinus12Month = Calendar.getInstance();
+		dataInicialMinus12Month.setTime(DateUtils.toSqlDate(dataInicial));
+		dataInicialMinus12Month.add(Calendar.MONTH, -12);
+		dataInicialMinus12Month.set(Calendar.DAY_OF_MONTH, 1);
 
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_MES);
-			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(dataInicialMinus6Month.getTimeInMillis())));
+			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(dataInicialMinus12Month.getTimeInMillis())));
 			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
 			stmt.setLong(3, codUnidade);
 			rSet = stmt.executeQuery();
