@@ -68,6 +68,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 			rSet = stmt.executeQuery();
 			if(rSet.first()){
 				itemManutencao = createItemManutencao(rSet);
+				System.out.println(itemManutencao);
 				list.add(itemManutencao);
 				holder.setPlaca(rSet.getString("PLACA"));
 			}
@@ -87,7 +88,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					
 				}
 			}
-			if(!listHolder.isEmpty()){
+			if(!listHolder.isEmpty() || rSet.getRow()==0){
 			holder.setListManutencao(list);
 			setQtItens(holder);
 			listHolder.add(holder);
@@ -135,7 +136,9 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 			for(ItemManutencao item : listItemManutencao){// contém cada item quebrado de uma mesma placa
 				List<ItemDescricao> tempList = new ArrayList<>();
 				while(i < listItemChecklist.size()){
-					if(listItemChecklist.get(i).placa.equals(itemManutencao.getPlaca()) && item.getCodItem() == listItemChecklist.get(i).codPergunta){
+					if(listItemChecklist.get(i).placa.equals(itemManutencao.getPlaca()) && item.getCodItem() == listItemChecklist.get(i).codPergunta
+							 && item.getDataResolucao() == null){
+												
 						ItemDescricao itemDescricao = new ItemDescricao();
 						itemDescricao.setData(listItemChecklist.get(i).data);
 						itemDescricao.setCpf(listItemChecklist.get(i).cpf);
@@ -254,8 +257,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
         System.out.println("tempoRestante long: " + tempoRestante);
         System.out.println("\nItem: " + itemManutencao.getItem() + "\n Horas restantes: " + TimeUnit.MILLISECONDS.toHours(tempoRestante));
         System.out.println(dataMaxima);
-
-        itemManutencao.setRestanteResolucaoMinutos(TimeUnit.MILLISECONDS.toMinutes(tempoRestante));
+        //TODO setar tempo restante
     }
 
 	public class ItemChecklist{
