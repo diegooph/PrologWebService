@@ -1,5 +1,21 @@
 package br.com.zalf.prolog.webservice.dao;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.Local;
+import br.com.zalf.prolog.models.dashboard.DashSeguranca;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class DashSegurancaDaoImpl extends DatabaseConnection{
@@ -81,236 +97,236 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
     // de forma que o mais recentemente fechado seja exibido primeiro
 	 */
 	
-//	DashSeguranca dash;
-//
-//	public DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		dash = new DashSeguranca();
-//		dash.dataInicial = DateUtils.toSqlDate(dataInicial);
-//		dash.dataFinal = DateUtils.toSqlDate(dataFinal);
-//		setTotais(dataInicial, dataFinal, codUnidade, equipe);
-//		setRelatosByFuncao(dataInicial, dataFinal, codUnidade, equipe);
-//		setRelatosByEquipe(dataInicial, dataFinal, codUnidade, equipe);
-//		setRelatosByMes(dataInicial, dataFinal, codUnidade, equipe);
-//		setLocalRelatos(dataInicial, dataFinal, codUnidade, equipe);
-//		setRelatosByColaborador(dataInicial, dataFinal, codUnidade, equipe);
-//		setTotaisGSD(dataInicial, dataFinal, codUnidade, equipe);
-//		System.out.println(dash);
-//		return dash;
-//	}
-//
-//	private void setTotais (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_TOTAIS);
-//			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis()))); //data atual
-//			stmt.setLong(2, codUnidade); //codUnidade
-//			stmt.setDate(3, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-//			stmt.setDate(4, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-//			stmt.setLong(5, codUnidade);
-//			stmt.setDate(6, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
-//			stmt.setDate(7, getUltimoDiaMesAnterior(dataFinal)); //ultimo dia do mes anterior
-//			stmt.setLong(8, codUnidade);
-//			stmt.setDate(9, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
-//			stmt.setDate(10, getMesmoDiaMesAnterior()); //dia atual do mês anterior
-//			stmt.setLong(11, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				dash.qtRelatosHoje = rSet.getInt("RELATOSHOJE");
-//				dash.qtRelatosMes = rSet.getInt("RELATOSMES");
-//				dash.qtRelatosMesAnterior = rSet.getInt("RELATOSMESANTERIOR");
-//				dash.qtRelatosMesmoPeriodoMesAnterior = rSet.getInt("RELATOSMESMOPERIODOMESANTERIOR");
-//			}
-//
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//
-//	}
-//
-//	private void setTotaisGSD (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_GSD);
-//			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis()))); //data atual
-//			stmt.setLong(2, codUnidade); //codUnidade
-//			stmt.setDate(3, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-//			stmt.setDate(4, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-//			stmt.setLong(5, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				dash.qtGsdHoje = rSet.getInt("TOTAL_HOJE");
-//				dash.qtGsdMes = rSet.getInt("TOTAL_MES");
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//
-//	}
-//
-//	private void setRelatosByFuncao (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		Map<String, Integer> mapFuncao = new HashMap<>();
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_FUNCAO);
-//			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-//			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-//			stmt.setLong(3, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				mapFuncao.put(rSet.getString("NOME_FUNCAO"), rSet.getInt("COUNT"));
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//		dash.mapRelatosByFuncao = mapFuncao;
-//
-//	}
-//
-//	private void setRelatosByEquipe (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		Map<String, Integer> mapEquipe = new HashMap<>();
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_EQUIPE);
-//			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-//			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-//			stmt.setLong(3, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				mapEquipe.put(rSet.getString("NOME_EQUIPE"), rSet.getInt("COUNT"));
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//		dash.mapRelatosByEquipe = mapEquipe;
-//
-//	}
-//
-//	private void setRelatosByMes (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		Map<Date, Integer> mapRelatosByMes = new HashMap<>();
-//		Calendar dataInicialMinus6Month = Calendar.getInstance();
-//		dataInicialMinus6Month.setTime(DateUtils.toSqlDate(dataInicial));
-//		dataInicialMinus6Month.add(Calendar.MONTH, -12);
-//		dataInicialMinus6Month.set(Calendar.DAY_OF_MONTH, 1);
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_MES);
-//			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(dataInicialMinus6Month.getTimeInMillis())));
-//			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
-//			stmt.setLong(3, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				mapRelatosByMes.put(rSet.getDate("DATE_TRUNC"), rSet.getInt("COUNT"));
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//		dash.mapRelatosByMes = mapRelatosByMes;
-//
-//	}
-//
-//	private void setLocalRelatos (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		List<Local> listLocal = new ArrayList<>();
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_LOCAL_RELATOS);
-//			stmt.setLong(1, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				Local local = new Local();
-//				local.setLatitude(rSet.getString("LATITUDE"));
-//				local.setLongitude(rSet.getString("LONGITUDE"));
-//				listLocal.add(local);
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//		dash.listLocalRelatos = listLocal;
-//
-//	}
-//
-//	private void setRelatosByColaborador (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		Map<Colaborador, Integer> mapColaborador = new HashMap<>();
-//
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_COLABORADOR);
-//			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
-//			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
-//			stmt.setLong(3, codUnidade);
-//			rSet = stmt.executeQuery();
-//			while(rSet.next()){
-//				Colaborador colaborador = new Colaborador();
-//				colaborador.setCpf(rSet.getLong("CPF"));
-//				colaborador.setNome(rSet.getString("NOME"));
-//				mapColaborador.put(colaborador, rSet.getInt("COUNT"));
-//			}
-//		}
-//		finally{
-//			closeConnection(conn, stmt, rSet);
-//		}
-//		dash.mapRelatosByColaborador = mapColaborador;
-//
-//	}
-//
-//	public java.sql.Date getPrimeiroDiaMesAnterior(LocalDate date){
-//
-//		Calendar first = Calendar.getInstance();
-//		first.setTime(DateUtils.toSqlDate(date));
-//		first.set(Calendar.DAY_OF_MONTH, 1);
-//		first.add(Calendar.MONTH, -1);
-//		return new java.sql.Date(first.getTimeInMillis());
-//	}
-//
-//	public java.sql.Date getUltimoDiaMesAnterior(LocalDate date){
-//
-//		Calendar last = Calendar.getInstance();
-//		last.setTime(DateUtils.toSqlDate(date));
-//		last.set(Calendar.DAY_OF_MONTH, 1);
-//		last.add(Calendar.DAY_OF_MONTH, -1);
-//
-//		return new java.sql.Date(last.getTimeInMillis());
-//	}
-//
-//	public java.sql.Date getMesmoDiaMesAnterior(){
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTimeInMillis(System.currentTimeMillis());
-//		calendar.add(Calendar.MONTH, -1);
-//
-//		return DateUtils.toSqlDate(new Date(calendar.getTimeInMillis()));
-//	}
+	DashSeguranca dash;
+
+	public DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		dash = new DashSeguranca();
+		dash.dataInicial = DateUtils.toSqlDate(dataInicial);
+		dash.dataFinal = DateUtils.toSqlDate(dataFinal);
+		setTotais(dataInicial, dataFinal, codUnidade, equipe);
+		setRelatosByFuncao(dataInicial, dataFinal, codUnidade, equipe);
+		setRelatosByEquipe(dataInicial, dataFinal, codUnidade, equipe);
+		setRelatosByMes(dataInicial, dataFinal, codUnidade, equipe);
+		setLocalRelatos(dataInicial, dataFinal, codUnidade, equipe);
+		setRelatosByColaborador(dataInicial, dataFinal, codUnidade, equipe);
+		setTotaisGSD(dataInicial, dataFinal, codUnidade, equipe);
+		System.out.println(dash);
+		return dash;
+	}
+
+	private void setTotais (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_TOTAIS);
+			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis()))); //data atual
+			stmt.setLong(2, codUnidade); //codUnidade
+			stmt.setDate(3, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(4, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(5, codUnidade);
+			stmt.setDate(6, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
+			stmt.setDate(7, getUltimoDiaMesAnterior(dataFinal)); //ultimo dia do mes anterior
+			stmt.setLong(8, codUnidade);
+			stmt.setDate(9, getPrimeiroDiaMesAnterior(dataInicial)); //primeiro dia do mes anterior
+			stmt.setDate(10, getMesmoDiaMesAnterior()); //dia atual do mês anterior
+			stmt.setLong(11, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				dash.qtRelatosHoje = rSet.getInt("RELATOSHOJE");
+				dash.qtRelatosMes = rSet.getInt("RELATOSMES");
+				dash.qtRelatosMesAnterior = rSet.getInt("RELATOSMESANTERIOR");
+				dash.qtRelatosMesmoPeriodoMesAnterior = rSet.getInt("RELATOSMESMOPERIODOMESANTERIOR");
+			}
+
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+
+	}
+
+	private void setTotaisGSD (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_GSD);
+			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis()))); //data atual
+			stmt.setLong(2, codUnidade); //codUnidade
+			stmt.setDate(3, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(4, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(5, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				dash.qtGsdHoje = rSet.getInt("TOTAL_HOJE");
+				dash.qtGsdMes = rSet.getInt("TOTAL_MES");
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+
+	}
+
+	private void setRelatosByFuncao (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, Integer> mapFuncao = new HashMap<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_FUNCAO);
+			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				mapFuncao.put(rSet.getString("NOME_FUNCAO"), rSet.getInt("COUNT"));
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		dash.mapRelatosByFuncao = mapFuncao;
+
+	}
+
+	private void setRelatosByEquipe (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, Integer> mapEquipe = new HashMap<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_EQUIPE);
+			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				mapEquipe.put(rSet.getString("NOME_EQUIPE"), rSet.getInt("COUNT"));
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		dash.mapRelatosByEquipe = mapEquipe;
+
+	}
+
+	private void setRelatosByMes (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<java.util.Date, Integer> mapRelatosByMes = new HashMap<>();
+		Calendar dataInicialMinus6Month = Calendar.getInstance();
+		dataInicialMinus6Month.setTime(DateUtils.toSqlDate(dataInicial));
+		dataInicialMinus6Month.add(Calendar.MONTH, -12);
+		dataInicialMinus6Month.set(Calendar.DAY_OF_MONTH, 1);
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_MES);
+			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(dataInicialMinus6Month.getTimeInMillis())));
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				mapRelatosByMes.put(rSet.getDate("DATE_TRUNC"), rSet.getInt("COUNT"));
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		dash.mapRelatosByMes = mapRelatosByMes;
+
+	}
+
+	private void setLocalRelatos (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Local> listLocal = new ArrayList<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_LOCAL_RELATOS);
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				Local local = new Local();
+				local.setLatitude(rSet.getString("LATITUDE"));
+				local.setLongitude(rSet.getString("LONGITUDE"));
+				listLocal.add(local);
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		dash.listLocalRelatos = listLocal;
+
+	}
+
+	private void setRelatosByColaborador (LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<Colaborador, Integer> mapColaborador = new HashMap<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_RELATOS_BY_COLABORADOR);
+			stmt.setDate(1, DateUtils.toSqlDate(dataInicial)); //primeiro dia do mes
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal)); //ultimo dia do mes
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				Colaborador colaborador = new Colaborador();
+				colaborador.setCpf(rSet.getLong("CPF"));
+				colaborador.setNome(rSet.getString("NOME"));
+				mapColaborador.put(colaborador, rSet.getInt("COUNT"));
+			}
+		}
+		finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		dash.mapRelatosByColaborador = mapColaborador;
+
+	}
+
+	public java.sql.Date getPrimeiroDiaMesAnterior(LocalDate date){
+
+		Calendar first = Calendar.getInstance();
+		first.setTime(DateUtils.toSqlDate(date));
+		first.set(Calendar.DAY_OF_MONTH, 1);
+		first.add(Calendar.MONTH, -1);
+		return new java.sql.Date(first.getTimeInMillis());
+	}
+
+	public java.sql.Date getUltimoDiaMesAnterior(LocalDate date){
+
+		Calendar last = Calendar.getInstance();
+		last.setTime(DateUtils.toSqlDate(date));
+		last.set(Calendar.DAY_OF_MONTH, 1);
+		last.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new java.sql.Date(last.getTimeInMillis());
+	}
+
+	public java.sql.Date getMesmoDiaMesAnterior(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.add(Calendar.MONTH, -1);
+
+		return DateUtils.toSqlDate(new Date(calendar.getTimeInMillis()));
+	}
 
 }
 
