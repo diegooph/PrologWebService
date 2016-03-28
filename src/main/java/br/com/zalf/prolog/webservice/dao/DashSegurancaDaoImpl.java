@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,7 +179,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<String, Integer> mapFuncao = new HashMap<>();
+		Map<String, Integer> mapFuncao = new LinkedHashMap<>();
 
 		try{
 			conn = getConnection();
@@ -203,7 +203,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<String, Integer> mapEquipe = new HashMap<>();
+		Map<String, Integer> mapEquipe = new LinkedHashMap<>();
 
 		try{
 			conn = getConnection();
@@ -227,7 +227,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<java.util.Date, Integer> mapRelatosByMes = new HashMap<>();
+		Map<java.util.Date, Integer> mapRelatosByMes = new LinkedHashMap<>();
 		Calendar dataInicialMinus12Month = Calendar.getInstance();
 		dataInicialMinus12Month.setTime(DateUtils.toSqlDate(dataInicial));
 		dataInicialMinus12Month.add(Calendar.MONTH, -12);
@@ -280,7 +280,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<Colaborador, Integer> mapColaborador = new HashMap<>();
+		Map<Colaborador, Integer> mapColaborador = new LinkedHashMap<>();
 
 		try{
 			conn = getConnection();
