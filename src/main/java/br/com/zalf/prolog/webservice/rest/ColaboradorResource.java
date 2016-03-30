@@ -19,6 +19,7 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.auth.Secured;
 import br.com.zalf.prolog.webservice.services.AutenticacaoService;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
@@ -29,8 +30,9 @@ public class ColaboradorResource {
 	private ColaboradorService service = new ColaboradorService();
 	
 	@POST
-	public Response insert(Request<Colaborador> request) {
-		if (service.insert(request)) {
+	@Secured
+	public Response insert(Colaborador colaborador) {
+		if (service.insert(colaborador)) {
 			return Response.Ok("Colaborador inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir colaborador");
@@ -38,8 +40,10 @@ public class ColaboradorResource {
 	}
 	
 	@PUT
-	public Response update(Request<Colaborador> request) {
-		if (service.update(request)) {
+	@Secured
+	@Path("{cpf}")
+	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
+		if (service.update(cpfAntigo, colaborador)) {
 			return Response.Ok("Colaborador atualizado com sucesso");
 		} else {
 			return Response.Error("Erro ao atualizar o colaborador");

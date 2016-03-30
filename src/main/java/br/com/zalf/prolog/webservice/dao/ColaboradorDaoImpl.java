@@ -20,37 +20,31 @@ import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
 	@Override
-	public boolean insert(Request<Colaborador> request) throws SQLException {
-		Autenticacao autenticacao = new Autenticacao("", request.getCpf(), 
-				request.getToken());
-		AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
-		if (autenticacaoDao.verifyIfExists(autenticacao)) {
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			try {
-				conn = getConnection();
+	public boolean insert(Colaborador colaborador) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
 
-				stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
-						+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
-						+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME "
-						+ "SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
-						+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
-				setStatementItems(stmt, request.getObject());
-				int count = stmt.executeUpdate();
-				if(count == 0){
-					throw new SQLException("Erro ao inserir o colaborador");
-				}	
-			}
-			finally {
-				closeConnection(conn, stmt, null);
-			}		
-			return true;
+			stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
+					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
+					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME "
+					+ "SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
+					+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
+			setStatementItems(stmt, colaborador);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o colaborador");
+			}	
 		}
-		return false;
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
 	}
 
 	@Override
-	public boolean update(Request<Colaborador> request) throws SQLException {
+	public boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -61,12 +55,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ "STATUS_ATIVO = ?, NOME = ?, SETOR = ?, "
 					+ "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
 					+ "COD_EMPRESA = ?, COD_EQUIPE = ? "
-					+ "FROM TOKEN_AUTENTICACAO TA WHERE CPF = ? AND "
-					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
-			setStatementItems(stmt, request.getObject());
-			stmt.setLong(15, request.getObject().getCpf());
-			stmt.setLong(16, request.getCpf());
-			stmt.setString(17, request.getToken());
+					+ "WHERE CPF = ?;");
+			setStatementItems(stmt, colaborador);
+			stmt.setLong(15, cpfAntigo);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
@@ -253,7 +244,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
-		System.out.println(rSet.getLong("COD_FUNCAO"));
 		c.setCpf(rSet.getLong("CPF"));
 		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
 		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
@@ -265,7 +255,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		c.setEquipe(rSet.getString("EQUIPE"));
 		c.setSetor(rSet.getString("SETOR"));
 		c.setNomeFuncao(rSet.getString("NOME_FUNCAO"));
-		System.out.println(rSet.getString("NOME_FUNCAO"));
 		c.setCodPermissao(rSet.getLong("PERMISSAO"));
 		return c;
 	}

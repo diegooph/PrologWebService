@@ -17,14 +17,14 @@ public interface ColaboradorDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível inserir no banco de dados
 	 */
-	boolean insert(Request<Colaborador> request) throws SQLException;
+	boolean insert(Colaborador colaborador) throws SQLException;
 	/**
 	 * Atualiza os dados de um colaborador
 	 * @param request com os dados a serem atualizados e dados do solicitante
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
-	boolean update(Request<Colaborador> request) throws SQLException;
+	boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException;
 	/**
 	 * Deleta um colaborador
 	 * @param request contém o colaborador a ser deletado e dados do solicitante

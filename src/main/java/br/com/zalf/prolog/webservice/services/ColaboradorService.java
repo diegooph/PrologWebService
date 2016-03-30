@@ -13,18 +13,18 @@ import br.com.zalf.prolog.webservice.dao.ColaboradorDaoImpl;
 public class ColaboradorService {
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
 	
-	public boolean insert(Request<Colaborador> request) {
+	public boolean insert(Colaborador colaborador) {
 		try {
-			return dao.insert(request);
+			return dao.insert(colaborador);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	public boolean update(Request<Colaborador> colaborador) {
+	public boolean update(Long cpfAntigo, Colaborador colaborador) {
 		try {
-			return dao.update(colaborador);
+			return dao.update(cpfAntigo, colaborador);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
