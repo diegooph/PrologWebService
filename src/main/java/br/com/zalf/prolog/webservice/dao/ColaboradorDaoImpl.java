@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
@@ -51,14 +49,35 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
 					+ "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
-					+ "DATA_NASCIMENTO = ? DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
+					+ "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
 					+ "STATUS_ATIVO = ?, NOME = ?, SETOR = ?, "
 					+ "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
 					+ "COD_EMPRESA = ?, COD_EQUIPE = ? "
 					+ "WHERE CPF = ?;");
-			setStatementItems(stmt, colaborador);
+			stmt.setLong(1, colaborador.getCpf());
+			stmt.setInt(2, colaborador.getMatriculaAmbev());
+			stmt.setInt(3, colaborador.getMatriculaTrans());
+			stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
+			stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
+			
+			// Só vai ter data de demissão quando estiver fazendo um update
+			// em um colaborador que já está deletado (inativo). 
+			if (colaborador.getDataDemissao() != null)
+				stmt.setDate(6, DateUtils.toSqlDate(colaborador.getDataDemissao()));	
+			else
+				stmt.setDate(6, null);
+			stmt.setBoolean(7, colaborador.isAtivo());
+			stmt.setString(8, colaborador.getNome());
+			stmt.setString(9, colaborador.getSetor());
+			stmt.setLong(10, colaborador.getCodFuncao());
+			stmt.setLong(11, colaborador.getCodUnidade());
+			stmt.setLong(12, colaborador.getCodPermissao());
+			stmt.setLong(13, colaborador.getCodEmpresa());
+			stmt.setLong(14, colaborador.getCodEquipe());
 			stmt.setLong(15, cpfAntigo);
+			
 			int count = stmt.executeUpdate();
+			
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
 			}	

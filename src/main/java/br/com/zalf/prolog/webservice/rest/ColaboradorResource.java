@@ -24,13 +24,13 @@ import br.com.zalf.prolog.webservice.services.AutenticacaoService;
 import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
 @Path("/colaboradores")
-@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
 	private ColaboradorService service = new ColaboradorService();
 	
 	@POST
 	@Secured
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response insert(Colaborador colaborador) {
 		if (service.insert(colaborador)) {
 			return Response.Ok("Colaborador inserido com sucesso");
@@ -41,7 +41,8 @@ public class ColaboradorResource {
 	
 	@PUT
 	@Secured
-	@Path("{cpf}")
+	@Path("/{cpf}")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
 		if (service.update(cpfAntigo, colaborador)) {
 			return Response.Ok("Colaborador atualizado com sucesso");
@@ -59,6 +60,7 @@ public class ColaboradorResource {
 	
 	@POST
 	@Path("/getAll")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public List<Colaborador> getAll(Request request) {
 		return service.getAll(request);
 	}
@@ -72,6 +74,7 @@ public class ColaboradorResource {
 	
 	@DELETE
 	@Path("/delete")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response delete(Request<Colaborador> request) {
 		if (service.delete(request)) {
 			return Response.Ok("Colaborador deletado com sucesso");
@@ -82,6 +85,7 @@ public class ColaboradorResource {
 	
 	@GET
 	@Path("/funcao/{codigo}")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Funcao getFuncaoByCod(@PathParam("codigo") Long codigo) {
 		return service.getFuncaoByCod(codigo);
 	}
