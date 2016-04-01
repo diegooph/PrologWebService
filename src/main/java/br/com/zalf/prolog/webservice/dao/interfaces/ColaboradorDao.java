@@ -31,7 +31,7 @@ public interface ColaboradorDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
-	boolean delete(Request<Colaborador> request) throws SQLException;
+	boolean delete(Long cpf) throws SQLException;
 	/**
 	 * Busca um colaborador pelo seu CPF
 	 * @param cpf chave a ser buscada no banco de dados

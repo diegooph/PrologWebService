@@ -31,9 +31,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public boolean delete(Request<Colaborador> request) {
+	public boolean delete(Long cpf) {
 		try {
-			return dao.delete(request);
+			return dao.delete(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

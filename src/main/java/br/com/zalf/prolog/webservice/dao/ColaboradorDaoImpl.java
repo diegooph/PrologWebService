@@ -93,18 +93,15 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	 * setamos o status para inativo.
 	 */
 	@Override
-	public boolean delete(Request<Colaborador> request) throws SQLException {
+	public boolean delete(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
-					+ "STATUS_ATIVO = FALSE"
-					+ "FROM TOKEN_AUTENTICACAO TA WHERE CPF = ? AND "
-					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?");
-			stmt.setLong(1, request.getObject().getCpf());
-			stmt.setLong(2, request.getCpf());
-			stmt.setString(3, request.getToken());
+					+ "STATUS_ATIVO = FALSE "
+					+ "WHERE CPF = ?;");
+			stmt.setLong(1, cpf);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);

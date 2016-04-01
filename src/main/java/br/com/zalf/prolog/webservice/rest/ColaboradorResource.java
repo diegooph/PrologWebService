@@ -73,10 +73,11 @@ public class ColaboradorResource {
 	}
 	
 	@DELETE
-	@Path("/delete")
+	@Path("/{cpf}")
+	@Secured
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public Response delete(Request<Colaborador> request) {
-		if (service.delete(request)) {
+	public Response delete(@PathParam("cpf") Long cpf) {
+		if (service.delete(cpf)) {
 			return Response.Ok("Colaborador deletado com sucesso");
 		} else {
 			return Response.Error("Falha ao deletar colaborador");
