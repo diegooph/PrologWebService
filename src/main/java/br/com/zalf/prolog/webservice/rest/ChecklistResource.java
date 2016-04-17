@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Response;
@@ -84,10 +85,15 @@ public class ChecklistResource {
 //	
 	@GET
 	@Secured
-	@Path("/colaborador/{cpfBusca}/{limit}/{offset}")
-	public List<Checklist> getByColaborador(@PathParam("cpfBusca") Long cpf, 
-			@PathParam("limit") int limit,
-			@PathParam("offset") long offset) {
+	@Path("/colaborador")
+	public List<Checklist> getByColaborador(
+			@QueryParam("cpf") Long cpf, 
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") long offset) {
+		System.out.println("Fora dilma");
+		System.out.println(cpf);
+		System.out.println(limit);
+		System.out.println(offset);
 		return service.getByColaborador(cpf, limit, offset);
 	}
 	
