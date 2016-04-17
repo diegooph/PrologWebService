@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 /**
  * Contém os métodos para manipular os checklists no banco de dados 
  */
@@ -68,11 +68,12 @@ public interface ChecklistDao {
 	 */
 	List<Checklist> getByColaborador(Long cpf, String token, long offset) throws SQLException;
 	/**
-	 * Busca das perguntas do checklist
+	 * Busca das perguntas do checklist e das alternativas de resposta
+	 * @param codUnidade código da unidade a ser buscadas as perguntas
 	 * @return lista de Pergunta
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<Pergunta> getPerguntas() throws SQLException;
+	List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade) throws SQLException;
 	/**
 	 * Busca os checklists realizados por outros colaboradores
 	 * @param cpf do solicitante, no qual não aparecerão seus checks na busca
