@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 
@@ -19,15 +20,15 @@ public class ChecklistService {
 		}
 	}
 	
-//	public boolean insert(Checklist checklist) {
-//		try {
-//			return dao.insert(checklist);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
-//	
+	public boolean insert(Checklist checklist) {
+		try {
+			return dao.insert(checklist);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 //	public boolean update(Checklist checklist) {
 //		try {
 //			return dao.update(checklist);
@@ -82,16 +83,16 @@ public class ChecklistService {
 //			return new ArrayList<Checklist>();
 //		}
 //	}
-//	
-//	public List<Checklist> getByColaborador(Long cpf, String token, long offset) {
-//		try {
-//			return dao.getByColaborador(cpf, token, offset);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return new ArrayList<Checklist>();
-//		}
-//	}
-//	
+	
+	public List<Checklist> getByColaborador(Long cpf, int limit, long offset) {
+		try {
+			return dao.getByColaborador(cpf, limit, offset);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Checklist>();
+		}
+	}
+	
 //	public List<Pergunta> getPerguntas() {
 //		try {
 //			System.out.println("pegando perguntas");

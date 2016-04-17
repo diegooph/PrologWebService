@@ -1,15 +1,20 @@
 package br.com.zalf.prolog.webservice.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.auth.Secured;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
 
 @Path("/checklist")
@@ -19,21 +24,22 @@ public class ChecklistResource {
 	private ChecklistService service = new ChecklistService();
 	
 	@GET
+	@Secured
 	@Path("/perguntas/{codUnidade}")
 	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade){
 		return service.getPerguntas(codUnidade);
 	}
 	
-//	@POST
-//	public Response insert(Checklist checklist) {
-//		checklist.setData(new Date(System.currentTimeMillis()));
-//		if (service.insert(checklist)) {
-//			return Response.Ok("Checklist inserido com sucesso");
-//		} else {
-//			return Response.Error("Erro ao inserir checklist");
-//		}
-//	}
-//	
+	@POST
+	public Response insert(Checklist checklist) {
+		checklist.setData(new Date(System.currentTimeMillis()));
+		if (service.insert(checklist)) {
+			return Response.Ok("Checklist inserido com sucesso");
+		} else {
+			return Response.Error("Erro ao inserir checklist");
+		}
+	}
+	
 //	@PUT
 //	public Response update(Checklist checklist) {
 //		if (service.update(checklist)) {
@@ -76,15 +82,15 @@ public class ChecklistResource {
 //				DateUtils.toLocalDate(new Date(dataFinal)), limit, offset);
 //	}	
 //	
-//	@POST
-//	@Path("/colaborador")
-//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-//	public List<Checklist> getByColaborador(@FormParam("cpf") Long cpf, 
-//			@FormParam("token") String token,
-//			@FormParam("offset") long offset) {
-//		return service.getByColaborador(cpf, token, offset);
-//	}
-//	
+	@GET
+	@Secured
+	@Path("/colaborador/{cpfBusca}/{limit}/{offset}")
+	public List<Checklist> getByColaborador(@PathParam("cpfBusca") Long cpf, 
+			@PathParam("limit") int limit,
+			@PathParam("offset") long offset) {
+		return service.getByColaborador(cpf, limit, offset);
+	}
+	
 //	@GET
 //	@Path("/perguntas")
 //	public List<Pergunta> getPerguntas() {
