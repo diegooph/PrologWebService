@@ -85,9 +85,9 @@ public class ChecklistResource {
 //	
 	@GET
 	@Secured
-	@Path("/colaborador")
+	@Path("/colaborador/{cpf}")
 	public List<Checklist> getByColaborador(
-			@QueryParam("cpf") Long cpf, 
+			@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset) {
 		System.out.println("Fora dilma");

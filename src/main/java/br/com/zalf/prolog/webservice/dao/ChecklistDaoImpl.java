@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			if (rSet.next()) {
 				checklist.setCodigo(rSet.getLong("CODIGO"));
 				insertRespostas(checklist);
-				//			insertItemManutencao(checklist, conn);
+				insertItemManutencao(checklist, conn);
 			}else{
 				throw new SQLException("Erro ao inserir o checklist");
 			}
@@ -62,63 +63,71 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 	 * @param checklist um Checklist
 	 * @throws SQLException caso não seja possível realizar as buscas e inserts
 	 */
-	/*		public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
-			PreparedStatement stmt = null;
-			ResultSet rSet = null;
-			try{
-				// verifica se já existe item em aberto na tabela manutenção
-				stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
-				for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
-					Pergunta pergunta = entry.getKey();
-					Resposta resposta = entry.getValue();
-					// verifica apenas os itens cuja resposta foi negativa (tem problema)
-					if(!resposta.getResposta().equals("S")){
-						stmt.setString(1, checklist.getPlacaVeiculo());
-						stmt.setLong(2, pergunta.getCodigo());
-						rSet = stmt.executeQuery();
-						if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
-							System.out.println("Item já existe e esta sendo atualizado o total de apontamentos");
-							int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
-							tempApontamentos += 1;
-							updateQtApontamentos(checklist.getPlacaVeiculo(), pergunta.getCodigo(), tempApontamentos, conn);
-						}else{ //item não existe, incluir na lista de manutenção
-							System.out.println("Item não existe e esta sendo criado na tabela manutenção");
-							insertApontamento(checklist.getPlacaVeiculo(), pergunta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
-						}
+	public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			// verifica se já existe item em aberto na tabela manutenção
+			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
+			for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+				// verifica apenas os itens cuja resposta foi negativa (tem problema)
+				if(respostaTemProblema(resposta)){
+					stmt.setString(1, checklist.getPlacaVeiculo());
+					stmt.setLong(2, resposta.getCodigo());
+					rSet = stmt.executeQuery();
+					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
+						System.out.println("Item já existe e esta sendo atualizado o total de apontamentos");
+						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
+						tempApontamentos += 1;
+						updateQtApontamentos(checklist.getPlacaVeiculo(), resposta.getCodigo(), tempApontamentos, conn);
+					}else{ //item não existe, incluir na lista de manutenção
+						System.out.println("Item não existe e esta sendo criado na tabela manutenção");
+						insertApontamento(checklist.getPlacaVeiculo(), resposta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
 					}
 				}
-			}finally{
-				closeConnection(conn, stmt, rSet);
 			}
-		}*/
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+	// Verifica se alguma alternativa da pergunta foi marcada
+	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
+		for(PerguntaRespostaChecklist.Alternativa alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
+			if(alternativa.selected == true){
+				return true;
+			}
+		}
+		return false;
+	}
 
 
-	/*		public void insertApontamento(String placa, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
-			PreparedStatement stmt = null;
-			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES (? , ? , ?)");
-			stmt.setTimestamp(1, dataApontamento);
-			stmt.setString(2, placa);
-			stmt.setLong(3, codPergunta);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao inserir item na tabela de manutenção");
-			}
-			closeConnection(null, stmt, null);
-		}*/
+	public void insertApontamento(String placa, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA=?),? , ? , ?)");
+		stmt.setString(1, placa);
+		stmt.setTimestamp(2, dataApontamento);
+		stmt.setString(3, placa);
+		stmt.setLong(4, codPergunta);
+		int count = stmt.executeUpdate();
+		if(count == 0){
+			throw new SQLException("Erro ao inserir item na tabela de manutenção");
+		}
+		closeConnection(null, stmt, null);
+	}
 
-	/*		public void updateQtApontamentos(String placa, long codPergunta, int apontamentos, Connection conn) throws SQLException{
-			Connection connection = conn;
-			PreparedStatement stmt = null;
-			stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
-			stmt.setInt(1, apontamentos);
-			stmt.setString(2, placa);
-			stmt.setLong(3, codPergunta);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao atualizar a quantidade de apontamentos");
-			}
-			closeConnection(null, stmt, null);
-		}*/
+	public void updateQtApontamentos(String placa, long codPergunta, int apontamentos, Connection conn) throws SQLException{
+		Connection connection = conn;
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA = ? AND ITEM = ? AND DATA_RESOLUCAO IS NULL");
+		stmt.setInt(1, apontamentos);
+		stmt.setString(2, placa);
+		stmt.setLong(3, codPergunta);
+		int count = stmt.executeUpdate();
+		if(count == 0){
+			throw new SQLException("Erro ao atualizar a quantidade de apontamentos");
+		}
+		closeConnection(null, stmt, null);
+	}
 
 	/*		@Override
 		public boolean update(Request<Checklist> checklist) throws SQLException {
@@ -365,6 +374,9 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 		PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
 		alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
 		alternativa.alternativa = rSet.getString("ALTERNATIVA");
+		if(alternativa.alternativa.equals("Outros")){
+			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
+		}
 		return alternativa;
 	}
 
@@ -393,18 +405,17 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 					stmt.setLong(2, checklist.getCodigo());
 					stmt.setLong(3, resposta.getCodigo());
 					stmt.setLong(4, alternativa.codigo);
-					if(alternativa.tipo != PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS){// escolheu uma das opções ou nenhuma
-						if(alternativa.selected){// se a alternativa esta marcada
+					if(alternativa.selected == true){
+						if(alternativa.tipo == PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS){// escolheu uma das opções ou nenhuma
+							stmt.setString(5, alternativa.respostaOutros); // armazena o texto inserido pelo usuário
+						}else{
 							stmt.setString(5, "NOK"); // nok para itens com problema
-						}else{ // caso a alternativa não tenha sido marcada
-							stmt.setString(5, "OK"); // ok para itens sem problema
 						}
 					}else{// a alternativa veio com texto setado, ou seja, foi selecionada a opção "outros"
-						stmt.setString(5, alternativa.respostaOutros); // armazena o texto inserido pelo usuário
+						stmt.setString(5, "OK"); // ok para itens sem problema
 					}
-					stmt.executeUpdate();
 				}
-
+				stmt.executeUpdate();
 			}
 		} finally {
 			closeConnection(conn, stmt, null);

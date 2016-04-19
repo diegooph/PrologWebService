@@ -16,6 +16,7 @@ import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.frota.ItemDescricao;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
+import br.com.zalf.prolog.models.frota.Tempo;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.FrotaDao;
@@ -26,9 +27,11 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 	private static final String PRIORIDADE_ALTA = "ALTA";
 	private static final String PRIORIDADE_BAIXA = "BAIXA";
 
+	private static final int MINUTOS_NUM_DIA = 1440;
+    private static final int MINUTOS_NUMA_HORA = 60;
 
 	@Override
-	public List<ManutencaoHolder> getManutencaoHolder (Long cpf, String token, Long codUnidade, int limit, long offset, boolean isAbertos) throws SQLException{
+	public List<ManutencaoHolder> getManutencaoHolder (Long codUnidade, int limit, long offset, boolean isAbertos) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -45,7 +48,6 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, CM.DATA_RESOLUCAO, "
 					+ "CM.CPF_FROTA, C.NOME FROM CHECKLIST_MANUTENCAO CM	"
 					+ "JOIN VEICULO V ON V.PLACA = CM.PLACA "
-					+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ?  AND TA.TOKEN = ? "
 					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
 					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
 					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
@@ -60,11 +62,9 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 			}	
 			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setInt(3, limit);
-			stmt.setLong(4, offset);
-			stmt.setLong(5, codUnidade);
+			stmt.setInt(1, limit);
+			stmt.setLong(2, offset);
+			stmt.setLong(3, codUnidade);
 			rSet = stmt.executeQuery();
 			if(rSet.first()){
 				itemManutencao = createItemManutencao(rSet);
@@ -161,15 +161,16 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 		item.setData(rSet.getTimestamp("DATA_APONTAMENTO"));
 		item.setCodItem(rSet.getInt("ITEM"));
 		item.setItem(rSet.getString("PERGUNTA"));
-		item.setPrazoHoras(rSet.getInt("PRAZO"));
+		Tempo tempoLimiteResolucao = new Tempo();
+		tempoLimiteResolucao.setHora(rSet.getInt("PRAZO"));
+		item.setTempoLimiteResolucao(tempoLimiteResolucao);
 		item.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
 		item.setDataResolucao(rSet.getTimestamp("DATA_RESOLUCAO"));
-		item.setStatusResolucao(rSet.getString("STATUS_RESOLUCAO"));
-		item.setCpfFrota(rSet.getLong("CPF_FROTA"));
-		item.setNomeFrota(rSet.getString("NOME"));
+		item.setFeedbackResolucao(rSet.getString("STATUS_RESOLUCAO"));
+		item.setCpfMecanico(rSet.getLong("CPF_FROTA"));
+		item.setNomeMecanico(rSet.getString("NOME"));
 		item.setPrioridade(rSet.getString("PRIORIDADE"));
 		setLongTempoRestante(item);
-
 		return item;
 	}
 	/**
@@ -197,9 +198,9 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "TA.TOKEN = ? AND"
 					+ "CPF_FROTA IS NULL");
 
-			stmt.setLong(1, itemManutencao.getCpfFrota());
+			stmt.setLong(1, itemManutencao.getCpfMecanico());
 			stmt.setTimestamp(2, DateUtils.toTimestamp(itemManutencao.getDataResolucao()));
-			stmt.setString(3, itemManutencao.getStatusResolucao());
+			stmt.setString(3, itemManutencao.getFeedbackResolucao());
 			stmt.setString(4, itemManutencao.getPlaca());
 			stmt.setInt(5, itemManutencao.getCodItem());
 			stmt.setLong(6, request.getCpf());
@@ -251,13 +252,31 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
     public void setLongTempoRestante(ItemManutencao itemManutencao) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(itemManutencao.getData());
-        calendar.add(Calendar.HOUR, itemManutencao.getPrazoHoras());
-        Date dataMaxima = calendar.getTime();
+        calendar.add(Calendar.HOUR, itemManutencao.getTempoLimiteResolucao().getHora());// data apontamento + prazo
+        Date dataMaxima = calendar.getTime(); // data máxima de resolução
         long tempoRestante = dataMaxima.getTime() - System.currentTimeMillis();
-        System.out.println("tempoRestante long: " + tempoRestante);
-        System.out.println("\nItem: " + itemManutencao.getItem() + "\n Horas restantes: " + TimeUnit.MILLISECONDS.toHours(tempoRestante));
-        System.out.println(dataMaxima);
+        Tempo tempo = new Tempo();
+        long temp = TimeUnit.MILLISECONDS.toMinutes(tempoRestante);
+        itemManutencao.setTempoRestante(tempo);
         //TODO setar tempo restante
+        
+/*        if (temp < MINUTOS_NUMA_HORA) {
+            tempo.setMinuto((int)temp);
+        } else if (temp < MINUTOS_NUM_DIA) {
+            long hours = TimeUnit.MINUTES.toHours(temp);
+            temp = hours % 60;
+            // TODO: Se minutos for zero não precisa mostrar
+            tempo.setHora((int)hours);
+            tempo.setMinuto((int)temp);
+        } else if (minutes >= MINUTOS_NUM_DIA) {
+            long days = TimeUnit.MINUTES.toDays(minutes);
+            long hours = TimeUnit.MINUTES.toHours(minutes) % 24;
+            // TODO: Se horas for zero não precisa mostrar
+            return days + "dia(s) e " + hours + " hora(s)";
+        }
+        return "";*/
+        
+        
     }
 
 	public class ItemChecklist{

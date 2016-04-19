@@ -8,7 +8,7 @@ import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 
 public interface FrotaDao {
 	
-	public List<ManutencaoHolder> getManutencaoHolder(Long cpf, String token, Long codUnidade, int limit, long offset, boolean isAbertos) throws SQLException;
+	public List<ManutencaoHolder> getManutencaoHolder(Long codUnidade, int limit, long offset, boolean isAbertos) throws SQLException;
 	public boolean consertaItem (Request<?> request) throws SQLException;
 	
 	
