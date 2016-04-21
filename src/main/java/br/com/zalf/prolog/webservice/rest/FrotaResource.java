@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.auth.Secured;
@@ -34,10 +34,15 @@ public class FrotaResource {
 			@QueryParam("isAbertos") boolean isAbertos){
 		return service.getManutencaoHolder(codUnidade, limit, offset, isAbertos);
 	}
-	
+
 	@POST
+	@Secured
 	@Path("/consertaItem")
-	public boolean consertaItem(Request<ItemManutencao> request){
-		return service.consertaItem(request);
+	public Response consertaItem(ItemManutencao itemManutencao){
+		if(service.consertaItem(itemManutencao)){
+			return Response.Ok("Item consertado com sucesso");
+		}else{
+			return Response.Error("Problema ao consertar o item");
+		}
 	}
 }

@@ -27,7 +27,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
-					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE "
+					+ "ORDER BY PLACA");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -94,6 +95,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		veiculo.setPlaca(rSet.getString("PLACA"));
 		veiculo.setModelo(rSet.getString("MODELO"));
 		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
+		veiculo.setKmAtual(rSet.getLong("KM"));
 		return veiculo;
 	}
 
@@ -149,5 +151,25 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, null);
 		}		
 		return true;
+	}
+
+	public void updateKmByPlaca(String placa, long km) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE VEICULO SET "
+					+ "KM = ? "
+					+ "WHERE PLACA = ?");
+			stmt.setLong(1, km);
+			stmt.setString(2, placa);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar o km do veículo");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
 	}
 }

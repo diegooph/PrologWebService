@@ -14,7 +14,9 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.auth.Secured;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
 
@@ -32,6 +34,7 @@ public class ChecklistResource {
 	}
 	
 	@POST
+	@Secured
 	public Response insert(Checklist checklist) {
 		checklist.setData(new Date(System.currentTimeMillis()));
 		if (service.insert(checklist)) {
@@ -39,6 +42,13 @@ public class ChecklistResource {
 		} else {
 			return Response.Error("Erro ao inserir checklist");
 		}
+	}
+	
+	@GET
+	@Secured
+	@Path("/liberacao/{codUnidade}")
+	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade){
+		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}
 	
 //	@PUT
@@ -90,13 +100,16 @@ public class ChecklistResource {
 			@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset) {
-		System.out.println("Fora dilma");
-		System.out.println(cpf);
-		System.out.println(limit);
-		System.out.println(offset);
 		return service.getByColaborador(cpf, limit, offset);
 	}
 	
+	@GET
+	@Secured
+	@Path("/novo/{codUnidade}")
+	public NovoChecklistHolder getNovoChecklistHolder(@PathParam("codUnidade") Long codUnidade){
+		return service.getNovoChecklistHolder(codUnidade);
+	}
+		
 //	@GET
 //	@Path("/perguntas")
 //	public List<Pergunta> getPerguntas() {

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.services;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.dao.FrotaDaoImpl;
 
@@ -11,11 +11,6 @@ public class FrotaService {
 	private FrotaDaoImpl dao = new FrotaDaoImpl();
 
 	public List<ManutencaoHolder> getManutencaoHolder(Long codUnidade, int limit, long offset, boolean isAbertos) {
-
-		System.out.println(codUnidade);
-		System.out.println(limit);
-		System.out.println(offset);
-		System.out.println(isAbertos);
 		
 		try {
 			return dao.getManutencaoHolder(codUnidade, limit, offset, isAbertos);					
@@ -25,9 +20,9 @@ public class FrotaService {
 		}
 	}
 
-	public boolean consertaItem (Request<?> request){
+	public boolean consertaItem (ItemManutencao itemManutencao){
 		try{
-			return dao.consertaItem(request);
+			return dao.consertaItem(itemManutencao);
 		} catch(SQLException e){
 			e.printStackTrace();
 			return false;

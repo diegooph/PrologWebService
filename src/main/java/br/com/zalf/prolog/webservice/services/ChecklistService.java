@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 
 public class ChecklistService {
@@ -26,6 +28,15 @@ public class ChecklistService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade){
+		try{
+			return dao.getNovoChecklistHolder(codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new NovoChecklistHolder();
 		}
 	}
 	
@@ -102,4 +113,13 @@ public class ChecklistService {
 //			return new ArrayList<Pergunta>();
 //		}
 //	}
+	
+	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade){
+		try{
+			return dao.getStatusLiberacaoVeiculos(codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
 }
