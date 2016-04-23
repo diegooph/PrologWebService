@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -202,8 +203,10 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			return null;
 		}*/
 
-	/*		@Override
-		public List<Checklist> getAll(Request<?> request) throws SQLException {
+			//@Override
+		public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+				Long codUnidade, long limit, long offset) throws SQLException {
+			
 			List<Checklist> checklists = new ArrayList<>();
 			//TODO verificar token e buscar apenas checklists da unidade informada no request
 			Connection conn = null;
@@ -211,10 +214,23 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			ResultSet rSet = null;
 			try {
 				conn = getConnection();
-				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
-						+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
-						+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-						+ "ORDER BY DATA_HORA DESC");
+				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.KM_VEICULO, "
+						+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
+						+ "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
+						+ "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
+						+ "WHERE C.DATA_HORA::DATE >= ? "
+						+ "AND C.DATA_HORA::DATE <= ? "
+						+ "AND E.NOME LIKE ? "
+						+ "AND CO.COD_UNIDADE = ? "
+						+ "ORDER BY DATA_HORA DESC "
+						+ "LIMIT ? OFFSET ?");
+				
+				stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
+				stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+				stmt.setString(3, equipe);
+				stmt.setLong(4, codUnidade);
+				stmt.setLong(5, limit);
+				stmt.setLong(6, offset);
 				rSet = stmt.executeQuery();
 				while (rSet.next()) {
 					Checklist checklist = createChecklist(rSet);
@@ -224,7 +240,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 				closeConnection(conn, stmt, rSet);
 			}
 			return checklists;
-		}*/
+		}
 
 	/*		@Override
 		public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException {
@@ -337,7 +353,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA, "
+			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.URL_IMAGEM, CP.PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA, "
 					+ "CP.SINGLE_CHOICE, CAP.CODIGO AS COD_ALTERNATIVA, "
 					+ "CAP.ALTERNATIVA, CAP.ORDEM AS ORDEM_ALTERNATIVA "
 					+ "FROM CHECKLIST_PERGUNTAS CP "
@@ -374,14 +390,13 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 		return perguntas;
 	}
 
-
-
 	private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException{
 		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
 		pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
 		pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
 		pergunta.setPergunta(rSet.getString("PERGUNTA"));
 		pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
+		pergunta.setUrl(rSet.getString("URL_IMAGEM"));
 		return pergunta;
 	}
 
@@ -437,7 +452,6 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 					}
 					stmt.executeUpdate();
 				}
-
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -490,7 +504,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA, "
 					+ "CP.PERGUNTA, CP.SINGLE_CHOICE,CAP.CODIGO AS COD_ALTERNATIVA, "
-					+ "CAP.ORDEM, CAP.ALTERNATIVA, CR.RESPOSTA  "
+					+ "CAP.ORDEM, CP.URL_IMAGEM, CAP.ALTERNATIVA, CR.RESPOSTA  "
 					+ "FROM CHECKLIST C JOIN CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST "
 					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CR.COD_PERGUNTA JOIN "
 					+ "CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CAP.CODIGO = CR.COD_ALTERNATIVA "
@@ -539,6 +553,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 		}else if(rSet.getString("RESPOSTA").equals("OK")){
 			alternativa.selected = false;
 		}else{
+			alternativa.selected = true;
 			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
 			alternativa.respostaOutros = rSet.getString("RESPOSTA");
 		}
@@ -643,7 +658,6 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 				}else{
 					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
 				}
-					
 			}
 		}
 	}
@@ -651,7 +665,6 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 	private boolean placaTemCheck (String placa, List<String> listPlacasComCheck){
 		List<String> listPlaca = new ArrayList<>();
 		listPlaca = listPlacasComCheck.stream().filter(c -> c.equals(placa)).collect(Collectors.toCollection(ArrayList::new));
-
 		if(listPlaca.isEmpty()){
 			return false;
 		}else{

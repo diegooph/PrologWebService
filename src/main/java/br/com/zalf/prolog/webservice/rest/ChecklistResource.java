@@ -17,6 +17,7 @@ import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
 import br.com.zalf.prolog.webservice.services.ChecklistService;
 
@@ -65,12 +66,20 @@ public class ChecklistResource {
 //	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 //		return service.getByCod(codigo);
 //	}
-//	
-//	@GET
-//	public List<Checklist> getAll() {
-//		System.out.println("CHAMOU");
-//		return service.getAll();
-//	}
+	
+	@GET
+	@Secured
+	@Path("{codUnidade}/{equipe}")
+	public List<Checklist> getAll(
+			@QueryParam("dataInicial") long dataInicial, 
+			@QueryParam("dataFinal") long dataFinal,
+			@PathParam("equipe") String equipe,
+			@PathParam("codUnidade") Long codUnidade,
+			@QueryParam("limit")long limit,
+			@QueryParam("offset") long offset) {
+		System.out.println("CHAMOU GETALL DO CHECKLIST");
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
+	}
 	
 //	@GET
 //	@Path("/exceto/colaborador/{cpf}")

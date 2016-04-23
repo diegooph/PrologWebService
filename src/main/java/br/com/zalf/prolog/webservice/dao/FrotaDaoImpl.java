@@ -54,7 +54,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "FROM CHECKLIST_MANUTENCAO CM LIMIT ? OFFSET ?) "
 					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
 					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
-					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA  %s ORDER BY PLACA, PG.PRAZO";
+					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA  %s ORDER BY PLACA, PG.PRAZO, CM.ITEM";
 			if(isAbertos){
 				query = String.format(query, "IS NULL");
 			}else{
@@ -92,7 +92,7 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					setQtItens(holder);
 					listManutencaoHolder.add(holder);
 					//listAlternativa = getListaAlternativas(codUnidade, conn);
-					setDescricaoItens(getListaAlternativas(codUnidade, conn), listManutencaoHolder);
+					setDescricaoItens(getListaAlternativas(codUnidade, conn, isAbertos), listManutencaoHolder);
 					ordenaLista(listManutencaoHolder);
 				}
 			}else{
@@ -131,25 +131,34 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 	private void setDescricaoItens(ResultSet rSetAlternativas, List<ManutencaoHolder> holder) throws SQLException{
 		rSetAlternativas.first();
+		List<Alternativa> tempListAlternativa;
 		for(ManutencaoHolder itemManutencao : holder){ // item manutenção contendo a placa e a lista de itens quebrados dessa placa
-			List<ItemManutencao> listItemManutencao = itemManutencao.getListManutencao(); 
+			List<ItemManutencao> listItemManutencao = itemManutencao.getListManutencao();
+			System.out.println("Verificando o holder da placa: " + itemManutencao.getPlaca() + "/n");
 			for(ItemManutencao item : listItemManutencao){// contém cada item quebrado de uma mesma placa
-				List<Alternativa> tempListAlternativa = new ArrayList<>();
+				tempListAlternativa = new ArrayList<>();
+				System.out.println("Verificando o item de codigo: " + item.getCodItem());
 				while(rSetAlternativas.getString("PLACA_VEICULO").equals(itemManutencao.getPlaca()) && item.getCodItem() == rSetAlternativas.getInt("COD_PERGUNTA")
-						&& item.getDataResolucao() == null){
+						/*&& item.getDataResolucao() == null*/){
+					System.out.println("entrou no while");
 
 					Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
 					if(rSetAlternativas.getString("RESPOSTA").equals("NOK")){
+						System.out.println("resposta == NOK");
 						alternativa.alternativa = rSetAlternativas.getString("ALTERNATIVA");	
 					}else{
+						System.out.println("resposta == OUTROS");
 						alternativa.respostaOutros = rSetAlternativas.getString("RESPOSTA");
 						alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
 					}
 					tempListAlternativa.add(alternativa);
+					System.out.println("Adicionando alternativa criada na lista temporaria");
 					if(!rSetAlternativas.next()){
+						System.out.println("final do rset de alternativas");
 						break;
 					}
 				}
+				System.out.println("setando a lista de alternativas no item: "  + item.getCodItem());
 				item.setListAlternativa(tempListAlternativa);
 			}
 		}
@@ -218,11 +227,12 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 
 
 
-	private ResultSet getListaAlternativas(Long codUnidade, Connection conn) throws SQLException{
+	private ResultSet getListaAlternativas(Long codUnidade, Connection conn, boolean isAbertos) throws SQLException{
 		PreparedStatement stmt = null;
 
 		try{
-			stmt = conn.prepareStatement("SELECT  DISTINCT C.PLACA_VEICULO,CR.COD_PERGUNTA, "
+			
+			String query = "SELECT  DISTINCT C.PLACA_VEICULO,CR.COD_PERGUNTA, "
 					+ "CR.COD_ALTERNATIVA, CR.RESPOSTA, CAP.ALTERNATIVA, PG.PRAZO "
 					+ "FROM CHECKLIST_RESPOSTAS CR JOIN	CHECKLIST C ON C.CODIGO = CR.COD_CHECKLIST	"
 					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
@@ -233,10 +243,19 @@ public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 					+ "JOIN CHECKLIST_MANUTENCAO CM ON CM.ITEM = CR.COD_PERGUNTA AND CM.PLACA = C.PLACA_VEICULO	"
 					+ "WHERE CR.RESPOSTA <> 'OK' "
 					+ "AND V.COD_UNIDADE = ? "
-					+ "AND	CM.CPF_FROTA IS NULL "
+					+ "AND	CM.CPF_FROTA %s "
 					+ "AND C.DATA_HORA >= CM.DATA_APONTAMENTO	"
-					+ "ORDER BY PLACA_VEICULO, PG.PRAZO", ResultSet.TYPE_SCROLL_SENSITIVE,
+					+ "ORDER BY PLACA_VEICULO, PG.PRAZO, CR.COD_PERGUNTA";
+			
+			if(isAbertos){
+				query = String.format(query, "IS NULL");
+			}else{
+				query = String.format(query, ">0");
+			}
+			
+			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
+							
 			stmt.setLong(1, codUnidade);
 			return stmt.executeQuery();
 		}finally{

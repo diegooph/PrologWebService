@@ -11,6 +11,12 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.permissao.Visao;
+import br.com.zalf.prolog.models.permissao.pilares.Entrega;
+import br.com.zalf.prolog.models.permissao.pilares.Frota;
+import br.com.zalf.prolog.models.permissao.pilares.Gente;
+import br.com.zalf.prolog.models.permissao.pilares.Pilar;
+import br.com.zalf.prolog.models.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
@@ -59,7 +65,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt.setInt(3, colaborador.getMatriculaTrans());
 			stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
 			stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
-			
+
 			// Só vai ter data de demissão quando estiver fazendo um update
 			// em um colaborador que já está deletado (inativo). 
 			if (colaborador.getDataDemissao() != null)
@@ -75,9 +81,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt.setLong(13, colaborador.getCodEmpresa());
 			stmt.setLong(14, colaborador.getCodEquipe());
 			stmt.setLong(15, cpfAntigo);
-			
+
 			int count = stmt.executeUpdate();
-			
+
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
 			}	
@@ -131,8 +137,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
+				c.setVisao(getVisaoByCpf(c.getCpf()));
 				System.out.println(c.getCodFuncao());
 				System.out.println(c.getNomeFuncao());
+				System.out.println(c.getVisao());
 				System.out.println(c);
 				return c;
 			}
@@ -140,6 +148,65 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			closeConnection(conn, stmt, rSet);
 		}
 		return null;
+	}
+
+	public Visao getVisaoByCpf(Long cpf)throws SQLException{
+		Visao visao = new Visao();
+		List<Pilar> listPilares = new ArrayList<>();
+		List<Integer> listFuncoes = new ArrayList<>();
+		Pilar pilar = new Pilar();
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT COD_FUNCAO_PROLOG AS FUNCAO, COD_PILAR_PROLOG AS PILAR "
+					+ "FROM CARGO_FUNCAO_PROLOG CFP JOIN COLABORADOR C ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR "
+					+ "WHERE C.CPF = ? ORDER BY 2, 1", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			if(rSet.first()){
+				pilar.codigo = rSet.getInt("PILAR");
+				pilar.funcoesDisponiveis = listFuncoes;
+				pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
+			}
+			while (rSet.next()) {
+				if(rSet.getInt("PILAR") == pilar.codigo){
+					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
+				}else{
+					listPilares.add(pilar);
+					
+					pilar = new Pilar();
+					listFuncoes = new ArrayList<>();
+					pilar.funcoesDisponiveis = listFuncoes;
+					pilar.codigo = rSet.getInt("PILAR");
+					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
+				}
+			}
+			listPilares.add(pilar);
+			visao.setPilares(listPilares);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return visao;
+	}
+
+	private Pilar createPilar(int codPilar){
+		
+		switch (codPilar) {
+		case 1:
+			return new Frota();
+		case 2:
+			return new Seguranca();
+		case 3:
+			return new Gente();
+		case 4:
+			return new Entrega();
+		default:
+			return null;
+		}
 	}
 
 	/**

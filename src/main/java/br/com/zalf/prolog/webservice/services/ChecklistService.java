@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.services;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,15 +68,16 @@ public class ChecklistService {
 //		}
 //	}
 	
-//	public List<Checklist> getAll() {
-//		try {
-//			return dao.getAll();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return new ArrayList<Checklist>();
-//		}
-//	}
-//	
+	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, long limit, long offset) {
+		try {
+			return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, limit, offset);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Checklist>();
+		}
+	}
+	
 //	public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade,  LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) {
 //		try {
 //			return dao.getAllByCodUnidade(cpf, token, codUnidade, dataInicial, dataFinal, limit, offset);

@@ -235,6 +235,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 
+		//TODO NÃO ESTA FAZENDO A BUSCA CORRETA QUANDO MANDAMOS APENAS O COD UNIDADE E % NO CODEQUIPE - VERIFICAR
 		System.out.println(dataInicial);
 		System.out.println(dataFinal);
 		System.out.println(equipe);
