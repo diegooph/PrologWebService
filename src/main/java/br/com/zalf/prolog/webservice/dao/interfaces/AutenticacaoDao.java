@@ -36,5 +36,5 @@ public interface AutenticacaoDao {
 	 * @return resultado do delete, true ou false
 	 * @throws SQLException caso não seja possível fazer o delete do token na tabela
 	 */
-	boolean delete(Autenticacao autenticacao) throws SQLException;
+	boolean delete(String token) throws SQLException;
 }

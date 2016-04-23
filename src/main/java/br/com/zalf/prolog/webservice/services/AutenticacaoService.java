@@ -4,9 +4,10 @@ import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.webservice.dao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 
 public class AutenticacaoService {
-	private AutenticacaoDaoImpl dao = new AutenticacaoDaoImpl();
+	private AutenticacaoDao dao = new AutenticacaoDaoImpl();
 	
 	public Autenticacao insertOrUpdate(Long cpf) {
 		try {
@@ -17,9 +18,9 @@ public class AutenticacaoService {
 		}
 	}
 	
-	public boolean delete(Autenticacao autenticacao) {
+	public boolean delete(String token) {
 	try {
-		return dao.delete(autenticacao);
+		return dao.delete(token);
 	} catch (SQLException e) {
 		e.printStackTrace();
 		return false;
