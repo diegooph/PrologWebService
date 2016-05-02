@@ -77,7 +77,6 @@ public class ChecklistResource {
 			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
-		System.out.println("CHAMOU GETALL DO CHECKLIST");
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
 	}
 	

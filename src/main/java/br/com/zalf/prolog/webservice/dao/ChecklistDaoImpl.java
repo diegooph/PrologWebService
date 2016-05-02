@@ -85,12 +85,10 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 					stmt.setLong(2, resposta.getCodigo());
 					rSet = stmt.executeQuery();
 					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
-						System.out.println("Item já existe e esta sendo atualizado o total de apontamentos");
 						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
 						tempApontamentos += 1;
 						updateQtApontamentos(checklist.getPlacaVeiculo(), resposta.getCodigo(), tempApontamentos, conn);
 					}else{ //item não existe, incluir na lista de manutenção
-						System.out.println("Item não existe e esta sendo criado na tabela manutenção");
 						insertApontamento(checklist.getPlacaVeiculo(), resposta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
 					}
 				}
@@ -643,7 +641,6 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			closeConnection(conn, stmt, rSet);
 		}
 		setStatusLiberacao(listVeiculos, listPlacasComCheck);
-		System.out.println(listPlacasComCheck);
 		return listVeiculos;
 	}
 

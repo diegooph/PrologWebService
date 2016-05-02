@@ -87,9 +87,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			
 			MetasDaoImpl metasDao = new MetasDaoImpl();
 			meta = metasDao.getMetasByCpf(cpf);
-			
 
 			while(rSet.next()){
+				System.out.println("entrou aqui");
 				Date data = rSet.getDate("DATA");
 				double valor = createValor(rSet);
 				ItemDevolucaoNf devolucaoNf = createDevNf(rSet);
@@ -107,6 +107,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 				
 				listItemProdutividade.add(itemProdutividade);
 			}
+			System.out.println(listItemProdutividade);
 			return listItemProdutividade;
 		}
 		finally {
@@ -159,7 +160,11 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
 		itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
 		itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
+		if(itemTracking.getTotal() > 0){
 		itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+		}else{
+			itemTracking.setResultado(0);
+		}
 		itemTracking.setMeta(meta.getMetaTracking());
 		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), meta.getMetaTracking())));
 		return itemTracking;

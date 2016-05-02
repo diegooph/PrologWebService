@@ -318,7 +318,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
 		f.setCodigo(rSet.getLong("CODIGO"));
-		System.out.println(rSet.getString("NOME"));
 		f.setNome(rSet.getString("NOME"));
 		return f;
 	}
