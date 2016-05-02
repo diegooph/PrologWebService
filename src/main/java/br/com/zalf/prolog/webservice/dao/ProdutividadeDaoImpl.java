@@ -89,7 +89,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			meta = metasDao.getMetasByCpf(cpf);
 
 			while(rSet.next()){
-				System.out.println("entrou aqui");
 				Date data = rSet.getDate("DATA");
 				double valor = createValor(rSet);
 				ItemDevolucaoNf devolucaoNf = createDevNf(rSet);
@@ -107,7 +106,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 				
 				listItemProdutividade.add(itemProdutividade);
 			}
-			System.out.println(listItemProdutividade);
 			return listItemProdutividade;
 		}
 		finally {
