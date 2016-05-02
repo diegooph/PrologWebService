@@ -4,8 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -52,20 +54,20 @@ public class ChecklistResource {
 		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}
 	
-//	@PUT
-//	public Response update(Checklist checklist) {
-//		if (service.update(checklist)) {
-//			return Response.Ok("Checklist atualizado com sucesso");
-//		} else {
-//			return Response.Error("Erro ao atualizar o checklist");
-//		}
-//	}
-//	
-//	@GET
-//	@Path("{codigo}")
-//	public Checklist getByCod(@PathParam("codigo") Long codigo) {
-//		return service.getByCod(codigo);
-//	}
+	@PUT
+	public Response update(Checklist checklist) {
+		if (service.update(checklist)) {
+			return Response.Ok("Checklist atualizado com sucesso");
+		} else {
+			return Response.Error("Erro ao atualizar o checklist");
+		}
+	}
+	
+	@GET
+	@Path("{codigo}")
+	public Checklist getByCod(@PathParam("codigo") Long codigo) {
+		return service.getByCod(codigo);
+	}
 	
 	@GET
 	@Secured
@@ -79,28 +81,7 @@ public class ChecklistResource {
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
 	}
-	
-//	@GET
-//	@Path("/exceto/colaborador/{cpf}")
-//	public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) {
-//		return service.getAllExcetoColaborador(cpf, offset);
-//	}
-	
-//	@POST
-//	@Path("/unidade")
-//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-//	public List<Checklist> getAllByCodUnidade(
-//			@FormParam("cpf") Long cpf,
-//			@FormParam("token") String token,
-//			@FormParam("codUnidade") Long codUnidade,
-//			@FormParam("dataInicial") long dataInicial,
-//			@FormParam("dataFinal") long dataFinal,
-//			@FormParam("limit") int limit,
-//			@FormParam("offset") long offset) {
-//		return service.getAllByCodUnidade(cpf, token, codUnidade, DateUtils.toLocalDate(new Date(dataInicial)), 
-//				DateUtils.toLocalDate(new Date(dataFinal)), limit, offset);
-//	}	
-//	
+
 	@GET
 	@Secured
 	@Path("/colaborador/{cpf}")
@@ -118,19 +99,13 @@ public class ChecklistResource {
 		return service.getNovoChecklistHolder(codUnidade);
 	}
 		
-//	@GET
-//	@Path("/perguntas")
-//	public List<Pergunta> getPerguntas() {
-//		return service.getPerguntas();
-//	}
-	
-//	@DELETE
-//	@Path("{codigo}")
-//	public Response delete(@PathParam("codigo") Long codigo) {
-//		if (service.delete(codigo)) {
-//			return Response.Ok("Checklist deletado com sucesso");
-//		} else {
-//			return Response.Error("Erro ao deletar checklist");
-//		}
-//	}
+	@DELETE
+	@Path("{codigo}")
+	public Response delete(@PathParam("codigo") Long codigo) {
+		if (service.delete(codigo)) {
+			return Response.Ok("Checklist deletado com sucesso");
+		} else {
+			return Response.Error("Erro ao deletar checklist");
+		}
+	}
 }

@@ -17,13 +17,12 @@ import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dao.interfaces.ChecklistDao;
 
-public class ChecklistDaoImpl extends DatabaseConnection{
+public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 
-	VeiculoDaoImpl veiculoDao;;
-	// Limit usado nas buscas para limitar a quantidade de resultados.
-	private static final int LIMIT = 10;
-
+	VeiculoDaoImpl veiculoDao;
+	
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
 	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
@@ -137,8 +136,9 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 		closeConnection(null, stmt, null);
 	}
 
-	/*		@Override
-		public boolean update(Request<Checklist> checklist) throws SQLException {
+	// implementar novamente, seguindo os padrões do novo check
+		@Override
+		public boolean update(Checklist checklist) throws SQLException {
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			try {
@@ -161,35 +161,34 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 				closeConnection(conn, stmt, null);
 			}		
 			return true;
-		}*/
+		}
 
-	/*		@Override
-		public boolean delete(Request<Checklist> request) throws SQLException {
+		@Override
+		public boolean delete(long codChecklist) throws SQLException {
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			try {
 				conn = getConnection();
 				stmt = conn.prepareStatement("DELETE FROM CHECKLIST WHERE CODIGO = ?");
-				//			stmt.setLong(1, codigo);
+							stmt.setLong(1, codChecklist);
 				return (stmt.executeUpdate() > 0);
 			} finally {
 				closeConnection(conn, stmt, null);
 			}
-		}*/
+		}
 
-	/*		// TODO: Fazer join token
 		@Override
-		public Checklist getByCod(Request<?> request) throws SQLException {
+		public Checklist getByCod(long codChecklist) throws SQLException {
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			ResultSet rSet = null;
 			try {
 				conn = getConnection();
-				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
-						+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
-						+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-						+ "WHERE C.CODIGO = ?");
-				//stmt.setLong(1, codigo);
+				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.KM_VEICULO, "
+						+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
+						+ "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
+						+ "WHERE C.CODIGO =  ? ");
+				stmt.setLong(1, codChecklist);
 				rSet = stmt.executeQuery();
 				if (rSet.next()) {
 					Checklist checklist = createChecklist(rSet);
@@ -199,9 +198,9 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 				closeConnection(conn, stmt, rSet);
 			}
 			return null;
-		}*/
+		}
 
-			//@Override
+		@Override
 		public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 				Long codUnidade, long limit, long offset) throws SQLException {
 			
@@ -240,72 +239,11 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			return checklists;
 		}
 
-	/*		@Override
-		public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException {
-			List<Checklist> checklists = new ArrayList<>();
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			ResultSet rSet = null;
-			try {
 
-				String query = "SELECT C.CODIGO, C.DATA_HORA, "
-						+ "C.CPF_COLABORADOR, CO.NOME, C.PLACA_VEICULO, TIPO FROM CHECKLIST C "
-						+ "JOIN COLABORADOR CO ON CO.CPF=C.CPF_COLABORADOR JOIN "
-						+ "TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
-						+ "WHERE CO.COD_UNIDADE = ? AND C.DATA_HORA::DATE BETWEEN ? AND ?  "
-						+ "ORDER BY DATA_HORA DESC "
-						+ "LIMIT ? OFFSET ?";
-				conn = getConnection();
-				stmt = conn.prepareStatement(query);
-				stmt.setLong(1, cpf);
-				stmt.setString(2, token);
-				stmt.setLong(3, codUnidade);
-				stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
-				stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
-				stmt.setInt(6, limit);
-				stmt.setLong(7, offset);
 
-				rSet = stmt.executeQuery();
-				while (rSet.next()) {
-					Checklist checklist = createChecklist(rSet);
-					System.out.println(checklist);
-					checklists.add(checklist);
-				}
-			} finally {
-				closeConnection(conn, stmt, rSet);
-			}
-			return checklists;
-		}*/
+	
 
-	/*		@Override
-		public List<Checklist> getAllExcetoColaborador(Long cpf, long offset) throws SQLException {
-			List<Checklist> checklists = new ArrayList<>();
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			ResultSet rSet = null;
-			try {
-				conn = getConnection();
-				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, "
-						+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.TIPO, CO.NOME "
-						+ "FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
-						+ "WHERE CPF_COLABORADOR != ? "
-						+ "ORDER BY DATA_HORA DESC "
-						+ "LIMIT ? OFFSET ? ");
-				stmt.setLong(1, cpf);
-				stmt.setInt(2, LIMIT);
-				stmt.setLong(3, offset);
-				rSet = stmt.executeQuery();
-				while (rSet.next()) {
-					Checklist checklist = createChecklist(rSet);
-					checklists.add(checklist);
-				}
-			} finally {
-				closeConnection(conn, stmt, rSet);
-			}
-			return checklists;
-		}*/
-
-	//	@Override
+	@Override
 	public List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
@@ -339,7 +277,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 	 * @return lista de PerguntaRespostaChecklist
 	 * @throws SQLException caso não seja possivel realizar a busca
 	 */
-	//@Override
+	@Override
 	public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade) throws SQLException {
 		List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
 		List<PerguntaRespostaChecklist.Alternativa> alternativas = new ArrayList<>();
@@ -356,7 +294,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 					+ "CAP.ALTERNATIVA, CAP.ORDEM AS ORDEM_ALTERNATIVA "
 					+ "FROM CHECKLIST_PERGUNTAS CP "
 					+ "JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CP.CODIGO = CAP.COD_PERGUNTA "
-					+ "AND CP.COD_UNIDADE = CAP.COD_UNIDADE WHERE CP.COD_UNIDADE = 1 "
+					+ "AND CP.COD_UNIDADE = CAP.COD_UNIDADE WHERE CP.COD_UNIDADE = 1 AND CP.STATUS_ATIVO = TRUE "
 					+ "ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			rSet = stmt.executeQuery();
@@ -543,7 +481,8 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 		}
 		checklist.setListRespostas(perguntas);
 	}
-// remonta as alternativas de uma Pergunta
+	
+	// remonta as alternativas de uma Pergunta
 	private void setRespostaAlternativa(PerguntaRespostaChecklist.Alternativa alternativa, ResultSet rSet) throws SQLException{
 
 		if(rSet.getString("RESPOSTA").equals("NOK")){
@@ -556,6 +495,7 @@ public class ChecklistDaoImpl extends DatabaseConnection{
 			alternativa.respostaOutros = rSet.getString("RESPOSTA");
 		}
 	}
+	
 /**
  * Cria o objeto responsavel por permitir a criação de um novo checklist, fornece as placas ativas de uma unidade e as pergutnas do checklist
  * @param codUnidade

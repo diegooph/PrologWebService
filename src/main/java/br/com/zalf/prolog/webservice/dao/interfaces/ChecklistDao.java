@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 /**
@@ -20,53 +19,49 @@ public interface ChecklistDao {
 	boolean insert(Checklist checklist) throws SQLException;
 	/**
 	 * Atualiza um checklist no banco de dados
-	 * @param request objeto contendo o checklist a ser atualizado e dados do 
-	 * usuário solicitante
+	 * @param checklist checklist a ser atualizado
 	 * @return boolean com o resultado da operação
 	 * @throws SQLException caso não seja possível atualizar o checklist
 	 */
-	boolean update(Request<Checklist> request) throws SQLException;
+	boolean update(Checklist checklist) throws SQLException;
 	/**
 	 * Deleta um checklist do banco de dados
-	 * @param request contém o checklist a ser deletado e dados do solicitante
+	 * @param codChecklist codigo do checklist a ser deletado
 	 * @return boolean com o resultado da operção
 	 * @throws SQLException caso não seja possível deletar o checklist
 	 */
-	boolean delete(Request<Checklist> request) throws SQLException;
+	boolean delete(long codChecklist) throws SQLException;
 	/**
 	 * Busca um checklist pelo seu código único
-	 * @param Request contento os dados do checklist a ser buscado e dados do solicitante
+	 * @param codChecklist codigo do checklist a ser buscado
 	 * @return um checklist
 	 * @throws SQLException caso não consiga buscar o checklist no banco de dados
 	 */
-	Checklist getByCod(Request<?> request) throws SQLException;
+	Checklist getByCod(long codChecklist) throws SQLException;
+
 	/**
-	 * Busca todos os checklists do banco de dados
-	 * @param request contendo os dados do solicitante
-	 * @return lista de checklist
-	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
-	 */
-	List<Checklist> getAll(Request<?> request) throws SQLException;
-	/**
-	 * Busca todos os checks de uma unidade respeitando o período selecionado
-	 * @param request contém os dados do solicitante, token e cod da unidade a ser buscada
+	 * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro)
 	 * @param dataInicial uma data
 	 * @param dataFinal uma data
-	 * @param limit um limit
-	 * @param offset um offset
-	 * @return uma lista de Checklist
+	 * @param equipe string contendo o nome da equipe ou '%' para o caso de buscar os checklists de todas
+	 * @param codUnidade código da unidade
+	 * @param limit quantidade de checks buscados no banco
+	 * @param offset a partir de qual check será  abusca
+	 * @return lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	public List<Checklist> getAllByCodUnidade(Long cpf, String token, Long codUnidade, LocalDate dataInicial, LocalDate dataFinal, int limit, long offset) throws SQLException;
+	List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, long limit, long offset) throws SQLException;
+	
 	/**
 	 * Busca os checklists realizados por um colaborador
-	 * @param cpf a ser consultado
-	 * @param token para verificar se o usuário solicitante esta logado
-	 * @param offset para implementação do load more
-	 * @return lista de checklist
+	 * @param cpf um cpf
+	 * @param limit quantidade de checks buscados no banco
+	 * @param offset a partir de qual check será  abusca
+	 * @return lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<Checklist> getByColaborador(Long cpf, String token, long offset) throws SQLException;
+	List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException;
 	/**
 	 * Busca das perguntas do checklist e das alternativas de resposta
 	 * @param codUnidade código da unidade a ser buscadas as perguntas
@@ -74,12 +69,5 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
 	List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade) throws SQLException;
-	/**
-	 * Busca os checklists realizados por outros colaboradores
-	 * @param cpf do solicitante, no qual não aparecerão seus checks na busca
-	 * @param offset para implementação do load more
-	 * @return lista de checklist
-	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
-	 */
-	List<Checklist> getAllExcetoColaborador(Long cpf, long offset) throws SQLException;
+	
 }
