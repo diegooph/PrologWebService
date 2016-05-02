@@ -55,6 +55,7 @@ public class ChecklistResource {
 	}
 	
 	@PUT
+	@Secured
 	public Response update(Checklist checklist) {
 		if (service.update(checklist)) {
 			return Response.Ok("Checklist atualizado com sucesso");
@@ -64,6 +65,7 @@ public class ChecklistResource {
 	}
 	
 	@GET
+	@Secured
 	@Path("{codigo}")
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
@@ -100,6 +102,7 @@ public class ChecklistResource {
 	}
 		
 	@DELETE
+	@Secured
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
 		if (service.delete(codigo)) {
