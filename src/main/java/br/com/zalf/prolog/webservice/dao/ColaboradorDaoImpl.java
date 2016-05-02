@@ -12,11 +12,7 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.permissao.Visao;
-import br.com.zalf.prolog.models.permissao.pilares.Entrega;
-import br.com.zalf.prolog.models.permissao.pilares.Frota;
-import br.com.zalf.prolog.models.permissao.pilares.Gente;
 import br.com.zalf.prolog.models.permissao.pilares.Pilar;
-import br.com.zalf.prolog.models.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
@@ -191,22 +187,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			closeConnection(conn, stmt, rSet);
 		}
 		return visao;
-	}
-
-	private Pilar createPilar(int codPilar){
-		
-		switch (codPilar) {
-		case 1:
-			return new Frota();
-		case 2:
-			return new Seguranca();
-		case 3:
-			return new Gente();
-		case 4:
-			return new Entrega();
-		default:
-			return null;
-		}
 	}
 
 	/**

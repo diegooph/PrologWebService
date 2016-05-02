@@ -325,6 +325,27 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return perguntas;
 	}
+	
+	public List<String> getUrlImagensPerguntas(Long codUnidade) throws SQLException {
+		
+		List<String> listUrl = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT URL_IMAGEM FROM CHECKLIST_PERGUNTAS WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				listUrl.add(rSet.getString("URL_IMAGEM"));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listUrl;
+	}
 
 	private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException{
 		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();

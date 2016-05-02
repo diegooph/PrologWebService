@@ -23,6 +23,15 @@ public class ChecklistService {
 		}
 	}
 	
+	public List<String> getUrlImagensPerguntas(long codUnidade){
+		try{
+			return dao.getUrlImagensPerguntas(codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public boolean insert(Checklist checklist) {
 		try {
 			return dao.insert(checklist);

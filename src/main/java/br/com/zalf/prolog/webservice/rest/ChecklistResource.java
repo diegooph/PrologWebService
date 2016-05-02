@@ -36,6 +36,13 @@ public class ChecklistResource {
 		return service.getPerguntas(codUnidade);
 	}
 	
+	@GET
+	@Secured
+	@Path("/urlImagens/{codUnidade}")
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade){
+		return service.getUrlImagensPerguntas(codUnidade);
+	}
+	
 	@POST
 	@Secured
 	public Response insert(Checklist checklist) {
