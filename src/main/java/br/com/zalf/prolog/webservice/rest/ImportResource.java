@@ -56,7 +56,7 @@ public class ImportResource {
 				// Pasta temporária da JVM
 				File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
 				if (!tmpDir.exists()) {
-					// Cria a pasta carros se não existe
+					// Cria a pasta mapas se não existe
 					tmpDir.mkdir();
 				}
 				// Cria o arquivo
