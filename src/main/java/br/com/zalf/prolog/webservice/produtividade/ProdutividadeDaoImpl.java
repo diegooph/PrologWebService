@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.produtividade;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +24,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.ProdutividadeDao;
+import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 
 public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
 

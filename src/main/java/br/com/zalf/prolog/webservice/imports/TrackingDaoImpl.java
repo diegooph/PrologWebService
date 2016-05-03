@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.imports;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.imports.Tracking;
 
 public class TrackingDaoImpl extends DatabaseConnection {
 

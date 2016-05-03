@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.calendario;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Evento;
-import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
 
 public class CalendarioService {
 

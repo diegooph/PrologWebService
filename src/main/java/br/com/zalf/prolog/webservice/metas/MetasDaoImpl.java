@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.metas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,6 @@ import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.indicador.Meta;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.MetasDao;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 

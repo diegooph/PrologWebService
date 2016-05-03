@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.ranking;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +31,8 @@ import br.com.zalf.prolog.models.ranking.ItemPosicao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.relatorio.RelatorioDaoImpl;
 
 public class RankingDaoImpl extends DatabaseConnection {
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.webservice.services.ColaboradorService;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import junit.framework.TestCase;
 
 public class ColaboradorTest extends TestCase {

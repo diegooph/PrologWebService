@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.treinamento;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +22,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.webservice.services.TreinamentoService;
 
 @Path("/treinamentos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

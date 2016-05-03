@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.gsd.pdv;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.PdvDao;
 
 public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 

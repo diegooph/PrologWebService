@@ -11,7 +11,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import br.com.zalf.prolog.webservice.services.AutenticacaoService;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 
 @Secured
 @Provider

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.metas;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Metas;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.webservice.services.MetaService;
 
 @Path("/meta")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

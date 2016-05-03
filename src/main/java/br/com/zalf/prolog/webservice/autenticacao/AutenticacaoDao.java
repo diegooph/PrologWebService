@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao.interfaces;
+package br.com.zalf.prolog.webservice.autenticacao;
 
 import java.sql.SQLException;
 

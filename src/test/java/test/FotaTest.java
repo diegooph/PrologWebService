@@ -2,7 +2,7 @@ package test;
 
 import org.junit.Test;
 
-import br.com.zalf.prolog.webservice.services.FrotaService;
+import br.com.zalf.prolog.webservice.frota.FrotaService;
 import junit.framework.TestCase;
 
 public class FotaTest extends TestCase{

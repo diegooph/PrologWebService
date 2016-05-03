@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.frota;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.auth.Secured;
-import br.com.zalf.prolog.webservice.services.FrotaService;
 
 
 @Path("/frota")

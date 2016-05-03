@@ -1,11 +1,10 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.faleConosco;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.FaleConosco;
-import br.com.zalf.prolog.webservice.dao.FaleConoscoDaoImpl;
 
 public class FaleConoscoService {
 	private FaleConoscoDaoImpl dao = new FaleConoscoDaoImpl();

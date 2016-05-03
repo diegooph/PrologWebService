@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.frota;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +19,6 @@ import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.models.frota.Tempo;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.FrotaDao;
 
 public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
 

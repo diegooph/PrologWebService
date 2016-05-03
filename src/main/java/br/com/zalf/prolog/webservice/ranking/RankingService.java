@@ -1,11 +1,10 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.ranking;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 import br.com.zalf.prolog.models.ranking.ItemPosicao;
-import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
 
 public class RankingService {
 	

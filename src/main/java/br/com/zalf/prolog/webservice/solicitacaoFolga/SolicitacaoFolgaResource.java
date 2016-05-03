@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.solicitacaoFolga;
 
 import java.sql.Date;
 import java.util.List;
@@ -17,7 +17,6 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
-import br.com.zalf.prolog.webservice.services.SolicitacaoFolgaService;
 
 @Path("/solicitacaoFolga")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

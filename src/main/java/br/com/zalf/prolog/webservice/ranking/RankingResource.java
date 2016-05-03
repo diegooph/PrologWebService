@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.ranking;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.ranking.ItemPosicao;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.services.RankingService;
 
 @Path("/ranking")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

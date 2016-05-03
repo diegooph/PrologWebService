@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.imports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,11 +21,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.webservice.imports.Import;
-import br.com.zalf.prolog.webservice.imports.MapaImport;
-import br.com.zalf.prolog.webservice.imports.Tracking;
-import br.com.zalf.prolog.webservice.services.MapaService;
-import br.com.zalf.prolog.webservice.services.TrackingService;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.dashboard;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 import br.com.zalf.prolog.models.dashboard.DashSeguranca;
-import br.com.zalf.prolog.webservice.DashManager;
 
 public class DashService {
 

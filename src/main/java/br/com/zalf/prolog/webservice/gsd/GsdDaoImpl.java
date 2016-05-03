@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.gsd;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import br.com.zalf.prolog.models.gsd.Gsd.PerguntaRespostasGsd;
 import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.GsdDao;
+import br.com.zalf.prolog.webservice.gsd.pdv.PdvDaoImpl;
 
 public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 

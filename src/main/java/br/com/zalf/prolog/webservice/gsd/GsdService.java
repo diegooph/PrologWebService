@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.gsd;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.gsd.Gsd;
-import br.com.zalf.prolog.webservice.dao.GsdDaoImpl;
 
 public class GsdService {
 	private GsdDaoImpl dao = new GsdDaoImpl();

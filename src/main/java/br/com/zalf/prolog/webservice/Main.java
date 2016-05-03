@@ -9,16 +9,18 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
+import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Metas;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.webservice.dao.CalendarioDaoImpl;
-import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
-import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
-import br.com.zalf.prolog.webservice.dao.ProdutividadeDaoImpl;
-import br.com.zalf.prolog.webservice.dao.RankingDaoImpl;
-import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.calendario.CalendarioDaoImpl;
+import br.com.zalf.prolog.webservice.checklist.ChecklistDaoImpl;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
+import br.com.zalf.prolog.webservice.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.ranking.RankingDaoImpl;
+import br.com.zalf.prolog.webservice.relatorio.RelatorioDaoImpl;
 
 public class Main {
 
@@ -32,6 +34,7 @@ public class Main {
 		RankingDaoImpl rankingDaoImpl = new RankingDaoImpl();
 		CalendarioDaoImpl calendarioDaoImpl = new CalendarioDaoImpl();
 		ChecklistDaoImpl checklistDaoImpl = new ChecklistDaoImpl();
+		ColaboradorDaoImpl colaboradorDaoImpl = new ColaboradorDaoImpl();
 		String equipe = "%";
 		long codUnidade = 1;
 		long offset = 0;
@@ -41,9 +44,17 @@ public class Main {
 		Date datainicial = Date.valueOf(dataInicial);
 		LocalDate dataFinal = LocalDate.of(2016, Month.MARCH, 20);
 		Date datafinal = Date.valueOf(dataFinal);
-		Long cpf = 12345678987L;
-		String token = "b820oonp8l2pm1qo2s0skike1f";
+		Long cpf = 12345678989L;
+		String token = "1khvje6fg1v57483shknlnodk1";
 		
+		Autenticacao aut = new Autenticacao();
+		aut.setCpf(cpf);
+		aut.setToken(token);
+		
+		System.out.println(new Gson().toJson(aut));
+		
+		System.out.println(datainicial.getTime());
+		System.out.println(datafinal.getTime());
 		
 	    
 		Metas metas = new Metas<>();
@@ -66,8 +77,8 @@ public class Main {
 		request.setCodUnidade(1L);
 			
 		
-		System.out.println(new Gson().toJson(request));
-		
+		//System.out.println(new Gson().toJson(checklistDaoImpl.getByColaborador(cpf, offset, limit)));
+		System.out.println(checklistDaoImpl.getByCod(20L));
 		
 		//FrotaDaoImpl frotaDao = new FrotaDaoImpl();
 		//frotaDao.getManutencaoHolder(cpf, token, codUnidade, 20, 0L, true);

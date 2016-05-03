@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.relato;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Relato;
-import br.com.zalf.prolog.webservice.dao.RelatoDaoImpl;
 
 public class RelatoService {
 	private RelatoDaoImpl dao = new RelatoDaoImpl();

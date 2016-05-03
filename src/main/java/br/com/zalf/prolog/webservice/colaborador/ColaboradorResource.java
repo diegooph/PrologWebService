@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.colaborador;
 
 import java.util.Date;
 import java.util.List;
@@ -19,9 +19,8 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.auth.Secured;
-import br.com.zalf.prolog.webservice.services.AutenticacaoService;
-import br.com.zalf.prolog.webservice.services.ColaboradorService;
 
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

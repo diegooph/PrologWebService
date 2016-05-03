@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.treinamento;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.webservice.dao.TreinamentoDaoImpl;
 
 public class TreinamentoService {
 	private TreinamentoDaoImpl dao = new TreinamentoDaoImpl();

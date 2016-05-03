@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.colaborador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,6 @@ import br.com.zalf.prolog.models.permissao.Visao;
 import br.com.zalf.prolog.models.permissao.pilares.Pilar;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.ColaboradorDao;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 

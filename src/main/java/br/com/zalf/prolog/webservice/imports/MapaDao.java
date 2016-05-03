@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.dao.interfaces;
+package br.com.zalf.prolog.webservice.imports;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.webservice.imports.MapaImport;
 /**
  * Contém os métodos para import da tabela Mapa (ambev: 2art)
  */

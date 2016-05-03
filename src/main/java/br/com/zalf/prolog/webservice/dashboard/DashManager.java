@@ -1,6 +1,4 @@
-package br.com.zalf.prolog.webservice;
-
-import br.com.zalf.prolog.webservice.dao.DashSegurancaDaoImpl;
+package br.com.zalf.prolog.webservice.dashboard;
 
 public class DashManager {
 	

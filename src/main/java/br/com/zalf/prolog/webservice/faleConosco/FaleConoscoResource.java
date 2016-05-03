@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.faleConosco;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -8,7 +8,6 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.FaleConosco;
 import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.webservice.services.FaleConoscoService;
 
 @Path("/faleConosco")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

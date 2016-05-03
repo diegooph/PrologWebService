@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.indicador;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 import br.com.zalf.prolog.models.indicador.IndicadorHolder;
-import br.com.zalf.prolog.webservice.dao.IndicadorDaoImpl;
 
 public class IndicadorService {
 	private IndicadorDaoImpl dao = new IndicadorDaoImpl();

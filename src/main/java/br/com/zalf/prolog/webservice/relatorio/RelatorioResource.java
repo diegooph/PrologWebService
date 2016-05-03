@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.relatorio;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
 import br.com.zalf.prolog.models.relatorios.Empresa;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.services.RelatorioService;
 
 
 @Path("/relatorios")

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +12,9 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
-import br.com.zalf.prolog.webservice.dao.interfaces.VeiculoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 

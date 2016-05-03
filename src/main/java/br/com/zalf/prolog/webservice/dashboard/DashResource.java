@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.dashboard;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.dashboard.DashSeguranca;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
-import br.com.zalf.prolog.webservice.services.DashService;
 
 @Path("/dashboard")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

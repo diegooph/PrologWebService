@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.indicador;
 
 import java.util.Date;
 
@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.services.IndicadorService;
 
 @Path("/indicadores")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

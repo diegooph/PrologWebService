@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.gsd;
 
 import java.util.Date;
 import java.util.List;
@@ -14,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.gsd.Gsd;
-import br.com.zalf.prolog.webservice.services.GsdService;
 
 @Path("/gsd")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.colaborador;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.webservice.dao.ColaboradorDaoImpl;
 
 public class ColaboradorService {
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();

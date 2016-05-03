@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.solicitacaoFolga;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.SolicitacaoFolga;
-import br.com.zalf.prolog.webservice.dao.SolicitacaoFolgaDaoImpl;
-import br.com.zalf.prolog.webservice.dao.interfaces.SolicitacaoFolgaDao;
 
 public class SolicitacaoFolgaService {
 private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();

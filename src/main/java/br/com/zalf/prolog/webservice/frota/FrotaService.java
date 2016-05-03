@@ -1,11 +1,10 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.frota;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.dao.FrotaDaoImpl;
 
 public class FrotaService {
 	private FrotaDaoImpl dao = new FrotaDaoImpl();

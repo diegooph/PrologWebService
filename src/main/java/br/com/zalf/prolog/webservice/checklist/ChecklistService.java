@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.checklist;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -9,7 +9,6 @@ import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.webservice.dao.ChecklistDaoImpl;
 
 public class ChecklistService {
 	private ChecklistDaoImpl dao = new ChecklistDaoImpl();

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.autenticacao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.SessionIdentifierGenerator;
-import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
 
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.produtividade;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.services.ProdutividadeService;
 
 @Path("/produtividade")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

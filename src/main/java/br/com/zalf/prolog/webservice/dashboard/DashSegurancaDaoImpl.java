@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.dashboard;
 
 import java.sql.Connection;
 import java.sql.Date;

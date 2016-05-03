@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.relatorio;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -6,7 +6,6 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
 import br.com.zalf.prolog.models.relatorios.Empresa;
-import br.com.zalf.prolog.webservice.dao.RelatorioDaoImpl;
 
 public class RelatorioService {
 

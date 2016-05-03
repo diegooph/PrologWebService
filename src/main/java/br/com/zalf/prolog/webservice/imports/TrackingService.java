@@ -1,11 +1,9 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.imports;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.webservice.dao.TrackingDaoImpl;
-import br.com.zalf.prolog.webservice.imports.Tracking;
 
 public class TrackingService {
 	

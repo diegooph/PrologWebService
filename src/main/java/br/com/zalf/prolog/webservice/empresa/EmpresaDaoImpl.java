@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dao;
+package br.com.zalf.prolog.webservice.empresa;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,8 @@ import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.dao.interfaces.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 
 public class EmpresaDaoImpl extends DatabaseConnection {
 

@@ -1,11 +1,10 @@
-package br.com.zalf.prolog.webservice.services;
+package br.com.zalf.prolog.webservice.empresa;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.webservice.dao.EmpresaDaoImpl;
 
 public class EmpresaService {
 

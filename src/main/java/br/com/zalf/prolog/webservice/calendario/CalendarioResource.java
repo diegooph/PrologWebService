@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.rest;
+package br.com.zalf.prolog.webservice.calendario;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Evento;
-import br.com.zalf.prolog.webservice.services.CalendarioService;
 
 @Path("/calendario")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
