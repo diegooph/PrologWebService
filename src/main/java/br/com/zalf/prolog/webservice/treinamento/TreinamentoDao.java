@@ -33,4 +33,6 @@ public interface TreinamentoDao {
 	 * @throws SQLException caso não seja possível realizar o insert
 	 */
 	boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException;
+	
+	boolean insert(Treinamento treinamento) throws SQLException;
 }

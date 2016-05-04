@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.util;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

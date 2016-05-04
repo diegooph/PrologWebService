@@ -73,6 +73,12 @@
 			<version>1.10.74</version>
 		</dependency>
 
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
 		<!-- Dependências para fazer comunicação cross-domain -->
 		<dependency>
 			<groupId>com.thetransactioncompany</groupId>

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.util;
 
 import java.io.File;
 import java.net.UnknownHostException;
@@ -29,7 +29,7 @@ public class AmazonS3Utils {
         getS3Client().putObject(putObjectRequest);
     }
 
-    public static String generateImageUrl(String bucketName, String objectName) {
+    public static String generateFileUrl(String bucketName, String objectName) {
         return getS3Client().getResourceUrl(bucketName, objectName);
     }
 

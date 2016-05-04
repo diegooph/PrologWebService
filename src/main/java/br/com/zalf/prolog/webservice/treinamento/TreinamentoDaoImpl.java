@@ -106,4 +106,9 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 		treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
 		return treinamento;
 	}
+
+	@Override
+	public boolean insert(Treinamento treinamento) throws SQLException {
+		return false;
+	}
 }

@@ -8,7 +8,7 @@ import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 
 public class TreinamentoService {
-	private TreinamentoDaoImpl dao = new TreinamentoDaoImpl();
+	private TreinamentoDao dao = new TreinamentoDaoImpl();
 	
 	public List<Treinamento> getVistosByColaborador(Long cpf, String token) {
 		try {
@@ -31,6 +31,15 @@ public class TreinamentoService {
 	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) {
 		try {
 			return dao.marcarTreinamentoComoVisto(treinamentoColaborador);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean insert(Treinamento treinamento) {
+		try {
+			return dao.insert(treinamento);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

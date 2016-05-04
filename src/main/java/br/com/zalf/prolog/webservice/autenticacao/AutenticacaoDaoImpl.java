@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.SessionIdentifierGenerator;
+import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
