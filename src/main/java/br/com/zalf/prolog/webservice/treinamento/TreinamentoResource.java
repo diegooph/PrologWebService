@@ -56,7 +56,7 @@ public class TreinamentoResource {
 	@Path("/upload")
 	@Secured
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	public Response uploadMapa(
+	public Response uploadTreinamento(
 			@FormDataParam("file") InputStream fileInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("treinamento") FormDataBodyPart jsonPart) {

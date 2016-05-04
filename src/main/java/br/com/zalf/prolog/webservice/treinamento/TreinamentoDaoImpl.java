@@ -7,14 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements 
-	TreinamentoDao {
-	
+TreinamentoDao {
+
 	@Override
 	public List<Treinamento> getNaoVistosColaborador(Long cpf, String token) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
@@ -23,12 +24,12 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 		ResultSet rSet = null;
 		String treinamentosNaoVistosQuery = 
 				"SELECT * FROM TREINAMENTO T JOIN TOKEN_AUTENTICACAO TA "
-				+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN "
-				+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
-				+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
-				+ "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
-				+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-				+ "C.CPF = ?);";
+						+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN "
+						+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
+						+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
+						+ "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+						+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
+						+ "C.CPF = ?);";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
@@ -46,7 +47,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 		}
 		return treinamentos;
 	}
-	
+
 	@Override
 	public List<Treinamento> getVistosColaborador(Long cpf, String token) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
@@ -55,8 +56,8 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 		ResultSet rSet = null;
 		String treinamentosVistosQuery = 
 				"SELECT * FROM TREINAMENTO T JOIN TOKEN_AUTENTICACAO TA ON ? = "
-				+ "TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN TREINAMENTO_COLABORADOR TC ON "
-				+ "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?;";
+						+ "TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN TREINAMENTO_COLABORADOR TC ON "
+						+ "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?;";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosVistosQuery);
@@ -73,7 +74,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 		}
 		return treinamentos;
 	}
-	
+
 	@Override
 	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException {
 		Connection conn = null;
@@ -109,6 +110,49 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements
 
 	@Override
 	public boolean insert(Treinamento treinamento) throws SQLException {
-		return false;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO (TITULO, DESCRICAO, URL_ARQUIVO, "
+					+ "DATA_LIBERACAO, COD_UNIDADE) "
+					+ "VALUES (?,?,?,?,?)");
+
+			stmt.setString(1, treinamento.getTitulo());
+			stmt.setString(2, treinamento.getDescricao());
+			stmt.setString(3, treinamento.getUrlArquivo());
+			stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
+			stmt.setLong(5, treinamento.getCodUnidade());
+			int count = stmt.executeUpdate();
+			if(count == 0 && !insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo())){
+				throw new SQLException("Erro ao inserir treinamento");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
 	}
+
+	private boolean insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
+			for(Funcao funcao : listFuncao){
+				stmt.setLong(1, codTreinamento);
+				stmt.setLong(2, funcao.getCodigo());
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					return false;
+				}
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
 }
