@@ -4,15 +4,19 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Equipe;
+import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -41,6 +45,14 @@ public class EmpresaResource {
 		} else {
 			return Response.Error("Erro ao inserir equipe");
 		}
+	}
+	
+	@GET
+	@Secured
+	@Path("/funcoes/{codUnidade}")
+	public List<Funcao> getFuncoesByCodUnidade(
+			@PathParam("codUnidade") Long codUnidade){
+				return service.getFuncoesByCodUnidade(codUnidade);
 	}
 	
 

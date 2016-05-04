@@ -9,12 +9,13 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Equipe;
+import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 
-public class EmpresaDaoImpl extends DatabaseConnection {
+public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
 			+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
@@ -24,6 +25,11 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 			+ "FROM TOKEN_AUTENTICACAO TA WHERE CODIGO = ?	"
 			+ "AND TA.CPF_COLABORADOR=? "
 			+ "AND TA.TOKEN=?";
+	
+	private final String BUSCA_FUNCOES_BY_COD_UNIDADE = "SELECT F.CODIGO, F.NOME "
+			+ "FROM UNIDADE_FUNCAO UF JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
+			+ "WHERE UF.COD_UNIDADE = ? "
+			+ "ORDER BY F.NOME";
 
 	public List<Equipe> getEquipesByCodUnidade (Request<?> request) throws SQLException{ 
 		List<Equipe> listEquipe = new ArrayList<>();
@@ -69,9 +75,7 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 	private Equipe createEquipe (ResultSet rset) throws SQLException{
 		Equipe equipe = new Equipe();
 		equipe.setCodigo(rset.getLong("CODIGO"));
-		System.out.println(equipe.getCodigo());
 		equipe.setNome(rset.getString("NOME"));
-		System.out.println(equipe.getNome());
 		return equipe;
 	}
 	
@@ -106,4 +110,34 @@ public class EmpresaDaoImpl extends DatabaseConnection {
 	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe, 
 	//a equipe está ligada como fk de colaborador e fk de calendário
 
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException{ 
+		List<Funcao> listFuncao = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_FUNCOES_BY_COD_UNIDADE);
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				listFuncao.add(createFuncao(rSet));
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listFuncao;
+	}
+	
+	private Funcao createFuncao(ResultSet rSet) throws SQLException{
+		
+		Funcao funcao = new Funcao();
+		funcao.setCodigo(rSet.getLong("CODIGO"));
+		funcao.setNome(rSet.getString("NOME"));
+		return funcao;
+		
+	}
+	
+	
 }

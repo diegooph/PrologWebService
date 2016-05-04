@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Equipe;
+import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.Veiculo;
 
 public interface EmpresaDao {
 	
@@ -15,8 +15,6 @@ public interface EmpresaDao {
 	
 	public boolean createEquipe (Request<Equipe> request) throws SQLException;
 	
-	public List<Veiculo> getVeiculosByCodUnidade(Request<?> request) throws SQLException;
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException;
 	
-	public boolean updateVeiculo (Request<Veiculo> request) throws SQLException;
-
 }

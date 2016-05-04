@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Equipe;
+import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 
 public class EmpresaService {
@@ -36,6 +37,15 @@ public class EmpresaService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade){
+		try{
+			return dao.getFuncoesByCodUnidade(codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
