@@ -7,6 +7,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.LoginHolder;
 import br.com.zalf.prolog.models.Request;
 
 public class ColaboradorService {
@@ -39,9 +40,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public Colaborador getByCod(Long cpf, String token) {
+	public Colaborador getByCod(Long cpf) {
 		try {
-			return dao.getByCod(cpf, token);
+			return dao.getByCod(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -82,5 +83,15 @@ public class ColaboradorService {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public LoginHolder getLoginHolder(Long cpf) {
+		try{
+			return dao.getLoginHolder(cpf);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

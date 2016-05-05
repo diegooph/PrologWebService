@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.LoginHolder;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
@@ -50,11 +51,19 @@ public class ColaboradorResource {
 		}
 	}
 	
-	@POST
-	@Path("/getByCod")
+	@GET
+	@Secured
+	@Path("/getByCod/{cpf}")
+	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
+		return service.getByCod(cpf);
+	}
+	
+	@GET
+	@Secured
+	@Path("/loginHolder/{cpf}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Colaborador getByCod(@FormParam("cpf") Long cpf, @FormParam("token") String token) {
-		return service.getByCod(cpf, token);
+	public LoginHolder getLoginHolder(@PathParam("cpf") Long cpf) {
+		return service.getLoginHolder(cpf);
 	}
 	
 	@POST

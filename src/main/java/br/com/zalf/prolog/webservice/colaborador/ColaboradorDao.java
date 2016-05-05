@@ -35,11 +35,10 @@ public interface ColaboradorDao {
 	/**
 	 * Busca um colaborador pelo seu CPF
 	 * @param cpf chave a ser buscada no banco de dados
-	 * @param token para verificar se o usuário solicitante está logado
 	 * @return um colaborador
 	 * @throws SQLException caso não seja possível buscar os dados
 	 */
-	Colaborador getByCod(Long cpf, String token) throws SQLException;
+	Colaborador getByCod(Long cpf) throws SQLException;
 	/**
 	 * Busca todos os colaboradores de uma unidade
 	 * @param request contém os dados do solicitante e código da unidade a ser filtrada

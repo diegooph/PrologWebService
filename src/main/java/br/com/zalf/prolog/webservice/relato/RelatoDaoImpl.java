@@ -296,4 +296,30 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		System.out.println(relato.getDistanciaColaborador());
 		return relato;
 	}
+	
+	public List<Relato.Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException{
+		List<Relato.Alternativa> listAlternativas = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
+					+ "FROM RELATO_ALTERNATIVA "
+					+ "WHERE COD_SETOR = ? AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, codSetor);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Relato.Alternativa alternativa = new Relato.Alternativa();
+				alternativa.codigo = rSet.getLong("CODIGO");
+				alternativa.alternativa = rSet.getString("ALTERNATIVA");
+				listAlternativas.add(alternativa);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listAlternativas;
+	}
 }

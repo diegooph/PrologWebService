@@ -9,12 +9,16 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.LoginHolder;
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.Setor;
 import br.com.zalf.prolog.models.permissao.Visao;
 import br.com.zalf.prolog.models.permissao.pilares.Pilar;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.relato.RelatoDaoImpl;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
@@ -26,9 +30,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			conn = getConnection();
 
 			stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
-					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO "
-					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME "
-					+ "SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
+					+ "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
+					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
+					+ "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
 					+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
 			setStatementItems(stmt, colaborador);
 			int count = stmt.executeUpdate();
@@ -51,7 +55,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
 					+ "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
 					+ "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
-					+ "STATUS_ATIVO = ?, NOME = ?, SETOR = ?, "
+					+ "STATUS_ATIVO = ?, NOME = ?, COD_SETOR = ?, "
 					+ "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
 					+ "COD_EMPRESA = ?, COD_EQUIPE = ? "
 					+ "WHERE CPF = ?;");
@@ -69,12 +73,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 				stmt.setDate(6, null);
 			stmt.setBoolean(7, colaborador.isAtivo());
 			stmt.setString(8, colaborador.getNome());
-			stmt.setString(9, colaborador.getSetor());
-			stmt.setLong(10, colaborador.getCodFuncao());
+			stmt.setLong(9, colaborador.getSetor().getCodigo());
+			stmt.setLong(10, colaborador.getFuncao().getCodigo());
 			stmt.setLong(11, colaborador.getCodUnidade());
 			stmt.setLong(12, colaborador.getCodPermissao());
 			stmt.setLong(13, colaborador.getCodEmpresa());
-			stmt.setLong(14, colaborador.getCodEquipe());
+			stmt.setLong(14, colaborador.getEquipe().getCodigo());
 			stmt.setLong(15, cpfAntigo);
 
 			int count = stmt.executeUpdate();
@@ -109,9 +113,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 	}
 
-	// TODO: mudar para receber um Request<?> request
+
 	@Override
-	public Colaborador getByCod(Long cpf, String token) throws SQLException {
+	public Colaborador getByCod(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -119,24 +123,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
-					+ "F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
-					+ "FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
-					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON C.COD_FUNCAO = "
-					+ "F.CODIGO "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
+					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
 			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
 				c.setVisao(getVisaoByCpf(c.getCpf()));
-				System.out.println(c.getCodFuncao());
-				System.out.println(c.getNomeFuncao());
-				System.out.println(c.getVisao());
-				System.out.println(c);
 				return c;
 			}
 		} finally {
@@ -172,7 +169,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
 				}else{
 					listPilares.add(pilar);
-					
+
 					pilar = new Pilar();
 					listFuncoes = new ArrayList<>();
 					pilar.funcoesDisponiveis = listFuncoes;
@@ -200,12 +197,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
-					+ "C.COD_EMPRESA, C.COD_EQUIPE, "
-					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
+					+ " FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
 			stmt.setLong(1, request.getCpf());
 			stmt.setString(2, request.getToken());
@@ -230,11 +228,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, C.COD_PERMISSAO AS PERMISSAO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS EQUIPE, C.SETOR, C.COD_FUNCAO, C.COD_UNIDADE, "
-					+ "F.NOME AS NOME_FUNCAO FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
+					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
+					+ "FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
 					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE C.COD_UNIDADE = ? AND C.STATUS_ATIVO = TRUE ORDER BY C.NOME; ");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
@@ -304,7 +304,22 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private Colaborador createColaborador(ResultSet rSet) throws SQLException {
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
-		c.setCodFuncao(rSet.getLong("COD_FUNCAO"));
+
+		Funcao funcao = new Funcao();
+		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
+		funcao.setNome(rSet.getString("NOME_FUNCAO"));
+		c.setFuncao(funcao);
+
+		Equipe equipe = new Equipe();
+		equipe.setCodigo(rSet.getLong("COD_EQUIPE"));
+		equipe.setNome(rSet.getString("NOME_EQUIPE"));
+		c.setEquipe(equipe);
+
+		Setor setor = new Setor();
+		setor.setCodigo(rSet.getLong("COD_SETOR"));
+		setor.setNome(rSet.getString("NOME_SETOR"));
+		c.setSetor(setor);
+
 		c.setCpf(rSet.getLong("CPF"));
 		c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
 		c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
@@ -313,10 +328,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
 		c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
 		c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
-		c.setEquipe(rSet.getString("EQUIPE"));
-		c.setSetor(rSet.getString("SETOR"));
-		c.setNomeFuncao(rSet.getString("NOME_FUNCAO"));
 		c.setCodPermissao(rSet.getLong("PERMISSAO"));
+		c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
 		return c;
 	}
 
@@ -329,11 +342,37 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setDate(6, DateUtils.toSqlDate(c.getDataDemissao()));
 		stmt.setBoolean(7, c.isAtivo());
 		stmt.setString(8, c.getNome());
-		stmt.setString(9, c.getSetor());
-		stmt.setLong(10, c.getCodFuncao());
+		stmt.setLong(9, c.getSetor().getCodigo());
+		stmt.setLong(10, c.getFuncao().getCodigo());
 		stmt.setLong(11, c.getCodUnidade());
 		stmt.setLong(12, c.getCodPermissao());
 		stmt.setLong(13, c.getCodEmpresa());
-		stmt.setString(14, c.getEquipe());
+		stmt.setLong(14, c.getEquipe().getCodigo());
+	}
+
+	public LoginHolder getLoginHolder(Long cpf)throws SQLException{
+		LoginHolder loginHolder = new LoginHolder();
+		loginHolder.colaborador = getByCod(cpf);
+		if(verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())){
+			RelatoDaoImpl relatoDao = new RelatoDaoImpl();
+			loginHolder.alternativasRelato = relatoDao.getAlternativas(
+					loginHolder.colaborador.getCodUnidade(), 
+					loginHolder.colaborador.getSetor().getCodigo());
+		}
+		return loginHolder;
+	}
+
+	private boolean verificaSeFazRelato(List<Pilar> listPilar){
+		for(Pilar pilar : listPilar){
+			if(pilar.codigo == 2){
+				for(Integer funcao : pilar.funcoesDisponiveis){
+					if(funcao == 2){
+						return true;
+					}
+
+				}
+			}
+		}
+		return false;
 	}
 }
