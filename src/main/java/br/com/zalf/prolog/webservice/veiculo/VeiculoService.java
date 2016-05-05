@@ -16,6 +16,7 @@ public class VeiculoService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Veiculo>();
+			
 		}
 	}
 	
