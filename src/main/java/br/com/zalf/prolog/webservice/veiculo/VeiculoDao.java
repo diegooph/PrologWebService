@@ -44,6 +44,6 @@ public interface VeiculoDao {
 	 * @return lista de Veiculo
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf, String token) 
+	List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) 
 			throws SQLException;
 }

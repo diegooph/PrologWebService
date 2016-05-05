@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Autenticacao;
-import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -44,17 +42,16 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
 	// TODO: Fazer join token
 	@Override
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf, String token) throws SQLException {
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
 		List<Veiculo> veiculos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
-			Colaborador colaborador = new ColaboradorDaoImpl().getByCod(cpf, token); 
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
-					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
-			stmt.setLong(1, colaborador.getCodUnidade());
+					+ "COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF=?) AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);

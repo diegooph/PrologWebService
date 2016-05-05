@@ -24,9 +24,8 @@ public class VeiculoResource {
 	@POST
 	@Path("/unidade/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getVeiculosAtivosByUnidadeByColaborador(cpf, token);
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf) {
+		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
 	}
 	
 	/**
