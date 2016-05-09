@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.util.DateUtils;
@@ -297,8 +298,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		return relato;
 	}
 	
-	public List<Relato.Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException{
-		List<Relato.Alternativa> listAlternativas = new ArrayList<>();
+	public List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException{
+		List<Alternativa> listAlternativas = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -312,9 +313,12 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 			stmt.setLong(2, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Relato.Alternativa alternativa = new Relato.Alternativa();
+				Alternativa alternativa = new Alternativa();
 				alternativa.codigo = rSet.getLong("CODIGO");
 				alternativa.alternativa = rSet.getString("ALTERNATIVA");
+				if(alternativa.alternativa.equals("Outros")){
+					alternativa.tipo = alternativa.TIPO_OUTROS;
+				}
 				listAlternativas.add(alternativa);
 			}
 		} finally {

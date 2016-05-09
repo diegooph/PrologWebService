@@ -61,7 +61,6 @@ public class ColaboradorResource {
 	@GET
 	@Secured
 	@Path("/loginHolder/{cpf}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public LoginHolder getLoginHolder(@PathParam("cpf") Long cpf) {
 		return service.getLoginHolder(cpf);
 	}
