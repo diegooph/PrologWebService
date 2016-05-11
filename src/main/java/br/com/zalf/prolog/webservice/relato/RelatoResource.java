@@ -55,27 +55,27 @@ public class RelatoResource {
 
 	@GET
 	@Secured
-	@Path("/colaborador/{cpf}")
+	@Path("{status}/colaborador/{cpf}")
 	public List<Relato> getByColaborador(@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@QueryParam("latitude") double latitude,
 			@QueryParam("longitude") double longitude,
 			@QueryParam("isOrderByDate") boolean isOrderByDate,
-			@QueryParam("status") String status) {
+			@PathParam("status") String status) {
 		return service.getByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status);
 	}
 
 	@GET
 	@Secured
-	@Path("/exceto/colaborador/{cpf}")
+	@Path("{status}/exceto/colaborador/{cpf}")
 	public List<Relato> getAllExcetoColaborador(@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@QueryParam("latitude") double latitude,
 			@QueryParam("longitude") double longitude,
 			@QueryParam("isOrderByDate") boolean isOrderByDate,
-			@QueryParam("status") String status) {
+			@PathParam("status") String status) {
 		return service.getAllExcetoColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status);
 	}
 

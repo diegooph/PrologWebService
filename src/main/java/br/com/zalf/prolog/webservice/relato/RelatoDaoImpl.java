@@ -27,9 +27,9 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt = conn.prepareStatement("INSERT INTO RELATO "
 					+ "(DATA_HORA_LOCAL,  DATA_HORA_DATABASE, LATITUDE, LONGITUDE, "
 					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR, STATUS, COD_UNIDADE, "
-					+ " COD_SETOR, COD_ALTERNATIVA) "
+					+ " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?,(SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?),"
-					+ "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?)");						
+					+ "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?)");						
 			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
 			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(3, relato.getLatitude());
@@ -42,6 +42,13 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setLong(10, relato.getCpfColaborador());
 			stmt.setLong(11, relato.getCpfColaborador());
 			stmt.setLong(12, relato.getAlternativa().codigo);
+			
+			if(relato.getAlternativa().tipo ==  Alternativa.TIPO_OUTROS){
+				stmt.setString(13, relato.getAlternativa().respostaOutros);
+			}else{
+				stmt.setNull(13, java.sql.Types.VARCHAR);
+			}
+			
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o relato");
