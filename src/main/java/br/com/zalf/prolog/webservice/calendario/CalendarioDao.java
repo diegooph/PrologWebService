@@ -15,6 +15,6 @@ public interface CalendarioDao {
 	 * @return uma lista com todos os eventos visíveis 
 	 * @throws SQLException caso não consiga acessar a tabela com os eventos
 	 */
-	public List<Evento> getEventosByCpf(Long cpf, String token) throws SQLException;
+	public List<Evento> getEventosByCpf(Long cpf) throws SQLException;
 
 }

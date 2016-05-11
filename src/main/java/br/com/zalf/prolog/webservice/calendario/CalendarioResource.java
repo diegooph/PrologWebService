@@ -3,13 +3,14 @@ package br.com.zalf.prolog.webservice.calendario;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Evento;
+import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/calendario")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -17,12 +18,12 @@ import br.com.zalf.prolog.models.Evento;
 public class CalendarioResource {
 	private CalendarioService service = new CalendarioService();
 
-	@POST
-	@Path("/getByCpf")
+	@GET
+	@Secured
+	@Path("/{cpg}")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Evento> getEventosByCpf(
-			@FormParam("cpf") Long cpf,
-			@FormParam("token") String token){
-		return service.getEventosByCpf(cpf, token);
+			@PathParam("cpf") Long cpf){
+		return service.getEventosByCpf(cpf);
 	}
 }

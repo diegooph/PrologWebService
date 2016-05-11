@@ -9,9 +9,9 @@ public class CalendarioService {
 
 	private CalendarioDaoImpl dao = new CalendarioDaoImpl();
 	
-	public List<Evento> getEventosByCpf(Long cpf, String token){
+	public List<Evento> getEventosByCpf(Long cpf){
 		try{
-			return dao.getEventosByCpf(cpf, token);
+			return dao.getEventosByCpf(cpf);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;

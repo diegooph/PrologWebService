@@ -25,7 +25,6 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "  
 			+ "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
 			+ "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? "
 			+ "UNION "
 			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
@@ -33,7 +32,6 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
 			+ "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
 			+ "AND CAL.COD_EQUIPE IS NULL "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? "
 			+ "UNION "
 			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
@@ -41,7 +39,6 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
 			+ "AND CAL.COD_FUNCAO IS NULL "
 			+ "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? "
 			+ "UNION "
 			+ "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
@@ -49,10 +46,9 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "CAL.COD_UNIDADE = C.COD_UNIDADE "
 			+ "AND CAL.COD_FUNCAO IS NULL "
 			+ "AND CAL.COD_EQUIPE IS NULL "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
 			+ "WHERE C.CPF=? ";
 
-	public List<Evento> getEventosByCpf(Long cpf, String token) throws SQLException{
+	public List<Evento> getEventosByCpf(Long cpf) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -62,18 +58,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EVENTOS);
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token); 
+			stmt.setLong(1, cpf); 
+			stmt.setLong(2, cpf); 
 			stmt.setLong(3, cpf); 
-			stmt.setLong(4, cpf);
-			stmt.setString(5, token); 
-			stmt.setLong(6, cpf); 
-			stmt.setLong(7, cpf);
-			stmt.setString(8, token); 
-			stmt.setLong(9, cpf); 
-			stmt.setLong(10, cpf);
-			stmt.setString(11, token); 
-			stmt.setLong(12, cpf); 
+			stmt.setLong(4, cpf); 
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				Evento evento = new Evento();
@@ -81,13 +69,8 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				evento.setDescricao(rSet.getString("DESCRICAO"));
 				evento.setCodigo(rSet.getLong("CODIGO"));
 				evento.setLocal(rSet.getString("LOCAL"));
-				System.out.println(evento.getCodigo());
-				System.out.println(evento.getData());
-				System.out.println(evento.getDescricao());
-				System.out.println(evento.getLocal());
 				listEvento.add(evento);
 			}
-
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
