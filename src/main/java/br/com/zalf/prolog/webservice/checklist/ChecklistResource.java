@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.checklist;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Date;
 import java.util.List;
 
@@ -88,6 +90,20 @@ public class ChecklistResource {
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
+	}
+	
+	@GET
+	@Secured
+	@Path("/recentes/{codUnidade}/{equipe}")
+	public List<Checklist> getAllByCodUnidade(
+			@PathParam("equipe") String equipe,
+			@PathParam("codUnidade") Long codUnidade,
+			@QueryParam("limit")long limit,
+			@QueryParam("offset") long offset) {
+		System.out.println("cegouuuuu");
+		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
+		Date datainicial = java.sql.Date.valueOf(dataInicial);
+		return service.getAll(DateUtils.toLocalDate(datainicial),DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade, limit, offset);
 	}
 
 	@GET

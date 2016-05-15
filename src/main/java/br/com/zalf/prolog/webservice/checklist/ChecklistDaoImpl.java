@@ -209,6 +209,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			ResultSet rSet = null;
+			
+			System.out.println(dataInicial + " data final: ");
+			System.out.println(dataFinal);
 			try {
 				conn = getConnection();
 				stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.KM_VEICULO, "
@@ -459,8 +462,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "CP.PERGUNTA, CP.SINGLE_CHOICE,CAP.CODIGO AS COD_ALTERNATIVA, "
 					+ "CAP.ORDEM, CP.URL_IMAGEM, CAP.ALTERNATIVA, CR.RESPOSTA  "
 					+ "FROM CHECKLIST C JOIN CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST "
-					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CR.COD_PERGUNTA JOIN "
-					+ "CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CAP.CODIGO = CR.COD_ALTERNATIVA "
+					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CR.COD_PERGUNTA AND CP.COD_UNIDADE = CR.COD_UNIDADE JOIN "
+					+ "CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CAP.CODIGO = CR.COD_ALTERNATIVA AND CAP.COD_UNIDADE = CR.COD_UNIDADE "
 					+ "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? "
 					+ "ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
