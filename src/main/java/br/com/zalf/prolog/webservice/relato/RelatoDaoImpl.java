@@ -168,10 +168,10 @@ public class RelatoDaoImpl extends DatabaseConnection {
 				+ "ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
 				+ " FROM RELATO R JOIN "
 				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF JOIN "
-				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF JOIN "
-				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE "
-				+ "WHERE R.CPF_COLABORADOR = ? AND R.STATUS = ? "
+				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
+				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
+				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
+				+ "WHERE R.CPF_COLABORADOR = ? AND R.STATUS LIKE ? "
 				+ "ORDER BY %s "
 				+ "LIMIT ? OFFSET ? ";
 		try {
@@ -187,6 +187,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setDouble(2, latitude);
 			stmt.setLong(3, cpf);
 			stmt.setString(4, status);
+		
 			stmt.setInt(5, limit);
 			stmt.setLong(6, offset);
 			rSet = stmt.executeQuery();

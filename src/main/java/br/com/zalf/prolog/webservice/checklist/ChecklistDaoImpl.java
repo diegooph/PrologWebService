@@ -239,10 +239,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			return checklists;
 		}
 
-
-
-	
-
 	@Override
 	public List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
