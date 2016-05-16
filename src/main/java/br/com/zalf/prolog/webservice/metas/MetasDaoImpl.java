@@ -195,9 +195,6 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 			meta.setNome(DEV_HL);
 			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
 		}
-		System.out.println(meta.getCodigo());
-		System.out.println(meta.getNome());
-		System.out.println(meta.getValor());
 		return meta;
 	}
 
@@ -238,14 +235,7 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 	public boolean updateByCod(Request<Metas> request) throws SQLException {
 
 		Metas<?> metas = request.getObject();
-		System.out.println("Codigo meta: " + request.getObject().getCodigo());
-		System.out.println("Nome meta: " +request.getObject().getNome());
-		System.out.println("Valor meta: " +request.getObject().getValor());
-		System.out.println("Cod unidade: " + request.getCodUnidade());
-		System.out.println("CPF: " +request.getCpf());
-		System.out.println("Token: " + request.getToken());
-		
-		
+				
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
