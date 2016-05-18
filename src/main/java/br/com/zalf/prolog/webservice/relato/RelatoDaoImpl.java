@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Alternativa;
+import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -37,10 +38,10 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setString(5, relato.getUrlFoto1());
 			stmt.setString(6, relato.getUrlFoto2());
 			stmt.setString(7, relato.getUrlFoto3());
-			stmt.setLong(8, relato.getCpfColaborador());
+			stmt.setLong(8, relato.getColaboradorRelato().getCpf());
 			stmt.setString(9, Relato.PENDENTE_CLASSIFICACAO);
-			stmt.setLong(10, relato.getCpfColaborador());
-			stmt.setLong(11, relato.getCpfColaborador());
+			stmt.setLong(10, relato.getColaboradorRelato().getCpf());
+			stmt.setLong(11, relato.getColaboradorRelato().getCpf());
 			stmt.setLong(12, relato.getAlternativa().codigo);
 			
 			if(relato.getAlternativa().tipo ==  Alternativa.TIPO_OUTROS){
@@ -70,7 +71,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 					+ " DATA_HORA_CLASSIFICACAO = ?, STATUS = ?, COD_ALTERNATIVA = ?, RESPOSTA_OUTROS = ? "
 					+ " WHERE CODIGO = ?");
 
-			stmt.setLong(1, relato.getCpfClassificacao());
+			stmt.setLong(1, relato.getColaboradorClassificacao().getCpf());
 			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(3, relato.getStatus());
 			stmt.setLong(4, relato.getAlternativa().codigo);
@@ -97,10 +98,10 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE RELATO SET CPF_FECHAMENTO = ?, "
-					+ " DATA_HORA_FECHAMENTO = ?, STATUS = ?, FEEDBACK_FECHAMENTO = ?,  "
+					+ " DATA_HORA_FECHAMENTO = ?, STATUS = ?, FEEDBACK_FECHAMENTO = ?  "
 					+ " WHERE CODIGO = ?");
 
-			stmt.setLong(1, relato.getCpfFechamento());
+			stmt.setLong(1, relato.getColaboradorFechamento().getCpf());
 			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(3, Relato.FECHADO);
 			stmt.setString(4, relato.getFeedbackFechamento());
@@ -333,13 +334,10 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		relato.setUrlFoto1(rSet.getString("URL_FOTO_1"));
 		relato.setUrlFoto2(rSet.getString("URL_FOTO_2"));
 		relato.setUrlFoto3(rSet.getString("URL_FOTO_3"));
-		relato.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		relato.setNomeColaborador(rSet.getString("NOME"));
-		relato.setCpfClassificacao(rSet.getLong("CPF_CLASSIFICACAO"));
-		relato.setNomeClassificacao(rSet.getString("NOME_CLASSIFICACAO"));
+		relato.setColaboradorRelato(createColaborador(rSet.getString("NOME"), rSet.getLong("CPF_COLABORADOR")));
+		relato.setColaboradorClassificacao(createColaborador(rSet.getString("NOME_CLASSIFICACAO"), rSet.getLong("CPF_CLASSIFICACAO")));
+		relato.setColaboradorFechamento(createColaborador(rSet.getString("NOME_FECHAMENTO"), rSet.getLong("CPF_FECHAMENTO")));
 		relato.setDataClassificacao(rSet.getTimestamp("DATA_HORA_CLASSIFICACAO"));
-		relato.setCpfFechamento(rSet.getLong("CPF_FECHAMENTO"));
-		relato.setNomeFechamento(rSet.getString("NOME_FECHAMENTO"));
 		relato.setDataFechamento(rSet.getTimestamp("DATA_HORA_FECHAMENTO"));
 		relato.setFeedbackFechamento(rSet.getString("FEEDBACK_FECHAMENTO"));
 		relato.setStatus(rSet.getString("STATUS"));
@@ -348,6 +346,13 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		relato.setAlternativa(alternativa);
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
 		return relato;
+	}
+	
+	private Colaborador createColaborador (String nome, Long cpf){
+		Colaborador colaborador = new Colaborador();
+		colaborador.setCpf(cpf);
+		colaborador.setNome(nome);
+		return colaborador;
 	}
 
 	private Alternativa createAlternativa(ResultSet rSet) throws SQLException{
