@@ -68,6 +68,6 @@ public interface ChecklistDao {
 	 * @return lista de Pergunta
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade) throws SQLException;
+	List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) throws SQLException;
 	
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,16 +33,33 @@ public class ChecklistResource {
 	
 	@GET
 	@Secured
-	@Path("/perguntas/{codUnidade}")
-	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade){
-		return service.getPerguntas(codUnidade);
+	@Path("/modelos/{codUnidade}/{codFuncao}")
+	public Map<Long, String> getModelosChecklistByCodUnidadeByCodFuncao(
+			@PathParam("codUnidade")Long codUnidade,
+			@PathParam("codFuncao") Long codFuncao) {
+		return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
 	}
 	
 	@GET
 	@Secured
-	@Path("/urlImagens/{codUnidade}")
-	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade){
-		return service.getUrlImagensPerguntas(codUnidade);
+	@Path("/modelos/{codUnidade}")
+	public Map<Long, String> getAllModelosChecklistByCodUnidade(
+			@PathParam("codUnidade")Long codUnidade){
+		return service.getAllModelosChecklistByCodUnidade(codUnidade);
+	}
+	
+	@GET
+	@Secured
+	@Path("/perguntas/{codUnidade}/{codModelo}")
+	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
+		return service.getPerguntas(codUnidade, codFuncao);
+	}
+	
+	@GET
+	@Secured
+	@Path("/urlImagens/{codUnidade}/{codFuncao}")
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
+		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 	
 	@POST
@@ -118,9 +136,11 @@ public class ChecklistResource {
 	
 	@GET
 	@Secured
-	@Path("/novo/{codUnidade}")
-	public NovoChecklistHolder getNovoChecklistHolder(@PathParam("codUnidade") Long codUnidade){
-		return service.getNovoChecklistHolder(codUnidade);
+	@Path("/novo/{codUnidade}/{codModelo}")
+	public NovoChecklistHolder getNovoChecklistHolder(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codModelo") Long codModelo){
+		return service.getNovoChecklistHolder(codUnidade, codModelo);
 	}
 		
 	@DELETE
