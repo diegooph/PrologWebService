@@ -731,6 +731,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
 			}
 
+			insertModeloTipoVeiculo(conn, modeloChecklist);
 			insertModeloFuncao(conn, modeloChecklist);
 			insertPerguntasModelo(conn, modeloChecklist);
 			insertAlternativas(conn, modeloChecklist);
@@ -746,6 +747,17 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return true;
 	}
+	
+	private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
+		PreparedStatement stmt = null;
+		for(Long codTipo : modeloChecklist.getListTipoVeiculo()){
+			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_VEICULO_TIPO VALUES (?,?,?)");
+			stmt.setLong(1, modeloChecklist.getCodUnidade());
+			stmt.setLong(2, modeloChecklist.getCodigo());
+			stmt.setLong(3, codTipo);
+			stmt.executeUpdate();
+		}
+	};
 
 	private void insertModeloFuncao(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
 		PreparedStatement stmt = null;

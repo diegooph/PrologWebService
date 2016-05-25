@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Request;
@@ -38,6 +40,26 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return veiculos;
+	}
+	
+	//@Override
+	public Map<Long, String> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
+		Map<Long, String> mapTiposVeiculos = new LinkedHashMap<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				mapTiposVeiculos.put(rSet.getLong("CODIGO"), rSet.getString("NOME"));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return mapTiposVeiculos;
 	}
 
 	// TODO: Fazer join token

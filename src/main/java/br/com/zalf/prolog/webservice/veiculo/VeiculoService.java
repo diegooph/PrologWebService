@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.veiculo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Veiculo;
@@ -16,6 +18,15 @@ public class VeiculoService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Veiculo>();
+		}
+	}
+	
+	public Map<Long, String> getTipoVeiculosByUnidade(Long codUnidade){
+		try {
+			return dao.getTipoVeiculosByUnidade(codUnidade);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new LinkedHashMap<>();
 		}
 	}
 	
