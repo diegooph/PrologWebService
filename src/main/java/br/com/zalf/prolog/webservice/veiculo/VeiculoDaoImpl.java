@@ -5,12 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
@@ -43,8 +42,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 	
 	//@Override
-	public Map<Long, String> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
-		Map<Long, String> mapTiposVeiculos = new LinkedHashMap<>();
+	public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
+		List<TipoVeiculo> listTipo = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -54,12 +53,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				mapTiposVeiculos.put(rSet.getLong("CODIGO"), rSet.getString("NOME"));
+				listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return mapTiposVeiculos;
+		return listTipo;
 	}
 
 	// TODO: Fazer join token

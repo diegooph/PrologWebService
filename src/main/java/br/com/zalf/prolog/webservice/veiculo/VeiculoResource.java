@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.veiculo;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -15,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
@@ -34,7 +34,7 @@ public class VeiculoResource {
 	@GET
 	@Secured
 	@Path("/{codUnidade}/tipo")
-	public Map<Long, String> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
+	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getTipoVeiculosByUnidade(codUnidade);
 	}
 	
