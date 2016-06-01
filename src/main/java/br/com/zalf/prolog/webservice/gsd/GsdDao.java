@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gsd;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Pergunta;
@@ -39,12 +40,18 @@ public interface GsdDao {
 	 */
 	Gsd getByCod(Request<?> request) throws SQLException;
 	/**
-	 * Busca todos os GSD do banco de dados
-	 * @param request contém os dados da busca e do solicitante
-	 * @return lista de GSD
-	 * @throws SQLException caso não seja possível realizar a busca
+	 * Busca todos os GSD respeitando os filtros aplicados
+	 * @param dataInicial 
+	 * @param dataFinal
+	 * @param equipe
+	 * @param codUnidade
+	 * @param limit
+	 * @param offset
+	 * @return
+	 * @throws SQLException
 	 */
-	List<Gsd> getAll(Request<?> request) throws SQLException;
+	public List<Gsd> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, long limit, long offset) throws SQLException;
 	/**
 	 * Busca todos os GSD de um determinado colaborador
 	 * @param cpf do colaborador a buscar os GSD

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gsd;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,15 +65,16 @@ public class GsdService {
 		}
 	}
 	
-//	public List<Gsd> getAll() {
-//		try {
-//			return dao.getAll();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return new ArrayList<Gsd>();
-//		}
-//	}
-//	
+	public List<Gsd> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, long limit, long offset){
+		try {
+			return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, limit, offset);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new ArrayList<Gsd>();
+		}
+	}
+	
 //	public boolean delete(Long codigo) {
 //		try {
 //			return dao.delete(codigo);

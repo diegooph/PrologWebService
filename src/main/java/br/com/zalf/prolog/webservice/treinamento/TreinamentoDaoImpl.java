@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,71 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements 
 TreinamentoDao {
+
+
+	public List<Treinamento> getAll (LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
+			Long codUnidade, long limit, long offset) throws SQLException{
+
+		List<Treinamento> listTreinamento = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Funcao funcao;
+		String treinamentosNaoVistosQuery = 
+				"SELECT T.*, F.CODIGO AS COD_FUNCAO, F.NOME AS NOME_FUNCAO "
+						+ "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO "
+						+ "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO "
+						+ "WHERE T.COD_UNIDADE = ? AND T.DATA_HORA_CADASTRO >= ? AND T.DATA_HORA_CADASTRO <= ? "
+						+ "AND F.CODIGO::TEXT LIKE ? "
+						+ "ORDER BY RT.COD_TREINAMENTO, RT.COD_FUNCAO "
+						+ "LIMIT ? OFFSET ?";
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+			stmt.setString(4, String.valueOf(codFuncao));
+			stmt.setLong(5, limit);
+			stmt.setLong(6, offset);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+
+				if(listTreinamento.size() == 0){ // caso a lista esteja vazia, cria o primeiro treinamento e a primeira funcao
+					Treinamento treinamento = createTreinamento(rSet);
+					treinamento.setFuncoesLiberadas(new ArrayList<>());
+					funcao = new Funcao();
+					funcao = createFuncao(rSet);
+					treinamento.getFuncoesLiberadas().add(funcao);
+					listTreinamento.add(treinamento);
+				}else{// caso a lista ja tenha algum item (treinamento)
+					if(listTreinamento.get(listTreinamento.size()-1).getCodigo() == rSet.getLong("CODIGO")){//item anterior == ao do rset atual
+						funcao = new Funcao();
+						funcao = createFuncao(rSet);
+						listTreinamento.get(listTreinamento.size()-1).getFuncoesLiberadas().add(funcao);
+					}else{// item anterior != do item atual
+						Treinamento treinamento = createTreinamento(rSet);
+						treinamento.setFuncoesLiberadas(new ArrayList<>());
+						funcao = new Funcao();
+						funcao = createFuncao(rSet);
+						treinamento.getFuncoesLiberadas().add(funcao);
+						listTreinamento.add(treinamento);
+					}
+				}
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		System.out.println(listTreinamento);
+		return listTreinamento;
+	}
+
+	private Funcao createFuncao (ResultSet rSet) throws SQLException{
+		Funcao funcao = new Funcao();
+		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
+		funcao.setNome(rSet.getString("NOME_FUNCAO"));
+		return funcao;
+	}
 
 	@Override
 	public List<Treinamento> getNaoVistosColaborador(Long cpf, String token) throws SQLException {

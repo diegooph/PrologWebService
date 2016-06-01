@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -18,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/treinamentos")
@@ -34,6 +37,19 @@ public class TreinamentoResource {
 		} else {
 			return Response.Error("Erro ao marcar treinamento");
 		}
+	}
+	
+	@GET
+	@Secured
+	public List<Treinamento> getAll (
+			@QueryParam("dataInicial") long dataInicial, 
+			@QueryParam("dataFinal") long dataFinal, 
+			@QueryParam("codFuncao") String codFuncao,
+			@QueryParam("codUnidade") Long codUnidade, 
+			@QueryParam("limit") long limit, 
+			@QueryParam("offset") long offset) {
+		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
+				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
 	}
 
 	@POST

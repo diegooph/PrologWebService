@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,16 +46,16 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 				// tabela GSD_RESPOSTAS e PDV_GSD já que nessas é preciso o
 				// código do GSD
 				gsd.setCodigo(rSet.getLong("CODIGO"));
-				
+
 				// Insere os PDVs agora pois já tem o código do GSD inserido
 				PdvDaoImpl pdvDao = new PdvDaoImpl();
-				
+
 				// Agora os pdvs foram inseridos e os que já existiam apenas
 				// tiveram seu código obtido para poder inserir na tabela
 				// PDV_GSD
 				List<Pdv> tempListPdv = pdvDao.insertList(gsd.getPdvs());
 				insertPdvsGsd(tempListPdv, gsd.getCodigo());
-				
+
 				// Insere as respostas desse GSD
 				insertRespostas(gsd);
 			}
@@ -63,7 +64,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		}
 		return true;
 	}
-	
+
 	private void insertPdvsGsd(List<Pdv> tempListPdv, Long codGsd) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -80,7 +81,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 					throw new SQLException("Erro ao inserir na tabela PDV_GSD");
 				}
 			}
-			
+
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
@@ -102,9 +103,56 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
-	@Override
-	public List<Gsd> getAll(Request<?> request) throws SQLException {
-		 throw new UnsupportedOperationException("Operation not supported yet");
+	//@Override
+	public List<Gsd> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+			Long codUnidade, long limit, long offset) throws SQLException {
+
+		List<Gsd> listGsd = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT G.CODIGO, G.DATA_HORA, G.LATITUDE, G.LONGITUDE,"
+					+ "G.URL_FOTO, G.CPF_AVALIADOR, G.CPF_MOTORISTA,G.CPF_AJUDANTE_1, "
+					+ "G.CPF_AJUDANTE_2, G.PLACA_VEICULO,C1.NOME AS NOME_AVALIADOR, "
+					+ "C2.NOME AS NOME_MOTORISTA,C3.NOME AS NOME_AJUDANTE_1, "
+					+ "C4.NOME AS NOME_AJUDANTE_2 "
+					+ "FROM GSD G JOIN COLABORADOR C1 ON C1.CPF = G.CPF_AVALIADOR "
+					+ "JOIN EQUIPE E ON E.CODIGO = C1.COD_EQUIPE "
+					+ "JOIN	COLABORADOR C2 ON C2.CPF =	G.CPF_MOTORISTA "
+					+ "JOIN COLABORADOR C3 ON C3.CPF =	G.CPF_AJUDANTE_1 "
+					+ "JOIN COLABORADOR C4 ON C4.CPF = G.CPF_AJUDANTE_2 "
+					+ "WHERE G.DATA_HORA >= ? "
+					+ "AND G.DATA_HORA <= ? "
+					+ "AND	C1.COD_UNIDADE = ? "
+					+ "AND E.NOME LIKE ? "
+					+ "LIMIT ? OFFSET ?");
+			
+			stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+			stmt.setLong(3, codUnidade);
+			stmt.setString(4, equipe);
+			stmt.setLong(5, limit);
+			stmt.setLong(6, offset);
+			
+			rSet = stmt.executeQuery();
+			
+			while (rSet.next()) {
+				Gsd gsd = createGsd(rSet);
+				// Cria a lista de PDV's desse GSD
+				List<Pdv> pdvs = createPdvs(gsd.getCodigo());
+				gsd.setPdvs(pdvs);
+				// Cria a lista de PerguntasRespostas desse GSD
+				List<Gsd.PerguntaRespostasGsd> perguntaRespostasGsds = 
+						createPerguntasRespostas(gsd.getCodigo());
+				gsd.setPerguntaRespostasList(perguntaRespostasGsds);
+				listGsd.add(gsd);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listGsd;		 
 	}
 
 	@Override
@@ -160,16 +208,16 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 			while (rSet.next()) {
 				// Cria o GSD
 				Gsd gsd = createGsd(rSet);
-				
+
 				// Cria a lista de PDV's desse GSD
 				List<Pdv> pdvs = createPdvs(gsd.getCodigo());
 				gsd.setPdvs(pdvs);
-				
+
 				// Cria a lista de PerguntasRespostas desse GSD
 				List<Gsd.PerguntaRespostasGsd> perguntaRespostasGsds = 
 						createPerguntasRespostas(gsd.getCodigo());
 				gsd.setPerguntaRespostasList(perguntaRespostasGsds);
-				
+
 				listGsd.add(gsd);
 			}
 		} finally {
@@ -177,7 +225,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		}
 		return listGsd;
 	}
-	
+
 	//TODO: Usar request para filtrar apenas os avaliadores de uma determinada unidade
 	@Override
 	public List<Gsd> getAllExcetoAvaliador(Long cpf, String token) throws SQLException {
@@ -209,7 +257,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 				// Cria a lista de PDV's desse GSD
 				List<Pdv> pdvs = createPdvs(gsd.getCodigo());
 				gsd.setPdvs(pdvs);
-								// Cria a lista de PerguntasRespostas desse GSD
+				// Cria a lista de PerguntasRespostas desse GSD
 				List<Gsd.PerguntaRespostasGsd> perguntaRespostasGsds = 
 						createPerguntasRespostas(gsd.getCodigo());
 				gsd.setPerguntaRespostasList(perguntaRespostasGsds);
@@ -220,7 +268,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		}
 		return listGsd;
 	}
-	
+
 	@Override
 	public List<Pergunta> getPerguntas() throws SQLException {
 		List<Pergunta> perguntas = new ArrayList<>();
@@ -243,7 +291,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		}
 		return perguntas;
 	}
-	
+
 	private Gsd createGsd(ResultSet rSet) throws SQLException {
 		Gsd gsd = new Gsd();
 		gsd.setCodigo(rSet.getLong("CODIGO"));
@@ -262,7 +310,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		gsd.setLongitude(rSet.getString("LONGITUDE"));
 		return gsd;
 	}
-	
+
 	private List<PerguntaRespostasGsd> createPerguntasRespostas(Long codGsd) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -274,10 +322,10 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 					+ "GP.TIPO, GP.PERGUNTA FROM GSD_RESPOSTAS GR JOIN "
 					+ "GSD_PERGUNTAS GP ON GR.COD_PERGUNTA = GP.CODIGO WHERE "
 					+ "GR.COD_GSD = ?;");
-		
+
 			stmt.setLong(1, codGsd);
 			rSet = stmt.executeQuery();
-			
+
 			// tipo da pergunta
 			String t;
 			Long codPergunta = -1L;
@@ -289,26 +337,26 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 				t = rSet.getString("TIPO");
 				pergunta.setTipo(t);
 				pGsd.setPergunta(pergunta);
-				
+
 				// Se entrar, significa que a pergunta anterior é diferente
 				// da pergunta atual, então preciso setar as coisas.
 				// Se for igual eu não preciso fazer nada
 				if (codPergunta != pergunta.getCodigo()) {
-					
+
 					// Perguntas que os três colaboradores responderam mas o 
 					// avaliador não
-			        if (t.equals(Gsd.PERGUNTA_ITENS_ROTA)
-			                || t.equals(Gsd.PERGUNTA_CONDICOES_EPIS)
-			                || t.equals(Gsd.PERGUNTA_CONDICOES_EPIS_OBSERVACOES)) {
-			        	pGsd.setRespostaMotorista(rSet.getString("RESPOSTA"));
+					if (t.equals(Gsd.PERGUNTA_ITENS_ROTA)
+							|| t.equals(Gsd.PERGUNTA_CONDICOES_EPIS)
+							|| t.equals(Gsd.PERGUNTA_CONDICOES_EPIS_OBSERVACOES)) {
+						pGsd.setRespostaMotorista(rSet.getString("RESPOSTA"));
 						pGsd.setRespostaAjudante1(rSet.getString("RESPOSTA"));
 						pGsd.setRespostaAjudante2(rSet.getString("RESPOSTA"));
-			        } else {
-			        	// Perguntas que apenas o avaliador respondeu
-			        	pGsd.setRespostaAvaliador(rSet.getString("RESPOSTA"));
-			        }
-			        
-			        list.add(pGsd);
+					} else {
+						// Perguntas que apenas o avaliador respondeu
+						pGsd.setRespostaAvaliador(rSet.getString("RESPOSTA"));
+					}
+
+					list.add(pGsd);
 				}
 				codPergunta = pergunta.getCodigo();
 			}
@@ -316,10 +364,10 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		
+
 		return list;
 	}
-	
+
 	private List<Pdv> createPdvs(Long codGsd) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -343,7 +391,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		
+
 		return pdvs;
 	}
 
@@ -361,52 +409,52 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 				stmt.setLong(2, pergunta.getCodigo());
 				// Perguntas que os três colaboradores respondem mas o avaliador
 				// não
-		        if (t.equals(Gsd.PERGUNTA_ITENS_ROTA)
-		                || t.equals(Gsd.PERGUNTA_CONDICOES_EPIS)
-		                || t.equals(Gsd.PERGUNTA_CONDICOES_EPIS_OBSERVACOES)) {
-		        	insertItemResposta(stmt, gsd.getCpfMotorista(), respostasGsd.getRespostaMotorista());
-		        	insertItemResposta(stmt, gsd.getCpfAjudante1(), respostasGsd.getRespostaAjudante1());
-		        	insertItemResposta(stmt, gsd.getCpfAjudante2(), respostasGsd.getRespostaAjudante2());
-		        } else {
-		        	// Perguntas que apenas o avaliador responde
-		        	stmt.setLong(3, gsd.getCpfAvaliador());
-		        	stmt.setString(4, respostasGsd.getRespostaAvaliador());
-		        	stmt.executeUpdate();
-		        }
+				if (t.equals(Gsd.PERGUNTA_ITENS_ROTA)
+						|| t.equals(Gsd.PERGUNTA_CONDICOES_EPIS)
+						|| t.equals(Gsd.PERGUNTA_CONDICOES_EPIS_OBSERVACOES)) {
+					insertItemResposta(stmt, gsd.getCpfMotorista(), respostasGsd.getRespostaMotorista());
+					insertItemResposta(stmt, gsd.getCpfAjudante1(), respostasGsd.getRespostaAjudante1());
+					insertItemResposta(stmt, gsd.getCpfAjudante2(), respostasGsd.getRespostaAjudante2());
+				} else {
+					// Perguntas que apenas o avaliador responde
+					stmt.setLong(3, gsd.getCpfAvaliador());
+					stmt.setString(4, respostasGsd.getRespostaAvaliador());
+					stmt.executeUpdate();
+				}
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
 	}
-	
+
 	private void insertItemResposta(PreparedStatement stmt, Long cpf, String 
 			resposta) throws SQLException {
 		stmt.setLong(3, cpf);
 		stmt.setString(4, resposta);
 		stmt.executeUpdate();
 	}
-//	
-//	private void updateRespostas(Gsd gsd) throws SQLException {
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		try {
-//			conn = getConnection();
-//			stmt = conn.prepareStatement("UPDATE GSD_RESPOSTAS SET RESPOSTA = ? "
-//					+ "WHERE COD_GSD = ? AND CPF_COLABORADOR = ? AND "
-//					+ "COD_PERGUNTA = ?");
-//			for (Map.Entry<Long, Gsd.PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
-//				Long cpf = entry.getKey();
-//				PerguntaRespostaHolder holder = entry.getValue();
-//				stmt.setString(1, holder.getResposta().getResposta());
-//				stmt.setLong(2, gsd.getCodigo());
-//				stmt.setLong(3, cpf);
-//				stmt.setLong(4, holder.getPergunta().getCodigo());
-//				stmt.executeUpdate();
-//			}
-//		} finally {
-//			closeConnection(conn, stmt, null);
-//		}
-//	}
-//	
+	//	
+	//	private void updateRespostas(Gsd gsd) throws SQLException {
+	//		Connection conn = null;
+	//		PreparedStatement stmt = null;
+	//		try {
+	//			conn = getConnection();
+	//			stmt = conn.prepareStatement("UPDATE GSD_RESPOSTAS SET RESPOSTA = ? "
+	//					+ "WHERE COD_GSD = ? AND CPF_COLABORADOR = ? AND "
+	//					+ "COD_PERGUNTA = ?");
+	//			for (Map.Entry<Long, Gsd.PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
+	//				Long cpf = entry.getKey();
+	//				PerguntaRespostaHolder holder = entry.getValue();
+	//				stmt.setString(1, holder.getResposta().getResposta());
+	//				stmt.setLong(2, gsd.getCodigo());
+	//				stmt.setLong(3, cpf);
+	//				stmt.setLong(4, holder.getPergunta().getCodigo());
+	//				stmt.executeUpdate();
+	//			}
+	//		} finally {
+	//			closeConnection(conn, stmt, null);
+	//		}
+	//	}
+	//	
 
 }
