@@ -24,6 +24,15 @@ public class ChecklistService {
 		}
 	}
 	
+	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) {
+		try{
+			return dao.insertModeloChecklist(modeloChecklist);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public Map<Long, String> getAllModelosChecklistByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getAllModelosChecklistByCodUnidade(codUnidade);
