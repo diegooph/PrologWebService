@@ -77,7 +77,7 @@ public class ChecklistResource {
 	@POST
 	@Secured
 	@Path("/modelo")
-	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist){
+	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
 		if(service.insertModeloChecklist(modeloChecklist)){
 			return Response.Ok("Modelo de checklist inserido com sucesso");
 		} else {

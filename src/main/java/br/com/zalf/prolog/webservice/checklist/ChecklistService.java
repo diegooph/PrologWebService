@@ -11,7 +11,7 @@ import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.modelo.checklist.ModeloChecklist;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 
 public class ChecklistService {
 	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
