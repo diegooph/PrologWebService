@@ -24,6 +24,7 @@ import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 
 @Path("/checklist")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -70,6 +71,17 @@ public class ChecklistResource {
 			return Response.Ok("Checklist inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir checklist");
+		}
+	}
+	
+	@POST
+	@Secured
+	@Path("/modelo")
+	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist){
+		if(service.insertModeloChecklist(modeloChecklist)){
+			return Response.Ok("Modelo de checklist inserido com sucesso");
+		} else {
+			return Response.Error("Erro ao inserir modelo de checklist");
 		}
 	}
 	
