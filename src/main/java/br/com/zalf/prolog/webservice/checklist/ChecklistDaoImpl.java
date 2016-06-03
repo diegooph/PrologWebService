@@ -350,7 +350,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
 					+ "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
-					+ "WHERE CMF.COD_UNIDADE = ? AND CMF.COD_FUNCAO LIKE ? AND CM.STATUS_ATIVO = TRUE "
+					+ "WHERE CMF.COD_UNIDADE = ? AND CMF.COD_FUNCAO::TEXT LIKE ? AND CM.STATUS_ATIVO = TRUE "
 					+ "ORDER BY MODELO");
 			stmt.setLong(1, codUnidade);
 			stmt.setString(2, codFuncao);
