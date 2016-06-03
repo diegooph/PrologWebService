@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,16 +34,16 @@ public class ChecklistResource {
 	@GET
 	@Secured
 	@Path("/modelos/{codUnidade}/{codFuncao}")
-	public Map<Long, String> getModelosChecklistByCodUnidadeByCodFuncao(
+	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
 			@PathParam("codUnidade")Long codUnidade,
-			@PathParam("codFuncao") Long codFuncao) {
+			@PathParam("codFuncao") String codFuncao) {
 		return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
 	}
 	
 	@GET
 	@Secured
 	@Path("/modelos/{codUnidade}")
-	public Map<Long, String> getAllModelosChecklistByCodUnidade(
+	public List<ModeloChecklist> getAllModelosChecklistByCodUnidade(
 			@PathParam("codUnidade")Long codUnidade){
 		return service.getAllModelosChecklistByCodUnidade(codUnidade);
 	}

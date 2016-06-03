@@ -3,25 +3,23 @@ package br.com.zalf.prolog.webservice.checklist;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 
 public class ChecklistService {
 	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
 	
-	public Map<Long, String> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncao) {
+	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
 		try{
 			return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
 		}catch (SQLException e) {
 			e.printStackTrace();
-			return new LinkedHashMap<>();
+			return new ArrayList<>();
 		}
 	}
 	
@@ -34,12 +32,12 @@ public class ChecklistService {
 		}
 	}
 	
-	public Map<Long, String> getAllModelosChecklistByCodUnidade(Long codUnidade) {
+	public List<ModeloChecklist> getAllModelosChecklistByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getAllModelosChecklistByCodUnidade(codUnidade);
 		}catch (SQLException e) {
 			e.printStackTrace();
-			return new LinkedHashMap<>();
+			return new ArrayList<>();
 		}
 	}
 	
