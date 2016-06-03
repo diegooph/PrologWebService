@@ -30,7 +30,7 @@ import br.com.zalf.prolog.webservice.auth.Secured;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource {
 	private ChecklistService service = new ChecklistService();
-	
+
 	@GET
 	@Secured
 	@Path("/modelos/{codUnidade}/{codFuncao}")
@@ -39,29 +39,43 @@ public class ChecklistResource {
 			@PathParam("codFuncao") String codFuncao) {
 		return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
 	}
-	
+
 	@GET
 	@Secured
-	@Path("/modelos/{codUnidade}")
-	public List<ModeloChecklist> getAllModelosChecklistByCodUnidade(
-			@PathParam("codUnidade")Long codUnidade){
-		return service.getAllModelosChecklistByCodUnidade(codUnidade);
+	@Path("/modelo/{codUnidade}/{codModelo}")
+	public List<ModeloChecklist> getModeloChecklist(
+			@PathParam("codModelo") Long codModelo,
+			@PathParam("codUnidade") Long codUnidade){
+		return service.getModeloChecklist(codModelo, codUnidade);
 	}
 	
+	@DELETE
+	@Secured
+	@Path("modelo/{codUnidade}/{codModelo}")
+	public Response setModeloChecklistInativo (
+			@PathParam("codUnidade") Long codUnidade, 
+			@PathParam("codModelo") Long codModelo){
+		if(service.setModeloChecklistInativo(codUnidade, codModelo)){
+			return Response.Ok("Modelo desativado com sucesso");
+		}else{
+			return Response.Error("Erro ao desativar o modelo");
+		}
+	}
+
 	@GET
 	@Secured
 	@Path("/perguntas/{codUnidade}/{codModelo}")
 	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
 		return service.getPerguntas(codUnidade, codFuncao);
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/urlImagens/{codUnidade}/{codFuncao}")
 	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
 		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
-	
+
 	@POST
 	@Secured
 	public Response insert(Checklist checklist) {
@@ -72,7 +86,7 @@ public class ChecklistResource {
 			return Response.Error("Erro ao inserir checklist");
 		}
 	}
-	
+
 	@POST
 	@Secured
 	@Path("/modelo")
@@ -83,14 +97,14 @@ public class ChecklistResource {
 			return Response.Error("Erro ao inserir modelo de checklist");
 		}
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/liberacao/{codUnidade}")
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade){
 		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}
-	
+
 	@PUT
 	@Secured
 	public Response update(Checklist checklist) {
@@ -100,14 +114,14 @@ public class ChecklistResource {
 			return Response.Error("Erro ao atualizar o checklist");
 		}
 	}
-	
+
 	@GET
 	@Secured
 	@Path("{codigo}")
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
-	
+
 	@GET
 	@Secured
 	@Path("{codUnidade}/{equipe}")
@@ -120,7 +134,7 @@ public class ChecklistResource {
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/recentes/{codUnidade}/{equipe}")
@@ -144,7 +158,7 @@ public class ChecklistResource {
 			@QueryParam("offset") long offset) {
 		return service.getByColaborador(cpf, limit, offset);
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/novo/{codUnidade}/{codModelo}")
@@ -153,7 +167,7 @@ public class ChecklistResource {
 			@PathParam("codModelo") Long codModelo){
 		return service.getNovoChecklistHolder(codUnidade, codModelo);
 	}
-		
+
 	@DELETE
 	@Secured
 	@Path("{codigo}")

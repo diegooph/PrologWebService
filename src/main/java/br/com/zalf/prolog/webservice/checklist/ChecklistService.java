@@ -23,21 +23,30 @@ public class ChecklistService {
 		}
 	}
 	
-	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) {
+	public List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade){
 		try{
-			return dao.insertModeloChecklist(modeloChecklist);
+			return dao.getModeloChecklist(codModelo, codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	public boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) {
+		try{
+			return dao.setModeloChecklistInativo(codUnidade, codModelo);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	public List<ModeloChecklist> getAllModelosChecklistByCodUnidade(Long codUnidade) {
+	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) {
 		try{
-			return dao.getAllModelosChecklistByCodUnidade(codUnidade);
-		}catch (SQLException e) {
+			return dao.insertModeloChecklist(modeloChecklist);
+		}catch(SQLException e){
 			e.printStackTrace();
-			return new ArrayList<>();
+			return false;
 		}
 	}
 	

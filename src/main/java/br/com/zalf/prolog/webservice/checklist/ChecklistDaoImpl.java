@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
+import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
@@ -366,32 +367,120 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return listModelos;
 	}
-
-	public List<ModeloChecklist> getAllModelosChecklistByCodUnidade(Long codUnidade) throws SQLException{
+	
+public List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException{
 		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<ModeloChecklist> listModelos = new ArrayList<>();
-		
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
 					+ "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
-					+ "WHERE CMF.COD_UNIDADE = ?"
+					+ "WHERE CMF.COD_UNIDADE = ? AND CM.CODIGO = ? "
 					+ "ORDER BY MODELO");
 			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codModelo);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				ModeloChecklist modeloChecklist = new ModeloChecklist();
 				modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
 				modeloChecklist.setNome(rSet.getString("MODELO"));
+				modeloChecklist.setListPerguntas(getPerguntas(codUnidade, codModelo));
+				modeloChecklist.setListTipoVeiculo(getTipoVeiculoByCodModelo(codUnidade, codModelo));
+				modeloChecklist.setListFuncao(getFuncaoByCodModelo(codUnidade, codModelo));
 				listModelos.add(modeloChecklist);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return listModelos;
+	}
+
+	public List<TipoVeiculo> getTipoVeiculoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<TipoVeiculo> listTipos = new ArrayList<>();
+		
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
+					+ "FROM CHECKLIST_MODELO_VEICULO_TIPO CM "
+					+ "JOIN VEICULO_TIPO VT ON CM.COD_UNIDADE = VT.COD_UNIDADE "
+					+ "AND CM.COD_TIPO_VEICULO = VT.CODIGO "
+					+ "WHERE CM.COD_UNIDADE = ? "
+					+ "AND CM.COD_MODELO = ? "
+					+ "ORDER BY VT.NOME");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codModelo);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				TipoVeiculo tipo = new TipoVeiculo();
+				tipo.setCodigo(rSet.getLong("CODIGO"));
+				tipo.setNome(rSet.getString("TIPO_VEICULO"));
+				listTipos.add(tipo);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listTipos;
+	}
+	
+	public boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException{
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Funcao> listFuncao = new ArrayList<>();
+		
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO SET STATUS_ATIVO = FALSE WHERE COD_UNIDADE  = ? AND CODIGO = ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codModelo);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				return false;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return true;
+	}
+	
+	
+	public List<Funcao> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Funcao> listFuncao = new ArrayList<>();
+		
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME "
+					+ "FROM CHECKLIST_MODELO_FUNCAO CM "
+					+ "JOIN FUNCAO F ON F.CODIGO = CM.COD_FUNCAO "
+					+ "WHERE CM.COD_UNIDADE = ? "
+					+ "AND CM.COD_CHECKLIST_MODELO = ? "
+					+ "ORDER BY F.NOME");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codModelo);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Funcao funcao = new Funcao();
+				funcao.setCodigo(rSet.getLong("CODIGO"));
+				funcao.setNome(rSet.getString("NOME"));
+				listFuncao.add(funcao);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listFuncao;
 	}
 
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException {
@@ -616,6 +705,14 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		holder.setListVeiculos(veiculoDao.getVeiculosAtivosByUnidade(codUnidade));
 		return holder;
 	}
+	
+//	public ModeloChecklist getModeloChecklist(Long codUnidade, Long codModelo) throws SQLException{
+//		
+//		ModeloChecklist modeloChecklist = new ModeloChecklist();
+//		modeloChecklist.setListPerguntas(getPerguntas(codUnidade, codModelo));
+//				
+//		return modeloChecklist;
+//	}
 
 	/**
 	 * Busca uma lista de todas as placas da unidade, separando em 3 status:
@@ -754,11 +851,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	
 	private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
 		PreparedStatement stmt = null;
-		for(Long codTipo : modeloChecklist.getListTipoVeiculo()){
+		for(TipoVeiculo tipoVeiculo : modeloChecklist.getListTipoVeiculo()){
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_VEICULO_TIPO VALUES (?,?,?)");
 			stmt.setLong(1, modeloChecklist.getCodUnidade());
 			stmt.setLong(2, modeloChecklist.getCodigo());
-			stmt.setLong(3, codTipo);
+			stmt.setLong(3, tipoVeiculo.getCodigo());
 			stmt.executeUpdate();
 		}
 	};
