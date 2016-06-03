@@ -14,9 +14,18 @@ import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
+	private static final String VEICULOS_BY_PLACA="SELECT V.PLACA, MV.NOME AS MODELO, MAV.NOME AS MARCA,  EV.DIANTEIRO, "
+			+ "EV.TRASEIRO, V.KILOMETRAGEM, V.STATUS_ATIVO "
+			+ "FROM VEICULO V "
+			+ "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
+			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+			+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
+			+ "WHERE PLACA = ?";
+	
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
 			throws SQLException {
@@ -40,6 +49,28 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}
 		return veiculos;
 	}
+	
+	public Veiculo getVeiculoByPlaca(String placa) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
+			stmt.setString(1, placa);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Veiculo veiculo = createVeiculo(rSet);
+				veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));
+				return veiculo;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return new Veiculo();
+	}
+
 	
 	//@Override
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
@@ -164,6 +195,27 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o veículo");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+	
+	public boolean updateKilometragem(String placa, long km) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE VEICULO SET "
+					+ "KILOMETRAGEM = ? "
+					+ "WHERE PLACA = ?");
+			stmt.setDouble(1, km);
+			stmt.setString(2, placa);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar a kilometragem do veículo");
 			}	
 		}
 		finally {

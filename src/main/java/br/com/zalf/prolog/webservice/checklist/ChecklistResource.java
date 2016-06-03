@@ -19,12 +19,12 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 
 @Path("/checklist")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
