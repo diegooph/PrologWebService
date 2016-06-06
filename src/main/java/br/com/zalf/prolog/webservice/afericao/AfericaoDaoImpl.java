@@ -97,7 +97,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			return false;
 		}
 	}
-	
+
 	private void insertOrUpdateServico (Pneu pneu, long codAfericao, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -150,7 +150,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 							i++;
 						}				
 					}
-				i ++;}
+					i ++;}
 			}else{
 				if(tipoServico.equals(Servico.TIPO_AMBOS)){
 					insertServico(pneu, codAfericao, Servico.TIPO_CALIBRAGEM, codUnidade, conn);
@@ -165,7 +165,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			closeConnection(conn, stmt, rSet);
 		}
 	}
-	
+
 	private void insertServico (Pneu pneu, long codAfericao, String tipoServico, Long codUnidade, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		stmt = conn.prepareStatement("INSERT INTO ITEM_SERVICO(COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO)"
@@ -220,7 +220,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO, ER.TOLERANCIA_CALIBRAGEM "
 					+ "FROM UNIDADE U JOIN "
 					+ "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-					+ "JOIN EMPRESA_RESTRICAO ER ON ER.COD_EMPRESA = E.CODIGO "
+					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
 					+ "WHERE U.CODIGO = ?");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
@@ -244,7 +244,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO, ER.TOLERANCIA_CALIBRAGEM "
 					+ "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
 					+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-					+ "JOIN EMPRESA_RESTRICAO ER ON ER.COD_EMPRESA = E.CODIGO "
+					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
 					+ "WHERE V.PLACA = ?");
 			stmt.setString(1, afericaoHolder.getVeiculo().getPlaca());
 			rSet = stmt.executeQuery();
@@ -264,8 +264,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
 		NovaAfericao afericaoHolder = new NovaAfericao();
 		afericaoHolder.setVeiculo(veiculoDaoImpl.getVeiculoByPlaca(placa));
-		setRestricoesAfericao(afericaoHolder);
-		return afericaoHolder;
+		if(afericaoHolder.getVeiculo().getPlaca() != null){
+			setRestricoesAfericao(afericaoHolder);
+			return afericaoHolder;
+		}
+		System.out.println("É NULO");
+		return new NovaAfericao();
 	}
 }
 

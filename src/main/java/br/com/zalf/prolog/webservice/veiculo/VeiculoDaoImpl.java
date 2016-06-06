@@ -19,7 +19,7 @@ import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
 	private static final String VEICULOS_BY_PLACA="SELECT V.PLACA, MV.NOME AS MODELO, MAV.NOME AS MARCA,  EV.DIANTEIRO, "
-			+ "EV.TRASEIRO, V.KILOMETRAGEM, V.STATUS_ATIVO "
+			+ "EV.TRASEIRO, V.KM, V.STATUS_ATIVO "
 			+ "FROM VEICULO V "
 			+ "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
 			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
@@ -60,7 +60,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
 			stmt.setString(1, placa);
 			rSet = stmt.executeQuery();
-			while (rSet.next()) {
+			if(rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);
 				veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));
 				return veiculo;
