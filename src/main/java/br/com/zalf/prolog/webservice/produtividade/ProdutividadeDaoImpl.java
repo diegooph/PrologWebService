@@ -41,15 +41,13 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 	 */
 	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, "
 			+ "M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, "
-			+ "M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,C.COD_FUNCAO AS FUNCAO_ATUAL, "
-			+ "HC.COD_FUNCAO AS FUNCAO_ANTIGA,	M.VlBateuJornMot, M.VlNaoBateuJornMot, "
+			+ "M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL, M.MATRICMOTORISTA, M.MATRICAJUD1, M.MATRICAJUD2, C.MATRICULA_AMBEV, C.COD_FUNCAO AS FUNCAO_ATUAL, "
+			+ "M.VlBateuJornMot, M.VlNaoBateuJornMot, "
 			+ "M.VlRecargaMot, M.VlBateuJornAju, M.VlNaoBateuJornAju, M.VlRecargaAju, "
 			+ "TRACKING.TOTAL as TOTAL_TRACKING, TRACKING.apontamento_ok "
 			+ "FROM MAPA_COLABORADOR MC JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND "
 			+ "MC.COD_AMBEV= C.MATRICULA_AMBEV JOIN MAPA M ON M.MAPA = MC.MAPA JOIN TOKEN_AUTENTICACAO "
-			+ "TA ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN LEFT	JOIN "
-			+ "HISTORICO_CARGOS HC ON HC.CPF_COLABORADOR = C.CPF AND M.DATA BETWEEN HC.DATA_INICIO AND "
-			+ "HC.DATA_FIM LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total_entregas AS TOTAL, "
+			+ "TA ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total_entregas AS TOTAL, "
 			+ "ok.apontamento_ok AS APONTAMENTO_OK from tracking t join mapa_colaborador mc on "
 			+ "mc.mapa = t.mapa join (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as "
 			+ "apontamento_ok from tracking t where t.disp_apont_cadastrado <= '0.3' group by t.mapa) as "
@@ -130,10 +128,12 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		double valor = 0;
 		int funcao = 0;
 		
-		if(rSet.getString("FUNCAO_ANTIGA") == null){
-			funcao = Integer.parseInt(rSet.getString("FUNCAO_ATUAL"));
-		} else {funcao = Integer.parseInt(rSet.getString("FUNCAO_ANTIGA"));}
-
+		if(rSet.getInt("MATRICMOTORISTA") == rSet.getInt("MATRICULA_AMBEV")){
+			funcao = 1;
+		}else{
+			funcao = 2;
+		}
+		
 		switch(funcao){
 		//caso a função seja cod = 1 = motorista
 		case(1):
