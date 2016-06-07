@@ -18,9 +18,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.auth.Secured;
@@ -31,43 +29,6 @@ import br.com.zalf.prolog.webservice.auth.Secured;
 public class ChecklistResource {
 	private ChecklistService service = new ChecklistService();
 
-	@GET
-	@Secured
-	@Path("/modelos/{codUnidade}/{codFuncao}")
-	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
-			@PathParam("codUnidade")Long codUnidade,
-			@PathParam("codFuncao") String codFuncao) {
-		return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
-	}
-
-	@GET
-	@Secured
-	@Path("/modelo/{codUnidade}/{codModelo}")
-	public List<ModeloChecklist> getModeloChecklist(
-			@PathParam("codModelo") Long codModelo,
-			@PathParam("codUnidade") Long codUnidade){
-		return service.getModeloChecklist(codModelo, codUnidade);
-	}
-	
-	@DELETE
-	@Secured
-	@Path("modelo/{codUnidade}/{codModelo}")
-	public Response setModeloChecklistInativo (
-			@PathParam("codUnidade") Long codUnidade, 
-			@PathParam("codModelo") Long codModelo){
-		if(service.setModeloChecklistInativo(codUnidade, codModelo)){
-			return Response.Ok("Modelo desativado com sucesso");
-		}else{
-			return Response.Error("Erro ao desativar o modelo");
-		}
-	}
-
-	@GET
-	@Secured
-	@Path("/perguntas/{codUnidade}/{codModelo}")
-	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
-		return service.getPerguntas(codUnidade, codFuncao);
-	}
 
 	@GET
 	@Secured
@@ -84,17 +45,6 @@ public class ChecklistResource {
 			return Response.Ok("Checklist inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir checklist");
-		}
-	}
-
-	@POST
-	@Secured
-	@Path("/modelo")
-	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
-		if(service.insertModeloChecklist(modeloChecklist)){
-			return Response.Ok("Modelo de checklist inserido com sucesso");
-		} else {
-			return Response.Error("Erro ao inserir modelo de checklist");
 		}
 	}
 
