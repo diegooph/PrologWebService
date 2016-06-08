@@ -1,16 +1,24 @@
 package br.com.zalf.prolog.webservice.veiculo;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.zalf.prolog.models.Autenticacao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
+import br.com.zalf.prolog.models.Veiculo.Eixos;
+import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
@@ -25,6 +33,16 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
 			+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 			+ "WHERE PLACA = ?";
+	
+	private static final String BUSCA_SELECAO_AFERICAO = "SELECT V.PLACA, AFERICAO.CONTAGEM "
+			+ "FROM VEICULO V "
+			+ "LEFT JOIN "
+			+ "(SELECT A.PLACA_VEICULO AS PLACA_CONTAGEM, COUNT(A.PLACA_VEICULO) AS CONTAGEM "
+			+ "FROM AFERICAO A "
+			+ "WHERE A.DATA_HORA::DATE >= ? AND A.DATA_HORA::DATE <= ? "
+			+ "GROUP BY 1) AS AFERICAO ON PLACA_CONTAGEM = V.PLACA "
+			+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
+			+ "ORDER BY CONTAGEM DESC";
 	
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
@@ -146,6 +164,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		veiculo.setModelo(rSet.getString("MODELO"));
 		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		veiculo.setKmAtual(rSet.getLong("KM"));
+		Veiculo.Eixos eixos = new Eixos();
+		eixos.dianteiro = rSet.getInt("DIANTEIRO");
+		eixos.traseiro = rSet.getInt("TRASEIRO");
+		veiculo.setMarca(rSet.getString("MARCA"));
+		veiculo.setEixos(eixos);
 		return veiculo;
 	}
 
@@ -242,5 +265,69 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		finally {
 			closeConnection(conn, stmt, null);
 		}		
+	}
+	
+	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(LocalDate dataInicial, LocalDate dataFinal, Long codEmpresa, Long codUnidade) throws SQLException{
+
+		List<Veiculo> veiculos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, String> mapPlacasAfericao = new LinkedHashMap<>();
+		int afericoes = 0;
+		int metaAfericao = 20;
+		int afericoesRealizadas = 0;
+		String status = null;
+		Date dataAtual = new Date(System.currentTimeMillis());
+		java.util.Date primeiroDiaMes = getPrimeiroDiaMes(dataAtual);
+		java.util.Date ultimoDiaMes = getUltimoDiaMes(dataAtual);
+		SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_SELECAO_AFERICAO);
+			stmt.setDate(1, DateUtils.toSqlDate(primeiroDiaMes));
+			stmt.setDate(2, DateUtils.toSqlDate(ultimoDiaMes));
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				String placa = rSet.getString("PLACA");
+				afericoes = rSet.getInt("CONTAGEM");
+				if(afericoes > 0){
+					status = SelecaoPlacaAfericao.STATUS_REALIZADO;
+					afericoesRealizadas += 1;
+				}else{
+					status = SelecaoPlacaAfericao.STATUS_PENDENTE;
+				}				
+				mapPlacasAfericao.put(placa, status);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		selecaoPlacaAfericao.setMapPlacasStatus(mapPlacasAfericao);
+		selecaoPlacaAfericao.setDataInicial(primeiroDiaMes);
+		selecaoPlacaAfericao.setDataFinal(ultimoDiaMes);
+		selecaoPlacaAfericao.setAfericoesRealizadas(afericoesRealizadas);
+		selecaoPlacaAfericao.setMetaAfericao(metaAfericao);
+
+		return selecaoPlacaAfericao;
+	}
+	
+	public java.util.Date getPrimeiroDiaMes(Date date){
+
+		Calendar first = Calendar.getInstance();
+		first.setTime(DateUtils.toSqlDate(date));
+		first.set(Calendar.DAY_OF_MONTH, 1);
+		return new java.sql.Date(first.getTimeInMillis());
+	}
+
+	public java.util.Date getUltimoDiaMes(Date date){
+
+		Calendar last = Calendar.getInstance();
+		last.setTime(DateUtils.toSqlDate(date));
+		last.set(Calendar.DAY_OF_MONTH, 1);
+		last.add(Calendar.MONTH, 1);
+		last.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new java.sql.Date(last.getTimeInMillis());
 	}
 }

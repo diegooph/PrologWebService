@@ -16,6 +16,7 @@ import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
+import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("veiculos")
@@ -36,6 +37,15 @@ public class VeiculoResource {
 	@Path("/{codUnidade}/tipo")
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getTipoVeiculosByUnidade(codUnidade);
+	}
+	
+	@GET
+	@Secured
+	@Path("/listaAfericao/{codEmpresa}/{codUnidade}")
+	public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codEmpresa") Long codEmpresa){
+		return service.getSelecaoPlacaAfericao(null, null, codEmpresa, codUnidade);
 	}
 	
 	/**
