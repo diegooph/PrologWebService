@@ -232,7 +232,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE VEICULO SET "
-					+ "KILOMETRAGEM = ? "
+					+ "KM = ? "
 					+ "WHERE PLACA = ?");
 			stmt.setDouble(1, km);
 			stmt.setString(2, placa);

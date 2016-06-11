@@ -60,6 +60,28 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		}		
 		return true;
 	}
+	
+	public boolean updateSulcos (Pneu pneu, Long codUnidade, Connection conn) throws SQLException{
+		
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE PNEU SET "
+					+ "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, ALTURA_SULCO_CENTRAL = ? "
+					+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+			stmt.setDouble(1, pneu.getPressaoAtual());
+			stmt.setDouble(2, pneu.getSulcoAtual().getInterno());
+			stmt.setDouble(3, pneu.getSulcoAtual().getExterno());
+			stmt.setDouble(4, pneu.getSulcoAtual().getCentral());
+			stmt.setLong(5, pneu.getCodigo());
+			stmt.setLong(6, codUnidade);
+			stmt.executeQuery();
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
 
 	@Override
 	public List<Pneu> getPneusByPlaca(String placa) throws SQLException{
@@ -134,6 +156,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
 		pneu.setStatus(rSet.getString("STATUS"));
 		pneu.setPosicao(rSet.getInt("POSICAO"));
+		pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
+		pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
 
 		return pneu;
 	}

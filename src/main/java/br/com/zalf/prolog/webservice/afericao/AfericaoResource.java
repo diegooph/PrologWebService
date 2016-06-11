@@ -12,8 +12,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
 
-import br.com.zalf.prolog.models.NovaAfericao;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.models.servico.Afericao;
 import br.com.zalf.prolog.webservice.auth.Secured;
 

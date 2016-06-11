@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.PlacaServicoHolder;
-import br.com.zalf.prolog.models.servico.Calibragem;
-import br.com.zalf.prolog.models.servico.Movimentacao;
-import br.com.zalf.prolog.models.servico.Servico;
-import br.com.zalf.prolog.models.servico.ServicoHolder;
+import br.com.zalf.prolog.models.pneu.servico.Calibragem;
+import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
+import br.com.zalf.prolog.models.pneu.servico.Servico;
+import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
@@ -70,9 +70,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa));
 		setServicos(holder);
 		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
-		afericaoDaoImpl.getRestricoes(codUnidade);
-		holder.setToleranciaCalibragem(afericaoDaoImpl.toleranciaCalibragem);
-		holder.setSulcoMinimoAceitavel(afericaoDaoImpl.sulcoMinimo);
+		holder.setRestricao(afericaoDaoImpl.getRestricoesByPlaca(placa));
 
 		return holder;
 	}
@@ -132,6 +130,23 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		movimentacao.setTipo(rSet.getString("TIPO_SERVICO"));
 		movimentacao.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
 		return movimentacao;
+	}
+
+	public boolean insertManutencao(Servico servico) throws SQLException {
+
+		if (servico.getTipo().equals(Servico.TIPO_CALIBRAGEM)) {
+			 return insertCalibragem(servico);
+		}	else{
+			return insertMovimentacao(servico);
+		}
+	}
+	
+	private boolean insertCalibragem(Servico servico) throws SQLException{
+		return true;
+	}
+	
+	private boolean insertMovimentacao(Servico servico) throws SQLException{
+		return true;
 	}
 
 

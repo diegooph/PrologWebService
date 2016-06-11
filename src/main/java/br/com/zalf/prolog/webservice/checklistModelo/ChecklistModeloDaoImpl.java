@@ -68,7 +68,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
 	@Override
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -94,10 +94,10 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		}
 		return listModelos;
 	}
-	
+
 	@Override
 	public List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -128,12 +128,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 	}
 
 	public List<TipoVeiculo> getTipoVeiculoByCodModeloChecklist(Long codUnidade, Long codModelo) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<TipoVeiculo> listTipos = new ArrayList<>();
-		
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
@@ -157,7 +157,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		}
 		return listTipos;
 	}
-	
+
 	@Override
 	public boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException{
 
@@ -165,7 +165,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Funcao> listFuncao = new ArrayList<>();
-		
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO SET STATUS_ATIVO = FALSE WHERE COD_UNIDADE  = ? AND CODIGO = ?");
@@ -180,14 +180,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		}
 		return true;
 	}
-		
+
 	public List<Funcao> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Funcao> listFuncao = new ArrayList<>();
-		
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME "
@@ -250,13 +250,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			if(rSet.next()){
 				System.out.println("Entrou no rSet.next: " + rSet.getLong("CODIGO"));
 				modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
+				insertModeloTipoVeiculo(conn, modeloChecklist);
+				insertModeloFuncao(conn, modeloChecklist);
+				insertModeloPerguntas(conn, modeloChecklist);
+				insertModeloAlternativas(conn, modeloChecklist);
 			}
-
-			insertModeloTipoVeiculo(conn, modeloChecklist);
-			insertModeloFuncao(conn, modeloChecklist);
-			insertModeloPerguntas(conn, modeloChecklist);
-			insertModeloAlternativas(conn, modeloChecklist);
-
 			conn.commit();
 			System.out.println("comitado!");
 		}catch(SQLException e){
@@ -268,7 +266,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		}
 		return true;
 	}
-	
+
 	private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
 		PreparedStatement stmt = null;
 		for(TipoVeiculo tipoVeiculo : modeloChecklist.getListTipoVeiculo()){
