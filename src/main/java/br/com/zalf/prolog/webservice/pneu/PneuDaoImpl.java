@@ -15,7 +15,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
 
 	private static final String BUSCA_PNEUS_BY_PLACA="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
@@ -75,7 +75,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			stmt.setDouble(4, pneu.getSulcoAtual().getCentral());
 			stmt.setLong(5, pneu.getCodigo());
 			stmt.setLong(6, codUnidade);
-			stmt.executeQuery();
+			stmt.executeUpdate();
 		}
 		finally {
 			closeConnection(conn, stmt, null);

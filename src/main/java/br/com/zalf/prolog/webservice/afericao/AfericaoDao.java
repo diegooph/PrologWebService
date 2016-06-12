@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.afericao;
 
 import java.sql.SQLException;
 
+import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
-import br.com.zalf.prolog.models.servico.Afericao;
 
 public interface AfericaoDao {
 	
