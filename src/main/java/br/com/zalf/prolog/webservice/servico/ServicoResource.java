@@ -7,7 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.com.zalf.prolog.models.PlacaServicoHolder;
+import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 import br.com.zalf.prolog.webservice.auth.Secured;
 

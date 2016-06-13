@@ -5,13 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import br.com.zalf.prolog.models.PlacaServicoHolder;
+import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.pneu.servico.Calibragem;
+import br.com.zalf.prolog.models.pneu.servico.Inspecao;
 import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
+import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
@@ -32,30 +36,38 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		List<PlacaServicoHolder.PlacaServico> listaServicos = new ArrayList<>();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.PLACA, MOV.TOTAL_MOVIMENTACAO, CAL.TOTAL_CALIBRAGEM "
-					+ "FROM VEICULO V join "
-					+ "(SELECT VP.PLACA AS PLACA_MOV, COUNT(ITS.TIPO_SERVICO) AS TOTAL_MOVIMENTACAO "
-					+ "FROM VEICULO_PNEU VP "
-					+ "JOIN ITEM_SERVICO ITS ON ITS.COD_PNEU = VP.COD_PNEU "
-					+ "WHERE ITS.TIPO_SERVICO = ? "
-					+ "GROUP BY 1,ITS.TIPO_SERVICO) AS MOV ON PLACA_MOV = V.PLACA "
-					+ "JOIN (SELECT VP.PLACA AS PLACA_CAL, COUNT(ITS.TIPO_SERVICO) AS TOTAL_CALIBRAGEM "
-					+ "FROM VEICULO_PNEU VP "
-					+ "JOIN ITEM_SERVICO ITS ON ITS.COD_PNEU = VP.COD_PNEU WHERE ITS.TIPO_SERVICO = ? "
-					+ "GROUP BY 1,ITS.TIPO_SERVICO) AS CAL ON PLACA_CAL = V.PLACA "
-					+ "WHERE V.COD_UNIDADE = ?");
+			stmt = conn.prepareStatement("SELECT V.PLACA, MOV.TOTAL_MOVIMENTACAO, CAL.TOTAL_CALIBRAGEM, INSP.TOTAL_INSPECAO " 
+					+ "FROM VEICULO V  join " 
+					+ "(SELECT VP.PLACA AS PLACA_MOV, COUNT(ITS.TIPO_SERVICO) AS TOTAL_MOVIMENTACAO " 
+					+ "FROM VEICULO_PNEU VP " 
+					+ "JOIN AFERICAO_MANUTENCAO ITS ON ITS.COD_PNEU = VP.COD_PNEU "
+					+ "WHERE ITS.TIPO_SERVICO = ? " 
+					+ "GROUP BY 1,ITS.TIPO_SERVICO) AS MOV ON PLACA_MOV = V.PLACA " 
+					+ "LEFT JOIN (SELECT VP.PLACA AS PLACA_CAL, COUNT(ITS.TIPO_SERVICO) AS TOTAL_CALIBRAGEM " 
+					+ "FROM VEICULO_PNEU VP " 
+					+ "JOIN AFERICAO_MANUTENCAO ITS ON ITS.COD_PNEU = VP.COD_PNEU WHERE ITS.TIPO_SERVICO = ? " 
+					+ "GROUP BY 1,ITS.TIPO_SERVICO) AS CAL ON PLACA_CAL = V.PLACA " 
+					+ "LEFT JOIN (SELECT VP.PLACA AS PLACA_CAL, COUNT(ITS.TIPO_SERVICO) AS TOTAL_INSPECAO "
+					+ "FROM VEICULO_PNEU VP " 
+					+ "JOIN AFERICAO_MANUTENCAO ITS ON ITS.COD_PNEU = VP.COD_PNEU WHERE ITS.TIPO_SERVICO = ? " 
+					+ "GROUP BY 1,ITS.TIPO_SERVICO) AS INSP ON PLACA_MOV = V.PLACA "
+					+ "WHERE V.COD_UNIDADE = ? ");
 			stmt.setString(1, Servico.TIPO_MOVIMENTACAO);
 			stmt.setString(2, Servico.TIPO_CALIBRAGEM);
-			stmt.setLong(3, codUnidade);
+			stmt.setString(3, Servico.TIPO_INSPECAO);
+			stmt.setLong(4, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				PlacaServicoHolder.PlacaServico item = new PlacaServicoHolder.PlacaServico();
 				item.placa = rSet.getString("PLACA");
 				item.qtCalibragem = rSet.getInt("TOTAL_CALIBRAGEM");
 				item.qtMovimentacao = rSet.getInt("TOTAL_MOVIMENTACAO");
+				item.qtInspecaoTotal = rSet.getInt("TOTAL_INSPECAO");
+
 				listaServicos.add(item);
 				placaServicoHolder.setQtCalibragemTotal(placaServicoHolder.getQtCalibragemTotal() + item.qtCalibragem);
 				placaServicoHolder.setQtMovimentacaoTotal(placaServicoHolder.getQtMovimentacaoTotal() + item.qtMovimentacao);
+				placaServicoHolder.setQtInspecaoTotal(placaServicoHolder.getQtInspecaoTotal() + item.qtInspecaoTotal);
 			}
 		}finally {
 			closeConnection(conn, stmt, null);
@@ -69,25 +81,61 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa));
 		setServicos(holder);
+		if(containInspecao(holder.getListServicos())){
+			holder.setListAlternativaInspecao(getListAlternativasInspecao());
+		}
 		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
 		holder.setRestricao(afericaoDaoImpl.getRestricoesByPlaca(placa));
 
 		return holder;
 	}
 
+	private boolean containInspecao(List<Servico> listServicos){
+
+		for (Servico servico : listServicos) {
+			if (servico instanceof Inspecao) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<PerguntaRespostaChecklist.Alternativa> getListAlternativasInspecao() throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<PerguntaRespostaChecklist.Alternativa> listAlternativas = new ArrayList<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
+					+ "WHERE A.STATUS_ATIVO = TRUE");
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+				alternativa.codigo = rSet.getLong("CODIGO");
+				alternativa.alternativa = rSet.getString("ALTERNATIVA");
+				listAlternativas.add(alternativa);
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return listAlternativas;
+	}
+
 	private void setServicos(ServicoHolder holder) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Calibragem> listCalibragem = new ArrayList<>();
-		List<Movimentacao> listMovimentacao = new ArrayList<>();
+		List<Servico> listServicos = new ArrayList<>();
 		pneuDao = new PneuDaoImpl();
+
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.PLACA, V.KILOMETRAGEM,V.COD_UNIDADE AS COD_UNIDADE, "
+			stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
 					+ "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP.NOME AS MARCA, "
 					+ "MP.NOME AS MODELO, DP.*, P.* "
-					+ "FROM ITEM_SERVICO ITS "
+					+ "FROM AFERICAO_MANUTENCAO ITS "
 					+ "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
 					+ "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
 					+ "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
@@ -100,18 +148,25 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 			stmt.setString(1, holder.getVeiculo().getPlaca());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				codUnidade = rSet.getLong("COD_UNIDADE");
-				if(rSet.getString("TIPO_SERVICO").equals(Servico.TIPO_CALIBRAGEM)){
-					listCalibragem.add(createCalibragem(rSet));
-				}else if(rSet.getString("TIPO_SERVICO").equals(Servico.TIPO_MOVIMENTACAO)){
-					listMovimentacao.add(createMovimentacao(rSet));
+
+				String tipoServico = rSet.getString("TIPO_SERVICO");
+
+				switch (tipoServico) {
+				case Servico.TIPO_CALIBRAGEM:
+					listServicos.add(createCalibragem(rSet));
+					break;
+				case Servico.TIPO_MOVIMENTACAO:
+					listServicos.add(createMovimentacao(rSet));
+					break;
+				case Servico.TIPO_INSPECAO:
+					listServicos.add(createInspecao(rSet));
+					break;
 				}
 			}
 		}finally {
 			closeConnection(conn, stmt, null);
 		}
-		holder.setListCalibragem(listCalibragem);
-		holder.setListMovimentacao(listMovimentacao);
+		holder.setListServicos(listServicos);
 	}
 
 	private Calibragem createCalibragem(ResultSet rSet) throws SQLException{
@@ -121,6 +176,15 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		calibragem.setTipo(rSet.getString("TIPO_SERVICO"));
 		calibragem.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
 		return calibragem;
+	}
+
+	private Inspecao createInspecao(ResultSet rSet) throws SQLException{
+		Inspecao inspecao = new Inspecao();
+		inspecao.setPneu(pneuDao.createPneu(rSet));
+		inspecao.setCodAfericao(rSet.getLong("COD_AFERICAO"));
+		inspecao.setTipo(rSet.getString("TIPO_SERVICO"));
+		inspecao.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
+		return inspecao;
 	}
 
 	private Movimentacao createMovimentacao(ResultSet rSet) throws SQLException{
@@ -134,18 +198,121 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 	public boolean insertManutencao(Servico servico) throws SQLException {
 
-		if (servico.getTipo().equals(Servico.TIPO_CALIBRAGEM)) {
-			 return insertCalibragem(servico);
-		}	else{
-			return insertMovimentacao(servico);
+		Connection conn = getConnection();
+		pneuDao = new PneuDaoImpl();
+
+		try{
+			switch (servico.getTipo()) {
+			case Servico.TIPO_CALIBRAGEM:
+				insertCalibragem((Calibragem) servico, conn);
+				break;
+			case Servico.TIPO_INSPECAO:
+				insertInspecao((Inspecao) servico, conn);
+				break;
+			case Servico.TIPO_MOVIMENTACAO:
+				insertMovimentacao((Movimentacao) servico, conn);
+				break;
+			}
+			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
+
+		}catch(SQLException e){
+			e.printStackTrace();
+			conn.rollback();
+			return false;
+		}finally{
+			closeConnection(conn, null, null);
 		}
+		return true;
 	}
-	
-	private boolean insertCalibragem(Servico servico) throws SQLException{
+
+	private boolean insertCalibragem(Calibragem servico, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+					+ "DATA_HORA_RESOLUCAO = ?, "
+					+ "CPF_MECANICO = ?, "
+					+ "PSI_APOS_CONSERTO = ?, "
+					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "WHERE COD_AFERICAO = ? AND "
+					+ "COD_PNEU = ? "
+					+ "AND TIPO_SERVICO = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, servico.getCpfMecanico());
+			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setLong(4, servico.getKmVeiculo());
+			stmt.setLong(5, servico.getCodAfericao());
+			stmt.setLong(6, servico.getPneu().getCodigo());
+			stmt.setString(7, servico.getTipo());
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir o item consertado");
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	private boolean insertInspecao(Inspecao servico, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+					+ "DATA_HORA_RESOLUCAO = ?, "
+					+ "CPF_MECANICO = ?, "
+					+ "PSI_APOS_CONSERTO = ?, "
+					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "WHERE COD_AFERICAO = ? AND "
+					+ "COD_PNEU = ? "
+					+ "STATUS_RESOLUCAO = ?"
+					+ "AND TIPO_SERVICO = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, servico.getCpfMecanico());
+			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setLong(4, servico.getKmVeiculo());
+			stmt.setLong(5, servico.getCodAfericao());
+			stmt.setLong(6, servico.getPneu().getCodigo());
+			stmt.setLong(7, servico.getAlternativaSelecionada().codigo);
+			stmt.setString(8, servico.getTipo());
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir o item consertado");
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
 		return true;
 	}
 	
-	private boolean insertMovimentacao(Servico servico) throws SQLException{
+
+	private boolean insertMovimentacao(Movimentacao servico, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+					+ "DATA_HORA_RESOLUCAO = ?, "
+					+ "CPF_MECANICO = ?, "
+					+ "PSI_APOS_CONSERTO = ?, "
+					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "WHERE COD_AFERICAO = ? AND "
+					+ "COD_PNEU = ? "
+					+ "STATUS_RESOLUCAO = ?"
+					+ "AND TIPO_SERVICO = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, servico.getCpfMecanico());
+			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setLong(4, servico.getKmVeiculo());
+			stmt.setLong(5, servico.getCodAfericao());
+			stmt.setLong(6, servico.getPneu().getCodigo());
+			stmt.setString(7, servico.getTipo());
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir o item consertado");
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
 		return true;
 	}
 

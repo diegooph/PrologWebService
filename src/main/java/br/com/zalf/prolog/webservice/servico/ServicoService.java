@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.servico;
 
 import java.sql.SQLException;
 
-import br.com.zalf.prolog.models.PlacaServicoHolder;
+import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 
 public class ServicoService {

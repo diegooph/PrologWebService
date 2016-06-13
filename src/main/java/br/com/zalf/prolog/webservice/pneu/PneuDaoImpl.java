@@ -25,7 +25,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, "
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, "
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC";
-	
+
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
 			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
@@ -34,7 +34,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
 			+ "WHERE P.CODIGO = ? ";
-			
+
 
 	public boolean updateSulcos (Pneu pneu, Long codUnidade) throws SQLException{
 		Connection conn = null;
@@ -60,12 +60,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		}		
 		return true;
 	}
-	
-	public boolean updateSulcos (Pneu pneu, Long codUnidade, Connection conn) throws SQLException{
-		
+
+	public boolean update (Pneu pneu, Long codUnidade, Connection conn) throws SQLException{
+
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE PNEU SET "
 					+ "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, ALTURA_SULCO_CENTRAL = ? "
 					+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
@@ -81,6 +80,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			closeConnection(conn, stmt, null);
 		}		
 		return true;
+	}
+
+	public void updateCalibragem (Pneu pneu, Long codUnidade, Connection conn) throws SQLException{
+
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("UPDATE PNEU SET "
+				+ "PRESSAO_ATUAL = ? "
+				+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+		stmt.setDouble(1, pneu.getPressaoAtual());
+		stmt.setLong(2, pneu.getCodigo());
+		stmt.setLong(3, codUnidade);
+		stmt.executeUpdate();
+		
 	}
 
 	@Override
@@ -104,7 +116,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		listPneu = ordenaLista(listPneu);
 		return listPneu;
 	}
-	
+
 	public Pneu getPneuByCod(long codPneu) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
