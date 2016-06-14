@@ -92,7 +92,18 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
 		stmt.executeUpdate();
-		
+	}
+	
+	public boolean updateStatus (Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("UPDATE PNEU SET "
+				+ "STATUS = ? "
+				+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+		stmt.setString(1, status);
+		stmt.setLong(2, pneu.getCodigo());
+		stmt.setLong(3, codUnidade);
+		stmt.executeUpdate();
+		return true;
 	}
 
 	@Override

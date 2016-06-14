@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.servico.Calibragem;
 import br.com.zalf.prolog.models.pneu.servico.Inspecao;
 import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
@@ -196,8 +197,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return movimentacao;
 	}
 
-	public boolean insertManutencao(Servico servico) throws SQLException {
+	public boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException {
 
+		this.codUnidade = codUnidade;
 		Connection conn = getConnection();
 		pneuDao = new PneuDaoImpl();
 
@@ -213,8 +215,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 				insertMovimentacao((Movimentacao) servico, conn);
 				break;
 			}
-			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
-
+			conn.commit();
 		}catch(SQLException e){
 			e.printStackTrace();
 			conn.rollback();
@@ -228,7 +229,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 	private boolean insertCalibragem(Calibragem servico, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
 					+ "DATA_HORA_RESOLUCAO = ?, "
 					+ "CPF_MECANICO = ?, "
@@ -248,8 +248,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 			if (count == 0) {
 				throw new SQLException("Erro ao inserir o item consertado");
 			}
+			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
 		}finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
@@ -257,61 +258,73 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 	private boolean insertInspecao(Inspecao servico, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
 					+ "DATA_HORA_RESOLUCAO = ?, "
 					+ "CPF_MECANICO = ?, "
 					+ "PSI_APOS_CONSERTO = ?, "
-					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "KM_MOMENTO_CONSERTO = ?, "
+					+ "COD_ALTERNATIVA = ? "
 					+ "WHERE COD_AFERICAO = ? AND "
 					+ "COD_PNEU = ? "
-					+ "STATUS_RESOLUCAO = ?"
+					+ "STATUS_RESOLUCAO IS NULL "
 					+ "AND TIPO_SERVICO = ?");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, servico.getCpfMecanico());
 			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
 			stmt.setLong(4, servico.getKmVeiculo());
-			stmt.setLong(5, servico.getCodAfericao());
-			stmt.setLong(6, servico.getPneu().getCodigo());
-			stmt.setLong(7, servico.getAlternativaSelecionada().codigo);
+			stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
+			stmt.setLong(6, servico.getCodAfericao());
+			stmt.setLong(7, servico.getPneu().getCodigo());
 			stmt.setString(8, servico.getTipo());
 			int count = stmt.executeUpdate();
 			if (count == 0) {
 				throw new SQLException("Erro ao inserir o item consertado");
 			}
+			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
 		}finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
-	
+
 
 	private boolean insertMovimentacao(Movimentacao servico, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
 					+ "DATA_HORA_RESOLUCAO = ?, "
 					+ "CPF_MECANICO = ?, "
 					+ "PSI_APOS_CONSERTO = ?, "
-					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "KM_MOMENTO_CONSERTO = ?, "
+					+ "COD_PNEU_INSERIDO = ? "
 					+ "WHERE COD_AFERICAO = ? AND "
-					+ "COD_PNEU = ? "
-					+ "STATUS_RESOLUCAO = ?"
-					+ "AND TIPO_SERVICO = ?");
+					+ "COD_PNEU = ? AND "
+					+ "STATUS_RESOLUCAO IS NULL AND "
+					+ "TIPO_SERVICO = ?");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, servico.getCpfMecanico());
-			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setDouble(3, servico.getPneuNovo().getPressaoAtual());
 			stmt.setLong(4, servico.getKmVeiculo());
-			stmt.setLong(5, servico.getCodAfericao());
-			stmt.setLong(6, servico.getPneu().getCodigo());
-			stmt.setString(7, servico.getTipo());
+			stmt.setLong(5, servico.getPneuNovo().getCodigo());
+			stmt.setLong(6, servico.getCodAfericao());
+			stmt.setLong(7, servico.getPneu().getCodigo());
+			stmt.setString(8, servico.getTipo());
 			int count = stmt.executeUpdate();
 			if (count == 0) {
 				throw new SQLException("Erro ao inserir o item consertado");
 			}
+			pneuDao.updateCalibragem(servico.getPneuNovo(), codUnidade, conn);
+
+			if (servico.getPneu().getVidaAtual() == servico.getPneu().getVidasTotal()) {
+				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.DESCARTE, conn);
+			}else{
+				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.RECAPAGEM, conn);
+			}
+			pneuDao.updateStatus(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, conn);
+
+			
 		}finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
