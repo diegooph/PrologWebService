@@ -144,10 +144,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement(("SELECT TIPO_SERVICO, COUNT(TIPO_SERVICO) "
+			stmt = conn.prepareStatement("SELECT TIPO_SERVICO, COUNT(TIPO_SERVICO) "
 					+ "FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND DATA_HORA_RESOLUCAO IS NULL "
 					+ "GROUP BY TIPO_SERVICO "
-					+ "ORDER BY TIPO_SERVICO"),ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+					+ "ORDER BY TIPO_SERVICO");
 
 			stmt.setLong(1, codPneu);
 			stmt.setLong(2, codUnidade);

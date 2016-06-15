@@ -321,7 +321,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.RECAPAGEM, conn);
 			}
 			pneuDao.updateStatus(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, conn);
-
+			pneuDao.updateVeiculoPneu(servico.getPlaca(), servico.getPneu(), servico.getPneuNovo(), conn);
 			
 		}finally {
 			closeConnection(null, stmt, null);
