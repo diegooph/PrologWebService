@@ -1,16 +1,22 @@
 package br.com.zalf.prolog.webservice.afericao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Restricao;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -255,6 +261,68 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			return afericaoHolder;
 		}
 		return new NovaAfericao();
+	}
+	
+	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codEmpresa, Long codUnidade) throws SQLException{
+
+		List<Veiculo> veiculos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, String> mapPlacasAfericao = new LinkedHashMap<>();
+		int afericoes = 0;
+		int metaAfericao = 20;
+		int afericoesRealizadas = 0;
+		String status = null;
+		SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, 0) as INTERVALO	"
+					+ "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO	"
+					+ "LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO "
+					+ "FROM AFERICAO "
+					+ "GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA	"
+					+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
+					+ "ORDER BY M.NOME, INTERVALO DESC");
+			
+			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(System.currentTimeMillis())));
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			
+			
+			
+			
+			
+			
+			
+			
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		selecaoPlacaAfericao.setAfericoesRealizadas(afericoesRealizadas);
+		selecaoPlacaAfericao.setMetaAfericao(metaAfericao);
+
+		return selecaoPlacaAfericao;
+	}
+	
+	
+	public java.util.Date getPrimeiroDiaMes(Date date){
+
+		Calendar first = Calendar.getInstance();
+		first.setTime(DateUtils.toSqlDate(date));
+		first.set(Calendar.DAY_OF_MONTH, 1);
+		return new java.sql.Date(first.getTimeInMillis());
+	}
+
+	public java.util.Date getUltimoDiaMes(Date date){
+
+		Calendar last = Calendar.getInstance();
+		last.setTime(DateUtils.toSqlDate(date));
+		last.set(Calendar.DAY_OF_MONTH, 1);
+		last.add(Calendar.MONTH, 1);
+		last.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new java.sql.Date(last.getTimeInMillis());
 	}
 }
 

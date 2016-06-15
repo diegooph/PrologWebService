@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 
 public class AfericaoService {
 	AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
@@ -23,6 +24,15 @@ public class AfericaoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new NovaAfericao();
+		}
+	}
+	
+	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codEmpresa, Long codUnidade){
+		try{
+			return afericaoDaoImpl.getSelecaoPlacaAfericao(codEmpresa, codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new SelecaoPlacaAfericao();
 		}
 	}
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/afericao")
@@ -43,5 +44,15 @@ public class AfericaoResource {
 	@Secured
 	public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa){
 		return service.getNovaAfericao(placa);
+	}
+	
+	
+	@GET
+	@Secured
+	@Path("/listaAfericao/{codEmpresa}/{codUnidade}")
+	public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codEmpresa") Long codEmpresa){
+		return service.getSelecaoPlacaAfericao(codEmpresa, codUnidade);
 	}
 }

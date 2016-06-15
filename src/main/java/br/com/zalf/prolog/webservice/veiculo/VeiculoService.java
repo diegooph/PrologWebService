@@ -1,14 +1,12 @@
 package br.com.zalf.prolog.webservice.veiculo;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 
 public class VeiculoService {
 	private VeiculoDaoImpl dao = new VeiculoDaoImpl();
@@ -31,14 +29,7 @@ public class VeiculoService {
 		}
 	}
 	
-	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(LocalDate dataInicial, LocalDate dataFinal, Long codEmpresa, Long codUnidade){
-		try{
-			return dao.getSelecaoPlacaAfericao(dataInicial, dataFinal, codEmpresa, codUnidade);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new SelecaoPlacaAfericao();
-		}
-	}
+
 
 	
 	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
