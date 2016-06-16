@@ -7,15 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Restricao;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.models.pneu.afericao.PlacaModeloHolder;
 import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.util.DateUtils;
@@ -27,7 +25,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 	@Override
 	public boolean insert (Afericao afericao, Long codUnidade) throws SQLException{
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -60,7 +58,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	}
 
 	private void insertValores (Afericao afericao, Long codUnidade, Connection conn) throws SQLException{
-		
+
 		PreparedStatement stmt = null;
 		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
 
@@ -194,7 +192,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		stmt.executeUpdate();
 	}
 
-
 	public Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -202,7 +199,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		Restricao restricao = new Restricao();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER.TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO "
+			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER.TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO, "
+					+ "ER.PERIODO_AFERICAO "
 					+ "FROM UNIDADE U JOIN "
 					+ "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
 					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
@@ -214,6 +212,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 				restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
 				restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
 				restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
+				restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
 			}else{
 				new SQLException("Erro ao buscar os dados de restrição");
 			}
@@ -230,7 +229,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		Restricao restricao = new Restricao();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM,ER.TOLERANCIA_INSPECAO, ER.TOLERANCIA_CALIBRAGEM "
+			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM,ER.TOLERANCIA_INSPECAO, ER.TOLERANCIA_CALIBRAGEM, "
+					+ "ER.PERIODO_AFERICAO "
 					+ "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
 					+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
 					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
@@ -242,6 +242,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 				restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
 				restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
 				restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
+				restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
 			}else{
 				new SQLException("Erro ao buscar os dados de restrição");
 			}
@@ -262,50 +263,69 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		}
 		return new NovaAfericao();
 	}
-	
-	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codEmpresa, Long codUnidade) throws SQLException{
 
-		List<Veiculo> veiculos = new ArrayList<>();
+	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) throws SQLException{
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Map<String, String> mapPlacasAfericao = new LinkedHashMap<>();
-		int afericoes = 0;
-		int metaAfericao = 20;
-		int afericoesRealizadas = 0;
-		String status = null;
 		SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
+
+		PlacaModeloHolder holder = new PlacaModeloHolder(); //possui a lista de placaStatus
+		List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
+		List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, 0) as INTERVALO	"
+			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, 0)::INTEGER as INTERVALO	"
 					+ "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO	"
 					+ "LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO "
 					+ "FROM AFERICAO "
 					+ "GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA	"
 					+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
 					+ "ORDER BY M.NOME, INTERVALO DESC");
-			
+
 			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(System.currentTimeMillis())));
-			stmt.setLong(3, codUnidade);
+			stmt.setLong(2, codUnidade);
 			rSet = stmt.executeQuery();
-			
-			
-			
-			
-			
-			
-			
-			
+
+			while(rSet.next()){
+				if(listPlacasMesmoModelo.size() == 0 ){//primeiro resultado do resultset
+					holder.setModelo(rSet.getString("NOME"));
+					PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
+					placa.placa = rSet.getString("PLACA");
+					placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
+					listPlacasMesmoModelo.add(placa);
+				}else{
+					if(holder.getModelo().equals(rSet.getString("NOME"))){// caso o resultado seja do mesmo modelo do anterior
+						PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
+						placa.placa = rSet.getString("PLACA");
+						placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
+						listPlacasMesmoModelo.add(placa);
+					}else{ // modelo diferente
+						holder.setPlacaStatus(listPlacasMesmoModelo);
+						listModelo.add(holder);
+						listPlacasMesmoModelo = new ArrayList<>();
+						holder = new PlacaModeloHolder();
+						holder.setModelo(rSet.getString("NOME"));
+						PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
+						placa.placa = rSet.getString("PLACA");
+						placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
+						listPlacasMesmoModelo.add(placa);
+					}
+				}
+			}
+			holder.setPlacaStatus(listPlacasMesmoModelo);
+			listModelo.add(holder);
+			selecaoPlacaAfericao.setPlacas(listModelo);
+			selecaoPlacaAfericao.setMeta(getRestricoesByCodUnidade(codUnidade).getPeriodoDiasAfericao());
+
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		selecaoPlacaAfericao.setAfericoesRealizadas(afericoesRealizadas);
-		selecaoPlacaAfericao.setMetaAfericao(metaAfericao);
-
 		return selecaoPlacaAfericao;
 	}
-	
-	
+
+
 	public java.util.Date getPrimeiroDiaMes(Date date){
 
 		Calendar first = Calendar.getInstance();

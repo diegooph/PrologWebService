@@ -27,9 +27,9 @@ public class AfericaoService {
 		}
 	}
 	
-	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codEmpresa, Long codUnidade){
+	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade){
 		try{
-			return afericaoDaoImpl.getSelecaoPlacaAfericao(codEmpresa, codUnidade);
+			return afericaoDaoImpl.getSelecaoPlacaAfericao(codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new SelecaoPlacaAfericao();

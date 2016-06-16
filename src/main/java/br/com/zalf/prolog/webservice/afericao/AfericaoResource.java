@@ -49,10 +49,9 @@ public class AfericaoResource {
 	
 	@GET
 	@Secured
-	@Path("/listaAfericao/{codEmpresa}/{codUnidade}")
+	@Path("/listaAfericao/{codUnidade}")
 	public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codEmpresa") Long codEmpresa){
-		return service.getSelecaoPlacaAfericao(codEmpresa, codUnidade);
+			@PathParam("codUnidade") Long codUnidade){
+		return service.getSelecaoPlacaAfericao(codUnidade);
 	}
 }
