@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Autenticacao;
+import br.com.zalf.prolog.models.MarcaModeloVeiculo;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
@@ -16,6 +17,7 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -26,9 +28,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
 			+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 			+ "WHERE PLACA = ?";
-	
 
-	
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
 			throws SQLException {
@@ -52,7 +52,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}
 		return veiculos;
 	}
-	
+
 	public Veiculo getVeiculoByPlaca(String placa) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -74,7 +74,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return new Veiculo();
 	}
 
-	
+
 	//@Override
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
 		List<TipoVeiculo> listTipo = new ArrayList<>();
@@ -210,7 +210,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}		
 		return true;
 	}
-	
+
 	public boolean updateKilometragem(String placa, long km) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -251,6 +251,70 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, null);
 		}		
 	}
-	
-	
+
+	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException{
+
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		List<MarcaModeloVeiculo> marcas = new ArrayList<>();
+		List<MarcaModeloVeiculo.ModeloVeiculo> modelos = new ArrayList<>();
+		MarcaModeloVeiculo marca = new MarcaModeloVeiculo();
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
+					+ " FROM MARCA_VEICULO MA JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
+					+ "WHERE MO.COD_EMPRESA = ? "
+					+ "ORDER BY COD_MARCA, COD_MODELO");
+			stmt.setLong(1, codEmpresa);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+
+				if(marcas.size() == 0 && modelos.size() == 0){ //primeiro resultado do rset
+					L.d("metodo", "marcas.size == 0");
+					marca.setCodigo(rSet.getLong("COD_MARCA"));
+					marca.setNome(rSet.getString("MARCA"));
+
+					MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
+					modelo.codigo = rSet.getLong("COD_MODELO");
+					modelo.nome = rSet.getString("MODELO");
+					modelos.add(modelo);
+
+				}else{
+					L.d("metodo", "marcas.size > 0");
+					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+						MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
+						modelo.codigo = rSet.getLong("COD_MODELO");
+						modelo.nome = rSet.getString("MODELO");
+						modelos.add(modelo);
+
+					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
+						marca.setModelos(modelos);
+						marcas.add(marca);
+
+						marca = new MarcaModeloVeiculo();
+						modelos = new ArrayList<>();
+
+						marca.setCodigo(rSet.getLong("COD_MARCA"));
+						marca.setNome(rSet.getString("MARCA"));
+
+						MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
+						modelo.codigo = rSet.getLong("COD_MODELO");
+						modelo.nome = rSet.getString("MODELO");
+						modelos.add(modelo);						
+					}
+				}
+			}
+			marca.setModelos(modelos);
+			marcas.add(marca);
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return marcas;
+	}
+
 }

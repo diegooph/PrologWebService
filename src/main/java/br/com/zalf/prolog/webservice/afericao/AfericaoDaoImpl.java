@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.afericao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.Pneu;
@@ -323,26 +321,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			closeConnection(conn, stmt, rSet);
 		}
 		return selecaoPlacaAfericao;
-	}
-
-
-	public java.util.Date getPrimeiroDiaMes(Date date){
-
-		Calendar first = Calendar.getInstance();
-		first.setTime(DateUtils.toSqlDate(date));
-		first.set(Calendar.DAY_OF_MONTH, 1);
-		return new java.sql.Date(first.getTimeInMillis());
-	}
-
-	public java.util.Date getUltimoDiaMes(Date date){
-
-		Calendar last = Calendar.getInstance();
-		last.setTime(DateUtils.toSqlDate(date));
-		last.set(Calendar.DAY_OF_MONTH, 1);
-		last.add(Calendar.MONTH, 1);
-		last.add(Calendar.DAY_OF_MONTH, -1);
-
-		return new java.sql.Date(last.getTimeInMillis());
 	}
 }
 

@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.MarcaModeloVeiculo;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
@@ -76,5 +77,12 @@ public class VeiculoResource {
 		} else {
 			return Response.Error("Erro ao inserir o veículo");
 		}
+	}
+	
+	@GET
+	@Secured
+	@Path("/marcaModelos/{codEmpresa}")
+	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
+		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
 	}
 }

@@ -55,6 +55,7 @@ public class ColaboradorResource {
 	@Secured
 	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
+		System.out.println(cpf);
 		return service.getByCod(cpf);
 	}
 	
@@ -103,6 +104,9 @@ public class ColaboradorResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf, 
 			@FormParam("dataNascimento") long dataNascimento) {
+		
+		System.out.println(cpf + "data: " + dataNascimento);
+		
 		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);

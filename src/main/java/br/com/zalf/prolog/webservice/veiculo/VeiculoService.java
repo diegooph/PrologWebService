@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.MarcaModeloVeiculo;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
@@ -28,9 +29,6 @@ public class VeiculoService {
 			return new ArrayList<>();
 		}
 	}
-	
-
-
 	
 	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
 		try {
@@ -65,6 +63,15 @@ public class VeiculoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa){
+		try{
+			return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
 		}
 	}
 }
