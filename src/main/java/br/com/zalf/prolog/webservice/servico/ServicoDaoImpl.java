@@ -21,6 +21,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.veiculo.VeiculoDaoImpl;
 
 public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
@@ -78,13 +79,17 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return placaServicoHolder;
 	}
 
-	public ServicoHolder getServicosByPlaca (String placa) throws SQLException{
+	public ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException{
 		ServicoHolder holder = new ServicoHolder();
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa));
 		setServicos(holder);
 		if(containInspecao(holder.getListServicos())){
 			holder.setListAlternativaInspecao(getListAlternativasInspecao());
+		}
+		if(containMovimentacao(holder.getListServicos())){
+			L.d("teste", "contem movimentacao");
+			holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));;
 		}
 		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
 		holder.setRestricao(afericaoDaoImpl.getRestricoesByPlaca(placa));
@@ -96,6 +101,16 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 		for (Servico servico : listServicos) {
 			if (servico instanceof Inspecao) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean containMovimentacao(List<Servico> listServicos){
+
+		for (Servico servico : listServicos) {
+			if (servico instanceof Movimentacao) {
 				return true;
 			}
 		}
@@ -198,9 +213,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return movimentacao;
 	}
 
-	public boolean insertManutencao(Servico servico) throws SQLException {
+	public boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException {
 
-		this.codUnidade = servico.getCodUnidade();
+		this.codUnidade = codUnidade;
 		Connection conn = getConnection();
 		pneuDao = new PneuDaoImpl();
 

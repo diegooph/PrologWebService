@@ -30,18 +30,19 @@ public class ServicoResource {
 	}
 	
 	@GET
-	@Path("/veiculo/{placaVeiculo}")
+	@Path("/{codUnidade}/{placaVeiculo}")
 	@Secured
 	public ServicoHolder getServicosByPlaca(
-			@PathParam("placaVeiculo") String placa){
-		return service.getServicosByPlaca(placa);
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("codUnidade") Long codUnidade){
+		return service.getServicosByPlaca(placa, codUnidade);
 	}
 	
 	@POST
 	@Secured
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico){
-		if(service.insertManutencao(servico)){
+	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade){
+		if(service.insertManutencao(servico, codUnidade)){
 			return Response.Ok("Serviço consertado com sucesso.");
 		}else{
 			return Response.Error("Erro ao marcar o item como consertado.");

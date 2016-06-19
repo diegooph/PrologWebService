@@ -20,18 +20,18 @@ public class ServicoService {
 		}
 	}
 	
-	public ServicoHolder getServicosByPlaca(String placa){
+	public ServicoHolder getServicosByPlaca(String placa, Long codUnidade){
 		try{
-			return dao.getServicosByPlaca(placa);
+			return dao.getServicosByPlaca(placa, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ServicoHolder();
 		}
 	}
 	
-	public boolean insertManutencao(Servico servico) {
+	public boolean insertManutencao(Servico servico, Long codUnidade) {
 		try{
-			return dao.insertManutencao(servico);
+			return dao.insertManutencao(servico, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

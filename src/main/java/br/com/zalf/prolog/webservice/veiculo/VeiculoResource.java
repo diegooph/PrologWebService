@@ -12,8 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.Eixos;
 import br.com.zalf.prolog.models.MarcaModeloVeiculo;
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
@@ -38,19 +38,18 @@ public class VeiculoResource {
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getTipoVeiculosByUnidade(codUnidade);
 	}
-
 	
-	/**
-	 * Busca todos os veículos de uma unidade
-	 * @param request onde contém os dados do solicitante e dados da unidade a ser buscada
-	 * @return uma lista de Veiculo
-	 */
+	
 	@POST
-	@Path("/unidade/getAll")
-	public List<Veiculo> getAll(Request request) {
-		return service.getAll(request);
+	@Secured
+	@Path("/{codUnidade}/tipo")
+	public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade){
+		if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
+			return Response.Ok("Tipo de veículo inserido com sucesso");
+		}else{
+			return Response.Error("Erro ao inserir o tipo de veículo");
+		}
 	}
-	
 	
 	@PUT	
 	@Path("/update")
@@ -68,11 +67,10 @@ public class VeiculoResource {
 		}
 	}
 	
-
 	@POST
-	@Path("/insert")
-	public Response insert(Request<Veiculo> request) {
-		if (service.insert(request)) {
+	@Path("/insert/{codUnidade}")
+	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
+		if (service.insert(veiculo, codUnidade)) {
 			return Response.Ok("Veículo inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir o veículo");
@@ -84,5 +82,23 @@ public class VeiculoResource {
 	@Path("/marcaModelos/{codEmpresa}")
 	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
 		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+	}
+	
+	@POST
+	@Secured
+	@Path("/modelo/{codEmpresa}")
+	public Response insertModeloVeiculo(MarcaModeloVeiculo marcaModelo, @PathParam("codEmpresa") long codEmpresa){
+		if (service.insertModeloVeiculo(marcaModelo, codEmpresa)) {
+			return Response.Ok("Modelo inserido com sucesso");
+		}else{
+			return Response.Error("Erro ao inserir o modelo");
+		}
+	}
+	
+	@GET
+	@Secured
+	@Path("/eixos")
+	public List<Eixos> getEixos(){
+		return service.getEixos();
 	}
 }

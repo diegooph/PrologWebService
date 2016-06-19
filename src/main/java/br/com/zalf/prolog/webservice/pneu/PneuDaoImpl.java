@@ -10,6 +10,7 @@ import java.util.List;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Sulco;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
@@ -27,15 +28,23 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
 			+ "WHERE P.CODIGO = ? ";
-
-
+	
+	private static final String BUSCA_PNEUS_BY_COD_UNIDADE="SELECT MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
+			+ "MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
+			+ "P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status	FROM PNEU P "
+			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
+			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ?";
+	
+	
 	public boolean updateSulcos (Pneu pneu, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -119,6 +128,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Pneu pneu = createPneu(rSet);
+				pneu.setPosicao(rSet.getInt("POSICAO"));
 				listPneu.add(pneu);
 			}
 		} finally {
@@ -142,6 +152,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			closeConnection(null, stmt, null);
 	}
 
+	//TODO refatorar! apenas o codPneu não é suficiente, precisamos inserir o codUnidade na busca
 	public Pneu getPneuByCod(long codPneu) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -154,6 +165,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				pneu = createPneu(rSet);
+				pneu.setPosicao(rSet.getInt("POSICAO"));
 			}else{
 				throw new SQLException("Não foi possível buscar o pneu solicitado");
 			}
@@ -161,6 +173,29 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			closeConnection(conn, stmt, rSet);
 		}
 		return pneu;
+	}
+	
+	public List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Pneu> pneus = new ArrayList<>();
+		L.d("aa", "Buscando pneus disponiveis com o codUnidade = "+codUnidade + " e o status = " + status);
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_PNEUS_BY_COD_UNIDADE);
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, status);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				Pneu pneu = createPneu(rSet);
+				pneus.add(pneu);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		System.out.println(pneus);
+		return pneus;
 	}
 
 	public Pneu createPneu(ResultSet rSet) throws SQLException{
@@ -192,7 +227,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
 		pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
 		pneu.setStatus(rSet.getString("STATUS"));
-		pneu.setPosicao(rSet.getInt("POSICAO"));
+		
 		pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
 		pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
 

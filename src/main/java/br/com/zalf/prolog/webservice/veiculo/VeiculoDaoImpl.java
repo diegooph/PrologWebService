@@ -7,27 +7,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Autenticacao;
+import br.com.zalf.prolog.models.Eixos;
 import br.com.zalf.prolog.models.MarcaModeloVeiculo;
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.Veiculo.Eixos;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
-	private static final String VEICULOS_BY_PLACA="SELECT V.PLACA, MV.NOME AS MODELO, MAV.NOME AS MARCA,  EV.DIANTEIRO, "
-			+ "EV.TRASEIRO, V.KM, V.STATUS_ATIVO "
-			+ "FROM VEICULO V "
-			+ "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
-			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-			+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
-			+ "WHERE PLACA = ?";
+	private static final String VEICULOS_BY_PLACA="SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+					+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
+					+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
+					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
+					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
+					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+					+ "WHERE V.PLACA = ?";
 
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) 
@@ -38,9 +34,13 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
-					+ "COD_UNIDADE = ? AND STATUS_ATIVO = TRUE "
-					+ "ORDER BY PLACA");
+			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+					+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
+					+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
+					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
+					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
+					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+					+ "WHERE V.COD_UNIDADE = ?");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -95,6 +95,50 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return listTipo;
 	}
 
+	public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, tipoVeiculo.getNome());
+			stmt.setBoolean(3, true);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao cadastrar o tipo de veículo");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	public List<Eixos> getEixos() throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Eixos> eixos = new ArrayList<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM EIXOS_VEICULO");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Eixos eixo = new Eixos();
+				eixo.codigo = rSet.getLong("CODIGO");
+				eixo.nome = rSet.getString("NOME");
+				eixo.dianteiro = rSet.getInt("DIANTEIRO");
+				eixo.traseiro = rSet.getInt("TRASEIRO");
+				eixos.add(eixo);
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return eixos;
+	}
+
 	// TODO: Fazer join token
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
@@ -104,34 +148,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VEICULO WHERE "
-					+ "COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF=?) AND STATUS_ATIVO = TRUE");
+			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+					+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
+					+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
+					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
+					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
+					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+					+ "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?)");
 			stmt.setLong(1, cpf);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Veiculo veiculo = createVeiculo(rSet);
-				veiculos.add(veiculo);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return veiculos;
-	}
-
-	@Override
-	public List<Veiculo> getAll(Request<?> request) throws SQLException {
-		List<Veiculo> veiculos = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VEICULO V JOIN TOKEN_AUTENTICACAO TA ON "
-					+ "TA.CPF_COLABORADOR = ? AND TA.TOKEN = ? "
-					+ "WHERE V.COD_UNIDADE=? ");
-			stmt.setLong(1, request.getCpf());
-			stmt.setString(2, request.getToken());
-			stmt.setLong(3, request.getCodUnidade());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);
@@ -146,47 +170,53 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
 		Veiculo veiculo = new Veiculo();
 		veiculo.setPlaca(rSet.getString("PLACA"));
-		veiculo.setModelo(rSet.getString("MODELO"));
 		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		veiculo.setKmAtual(rSet.getLong("KM"));
-		Veiculo.Eixos eixos = new Eixos();
+		Eixos eixos = new Eixos();
 		eixos.dianteiro = rSet.getInt("DIANTEIRO");
 		eixos.traseiro = rSet.getInt("TRASEIRO");
-		veiculo.setMarca(rSet.getString("MARCA"));
 		veiculo.setEixos(eixos);
+		TipoVeiculo tipo = new TipoVeiculo();
+		tipo.setCodigo(rSet.getLong("COD_TIPO"));
+		tipo.setNome(rSet.getString("TIPO"));
+		veiculo.setTipo(tipo);
+		MarcaModeloVeiculo marcaModelo = new MarcaModeloVeiculo();
+		marcaModelo.setCodigo(rSet.getLong("COD_MARCA"));
+		marcaModelo.setNome(rSet.getString("MARCA"));
+		MarcaModeloVeiculo.ModeloVeiculo modeloVeiculo = new MarcaModeloVeiculo.ModeloVeiculo();
+		modeloVeiculo.codigo = rSet.getLong("COD_MODELO");
+		modeloVeiculo.nome = rSet.getString("MODELO");
+		List<MarcaModeloVeiculo.ModeloVeiculo> modelos = new ArrayList<>();
+		modelos.add(modeloVeiculo);
+		marcaModelo.setModelos(modelos);
 		return veiculo;
 	}
 
-	@Override
-	public boolean insert(Request<Veiculo> request) throws SQLException {
+	public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		Autenticacao autenticacao = new Autenticacao("", request.getCpf(), 
-				request.getToken());
-		AutenticacaoDao dao = new AutenticacaoDaoImpl();
-		if (dao.verifyIfExists(autenticacao)) {
-			try {
-				conn = getConnection();
-				stmt = conn.prepareStatement("INSERT INTO VEICULO "
-						+ "(PLACA, MODELO, COD_UNIDADE, STATUS_ATIVO) VALUES "
-						+ "(?,?,?,?)");
-				stmt.setString(1, request.getObject().getPlaca());
-				stmt.setString(2, request.getObject().getModelo());
-				stmt.setLong(3, request.getCodUnidade());
-				stmt.setBoolean(4, true);
-				int count = stmt.executeUpdate();
-				if(count == 0){
-					throw new SQLException("Erro ao inserir o veículo");
-				}	
-			}
-			finally {
-				closeConnection(conn, stmt, null);
-			}		
-			return true;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
+			stmt.setString(1, veiculo.getPlaca());
+			stmt.setLong(2, codUnidade);
+			stmt.setLong(3, veiculo.getKmAtual());
+			stmt.setBoolean(4, true);
+			stmt.setLong(5, veiculo.getTipo().getCodigo());
+			stmt.setLong(6, veiculo.getMarcaModelo().getModelos().get(1).codigo);
+			stmt.setLong(7, veiculo.getEixos().codigo);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o veículo");
+			}	
 		}
-		return false;
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
 	}
 
+	//TODO refatorar para o novo modelo de veículo
 	@Override
 	public boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) throws SQLException {
 		Connection conn = null;
@@ -203,27 +233,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o veículo");
-			}	
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
-	}
-
-	public boolean updateKilometragem(String placa, long km) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE VEICULO SET "
-					+ "KM = ? "
-					+ "WHERE PLACA = ?");
-			stmt.setDouble(1, km);
-			stmt.setString(2, placa);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao atualizar a kilometragem do veículo");
 			}	
 		}
 		finally {
@@ -253,8 +262,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException{
-
-
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -272,17 +279,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt.setLong(1, codEmpresa);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-
 				if(marcas.size() == 0 && modelos.size() == 0){ //primeiro resultado do rset
 					L.d("metodo", "marcas.size == 0");
 					marca.setCodigo(rSet.getLong("COD_MARCA"));
 					marca.setNome(rSet.getString("MARCA"));
-
 					MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
 					modelo.codigo = rSet.getLong("COD_MODELO");
 					modelo.nome = rSet.getString("MODELO");
 					modelos.add(modelo);
-
 				}else{
 					L.d("metodo", "marcas.size > 0");
 					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
@@ -290,17 +294,13 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 						modelo.codigo = rSet.getLong("COD_MODELO");
 						modelo.nome = rSet.getString("MODELO");
 						modelos.add(modelo);
-
 					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
 						marca.setModelos(modelos);
 						marcas.add(marca);
-
 						marca = new MarcaModeloVeiculo();
 						modelos = new ArrayList<>();
-
 						marca.setCodigo(rSet.getLong("COD_MARCA"));
 						marca.setNome(rSet.getString("MARCA"));
-
 						MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
 						modelo.codigo = rSet.getLong("COD_MODELO");
 						modelo.nome = rSet.getString("MODELO");
@@ -315,6 +315,29 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, null);
 		}		
 		return marcas;
+	}
+
+
+	public boolean insertModeloVeiculo(MarcaModeloVeiculo marcaModelo, long codEmpresa) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
+			for (MarcaModeloVeiculo.ModeloVeiculo modelo : marcaModelo.getModelos()) {
+				stmt.setString(1, modelo.nome);
+				stmt.setLong(2, marcaModelo.getCodigo());
+				stmt.setLong(3, codEmpresa);
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					throw new SQLException("Erro ao cadastrar o modelo do veículo");
+				}	
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
 	}
 
 }

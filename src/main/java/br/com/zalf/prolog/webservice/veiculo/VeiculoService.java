@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Eixos;
 import br.com.zalf.prolog.models.MarcaModeloVeiculo;
-import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 
@@ -30,18 +30,27 @@ public class VeiculoService {
 		}
 	}
 	
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
-		try {
-			return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
-		} catch (SQLException e) {
+	public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade){
+		try{
+			return dao.insertTipoVeiculo(tipoVeiculo, codUnidade);
+		}catch(SQLException e){
 			e.printStackTrace();
-			return new ArrayList<Veiculo>();
+			return false;
 		}
 	}
 	
-	public List<Veiculo> getAll(Request<?> request) {
+	public List<Eixos> getEixos(){
+		try{
+			return dao.getEixos();
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
 		try {
-			return dao.getAll(request);
+			return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Veiculo>();
@@ -57,9 +66,9 @@ public class VeiculoService {
 		}
 	}
 	
-	public boolean insert(Request<Veiculo> request) {
+	public boolean insert(Veiculo veiculo, Long codUnidade) {
 		try{
-			return dao.insert(request);
+			return dao.insert(veiculo, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
@@ -72,6 +81,15 @@ public class VeiculoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+	
+	public boolean insertModeloVeiculo(MarcaModeloVeiculo marcaModelo, long codEmpresa){
+		try{
+			return dao.insertModeloVeiculo(marcaModelo, codEmpresa);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 }
