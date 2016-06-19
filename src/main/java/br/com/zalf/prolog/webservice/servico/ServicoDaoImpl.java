@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.servico.Calibragem;
@@ -63,12 +64,12 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 				item.placa = rSet.getString("PLACA");
 				item.qtCalibragem = rSet.getInt("TOTAL_CALIBRAGEM");
 				item.qtMovimentacao = rSet.getInt("TOTAL_MOVIMENTACAO");
-				item.qtInspecaoTotal = rSet.getInt("TOTAL_INSPECAO");
+				item.qtInspecao = rSet.getInt("TOTAL_INSPECAO");
 
 				listaServicos.add(item);
 				placaServicoHolder.setQtCalibragemTotal(placaServicoHolder.getQtCalibragemTotal() + item.qtCalibragem);
 				placaServicoHolder.setQtMovimentacaoTotal(placaServicoHolder.getQtMovimentacaoTotal() + item.qtMovimentacao);
-				placaServicoHolder.setQtInspecaoTotal(placaServicoHolder.getQtInspecaoTotal() + item.qtInspecaoTotal);
+				placaServicoHolder.setQtInspecaoTotal(placaServicoHolder.getQtInspecaoTotal() + item.qtInspecao);
 			}
 		}finally {
 			closeConnection(conn, stmt, null);
@@ -101,11 +102,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return false;
 	}
 
-	private List<PerguntaRespostaChecklist.Alternativa> getListAlternativasInspecao() throws SQLException{
+	private List<Alternativa> getListAlternativasInspecao() throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<PerguntaRespostaChecklist.Alternativa> listAlternativas = new ArrayList<>();
+		List<Alternativa> listAlternativas = new ArrayList<>();
 
 		try{
 			conn = getConnection();
@@ -197,9 +198,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return movimentacao;
 	}
 
-	public boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException {
+	public boolean insertManutencao(Servico servico) throws SQLException {
 
-		this.codUnidade = codUnidade;
+		this.codUnidade = servico.getCodUnidade();
 		Connection conn = getConnection();
 		pneuDao = new PneuDaoImpl();
 

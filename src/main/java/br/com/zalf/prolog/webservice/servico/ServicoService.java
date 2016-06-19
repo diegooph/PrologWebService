@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.servico;
 import java.sql.SQLException;
 
 import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
+import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 
 public class ServicoService {
@@ -27,5 +28,15 @@ public class ServicoService {
 			return new ServicoHolder();
 		}
 	}
+	
+	public boolean insertManutencao(Servico servico) {
+		try{
+			return dao.insertManutencao(servico);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 }
