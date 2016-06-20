@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.MarcaVeiculo;
+import br.com.zalf.prolog.models.Marca;
+import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 
@@ -75,7 +76,7 @@ public class VeiculoService {
 		}
 	}
 	
-	public List<MarcaVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa){
+	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa){
 		try{
 			return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
 		}catch(SQLException e){
@@ -84,9 +85,9 @@ public class VeiculoService {
 		}
 	}
 	
-	public boolean insertModeloVeiculo(MarcaVeiculo marcaModelo, long codEmpresa){
+	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca){
 		try{
-			return dao.insertModeloVeiculo(marcaModelo, codEmpresa);
+			return dao.insertModeloVeiculo(modelo, codEmpresa, codMarca);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

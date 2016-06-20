@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Marca;
+import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Sulco;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -16,7 +18,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
 
 	private static final String BUSCA_PNEUS_BY_PLACA="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
@@ -28,7 +30,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
@@ -36,14 +38,45 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
 			+ "WHERE P.CODIGO = ? ";
 	
-	private static final String BUSCA_PNEUS_BY_COD_UNIDADE="SELECT MP.NOME AS MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
-			+ "MOP.NOME AS MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
+	private static final String BUSCA_PNEUS_BY_COD_UNIDADE="SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
+			+ "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
 			+ "P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status	FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
 			+ "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ?";
 	
+	
+	public boolean insert(Pneu pneu, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO PNEU(?, ?, ?, ?,?, "
+					+ "?, ?, ?,?, ?, ?, ?, ?)");
+			stmt.setLong(1, pneu.getCodigo());
+			stmt.setLong(2, pneu.getModelo().getCodigo());
+			stmt.setLong(3, pneu.getDimensao().codigo);
+			stmt.setDouble(4, pneu.getPressaoCorreta());
+			stmt.setDouble(5, 0L);
+			stmt.setDouble(6, pneu.getSulcoPneuNovo().getCentral());
+			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
+			stmt.setDouble(8, pneu.getSulcoAtual().getCentral());
+			stmt.setDouble(9, pneu.getSulcoAtual().getExterno());
+			stmt.setLong(10, codUnidade);
+			stmt.setString(11, pneu.getStatus());
+			stmt.setInt(12, pneu.getVidaAtual());
+			stmt.setInt(13, pneu.getVidasTotal());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o pneu");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
 	
 	public boolean updateSulcos (Pneu pneu, Long codUnidade) throws SQLException{
 		Connection conn = null;
@@ -201,8 +234,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 	public Pneu createPneu(ResultSet rSet) throws SQLException{
 		Pneu pneu = new Pneu();
 		pneu.setCodigo(rSet.getInt("CODIGO"));
-		pneu.setMarca(rSet.getString("MARCA"));
-		pneu.setModelo(rSet.getString("MODELO"));
+		Marca marca = new Marca();
+		marca.setCodigo(rSet.getLong("COD_MARCA"));
+		marca.setNome(rSet.getString("MARCA"));
+		pneu.setMarca(marca);
+		Modelo modelo = new Modelo();
+		modelo.setCodigo(rSet.getLong("COD_MODELO"));
+		modelo.setNome(rSet.getString("MODELO"));
+		pneu.setModelo(modelo);
 
 		Pneu.Dimensao dimensao = new Pneu.Dimensao();
 		dimensao.altura = rSet.getInt("ALTURA");

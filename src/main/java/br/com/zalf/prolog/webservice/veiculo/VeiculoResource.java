@@ -13,7 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.MarcaVeiculo;
+import br.com.zalf.prolog.models.Marca;
+import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
@@ -80,15 +81,15 @@ public class VeiculoResource {
 	@GET
 	@Secured
 	@Path("/marcaModelos/{codEmpresa}")
-	public List<MarcaVeiculo> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
+	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
 		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
 	}
 	
 	@POST
 	@Secured
-	@Path("/modelo/{codEmpresa}")
-	public Response insertModeloVeiculo(MarcaVeiculo marcaModelo, @PathParam("codEmpresa") long codEmpresa){
-		if (service.insertModeloVeiculo(marcaModelo, codEmpresa)) {
+	@Path("/modelo/{codEmpresa}/{codMarca}")
+	public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
+		if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {
 			return Response.Ok("Modelo inserido com sucesso");
 		}else{
 			return Response.Error("Erro ao inserir o modelo");
