@@ -140,7 +140,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return eixos;
 	}
 
-	// TODO: Fazer join token
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
 		List<Veiculo> veiculos = new ArrayList<>();

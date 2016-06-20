@@ -35,11 +35,17 @@ public class VeiculoResource {
 	
 	@GET
 	@Secured
+	@Path("/{codUnidade}")
+	public List<Veiculo> getVeiculosAtivosByUnidade(@PathParam("codUnidade") Long codUnidade){
+		return service.getVeiculosAtivosByUnidade(codUnidade);
+	}
+	
+	@GET
+	@Secured
 	@Path("/{codUnidade}/tipo")
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getTipoVeiculosByUnidade(codUnidade);
-	}
-	
+	}	
 	
 	@POST
 	@Secured
