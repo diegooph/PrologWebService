@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.MarcaModeloVeiculo;
+import br.com.zalf.prolog.models.MarcaVeiculo;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
@@ -80,14 +80,14 @@ public class VeiculoResource {
 	@GET
 	@Secured
 	@Path("/marcaModelos/{codEmpresa}")
-	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
+	public List<MarcaVeiculo> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
 		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
 	}
 	
 	@POST
 	@Secured
 	@Path("/modelo/{codEmpresa}")
-	public Response insertModeloVeiculo(MarcaModeloVeiculo marcaModelo, @PathParam("codEmpresa") long codEmpresa){
+	public Response insertModeloVeiculo(MarcaVeiculo marcaModelo, @PathParam("codEmpresa") long codEmpresa){
 		if (service.insertModeloVeiculo(marcaModelo, codEmpresa)) {
 			return Response.Ok("Modelo inserido com sucesso");
 		}else{

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.MarcaModeloVeiculo;
+import br.com.zalf.prolog.models.MarcaVeiculo;
+import br.com.zalf.prolog.models.ModeloVeiculo;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -180,15 +181,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		tipo.setCodigo(rSet.getLong("COD_TIPO"));
 		tipo.setNome(rSet.getString("TIPO"));
 		veiculo.setTipo(tipo);
-		MarcaModeloVeiculo marcaModelo = new MarcaModeloVeiculo();
-		marcaModelo.setCodigo(rSet.getLong("COD_MARCA"));
-		marcaModelo.setNome(rSet.getString("MARCA"));
-		MarcaModeloVeiculo.ModeloVeiculo modeloVeiculo = new MarcaModeloVeiculo.ModeloVeiculo();
-		modeloVeiculo.codigo = rSet.getLong("COD_MODELO");
-		modeloVeiculo.nome = rSet.getString("MODELO");
-		List<MarcaModeloVeiculo.ModeloVeiculo> modelos = new ArrayList<>();
-		modelos.add(modeloVeiculo);
-		marcaModelo.setModelos(modelos);
+		MarcaVeiculo marca = new MarcaVeiculo();
+		marca.setCodigo(rSet.getLong("COD_MARCA"));
+		marca.setNome(rSet.getString("MARCA"));
+		veiculo.setMarca(marca);
+		ModeloVeiculo modelo = new ModeloVeiculo();
+		modelo.setCodigo(rSet.getLong("COD_MODELO"));
+		modelo.setNome(rSet.getString("MODELO"));
+		veiculo.setModelo(modelo);		
 		return veiculo;
 	}
 
@@ -203,7 +203,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt.setLong(3, veiculo.getKmAtual());
 			stmt.setBoolean(4, true);
 			stmt.setLong(5, veiculo.getTipo().getCodigo());
-			stmt.setLong(6, veiculo.getMarcaModelo().getModelos().get(1).codigo);
+			stmt.setLong(6, veiculo.getModelo().getCodigo());
 			stmt.setLong(7, veiculo.getEixos().codigo);
 			int count = stmt.executeUpdate();
 			if(count == 0){
@@ -261,14 +261,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}		
 	}
 
-	public List<MarcaModeloVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException{
+	public List<MarcaVeiculo> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 
-		List<MarcaModeloVeiculo> marcas = new ArrayList<>();
-		List<MarcaModeloVeiculo.ModeloVeiculo> modelos = new ArrayList<>();
-		MarcaModeloVeiculo marca = new MarcaModeloVeiculo();
+		List<MarcaVeiculo> marcas = new ArrayList<>();
+		List<ModeloVeiculo> modelos = new ArrayList<>();
+		MarcaVeiculo marca = new MarcaVeiculo();
 
 		try {
 			conn = getConnection();
@@ -283,27 +283,27 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					L.d("metodo", "marcas.size == 0");
 					marca.setCodigo(rSet.getLong("COD_MARCA"));
 					marca.setNome(rSet.getString("MARCA"));
-					MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
-					modelo.codigo = rSet.getLong("COD_MODELO");
-					modelo.nome = rSet.getString("MODELO");
+					ModeloVeiculo modelo = new ModeloVeiculo();
+					modelo.setCodigo(rSet.getLong("COD_MODELO"));
+					modelo.setNome(rSet.getString("MODELO"));
 					modelos.add(modelo);
 				}else{
 					L.d("metodo", "marcas.size > 0");
 					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
-						MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
-						modelo.codigo = rSet.getLong("COD_MODELO");
-						modelo.nome = rSet.getString("MODELO");
+						ModeloVeiculo modelo = new ModeloVeiculo();
+						modelo.setCodigo(rSet.getLong("COD_MODELO"));
+						modelo.setNome(rSet.getString("MODELO"));
 						modelos.add(modelo);
 					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
 						marca.setModelos(modelos);
 						marcas.add(marca);
-						marca = new MarcaModeloVeiculo();
+						marca = new MarcaVeiculo();
 						modelos = new ArrayList<>();
 						marca.setCodigo(rSet.getLong("COD_MARCA"));
 						marca.setNome(rSet.getString("MARCA"));
-						MarcaModeloVeiculo.ModeloVeiculo modelo = new MarcaModeloVeiculo.ModeloVeiculo();
-						modelo.codigo = rSet.getLong("COD_MODELO");
-						modelo.nome = rSet.getString("MODELO");
+						ModeloVeiculo modelo = new ModeloVeiculo();
+						modelo.setCodigo(rSet.getLong("COD_MODELO"));
+						modelo.setNome(rSet.getString("MODELO"));
 						modelos.add(modelo);						
 					}
 				}
@@ -318,14 +318,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 
-	public boolean insertModeloVeiculo(MarcaModeloVeiculo marcaModelo, long codEmpresa) throws SQLException{
+	public boolean insertModeloVeiculo(MarcaVeiculo marcaModelo, long codEmpresa) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
-			for (MarcaModeloVeiculo.ModeloVeiculo modelo : marcaModelo.getModelos()) {
-				stmt.setString(1, modelo.nome);
+			for (ModeloVeiculo modelo : marcaModelo.getModelos()) {
+				stmt.setString(1, modelo.getNome());
 				stmt.setLong(2, marcaModelo.getCodigo());
 				stmt.setLong(3, codEmpresa);
 				int count = stmt.executeUpdate();
