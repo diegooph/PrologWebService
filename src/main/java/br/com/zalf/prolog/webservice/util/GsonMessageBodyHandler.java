@@ -36,7 +36,7 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 	private Gson gson;
 
 	RuntimeTypeAdapterFactory<Servico> adapter = RuntimeTypeAdapterFactory
-            .of(Servico.class)
+            .of(Servico.class, "tipo")
             .registerSubtype(Calibragem.class, Servico.TIPO_CALIBRAGEM)
             .registerSubtype(Movimentacao.class, Servico.TIPO_MOVIMENTACAO)
             .registerSubtype(Inspecao.class, Servico.TIPO_INSPECAO);
