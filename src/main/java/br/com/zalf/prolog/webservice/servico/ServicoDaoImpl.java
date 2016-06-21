@@ -217,6 +217,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 		this.codUnidade = codUnidade;
 		Connection conn = getConnection();
+		conn.setAutoCommit(false);
 		pneuDao = new PneuDaoImpl();
 
 		try{
