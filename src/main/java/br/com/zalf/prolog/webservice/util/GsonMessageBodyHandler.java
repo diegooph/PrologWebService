@@ -31,25 +31,25 @@ import br.com.zalf.prolog.models.pneu.servico.Servico;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
-		MessageBodyReader<Object> {
+MessageBodyReader<Object> {
 	private static final String UTF_8 = "UTF-8";
 	private Gson gson;
 
 	RuntimeTypeAdapterFactory<Servico> adapter = RuntimeTypeAdapterFactory
-            .of(Servico.class, "tipo")
-            .registerSubtype(Calibragem.class, Servico.TIPO_CALIBRAGEM)
-            .registerSubtype(Movimentacao.class, Servico.TIPO_MOVIMENTACAO)
-            .registerSubtype(Inspecao.class, Servico.TIPO_INSPECAO);
-	
+			.of(Servico.class)
+			.registerSubtype(Calibragem.class)
+			.registerSubtype(Movimentacao.class)
+			.registerSubtype(Inspecao.class);
+
 	private Gson getGson() {
 		if (gson == null) {
 			gson = new GsonBuilder()
-	                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-	                .setPrettyPrinting()
-	                .serializeSpecialFloatingPointValues()
-	                .enableComplexMapKeySerialization()
-	                .registerTypeAdapterFactory(adapter)
-	                .create();
+					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+					.setPrettyPrinting()
+					.serializeSpecialFloatingPointValues()
+					.enableComplexMapKeySerialization()
+					.registerTypeAdapterFactory(adapter)
+					.create();
 		}
 		return gson;
 	}
@@ -64,7 +64,7 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 	public Object readFrom(Class<Object> type, Type genericType,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-			throws IOException {
+					throws IOException {
 		InputStreamReader streamReader = new InputStreamReader(entityStream,
 				UTF_8);
 		try {
@@ -97,7 +97,7 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException,
-			WebApplicationException {
+	WebApplicationException {
 		OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8);
 		try {
 			Type jsonType;
