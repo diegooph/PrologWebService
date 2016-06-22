@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.servico;
+package br.com.zalf.prolog.webservice.pneu.servico;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

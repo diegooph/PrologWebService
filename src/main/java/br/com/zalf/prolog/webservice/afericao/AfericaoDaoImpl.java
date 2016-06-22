@@ -31,12 +31,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		try{
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO) "
-					+ "VALUES (?, ?, ?, ?) RETURNING CODIGO");
+			stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, TEMPO_REALIZACAO) "
+					+ "VALUES (?, ?, ?, ?, ?) RETURNING CODIGO");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(afericao.getDataHora()));
 			stmt.setString(2, afericao.getVeiculo().getPlaca());
 			stmt.setLong(3, afericao.getCpfAferidor());
 			stmt.setLong(4, afericao.getKmMomentoAfericao());
+			stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				afericao.setCodigo(rSet.getLong("CODIGO"));
@@ -122,10 +123,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		List<String> servicosCadastrados = getServicosCadastradosByPneu(new Long(pneu.getCodigo()), codUnidade);
 
 		for (String servicoPendente : servicosPendentes) {
-			if(servicosCadastrados.contains(servicoPendente)){
-				incrementaQtApontamentos(pneu, codUnidade, servicoPendente, conn);		
-			}else{
-				insertServico(pneu, codAfericao, servicoPendente, codUnidade, conn);
+
+			if(servicoPendente.equals(Servico.TIPO_INSPECAO) && servicosCadastrados.contains(Servico.TIPO_CALIBRAGEM)){
+				calibragemToInspecao(pneu, codUnidade, conn);				
+			}else{			
+				if(servicosCadastrados.contains(servicoPendente)){
+					incrementaQtApontamentos(pneu, codUnidade, servicoPendente, conn);		
+				}else{
+					insertServico(pneu, codAfericao, servicoPendente, codUnidade, conn);
+				}
 			}
 		}
 	}
@@ -187,6 +193,29 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		stmt.setLong(4, pneu.getCodigo());
 		stmt.setLong(5, codUnidade);
 		stmt.setString(6, tipoServico);
+		stmt.executeUpdate();
+	}
+
+	/**
+	 * Método usado para trocar um serviço cadastrado como calibragem para inspeção
+	 * @param pneu
+	 * @param codUnidade
+	 * @param conn
+	 * @throws SQLException
+	 */
+	private void calibragemToInspecao (Pneu pneu, Long codUnidade, Connection conn) throws SQLException{
+
+		PreparedStatement stmt = null;
+		stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
+				+ "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
+				+ "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
+		stmt.setLong(1, pneu.getCodigo());
+		stmt.setLong(2, codUnidade);
+		stmt.setString(3, Servico.TIPO_CALIBRAGEM);
+		stmt.setString(4, Servico.TIPO_INSPECAO);
+		stmt.setLong(5, pneu.getCodigo());
+		stmt.setLong(6, codUnidade);
+		stmt.setString(7,Servico.TIPO_CALIBRAGEM);
 		stmt.executeUpdate();
 	}
 

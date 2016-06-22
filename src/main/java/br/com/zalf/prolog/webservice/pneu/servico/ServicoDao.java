@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.servico;
+package br.com.zalf.prolog.webservice.pneu.servico;
 
 import java.sql.SQLException;
 
