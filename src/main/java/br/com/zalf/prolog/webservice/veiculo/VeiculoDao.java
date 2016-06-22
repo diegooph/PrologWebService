@@ -21,8 +21,15 @@ public interface VeiculoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o update
 	 */
-	boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) throws SQLException;
+	boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
 	
+	/**
+	 * Seta o veiculo como inativo no banco de dados
+	 * @param placa
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean delete(String placa) throws SQLException;
 	/**
 	 * Busca os veículos ativos de uma determinada unidade
 	 * @param codUnidade um código

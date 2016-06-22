@@ -58,10 +58,19 @@ public class VeiculoService {
 		}
 	}
 	
-	public boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) {
+	public boolean update(Veiculo veiculo, String placaOriginal) {
 		try {
-			return dao.update(placa, placaEditada, modelo, isAtivo);
+			return dao.update(veiculo, placaOriginal);
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean delete(String placa){
+		try{
+			return dao.delete(placa);
+		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
 		}

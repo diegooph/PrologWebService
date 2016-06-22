@@ -215,20 +215,22 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return true;
 	}
 
-	//TODO refatorar para o novo modelo de veículo
 	@Override
-	public boolean update(String placa, String placaEditada, String modelo, boolean isAtivo) throws SQLException {
+	public boolean update(Veiculo veiculo, String placaOriginal) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE VEICULO SET "
-					+ "PLACA = ?, MODELO = ?, STATUS_ATIVO = ? "
+					+ "PLACA = ?, KM = ?,  COD_TIPO = ?, COD_MODELO = ?, "
+					+ "COD_EIXOS = ? "
 					+ "WHERE PLACA = ?");
-			stmt.setString(1, placaEditada);
-			stmt.setString(2, modelo);
-			stmt.setBoolean(3, isAtivo);
-			stmt.setString(4, placa);
+			stmt.setString(1, veiculo.getPlaca());
+			stmt.setLong(2, veiculo.getKmAtual());
+			stmt.setLong(3, veiculo.getTipo().getCodigo());
+			stmt.setLong(4, veiculo.getModelo().getCodigo());
+			stmt.setLong(5, veiculo.getEixos().codigo);
+			stmt.setString(6, placaOriginal);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o veículo");
@@ -239,6 +241,29 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}		
 		return true;
 	}
+	
+	@Override
+	public boolean delete(String placa) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		L.d("delete", placa);
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
+							+ "WHERE PLACA = ?");
+			stmt.setBoolean(1, false);
+			stmt.setString(2, placa);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao deletar o veículo");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
 
 	public void updateKmByPlaca(String placa, long km) throws SQLException{
 		Connection conn = null;

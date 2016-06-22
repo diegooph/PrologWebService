@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.veiculo;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -59,15 +60,10 @@ public class VeiculoResource {
 	}
 	
 	@PUT	
-	@Path("/update")
+	@Path("/update/{placaOriginal}")
 	@Secured
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response update(
-			@FormParam("placa") String placa,
-			@FormParam("placaEditada") String placaEditada,
-			@FormParam("modelo") String modelo,
-			@FormParam("isAtivo") boolean isAtivo) {
-		if (service.update(placa, placaEditada, modelo, isAtivo)) {
+	public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
+		if (service.update(veiculo, placaOriginal)) {
 			return Response.Ok("Veículo atualizado com sucesso");
 		} else {
 			return Response.Error("Erro ao atualizar o veículo");
@@ -81,6 +77,17 @@ public class VeiculoResource {
 			return Response.Ok("Veículo inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir o veículo");
+		}
+	}
+	
+	@DELETE
+	@Secured
+	@Path("/{placa}")
+	public Response delete(@PathParam("placa") String placa){
+		if (service.delete(placa)) {
+			return Response.Ok("Veículo deletado com sucesso.");
+		}else{
+			return Response.Error("Erro ao deletar o veículo.");
 		}
 	}
 	
