@@ -10,8 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.Pneu;
+import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/pneus")
@@ -36,6 +38,20 @@ public class PneuResource{
 	@Path("/{codUnidade}/{status}")
 	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status){
 		return service.getPneuByCodUnidadeByStatus(codUnidade, status);
+	}
+	
+	@GET
+	@Secured
+	@Path("/marcaModelos/{codEmpresa}")
+	public List<Marca> getMarcaModeloPneuByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
+		return service.getMarcaModeloPneuByCodEmpresa(codEmpresa);
+	}
+	
+	@GET
+	@Secured
+	@Path("/dimensao")
+	public List<Dimensao> getDimensoes(){
+		return service.getDimensoes();
 	}
 
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.pneu.Pneu;
+import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 import br.com.zalf.prolog.models.pneu.Sulco;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
@@ -285,6 +286,86 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			halfSizeListaOriginal ++;
 		}
 		return copiaOriginal;			
+	}
+	
+	public List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		List<Marca> marcas = new ArrayList<>();
+		List<Modelo> modelos = new ArrayList<>();
+		Marca marca = new Marca();
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MA.NOME AS MARCA, MA.CODIGO AS COD_MARCA "
+					+ "FROM MODELO_PNEU MP JOIN MARCA_PNEU MA ON MA.CODIGO = MP.COD_MARCA "
+					+ "WHERE MP.COD_EMPRESA = ? "
+					+ "ORDER BY COD_MARCA, COD_MODELO");
+			stmt.setLong(1, codEmpresa);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				if(marcas.size() == 0 && modelos.size() == 0){ //primeiro resultado do rset
+					L.d("metodo", "marcas.size == 0");
+					marca.setCodigo(rSet.getLong("COD_MARCA"));
+					marca.setNome(rSet.getString("MARCA"));
+					Modelo modelo = new Modelo();
+					modelo.setCodigo(rSet.getLong("COD_MODELO"));
+					modelo.setNome(rSet.getString("MODELO"));
+					modelos.add(modelo);
+				}else{
+					L.d("metodo", "marcas.size > 0");
+					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+						Modelo modelo = new Modelo();
+						modelo.setCodigo(rSet.getLong("COD_MODELO"));
+						modelo.setNome(rSet.getString("MODELO"));
+						modelos.add(modelo);
+					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
+						marca.setModelos(modelos);
+						marcas.add(marca);
+						marca = new Marca();
+						modelos = new ArrayList<>();
+						marca.setCodigo(rSet.getLong("COD_MARCA"));
+						marca.setNome(rSet.getString("MARCA"));
+						Modelo modelo = new Modelo();
+						modelo.setCodigo(rSet.getLong("COD_MODELO"));
+						modelo.setNome(rSet.getString("MODELO"));
+						modelos.add(modelo);						
+					}
+				}
+			}
+			marca.setModelos(modelos);
+			marcas.add(marca);
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return marcas;
+	}
+	
+	public List<Dimensao> getDimensoes() throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Dimensao> dimensoes = new ArrayList<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM DIMENSAO_PNEU");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Dimensao dimensao = new Dimensao();
+				dimensao.codigo = rSet.getLong("CODIGO");
+				dimensao.altura = rSet.getInt("ALTURA");
+				dimensao.aro = rSet.getInt("ARO");
+				dimensao.largura = rSet.getInt("LARGURA");				
+				dimensoes.add(dimensao);
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return dimensoes;
 	}
 
 }

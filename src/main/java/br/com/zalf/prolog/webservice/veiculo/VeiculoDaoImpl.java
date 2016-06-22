@@ -41,7 +41,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
 					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-					+ "WHERE V.COD_UNIDADE = ?");
+					+ "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
