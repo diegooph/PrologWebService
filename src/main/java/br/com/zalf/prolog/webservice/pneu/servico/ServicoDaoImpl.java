@@ -19,8 +19,8 @@ import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.afericao.AfericaoDaoImpl;
-import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.veiculo.VeiculoDaoImpl;
 

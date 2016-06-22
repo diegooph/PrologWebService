@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.pneu;
+package br.com.zalf.prolog.webservice.pneu.pneu;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

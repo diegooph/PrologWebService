@@ -13,7 +13,7 @@ import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {

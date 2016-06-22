@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.afericao;
+package br.com.zalf.prolog.webservice.pneu.afericao;
 
 import java.sql.SQLException;
 
