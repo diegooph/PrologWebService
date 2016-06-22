@@ -119,7 +119,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			stmt.executeUpdate();
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}		
 		return true;
 	}
