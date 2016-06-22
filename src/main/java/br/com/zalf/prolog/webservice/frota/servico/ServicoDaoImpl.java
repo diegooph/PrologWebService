@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota;
+package br.com.zalf.prolog.webservice.frota.servico;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ import br.com.zalf.prolog.models.frota.Tempo;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
-public class FrotaDaoImpl extends DatabaseConnection implements FrotaDao{
+public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 	private static final String PRIORIDADE_CRITICA = "CRITICA";
 	private static final String PRIORIDADE_ALTA = "ALTA";

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota;
+package br.com.zalf.prolog.webservice.frota.servico;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ import br.com.zalf.prolog.webservice.auth.Secured;
 @Path("/frota")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class FrotaResource {
-	private FrotaService service = new FrotaService();
+public class ServicoResource {
+	private ServicoService service = new ServicoService();
 
 	@GET
 	@Secured

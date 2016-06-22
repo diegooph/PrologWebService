@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota;
+package br.com.zalf.prolog.webservice.frota.servico;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 
-public class FrotaService {
-	private FrotaDaoImpl dao = new FrotaDaoImpl();
+public class ServicoService {
+	private ServicoDaoImpl dao = new ServicoDaoImpl();
 
 	public List<ManutencaoHolder> getManutencaoHolder(Long codUnidade, int limit, long offset, boolean isAbertos) {
 		

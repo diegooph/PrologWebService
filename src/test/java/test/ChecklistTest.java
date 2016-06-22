@@ -2,7 +2,7 @@ package test;
 
 import org.junit.Test;
 
-import br.com.zalf.prolog.webservice.checklist.ChecklistService;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import junit.framework.TestCase;
 
 public class ChecklistTest extends TestCase {

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.checklist;
+package br.com.zalf.prolog.webservice.frota.checklist;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

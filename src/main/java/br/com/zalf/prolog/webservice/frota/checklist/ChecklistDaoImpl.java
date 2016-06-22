@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.checklist;
+package br.com.zalf.prolog.webservice.frota.checklist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,8 +18,8 @@ import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.checklistModelo.ChecklistModeloDaoImpl;
-import br.com.zalf.prolog.webservice.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 

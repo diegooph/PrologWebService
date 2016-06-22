@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.checklistModelo;
+package br.com.zalf.prolog.webservice.frota.checklistModelo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
