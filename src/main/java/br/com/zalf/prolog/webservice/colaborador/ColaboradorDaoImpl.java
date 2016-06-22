@@ -18,7 +18,7 @@ import br.com.zalf.prolog.models.permissao.Visao;
 import br.com.zalf.prolog.models.permissao.pilares.Pilar;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.relato.RelatoDaoImpl;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
