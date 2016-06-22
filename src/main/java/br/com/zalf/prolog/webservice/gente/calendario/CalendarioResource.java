@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.calendario;
+package br.com.zalf.prolog.webservice.gente.calendario;
 
 import java.util.List;
 
