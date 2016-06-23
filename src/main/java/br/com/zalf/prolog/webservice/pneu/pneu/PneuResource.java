@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,8 +37,8 @@ public class PneuResource{
 	@GET
 	@Secured
 	@Path("/{codUnidade}/{status}")
-	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status){
-		return service.getPneuByCodUnidadeByStatus(codUnidade, status);
+	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status, @HeaderParam("Authorization") String tokenHeader){
+		 return service.getPneuByCodUnidadeByStatus(codUnidade, status);
 	}
 	
 	@GET

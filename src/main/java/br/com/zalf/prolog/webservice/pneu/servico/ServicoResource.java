@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.pneu.servico;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -41,8 +42,9 @@ public class ServicoResource {
 	@POST
 	@Secured
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade){
-		if(service.insertManutencao(servico, codUnidade)){
+	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade, @HeaderParam("Authorization") String tokenHeader){
+		String token = tokenHeader.substring("Bearer".length()).trim();
+		if(service.insertManutencao(servico, codUnidade, token)){
 			return Response.Ok("Serviço consertado com sucesso.");
 		}else{
 			return Response.Error("Erro ao marcar o item como consertado.");

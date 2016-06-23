@@ -29,9 +29,9 @@ public class ServicoService {
 		}
 	}
 	
-	public boolean insertManutencao(Servico servico, Long codUnidade) {
+	public boolean insertManutencao(Servico servico, Long codUnidade, String token) {
 		try{
-			return dao.insertManutencao(servico, codUnidade);
+			return dao.insertManutencao(servico, codUnidade, token);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

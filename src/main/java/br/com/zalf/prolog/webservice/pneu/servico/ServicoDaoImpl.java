@@ -213,7 +213,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return movimentacao;
 	}
 
-	public boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException {
+	public boolean insertManutencao(Servico servico, Long codUnidade, String token) throws SQLException {
 
 		this.codUnidade = codUnidade;
 		Connection conn = getConnection();
@@ -229,7 +229,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 				insertInspecao((Inspecao) servico, conn);
 				break;
 			case Servico.TIPO_MOVIMENTACAO:
-				insertMovimentacao((Movimentacao) servico, conn);
+				insertMovimentacao((Movimentacao) servico, conn, token);
 				break;
 			}
 			conn.commit();
@@ -305,7 +305,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 	}
 
 
-	private boolean insertMovimentacao(Movimentacao servico, Connection conn) throws SQLException{
+	private boolean insertMovimentacao(Movimentacao servico, Connection conn, String token) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
@@ -334,10 +334,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 			if (servico.getPneu().getVidaAtual() == servico.getPneu().getVidasTotal()) {
 				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.DESCARTE, conn);
+				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.DESCARTE, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
 			}else{
 				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.RECAPAGEM, conn);
+				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.RECAPAGEM, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
 			}
+			
 			pneuDao.updateStatus(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, conn);
+			pneuDao.registraMovimentacaoHistorico(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
 			pneuDao.updateVeiculoPneu(servico.getPlaca(), servico.getPneu(), servico.getPneuNovo(), conn);
 			
 		}finally {
