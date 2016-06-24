@@ -54,8 +54,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO PNEU(?, ?, ?, ?,?, "
-					+ "?, ?, ?,?, ?, ?, ?, ?)");
+			stmt = conn.prepareStatement("INSERT INTO PNEU VALUES(?, ?, ?, ?,?,?, ?, ?,?, ?, ?, ?, ?)");
 			stmt.setLong(1, pneu.getCodigo());
 			stmt.setLong(2, pneu.getModelo().getCodigo());
 			stmt.setLong(3, pneu.getDimensao().codigo);
@@ -69,6 +68,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			stmt.setString(11, pneu.getStatus());
 			stmt.setInt(12, pneu.getVidaAtual());
 			stmt.setInt(13, pneu.getVidasTotal());
+			System.out.println(stmt.toString());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o pneu");
