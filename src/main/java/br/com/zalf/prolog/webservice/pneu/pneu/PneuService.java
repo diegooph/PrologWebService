@@ -22,6 +22,15 @@ public class PneuService {
 		}
 	}
 	
+	public boolean update (Pneu pneu, Long codUnidade, Long codOriginal){
+		try{
+			return dao.update(pneu, codUnidade, codOriginal);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca){
 		try{
 			return dao.insertModeloPneu(modelo, codEmpresa, codMarca);

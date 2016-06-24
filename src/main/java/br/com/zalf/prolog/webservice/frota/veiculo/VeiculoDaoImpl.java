@@ -194,6 +194,10 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		veiculo.setPlaca(veiculo.getPlaca().replaceAll("\\-|\\s+", "").trim().toUpperCase());
+		if (veiculo.getPlaca().trim().isEmpty() || veiculo.getPlaca().length() != 7) {
+			throw new SQLException("Campo placa esta errado.");
+		}
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");

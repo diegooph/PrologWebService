@@ -73,7 +73,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setDouble(6, pneu.getSulcoAtual().getExterno());
 			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
 			//Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
-			pneuDaoImpl.update(pneu, codUnidade, conn);
+			pneuDaoImpl.updateMedicoes(pneu, codUnidade, conn);
 			stmt.executeUpdate();
 			Restricao restricao = getRestricoesByCodUnidade(codUnidade);
 			List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
