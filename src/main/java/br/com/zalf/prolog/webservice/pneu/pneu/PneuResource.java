@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.Marca;
+import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
@@ -31,6 +32,17 @@ public class PneuResource{
 			return Response.Ok("Pneu inserido com sucesso.");
 		}else{
 			return Response.Error("Erro ao inserir o pneu");
+		}
+	}
+	
+	@POST
+	@Secured
+	@Path("/modelo/{codEmpresa}/{codMarca}")
+	public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
+		if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
+			return Response.Ok("Modelo de pneu inserido com sucesso.");
+		}else{
+			return Response.Error("Erro ao inserir o modelo de pneu.");
 		}
 	}
 	

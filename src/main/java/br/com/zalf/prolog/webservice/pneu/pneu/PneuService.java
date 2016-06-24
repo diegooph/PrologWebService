@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Marca;
+import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 
@@ -15,6 +16,15 @@ public class PneuService {
 	public boolean insert(Pneu pneu, Long codUnidade){
 		try{
 			return dao.insert(pneu, codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca){
+		try{
+			return dao.insertModeloPneu(modelo, codEmpresa, codMarca);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

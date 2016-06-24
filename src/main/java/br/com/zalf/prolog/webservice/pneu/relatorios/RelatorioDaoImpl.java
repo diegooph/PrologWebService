@@ -33,7 +33,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE "
 			+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
-			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC";
+			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC "
+			+ "LIMIT ? OFFSET ?";
 
 
 	public ResumoSulcos getResumoSulcos(Long codUnidade, String status)throws SQLException{
@@ -97,7 +98,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade) throws SQLException{
+	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -111,6 +112,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			stmt.setDouble(2, fimFaixa);
 			stmt.setLong(3, codEmpresa);
 			stmt.setString(4, String.valueOf(codUnidade));
+			stmt.setLong(5, limit);
+			stmt.setLong(6, offset);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				pneu = pneuDaoImpl.createPneu(rSet);

@@ -382,5 +382,25 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		}
 		return dimensoes;
 	}
+	
+	public boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
+			stmt.setString(1, modelo.getNome());
+			stmt.setLong(2, codMarca);
+			stmt.setLong(3, codEmpresa);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao cadastrar o modelo do pneu");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
 
 }
