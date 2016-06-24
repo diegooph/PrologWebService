@@ -244,7 +244,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		System.out.println(pneus);
 		return pneus;
 	}
 
