@@ -83,7 +83,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		ServicoHolder holder = new ServicoHolder();
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa));
-		setServicos(holder);
+		holder.setListServicos(getServicosAbertosByPlaca(placa, "%"));
 		if(containInspecao(holder.getListServicos())){
 			holder.setListAlternativaInspecao(getListAlternativasInspecao());
 		}
@@ -140,7 +140,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return listAlternativas;
 	}
 
-	private void setServicos(ServicoHolder holder) throws SQLException{
+	public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -160,15 +160,16 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					+ "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
 					+ "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
 					+ "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = ITS.COD_PNEU "
-					+ "WHERE A.PLACA_VEICULO = ? AND ITS.DATA_HORA_RESOLUCAO IS NULL "
+					+ "WHERE A.PLACA_VEICULO = ? AND ITS.DATA_HORA_RESOLUCAO IS NULL AND ITS.TIPO_SERVICO LIKE ? "
 					+ "ORDER BY ITS.TIPO_SERVICO");
-			stmt.setString(1, holder.getVeiculo().getPlaca());
+			stmt.setString(1, placa);
+			stmt.setString(2, tipoServico);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 
-				String tipoServico = rSet.getString("TIPO_SERVICO");
+				String tipo = rSet.getString("TIPO_SERVICO");
 
-				switch (tipoServico) {
+				switch (tipo) {
 				case Servico.TIPO_CALIBRAGEM:
 					listServicos.add(createCalibragem(rSet));
 					break;
@@ -183,7 +184,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		}finally {
 			closeConnection(conn, stmt, null);
 		}
-		holder.setListServicos(listServicos);
+		return listServicos;
 	}
 
 	private Calibragem createCalibragem(ResultSet rSet) throws SQLException{

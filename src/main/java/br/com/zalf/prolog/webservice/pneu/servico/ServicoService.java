@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.pneu.servico;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.models.pneu.servico.Servico;
@@ -26,6 +28,15 @@ public class ServicoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ServicoHolder();
+		}
+	}
+	
+	public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico){
+		try{
+			return dao.getServicosAbertosByPlaca(placa, tipoServico);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
 		}
 	}
 	

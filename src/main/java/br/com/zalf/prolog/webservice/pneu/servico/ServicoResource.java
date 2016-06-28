@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.servico;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -20,16 +22,16 @@ import br.com.zalf.prolog.webservice.auth.Secured;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ServicoResource {
-	
+
 	ServicoService service = new ServicoService();
-	
+
 	@GET
 	@Path("/{codUnidade}")
 	@Secured
 	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade){
 		return service.getConsolidadoListaVeiculos(codUnidade);
 	}
-	
+
 	@GET
 	@Path("/{codUnidade}/{placaVeiculo}")
 	@Secured
@@ -38,7 +40,16 @@ public class ServicoResource {
 			@PathParam("codUnidade") Long codUnidade){
 		return service.getServicosByPlaca(placa, codUnidade);
 	}
-	
+
+	@GET
+	@Path("/abertos/{placaVeiculo}/{tipoServico}")
+	@Secured
+	public List<Servico> getServicosAbertosByPlaca(
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("tipoServico") String tipoServico){
+		return service.getServicosAbertosByPlaca(placa, tipoServico);
+	}
+
 	@POST
 	@Secured
 	@Path("/conserto/{codUnidade}")
