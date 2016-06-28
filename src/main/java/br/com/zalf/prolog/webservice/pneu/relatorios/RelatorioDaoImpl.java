@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.relatorios.ResumoSulcos;
+import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 /**
  * Classe responsável por estratificar os dados dos pneus.
@@ -21,7 +22,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = "RelatorioPneus";
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE =? ORDER BY 1 DESC";
+	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ? AND STATUS LIKE ? ORDER BY 1 DESC";
 
 	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
@@ -37,9 +38,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "LIMIT ? OFFSET ?";
 
 
-	public ResumoSulcos getResumoSulcos(Long codUnidade, String status)throws SQLException{
+	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, String status)throws SQLException{
 
-		ResumoSulcos resumo = new ResumoSulcos();
 		List<Double> valores = new ArrayList<>();
 
 		Connection conn = null;
@@ -48,7 +48,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
-			stmt.setLong(1, codUnidade);
+			stmt.setString(1, codUnidade);
+			stmt.setString(2, status);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
@@ -56,39 +57,44 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		setFaixas(resumo, valores);
-		return resumo;
+		if (valores.isEmpty()) {
+			return new ArrayList<>();
+
+		}else{
+			return getFaixas(valores);
+		}
 	};
 
-	private List<ResumoSulcos.Faixa> setFaixas(ResumoSulcos resumo,List<Double> valores){
+	private List<Faixa> getFaixas(List<Double> valores){
 		Double minimo = (double) 0;
 		Double cota = valores.get(0) / 5;
 		Double maximo = cota;
 		int totalPneus = valores.size();
-		List<ResumoSulcos.Faixa> faixas = new ArrayList<>();
+		List<Faixa> faixas = new ArrayList<>();
 		//cria as faixas
+		L.d("kk", valores.toString());
 		while(minimo < valores.get(0)){
-			ResumoSulcos.Faixa faixa = new ResumoSulcos.Faixa();
-			faixa.inicio = minimo;
-			faixa.fim = maximo;
+			Faixa faixa = new Faixa();
+			faixa.setInicio(minimo);
+			faixa.setFim(maximo);
 			minimo = maximo;
 			maximo = maximo + cota;
 			faixas.add(faixa);
 		}
 		//soma cada sulco para a sua devida faixa
-		for(ResumoSulcos.Faixa faixa : faixas){
+		for(Faixa faixa : faixas){
 			for (int i = 0; i < valores.size(); i++) {
-				if(valores.get(i)>= faixa.inicio && valores.get(i) < faixa.fim){
-					faixa.totalPneus ++;
+				if(valores.get(i)> faixa.getInicio() && valores.get(i) <= faixa.getFim()){
+					faixa.setTotalPneus(faixa.getTotalPneus()+1);;
 					valores.remove(i);
 					i--;
 				}
 			}
-			faixa.porcentagem = faixa.totalPneus / totalPneus;
+			faixa.setPorcentagem(faixa.getTotalPneus()/totalPneus);
 		}
 		return faixas;
 	}
-	
+
 	/**
 	 * Busca os pneus respeitando os filtros de limite de sulcos aplicados, além do codEmpresa e codUnidade
 	 * @param inicioFaixa menor sulco a ser considerado

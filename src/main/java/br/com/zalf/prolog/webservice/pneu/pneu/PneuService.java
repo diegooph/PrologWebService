@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Modelo;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 
@@ -64,6 +65,15 @@ public class PneuService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+	
+	public boolean vinculaPneuVeiculo(Veiculo veiculo){
+		try{
+			return dao.vinculaPneuVeiculo(veiculo);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

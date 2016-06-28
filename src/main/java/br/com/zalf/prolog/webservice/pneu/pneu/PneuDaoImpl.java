@@ -10,6 +10,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Modelo;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 import br.com.zalf.prolog.models.pneu.Sulco;
@@ -433,6 +434,85 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			}	
 		}
 		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	public boolean vinculaPneuVeiculo(Veiculo veiculo) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		long codUnidade = 0L;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			for(Pneu pneu : veiculo.getListPneus()){
+				stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU VALUES(?,?,(SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?) RETURNING COD_UNIDADE");
+				stmt.setString(1, veiculo.getPlaca());
+				stmt.setLong(2, pneu.getCodigo());
+				stmt.setString(3, veiculo.getPlaca());
+				stmt.setInt(4, pneu.getPosicao());				
+				rSet = stmt.executeQuery();
+				if(rSet.next()){
+					codUnidade = rSet.getLong("COD_UNIDADE");
+				}else{
+					throw new SQLException("Erro ao vincular o pneu ao veículo");
+				}
+				updateStatus(pneu, codUnidade, Pneu.EM_USO, conn);
+			}
+			conn.commit();
+		}catch(SQLException e){
+			e.printStackTrace();
+			conn.rollback();
+			return false;
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	private void updatePosicao(String placa, Pneu pneu, int posicao, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET POSICAO = ? WHERE PLACA = ? AND COD_PNEU = ?");
+			stmt.setInt(1, posicao);
+			stmt.setString(2, placa);
+			stmt.setLong(3, pneu.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar a posicao do pneu");
+			}
+		}finally{
+			closeConnection(null, stmt, null);
+		}
+	}
+
+	public boolean updatePosicaoPneuVeiculo(Veiculo veiculo) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		long codUnidade = 0L;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			// primeiramente é alterado a posicao de todos os pneus para uma posicao ficticia, 
+			//após isso é feito o update para inserrir a nova posicao do pneu, esse processo é realizado pois existe a clausula unique(placa, posicao)
+			//se fosse realizado direto o update pneu a pneu iria violar o unique.
+			for(Pneu pneu : veiculo.getListPneus()){
+				updatePosicao(veiculo.getPlaca(), pneu, pneu.getPosicao()+5, conn);
+			}
+			for(Pneu pneu : veiculo.getListPneus()){
+				updatePosicao(veiculo.getPlaca(), pneu, pneu.getPosicao(), conn);
+			}
+			conn.commit();
+		}catch(SQLException e){
+			e.printStackTrace();
+			conn.rollback();
+			return false;
+		}finally {
 			closeConnection(conn, stmt, null);
 		}
 		return true;

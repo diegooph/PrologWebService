@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.auth.Secured;
@@ -77,6 +78,17 @@ public class PneuResource{
 	@Path("/dimensao")
 	public List<Dimensao> getDimensoes(){
 		return service.getDimensoes();
+	}
+	
+	@POST
+	@Secured
+	@Path("/vincular")
+	public Response vinculaPneuVeiculo(Veiculo veiculo){
+		if (service.vinculaPneuVeiculo(veiculo)) {
+			return Response.Ok("Pneus vinculados com sucesso.");
+		}else{
+			return Response.Error("Erro ao víncular os pneus ao veículo");
+		}
 	}
 
 }
