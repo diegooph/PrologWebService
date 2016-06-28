@@ -283,7 +283,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					+ "COD_ALTERNATIVA = ? "
 					+ "WHERE COD_AFERICAO = ? AND "
 					+ "COD_PNEU = ? AND "
-					+ "STATUS_RESOLUCAO IS NULL "
+					+ "DATA_HORA_RESOLUCAO IS NULL "
 					+ "AND TIPO_SERVICO = ?");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, servico.getCpfMecanico());

@@ -109,7 +109,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
 		PreparedStatement stmt = null;
 		try {
-			stmt = conn.prepareStatement("UPDATE PNEU SET"
+			stmt = conn.prepareStatement("UPDATE PNEU SET "
 					+ "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, ALTURA_SULCO_CENTRAL = ? "
 					+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
 			stmt.setDouble(1, pneu.getPressaoAtual());
