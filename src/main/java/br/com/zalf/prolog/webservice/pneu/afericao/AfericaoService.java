@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
@@ -33,6 +35,15 @@ public class AfericaoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new SelecaoPlacaAfericao();
+		}
+	}
+	
+	public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset){
+		try{
+			return afericaoDaoImpl.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
 		}
 	}
 }

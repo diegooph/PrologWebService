@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Restricao;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
@@ -18,6 +20,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
@@ -35,7 +38,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 					+ "VALUES (?, ?, ?, ?, ?) RETURNING CODIGO");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(afericao.getDataHora()));
 			stmt.setString(2, afericao.getVeiculo().getPlaca());
-			stmt.setLong(3, afericao.getCpfAferidor());
+			stmt.setLong(3, afericao.getColaborador().getCpf());
 			stmt.setLong(4, afericao.getKmMomentoAfericao());
 			stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
 			rSet = stmt.executeQuery();
@@ -83,7 +86,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		}
 
 	}
-
 
 	/**
 	 * Cria uma lista com os serviços necessários que sejam cadastrados para o pneu verificado
@@ -350,6 +352,97 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			closeConnection(conn, stmt, rSet);
 		}
 		return selecaoPlacaAfericao;
+	}
+
+	/**
+	 * Busca uma lista com informações reduzidas sobre as aferições, usado para exibir uma lista resumida dos dados (data, nome, tempo, placa)
+	 * @param codUnidades lista com os codigos das unidades a serem buscadas as aferições
+	 * @param placas
+	 * @param limit
+	 * @param offset
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException{
+		//LIKE ANY (ARRAY[?])
+		List<Afericao> afericoes = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+					+ "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
+					+ "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
+					+ "ORDER BY A.DATA_HORA DESC "
+					+ "LIMIT ? OFFSET ?");			
+			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
+			stmt.setLong(3, limit);
+			stmt.setLong(4, offset);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				afericoes.add(createAfericaoResumida(rSet));
+			}
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		return afericoes;
+	}
+
+	public Afericao getByCod (Long codAfericao, Long codUnidade) throws SQLException{
+
+		Connection conn = null;
+		ResultSet rSet = null;
+		PreparedStatement stmt = null;
+		Afericao afericao = new Afericao();
+		Veiculo veiculo = new Veiculo();
+		List<Pneu> pneus = new ArrayList<>();
+		PneuDaoImpl pneuDao = new PneuDaoImpl();
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, "
+					+ "AV.PSI AS PRESSAO_ATUAL, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, " 
+					+ "DP.ALTURA, DP.LARGURA, DP.ARO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL "
+					+ "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
+					+ "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
+					+ "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA "
+					+ "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
+					+ "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
+					+ "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ?");
+			stmt.setLong(1, codAfericao);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+					afericao = createAfericaoResumida(rSet);
+					veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
+
+				pneus.add(pneuDao.createPneu(rSet));
+			}
+			veiculo.setListPneus(pneus);
+			afericao.setVeiculo(veiculo);
+
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		return afericao;	
+	}
+
+	private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException{
+		Afericao afericao = new Afericao();
+		afericao.setCodigo(rSet.getLong("CODIGO"));
+		afericao.setDataHora(rSet.getDate("DATA_HORA"));
+		afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
+		afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
+		afericao.setVeiculo(veiculo);
+		Colaborador colaborador = new Colaborador();
+		colaborador.setCpf(rSet.getLong("CPF"));
+		colaborador.setNome(rSet.getString("NOME"));
+		afericao.setColaborador(colaborador);
+		return afericao;
 	}
 }
 

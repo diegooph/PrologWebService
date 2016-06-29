@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -8,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
@@ -45,13 +47,23 @@ public class AfericaoResource {
 	public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa){
 		return service.getNovaAfericao(placa);
 	}
-	
-	
+		
 	@GET
 	@Secured
 	@Path("/listaAfericao/{codUnidade}")
 	public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
 			@PathParam("codUnidade") Long codUnidade){
 		return service.getSelecaoPlacaAfericao(codUnidade);
+	}
+	
+	@GET
+	@Secured
+	@Path("/getAll")
+	public List<Afericao> getAfericoesByCodUnidadeByPlaca(
+			@QueryParam("codUnidades") List<String> codUnidades, 
+			@QueryParam("placas") List<String> placas, 
+			@QueryParam("limit") long limit,
+			@QueryParam("offset") long offset){
+		return service.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
 	}
 }
