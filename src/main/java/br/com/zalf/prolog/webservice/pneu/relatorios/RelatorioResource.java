@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
@@ -21,10 +22,10 @@ public class RelatorioResource {
 	
 	@GET
 	@Secured
-	@Path("/resumoSulcos/{codUnidade}/{status}")
+	@Path("/resumoSulcos/{codUnidade}")
 	public List<Faixa> getQtPneusByFaixaSulco(
 			@PathParam("codUnidade") String codUnidade,
-			@PathParam("status") String status){
+			@QueryParam("status") List<String> status){
 		return service.getQtPneusByFaixaSulco(codUnidade, status);
 	}
 	

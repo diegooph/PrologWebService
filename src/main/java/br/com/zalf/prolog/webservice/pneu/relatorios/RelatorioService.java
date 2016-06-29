@@ -20,7 +20,7 @@ public class RelatorioService {
 		}
 	}
 	
-	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, String status){
+	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, List<String> status){
 		try{
 			return dao.getQtPneusByFaixaSulco(codUnidade, status);
 		}catch(SQLException e){

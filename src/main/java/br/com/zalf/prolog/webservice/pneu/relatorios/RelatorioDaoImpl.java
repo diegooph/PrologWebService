@@ -12,6 +12,7 @@ import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 /**
  * Classe responsável por estratificar os dados dos pneus.
@@ -22,7 +23,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = "RelatorioPneus";
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ? AND STATUS LIKE ? ORDER BY 1 DESC";
+	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ? AND STATUS "
+			+ "LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
 
 	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
@@ -38,18 +40,21 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "LIMIT ? OFFSET ?";
 
 
-	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, String status)throws SQLException{
+	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, List<String> status)throws SQLException{
 
 		List<Double> valores = new ArrayList<>();
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+				
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
 			stmt.setString(1, codUnidade);
-			stmt.setString(2, status);
+			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
+			//stmt.setArray(2, conn.createArrayOf("text", array));
+			System.out.println(stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
