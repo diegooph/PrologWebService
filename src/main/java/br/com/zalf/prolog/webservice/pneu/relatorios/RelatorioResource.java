@@ -21,7 +21,7 @@ public class RelatorioResource {
 	
 	@GET
 	@Secured
-	@Path("/resumoSulcos/")
+	@Path("/resumoSulcos")
 	public List<Faixa> getQtPneusByFaixaSulco(
 			@QueryParam("codUnidades") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
