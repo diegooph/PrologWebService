@@ -23,7 +23,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = "RelatorioPneus";
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ? AND STATUS "
+	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS "
 			+ "LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
 
 	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
@@ -40,7 +40,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "LIMIT ? OFFSET ?";
 
 
-	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, List<String> status)throws SQLException{
+	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException{
 
 		List<Double> valores = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
-			stmt.setString(1, codUnidade);
+			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
 			//stmt.setArray(2, conn.createArrayOf("text", array));
 			System.out.println(stmt.toString());

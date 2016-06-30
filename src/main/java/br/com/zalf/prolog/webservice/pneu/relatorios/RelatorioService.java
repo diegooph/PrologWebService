@@ -20,9 +20,9 @@ public class RelatorioService {
 		}
 	}
 	
-	public List<Faixa> getQtPneusByFaixaSulco(String codUnidade, List<String> status){
+	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status){
 		try{
-			return dao.getQtPneusByFaixaSulco(codUnidade, status);
+			return dao.getQtPneusByFaixaSulco(codUnidades, status);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();

@@ -22,11 +22,11 @@ public class RelatorioResource {
 	
 	@GET
 	@Secured
-	@Path("/resumoSulcos/{codUnidade}")
+	@Path("/resumoSulcos/{codUnidades}")
 	public List<Faixa> getQtPneusByFaixaSulco(
-			@PathParam("codUnidade") String codUnidade,
+			@PathParam("codUnidade") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
-		return service.getQtPneusByFaixaSulco(codUnidade, status);
+		return service.getQtPneusByFaixaSulco(codUnidades, status);
 	}
 	
 }
