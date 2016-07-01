@@ -257,6 +257,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					+ "PSI_APOS_CONSERTO = ?, "
 					+ "KM_MOMENTO_CONSERTO = ? "
 					+ "WHERE COD_AFERICAO = ? AND "
+					+ "DATA_HORA_RESOLUCAO IS NULL AND "
 					+ "COD_PNEU = ? "
 					+ "AND TIPO_SERVICO = ?");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
@@ -321,7 +322,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					+ "COD_PNEU_INSERIDO = ? "
 					+ "WHERE COD_AFERICAO = ? AND "
 					+ "COD_PNEU = ? AND "
-					+ "STATUS_RESOLUCAO IS NULL AND "
+					+ "DATA_HORA_RESOLUCAO IS NULL AND "
 					+ "TIPO_SERVICO = ?");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, servico.getCpfMecanico());
