@@ -23,6 +23,8 @@ import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
+	
+	private static final String TAG = "AfericaoDaoImpl";
 
 	@Override
 	public boolean insert (Afericao afericao, Long codUnidade) throws SQLException{
@@ -383,7 +385,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setLong(4, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				afericoes.add(createAfericaoResumida(rSet));
+						afericoes.add(createAfericaoResumida(rSet));
 			}
 		}finally{
 			closeConnection(conn, stmt, rSet);

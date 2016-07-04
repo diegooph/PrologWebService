@@ -189,7 +189,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 	public boolean registraMovimentacaoHistorico (Pneu pneu, Long codUnidade, String statusDestino, long kmVeiculo,String placaVeiculo, Connection conn, String token) throws SQLException{
 		PreparedStatement stmt = null;
 		stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU VALUES (?,?,?,?,?,?,?, (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?))");
-		stmt.setTime(1, new Time(System.currentTimeMillis()));
+		stmt.setTimestamp(1, br.com.zalf.prolog.models.util.DateUtils.toTimestamp(new Time(System.currentTimeMillis())));		
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
 		stmt.setString(4, pneu.getStatus());
