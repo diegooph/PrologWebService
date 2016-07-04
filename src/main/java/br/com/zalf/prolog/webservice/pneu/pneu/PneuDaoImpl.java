@@ -245,11 +245,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
 	public void updateVeiculoPneu (String placa, Pneu pneu, Pneu pneuNovo, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-
+		L.d(PneuDaoImpl.class.getSimpleName(), pneu.getCodigo() + " " + pneuNovo.getCodigo() + " " + placa);
 		stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET COD_PNEU = ? WHERE PLACA = ? AND COD_PNEU = ?");
-		stmt.setLong(1, pneu.getCodigo());
+		stmt.setLong(1, pneuNovo.getCodigo());
 		stmt.setString(2, placa);
-		stmt.setLong(3, pneuNovo.getCodigo());
+		stmt.setLong(3, pneu.getCodigo());
 		int count = stmt.executeUpdate();
 		if(count == 0){
 			throw new SQLException("Erro ao substituir o pneu vinculado a placa");
