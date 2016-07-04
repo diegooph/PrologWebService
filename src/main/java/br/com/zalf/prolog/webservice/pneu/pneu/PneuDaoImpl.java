@@ -20,17 +20,34 @@ import br.com.zalf.prolog.webservice.util.L;
 public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
 
-	private static final String BUSCA_PNEUS_BY_PLACA="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
-			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
-			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
-			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
-			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-			+ "WHERE PLACA = ? "
-			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, "
-			+ "substring(VP.posicao::text FROM 1 for 1) ASC, "
-			+ "substring(VP.posicao::text FROM 3 for 1) ASC";
+	private static final String BUSCA_PNEUS_BY_PLACA="( SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, " 
++ "			P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status " 
+			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU " 
+			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
+			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
+			+ "WHERE PLACA =  'FJK4173' "
+			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
+			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
+			+ "substring(VP.posicao::text FROM 3 for 1) ASC "
+			+ "LIMIT (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 "
+			+ "OFFSET 0 "
+			+ ") "
+			+ "UNION ALL ( "
+			+ "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, " 
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status " 
+			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU " 
+			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
+			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
+			+ "WHERE PLACA =  'FJK4173' "
+			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
+			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
+			+ "substring(VP.posicao::text FROM 3 for 1) DESC "
+			+ "LIMIT (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 "
+			+ "OFFSET (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 )";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
@@ -211,16 +228,18 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_PNEUS_BY_PLACA);
 			stmt.setString(1, placa);
+			stmt.setString(2, placa);
+			stmt.setString(3, placa);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Pneu pneu = createPneu(rSet);
 				pneu.setPosicao(rSet.getInt("POSICAO"));
 				listPneu.add(pneu);
 			}
+			listPneu = ordenaLista(listPneu);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		listPneu = ordenaLista(listPneu);
 		return listPneu;
 	}
 
@@ -328,14 +347,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 	private List<Pneu> ordenaLista(List<Pneu> listPneu){
 		int sizeListaOriginal = listPneu.size();
 		List<Pneu> copiaOriginal = new ArrayList();
+		// cria uma cópia da lista original de pneus
 		for(Pneu pneu : listPneu){
 			copiaOriginal.add(pneu);
 		}
+		
+		// metade da lista
 		int halfSizeListaOriginal = listPneu.size() / 2;
+		
+		//itera size/2, começando do ultimo elemento da lista original
 		for(int i = sizeListaOriginal; i > sizeListaOriginal/2; i--){
+			// seta na lista cópia, posição 5 - listaOriginal(ultima pos)
 			copiaOriginal.set(halfSizeListaOriginal, listPneu.get(i-1));
 			halfSizeListaOriginal ++;
 		}
+		System.out.println(copiaOriginal);
 		return copiaOriginal;			
 	}
 

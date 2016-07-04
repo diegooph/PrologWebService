@@ -306,6 +306,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
 		List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
 		try {
+			//caolesce - trabalha semenlhante ao IF, verifica se o valor é null
 			conn = getConnection();
 			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, 0)::INTEGER as INTERVALO	"
 					+ "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO	"
@@ -317,6 +318,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
+			System.out.println(stmt.toString());
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
