@@ -7,8 +7,6 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import br.com.zalf.prolog.models.Relato;
-import br.com.zalf.prolog.webservice.relato.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
 
@@ -33,8 +31,8 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 		
-		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
-		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
+//		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
+//		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
 		
 		
 		
