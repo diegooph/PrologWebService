@@ -27,7 +27,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
-			+ "WHERE PLACA =  'FJK4173' "
+			+ "WHERE PLACA =  ? "
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC "
@@ -42,7 +42,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
-			+ "WHERE PLACA =  'FJK4173' "
+			+ "WHERE PLACA =  ? "
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 3 for 1) DESC "
@@ -230,6 +230,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			stmt.setString(1, placa);
 			stmt.setString(2, placa);
 			stmt.setString(3, placa);
+			stmt.setString(4, placa);
+			stmt.setString(5, placa);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Pneu pneu = createPneu(rSet);
