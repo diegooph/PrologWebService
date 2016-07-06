@@ -23,8 +23,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = "RelatorioPneus";
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT ALTURA_SULCO_CENTRAL FROM PNEU WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS "
-			+ "LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
+	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, 0) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
+			
 
 	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
@@ -43,18 +44,14 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException{
 
 		List<Double> valores = new ArrayList<>();
-
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-				
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
-			//stmt.setArray(2, conn.createArrayOf("text", array));
-			System.out.println(stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
@@ -72,7 +69,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private List<Faixa> getFaixas(List<Double> valores){
 		Double minimo = (double) 0;
-		Double cota = valores.get(0) / 5;
+		Double cota = (valores.get(0) / 5)+ 1;
 		Double maximo = cota;
 		int totalPneus = valores.size();
 		List<Faixa> faixas = new ArrayList<>();
@@ -89,7 +86,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		//soma cada sulco para a sua devida faixa
 		for(Faixa faixa : faixas){
 			for (int i = 0; i < valores.size(); i++) {
-				if(valores.get(i)> faixa.getInicio() && valores.get(i) <= faixa.getFim()){
+				if(valores.get(i)>= faixa.getInicio() && valores.get(i) < faixa.getFim()){
 					faixa.setTotalPneus(faixa.getTotalPneus()+1);;
 					valores.remove(i);
 					i--;
