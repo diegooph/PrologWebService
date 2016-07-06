@@ -385,6 +385,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
 			stmt.setLong(3, limit);
 			stmt.setLong(4, offset);
+			System.out.println(stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 						afericoes.add(createAfericaoResumida(rSet));
