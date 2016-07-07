@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
@@ -20,6 +21,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.LogDatabase;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
@@ -28,7 +30,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 	@Override
 	public boolean insert (Afericao afericao, Long codUnidade) throws SQLException{
-
+		LogDatabase.insertLog(afericao);
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -316,9 +318,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 					+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
 					+ "ORDER BY M.NOME, INTERVALO DESC");
 
-			stmt.setDate(1, DateUtils.toSqlDate(new java.util.Date(System.currentTimeMillis())));
+			
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
-			System.out.println(stmt.toString());
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){

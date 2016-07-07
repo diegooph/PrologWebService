@@ -20,38 +20,18 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import br.com.zalf.prolog.models.pneu.servico.Calibragem;
-import br.com.zalf.prolog.models.pneu.servico.Inspecao;
-import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
 
 @Provider
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 MessageBodyReader<Object> {
+	
 	private static final String UTF_8 = "UTF-8";
 	private Gson gson;
-
-	RuntimeTypeAdapterFactory<Servico> adapter = RuntimeTypeAdapterFactory
-			.of(Servico.class)
-			.registerSubtype(Calibragem.class)
-			.registerSubtype(Movimentacao.class)
-			.registerSubtype(Inspecao.class);
-
 	private Gson getGson() {
-		if (gson == null) {
-			gson = new GsonBuilder()
-					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-					.setPrettyPrinting()
-					.serializeSpecialFloatingPointValues()
-					.enableComplexMapKeySerialization()
-					.registerTypeAdapterFactory(adapter)
-					.create();
-		}
-		return gson;
+	
+		return GsonUtils.getGson();
 	}
 
 	@Override
