@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class LogDatabase extends DatabaseConnection{
+	private static final String TAG = LogDatabase.class.getSimpleName();
 
 	public static void insertLog(Object o){
 
@@ -17,10 +18,12 @@ public class LogDatabase extends DatabaseConnection{
 				try {
 					conn = getConnection();
 					stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON) VALUES (?)");
-					stmt.setString(1, GsonUtils.getGson().toJson(o));
+					String json = GsonUtils.getGson().toJson(o);
+					L.d(TAG, json);
+					stmt.setString(1, json);
 					stmt.executeUpdate();
 				}catch(SQLException e){
-
+					L.e(TAG, "ERRO", e);
 				}
 				finally {
 					closeConnection(null, stmt, null);

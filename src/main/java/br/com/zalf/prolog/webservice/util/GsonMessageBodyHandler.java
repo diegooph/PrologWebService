@@ -29,9 +29,10 @@ MessageBodyReader<Object> {
 	
 	private static final String UTF_8 = "UTF-8";
 	private Gson gson;
-	private Gson getGson() {
 	
-		return GsonUtils.getGson();
+	private Gson getGson() {
+		gson = GsonUtils.getGson();
+		return gson;
 	}
 
 	@Override
