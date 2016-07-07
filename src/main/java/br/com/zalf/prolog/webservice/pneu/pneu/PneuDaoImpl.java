@@ -50,7 +50,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "OFFSET (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 )";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, "
+			+ "PD.ALTURA, PD.LARGURA, PD.ARO, PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
@@ -59,7 +60,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 			+ "WHERE P.CODIGO = ? ";
 
 	private static final String BUSCA_PNEUS_BY_COD_UNIDADE="SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
-			+ "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
+			+ "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO,PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
 			+ "P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status	FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
@@ -317,6 +318,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 		pneu.setModelo(modelo);
 
 		Pneu.Dimensao dimensao = new Pneu.Dimensao();
+		dimensao.codigo = rSet.getLong("COD_DIMENSAO");
 		dimensao.altura = rSet.getInt("ALTURA");
 		dimensao.aro = rSet.getInt("ARO");
 		dimensao.largura = rSet.getInt("LARGURA");
