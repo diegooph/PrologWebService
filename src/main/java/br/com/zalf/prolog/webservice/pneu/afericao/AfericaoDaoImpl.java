@@ -202,12 +202,17 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 	private void insertServico (Pneu pneu, long codAfericao, String tipoServico, Long codUnidade, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO)"
-				+ " VALUES(?,?,?,?)");
+		stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO, COD_PNEU_INSERIDO)"
+				+ " VALUES(?,?,?,?,?)");
 		stmt.setLong(1, codAfericao);
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
 		stmt.setString(4, tipoServico);
+		if (pneu.getProblemas().contains(Pneu.Problema.NUMERO_INCORRETO)) {
+			stmt.setInt(5, pneu.getCodPneuProblema());			
+		}else{
+			stmt.setNull(5, java.sql.Types.INTEGER);
+		}
 		stmt.executeUpdate();
 	}
 
@@ -435,7 +440,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, "
 					+ "AV.PSI AS PRESSAO_ATUAL, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, " 
-					+ "DP.ALTURA, DP.LARGURA, DP.ARO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL "
+					+ "DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL "
 					+ "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
 					+ "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
 					+ "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA "
