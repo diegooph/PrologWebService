@@ -18,7 +18,7 @@ import br.com.zalf.prolog.webservice.util.L;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
-	private static final String VEICULOS_BY_PLACA="SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+	private static final String VEICULOS_BY_PLACA="SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, EV.CODIGO AS COD_EIXOS, "
 			+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
 			+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
 			+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
@@ -35,7 +35,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, "
 					+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
 					+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
@@ -148,7 +148,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, "
+			stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, EV.CODIGO AS COD_EIXOS, "
 					+ "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
 					+ "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
@@ -173,6 +173,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 		veiculo.setKmAtual(rSet.getLong("KM"));
 		Eixos eixos = new Eixos();
+		eixos.codigo = rSet.getLong("COD_EIXOS");
 		eixos.dianteiro = rSet.getInt("DIANTEIRO");
 		eixos.traseiro = rSet.getInt("TRASEIRO");
 		veiculo.setEixos(eixos);
