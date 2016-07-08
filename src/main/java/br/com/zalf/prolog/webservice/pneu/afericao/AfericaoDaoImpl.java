@@ -26,7 +26,7 @@ import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	
-	private static final String TAG = "AfericaoDaoImpl";
+	private static final String TAG = AfericaoDaoImpl.class.getSimpleName();
 
 	@Override
 	public boolean insert (Afericao afericao, Long codUnidade) throws SQLException{
@@ -88,7 +88,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 				insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);
 			}
 		}
-
 	}
 
 	/**
@@ -102,15 +101,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 
 		List<String> servicos = new ArrayList<>();
-
-		if(pneu.getPressaoAtual() <= (pneu.getPressaoCorreta()*(1-restricao.getToleranciaInspecao()))){
+		
+		// verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão
+		if(pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)){
 			servicos.add(Servico.TIPO_INSPECAO);
-		}else{
-			if(pneu.getPressaoAtual() <= (pneu.getPressaoCorreta()*(1-restricao.getToleranciaCalibragem())) ||
+		}
+		// caso não tenha sido problema, verifica se está apto a ser inspeção
+		else if(pneu.getPressaoAtual() <= (pneu.getPressaoCorreta()*(1-restricao.getToleranciaInspecao()))){
+			servicos.add(Servico.TIPO_INSPECAO);
+		}
+		// caso não entre em inspeção, verifica se é uma calibragem
+		else if(pneu.getPressaoAtual() <= (pneu.getPressaoCorreta()*(1-restricao.getToleranciaCalibragem())) ||
 					pneu.getPressaoAtual() >= (pneu.getPressaoCorreta()*(1+restricao.getToleranciaCalibragem()))){
 				servicos.add(Servico.TIPO_CALIBRAGEM);
-			}
 		}
+		
+		// Nessa parte verifica os sulcos, verificando primeiro se esta na ultima vida.
 		if (pneu.getVidaAtual() == pneu.getVidasTotal()){//verifica se o pneu esta na ultima vida, o que reduz o limite de mm 
 			if (pneu.getSulcoAtual().getCentral() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
 				servicos.add(Servico.TIPO_MOVIMENTACAO);				// insere a movimentação na lista de serviços pendentes
@@ -122,6 +128,24 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		}
 		return servicos;
 	}
+	
+	private void insertInconsistencia(Long codAfericao, String placa, Pneu pneu, Long codUnidade, Connection conn)throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
+					+ "COD_AFERICAO, PLACA, COD_PNEU_CORRETO, COD_PNEU_INCORRETO, POSICAO, COD_UNIDADE) VALUES (?,?,?,?,?,?,?)");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, codAfericao);
+			stmt.setString(3, placa);
+			stmt.setLong(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
+			stmt.setLong(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+			stmt.setInt(6, pneu.getPosicao());
+			stmt.setLong(7, codUnidade);
+			stmt.executeQuery();
+		}finally{
+			closeConnection(null, stmt, null);
+		}		
+	}
 
 
 	private void insertOrUpdateServico(Pneu pneu, long codAfericao, Long codUnidade, Connection conn, List<String> servicosPendentes) throws SQLException{
@@ -129,7 +153,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		List<String> servicosCadastrados = getServicosCadastradosByPneu(new Long(pneu.getCodigo()), codUnidade);
 
 		for (String servicoPendente : servicosPendentes) {
-
+			//se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga calibragem para uma inspeção
 			if(servicoPendente.equals(Servico.TIPO_INSPECAO) && servicosCadastrados.contains(Servico.TIPO_CALIBRAGEM)){
 				calibragemToInspecao(pneu, codUnidade, conn);				
 			}else{			
@@ -439,7 +463,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException{
 		Afericao afericao = new Afericao();
 		afericao.setCodigo(rSet.getLong("CODIGO"));
-		afericao.setDataHora(rSet.getDate("DATA_HORA"));
+		afericao.setDataHora(rSet.getTimestamp("DATA_HORA"));
 		afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
 		afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
 		Veiculo veiculo = new Veiculo();
