@@ -439,7 +439,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException{
 		Afericao afericao = new Afericao();
 		afericao.setCodigo(rSet.getLong("CODIGO"));
-		afericao.setDataHora(rSet.getDate("DATA_HORA"));
+		afericao.setDataHora(rSet.getTimestamp("DATA_HORA"));
 		afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
 		afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
 		Veiculo veiculo = new Veiculo();
