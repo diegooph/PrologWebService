@@ -455,6 +455,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			afericao.setVeiculo(veiculo);
 
 		}finally{
+			
 			closeConnection(conn, stmt, rSet);
 		}
 		return afericao;	
