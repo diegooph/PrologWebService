@@ -448,8 +448,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			while (rSet.next()) {
 					afericao = createAfericaoResumida(rSet);
 					veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
-
-				pneus.add(pneuDao.createPneu(rSet));
+					pneus.add(pneuDao.createPneu(rSet));
 			}
 			veiculo.setListPneus(pneus);
 			afericao.setVeiculo(veiculo);

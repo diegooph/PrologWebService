@@ -66,4 +66,10 @@ public class AfericaoResource {
 			@QueryParam("offset") long offset){
 		return service.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
 	}
+	
+	@GET
+	@Secured
+	public Afericao getByCod (@QueryParam("codAfericao") Long codAfericao, @QueryParam("codUnidade") Long codUnidade){
+		return service.getByCod(codAfericao, codUnidade);
+	}
 }
