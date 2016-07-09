@@ -48,8 +48,6 @@ public class RankingDaoImpl extends DatabaseConnection {
 			+ "AND MC.COD_AMBEV = C.MATRICULA_AMBEV "
 			+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE	"
 			+ "JOIN MAPA M ON M.MAPA = MC.MAPA "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON ? = TA.CPF_COLABORADOR "
-			+ "AND ? = TA.TOKEN	"
 			+ "JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO "
 			+ "LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, "
 			+ "ok.APONTAMENTOS_OK AS APONTAMENTO_OK from tracking t "
@@ -78,7 +76,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 
 
 	public List<ItemPosicao> getRanking (LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, Long cpf, String token) throws SQLException{
+			Long codUnidade) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -92,12 +90,10 @@ public class RankingDaoImpl extends DatabaseConnection {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_INDICADORES_RANKING, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setString(3, equipe);
-			stmt.setLong(4, codUnidade);
-			stmt.setDate(5, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
+			stmt.setString(1, equipe);
+			stmt.setLong(2, codUnidade);
+			stmt.setDate(3, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(4, DateUtils.toSqlDate(dataFinal));
 			rSet = stmt.executeQuery();
 			listPosicao = createRanking(rSet);
 			setMedalhas(listPosicao);
@@ -249,7 +245,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		tracking.setOk(rSet.getInt("APONTAMENTO_OK"));
 		tracking.setNok(tracking.getTotal() - tracking.getOk());
 		tracking.setMeta(meta.getMetaTracking());
-		tracking.setResultado(tracking.getOk() / tracking.getResultado());
+		tracking.setResultado(tracking.getOk() / tracking.getTotal());
 		tracking.setBateuMeta(MetaUtils.bateuMetaMapas(tracking.getResultado(), meta.getMetaTracking()));
 		return tracking;
 	}
