@@ -6,10 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.Gson;
 
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
@@ -24,11 +23,14 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
+			System.out.println(ChronoUnit.DAYS.between(DateUtils.toLocalDate(new Date(System.currentTimeMillis())), DateUtils.toLocalDate(s.getDataFolga())));
+			if (ChronoUnit.DAYS.between(DateUtils.toLocalDate(new Date(System.currentTimeMillis())), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
+				return false;				
+			}
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
 					+ "CPF_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
 					+ "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?);");
-
 			stmt.setLong(1, s.getCpfColaborador());
 			stmt.setDate(2, new Date(System.currentTimeMillis()));
 			stmt.setDate(3, DateUtils.toSqlDate(s.getDataFolga()));
@@ -39,7 +41,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir a solicitação de folga");
-			}	
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
@@ -110,7 +112,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-			
+
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ? AND STATUS = 'PENDENTE'");
@@ -143,9 +145,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			conn = getConnection();
 			String query = "SELECT SF.*, C.NOME FROM SOLICITACAO_FOLGA SF "
 					+ "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
-					+ "WHERE SF.DATA_SOLICITACAO BETWEEN ? AND ? "
+					+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "WHERE SF.DATA_FOLGA BETWEEN ? AND ? "
 					+ "AND C.COD_UNIDADE = ? "
-					+ "AND C.COD_EQUIPE::TEXT LIKE ? "
+					+ "AND E.NOME LIKE ? "
 					+ "AND SF.STATUS LIKE ? "
 					+ "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
 					+ "ORDER BY SF.DATA_SOLICITACAO";
@@ -169,7 +172,6 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		finally {
 			closeConnection(conn, stmt, null);
 		}
-		System.out.println(list);
 		return list;
 	}
 
@@ -217,7 +219,6 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		solicitacaoFolga.setNomeColaborador(rSet.getString("NOME"));
 		solicitacaoFolga.setPeriodo(rSet.getString("PERIODO"));
 		solicitacaoFolga.setStatus(rSet.getString("STATUS"));
-		System.out.println(new Gson().toJson(solicitacaoFolga));
 		return solicitacaoFolga;
 	}
 
