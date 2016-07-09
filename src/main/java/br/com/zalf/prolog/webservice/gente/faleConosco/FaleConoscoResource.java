@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.FaleConosco;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/faleConosco")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -16,6 +17,7 @@ public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
 	
 	@POST
+	@Secured
 	public Response insert(FaleConosco faleConosco) {
 		if (service.insert(faleConosco)) {
 			return Response.Ok("Fale conosco inserido com sucesso");

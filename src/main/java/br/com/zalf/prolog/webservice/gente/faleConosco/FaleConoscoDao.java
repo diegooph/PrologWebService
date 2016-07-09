@@ -23,7 +23,7 @@ public interface FaleConoscoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar/editar
 	 */
-	boolean update(Request<FaleConosco> request) throws SQLException;
+	boolean update(FaleConosco faleConosco) throws SQLException;
 	/**
 	 * Deleta um FaleConsco do banco de dados
 	 * @param request contendo os dados do objeto a ser deletado
@@ -37,19 +37,19 @@ public interface FaleConoscoDao {
 	 * @return um FaleConosco
 	 * @throws SQLException caso não seja possível buscar 
 	 */
-	FaleConosco getByCod(Request<FaleConosco> request) throws SQLException;
+	FaleConosco getByCod(Request<FaleConosco> request) throws Exception;
 	/**
 	 * Busca todos os FaleConosco do banco de dados
 	 * @param request contendo os dados do solicitante
 	 * @return lista de FaleConosco
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<FaleConosco> getAll(Request<?> request) throws SQLException;
+	List<FaleConosco> getAll(Request<?> request) throws Exception;
 	/**
 	 * Busca os FaleConosco de um determinado colaborador
 	 * @param cpf do colaborador a ser buscado os FaleConosco
 	 * @return lista de FaleConosco
 	 * @throws SQLException
 	 */
-	List<FaleConosco> getByColaborador(long cpf) throws SQLException;
+	List<FaleConosco> getByColaborador(long cpf) throws Exception;
 }

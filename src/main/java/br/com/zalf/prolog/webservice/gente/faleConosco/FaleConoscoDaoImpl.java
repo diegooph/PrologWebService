@@ -29,7 +29,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 			// o que não poderíamos garantir caso viesse do lado do cliente.
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(2, faleConosco.getDescricao());
-			stmt.setString(3, faleConosco.getCategoria());
+			stmt.setString(3, faleConosco.getCategoria().asString());
 			stmt.setLong(4, faleConosco.getCpfColaborador());
 			int count = stmt.executeUpdate();
 			if(count == 0){
@@ -43,7 +43,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 	}
 
 	@Override
-	public boolean update(Request<FaleConosco> request) throws SQLException {
+	public boolean update(FaleConosco faleConosco) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -51,11 +51,11 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
 					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
 					+ "WHERE CODIGO = ? ");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(request.getObject().getData()));
-			stmt.setString(2, request.getObject().getDescricao());
-			stmt.setString(3, request.getObject().getCategoria());
-			stmt.setLong(4, request.getCpf());		
-			stmt.setLong(5, request.getObject().getCodigo());
+			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
+			stmt.setString(2, faleConosco.getDescricao());
+			stmt.setString(3, faleConosco.getCategoria().asString());
+			stmt.setLong(4, faleConosco.getCpfColaborador());		
+			stmt.setLong(5, faleConosco.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o fale conosco");
@@ -85,7 +85,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 
 	// TODO: Fazer join token 
 	@Override
-	public FaleConosco getByCod(Request<FaleConosco> request) throws SQLException {
+	public FaleConosco getByCod(Request<FaleConosco> request) throws Exception {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -110,7 +110,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 	}
 
 	@Override
-	public List<FaleConosco> getAll(Request<?> request) throws SQLException {
+	public List<FaleConosco> getAll(Request<?> request) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -134,7 +134,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 	}
 
 	@Override
-	public List<FaleConosco> getByColaborador(long cpf) throws SQLException {
+	public List<FaleConosco> getByColaborador(long cpf) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -155,13 +155,14 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 		return list;
 	}
 
-	private FaleConosco createFaleConosco(ResultSet rSet) throws SQLException{
+	private FaleConosco createFaleConosco(ResultSet rSet) throws Exception{
+		
 		FaleConosco faleConosco = new FaleConosco();
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));
 		faleConosco.setData(rSet.getTimestamp("DATA_HORA"));
 		faleConosco.setDescricao(rSet.getString("DESCRICAO"));
-		faleConosco.setCategoria(rSet.getString("CATEGORIA"));
 		faleConosco.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
+		faleConosco.setCategoria(FaleConosco.Categoria.fromString(rSet.getString("CATEGORIA")));
 		return faleConosco;
 	}
 }

@@ -20,8 +20,7 @@ public class CalendarioResource {
 
 	@GET
 	@Secured
-	@Path("/{cpg}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Path("/{cpf}")
 	public List<Evento> getEventosByCpf(
 			@PathParam("cpf") Long cpf){
 		return service.getEventosByCpf(cpf);
