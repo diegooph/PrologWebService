@@ -26,11 +26,7 @@ public class SolicitacaoFolgaResource {
 	
 	@POST
 	public Response insert(SolicitacaoFolga solicitacaoFolga) {
-		if (service.insert(solicitacaoFolga)) {
-			return Response.Ok("Solicitação de folga inserida com sucesso");
-		} else {
-			return Response.Error("Erro ao inserir solicitação de folga");
-		}
+		return service.insert(solicitacaoFolga);
 	}
 	
 	@POST

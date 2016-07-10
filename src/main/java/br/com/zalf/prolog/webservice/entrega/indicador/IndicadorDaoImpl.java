@@ -89,7 +89,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-
+		System.out.println(indicadorHolder);
 		return indicadorHolder;
 	}
 
@@ -145,7 +145,11 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
 			itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
 			itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
-			itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());
+			if (itemTracking.getTotal() > 0) {
+				itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());	
+			}else{
+				itemTracking.setResultado(0);
+			}			
 			itemTracking.setMeta(meta.getMetaTracking());
 			itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
 			listTracking.add(itemTracking);
@@ -158,7 +162,11 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		trackingHolder.setTotal(total);
 		trackingHolder.setOk(okTotal);
 		trackingHolder.setNok(nokTotal);
-		trackingHolder.setResultado(okTotal / total);
+		if (trackingHolder.getTotal() > 0) {
+			trackingHolder.setResultado(okTotal / total);	
+		}else{
+			trackingHolder.setResultado(0);
+		}		
 		trackingHolder.setMeta(meta.getMetaTracking());
 		trackingHolder.setBateuMeta(!(MetaUtils.bateuMeta(trackingHolder.getResultado(), trackingHolder.getMeta())));
 		indicadorHolder.setTracking(trackingHolder);

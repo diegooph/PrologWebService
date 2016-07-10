@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.ResponseWithCod;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -19,35 +21,35 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 
 
 	@Override
-	public boolean insert(SolicitacaoFolga s) throws SQLException {
+	public Response insert(SolicitacaoFolga s) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rSet = null;
 		try {
-			System.out.println(ChronoUnit.DAYS.between(DateUtils.toLocalDate(new Date(System.currentTimeMillis())), DateUtils.toLocalDate(s.getDataFolga())));
+			// verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias)
 			if (ChronoUnit.DAYS.between(DateUtils.toLocalDate(new Date(System.currentTimeMillis())), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
-				return false;				
+				return Response.Error("Erro ao inserir a solicitação de folga");				
 			}
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
 					+ "CPF_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
-					+ "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?);");
+					+ "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
 			stmt.setLong(1, s.getCpfColaborador());
 			stmt.setDate(2, new Date(System.currentTimeMillis()));
 			stmt.setDate(3, DateUtils.toSqlDate(s.getDataFolga()));
 			stmt.setString(4, s.getMotivoFolga());
 			stmt.setString(5, SolicitacaoFolga.STATUS_PENDENTE);
 			stmt.setString(6, s.getPeriodo());
-
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao inserir a solicitação de folga");
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return ResponseWithCod.Ok("Solicitação inserida com sucesso",rSet.getLong("CODIGO"));
+			}else{
+				return Response.Error("Erro ao inserir a solicitação de folga");
 			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
 		}		
-
-		return true;
 	}
 
 	@Override

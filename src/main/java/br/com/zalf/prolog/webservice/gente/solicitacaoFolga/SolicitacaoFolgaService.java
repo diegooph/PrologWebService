@@ -5,17 +5,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 
 public class SolicitacaoFolgaService {
 private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 	
-	public boolean insert(SolicitacaoFolga solicitacaoFolga) {
+	public Response insert(SolicitacaoFolga solicitacaoFolga) {
 		try {
 			return dao.insert(solicitacaoFolga);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return Response.Error("Erro ao inserir a solicitação de folga.");
 		}
 	}
 
