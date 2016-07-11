@@ -5,10 +5,12 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
@@ -26,6 +28,16 @@ public class RelatorioResource {
 			@QueryParam("codUnidades") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
 		return service.getQtPneusByFaixaSulco(codUnidades, status);
+	}
+	
+	@GET
+	@Secured
+	@Path("aderencia/{codUnidade}/{ano}/{mes}")
+	public List<Aderencia> getAderenciaByUnidade(
+			@PathParam("ano") int ano,
+			@PathParam("mes") int mes,
+			@PathParam("codUnidade") Long codUnidade){	
+		return service.getAderenciaByUnidade(ano, mes, codUnidade);
 	}
 	
 }

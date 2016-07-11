@@ -368,5 +368,22 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}
 		return true;
 	}
+	
+	public int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		int total = 0;
+		try{
+			stmt = conn.prepareStatement("SELECT COUNT(PLACA) FROM VEICULO WHERE STATUS_ATIVO = TRUE AND COD_UNIDADE = ?");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				total = rSet.getInt("COUNT");				
+			}
+		}finally{
+			closeConnection(null, stmt, rSet);
+		}
+		return total;
+	}
 
 }

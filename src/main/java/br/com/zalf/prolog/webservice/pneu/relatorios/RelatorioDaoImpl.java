@@ -1,15 +1,22 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.Pneu;
+import br.com.zalf.prolog.models.pneu.Restricao;
+import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
@@ -21,11 +28,11 @@ import br.com.zalf.prolog.webservice.util.PostgresUtil;
  */
 public class RelatorioDaoImpl extends DatabaseConnection{
 
-	private static final String TAG = "RelatorioPneus";
+	private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
 	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, 0) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
 			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
-			
+
 
 	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
@@ -134,5 +141,61 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	}
 
 	public void getResumoCalibragens(){};
+
+	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		List<Aderencia> aderencias = new ArrayList<>();
+		Aderencia aderencia = null;
+		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
+		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
+		Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(codUnidade);
+		double meta = 0;
+		int totalVeiculos = 0;
+
+		try{			
+			LocalDate dataInicial = LocalDate.of(ano, mes, 01);
+			Date datainicial = Date.valueOf(dataInicial);
+			int dia = 1;
+
+			conn = getConnection();
+			totalVeiculos = veiculoDaoImpl.getTotalVeiculosByUnidade(codUnidade, conn);
+			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
+			stmt = conn.prepareStatement("SELECT EXTRACT(DAY from A.DATA_HORA) AS DIA, COUNT(EXTRACT(DAY from A.DATA_HORA)) AS REALIZADAS "
+					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+					+ "WHERE A.DATA_HORA >=? AND A.DATA_HORA <= ? AND "
+					+ "V.COD_UNIDADE = ? "
+					+ "GROUP BY 1 "
+					+ "ORDER BY 1");
+			stmt.setDate(1, datainicial);
+			stmt.setDate(2, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(datainicial)));
+			stmt.setLong(3, codUnidade);
+			L.d(TAG, stmt.toString());
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				while(dia < rSet.getInt("DIA")){
+					aderencia = new Aderencia();
+					aderencia.setDia(dia);
+					aderencia.setRealizadas(0);
+					aderencia.setMeta(meta);
+					aderencia.setResultado(0);
+					aderencias.add(aderencia);	
+					dia++;
+				}					
+					aderencia = new Aderencia();
+					aderencia.setDia(rSet.getInt("DIA"));
+					aderencia.setRealizadas(rSet.getInt("REALIZADAS"));
+					aderencia.setMeta(meta);
+					aderencia.setResultado(rSet.getInt("REALIZADAS") / meta);
+					aderencias.add(aderencia);	
+					dia++;	
+			}
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
+		return aderencias;
+	}
 
 }

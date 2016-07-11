@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.Pneu;
+import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
 
 public class RelatorioService {
@@ -23,6 +24,15 @@ public class RelatorioService {
 	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status){
 		try{
 			return dao.getQtPneusByFaixaSulco(codUnidades, status);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade){
+		try{
+			return dao.getAderenciaByUnidade(ano, mes, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
