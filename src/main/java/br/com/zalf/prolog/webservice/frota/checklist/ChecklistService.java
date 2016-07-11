@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 
@@ -27,6 +29,15 @@ public class ChecklistService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao){
+		try{
+			return dao.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

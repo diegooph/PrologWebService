@@ -8,11 +8,14 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
@@ -277,7 +280,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return checklists;
 	}
-		
+
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException {
 
 		List<String> listUrl = new ArrayList<>();
@@ -502,6 +505,54 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return holder;
 	}
 
+	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<ModeloChecklist, List<String>> modeloPlaca = new LinkedHashMap<>();
+		ModeloChecklist modelo = null;
+		List<String> placas = new ArrayList<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CM.CODIGO, CM.NOME, V.PLACA, V.KM FROM " 
+					+ "CHECKLIST_MODELO CM " 
+					+ "JOIN CHECKLIST_MODELO_FUNCAO CMF ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE "
+					+ "JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE "
+					+ "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
+					+ "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
+					+ "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
+					+ "ORDER BY CM.NOME, V.PLACA", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codFuncao);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				// primeira liha do Rset, cria o modelo, add a primeira placa
+				if (rSet.first()){
+					modelo = new ModeloChecklist();
+					modelo.setCodigo(rSet.getLong("CODIGO"));
+					modelo.setNome(rSet.getString("NOME"));
+					placas.add(rSet.getString("PLACA"));	
+				}// verificar se o prox modelo é igual ao ja criado
+				if (rSet.getLong("CODIGO") == modelo.getCodigo()) {
+					placas.add(rSet.getString("PLACA"));					
+				}else{// modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
+					modeloPlaca.put(modelo, placas);
+					modelo = new ModeloChecklist();
+					placas = new ArrayList<>();
+					modelo.setCodigo(rSet.getLong("CODIGO"));
+					modelo.setNome(rSet.getString("NOME"));
+					placas.add(rSet.getString("PLACA"));
+				}				
+			}
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}	
+		System.out.println(modeloPlaca);
+		return modeloPlaca;
+	}
+
 	/**
 	 * Busca uma lista de todas as placas da unidade, separando em 3 status:
 	 * PENDENTE: não tem checklist realizado no dia atual e não tem itens críticos a serem arrumados
@@ -544,7 +595,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				if(rSet.getString("PLACA_CHECK") != null){
 					listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
 			}
-			while (rSet.next()) {
+			while (rSet.next()) { new ModeloChecklist();
 				if(rSet.getString("PLACA").equals(veiculoLiberacao.getPlaca())){
 					pergunta = new PerguntaRespostaChecklist();
 					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
@@ -600,7 +651,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			return true;
 		}
 	}
-	
+
 }
 
 

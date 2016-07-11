@@ -34,7 +34,7 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 
 public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
-	
+
 	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, "
 			+ "M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS, "
 			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL, "
@@ -71,20 +71,23 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			// Token autenticação
 			stmt.setLong(1, cpf);
 			stmt.setString(2, token);
-			
+
 			stmt.setLong(3, cpf);
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
-			
+
 			rSet = stmt.executeQuery();
-			createDevCx(rSet);
-			createDevNf(rSet);
-			createDevHl(rSet);
-			createTempoInterno(rSet);
-			createTempoRota(rSet);
-			createTempoLargada(rSet);
-			createJornadaLiquida(rSet);
-			createTracking(rSet);
+			if (rSet.next()) {
+				rSet.beforeFirst();
+				createDevCx(rSet);
+				createDevNf(rSet);
+				createDevHl(rSet);
+				createTempoInterno(rSet);
+				createTempoRota(rSet);
+				createTempoLargada(rSet);
+				createJornadaLiquida(rSet);
+				createTracking(rSet);
+			}
 
 		} finally {
 			closeConnection(conn, stmt, rSet);
@@ -172,7 +175,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		indicadorHolder.setTracking(trackingHolder);
 		rSet.beforeFirst();
 	}
-	
+
 	public void createDevCx(ResultSet rSet) throws SQLException {
 		DevolucaoCxHolder devCaixa = new DevolucaoCxHolder();
 		List<ItemDevolucaoCx> listDevCx = new ArrayList<>();
@@ -281,7 +284,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		tempoInternoHolder.setMapasNok(mapasNok);
 		tempoInternoHolder.setListItemTempoInterno(listTempoInterno);
 		tempoInternoHolder
-				.setResultado((double) tempoInternoHolder.getMapasOk() / (double) tempoInternoHolder.getTotalMapas());
+		.setResultado((double) tempoInternoHolder.getMapasOk() / (double) tempoInternoHolder.getTotalMapas());
 		tempoInternoHolder.setMeta(meta.getMetaTempoInternoMapas());
 		tempoInternoHolder.setBateuMeta(
 				MetaUtils.bateuMetaMapas(tempoInternoHolder.getResultado(), meta.getMetaTempoInternoMapas()));
@@ -321,7 +324,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		tempoRotaHolder.setResultado((double) tempoRotaHolder.getMapasOk() / (double) tempoRotaHolder.getTotalMapas());
 		tempoRotaHolder.setMeta(meta.getMetaTempoRotaMapas());
 		tempoRotaHolder
-				.setBateuMeta(MetaUtils.bateuMetaMapas(tempoRotaHolder.getResultado(), meta.getMetaTempoRotaMapas()));
+		.setBateuMeta(MetaUtils.bateuMetaMapas(tempoRotaHolder.getResultado(), meta.getMetaTempoRotaMapas()));
 		indicadorHolder.setTempoRota(tempoRotaHolder);
 		rSet.beforeFirst();
 
@@ -359,7 +362,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		tempoLargadaHolder.setMapasNok(mapasNok);
 		tempoLargadaHolder.setListTempoLargada(listTempoLargada);
 		tempoLargadaHolder
-				.setResultado((double) tempoLargadaHolder.getMapasOk() / (double) tempoLargadaHolder.getTotalMapas());
+		.setResultado((double) tempoLargadaHolder.getMapasOk() / (double) tempoLargadaHolder.getTotalMapas());
 		tempoLargadaHolder.setMeta(meta.getMetaTempoLargadaMapas());
 		tempoLargadaHolder.setBateuMeta(
 				MetaUtils.bateuMetaMapas(tempoLargadaHolder.getResultado(), meta.getMetaTempoLargadaMapas()));
