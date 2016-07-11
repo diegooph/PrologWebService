@@ -318,7 +318,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	public NovaAfericao getNovaAfericao(String placa) throws SQLException{
 		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
 		NovaAfericao afericaoHolder = new NovaAfericao();
-		afericaoHolder.setVeiculo(veiculoDaoImpl.getVeiculoByPlaca(placa));
+		afericaoHolder.setVeiculo(veiculoDaoImpl.getVeiculoByPlaca(placa, true));
 		if(afericaoHolder.getVeiculo().getPlaca() != null){
 			afericaoHolder.setRestricao(getRestricoesByPlaca(placa));
 			return afericaoHolder;

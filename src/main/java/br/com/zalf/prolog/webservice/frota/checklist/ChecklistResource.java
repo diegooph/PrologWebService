@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
@@ -118,17 +117,18 @@ public class ChecklistResource {
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
 			@PathParam("codUnidade") Long codUnidade, 
-			@PathParam("codFuncaoColaborador") Long codFuncao) throws SQLException{
+			@PathParam("codFuncaoColaborador") Long codFuncao){
 		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
 	}
 	
 	@GET
 	@Secured
-	@Path("/novo/{codUnidade}/{codModelo}")
+	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
 	public NovoChecklistHolder getNovoChecklistHolder(
 			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codModelo") Long codModelo){
-		return service.getNovoChecklistHolder(codUnidade, codModelo);
+			@PathParam("codModelo") Long codModelo,
+			@PathParam("placa") String placa){
+		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
 	}
 
 	@DELETE

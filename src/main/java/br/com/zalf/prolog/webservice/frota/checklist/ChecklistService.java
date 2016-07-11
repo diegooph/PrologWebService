@@ -41,9 +41,9 @@ public class ChecklistService {
 		}
 	}
 	
-	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo){
+	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa){
 		try{
-			return dao.getNovoChecklistHolder(codUnidade, codModelo);
+			return dao.getNovoChecklistHolder(codUnidade, codModelo, placa);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new NovoChecklistHolder();

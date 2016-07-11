@@ -86,7 +86,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 	public ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException{
 		ServicoHolder holder = new ServicoHolder();
 		veiculoDao = new VeiculoDaoImpl();
-		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa));
+		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
 		holder.setListServicos(getServicosAbertosByPlaca(placa, "%"));
 		if(containInspecao(holder.getListServicos())){
 			holder.setListAlternativaInspecao(getListAlternativasInspecao());

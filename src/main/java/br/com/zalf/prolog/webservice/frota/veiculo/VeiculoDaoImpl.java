@@ -54,7 +54,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return veiculos;
 	}
 
-	public Veiculo getVeiculoByPlaca(String placa) throws SQLException{
+	public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -66,7 +66,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			rSet = stmt.executeQuery();
 			if(rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);
-				veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));
+				if (withPneus) {
+					veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));	
+				}
 				return veiculo;
 			}
 		} finally {
@@ -246,7 +248,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}		
 		return true;
 	}
-	
+
 	@Override
 	public boolean delete(String placa) throws SQLException {
 		Connection conn = null;
@@ -255,7 +257,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
-							+ "WHERE PLACA = ?");
+					+ "WHERE PLACA = ?");
 			stmt.setBoolean(1, false);
 			stmt.setString(2, placa);
 			int count = stmt.executeUpdate();

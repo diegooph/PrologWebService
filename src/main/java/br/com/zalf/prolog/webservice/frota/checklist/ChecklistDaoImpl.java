@@ -45,11 +45,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
-					+ "(COD, UNIDADE, COD_MODELO_CHECKLIST, DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO, KM_VEICULO, TEMPO_REALIZACAO) "
-					+ "VALUES ((SELECT COD_UNIDADE, FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO");						
+					+ "(COD_UNIDADE, COD_CHECKLIST_MODELO, DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO, KM_VEICULO, TEMPO_REALIZACAO) "
+					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO");						
 			stmt.setString(1, checklist.getPlacaVeiculo());
 			stmt.setLong(2, checklist.getCodModelo());
-			stmt.setTimestamp(3, DateUtils.toTimestamp(checklist.getData()));
+			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(4, checklist.getColaborador().getCpf());
 			stmt.setString(5, checklist.getPlacaVeiculo());
 			stmt.setString(6, String.valueOf(checklist.getTipo()));
@@ -117,7 +117,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	public void insertApontamento(String placa, long codModelo, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA=?),?,?,?,?)");
+		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO(COD_UNIDADE, COD_CHECKLIST_MODELO, DATA_APONTAMENTO, PLACA, ITEM) "
+				+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA=?),?,?,?,?)");
 		stmt.setString(1, placa);
 		stmt.setLong(2, codModelo);
 		stmt.setTimestamp(3, dataApontamento);
@@ -133,8 +134,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public void updateQtApontamentos(String placa, Long codModelo, long codPergunta, int apontamentos, Connection conn) throws SQLException{
 		Connection connection = conn;
 		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA = ? AND ITEM = ? AND COD_UNIDADE = ? "
-				+ "AND COD_CHECKLIST_MODELO = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?) AND DATA_RESOLUCAO IS NULL");
+		stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA LIKE ? AND ITEM = ? AND "
+				+ "COD_UNIDADE = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA LIKE ?) "
+				+ "AND COD_CHECKLIST_MODELO = ?  AND DATA_RESOLUCAO IS NULL");
 		stmt.setInt(1, apontamentos);
 		stmt.setString(2, placa);
 		stmt.setLong(3, codPergunta);
@@ -348,7 +350,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS "
 					+ "(COD_UNIDADE, COD_CHECKLIST_MODELO, COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA, RESPOSTA) "
-					+ "VALUES ((SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA=?), ?, ?, ?, ?)");
+					+ "VALUES ((SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA=?), ?, ?, ?, ?, ?)");
 			for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
 				stmt.setString(1, checklist.getPlacaVeiculo());
 				stmt.setLong(2, checklist.getCodModelo());
@@ -496,12 +498,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	 * @return
 	 * @throws SQLException
 	 */
-	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo) throws SQLException{
+	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException{
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDaoImpl checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
-		holder.setListVeiculos(veiculoDao.getVeiculosAtivosByUnidade(codUnidade));
+		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
 		return holder;
 	}
 
@@ -529,7 +531,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				// primeira liha do Rset, cria o modelo, add a primeira placa
-				if (rSet.first()){
+				if (modelo == null){
 					modelo = new ModeloChecklist();
 					modelo.setCodigo(rSet.getLong("CODIGO"));
 					modelo.setNome(rSet.getString("NOME"));
