@@ -33,8 +33,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, 0) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
 			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
 
-
-	private static final String PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
+	private static final String SULCOS_PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
 			+ "FROM PNEU P "
@@ -122,7 +121,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(PNEUS_BY_FAIXAS);
+			stmt = conn.prepareStatement(SULCOS_PNEUS_BY_FAIXAS);
 			stmt.setDouble(1, inicioFaixa);
 			stmt.setDouble(2, fimFaixa);
 			stmt.setLong(3, codEmpresa);
@@ -156,18 +155,18 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		Date dataAtual = new Date(System.currentTimeMillis());
 		LocalDate dataInicial = LocalDate.of(ano, mes, 01);
 		Date datainicial = Date.valueOf(dataInicial);
-		
+
 		double meta = 0;
 		int totalVeiculos = 0;
 		int ultimoDia = 0;
 		int dia = 1;		
-		
+
 		if (dataAtual.getYear()+1900 == ano && dataAtual.getMonth()+1 == mes) {
 			ultimoDia = dataAtual.getDate();
 		}else{
 			ultimoDia = DateUtils.getUltimoDiaMes(datainicial).getDate();
 		}
-		
+
 		try{			
 			conn = getConnection();
 			totalVeiculos = veiculoDaoImpl.getTotalVeiculosByUnidade(codUnidade, conn);
@@ -206,11 +205,86 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		}
 		return aderencias;
 	}
-	
+
 	private Aderencia createAderenciaVazia(double meta, int dia){
 		Aderencia aderencia = new Aderencia();
 		aderencia.setDia(dia);
 		aderencia.setMeta(meta);
 		return aderencia;
 	}
+
+	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status)throws SQLException{
+		L.d(TAG, codUnidades.toString());
+		L.d(TAG, status.toString());
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Faixa> faixas = new ArrayList<>();
+		Faixa ma20 = new Faixa();
+		ma20.setInicio(20);
+		ma20.setFim(100);
+		Faixa ma10 = new Faixa();
+		ma10.setInicio(10);
+		ma10.setFim(20);
+		Faixa ma5 = new Faixa();
+		ma5.setInicio(5);
+		ma5.setFim(10);
+		Faixa ok = new Faixa();
+		ok.setInicio(-5);
+		ok.setFim(5);
+		Faixa me20 = new Faixa();
+		me20.setInicio(-20);
+		me20.setFim(-100);
+		Faixa me10 = new Faixa();
+		me10.setInicio(-10);
+		me10.setFim(-20);
+		Faixa me5 = new Faixa();
+		me5.setInicio(-5);
+		me5.setFim(-10);
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) AS PRESSAO_ATUAL, " 
+					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0) AS PRESSAO_RECOMENDADA, " 
+					+ "COALESCE(((pressao_atual/pressao_recomendada)-1)*100, ((pressao_atual/pressao_recomendada)-1)*100, 0)::INT AS PORC FROM PNEU WHERE " 
+					+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC ");
+			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				L.d(TAG, String.valueOf(rSet.getDouble("PRESSAO_RECOMENDADA")));
+				
+				int valor = rSet.getInt("PORC"); 
+				//L.d(TAG, String.valueOf(valor));
+				
+				if (valor >= ma20.getInicio() && valor < ma20.getFim()) {
+					ma20.setTotalPneus(ma20.getTotalPneus()+1);
+				}else if (valor >= ma10.getInicio() && valor < ma10.getFim()) {
+					ma10.setTotalPneus(ma10.getTotalPneus()+1);
+				}else if (valor >= ma5.getInicio() && valor < ma5.getFim()) {
+					ma5.setTotalPneus(ma5.getTotalPneus()+1);
+				}else if (valor >= ok.getInicio() && valor < ok.getFim()) {
+					ok.setTotalPneus(ok.getTotalPneus()+1);
+				}else if (valor >= me20.getInicio() && valor < me20.getFim()) {
+					me20.setTotalPneus(me20.getTotalPneus()+1);
+				}else if (valor >= me10.getInicio() && valor < me10.getFim()) {
+					me10.setTotalPneus(me10.getTotalPneus()+1);
+				}else if (valor >= me5.getInicio() && valor < me5.getFim()) {
+					me5.setTotalPneus(me5.getTotalPneus()+1);
+				}				
+			}
+			faixas.add(ma20);
+			faixas.add(ma10);
+			faixas.add(ma5);
+			faixas.add(ok);
+			faixas.add(me5);
+			faixas.add(me10);
+			faixas.add(me20);
+		}finally{
+			closeConnection(conn, stmt, rSet);		
+		}
+		return faixas;
+	}
+
 }

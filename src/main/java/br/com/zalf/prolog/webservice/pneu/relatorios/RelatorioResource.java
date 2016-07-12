@@ -32,6 +32,15 @@ public class RelatorioResource {
 	
 	@GET
 	@Secured
+	@Path("/resumoPressao")
+	public List<Faixa> getQtPneusByFaixaPressao(
+			@QueryParam("codUnidades") List<String> codUnidades,
+			@QueryParam("status") List<String> status){
+		return service.getQtPneusByFaixaPressao(codUnidades, status);
+	}
+	
+	@GET
+	@Secured
 	@Path("aderencia/{codUnidade}/{ano}/{mes}")
 	public List<Aderencia> getAderenciaByUnidade(
 			@PathParam("ano") int ano,

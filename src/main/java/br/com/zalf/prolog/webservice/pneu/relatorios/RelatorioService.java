@@ -30,6 +30,15 @@ public class RelatorioService {
 		}
 	}
 	
+	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status){
+		try{
+			return dao.getQtPneusByFaixaPressao(codUnidades, status);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
 	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade){
 		try{
 			return dao.getAderenciaByUnidade(ano, mes, codUnidade);
