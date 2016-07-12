@@ -14,10 +14,12 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class RelatoDaoImpl extends DatabaseConnection {
 
-	private static final int LIMIT = 10;
+	private static final String TAG = RelatoDaoImpl.class.getSimpleName();
+
 
 	//	@Override
 	public boolean insert(Relato relato) throws SQLException {
@@ -43,13 +45,13 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setLong(10, relato.getColaboradorRelato().getCpf());
 			stmt.setLong(11, relato.getColaboradorRelato().getCpf());
 			stmt.setLong(12, relato.getAlternativa().codigo);
-			
+
 			if(relato.getAlternativa().tipo ==  Alternativa.TIPO_OUTROS){
 				stmt.setString(13, relato.getAlternativa().respostaOutros);
 			}else{
 				stmt.setNull(13, java.sql.Types.VARCHAR);
 			}
-			
+
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o relato");
@@ -91,7 +93,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		}		
 		return true;
 	}
-	
+
 	public boolean fechaRelato(Relato relato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -117,14 +119,14 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return true;
 	}
 
-		//@Override
+	//@Override
 	public boolean delete(Long codRelato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM RELATO WHERE CODIGO = ?");
-						stmt.setLong(1, codRelato);
+			stmt.setLong(1, codRelato);
 			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
@@ -139,13 +141,13 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO, "
-				+ " FROM RELATO R JOIN "
-				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF JOIN "
-				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF JOIN "
-				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE "
-				+ "WHERE R.CODIGO = ?");
-			
+					+ " FROM RELATO R JOIN "
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
+					+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF JOIN "
+					+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF JOIN "
+					+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE "
+					+ "WHERE R.CODIGO = ?");
+
 			stmt.setLong(1, codRelato);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
@@ -159,8 +161,8 @@ public class RelatoDaoImpl extends DatabaseConnection {
 	}
 
 	//	@Override
-	public List<Relato> getByColaborador(Long cpf, int limit, long offset, double latitude, 
-			double longitude, boolean isOrderByDate, String status) throws SQLException {
+	public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude, 
+			double longitude, boolean isOrderByDate, String status, String campoFiltro) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -172,25 +174,24 @@ public class RelatoDaoImpl extends DatabaseConnection {
 				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
 				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
 				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
-				+ "WHERE R.CPF_COLABORADOR = ? AND R.STATUS LIKE ? "
-				+ "ORDER BY %s "
+				+ "WHERE %1s = ? AND R.STATUS LIKE ? "
+				+ "ORDER BY %2s "
 				+ "LIMIT ? OFFSET ? ";
 		try {
-
 			conn = getConnection();
 			if(isOrderByDate){
-				query = String.format(query, "DATA_HORA_DATABASE DESC");
+				query = String.format(query, getCampoFiltro(campoFiltro), "DATA_HORA_DATABASE DESC");
 			}else{
-				query = String.format(query, "DISTANCIA ASC");
+				query = String.format(query, getCampoFiltro(campoFiltro), "DISTANCIA ASC");
 			}
 			stmt = conn.prepareStatement(query);
 			stmt.setDouble(1, longitude);
 			stmt.setDouble(2, latitude);
 			stmt.setLong(3, cpf);
 			stmt.setString(4, status);
-		
 			stmt.setInt(5, limit);
 			stmt.setLong(6, offset);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
@@ -200,6 +201,24 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			closeConnection(conn, stmt, rSet);
 		}
 		return relatos;
+	}
+
+	private String getCampoFiltro(String campoFiltro){
+		String s = null;
+		switch (campoFiltro) {
+		case "realizados":
+			s = "CPF_COLABORADOR";
+			break;
+		case "classificados":
+			s = "CPF_CLASSIFICACAO";
+			break;
+		case "fechados":
+			s = "CPF_FECHAMENTO";
+			break;
+		default:
+			break;
+		}
+		return s;
 	}
 
 	//	@Override
@@ -286,24 +305,24 @@ public class RelatoDaoImpl extends DatabaseConnection {
 	//@Override
 	public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade,long limit, long offset, String status) throws SQLException{
-		
+
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		
+
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO "
-				+ " FROM RELATO R JOIN "
-				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-				+ "EQUIPE E ON E.CODIGO = C.COD_EQUIPE JOIN "
-				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT JOIN "
-				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
-				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
-				+ "WHERE R.COD_UNIDADE = ? AND R.STATUS LIKE ? AND E.NOME LIKE ? AND R.DATA_HORA_DATABASE >= ? AND R.DATA_HORA_DATABASE <= ? "
-				+ "ORDER BY DATA_HORA_DATABASE DESC "
-				+ "LIMIT ? OFFSET ? ");
+					+ " FROM RELATO R JOIN "
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
+					+ "EQUIPE E ON E.CODIGO = C.COD_EQUIPE JOIN "
+					+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT JOIN "
+					+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
+					+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
+					+ "WHERE R.COD_UNIDADE = ? AND R.STATUS LIKE ? AND E.NOME LIKE ? AND R.DATA_HORA_DATABASE >= ? AND R.DATA_HORA_DATABASE <= ? "
+					+ "ORDER BY DATA_HORA_DATABASE DESC "
+					+ "LIMIT ? OFFSET ? ");
 
 			stmt.setLong(1, codUnidade);
 			stmt.setString(2, status);
@@ -347,7 +366,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
 		return relato;
 	}
-	
+
 	private Colaborador createColaborador (String nome, Long cpf){
 		Colaborador colaborador = new Colaborador();
 		colaborador.setCpf(cpf);

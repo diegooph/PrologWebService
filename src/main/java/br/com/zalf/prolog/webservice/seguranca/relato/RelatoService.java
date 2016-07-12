@@ -55,9 +55,9 @@ public class RelatoService {
 		}
 	}
 	
-	public List<Relato> getByColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) {
+	public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status, String campoFiltro) {
 		try {
-			return dao.getByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status);
+			return dao.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, campoFiltro);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Relato>();

@@ -55,17 +55,43 @@ public class RelatoResource {
 
 	@GET
 	@Secured
-	@Path("{status}/colaborador/{cpf}")
-	public List<Relato> getByColaborador(@PathParam("cpf") Long cpf, 
+	@Path("/realizados/{cpf}/{status}")
+	public List<Relato> getRealizadosByColaborador(@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@QueryParam("latitude") double latitude,
 			@QueryParam("longitude") double longitude,
 			@QueryParam("isOrderByDate") boolean isOrderByDate,
 			@PathParam("status") String status) {
-		return service.getByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status);
+		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, "realizados");
 	}
-
+	
+	@GET
+	@Secured
+	@Path("/classificados/{cpf}/{status}")
+	public List<Relato> getClassificadosByColaborador(@PathParam("cpf") Long cpf, 
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") long offset,
+			@QueryParam("latitude") double latitude,
+			@QueryParam("longitude") double longitude,
+			@QueryParam("isOrderByDate") boolean isOrderByDate,
+			@PathParam("status") String status) {
+		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, "classificados");
+	}
+	
+	@GET
+	@Secured
+	@Path("/fechados/{cpf}/{status}")
+	public List<Relato> getFechadosByColaborador(@PathParam("cpf") Long cpf, 
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") long offset,
+			@QueryParam("latitude") double latitude,
+			@QueryParam("longitude") double longitude,
+			@QueryParam("isOrderByDate") boolean isOrderByDate,
+			@PathParam("status") String status) {
+		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, "fechados");
+	}
+	
 	@GET
 	@Secured
 	@Path("{status}/exceto/colaborador/{cpf}")
