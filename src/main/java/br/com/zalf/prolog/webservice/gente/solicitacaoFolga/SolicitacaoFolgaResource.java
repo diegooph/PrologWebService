@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 import br.com.zalf.prolog.models.util.DateUtils;
@@ -25,7 +26,7 @@ public class SolicitacaoFolgaResource {
 	private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
 	
 	@POST
-	public Response insert(SolicitacaoFolga solicitacaoFolga) {
+	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		return service.insert(solicitacaoFolga);
 	}
 	

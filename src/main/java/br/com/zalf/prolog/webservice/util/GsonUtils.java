@@ -3,6 +3,9 @@ package br.com.zalf.prolog.webservice.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import br.com.zalf.prolog.models.AbstractResponse;
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.ResponseWithCod;
 import br.com.zalf.prolog.models.pneu.servico.Calibragem;
 import br.com.zalf.prolog.models.pneu.servico.Inspecao;
 import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
@@ -10,23 +13,30 @@ import br.com.zalf.prolog.models.pneu.servico.Servico;
 
 public class GsonUtils {
 
-	public static Gson getGson(){
+	private static final GsonBuilder sBuilder = new GsonBuilder()
+			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+			.setPrettyPrinting()
+			.serializeSpecialFloatingPointValues()
+			.enableComplexMapKeySerialization();
 
-		RuntimeTypeAdapterFactory<Servico> adapter = RuntimeTypeAdapterFactory
-				.of(Servico.class)
-				.registerSubtype(Calibragem.class)
-				.registerSubtype(Movimentacao.class)
-				.registerSubtype(Inspecao.class);
+    static {
+        RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
+                .of(Servico.class)
+                .registerSubtype(Calibragem.class)
+                .registerSubtype(Movimentacao.class)
+                .registerSubtype(Inspecao.class);
 
-		Gson gson = new GsonBuilder()
-					.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-					.setPrettyPrinting()
-					.serializeSpecialFloatingPointValues()
-					.enableComplexMapKeySerialization()
-					.registerTypeAdapterFactory(adapter)
-					.create();
+        RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
+                .of(AbstractResponse.class)
+                .registerSubtype(Response.class)
+                .registerSubtype(ResponseWithCod.class);
 
-		return gson;
+        sBuilder.registerTypeAdapterFactory(adapterServico);
+        sBuilder.registerTypeAdapterFactory(adapterResponse);
+    }
+
+
+	public static Gson getGson()  {
+		return sBuilder.create();
 	}
-
 }

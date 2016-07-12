@@ -10,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.ResponseWithCod;
@@ -21,13 +22,13 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 
 
 	@Override
-	public Response insert(SolicitacaoFolga s) throws SQLException {
+	public AbstractResponse insert(SolicitacaoFolga s) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			// verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias)
-			if (ChronoUnit.DAYS.between(DateUtils.toLocalDate(new Date(System.currentTimeMillis())), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
+			if (ChronoUnit.DAYS.between(LocalDate.now(), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
 				return Response.Error("Erro ao inserir a solicitação de folga");				
 			}
 			conn = getConnection();
@@ -42,7 +43,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt.setString(6, s.getPeriodo());
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				return ResponseWithCod.Ok("Solicitação inserida com sucesso",rSet.getLong("CODIGO"));
+				return ResponseWithCod.Ok("Solicitação inserida com sucesso", rSet.getLong("CODIGO"));
 			}else{
 				return Response.Error("Erro ao inserir a solicitação de folga");
 			}

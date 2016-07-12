@@ -5,13 +5,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 
 public class SolicitacaoFolgaService {
 private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 	
-	public Response insert(SolicitacaoFolga solicitacaoFolga) {
+	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		try {
 			return dao.insert(solicitacaoFolga);
 		} catch (SQLException e) {

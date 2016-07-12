@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.SolicitacaoFolga;
 /**
  * Contém os métodos para manipular as solicitações de folga
@@ -17,7 +17,7 @@ public interface SolicitacaoFolgaDao {
 	 * @return Reponse.Ok com o codigo gerado, ou .Error caso não seja possível inserir
 	 * @throws SQLException caso não seja possível inserir a solicitação de folga
 	 */
-	Response insert(SolicitacaoFolga solicitacao) throws SQLException;
+	AbstractResponse insert(SolicitacaoFolga solicitacao) throws SQLException;
 	/**
 	 * Atualiza/Edita uma solicitação de folga
 	 * @param request contendo a solicitação de folga a ser atualizada/editada, 

@@ -40,6 +40,9 @@ public class RelatorioResource {
 			@FormParam("codUnidade") Long codUnidade,
 			@FormParam("cpf") Long cpf,
 			@FormParam("token") String token) {
+		System.out.println("Inciial: " + new Date(dataInicial));
+		System.out.println("Final: " + new Date(dataFinal));
+		
 		return service.getRelatorioByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
 				DateUtils.toLocalDate(new Date(dataFinal)),equipe, codUnidade, cpf, token);
 	}
