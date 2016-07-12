@@ -214,9 +214,6 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	}
 
 	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status)throws SQLException{
-		L.d(TAG, codUnidades.toString());
-		L.d(TAG, status.toString());
-		
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -235,29 +232,29 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		ok.setFim(5);
 		Faixa me20 = new Faixa();
 		me20.setInicio(-20);
-		me20.setFim(-100);
+		me20.setFim(-101);
 		Faixa me10 = new Faixa();
 		me10.setInicio(-10);
 		me10.setFim(-20);
 		Faixa me5 = new Faixa();
 		me5.setInicio(-5);
 		me5.setFim(-10);
+		int total = 0;
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) AS PRESSAO_ATUAL, " 
-					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0) AS PRESSAO_RECOMENDADA, " 
-					+ "COALESCE(((pressao_atual/pressao_recomendada)-1)*100, ((pressao_atual/pressao_recomendada)-1)*100, 0)::INT AS PORC FROM PNEU WHERE " 
-					+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC ");
+			stmt = conn.prepareStatement("SELECT "
+					+ "(((COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) - COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))/"
+					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))*100)::INT AS PORC "
+					+ "FROM PNEU "
+					+ "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  "
+					+ "ORDER BY 1 asc");
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				L.d(TAG, String.valueOf(rSet.getDouble("PRESSAO_RECOMENDADA")));
-				
+
 				int valor = rSet.getInt("PORC"); 
-				//L.d(TAG, String.valueOf(valor));
-				
 				if (valor >= ma20.getInicio() && valor < ma20.getFim()) {
 					ma20.setTotalPneus(ma20.getTotalPneus()+1);
 				}else if (valor >= ma10.getInicio() && valor < ma10.getFim()) {
@@ -266,13 +263,14 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 					ma5.setTotalPneus(ma5.getTotalPneus()+1);
 				}else if (valor >= ok.getInicio() && valor < ok.getFim()) {
 					ok.setTotalPneus(ok.getTotalPneus()+1);
-				}else if (valor >= me20.getInicio() && valor < me20.getFim()) {
+				}else if (valor >= me20.getFim() && valor < me20.getInicio()) {
 					me20.setTotalPneus(me20.getTotalPneus()+1);
-				}else if (valor >= me10.getInicio() && valor < me10.getFim()) {
+				}else if (valor >= me10.getFim() && valor < me10.getInicio()) {
 					me10.setTotalPneus(me10.getTotalPneus()+1);
-				}else if (valor >= me5.getInicio() && valor < me5.getFim()) {
+				}else if (valor >= me5.getFim() && valor < me5.getInicio()) {
 					me5.setTotalPneus(me5.getTotalPneus()+1);
-				}				
+				}
+				total++;
 			}
 			faixas.add(ma20);
 			faixas.add(ma10);
@@ -284,7 +282,15 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		}finally{
 			closeConnection(conn, stmt, rSet);		
 		}
+		setPorcentagemFaixas(faixas, total);
 		return faixas;
+	}
+
+	private void setPorcentagemFaixas(List<Faixa> faixas, int total){
+		for (Faixa faixa : faixas) {
+			double porcentagem = (double) faixa.getTotalPneus() / total;
+			faixa.setPorcentagem(porcentagem);
+		}
 	}
 
 }
