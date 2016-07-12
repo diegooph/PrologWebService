@@ -232,7 +232,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		ok.setFim(5);
 		Faixa me20 = new Faixa();
 		me20.setInicio(-20);
-		me20.setFim(-101);
+		me20.setFim(-100);
 		Faixa me10 = new Faixa();
 		me10.setInicio(-10);
 		me10.setFim(-20);
