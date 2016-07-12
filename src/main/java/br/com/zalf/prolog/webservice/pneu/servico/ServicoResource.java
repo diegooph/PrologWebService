@@ -15,7 +15,7 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 
 @Path("/servico")

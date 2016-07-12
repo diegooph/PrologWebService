@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.ranking.ItemPosicao;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/ranking")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

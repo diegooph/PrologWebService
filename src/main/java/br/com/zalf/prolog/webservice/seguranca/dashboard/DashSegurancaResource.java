@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.dashboard.DashSeguranca;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/dashboard")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

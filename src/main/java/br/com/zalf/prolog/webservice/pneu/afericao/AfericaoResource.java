@@ -16,8 +16,8 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
-import br.com.zalf.prolog.webservice.BodyGetter;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.LogBody;
 
 @Path("/afericao")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -28,7 +28,7 @@ public class AfericaoResource {
 
 	@POST
 	@Secured
-	@BodyGetter
+	@LogBody
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao, 
 			@PathParam("codUnidade") Long codUnidade) {

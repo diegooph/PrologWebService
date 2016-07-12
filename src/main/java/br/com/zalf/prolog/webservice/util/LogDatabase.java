@@ -18,7 +18,23 @@ public class LogDatabase extends DatabaseConnection{
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON) VALUES (?)");
 			String json = GsonUtils.getGson().toJson(o);
-			//L.d(TAG, json);
+			stmt.setString(1, json);
+			stmt.executeUpdate();
+		}catch(SQLException e){
+			L.e(TAG, "ERRO", e);
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+	}
+	
+	public static void insertLog(String json){
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON) VALUES (?)");
 			stmt.setString(1, json);
 			stmt.executeUpdate();
 		}catch(SQLException e){

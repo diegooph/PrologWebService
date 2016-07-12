@@ -23,7 +23,7 @@ import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/checklist")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

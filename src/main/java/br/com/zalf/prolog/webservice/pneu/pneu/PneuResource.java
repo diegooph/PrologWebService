@@ -18,7 +18,7 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

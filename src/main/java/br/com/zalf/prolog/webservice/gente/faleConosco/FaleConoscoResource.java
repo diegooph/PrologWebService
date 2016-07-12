@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.FaleConosco;
 import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/faleConosco")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

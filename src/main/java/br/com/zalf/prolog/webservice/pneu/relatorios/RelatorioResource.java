@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/pneus/relatorios/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

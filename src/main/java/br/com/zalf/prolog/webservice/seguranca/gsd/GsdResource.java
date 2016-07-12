@@ -16,7 +16,7 @@ import br.com.zalf.prolog.models.Pergunta;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.gsd.Gsd;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/gsd")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

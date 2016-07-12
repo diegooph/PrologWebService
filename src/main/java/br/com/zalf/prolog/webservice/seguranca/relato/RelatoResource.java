@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/relatos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

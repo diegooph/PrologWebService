@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 
 @Path("/frota")

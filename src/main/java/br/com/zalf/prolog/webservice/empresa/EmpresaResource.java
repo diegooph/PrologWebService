@@ -16,7 +16,7 @@ import br.com.zalf.prolog.models.Equipe;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

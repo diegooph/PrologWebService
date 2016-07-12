@@ -21,7 +21,7 @@ import br.com.zalf.prolog.models.LoginHolder;
 import br.com.zalf.prolog.models.Request;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

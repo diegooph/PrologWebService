@@ -19,7 +19,7 @@ import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.webservice.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
