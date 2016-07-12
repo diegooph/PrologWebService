@@ -12,8 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.google.gson.Gson;
-
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
@@ -32,7 +30,7 @@ public class AfericaoResource {
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao, 
 			@PathParam("codUnidade") Long codUnidade) {
-		System.out.println(new Gson().toJson(afericao));
+		//System.out.println(new Gson().toJson(afericao));
 		afericao.setDataHora(new Date(System.currentTimeMillis()));
 		if (service.Insert(afericao, codUnidade)) {
 			return Response.Ok("Aferição inserida com sucesso");

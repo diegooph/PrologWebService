@@ -152,14 +152,23 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
 		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
 		Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(codUnidade);
+
+		Date dataAtual = new Date(System.currentTimeMillis());
+		LocalDate dataInicial = LocalDate.of(ano, mes, 01);
+		Date datainicial = Date.valueOf(dataInicial);
+		
 		double meta = 0;
 		int totalVeiculos = 0;
-
+		int ultimoDia = 0;
+		int dia = 1;		
+		
+		if (dataAtual.getYear()+1900 == ano && dataAtual.getMonth()+1 == mes) {
+			ultimoDia = dataAtual.getDate();
+		}else{
+			ultimoDia = DateUtils.getUltimoDiaMes(datainicial).getDate();
+		}
+		
 		try{			
-			LocalDate dataInicial = LocalDate.of(ano, mes, 01);
-			Date datainicial = Date.valueOf(dataInicial);
-			int dia = 1;
-
 			conn = getConnection();
 			totalVeiculos = veiculoDaoImpl.getTotalVeiculosByUnidade(codUnidade, conn);
 			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
@@ -172,30 +181,36 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			stmt.setDate(1, datainicial);
 			stmt.setDate(2, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(datainicial)));
 			stmt.setLong(3, codUnidade);
-			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				while(dia < rSet.getInt("DIA")){
-					aderencia = new Aderencia();
-					aderencia.setDia(dia);
-					aderencia.setRealizadas(0);
-					aderencia.setMeta(meta);
-					aderencia.setResultado(0);
-					aderencias.add(aderencia);	
+					aderencias.add(createAderenciaVazia(meta, dia));	
 					dia++;
 				}					
-					aderencia = new Aderencia();
-					aderencia.setDia(rSet.getInt("DIA"));
-					aderencia.setRealizadas(rSet.getInt("REALIZADAS"));
-					aderencia.setMeta(meta);
-					aderencia.setResultado(rSet.getInt("REALIZADAS") / meta);
-					aderencias.add(aderencia);	
-					dia++;	
+				aderencia = new Aderencia();
+				aderencia.setDia(rSet.getInt("DIA"));
+				aderencia.setRealizadas(rSet.getInt("REALIZADAS"));
+				aderencia.setMeta(meta);
+				aderencias.add(aderencia);	
+				dia++;
+
+				if (rSet.isLast()) {
+					while(dia <= ultimoDia){
+						aderencias.add(createAderenciaVazia(meta, dia));	
+						dia++;
+					}
+				}
 			}
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
 		return aderencias;
 	}
-
+	
+	private Aderencia createAderenciaVazia(double meta, int dia){
+		Aderencia aderencia = new Aderencia();
+		aderencia.setDia(dia);
+		aderencia.setMeta(meta);
+		return aderencia;
+	}
 }
