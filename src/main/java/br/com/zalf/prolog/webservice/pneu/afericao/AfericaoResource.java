@@ -16,6 +16,7 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.pneu.afericao.Afericao;
 import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.BodyGetter;
 import br.com.zalf.prolog.webservice.auth.Secured;
 
 @Path("/afericao")
@@ -27,6 +28,7 @@ public class AfericaoResource {
 
 	@POST
 	@Secured
+	@BodyGetter
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao, 
 			@PathParam("codUnidade") Long codUnidade) {
