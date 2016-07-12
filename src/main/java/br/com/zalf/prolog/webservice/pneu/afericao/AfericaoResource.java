@@ -32,7 +32,6 @@ public class AfericaoResource {
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao, 
 			@PathParam("codUnidade") Long codUnidade) {
-		//System.out.println(new Gson().toJson(afericao));
 		afericao.setDataHora(new Date(System.currentTimeMillis()));
 		if (service.Insert(afericao, codUnidade)) {
 			return Response.Ok("Aferição inserida com sucesso");

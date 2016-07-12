@@ -103,7 +103,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		List<String> servicos = new ArrayList<>();
 		
 		// verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão
-		if(pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)){
+		if(pneu.getProblemas()!= null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)){
 			servicos.add(Servico.TIPO_INSPECAO);
 		}
 		// caso não tenha sido problema, verifica se está apto a ser inspeção
@@ -208,7 +208,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
 		stmt.setString(4, tipoServico);
-		if (pneu.getProblemas().contains(Pneu.Problema.NUMERO_INCORRETO)) {
+		if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.NUMERO_INCORRETO)) {
 			stmt.setInt(5, pneu.getCodPneuProblema());			
 		}else{
 			stmt.setNull(5, java.sql.Types.INTEGER);
