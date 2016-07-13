@@ -16,6 +16,7 @@ import br.com.zalf.prolog.models.pneu.Restricao;
 import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
 import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
+import br.com.zalf.prolog.models.pneu.servico.Servico;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -48,6 +49,56 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
 			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC "
 			+ "LIMIT ? OFFSET ?";
+	
+	private static final String RESUMO_SERVICOS = "SELECT AD.DATA, CAL.CAL_ABERTAS, INSP.INSP_ABERTAS, MOV.MOV_ABERTAS, CAL_FECHADAS.CAL_FECHADAS, INSP_FECHADAS.INSP_FECHADAS, MOV_FECHADAS.MOV_FECHADAS FROM AUX_DATA AD LEFT JOIN "
+			+ "-- BUSCA AS CALIBRAGENS ABERTAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS CAL_ABERTAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS CAL ON CAL.DATA = AD.DATA "
+			+ "LEFT JOIN "
+			+ "-- BUSCA AS INSPEÇÕES ABERTAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS INSP_ABERTAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS INSP ON INSP.DATA = AD.DATA "
+			+ "LEFT JOIN "
+			+ "-- BUSCA AS MOVIMENTAÇÕES ABERTAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS MOV_ABERTAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS MOV ON MOV.DATA = AD.DATA "
+			+ "LEFT JOIN "
+			+ "-- BUSCA AS CALIBRAGENS FECHADAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS CAL_FECHADAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS CAL_FECHADAS ON CAL_FECHADAS.DATA = AD.DATA "
+			+ "LEFT JOIN "
+			+ "-- BUSCA AS INSPEÇÕES FECHADAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS INSP_FECHADAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS INSP_FECHADAS ON INSP_FECHADAS.DATA = AD.DATA "
+			+ "LEFT JOIN "
+			+ "-- BUSCA AS MOVIMENTAÇÕES FECHADAS \n "
+			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS MOV_FECHADAS FROM "
+			+ "AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO "
+			+ "WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND "
+			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ? "
+			+ "GROUP BY A.DATA_HORA::DATE "
+			+ "ORDER BY A.DATA_HORA::DATE DESC) AS MOV_FECHADAS ON MOV_FECHADAS.DATA = AD.DATA "
+			+ "WHERE AD.DATA BETWEEN ? AND ? ";
 
 
 	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException{
@@ -351,28 +402,95 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		L.d(TAG, "Populadas: " + faixas.toString());
 		return faixas;
 	}
-	
-	public List<ResumoServicos> getResumoServicosByUnidades(List<Long> codUnidades){
+
+	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		List<ResumoServicos> servicos = new ArrayList<>();
+		ResumoServicos resumoDia = null;
+		ResumoServicos.Servicos abertos = null;
+		ResumoServicos.Servicos fechados = null;
+		ResumoServicos.Servicos fechadosAc = null;
+		ResumoServicos.Servicos abertosAc = null;
+
+		Date dataInicial = new Date(ano-1900, mes-1, 01);
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement(RESUMO_SERVICOS);
+			
+			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(2, Servico.TIPO_CALIBRAGEM);
+			stmt.setArray(3, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(4, Servico.TIPO_INSPECAO);
+			stmt.setArray(5, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(6, Servico.TIPO_MOVIMENTACAO);
+			stmt.setArray(7, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(8, Servico.TIPO_CALIBRAGEM);
+			stmt.setArray(9, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(10, Servico.TIPO_INSPECAO);
+			stmt.setArray(11, PostgresUtil.ListToArray(conn, codUnidades));
+			stmt.setString(12, Servico.TIPO_MOVIMENTACAO);
+			stmt.setDate(13, dataInicial);
+			stmt.setDate(14, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(dataInicial)));
+			rSet = stmt.executeQuery();
+			int tempCalFechadas = 0;
+			int tempInspFechadas = 0;
+			int tempMovFechadas = 0;
+			int tempCalAbertas = 0;
+			int tempInspAbertas = 0;
+			int tempMovAbertas = 0;
+			while (rSet.next()) {
+				resumoDia = new ResumoServicos();
+				abertos = new ResumoServicos.Servicos();
+				fechados = new ResumoServicos.Servicos();
+				fechadosAc = new ResumoServicos.Servicos();
+				abertosAc = new ResumoServicos.Servicos();
+				resumoDia.setDia(rSet.getDate("DATA").getDate());
+				// quantidade de serviços abertos no dia
+				abertos.calibragem = rSet.getInt("CAL_ABERTAS");
+				abertos.inspecao = rSet.getInt("INSP_ABERTAS");
+				abertos.movimentacao = rSet.getInt("MOV_ABERTAS");
+				// quantidade de serviços fechados no dia 
+				fechados.calibragem = rSet.getInt("CAL_FECHADAS");
+				fechados.inspecao = rSet.getInt("INSP_FECHADAS");
+				fechados.movimentacao = rSet.getInt("MOV_FECHADAS");
+				// contador do acumulado, conta quantos serviços no total ja foram fechados
+				tempCalFechadas += rSet.getInt("CAL_FECHADAS");
+				tempInspFechadas += rSet.getInt("INSP_FECHADAS");
+				tempMovFechadas += rSet.getInt("MOV_FECHADAS");
+				//contador do acumulado, conta quantos serviços estão em aberto no dia
+				// leva em consideração o total aberto - o arrumado no dia
+				tempCalAbertas += abertos.calibragem + fechados.calibragem;
+				tempInspAbertas += abertos.inspecao + fechados.inspecao;
+				tempInspAbertas += abertos.movimentacao + fechados.movimentacao;
+				// associa os valores com os temporários 
+				fechadosAc.calibragem = tempCalFechadas;
+				fechadosAc.inspecao = tempInspFechadas;
+				fechadosAc.movimentacao = tempMovFechadas;
+				// associa os valores com os temporários
+				abertosAc.calibragem = tempCalAbertas;
+				abertosAc.inspecao = tempInspAbertas;
+				abertosAc.movimentacao = tempMovAbertas;
+				// seta os objetos internos do Resumo
+				resumoDia.setAbertos(abertos);
+				resumoDia.setFechados(fechados);
+				resumoDia.setAcumuladoFechados(fechadosAc);
+				resumoDia.setAcumuladoAbertos(abertosAc);
+				
+				L.d(TAG, resumoDia.toString());				
+			}
+			
+		}finally{
+			closeConnection(conn, stmt, rSet);
+		}
 		return null;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
 
 	//ordena as faixas pelo inicio de cada uma
 	private class CustomComparatorFaixas implements Comparator<Faixa>{
