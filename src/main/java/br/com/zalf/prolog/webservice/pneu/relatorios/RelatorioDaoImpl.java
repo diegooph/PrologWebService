@@ -15,6 +15,7 @@ import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.Restricao;
 import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
+import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -351,7 +352,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		return faixas;
 	}
 	
-	
+	public List<ResumoServicos> getResumoServicosByUnidades(List<Long> codUnidades){
+		return null;
+	}
 	
 	
 	
