@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.zalf.prolog.models.pneu.Pneu;
@@ -98,7 +100,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 					i--;
 				}
 			}
-			faixa.setPorcentagem(faixa.getTotalPneus()/totalPneus);
+			faixa.setPorcentagem((double)faixa.getTotalPneus()/totalPneus);
 		}
 		return faixas;
 	}
@@ -217,29 +219,16 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Faixa> faixas = new ArrayList<>();
-		Faixa ma20 = new Faixa();
-		ma20.setInicio(20);
-		ma20.setFim(100);
-		Faixa ma10 = new Faixa();
-		ma10.setInicio(10);
-		ma10.setFim(20);
-		Faixa ma5 = new Faixa();
-		ma5.setInicio(5);
-		ma5.setFim(10);
-		Faixa ok = new Faixa();
-		ok.setInicio(-5);
-		ok.setFim(5);
-		Faixa me20 = new Faixa();
-		me20.setInicio(-20);
-		me20.setFim(-100);
-		Faixa me10 = new Faixa();
-		me10.setInicio(-10);
-		me10.setFim(-20);
-		Faixa me5 = new Faixa();
-		me5.setInicio(-5);
-		me5.setFim(-10);
-		int total = 0;
+		List<Faixa> faixas = null;
+		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
+		if (!codUnidades.get(0).equals("%")) {
+			Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));	
+			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
+			faixas = criaFaixas(base, 10);
+		}else{
+			faixas = criaFaixas(0, 10);
+		}		
+		List<Integer> valores = new ArrayList<>();
 
 		try{
 			conn = getConnection();
@@ -253,44 +242,125 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-
-				int valor = rSet.getInt("PORC"); 
-				if (valor >= ma20.getInicio() && valor < ma20.getFim()) {
-					ma20.setTotalPneus(ma20.getTotalPneus()+1);
-				}else if (valor >= ma10.getInicio() && valor < ma10.getFim()) {
-					ma10.setTotalPneus(ma10.getTotalPneus()+1);
-				}else if (valor >= ma5.getInicio() && valor < ma5.getFim()) {
-					ma5.setTotalPneus(ma5.getTotalPneus()+1);
-				}else if (valor >= ok.getInicio() && valor < ok.getFim()) {
-					ok.setTotalPneus(ok.getTotalPneus()+1);
-				}else if (valor >= me20.getFim() && valor < me20.getInicio()) {
-					me20.setTotalPneus(me20.getTotalPneus()+1);
-				}else if (valor >= me10.getFim() && valor < me10.getInicio()) {
-					me10.setTotalPneus(me10.getTotalPneus()+1);
-				}else if (valor >= me5.getFim() && valor < me5.getInicio()) {
-					me5.setTotalPneus(me5.getTotalPneus()+1);
-				}
-				total++;
+				valores.add(rSet.getInt("PORC"));
 			}
-			faixas.add(ma20);
-			faixas.add(ma10);
-			faixas.add(ma5);
-			faixas.add(ok);
-			faixas.add(me5);
-			faixas.add(me10);
-			faixas.add(me20);
+
 		}finally{
 			closeConnection(conn, stmt, rSet);		
 		}
-		setPorcentagemFaixas(faixas, total);
+		int totalValores = valores.size();
+		populaFaixas(faixas, valores);
+		setPorcentagemFaixas(faixas, totalValores);
+		L.d(TAG, "Finalizado: " + faixas.toString());
 		return faixas;
 	}
 
 	private void setPorcentagemFaixas(List<Faixa> faixas, int total){
+		L.d(TAG, String.valueOf(total));
 		for (Faixa faixa : faixas) {
-			double porcentagem = (double) faixa.getTotalPneus() / total;
-			faixa.setPorcentagem(porcentagem);
+			if (faixa.getTotalPneus() == 0) {
+				faixa.setPorcentagem(0);
+			}else{
+				double porcentagem = (double) faixa.getTotalPneus() / total;
+				faixa.setPorcentagem(porcentagem);
+			}
 		}
 	}
 
+	public List<Faixa> criaFaixas(int base, int escala){
+		List<Faixa> faixas = new ArrayList<>();
+		// cria a primeira faixa de 0 até a restrição imposta pela empresa (3% por exemplo)
+		Faixa faixa = new Faixa();
+		faixa.setInicio(0);
+		faixa.setFim(base);
+		faixas.add(faixa);
+		// cria a primeira faixas negativa, que vai de -3 a 0
+		faixa = new Faixa();
+		faixa.setInicio(base*-1);
+		faixa.setFim(0);
+		faixas.add(faixa);
+
+		int inicio = base;
+		int fim = base;
+
+		// 1- verificar o próximo multiplo de 10 a partir da base(restricao)
+		while (fim % 10 != 0) {
+			fim++;			
+		}	
+		// cria a segunda faixa positiva, que vai de 3 a 10(calculado com o while acima)
+		faixa = new Faixa();
+		faixa.setInicio(inicio);
+		faixa.setFim(fim);
+		faixas.add(faixa);
+		// cria a segunda faixa negativa, que vai de -10 a -3
+		faixa = new Faixa();
+		faixa.setInicio(fim*-1);
+		faixa.setFim(inicio*-1);
+		faixas.add(faixa);
+
+		while (fim < 100) {
+			inicio = fim;
+			fim = inicio + escala;
+			faixa = new Faixa();
+			faixa.setInicio(inicio);
+			faixa.setFim(fim);			
+			faixas.add(faixa);
+
+			faixa = new Faixa();
+			faixa.setInicio(fim * -1);
+			faixa.setFim(inicio * -1);			
+			faixas.add(faixa);
+		}
+
+		Collections.sort(faixas, new CustomComparatorFaixas());
+		return faixas;
+	}
+
+	public List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores){
+		Collections.sort(valores);
+		int integer = 0;
+		// percorre todas as faixas
+		for (Faixa faixa: faixas) {
+			// percorre todos os valores
+			for (int i = 0; i<valores.size(); i++) {
+				integer = valores.get(i);
+				// se a faixa começa com 0, veirica se é >= inicio e <= fim
+				if (faixa.getInicio() == 0) {
+					if (integer >= faixa.getInicio() && integer <= faixa.getFim()) {
+						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+						valores.remove(i);
+						i--;
+					}
+				}				
+				// se a faixa for do lado negativo, a comparação se da de forma diferente >= inicio <fim
+				else if (faixa.getInicio() < 0) {
+					// verifica se o valor esta apto a entrar na faixa
+					if (integer >= faixa.getInicio() && integer < faixa.getFim()) {
+						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+						valores.remove(i);
+						i--;
+					}					
+					// > inicio <= fim
+				}else if(integer > faixa.getInicio() && integer <= faixa.getFim()){
+					faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+					valores.remove(i);
+					i--;
+				}
+			}
+		}
+		L.d(TAG, "Populadas: " + faixas.toString());
+		return faixas;
+	}
+
+	//ordena as faixas pelo inicio de cada uma
+	private class CustomComparatorFaixas implements Comparator<Faixa>{
+		/**
+		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
+		 */
+		@Override
+		public int compare(Faixa o1, Faixa o2) {
+			Integer valor1 = Double.compare(o1.getInicio(), o2.getInicio());
+			return valor1;
+		}			
+	}
 }
