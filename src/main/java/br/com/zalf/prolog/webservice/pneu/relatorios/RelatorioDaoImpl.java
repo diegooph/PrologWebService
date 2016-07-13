@@ -224,9 +224,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		if (!codUnidades.get(0).equals("%")) {
 			Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));	
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
-			faixas = criaFaixas(base, 10);
+			faixas = criaFaixas(base, 30);
 		}else{
-			faixas = criaFaixas(0, 10);
+			faixas = criaFaixas(0, 30);
 		}		
 		List<Integer> valores = new ArrayList<>();
 
@@ -244,7 +244,6 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			while(rSet.next()){
 				valores.add(rSet.getInt("PORC"));
 			}
-
 		}finally{
 			closeConnection(conn, stmt, rSet);		
 		}
@@ -351,6 +350,26 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		L.d(TAG, "Populadas: " + faixas.toString());
 		return faixas;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	//ordena as faixas pelo inicio de cada uma
 	private class CustomComparatorFaixas implements Comparator<Faixa>{

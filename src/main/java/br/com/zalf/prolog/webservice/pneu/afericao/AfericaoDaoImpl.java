@@ -69,8 +69,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
 
 		stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
-				+ "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL,ALTURA_SULCO_EXTERNO, ALTURA_SULCO_INTERNO) VALUES "
-				+ "(?, ?, ?, ?, ?, ?, ?)");
+				+ "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL,ALTURA_SULCO_EXTERNO, ALTURA_SULCO_INTERNO, POSICAO) VALUES "
+				+ "(?, ?, ?, ?, ?, ?, ?, ?)");
 		for(Pneu pneu : afericao.getVeiculo().getListPneus()){
 			stmt.setLong(1, afericao.getCodigo());
 			stmt.setLong(2, pneu.getCodigo());
@@ -79,6 +79,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setDouble(5, pneu.getSulcoAtual().getCentral());
 			stmt.setDouble(6, pneu.getSulcoAtual().getExterno());
 			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
+			stmt.setInt(8, pneu.getPosicao());
 			//Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
 			pneuDaoImpl.updateMedicoes(pneu, codUnidade, conn);
 			stmt.executeUpdate();
