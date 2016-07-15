@@ -109,6 +109,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
 			return new ArrayList<>();
 
 		} else {
+			
 			return getFaixas(valores);
 		}
 	};
