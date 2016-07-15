@@ -34,7 +34,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, 0) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
+	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
 			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
 
 	private static final String SULCOS_PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
@@ -154,6 +154,13 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			}
 			faixa.setPorcentagem((double)faixa.getTotalPneus()/totalPneus);
 		}
+		// cria a faixa de itens não aferidos, com o que sobrou da lista valores
+		Faixa faixa = new Faixa();
+		faixa.setNaoAferidos(true);
+		faixa.setTotalPneus(valores.size());
+		faixa.setPorcentagem((double) valores.size() / totalPneus);
+		faixas.add(faixa);
+		
 		return faixas;
 	}
 
