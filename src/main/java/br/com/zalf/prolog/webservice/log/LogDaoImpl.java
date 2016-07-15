@@ -8,14 +8,14 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class LogDaoImpl extends DatabaseConnection {
 
-	public boolean insert(String log) throws SQLException {
+	public boolean insert(String log, String indicador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON, IDENTIFICADOR) VALUES (?,?)");
 			stmt.setString(1, log);
-			stmt.setString(2, "aferidor");
+			stmt.setString(2, indicador);
 			int count = stmt.executeUpdate();
 			if (count > 0) {
 				return true;
