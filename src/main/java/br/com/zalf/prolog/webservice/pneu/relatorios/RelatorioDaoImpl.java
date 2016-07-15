@@ -49,7 +49,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
 			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC "
 			+ "LIMIT ? OFFSET ?";
-	
+
 	private static final String RESUMO_SERVICOS = "SELECT AD.DATA, CAL.CAL_ABERTAS, INSP.INSP_ABERTAS, MOV.MOV_ABERTAS, CAL_FECHADAS.CAL_FECHADAS, INSP_FECHADAS.INSP_FECHADAS, MOV_FECHADAS.MOV_FECHADAS FROM AUX_DATA AD LEFT JOIN "
 			+ "-- BUSCA AS CALIBRAGENS ABERTAS \n "
 			+ "(SELECT A.DATA_HORA::DATE AS DATA, COUNT(A.CODIGO) AS CAL_ABERTAS FROM "
@@ -160,7 +160,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		faixa.setTotalPneus(valores.size());
 		faixa.setPorcentagem((double) valores.size() / totalPneus);
 		faixas.add(faixa);
-		
+
 		return faixas;
 	}
 
@@ -288,27 +288,45 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			faixas = criaFaixas(0, 30);
 		}		
 		List<Integer> valores = new ArrayList<>();
+		int naoAferidos = 0;
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT "
-					+ "(((COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) - COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))/"
-					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))*100)::INT AS PORC "
-					+ "FROM PNEU "
-					+ "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  "
+			//			stmt = conn.prepareStatement("SELECT "
+			//					+ "(((COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) - COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))/"
+			//					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))*100)::INT AS PORC "
+			//					+ "FROM PNEU "
+			//					+ "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  "
+			//					+ "ORDER BY 1 asc");
+
+			stmt = conn.prepareStatement("SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
+					+ "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS PORC  "
+					+ "FROM PNEU  "
+					+ "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
 					+ "ORDER BY 1 asc");
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
 			stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				valores.add(rSet.getInt("PORC"));
+				if (rSet.getString("PORC").equals("N")) {
+					naoAferidos ++;
+				}else{
+					valores.add((int) rSet.getDouble("PORC"));
+				}
 			}
 		}finally{
 			closeConnection(conn, stmt, rSet);		
 		}
-		int totalValores = valores.size();
+		
+		int totalValores = valores.size() + naoAferidos;
+		L.d(TAG, "Total valores: " + totalValores);
 		populaFaixas(faixas, valores);
 		setPorcentagemFaixas(faixas, totalValores);
+		Faixa faixa = new Faixa();
+		faixa.setNaoAferidos(true);
+		faixa.setTotalPneus(naoAferidos);
+		faixa.setPorcentagem((double) naoAferidos/ (double) totalValores);	
+		faixas.add(faixa);		
 		L.d(TAG, "Finalizado: " + faixas.toString());
 		return faixas;
 	}
@@ -427,7 +445,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(RESUMO_SERVICOS);
-			
+
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
 			stmt.setString(2, Servico.TIPO_CALIBRAGEM);
 			stmt.setArray(3, PostgresUtil.ListToArray(conn, codUnidades));
@@ -488,7 +506,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 				resumoDia.setAcumuladoAbertos(abertosAc);
 				servicos.add(resumoDia);
 			}
-			
+
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
