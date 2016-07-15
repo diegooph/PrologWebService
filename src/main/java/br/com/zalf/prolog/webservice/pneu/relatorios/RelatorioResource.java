@@ -12,9 +12,10 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
+import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-@Path("/pneus/relatorios/")
+@Path("/pneus/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
@@ -41,12 +42,22 @@ public class RelatorioResource {
 	
 	@GET
 	@Secured
-	@Path("aderencia/{codUnidade}/{ano}/{mes}")
+	@Path("/aderencia/{codUnidade}/{ano}/{mes}")
 	public List<Aderencia> getAderenciaByUnidade(
 			@PathParam("ano") int ano,
 			@PathParam("mes") int mes,
 			@PathParam("codUnidade") Long codUnidade){	
 		return service.getAderenciaByUnidade(ano, mes, codUnidade);
+	}
+
+	@GET
+	@Secured
+	@Path("resumoServicos/{ano}/{mes}")
+	public List<ResumoServicos> getResumoServicosByUnidades(
+			@PathParam("ano") int ano,
+			@PathParam("mes") int mes,
+			@QueryParam("codUnidades") List<String> codUnidades){
+		return service.getResumoServicosByUnidades(ano, mes, codUnidades);
 	}
 	
 }

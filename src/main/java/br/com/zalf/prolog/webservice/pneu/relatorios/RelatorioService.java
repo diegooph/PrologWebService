@@ -7,6 +7,7 @@ import java.util.List;
 import br.com.zalf.prolog.models.pneu.Pneu;
 import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
 import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
+import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
 
 public class RelatorioService {
 	
@@ -42,6 +43,15 @@ public class RelatorioService {
 	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade){
 		try{
 			return dao.getAderenciaByUnidade(ano, mes, codUnidade);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+	
+	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades){
+		try{
+			return dao.getResumoServicosByUnidades(ano, mes, codUnidades);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
