@@ -15,9 +15,9 @@ import br.com.zalf.prolog.webservice.util.LogDatabase;
 
 @LogBody
 @Provider
-public class BodyIntercptor implements ContainerRequestFilter {
+public class BodyInterceptor implements ContainerRequestFilter {
 
-	private static final String TAG = BodyIntercptor.class.getSimpleName();
+	private static final String TAG = BodyInterceptor.class.getSimpleName();
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
