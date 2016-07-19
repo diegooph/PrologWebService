@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="logica-projeto">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/logica-projeto.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/logica-projeto.jar!/src" />
+    </SOURCES>
+  </library>
+</component>
