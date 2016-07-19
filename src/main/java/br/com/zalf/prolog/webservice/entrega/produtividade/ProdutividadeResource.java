@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.util.L;
 
 @Path("/produtividade")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -29,9 +30,7 @@ public class ProdutividadeResource{
 			@FormParam("token") String token) {
 		return service.getProdutividadeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), cpf, token);
-
 	}
-
 }
 
 

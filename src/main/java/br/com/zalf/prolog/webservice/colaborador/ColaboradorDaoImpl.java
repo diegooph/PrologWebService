@@ -19,8 +19,11 @@ import br.com.zalf.prolog.models.permissao.pilares.Pilar;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
+
+	private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
 	@Override
 	public boolean insert(Colaborador colaborador) throws SQLException {
@@ -146,7 +149,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		Visao visao = new Visao();
 		List<Pilar> listPilares = new ArrayList<>();
 		List<Integer> listFuncoes = new ArrayList<>();
-		Pilar pilar = new Pilar();
+		Pilar pilar = null;
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -160,6 +163,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			if(rSet.first()){
+				pilar = new Pilar();
 				pilar.codigo = rSet.getInt("PILAR");
 				pilar.funcoesDisponiveis = listFuncoes;
 				pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
@@ -169,7 +173,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
 				}else{
 					listPilares.add(pilar);
-
 					pilar = new Pilar();
 					listFuncoes = new ArrayList<>();
 					pilar.funcoesDisponiveis = listFuncoes;
@@ -177,8 +180,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
 				}
 			}
-			listPilares.add(pilar);
-			visao.setPilares(listPilares);
+			if (pilar!=null){
+				listPilares.add(pilar);
+				visao.setPilares(listPilares);
+			}else{
+				return null;
+			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
@@ -353,11 +360,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	public LoginHolder getLoginHolder(Long cpf)throws SQLException{
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.colaborador = getByCod(cpf);
-		if(verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())){
-			RelatoDaoImpl relatoDao = new RelatoDaoImpl();
-			loginHolder.alternativasRelato = relatoDao.getAlternativas(
-					loginHolder.colaborador.getCodUnidade(), 
-					loginHolder.colaborador.getSetor().getCodigo());
+
+		if(loginHolder.colaborador.getVisao() != null) {
+			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+				RelatoDaoImpl relatoDao = new RelatoDaoImpl();
+				loginHolder.alternativasRelato = relatoDao.getAlternativas(
+						loginHolder.colaborador.getCodUnidade(),
+						loginHolder.colaborador.getSetor().getCodigo());
+			}
 		}
 		return loginHolder;
 	}

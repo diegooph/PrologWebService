@@ -25,8 +25,11 @@ import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
+
+    private static String TAG = ProdutividadeDaoImpl.class.getSimpleName();
 
 	/**
 	 * Data do mapa é comparada com a tabela histórico_cargos.
@@ -39,7 +42,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 	 * Se houver dados na coluna funcao_antiga, é usado a função descrita nela para 
 	 * calculas a remuneração deste mapa.
 	 */
-	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.CXCARREG,M.CXENTREG, "
+	private static final String BUSCA_PRODUTIVIDADE="SELECT M.DATA, M.FATOR, M.CXCARREG,M.CXENTREG, "
 			+ "M.QTNFCARREGADAS,M.QTNFENTREGUES,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.HRSAI, "
 			+ "M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL, M.MATRICMOTORISTA, M.MATRICAJUD1, M.MATRICAJUD2, C.MATRICULA_AMBEV, C.COD_FUNCAO AS FUNCAO_ATUAL, "
 			+ "M.VlBateuJornMot, M.VlNaoBateuJornMot, "
@@ -72,7 +75,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_PRODUTIVIDADE, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt = conn.prepareStatement(BUSCA_PRODUTIVIDADE,
+					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			
 			// Token autenticação
 			stmt.setLong(1, cpf);
@@ -81,7 +85,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setLong(3, cpf);
 			stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
-			rSet = stmt.executeQuery();	
+            L.d(TAG, stmt.toString());
+            rSet = stmt.executeQuery();
 			
 			MetasDaoImpl metasDao = new MetasDaoImpl();
 			meta = metasDao.getMetasByCpf(cpf);
@@ -146,7 +151,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			valor = rSet.getDouble("VlBateuJornAju");
 			valor = valor + rSet.getDouble("VlNaoBateuJornAju");
 			valor = valor + rSet.getDouble("VlRecargaAju");
-			valor = valor/2;
+			valor = valor/rSet.getInt("fator");
 			break;
 		}
 		return valor;
