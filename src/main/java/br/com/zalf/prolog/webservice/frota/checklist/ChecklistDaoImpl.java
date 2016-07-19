@@ -546,8 +546,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					modelo.setCodigo(rSet.getLong("CODIGO"));
 					modelo.setNome(rSet.getString("NOME"));
 					placas.add(rSet.getString("PLACA"));
-				}				
+				}
 			}
+			modeloPlaca.put(modelo, placas);
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}	
