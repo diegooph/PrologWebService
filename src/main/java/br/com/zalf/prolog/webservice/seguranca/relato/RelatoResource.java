@@ -65,7 +65,22 @@ public class RelatoResource {
 			@PathParam("status") String status) {
 		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, "realizados");
 	}
-	
+
+	@GET
+	@Path("/{status}/colaborador/{cpf}")
+	@Secured
+	public List<Relato> getByColaborador(@PathParam("status") String status,
+										@PathParam("cpf") Long cpf,
+										@QueryParam("limit") int limit,
+										@QueryParam("offset") long offset,
+										@QueryParam("latitude") double latitude,
+										@QueryParam("longitude") double longitude,
+										@QueryParam("isOrderByDate") boolean isOrderByDate){
+		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate,
+				status, "realizados" );
+	}
+
+
 	@GET
 	@Secured
 	@Path("/classificados/{cpf}/{status}")

@@ -7,7 +7,9 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.webservice.util.L;
+import com.google.gson.Gson;
 
 
 public class Main {
@@ -33,9 +35,12 @@ public class Main {
 		
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
-		
-		
-		
+
+
+		Colaborador c = new Colaborador();
+		c.setCodUnidade(2);
+		c.setNome("Teste");
+		System.out.println(new Gson().toJson(c));
 		
 //
 //		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);

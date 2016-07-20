@@ -31,7 +31,6 @@ public class ImportResource {
 	  	@Path("/mapa")
 	    @Consumes({MediaType.MULTIPART_FORM_DATA})
 	    public Response uploadMapa(
-	    		
 	    		@FormDataParam("file") InputStream fileInputStream,
 	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
 	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
