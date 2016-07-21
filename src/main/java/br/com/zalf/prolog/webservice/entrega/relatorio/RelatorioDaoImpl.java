@@ -28,6 +28,7 @@ import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
@@ -165,7 +166,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_REGIONAL);
-			stmt.setLong(1, cpf); 
+			stmt.setLong(1, cpf.longValue());
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){ // rset com os codigos e nomes da regionais
@@ -485,12 +486,21 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Time tempoInterno;
 		itemTempoInterno.setData(rSet.getDate("DATA"));
 		itemTempoInterno.setHrEntrada((rSet.getTime("HRENTR")));
+		L.d("t", "Pegando tempo interno");
+		tempoInterno = new Time(0);
 		tempoInterno = rSet.getTime("TEMPOINTERNO");
-		// entrada + tempo interno = horario do fechamento
-		itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
-		itemTempoInterno.setResultado(tempoInterno);
-		itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
-		itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
+		if (tempoInterno != null) {
+			// entrada + tempo interno = horario do fechamento
+			itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
+			itemTempoInterno.setResultado(tempoInterno);
+			itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+			itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
+		}else{
+			itemTempoInterno.setHrFechamento(new Time(0));
+			itemTempoInterno.setResultado(new Time(0));
+			itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
+			itemTempoInterno.setBateuMeta(false);
+		}
 		return itemTempoInterno;
 	}
 
@@ -525,7 +535,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Time matinal;
 		Time rota;
 		Time tempoInterno;
-		tempoInterno = rSet.getTime("TEMPOINTERNO");
+		tempoInterno = new Time(rSet.getTime("TEMPOINTERNO").getTime()+0) ;
 		rota = TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
 				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
 		matinal = MetaUtils.calculaTempoLargada(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),
