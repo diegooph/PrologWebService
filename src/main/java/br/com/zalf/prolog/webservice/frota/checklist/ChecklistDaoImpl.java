@@ -23,6 +23,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 
@@ -42,6 +43,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		veiculoDao = new VeiculoDaoImpl();
+		L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
@@ -432,16 +434,26 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		PerguntaRespostaChecklist.Alternativa alternativa =  new PerguntaRespostaChecklist.Alternativa();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA, "
-					+ "CP.PERGUNTA, CP.SINGLE_CHOICE,CAP.CODIGO AS COD_ALTERNATIVA, CP.PRIORIDADE,  "
-					+ "CAP.ORDEM, CP.URL_IMAGEM, CAP.ALTERNATIVA, CR.RESPOSTA  "
-					+ "FROM CHECKLIST C JOIN CHECKLIST_RESPOSTAS CR ON C.CODIGO = CR.COD_CHECKLIST AND CR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO "
-					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CR.COD_PERGUNTA AND CP.COD_UNIDADE = CR.COD_UNIDADE AND "
-					+ "CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO JOIN "
-					+ "CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CAP.CODIGO = CR.COD_ALTERNATIVA AND CAP.COD_UNIDADE = CR.COD_UNIDADE "
-					+ "AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO "
-					+ "WHERE C.CODIGO = ? AND C.CPF_COLABORADOR = ? "
-					+ "ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
+			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA,\n" +
+							"CP.PERGUNTA, CP.SINGLE_CHOICE,CAP.CODIGO AS COD_ALTERNATIVA, CP.PRIORIDADE,\n" +
+							"CAP.ORDEM, CP.URL_IMAGEM, CAP.ALTERNATIVA, CR.RESPOSTA\n" +
+							"FROM CHECKLIST C\n" +
+							"\tJOIN CHECKLIST_RESPOSTAS CR ON\n" +
+							"\t\t\tC.CODIGO = CR.COD_CHECKLIST AND\n" +
+							"\t\t\tCR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO AND\n" +
+							"\t\t\tc.cod_unidade = cr.cod_unidade\n" +
+							"\tJOIN CHECKLIST_PERGUNTAS CP ON\n" +
+							"\t\t\tCP.CODIGO = CR.COD_PERGUNTA AND\n" +
+							"\t\t\tCP.COD_UNIDADE = CR.COD_UNIDADE AND\n" +
+							"\t\t\tCP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO and\n" +
+							"\t\t\tcp.codigo = cr.cod_pergunta\n" +
+							"\tJOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON\n" +
+							"\t\t\tCAP.CODIGO = CR.COD_ALTERNATIVA AND\n" +
+							"\t\t\tCAP.COD_UNIDADE = CR.COD_UNIDADE AND\n" +
+							"\t\t\tCAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO and\n" +
+							"\t\t\t\tcap.cod_pergunta = cr.cod_pergunta\n" +
+							"\tWHERE c.codigo = ? and c.cpf_colaborador = ? \n" +
+							" ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, checklist.getCodigo());
 			stmt.setLong(2, checklist.getColaborador().getCpf());

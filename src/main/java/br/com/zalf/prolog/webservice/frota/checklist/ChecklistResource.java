@@ -24,6 +24,7 @@ import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.L;
 
 @Path("/checklist")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -42,6 +43,7 @@ public class ChecklistResource {
 	@POST
 	@Secured
 	public Response insert(Checklist checklist) {
+		L.d("ChecklistResource", "Chamou o resource");
 		checklist.setData(new Date(System.currentTimeMillis()));
 		if (service.insert(checklist)) {
 			return Response.Ok("Checklist inserido com sucesso");
