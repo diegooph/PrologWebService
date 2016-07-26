@@ -43,7 +43,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "JOIN COLABORADOR C ON M.MATRICMOTORISTA = C.MATRICULA_AMBEV "
 			+ "JOIN COLABORADOR C1 ON M.MATRICAJUD1 = C1.MATRICULA_AMBEV "
 			+ "JOIN COLABORADOR C2 ON M.MATRICAJUD2 = C2.MATRICULA_AMBEV "
-			+ " JOIN EMPRESA E ON E.CODIGO = M.COD_UNIDADE "
+			+ " JOIN UNIDADE E ON E.CODIGO = M.COD_UNIDADE "
 			+ "JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
 			+ "LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK "
 			+ "FROM tracking t join MAPA M on m.mapa = t.mapa "
@@ -53,7 +53,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
 			+ "group by t.mapa) as total on total_entregas = t.mapa "
 			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE EQ.NOME LIKE ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? "
+			+ "WHERE EQ.NOME LIKE ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? AND C.matricula_ambev <> 0 AND C1.matricula_ambev <> 0 " +
+            "   AND c2.matricula_ambev <> 0 "
 			+ "ORDER BY M.DATA, EQ.NOME ";
 
 	public static final String BUSCA_REGIONAL = "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
@@ -360,8 +361,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		System.out.println(codUnidade);
 		System.out.println(cpf);
 		System.out.println(token);
-		
-		
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -379,12 +379,14 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setLong(4, codUnidade);
 			stmt.setDate(5, DateUtils.toSqlDate(dataInicial));
 			stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
+            L.d("RelatorioDaoImpl", stmt.toString());
 			rSet = stmt.executeQuery();
 			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
 			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
 			List<Mapa> listMapas = new ArrayList<>();
 			Mapa mapa;
 			if(rSet.first()){
+			    L.d("RelatorioDaoImpl", "rSet nao vazio");
 				mapa = createMapa(rSet);
 				listMapas.add(mapa);
 			}
@@ -424,8 +426,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	}
 
 	public Mapa createMapa(ResultSet rSet) throws SQLException{
-		Mapa mapa = new Mapa();
+	    Mapa mapa = new Mapa();
 		mapa.setNumeroMapa(rSet.getInt("MAPA"));
+
+        L.d("tag", "Criou o mapa: " + mapa.getNumeroMapa());
 		mapa.setData(rSet.getDate("DATA"));
 		mapa.setEquipe(rSet.getString("EQUIPE"));
 		mapa.setMotorista(rSet.getString("NOMEMOTORISTA"));

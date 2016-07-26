@@ -12,6 +12,7 @@ import java.util.List;
 import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Relato;
+import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
@@ -30,9 +31,9 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt = conn.prepareStatement("INSERT INTO RELATO "
 					+ "(DATA_HORA_LOCAL,  DATA_HORA_DATABASE, LATITUDE, LONGITUDE, "
 					+ "URL_FOTO_1, URL_FOTO_2, URL_FOTO_3, CPF_COLABORADOR, STATUS, COD_UNIDADE, "
-					+ " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS) "
+					+ " COD_SETOR, COD_ALTERNATIVA, RESPOSTA_OUTROS, COD_PDV) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?,(SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?),"
-					+ "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?)");						
+					+ "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?)");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(relato.getDataLocal()));
 			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(3, relato.getLatitude());
@@ -51,7 +52,9 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			}else{
 				stmt.setNull(13, java.sql.Types.VARCHAR);
 			}
-
+			if (relato.getPdv() != null) {
+				stmt.setInt(14, relato.getPdv().getCodigo());
+			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o relato");
@@ -364,6 +367,8 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		alternativa.respostaOutros = rSet.getString("RESPOSTA_OUTROS");
 		relato.setAlternativa(alternativa);
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
+		Pdv pdv = new Pdv();
+		pdv.setCodigo(rSet.getInt("COD_PDV"));
 		return relato;
 	}
 

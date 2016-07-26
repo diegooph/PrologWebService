@@ -7,16 +7,16 @@ import br.com.zalf.prolog.models.FaleConosco;
 
 public class FaleConoscoService {
 	private FaleConoscoDaoImpl dao = new FaleConoscoDaoImpl();
-	
-	public boolean insert(FaleConosco faleConosco) {
+
+	public boolean insert(FaleConosco faleConosco, Long codUnidade) {
 		try {
-			return dao.insert(faleConosco);
+			return dao.insert(faleConosco, codUnidade);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 //	public boolean update(FaleConosco faleConosco) {
 //		try {
 //			return dao.update(faleConosco);
@@ -34,8 +34,8 @@ public class FaleConoscoService {
 //			return false;
 //		}
 //	}
-	
-//	public FaleConosco getByCod(Long codigo, String token) {
+
+	//	public FaleConosco getByCod(Long codigo, String token) {
 //		try {
 //			return dao.getByCod(codigo, token);
 //		} catch (SQLException e) {
@@ -44,15 +44,17 @@ public class FaleConoscoService {
 //		}
 //	}
 //	
-//	public List<FaleConosco> getAll() {
-//		try {
-//			return dao.getAll();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return new ArrayList<FaleConosco>();
-//		}
-//	}
-	
+	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
+									String equipe, Long codUnidade, String status, String categoria){
+
+		try{
+			return dao.getAll(dataInicial, dataFinal, limit, offset,equipe, codUnidade, status, categoria);
+		}catch (Exception e){
+			e.printStackTrace();
+			return new ArrayList<FaleConosco>();
+		}
+	}
+
 	public List<FaleConosco> getByColaborador(long cpf) {
 		try {
 			return dao.getByColaborador(cpf);

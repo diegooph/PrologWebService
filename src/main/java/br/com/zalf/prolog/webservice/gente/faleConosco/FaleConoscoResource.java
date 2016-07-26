@@ -1,14 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.FaleConosco;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+
+import java.util.List;
 
 @Path("/faleConosco")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -18,8 +17,9 @@ public class FaleConoscoResource {
 	
 	@POST
 	@Secured
-	public Response insert(FaleConosco faleConosco) {
-		if (service.insert(faleConosco)) {
+	@Path("/{codUnidade}")
+	public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
+		if (service.insert(faleConosco, codUnidade)) {
 			return Response.Ok("Fale conosco inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir fale conosco");
@@ -40,12 +40,23 @@ public class FaleConoscoResource {
 //	public FaleConosco getByCod(@PathParam("codigo") Long codigo) {
 //		return service.getByCod(codigo);
 //	}
-//	
-//	@GET
-//	public List<FaleConosco> getAll() {
-//		return service.getAll();
-//	}
-//	
+
+	@GET
+	@Secured
+	@Path("/{codUnidade}/{equipe}")
+	public List<FaleConosco> getAll(
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") int offset,
+			@PathParam("equipe") String equipe,
+			@PathParam("codUnidade") Long codUnidade,
+			@QueryParam("status") String status,
+			@QueryParam("categoria") String categoria){
+
+		return service.getAll(dataInicial, dataFinal, limit, offset, equipe, codUnidade, status, categoria);
+	}
+
 //	@GET
 //	@Path("/colaborador/{cpf}")
 //	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf) {

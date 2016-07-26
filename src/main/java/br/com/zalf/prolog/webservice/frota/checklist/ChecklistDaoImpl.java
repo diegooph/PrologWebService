@@ -19,6 +19,8 @@ import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
+import br.com.zalf.prolog.models.checklist.os.OrdemServico;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
@@ -32,7 +34,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
 	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
-	 * 
+	 *
 	 * @return boolean
 	 * @version 1.0
 	 * @since 7 de dez de 2015 13:52:18
@@ -46,9 +48,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST "
-					+ "(COD_UNIDADE, COD_CHECKLIST_MODELO, DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO, KM_VEICULO, TEMPO_REALIZACAO) "
-					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO");						
+					+ "(COD_UNIDADE,COD_CHECKLIST_MODELO, DATA_HORA, CPF_COLABORADOR, PLACA_VEICULO, TIPO, KM_VEICULO, TEMPO_REALIZACAO) "
+					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO");
 			stmt.setString(1, checklist.getPlacaVeiculo());
 			stmt.setLong(2, checklist.getCodModelo());
 			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
@@ -60,7 +63,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				checklist.setCodigo(rSet.getLong("CODIGO"));
-				insertRespostas(checklist);
+				insertRespostas(checklist, conn);
 				insertItemManutencao(checklist, conn);
 				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo());
 			}else{
@@ -69,7 +72,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		finally {
 			closeConnection(conn, stmt, rSet);
-		}		
+		}
 		return true;
 	}
 
@@ -81,30 +84,128 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+		boolean possuiOsAberta = false;
+		List<PerguntaRespostaChecklist> itensAbertos = null;
 		try{
-			// verifica se já existe item em aberto na tabela manutenção
-			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND COD_CHECKLIST_MODELO = ? "
-					+ "AND DATA_RESOLUCAO IS NULL");
-			for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-				// verifica apenas os itens cuja resposta foi negativa (tem problema)
-				if(respostaTemProblema(resposta)){
-					stmt.setString(1, checklist.getPlacaVeiculo());
-					stmt.setLong(2, resposta.getCodigo());
-					stmt.setLong(3, checklist.getCodModelo());
-					rSet = stmt.executeQuery();
-					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
-						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
-						tempApontamentos += 1;
-						updateQtApontamentos(checklist.getPlacaVeiculo(), checklist.getCodModelo(), resposta.getCodigo(), tempApontamentos, conn);
-					}else{ //item não existe, incluir na lista de manutenção
-						insertApontamento(checklist.getPlacaVeiculo(),checklist.getCodModelo(), resposta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
+			for(PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) {
+				if(respostaTemProblema(pergunta)){
+					//itensAbertos = getItensEmAberto(checklist.getPlacaVeiculo(), conn);
+					for(PerguntaRespostaChecklist.Alternativa alternativa : pergunta.getAlternativasResposta()) {
+						if (possuiItemAberto(pergunta.getCodigo(), alternativa.codigo, itensAbertos)){
+							// placa ja tem um item em aberto, pergunta + alternativa
+							// incrementar a qtApontamentos na tabela te itens OS
+						}
 					}
 				}
 			}
+
+
+
+
+
 		}finally{
-			closeConnection(conn, stmt, rSet);
+			closeConnection(null, stmt, null);
 		}
 	}
+
+	private boolean possuiItemAberto(long codPergunta, long codAlternativa, List<PerguntaRespostaChecklist> itensAbertos){
+		for (PerguntaRespostaChecklist perguntaAberto: itensAbertos){
+			for (PerguntaRespostaChecklist.Alternativa alternativa: perguntaAberto.getAlternativasResposta()) {
+				if (perguntaAberto.getCodigo() == codPergunta && alternativa.codigo == codAlternativa){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean possuiOsAberta(String placa, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			stmt = conn.prepareStatement("SELECT COUNT(OS.CODIGO) FROM checklist_ordem_servico OS JOIN CHECKLIST C ON C.CODIGO = OS.COD_CHECKLIST\n" +
+					"AND OS.COD_UNIDADE = C.COD_UNIDADE\n" +
+					"WHERE C.PLACA_VEICULO = ? AND OS.STATUS = ?\n" +
+					"GROUP BY C.PLACA_VEICULO\n");
+			stmt.setString(1, placa);
+			stmt.setString(2, OrdemServico.Status.ABERTA.asString());
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				if (rSet.getInt("COUNT") > 0) {
+					return true;
+				}
+			} else {
+				return false;
+			}
+		} finally {
+			closeConnection(null, stmt, rSet);
+		}
+		return false;
+	}
+
+	private List<PerguntaRespostaChecklist> getOs(String placa, Connection conn) throws SQLException{
+		List<PerguntaRespostaChecklist> itensAbertos = new ArrayList<>();
+		PerguntaRespostaChecklist pergunta = null;
+		List<PerguntaRespostaChecklist.Alternativa> alternativas = null;
+		PerguntaRespostaChecklist.Alternativa alternativa = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			stmt = conn.prepareStatement("SELECT I.cod_pergunta,  I.cod_alternativa, cp.pergunta, cap.alternativa FROM checklist C\n" +
+					"  JOIN checklist_ordem_servico OS on c.cod_unidade = os.cod_unidade AND C.CODIGO = OS.COD_CHECKLIST\n" +
+					"  JOIN checklist_ordem_servico_itens I ON I.COD_OS = OS.CODIGO AND I.cod_unidade = OS.COD_UNIDADE\n" +
+					"  JOIN checklist_perguntas cp on cp.cod_checklist_modelo = c.cod_checklist_modelo\n" +
+					"   and cp.cod_unidade = c.cod_unidade\n" +
+					"   and cp.codigo = i.cod_pergunta\n" +
+					"  JOIN checklist_alternativa_pergunta cap on cap.cod_unidade = i.cod_unidade\n" +
+					"    and cap.cod_checklist_modelo = c.cod_checklist_modelo\n" +
+					"    and cap.cod_pergunta = i.cod_pergunta\n" +
+					"    and cap.codigo = i.cod_alternativa\n" +
+					"WHERE C.PLACA_VEICULO = ? AND OS.STATUS = ? AND I.status_resolucao = ?;");
+			stmt.setString(1,placa);
+			stmt.setString(2, OrdemServico.Status.ABERTA.asString());
+			stmt.setString(3, ItemOrdemServico.Status.PENDENTE.asString());
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				if (pergunta == null){
+					pergunta = new PerguntaRespostaChecklist();
+					pergunta.setCodigo(rSet.getLong("cod_pergunta"));
+					pergunta.setPergunta(rSet.getString("pergunta"));
+					alternativa = new PerguntaRespostaChecklist.Alternativa();
+					alternativa.codigo = rSet.getLong("cod_alternativa");
+					alternativa.alternativa = rSet.getString("alternativa");
+					alternativas = new ArrayList<>();
+					alternativas.add(alternativa);
+				}else{
+					if (rSet.getLong("cod_pergunta") == pergunta.getCodigo()){
+						alternativa = new PerguntaRespostaChecklist.Alternativa();
+						alternativa.codigo = rSet.getLong("cod_alternativa");
+						alternativa.alternativa = rSet.getString("alternativa");
+						alternativas.add(alternativa);
+					}else{
+						pergunta.setAlternativasResposta(alternativas);
+						itensAbertos.add(pergunta);
+						pergunta = new PerguntaRespostaChecklist();
+						pergunta.setCodigo(rSet.getLong("cod_pergunta"));
+						pergunta.setPergunta(rSet.getString("pergunta"));
+						alternativa = new PerguntaRespostaChecklist.Alternativa();
+						alternativa.codigo = rSet.getLong("cod_alternativa");
+						alternativa.alternativa = rSet.getString("alternativa");
+						alternativas = new ArrayList<>();
+						alternativas.add(alternativa);
+					}
+				}
+			}
+			pergunta.setAlternativasResposta(alternativas);
+			itensAbertos.add(pergunta);
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
+		return itensAbertos;
+	}
+
+
+
 	// Verifica se alguma alternativa da pergunta foi marcada
 	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
 		//Percorre a lista de alternativas de uma pergunta, se alguma estiver selecionada retorna true.
@@ -174,7 +275,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
+		}
 		return true;
 	}
 
@@ -217,7 +318,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, long limit, long offset) throws SQLException {
+								  Long codUnidade, long limit, long offset) throws SQLException {
 
 		List<Checklist> checklists = new ArrayList<>();
 		//TODO verificar token e buscar apenas checklists da unidade informada no request
@@ -339,17 +440,15 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
 	 * map<pergunta, resposta> então precisamos percorrer todo esse map para
 	 * adicionar todas as respostas de um checklist ao BD.
-	 * 
+	 *
 	 * @return void
 	 * @version 1.0
 	 * @since 7 de dez de 2015 14:01:03
 	 * @author Luiz Felipe
 	 */
-	private void insertRespostas(Checklist checklist) throws SQLException {
-		Connection conn = null;
+	private void insertRespostas(Checklist checklist, Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_RESPOSTAS "
 					+ "(COD_UNIDADE, COD_CHECKLIST_MODELO, COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA, RESPOSTA) "
 					+ "VALUES ((SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA=?), ?, ?, ?, ?, ?)");
@@ -379,29 +478,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				}
 			}
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 	}
-
-	/*	private void updateRespostas(Checklist checklist) throws SQLException {
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			try {
-				conn = getConnection();
-				stmt = conn.prepareStatement("UPDATE CHECKLIST_RESPOSTAS SET "
-						+ "COD_PERGUNTA = ?, RESPOSTA = ? WHERE COD_CHECKLIST = ?");
-				for (Map.Entry<Pergunta, Resposta> entry : checklist.getPerguntaRespostaMap().entrySet()) {
-					Pergunta pergunta = entry.getKey();
-					Resposta resposta = entry.getValue();
-					stmt.setLong(1, pergunta.getCodigo());
-					stmt.setString(2, resposta.getResposta());
-					stmt.setLong(3, checklist.getCodigo());
-					stmt.executeUpdate();
-				}
-			} finally {
-				closeConnection(conn, stmt, null);
-			}
-		}*/
 
 	private Checklist createChecklist(ResultSet rSet) throws SQLException {
 		Checklist checklist = new Checklist();
@@ -462,13 +541,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				pergunta = createPergunta(rSet);
 				alternativa = createAlternativa(rSet);
 				setRespostaAlternativa(alternativa, rSet);
-				alternativas.add(alternativa);			
+				alternativas.add(alternativa);
 			}
 			while (rSet.next()) {
 				if(rSet.getLong("COD_PERGUNTA") == pergunta.getCodigo()){
 					alternativa = createAlternativa(rSet);
 					setRespostaAlternativa(alternativa, rSet);
-					alternativas.add(alternativa);			
+					alternativas.add(alternativa);
 				}else{
 					pergunta.setAlternativasResposta(alternativas);
 					perguntas.add(pergunta);
@@ -478,7 +557,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 					alternativa = createAlternativa(rSet);
 					setRespostaAlternativa(alternativa, rSet);
-					alternativas.add(alternativa);			
+					alternativas.add(alternativa);
 				}
 			}
 			pergunta.setAlternativasResposta(alternativas);
@@ -529,14 +608,14 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CM.CODIGO, CM.NOME, V.PLACA, V.KM FROM " 
-					+ "CHECKLIST_MODELO CM " 
-					+ "JOIN CHECKLIST_MODELO_FUNCAO CMF ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE "
-					+ "JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE "
-					+ "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
-					+ "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-					+ "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
-					+ "ORDER BY CM.NOME, V.PLACA", ResultSet.TYPE_SCROLL_SENSITIVE,
+			stmt = conn.prepareStatement("SELECT CM.CODIGO, CM.NOME, V.PLACA, V.KM FROM "
+							+ "CHECKLIST_MODELO CM "
+							+ "JOIN CHECKLIST_MODELO_FUNCAO CMF ON CMF.COD_CHECKLIST_MODELO = CM.CODIGO AND CM.COD_UNIDADE = CMF.COD_UNIDADE "
+							+ "JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE "
+							+ "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
+							+ "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
+							+ "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
+							+ "ORDER BY CM.NOME, V.PLACA", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codFuncao);
@@ -547,10 +626,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					modelo = new ModeloChecklist();
 					modelo.setCodigo(rSet.getLong("CODIGO"));
 					modelo.setNome(rSet.getString("NOME"));
-					placas.add(rSet.getString("PLACA"));	
+					placas.add(rSet.getString("PLACA"));
 				}// verificar se o prox modelo é igual ao ja criado
 				if (rSet.getLong("CODIGO") == modelo.getCodigo()) {
-					placas.add(rSet.getString("PLACA"));					
+					placas.add(rSet.getString("PLACA"));
 				}else{// modelo diferente, deve setar adicionar tudo ao map e zerar os valores.
 					modeloPlaca.put(modelo, placas);
 					modelo = new ModeloChecklist();
@@ -563,7 +642,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			modeloPlaca.put(modelo, placas);
 		}finally{
 			closeConnection(conn, stmt, rSet);
-		}	
+		}
 		System.out.println(modeloPlaca);
 		return modeloPlaca;
 	}
@@ -580,7 +659,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException{
 		List<VeiculoLiberacao> listVeiculos = new ArrayList<>();
 		List<PerguntaRespostaChecklist> listProblemas = new ArrayList<>();
-		List<String> listPlacasComCheck = new ArrayList<>();				
+		List<String> listPlacasComCheck = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -615,7 +694,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					pergunta = new PerguntaRespostaChecklist();
 					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
 					if(pergunta.getPergunta() != null){
-						listProblemas.add(pergunta);}	
+						listProblemas.add(pergunta);}
 				}else{
 					if(rSet.getString("PLACA_CHECK") != null){
 						listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
@@ -647,7 +726,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			if(veiculoLiberacao.getItensCriticos().size() > 0){
 				veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
 			}else{
-
 				if(placaTemCheck(veiculoLiberacao.getPlaca(), listPlacasComCheck)){
 					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
 				}else{
