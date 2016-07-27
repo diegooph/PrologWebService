@@ -173,17 +173,16 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		realizador.setCpf(rSet.getLong("CPF_COLABORADOR"));
 		faleConosco.setColaborador(realizador);
 		faleConosco.setCategoria(FaleConosco.Categoria.fromString(rSet.getString("CATEGORIA")));
-		String temp = rSet.getString("feedback");
+		String feedback = rSet.getString("feedback");
 		L.d("tag", String.valueOf(faleConosco.getCodigo()));
 		L.d("tag", rSet.getString("feedback"));
-		if(temp != null){
-			faleConosco.setFeedback(rSet.getString("FEEDBACK"));
+		if(feedback != null){
+			faleConosco.setFeedback(feedback);
 			Colaborador colaboradorFeedback = new Colaborador();
 			colaboradorFeedback.setCpf(rSet.getLong("cpf_feedback"));
 			colaboradorFeedback.setNome(rSet.getString("nome_feedback"));
 			faleConosco.setColaboradorFeedback(colaboradorFeedback);
 			faleConosco.setDataFeedback(rSet.getTimestamp("DATA_HORA_FEEDBACK"));
-			faleConosco.setFeedback(rSet.getString("FEEDBACK"));
 		}
 		return faleConosco;
 	}
