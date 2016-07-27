@@ -166,6 +166,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 	private FaleConosco createFaleConosco(ResultSet rSet) throws Exception{
 		
 		FaleConosco faleConosco = new FaleConosco();
+		faleConosco.setStatus(rSet.getString("STATUS"));
 		faleConosco.setCodigo(rSet.getLong("CODIGO"));
 		faleConosco.setData(rSet.getTimestamp("DATA_HORA"));
 		faleConosco.setDescricao(rSet.getString("DESCRICAO"));

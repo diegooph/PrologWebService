@@ -49,12 +49,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "WHERE C.CPF=? ";
 
 	public List<Evento> getEventosByCpf(Long cpf) throws SQLException{
-
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Evento> listEvento = new ArrayList<>();
-
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EVENTOS);
@@ -76,4 +74,19 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		}
 		return listEvento;
 	}
+
+//	public List<Evento> getAll (long dataInicial, long dataFinal, int limit, int offset,
+//								String equipe, Long codUnidade, String status, String categoria){
+//		Connection conn = null;
+//		ResultSet rSet = null;
+//		PreparedStatement stmt = null;
+//		try{
+//			conn = getConnection();
+//			stmt = conn.prepareStatement("");
+//		}
+//
+//
+//
+//
+//	}
 }
