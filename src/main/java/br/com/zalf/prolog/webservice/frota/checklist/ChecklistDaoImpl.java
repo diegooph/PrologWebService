@@ -75,6 +75,38 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		return true;
 	}
+//
+//	/**
+//	 * Método para inserir itens com apontados como problema no checklist em uma tabela destinada ao controle de manutenção
+//	 * @param checklist um Checklist
+//	 * @throws SQLException caso não seja possível realizar as buscas e inserts
+//	 */
+//	public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
+//		PreparedStatement stmt = null;
+//		ResultSet rSet = null;
+//		boolean possuiOsAberta = false;
+//		List<PerguntaRespostaChecklist> itensAbertos = null;
+//		try{
+//			for(PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) {
+//				if(respostaTemProblema(pergunta)){
+//					//itensAbertos = getItensEmAberto(checklist.getPlacaVeiculo(), conn);
+//					for(PerguntaRespostaChecklist.Alternativa alternativa : pergunta.getAlternativasResposta()) {
+//						if (possuiItemAberto(pergunta.getCodigo(), alternativa.codigo, itensAbertos)){
+//							// placa ja tem um item em aberto, pergunta + alternativa
+//							// incrementar a qtApontamentos na tabela te itens OS
+//						}
+//					}
+//				}
+//			}
+//
+////
+//
+//
+//
+//		}finally{
+//			closeConnection(null, stmt, null);
+//		}
+//	}
 
 	/**
 	 * Método para inserir itens com apontados como problema no checklist em uma tabela destinada ao controle de manutenção
@@ -84,27 +116,28 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		boolean possuiOsAberta = false;
-		List<PerguntaRespostaChecklist> itensAbertos = null;
 		try{
-			for(PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) {
-				if(respostaTemProblema(pergunta)){
-					//itensAbertos = getItensEmAberto(checklist.getPlacaVeiculo(), conn);
-					for(PerguntaRespostaChecklist.Alternativa alternativa : pergunta.getAlternativasResposta()) {
-						if (possuiItemAberto(pergunta.getCodigo(), alternativa.codigo, itensAbertos)){
-							// placa ja tem um item em aberto, pergunta + alternativa
-							// incrementar a qtApontamentos na tabela te itens OS
-						}
+			// verifica se já existe item em aberto na tabela manutenção
+			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND COD_CHECKLIST_MODELO = ? "
+					+ "AND DATA_RESOLUCAO IS NULL");
+			for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+				// verifica apenas os itens cuja resposta foi negativa (tem problema)
+				if(respostaTemProblema(resposta)){
+					stmt.setString(1, checklist.getPlacaVeiculo());
+					stmt.setLong(2, resposta.getCodigo());
+					stmt.setLong(3, checklist.getCodModelo());
+					rSet = stmt.executeQuery();
+					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
+						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
+						tempApontamentos += 1;
+						updateQtApontamentos(checklist.getPlacaVeiculo(), checklist.getCodModelo(), resposta.getCodigo(), tempApontamentos, conn);
+					}else{ //item não existe, incluir na lista de manutenção
+						insertApontamento(checklist.getPlacaVeiculo(),checklist.getCodModelo(), resposta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
 					}
 				}
 			}
-
-
-
-
-
 		}finally{
-			closeConnection(null, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}
 	}
 
@@ -437,7 +470,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	/**
 	 * Método responsável por salvar as respostas de um checklist na tabela
-	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um 
+	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um
 	 * map<pergunta, resposta> então precisamos percorrer todo esse map para
 	 * adicionar todas as respostas de um checklist ao BD.
 	 *
