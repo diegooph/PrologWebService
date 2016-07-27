@@ -47,8 +47,9 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
-					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? "
-					+ "WHERE CODIGO = ? ");
+					+ "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? , DATA_HORA_FEEDBACK = ?, CPF_FEEDBACK = ?," +
+					"FEEDBACK = ?, STATUS = ? "
+					+ "WHERE CODIGO = ? AND COD_UNIDADE = ? ");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(faleConosco.getData()));
 			stmt.setString(2, faleConosco.getDescricao());
 			stmt.setString(3, faleConosco.getCategoria().asString());
@@ -161,6 +162,34 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			closeConnection(conn, stmt, rSet);
 		}
 		return list;
+	}
+
+	public boolean insertFeedback(FaleConosco faleConosco, Long codUnidade) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
+					+ "DATA_HORA_FEEDBACK = ?, CPF_FEEDBACK = ?," +
+					"FEEDBACK = ?, STATUS = ? "
+					+ "WHERE CODIGO = ? AND COD_UNIDADE = ? ");
+
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, faleConosco.getColaboradorFeedback().getCpf());
+			stmt.setString(3, faleConosco.getFeedback());
+			stmt.setString(4, FaleConosco.STATUS_RESPONDIDO);
+			stmt.setLong(5, faleConosco.getCodigo());
+			stmt.setLong(6, codUnidade);
+
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir feedback no fale conosco");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
 	}
 
 	private FaleConosco createFaleConosco(ResultSet rSet) throws Exception{

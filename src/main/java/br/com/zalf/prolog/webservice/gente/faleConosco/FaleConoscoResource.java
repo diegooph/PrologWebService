@@ -14,7 +14,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
-	
+
 	@POST
 	@Secured
 	@Path("/{codUnidade}")
@@ -25,7 +25,7 @@ public class FaleConoscoResource {
 			return Response.Error("Erro ao inserir fale conosco");
 		}
 	}
-	
+
 //	@PUT
 //	public Response update(FaleConosco faleConosco) {
 //		if (service.update(faleConosco)) {
@@ -55,6 +55,17 @@ public class FaleConoscoResource {
 			@QueryParam("categoria") String categoria){
 
 		return service.getAll(dataInicial, dataFinal, limit, offset, equipe, codUnidade, status, categoria);
+	}
+
+	@PUT
+	@Secured
+	@Path("/feedback/{codUnidade}")
+	public Response insertFeedback(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade){
+		if(service.insertFeedback(faleConosco, codUnidade)){
+			return Response.Ok("Feedback inserido com sucesso.");
+		}else{
+			return Response.Error("Erro ao inserir o feedback no fale conosco.");
+		}
 	}
 
 //	@GET

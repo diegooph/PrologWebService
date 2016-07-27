@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,16 @@ public class FaleConoscoService {
 //			return null;
 //		}
 //	}
-//	
+//
+	public boolean insertFeedback(FaleConosco faleConosco, Long codUnidade){
+		try{
+			return dao.insertFeedback(faleConosco, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
 									String equipe, Long codUnidade, String status, String categoria){
 
