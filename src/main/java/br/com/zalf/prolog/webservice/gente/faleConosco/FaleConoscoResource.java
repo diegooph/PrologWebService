@@ -68,12 +68,13 @@ public class FaleConoscoResource {
 		}
 	}
 
-//	@GET
-//	@Path("/colaborador/{cpf}")
-//	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf) {
-//		return service.getByColaborador(cpf);
-//	}
-//	
+	@GET
+	@Secured
+	@Path("/{cpf}")
+	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getByColaborador(cpf);
+	}
+
 //	@DELETE
 //	@Path("{codigo}")
 //	public Response delete(@PathParam("codigo") Long codigo) {
