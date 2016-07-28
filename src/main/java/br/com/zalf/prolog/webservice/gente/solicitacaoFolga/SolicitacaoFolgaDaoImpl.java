@@ -10,11 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.ResponseWithCod;
-import br.com.zalf.prolog.models.SolicitacaoFolga;
+import br.com.zalf.prolog.models.*;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
@@ -35,7 +31,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
 					+ "CPF_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
 					+ "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-			stmt.setLong(1, s.getCpfColaborador());
+			stmt.setLong(1, s.getColaborador().getCpf());
 			stmt.setDate(2, new Date(System.currentTimeMillis()));
 			stmt.setDate(3, DateUtils.toSqlDate(s.getDataFolga()));
 			stmt.setString(4, s.getMotivoFolga());
@@ -49,7 +45,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			}
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}		
 	}
 
@@ -71,10 +67,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 					+ " PERIODO=? "
 					+ "WHERE CODIGO=?");
 
-			stmt.setLong(1, solicitacaoFolga.getCpfColaborador());
+			stmt.setLong(1, solicitacaoFolga.getColaborador().getCpf());
 
-			if(solicitacaoFolga.getCpfFeedback() != null){
-				stmt.setLong(2, solicitacaoFolga.getCpfFeedback());
+			if(solicitacaoFolga.getColaboradorFeedback() != null){
+				stmt.setLong(2, solicitacaoFolga.getColaboradorFeedback().getCpf());
 			}else{
 				stmt.setNull(2, java.sql.Types.BIGINT);
 			}
@@ -114,9 +110,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	public boolean delete(Long codigo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 
-		try{
+		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ? AND STATUS = 'PENDENTE'");
 			stmt.setLong(1, codigo);
@@ -126,7 +121,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			}
 		}	
 		finally{
-			closeConnection(conn, stmt, rSet);
+			closeConnection(conn, stmt, null);
 		}
 		return false;
 	}
@@ -146,8 +141,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		List<SolicitacaoFolga> list = new ArrayList<>();
 		try {
 			conn = getConnection();
-			String query = "SELECT SF.*, C.NOME FROM SOLICITACAO_FOLGA SF "
+			String query = "SELECT SF.*, C.NOME AS NOME_SOLICITANTE, C_FEEDBACK.NOME AS NOME_FEEDBACK FROM "
+					+ "SOLICITACAO_FOLGA SF "
 					+ "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
+					+ "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CPF = SF.CPF_FEEDBACK "
 					+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ "WHERE SF.DATA_FOLGA BETWEEN ? AND ? "
 					+ "AND C.COD_UNIDADE = ? "
@@ -173,7 +170,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			}				
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(conn, stmt, rSet);
 		}
 		return list;
 	}
@@ -186,18 +183,19 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT SF.CODIGO, SF.CPF_COLABORADOR, "
-					+ "SF.CPF_FEEDBACK, SF.DATA_FEEDBACK, SF.DATA_FOLGA, "
-					+ "SF.DATA_SOLICITACAO, SF.MOTIVO_FOLGA, "
-					+ "SF.JUSTIFICATIVA_FEEDBACK, SF.PERIODO, SF.STATUS, C.NOME "
-					+ "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON "
-					+ "? = C.CPF JOIN TOKEN_AUTENTICACAO TA ON "
-					+ "? = TA.CPF_COLABORADOR AND ? = TA.TOKEN WHERE "
-					+ "SF.CPF_COLABORADOR = ?;");
+			stmt = conn.prepareStatement("SELECT SF.CODIGO, SF.CPF_COLABORADOR, " +
+					"SF.CPF_FEEDBACK, SF.DATA_FEEDBACK, SF.DATA_FOLGA, " +
+					"SF.DATA_SOLICITACAO, SF.MOTIVO_FOLGA, " +
+					"SF.JUSTIFICATIVA_FEEDBACK, SF.PERIODO, SF.STATUS, C.NOME AS NOME_SOLICITANTE, " +
+					"C_FEEDBACK.NOME AS NOME_FEEDBACK " +
+					"FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
+					"SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
+					"SF.CPF_FEEDBACK = C_FEEDBACK.CPF JOIN TOKEN_AUTENTICACAO TA ON " +
+					"? = TA.CPF_COLABORADOR AND ? = TA.TOKEN WHERE " +
+					"SF.CPF_COLABORADOR = ?;");
 			stmt.setLong(1, cpf);
-			stmt.setLong(2, cpf);
-			stmt.setString(3, token);
-			stmt.setLong(4, cpf);
+			stmt.setString(2, token);
+			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				SolicitacaoFolga solicitacaoFolga = createSolicitacaoFolga(rSet);
@@ -212,17 +210,24 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	private SolicitacaoFolga createSolicitacaoFolga(ResultSet rSet) throws SQLException {
 		SolicitacaoFolga solicitacaoFolga = new SolicitacaoFolga();
 		solicitacaoFolga.setCodigo(rSet.getLong("CODIGO"));
-		solicitacaoFolga.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
-		solicitacaoFolga.setCpfFeedback(rSet.getLong("CPF_FEEDBACK"));
+
+		Colaborador colaborador = new Colaborador();
+		colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
+		colaborador.setNome(rSet.getString("NOME_SOLICITANTE"));
+		solicitacaoFolga.setColaborador(colaborador);
+
+		Colaborador colaboradorFeedback = new Colaborador();
+		colaboradorFeedback.setCpf(rSet.getLong("CPF_FEEDBACK"));
+		colaboradorFeedback.setNome(rSet.getString("NOME_FEEDBACK"));
+		solicitacaoFolga.setColaboradorFeedback(colaboradorFeedback);
+
 		solicitacaoFolga.setDataFeedback(rSet.getDate("DATA_FEEDBACK"));
 		solicitacaoFolga.setDataFolga(rSet.getDate("DATA_FOLGA"));
 		solicitacaoFolga.setDataSolicitacao(rSet.getDate("DATA_SOLICITACAO"));
 		solicitacaoFolga.setMotivoFolga(rSet.getString("MOTIVO_FOLGA"));
 		solicitacaoFolga.setJustificativaFeedback(rSet.getString("JUSTIFICATIVA_FEEDBACK"));
-		solicitacaoFolga.setNomeColaborador(rSet.getString("NOME"));
 		solicitacaoFolga.setPeriodo(rSet.getString("PERIODO"));
 		solicitacaoFolga.setStatus(rSet.getString("STATUS"));
 		return solicitacaoFolga;
 	}
-
 }
