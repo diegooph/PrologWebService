@@ -154,7 +154,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			stmt = conn.prepareStatement("SELECT F.*, C.cpf AS CPF_COLABORADOR, C.nome AS NOME_COLABORADOR, " +
 					"C2.cpf AS CPF_FEEDBACK, C2.nome AS NOME_FEEDBACK FROM FALE_CONOSCO F JOIN colaborador C ON F.cpf_colaborador = C.cpf " +
 					"LEFT JOIN colaborador C2 ON C2.cpf = F.CPF_FEEDBACK WHERE " +
-					"CPF_COLABORADOR = ?");
+					"CPF_COLABORADOR = ? ORDER BY F.data_hora");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
