@@ -19,10 +19,9 @@ public class CalendarioService {
 		}
 	}
 
-	public List<Evento> getAll (long dataInicial, long dataFinal, int limit, int offset,
-								Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
+	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
 		try{
-			return dao.getAll(dataInicial, dataFinal, limit, offset, codEmpresa, codUnidade, equipe, funcao);
+			return dao.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, equipe, funcao);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return new ArrayList<Evento>();

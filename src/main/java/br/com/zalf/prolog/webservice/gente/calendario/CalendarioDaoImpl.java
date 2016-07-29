@@ -75,8 +75,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return listEvento;
 	}
 
-	public List<Evento> getAll (long dataInicial, long dataFinal, int limit, int offset,
-								Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
+	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
 
 		L.d(tag, new Date(dataInicial).toString());
 		L.d(tag, new Date(dataFinal).toString());
