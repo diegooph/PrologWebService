@@ -20,8 +20,8 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
-					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR, COD_UNIDADE) VALUES "
-					+ "(?,?,?,?,?) ");
+					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR, COD_UNIDADE, STATUS) VALUES "
+					+ "(?,?,?,?,?,?) ");
 			// A data do fale conosco é pegada com System.currentTimeMillis()
 			// pois assim a data vem do servidor, que sempre estará certa 
 			// o que não poderíamos garantir caso viesse do lado do cliente.
@@ -30,6 +30,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			stmt.setString(3, faleConosco.getCategoria().asString());
 			stmt.setLong(4, faleConosco.getColaborador().getCpf());
 			stmt.setLong(5, codUnidade);
+			stmt.setString(6, FaleConosco.STATUS_PENDENTE);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o fale conosco");
