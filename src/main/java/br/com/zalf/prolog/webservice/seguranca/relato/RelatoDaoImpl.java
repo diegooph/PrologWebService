@@ -143,14 +143,13 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO, "
-					+ " FROM RELATO R JOIN "
-					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-					+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF JOIN "
+			stmt = conn.prepareStatement("SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO, NULL AS DISTANCIA "
+					+ "FROM RELATO R JOIN "
+					+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF  LEFT JOIN "
+					+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
 					+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF JOIN "
 					+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE "
 					+ "WHERE R.CODIGO = ?");
-
 			stmt.setLong(1, codRelato);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
@@ -369,6 +368,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
 		Pdv pdv = new Pdv();
 		pdv.setCodigo(rSet.getInt("COD_PDV"));
+		relato.setPdv(pdv);
 		return relato;
 	}
 

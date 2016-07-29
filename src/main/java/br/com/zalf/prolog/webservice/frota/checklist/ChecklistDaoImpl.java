@@ -363,7 +363,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		System.out.println(dataFinal);
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.KM_VEICULO, "
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.cod_checklist_modelo, C.KM_VEICULO, "
 					+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
 					+ "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "

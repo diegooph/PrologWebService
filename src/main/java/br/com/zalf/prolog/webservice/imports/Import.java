@@ -31,9 +31,9 @@ public class Import {
 		try {
 			Reader in = new FileReader(path);
 			
-			//List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+			List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
 						
-			List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
 			
 			for (int i = 1; i < tabela.size(); i++) {
 				MapaImport mapa = new MapaImport();
@@ -155,7 +155,8 @@ public class Import {
 		List<Tracking> listTracking = new ArrayList<>();
 		try {
 			Reader in = new FileReader(path);
-			List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+			List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
 			for (int i = 1; i < tabela.size(); i++) {
 				Tracking tracking = new Tracking();
 				CSVRecord linha = tabela.get(i);
