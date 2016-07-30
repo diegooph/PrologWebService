@@ -28,4 +28,13 @@ public class CalendarioService {
 		}
 	}
 
+	private boolean delete (Long codUnidade, Long codEvento){
+		try{
+			return dao.delete(codUnidade, codEvento);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

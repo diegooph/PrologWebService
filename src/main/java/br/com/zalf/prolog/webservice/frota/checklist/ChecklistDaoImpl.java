@@ -69,6 +69,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			}else{
 				throw new SQLException("Erro ao inserir o checklist");
 			}
+			conn.commit();
 		}
 		finally {
 			closeConnection(conn, stmt, rSet);
@@ -137,7 +138,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				}
 			}
 		}finally{
-			closeConnection(conn, stmt, rSet);
+			closeConnection(null, stmt, rSet);
 		}
 	}
 
@@ -507,7 +508,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 						// salva OK, indicando que o item NÃO tem problema
 						stmt.setString(6, "OK");
 					}
-					stmt.executeUpdate();
+					int count = stmt.executeUpdate();
+					if (count == 0){
+						throw new SQLException("Erro ao inserir resposta");
+					}
 				}
 			}
 		} finally {

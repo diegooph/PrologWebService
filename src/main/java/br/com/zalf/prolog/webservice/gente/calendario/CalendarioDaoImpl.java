@@ -75,15 +75,8 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return listEvento;
 	}
 
-	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
-
-		L.d(tag, new Date(dataInicial).toString());
-		L.d(tag, new Date(dataFinal).toString());
-		L.d(tag, String.valueOf(codEmpresa));
-		L.d(tag, String.valueOf(codUnidade));
-		L.d(tag, equipe);
-		L.d(tag, String.valueOf(funcao));
-
+	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
+								String equipe, String funcao) throws SQLException{
 		Connection conn = null;
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
@@ -121,5 +114,24 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			closeConnection(conn, stmt, rSet);
 		}
 		return eventos;
+	}
+
+	public boolean delete (Long codUnidade, Long codEvento) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("DELETE FROM calendario WHERE cod_unidade = ? AND codigo = ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codEvento);
+			int count = stmt.executeUpdate();
+			if (count > 0){
+				return true;
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return false;
 	}
 }
