@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -8,6 +9,9 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.os.OrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import com.google.gson.Gson;
 
@@ -41,7 +45,14 @@ public class Main {
 		c.setCodUnidade(2);
 		c.setNome("Teste");
 		System.out.println(new Gson().toJson(c));
-		
+
+//		ChecklistDaoImpl dao = new ChecklistDaoImpl();
+//		Connection conn = DatabaseConnection.getConnection();
+		//L.d("main", dao.getResumoOs("FFX1234","A", conn).toString());
+        //System.out.print(new Gson().toJson(dao.getItensOs("FFX1234", 1L, "P", conn)));
+//        Checklist check = new Checklist();
+//        check.setPlacaVeiculo("FFX1234");
+//        dao.insertItemOs(check, conn);
 //
 //		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);
 //		Date datainicial = Date.valueOf(dataInicial);
