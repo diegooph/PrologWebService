@@ -10,10 +10,10 @@ public class EmpresaService {
 
 	private EmpresaDaoImpl dao = new EmpresaDaoImpl();
 	
-	public List<Equipe> getEquipesByCodUnidade(Request<?> request){
+	public List<Equipe> getEquipesByCodUnidade(Long codUnidade){
 		
 		try{
-			return dao.getEquipesByCodUnidade(request);
+			return dao.getEquipesByCodUnidade(codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;

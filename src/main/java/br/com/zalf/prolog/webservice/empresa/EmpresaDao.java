@@ -9,7 +9,7 @@ import br.com.zalf.prolog.models.Request;
 
 public interface EmpresaDao {
 	
-	public List<Equipe> getEquipesByCodUnidade (Request<?> request) throws SQLException;
+	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException;
 	
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException;
 	

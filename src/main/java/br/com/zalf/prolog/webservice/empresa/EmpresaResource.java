@@ -23,9 +23,10 @@ public class EmpresaResource {
 	EmpresaService service = new EmpresaService();
 	
 	@POST
-	@Path("/getEquipesByCodUnidade")
-	public List<Equipe> getEquipesByCodUnidade(Request<Equipe> request) throws SQLException{
-		return service.getEquipesByCodUnidade(request);
+	@Secured
+	@Path("/getEquipesByCodUnidade/{codUnidade}")
+	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException{
+		return service.getEquipesByCodUnidade(codUnidade);
 	}
 	
 	@PUT

@@ -29,7 +29,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "WHERE UF.COD_UNIDADE = ? "
 			+ "ORDER BY F.NOME";
 
-	public List<Equipe> getEquipesByCodUnidade (Request<?> request) throws SQLException{ 
+	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException{
 		List<Equipe> listEquipe = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -37,7 +37,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EQUIPES_BY_COD_UNIDADE);
-			stmt.setLong(1, request.getCodUnidade());
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				listEquipe.add(createEquipe(rSet));
