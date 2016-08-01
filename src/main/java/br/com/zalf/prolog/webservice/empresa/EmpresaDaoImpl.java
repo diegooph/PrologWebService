@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import br.com.zalf.prolog.models.Autenticacao;
-import br.com.zalf.prolog.models.Equipe;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
@@ -131,13 +129,53 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 	
 	private Funcao createFuncao(ResultSet rSet) throws SQLException{
-		
 		Funcao funcao = new Funcao();
 		funcao.setCodigo(rSet.getLong("CODIGO"));
 		funcao.setNome(rSet.getString("NOME"));
 		return funcao;
-		
 	}
-	
-	
+
+	public List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Setor> setores = new ArrayList<>();
+		Setor setor = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM setor WHERE cod_unidade = ?\n" +
+					"ORDER BY nome");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				setor = new Setor();
+				setor.setCodigo(rSet.getLong("codigo"));
+				setor.setNome(rSet.getString("nome"));
+				setores.add(setor);
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return setores;
+	}
+
+	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, nome);
+			rSet = stmt.executeQuery();
+			if (rSet.next()){
+				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+			}else{
+				return Response.Error("Erro ao inserir o setor");
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
 }

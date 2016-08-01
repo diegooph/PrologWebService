@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.empresa;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Equipe;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.models.*;
 
 public class EmpresaService {
 
@@ -46,6 +45,24 @@ public class EmpresaService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public List<Setor> getSetorByCodUnidade(Long codUnidade){
+		try{
+			return dao.getSetorByCodUnidade(codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public AbstractResponse insertSetor(String nome, Long codUnidade){
+		try{
+			return dao.insertSetor(nome,codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o setor");
 		}
 	}
 	
