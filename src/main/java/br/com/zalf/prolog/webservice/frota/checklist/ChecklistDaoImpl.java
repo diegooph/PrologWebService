@@ -93,6 +93,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				checklist.setCodigo(rSet.getLong("CODIGO"));
 				insertRespostas(checklist, conn);
 				insertItemManutencao(checklist, conn);
+				insertItemOs(checklist, conn);
 				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo());
 			}else{
 				throw new SQLException("Erro ao inserir o checklist");
@@ -134,25 +135,32 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public void insertItemOs(Checklist checklist, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
+		Long tempCodOs = null;
 		Long gerouOs = null;
 		// vem apenas um holder, ja que a busca foi feita apenas para uma placa
 		List<OsHolder> oss = getResumoOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn);
+		L.d("List<OsHolder>", oss.toString());
 		// todas as os de uma unica placa
-		List<OrdemServico> ordens = oss.get(0).getOs();
+		List<OrdemServico> ordens = null;
+		if (oss != null) {
+			ordens = oss.get(0).getOs();
+			L.d("ordens", ordens.toString());
+		}
 		try{
 			for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
 				if (respostaTemProblema(pergunta)){ //pergunta foi marcada negativamente, tem problema apontado
 					for (Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
-						Long tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
+						if (ordens != null) {//verifica se ja tem algum item em aberto
+							tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
+						}
 						if(tempCodOs != null){
 							incrementaQtApontamento2(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
 						}else{
-							//insere servico novo
-							if (gerouOs != null){ //checklist ja gerou uma os
+							if (gerouOs != null){ //checklist ja gerou uma os -> deve inserir o item nessa os gerada
 								insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
 							}else{
-								//abre nova os e insere o item
-								// flag = true
+								gerouOs = createOs(checklist.getPlacaVeiculo(), checklist.getCodigo(), conn);
+								insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
 							}
 						}
 					}
@@ -163,15 +171,40 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 	}
 
+	private Long createOs (String placa, Long codChecklist, Connection conn) throws SQLException{
+		ResultSet rSet = null;
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico(CODIGO, cod_unidade, cod_checklist, status) VALUES\n" +
+					"((SELECT COALESCE(MAX(CODIGO), MAX(CODIGO), 0) +1 AS CODIGO\n" +
+					"  FROM checklist_ordem_servico\n" +
+					"  WHERE cod_unidade = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?)),\n" +
+					" (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?) RETURNING CODIGO");
+			stmt.setString(1, placa);
+			stmt.setString(2, placa);
+			stmt.setLong(3, codChecklist);
+			stmt.setString(4, OrdemServico.Status.ABERTA.asString());
+			rSet = stmt.executeQuery();
+			if (rSet.next()){
+				return rSet.getLong("codigo");
+			}else{
+				throw new SQLException("Erro ao criar nova OS");
+			}
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
+	}
+
 	private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
-			stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa)\n" +
-					"VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?)");
+			stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
+					"VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?)");
 			stmt.setString(1, placa);
 			stmt.setLong(2, codOs);
 			stmt.setLong(3, codPergunta);
 			stmt.setLong(4, codAlternativa);
+			stmt.setString(5, ItemOrdemServico.Status.PENDENTE.asString());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o serviço");
@@ -233,8 +266,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public List<OsHolder> getResumoOs(String placa, String status, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<OsHolder> holders = new ArrayList<>();
-		List<OrdemServico> oss = new ArrayList<>();
+		List<OsHolder> holders = null;
+		List<OrdemServico> oss = null;
 		OsHolder holder = null;
 		OrdemServico os = null;
 		try{
@@ -247,6 +280,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				if (holder == null){//primeiro item do ResultSet
+					holders = new ArrayList<>();
+					oss = new ArrayList<>();
 					holder = new OsHolder();
 					holder.setPlaca(rSet.getString("placa_veiculo"));
 					os = createOrdemServico(rSet);
