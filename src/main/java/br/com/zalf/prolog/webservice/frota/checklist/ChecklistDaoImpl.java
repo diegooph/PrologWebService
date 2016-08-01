@@ -73,7 +73,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		veiculoDao = new VeiculoDaoImpl();
-		L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
+		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -139,7 +139,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		Long gerouOs = null;
 		// vem apenas um holder, ja que a busca foi feita apenas para uma placa
 		List<OsHolder> oss = getResumoOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn);
-		L.d("List<OsHolder>", oss.toString());
 		// todas as os de uma unica placa
 		List<OrdemServico> ordens = null;
 		if (oss != null) {
@@ -148,17 +147,24 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		try{
 			for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
-				if (respostaTemProblema(pergunta)){ //pergunta foi marcada negativamente, tem problema apontado
-					for (Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
+				L.d("Pergunta", pergunta.getCodigo().toString());
+				for (PerguntaRespostaChecklist.Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
+					L.d("Verificando Alternativa:", String.valueOf(alternativa.codigo));
+					if (alternativa.selected) {
+						L.d("Alternativa esta elecionada", String.valueOf(alternativa.codigo));
 						if (ordens != null) {//verifica se ja tem algum item em aberto
 							tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
+							if (tempCodOs != null) {
+								L.d("tempCodOs", tempCodOs.toString());
+							}
 						}
-						if(tempCodOs != null){
+						if (tempCodOs != null) {
 							incrementaQtApontamento2(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
-						}else{
-							if (gerouOs != null){ //checklist ja gerou uma os -> deve inserir o item nessa os gerada
+							L.d("incrementa", "chamou metodo para incrementar a qt de apontamentos");
+						} else {
+							if (gerouOs != null) { //checklist ja gerou uma os -> deve inserir o item nessa os gerada
 								insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
-							}else{
+							} else {
 								gerouOs = createOs(checklist.getPlacaVeiculo(), checklist.getCodigo(), conn);
 								insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
 							}
@@ -172,6 +178,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	private Long createOs (String placa, Long codChecklist, Connection conn) throws SQLException{
+		L.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
 		try{
@@ -196,6 +203,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
+		L.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
 		PreparedStatement stmt = null;
 		try{
 			stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
@@ -215,6 +223,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	private void incrementaQtApontamento2(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
+		L.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try{
@@ -251,10 +260,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	private Long jaPossuiItemEmAberto(Long codPergunta, Long codAlternativa, List<OrdemServico> oss){
+		L.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
 		for (OrdemServico os:oss) {
 			for (ItemOrdemServico item:os.getItens()) {
 				for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
-					if (item.getPergunta().getCodigo() == codPergunta && alternativa.codigo == codAlternativa){
+					if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa){
+						L.d("item existe", "item existe na lista");
 						return os.getCodigo();
 					}
 				}
