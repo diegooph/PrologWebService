@@ -50,7 +50,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
 					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
 					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
-					+ "FROM CHECKLIST_MANUTENCAO CM LIMIT ? OFFSET ?) "
+					+ "FROM CHECKLIST_MANUTENCAO CM "
+					+ " WHERE COD_UNIDADE = ? "
+					+ " LIMIT ? OFFSET ?) "
 					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
 					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
 					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA %s ORDER BY PLACA, PG.PRAZO, CM.ITEM";
@@ -61,9 +63,10 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 			}	
 			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-			stmt.setInt(1, limit);
-			stmt.setLong(2, offset);
-			stmt.setLong(3, codUnidade);
+			stmt.setLong(1, codUnidade);
+			stmt.setInt(2, limit);
+			stmt.setLong(3, offset);
+			stmt.setLong(4, codUnidade);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				if(rSet.first()){
@@ -179,12 +182,13 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		setTempoRestante(item, rSet.getInt("PRAZO"));
 		return item;
 	}
+
 	/**
-	 * Marca como resolvido um item em aberto, salvando o cpf de quem consertou e a data/hora
-	 * @param request contém o item que foi consertado e dados do solicitante
-	 * @return 
-	 * @throws SQLException 
-	 */
+	 *
+	 * @param itemManutencao
+	 * @return
+	 * @throws SQLException
+     */
 	@Override
 	public boolean consertaItem (ItemManutencao itemManutencao) throws SQLException{
 		Connection conn = null;
