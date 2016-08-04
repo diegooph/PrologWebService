@@ -47,5 +47,14 @@ public class CalendarioService {
 		}
 	}
 
+	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe){
+		try{
+			return dao.update(evento, codUnidade, codFuncao, codEquipe);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 }

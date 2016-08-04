@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
+import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
 import com.google.gson.Gson;
@@ -39,7 +40,7 @@ public class CalendarioResource {
 		return service.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, equipe, funcao);
 	}
 
-	@POST
+	@PUT
 	@Secured
 	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
 	public AbstractResponse insert (Evento evento,
@@ -47,5 +48,19 @@ public class CalendarioResource {
 					@PathParam("codEquipe") String codFuncao,
 					@PathParam("codFuncao") String codEquipe){
 		return service.insert(evento, codUnidade, codFuncao, codEquipe);
+	}
+
+	@POST
+	@Secured
+	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
+	public Response update (Evento evento,
+							@PathParam("codUnidade") String codUnidade,
+							@PathParam("codEquipe") String codFuncao,
+							@PathParam("codFuncao") String codEquipe){
+		if (service.update(evento, codUnidade, codFuncao, codEquipe)){
+			return Response.Ok("Evento alterado com sucesso");
+		}else{
+			return Response.Error("Erro ao editar o evento");
+		}
 	}
 }

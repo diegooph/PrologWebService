@@ -173,4 +173,40 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			closeConnection(conn, stmt, rSet);
 		}
 	}
+
+	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE CALENDARIO SET DATA = ?, DESCRICAO = ?, " +
+					" COD_UNIDADE = ?, COD_FUNCAO = ?, COD_EQUIPE = ?, LOCAL = ? WHERE " +
+					" CODIGO = ? AND COD_UNIDADE = ? ");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(evento.getData()));
+			stmt.setString(2, evento.getDescricao());
+			stmt.setLong(3, Long.parseLong(codUnidade));
+			if (codFuncao.equals("%")){
+				stmt.setNull(4, Types.BIGINT);
+			}else {
+				stmt.setLong(4, Long.parseLong(codFuncao));
+			}
+
+			if (codEquipe.equals("%")){
+				stmt.setNull(5, Types.BIGINT);
+			}else {
+				stmt.setLong(5, Long.parseLong(codEquipe));
+			}
+			stmt.setString(6, evento.getLocal());
+			stmt.setLong(7, evento.getCodigo());
+			stmt.setLong(8, Long.parseLong(codUnidade));
+			int count = stmt.executeUpdate();
+			if(count > 0){
+				return true;
+			}else{
+				return false;
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+	}
 }
