@@ -4,7 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
+import br.com.zalf.prolog.models.Response;
 
 public class CalendarioService {
 
@@ -36,5 +38,14 @@ public class CalendarioService {
 			return false;
 		}
 	}
+	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe){
+		try {
+			return dao.insert(evento, codUnidade, codFuncao, codEquipe);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o evento");
+		}
+	}
+
 
 }

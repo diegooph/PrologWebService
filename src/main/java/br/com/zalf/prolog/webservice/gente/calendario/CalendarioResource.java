@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
+import com.google.gson.Gson;
 
 @Path("/calendario")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -34,5 +37,15 @@ public class CalendarioResource {
 								@PathParam("equipe") String equipe,
 								@PathParam("funcao") String funcao) throws SQLException {
 		return service.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, equipe, funcao);
+	}
+
+	@POST
+	@Secured
+	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
+	public AbstractResponse insert (Evento evento,
+					@PathParam("codUnidade") String codUnidade,
+					@PathParam("codEquipe") String codFuncao,
+					@PathParam("codFuncao") String codEquipe){
+		return service.insert(evento, codUnidade, codFuncao, codEquipe);
 	}
 }

@@ -6,6 +6,8 @@ import java.util.*;
 
 import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.ResponseWithCod;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
@@ -136,16 +138,39 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return false;
 	}
 
-//	public AbstractResponse insert (Evento evento,) throws SQLException{
-//		Connection conn = null;
-//		PreparedStatement stmt = null;
-//		ResultSet rSet = null;
-//		try{
-//			conn = getConnection();
-//			conn.setAutoCommit(false);
-//			stmt = conn.prepareStatement("")
-//
-//
-//		}
-//	}
+	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Long nullLong = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO calendario(data, descricao, cod_unidade, cod_funcao, cod_equipe, local) " +
+					"VALUES (?,?,?,?,?,?) returning codigo");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(evento.getData()));
+			stmt.setString(2, evento.getDescricao());
+			stmt.setLong(3, Long.parseLong(codUnidade));
+
+			if (codFuncao.equals("%")){
+				stmt.setNull(4, Types.BIGINT);
+			}else {
+				stmt.setLong(4, Long.parseLong(codFuncao));
+			}
+
+			if (codEquipe.equals("%")){
+				stmt.setNull(5, Types.BIGINT);
+			}else {
+				stmt.setLong(5, Long.parseLong(codEquipe));
+			}
+			stmt.setString(6, evento.getLocal());
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return ResponseWithCod.Ok("Evento inserido com sucesso", rSet.getLong("codigo"));
+			}else{
+				return Response.Error("Erro ao inserir o evento");
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
 }
