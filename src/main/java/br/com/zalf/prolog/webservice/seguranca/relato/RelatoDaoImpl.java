@@ -235,7 +235,8 @@ public class RelatoDaoImpl extends DatabaseConnection {
 				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT JOIN "
 				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
 				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
-				+ "WHERE R.CPF_COLABORADOR != ? AND R.STATUS LIKE ? AND R.COD_UNIDADE = c.cod_unidade "
+				+ "WHERE R.CPF_COLABORADOR != ? AND R.STATUS LIKE ? AND R.COD_UNIDADE = (SELECT COD_UNIDADE FROM colaborador\n" +
+				"        WHERE CPF = ?) "
 				+ "ORDER BY %s "
 				+ "LIMIT ? OFFSET ? ";
 		try {
@@ -251,8 +252,9 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setDouble(2, latitude);
 			stmt.setLong(3, cpf);
 			stmt.setString(4, status);
-			stmt.setInt(5, limit);
-			stmt.setLong(6, offset);
+			stmt.setLong(5, cpf);
+			stmt.setInt(6, limit);
+			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
