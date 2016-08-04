@@ -97,7 +97,6 @@ public class ChecklistResource {
 			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
-		System.out.println("cegouuuuu");
 		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
 		Date datainicial = java.sql.Date.valueOf(dataInicial);
 		return service.getAll(DateUtils.toLocalDate(datainicial),DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade, limit, offset);

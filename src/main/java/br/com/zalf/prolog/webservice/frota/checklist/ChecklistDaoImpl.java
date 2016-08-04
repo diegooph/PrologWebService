@@ -586,7 +586,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 								  Long codUnidade, long limit, long offset) throws SQLException {
 
 		List<Checklist> checklists = new ArrayList<>();
-		//TODO verificar token e buscar apenas checklists da unidade informada no request
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -602,7 +601,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "WHERE C.DATA_HORA::DATE >= ? "
 					+ "AND C.DATA_HORA::DATE <= ? "
 					+ "AND E.NOME LIKE ? "
-					+ "AND CO.COD_UNIDADE = ? "
+					+ "AND C.COD_UNIDADE = ? "
 					+ "ORDER BY DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 

@@ -4,6 +4,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -134,4 +135,17 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		}
 		return false;
 	}
+
+//	public AbstractResponse insert (Evento evento,) throws SQLException{
+//		Connection conn = null;
+//		PreparedStatement stmt = null;
+//		ResultSet rSet = null;
+//		try{
+//			conn = getConnection();
+//			conn.setAutoCommit(false);
+//			stmt = conn.prepareStatement("")
+//
+//
+//		}
+//	}
 }
