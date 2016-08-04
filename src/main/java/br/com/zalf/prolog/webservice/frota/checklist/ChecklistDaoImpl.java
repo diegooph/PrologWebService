@@ -583,15 +583,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-								  Long codUnidade, long limit, long offset) throws SQLException {
-
+								  Long codUnidade, String placa, long limit, long offset) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-
-		System.out.println(dataInicial + " data final: ");
-		System.out.println(dataFinal);
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.cod_checklist_modelo, C.KM_VEICULO, "
@@ -602,6 +598,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "AND C.DATA_HORA::DATE <= ? "
 					+ "AND E.NOME LIKE ? "
 					+ "AND C.COD_UNIDADE = ? "
+					+ "AND C.PLACA_VEICULO LIKE ?"
 					+ "ORDER BY DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 
@@ -609,8 +606,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
 			stmt.setString(3, equipe);
 			stmt.setLong(4, codUnidade);
-			stmt.setLong(5, limit);
-			stmt.setLong(6, offset);
+			stmt.setString(5, placa);
+			stmt.setLong(6, limit);
+			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet);

@@ -78,15 +78,17 @@ public class ChecklistResource {
 
 	@GET
 	@Secured
-	@Path("{codUnidade}/{equipe}")
+	@Path("{codUnidade}/{equipe}/{placa}")
 	public List<Checklist> getAll(
 			@QueryParam("dataInicial") long dataInicial, 
 			@QueryParam("dataFinal") long dataFinal,
-			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("equipe") String equipe,
+			@PathParam("placa") String placa,
 			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset) {
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
+			@QueryParam("offset") long offset){
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
+				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
 	}
 
 	@GET
@@ -99,7 +101,8 @@ public class ChecklistResource {
 			@QueryParam("offset") long offset) {
 		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
 		Date datainicial = java.sql.Date.valueOf(dataInicial);
-		return service.getAll(DateUtils.toLocalDate(datainicial),DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade, limit, offset);
+		return service.getAll(DateUtils.toLocalDate(datainicial),
+				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
 	}
 
 	@GET

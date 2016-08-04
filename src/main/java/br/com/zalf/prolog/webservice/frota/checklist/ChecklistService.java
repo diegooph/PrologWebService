@@ -78,9 +78,9 @@ public class ChecklistService {
 	}
 	
 	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, long limit, long offset) {
+			Long codUnidade, String placa, long limit, long offset) {
 		try {
-			return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, limit, offset);
+			return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Checklist>();
