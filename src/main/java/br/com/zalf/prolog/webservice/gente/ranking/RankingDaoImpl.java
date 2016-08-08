@@ -33,13 +33,16 @@ import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 public class RankingDaoImpl extends DatabaseConnection {
 
-/**
- * Busca os dados da tabela mapa e tracking para montar todos os indicadores, 
- * respeitando o período selecionado e o cod da unidade.
- */
+	private static final String tag = RankingDaoImpl.class.getSimpleName();
+
+	/**
+	 * Busca os dados da tabela mapa e tracking para montar todos os indicadores,
+	 * respeitando o período selecionado e o cod da unidade.
+	 */
 	private static final String BUSCA_INDICADORES_RANKING = "SELECT C.CPF, C.NOME, F.NOME AS FUNCAO, E.NOME AS EQUIPE, M.DATA, "
 			+ " M.CXCARREG, M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS,	"
 			+ "M.QTNFENTREGUES, M.HRSAI, M.HRENTR,M.TEMPOINTERNO, M.HRMATINAL,	"
@@ -76,7 +79,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 
 
 	public List<ItemPosicao> getRanking (LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade) throws SQLException{
+										 Long codUnidade) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -103,16 +106,16 @@ public class RankingDaoImpl extends DatabaseConnection {
 		finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		//System.out.print(listPosicao);
+		L.d(tag, listPosicao.toString());
 		return listPosicao;
 	}
-/**
- * Cria uma lista de objetos ItemPosicao, contendo os indicadores e resultados 
- * de cada colaborador
- * @param rSet um ResultSet contendo o resultado da busca
- * @return uma lista de ItemPosicao, contendo todos os colaboradores e seus resultados
- * @throws SQLException caso ocorra erro ao percorrer o ResultSet
- */
+	/**
+	 * Cria uma lista de objetos ItemPosicao, contendo os indicadores e resultados
+	 * de cada colaborador
+	 * @param rSet um ResultSet contendo o resultado da busca
+	 * @return uma lista de ItemPosicao, contendo todos os colaboradores e seus resultados
+	 * @throws SQLException caso ocorra erro ao percorrer o ResultSet
+	 */
 	public List<ItemPosicao> createRanking(ResultSet rSet) throws SQLException{
 		List<ItemPosicao> listPosicao = new ArrayList<>();
 		ItemPosicao itemPosicao = new ItemPosicao();
@@ -152,7 +155,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		itemPosicao.setTempoInterno(createTempoInterno(rSet));
 		itemPosicao.setJornada(createJornada(rSet));
 		itemPosicao.setTracking(createTracking(rSet));
-		return itemPosicao;	
+		return itemPosicao;
 	}
 
 	private DevolucaoCxHolder createDevCx(ResultSet rSet) throws SQLException{
@@ -183,7 +186,11 @@ public class RankingDaoImpl extends DatabaseConnection {
 		devNf.setEntreguesTotal(rSet.getInt("QTNFENTREGUES"));
 		devNf.setDevolvidasTotal(devNf.getCarregadasTotal() - devNf.getEntreguesTotal());
 		devNf.setMeta(meta.getMetaDevNf());
-		devNf.setResultadoTotal(devNf.getDevolvidasTotal() / devNf.getCarregadasTotal());
+		if(devNf.getCarregadasTotal() > 0){
+			devNf.setResultadoTotal(devNf.getDevolvidasTotal() / devNf.getCarregadasTotal());
+		}else{
+			devNf.setResultadoTotal(0);
+		}
 		devNf.setBateuMeta(MetaUtils.bateuMeta(devNf.getResultadoTotal(), meta.getMetaDevNf()));
 		return devNf;
 	}
@@ -245,7 +252,11 @@ public class RankingDaoImpl extends DatabaseConnection {
 		tracking.setOk(rSet.getInt("APONTAMENTO_OK"));
 		tracking.setNok(tracking.getTotal() - tracking.getOk());
 		tracking.setMeta(meta.getMetaTracking());
-		tracking.setResultado(tracking.getOk() / tracking.getTotal());
+		if (tracking.getTotal() > 0) {
+			tracking.setResultado(tracking.getOk() / tracking.getTotal());
+		}else{
+			tracking.setResultado(0);
+		}
 		tracking.setBateuMeta(MetaUtils.bateuMetaMapas(tracking.getResultado(), meta.getMetaTracking()));
 		return tracking;
 	}
@@ -280,7 +291,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		holder.setDevolvidasTotal(holder.getDevolvidasTotal() + item.getDevolvidas());
 		holder.setEntreguesTotal(holder.getEntreguesTotal() + item.getEntregues());
 		holder.setResultadoTotal(holder.getDevolvidasTotal() / holder.getCarregadasTotal());
-		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));	
+		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));
 		return holder;
 	}
 
@@ -289,7 +300,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		holder.setDevolvidasTotal(holder.getDevolvidasTotal() + item.getDevolvidas());
 		holder.setEntreguesTotal(holder.getEntreguesTotal() + item.getEntregues());
 		holder.setResultadoTotal(holder.getDevolvidasTotal() / holder.getCarregadasTotal());
-		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));	
+		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));
 		return holder;
 	}
 
@@ -297,8 +308,12 @@ public class RankingDaoImpl extends DatabaseConnection {
 		holder.setCarregadasTotal(holder.getCarregadasTotal() + item.getCarregadas());
 		holder.setDevolvidasTotal(holder.getDevolvidasTotal() + item.getDevolvidas());
 		holder.setEntreguesTotal(holder.getEntreguesTotal() + item.getEntregues());
-		holder.setResultadoTotal(holder.getDevolvidasTotal() / holder.getCarregadasTotal());
-		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));	
+		if (holder.getCarregadasTotal() > 0) {
+			holder.setResultadoTotal(holder.getDevolvidasTotal() / holder.getCarregadasTotal());
+		}else{
+			holder.setResultadoTotal(0);
+		}
+		holder.setBateuMeta(MetaUtils.bateuMeta(holder.getResultadoTotal(), holder.getMeta()));
 		return holder;
 	}
 
@@ -425,8 +440,8 @@ public class RankingDaoImpl extends DatabaseConnection {
 		for(ItemPosicao item : list){
 			item.setPontuacao(
 					item.getOuro() * PONTOS_OURO +
-					item.getPrata() * PONTOS_PRATA +
-					item.getBronze() * PONTOS_BRONZE);
+							item.getPrata() * PONTOS_PRATA +
+							item.getBronze() * PONTOS_BRONZE);
 		}
 	}
 
@@ -441,7 +456,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 
 		Collections.sort(list, new CustomComparator());
 		Collections.reverse(list);
-		
+
 		int posicao = 1;
 		for(ItemPosicao item : list){
 			item.setPosicao(posicao);
@@ -462,7 +477,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 			}
 			Integer valor2 = Double.compare(o2.getDevNf().getResultadoTotal(), o1.getDevNf().getResultadoTotal());
 			return valor2;
-			
+
 		}
 	}
 }

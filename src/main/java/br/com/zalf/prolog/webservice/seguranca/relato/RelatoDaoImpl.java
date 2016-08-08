@@ -1,10 +1,6 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +42,11 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setLong(10, relato.getColaboradorRelato().getCpf());
 			stmt.setLong(11, relato.getColaboradorRelato().getCpf());
 			stmt.setLong(12, relato.getAlternativa().codigo);
-
-			if(relato.getAlternativa().tipo ==  Alternativa.TIPO_OUTROS){
-				stmt.setString(13, relato.getAlternativa().respostaOutros);
-			}else{
-				stmt.setNull(13, java.sql.Types.VARCHAR);
-			}
+			stmt.setString(13, relato.getDescricao());
 			if (relato.getPdv() != null) {
 				stmt.setInt(14, relato.getPdv().getCodigo());
+			}else{
+				stmt.setNull(14, Types.INTEGER);
 			}
 			int count = stmt.executeUpdate();
 			if(count == 0){
@@ -80,11 +73,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setString(3, relato.getStatus());
 			stmt.setLong(4, relato.getAlternativa().codigo);
-			if(relato.getAlternativa().tipo == Alternativa.TIPO_OUTROS){
-				stmt.setString(5, relato.getAlternativa().respostaOutros);
-			}else{
-				stmt.setNull(5, java.sql.Types.VARCHAR);
-			}
+			stmt.setString(5, relato.getDescricao());
 			stmt.setLong(6, relato.getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
@@ -193,7 +182,6 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			stmt.setString(4, status);
 			stmt.setInt(5, limit);
 			stmt.setLong(6, offset);
-			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Relato relato = createRelato(rSet);
@@ -364,8 +352,8 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		relato.setDataFechamento(rSet.getTimestamp("DATA_HORA_FECHAMENTO"));
 		relato.setFeedbackFechamento(rSet.getString("FEEDBACK_FECHAMENTO"));
 		relato.setStatus(rSet.getString("STATUS"));
+		relato.setDescricao(rSet.getString("RESPOSTA_OUTROS"));
 		Alternativa alternativa = createAlternativa(rSet);
-		alternativa.respostaOutros = rSet.getString("RESPOSTA_OUTROS");
 		relato.setAlternativa(alternativa);
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
 		Pdv pdv = new Pdv();

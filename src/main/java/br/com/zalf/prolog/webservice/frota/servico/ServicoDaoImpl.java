@@ -43,30 +43,41 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		try{
 			conn = getConnection();
 			//query busca todos os itens de manutenção
-			String query = "SELECT CM.DATA_APONTAMENTO, CM.PLACA, CM.ITEM, CP.PERGUNTA, CP.PRIORIDADE, PG.PRAZO, "
-					+ "CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, CM.DATA_RESOLUCAO, "
-					+ "CM.CPF_FROTA, C.NOME FROM CHECKLIST_MANUTENCAO CM	"
-					+ "JOIN VEICULO V ON V.PLACA = CM.PLACA "
-					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
-					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
-					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
-					+ "FROM CHECKLIST_MANUTENCAO CM "
-					+ " WHERE COD_UNIDADE = ? "
-					+ " LIMIT ? OFFSET ?) "
-					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
-					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
-					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA %s ORDER BY PLACA, PG.PRAZO, CM.ITEM";
+//			String query = "SELECT CM.DATA_APONTAMENTO, CM.PLACA, CM.ITEM, CP.PERGUNTA, CP.PRIORIDADE, PG.PRAZO, "
+//					+ "CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, CM.DATA_RESOLUCAO, "
+//					+ "CM.CPF_FROTA, C.NOME FROM CHECKLIST_MANUTENCAO CM	"
+//					+ "JOIN VEICULO V ON V.PLACA = CM.PLACA "
+//					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
+//					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
+//					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
+//					+ "FROM CHECKLIST_MANUTENCAO CM "
+//					+ " WHERE COD_UNIDADE = ? "
+//					+ " LIMIT ? OFFSET ?) "
+//					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
+//					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
+//					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA %s ORDER BY PLACA, PG.PRAZO, CM.ITEM";
+			String query = "SELECT * FROM checklist_manutencao CM\n" +
+					"JOIN VEICULO V ON V.placa = CM.placa and cm.cpf_frota %1s\n" +
+					"JOIN checklist_perguntas CP ON CP.codigo = CM.item\n" +
+					"AND CP.cod_unidade = CM.cod_unidade\n" +
+					"AND CP.cod_checklist_modelo = CM.cod_checklist_modelo\n" +
+					"JOIN prioridade_pergunta_checklist PP ON PP.prioridade = CP.prioridade\n" +
+					"LEFT JOIN colaborador C ON C.cpf = CM.cpf_frota\n" +
+					"WHERE CM.placa IN (SELECT DISTINCT(PLACA) AS PLACAD FROM checklist_manutencao WHERE cod_unidade = ?\n" +
+					"  and cpf_frota %2s\n" +
+					"  ORDER BY PLACA\n" +
+					"  LIMIT ? OFFSET ?)\n" +
+					"ORDER BY CM.PLACA, PP.PRAZO, CM.ITEM";
 			if(isAbertos){
-				query = String.format(query, "IS NULL");
+				query = String.format(query, "IS NULL", "IS NULL");
 			}else{
-				query = String.format(query, ">0");
+				query = String.format(query, ">0", ">0");
 			}	
 			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, codUnidade);
 			stmt.setInt(2, limit);
 			stmt.setLong(3, offset);
-			stmt.setLong(4, codUnidade);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
 				if(rSet.first()){
@@ -147,9 +158,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 					Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
 					if(rSetAlternativas.getString("RESPOSTA").equals("NOK")){
 						System.out.println("resposta == NOK");
+
 						alternativa.alternativa = rSetAlternativas.getString("ALTERNATIVA");	
 					}else{
 						System.out.println("resposta == OUTROS");
+						alternativa.selected = true;
 						alternativa.respostaOutros = rSetAlternativas.getString("RESPOSTA");
 						alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
 					}

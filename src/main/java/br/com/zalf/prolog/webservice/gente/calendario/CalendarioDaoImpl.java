@@ -1,16 +1,15 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import java.sql.*;
-import java.sql.Date;
-import java.util.*;
-
 import br.com.zalf.prolog.models.AbstractResponse;
 import br.com.zalf.prolog.models.Evento;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.ResponseWithCod;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.util.L;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao{
 

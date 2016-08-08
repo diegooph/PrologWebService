@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -178,4 +179,21 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 	}
+
+//	public ResumoMapaTracking getResumoAtualizacaoDados(int ano, int mes){
+//		Connection conn = null;
+//		PreparedStatement stmt= null;
+//		ResultSet rSet = null;
+//		List<Date> mapas = null;
+//		List<Date> trackings = null;
+//		ResumoMapaTracking resumo = null;
+//		try{
+//			conn = getConnection();
+//			stmt = conn.prepareStatement("");
+//		}finally {
+//			closeConnection(conn,stmt,rSet);
+//		}
+//
+//
+//	}
 }

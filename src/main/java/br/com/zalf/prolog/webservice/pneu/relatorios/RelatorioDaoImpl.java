@@ -221,7 +221,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		int totalVeiculos = 0;
 		int ultimoDia = 0;
 		int dia = 1;		
-
+		/* verifica se o mes procurado é o mesmo mes corrente, se for, pega o dia atual, caso contrário
+		 pega o ultimo dia do mês */
 		if (dataAtual.getYear()+1900 == ano && dataAtual.getMonth()+1 == mes) {
 			ultimoDia = dataAtual.getDate();
 		}else{
