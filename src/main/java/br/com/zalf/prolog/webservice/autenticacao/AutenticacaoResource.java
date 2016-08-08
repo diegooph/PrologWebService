@@ -17,17 +17,7 @@ import br.com.zalf.prolog.models.Response;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AutenticacaoResource {
 	private AutenticacaoService service = new AutenticacaoService();
-	
-	@POST
-	@Path("/verifyIfExists")
-	public Response verifyIfExists(Autenticacao autenticacao) {		
-		if (service.verifyIfExists(autenticacao)) {
-			return Response.Ok("Token encontrado, usuário liberado para realizar requisições");
-		} else {
-			return Response.Error("Token não encontrado, usuário bloqueado para realizar requisições");
-		}
-	}
-	
+
 	@DELETE
 	@Path("{token}")
 	public Response delete(@PathParam("token") String token) {

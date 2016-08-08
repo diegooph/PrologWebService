@@ -15,14 +15,6 @@ public interface AutenticacaoDao {
 	 */
 	Autenticacao insertOrUpdate(Long cpf) throws SQLException;
 	/**
-	 * Verifica a existencia de um token para o cpf informado no objeto autenticação
-	 * @param autenticacao contém o CPF e Token a serem verificados
-	 * @return boolean com resultado do Exists, caso exista um CPF e Token compatíveis no BD
-	 * retorna TRUE.
-	 * @throws SQLException caso não seja possível verificar o BD
-	 */
-	boolean verifyIfExists(Autenticacao autenticacao) throws SQLException;
-	/**
 	 * Verifica a existência de um token
 	 * @param token um token
 	 * @return boolean com o resultado da requisição

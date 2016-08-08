@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import br.com.zalf.prolog.models.Autenticacao;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
@@ -29,43 +27,22 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyIfExists(Autenticacao autenticacao) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT TA.CPF_COLABORADOR FROM "
-					+ "TOKEN_AUTENTICACAO TA WHERE TA.CPF_COLABORADOR = ? AND TA.TOKEN = ?)");
-			stmt.setLong(1, autenticacao.getCpf());
-			stmt.setString(2, autenticacao.getToken());
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				return rSet.getBoolean("EXISTS");
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return false;
-	}
-	
-	@Override
 	public boolean verifyIfTokenExists(String token) throws SQLException{
 		
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT TA.TOKEN FROM "
-					+ "TOKEN_AUTENTICACAO TA WHERE TA.TOKEN = ?)");
-			stmt.setString(1, token);
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				return rSet.getBoolean("EXISTS");
+			stmt = conn.prepareStatement("UPDATE token_autenticacao SET " +
+					"DATA_HORA = ? WHERE TOKEN = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setString(2, token);
+			int count =  stmt.executeUpdate();
+			if (count > 0) {
+				return true;
 			}
 		} finally {
-			closeConnection(conn, stmt, rSet);
+			closeConnection(conn, stmt, null);
 		}
 		return false;
 	}

@@ -24,16 +24,7 @@ public class AutenticacaoService {
 		return false;
 	}
 }
-	
-	public boolean verifyIfExists(Autenticacao autenticacao) {
-		try {
-			return dao.verifyIfExists(autenticacao);					
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
+
 	public boolean verifyIfTokenExists(String token){
 		try {
 			return dao.verifyIfTokenExists(token);
