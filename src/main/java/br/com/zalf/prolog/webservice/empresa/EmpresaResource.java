@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
+import br.com.zalf.prolog.models.imports.HolderMapaTracking;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/empresa")
@@ -71,9 +71,9 @@ public class EmpresaResource {
 	@GET
 	@Secured
 	@Path("/resumoDados/{codUnidade}/{ano}/{mes}")
-	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
-                                                                    @PathParam("mes") int mes,
-                                                                    @PathParam("codUnidade") Long codUnidade){
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
+                                                                          @PathParam("mes") int mes,
+                                                                          @PathParam("codUnidade") Long codUnidade){
 		return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
 	}
 

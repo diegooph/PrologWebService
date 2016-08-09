@@ -5,21 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
-import br.com.zalf.prolog.models.imports.MapaImport;
+import br.com.zalf.prolog.models.imports.HolderMapaTracking;
 import br.com.zalf.prolog.models.imports.MapaTracking;
-import br.com.zalf.prolog.models.imports.TrackingImport;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
-
-import javax.xml.ws.Holder;
 
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
@@ -187,12 +179,12 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 	}
 
-	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException{
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt= null;
 		ResultSet rSet = null;
-		List<HolderResumoMapaTracking> holders = null;
-		HolderResumoMapaTracking holder = null;
+		List<HolderMapaTracking> holders = null;
+		HolderMapaTracking holder = null;
 		List<MapaTracking> mapas = null;
 		MapaTracking mapa = null;
 
@@ -211,7 +203,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			while (rSet.next()){
 				if (holders == null){// primeira iteração do rSet
 					holders = new ArrayList<>();
-					holder = new HolderResumoMapaTracking();
+					holder = new HolderMapaTracking();
 					holder.setData(rSet.getDate("DATA"));
 					mapas  = new ArrayList<>();
 					mapa = new MapaTracking();
@@ -227,7 +219,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 					}else{// mudou a data, fechar as listas e começar novamente
 						holder.setMapas(mapas);
 						holders.add(holder);
-						holder = new HolderResumoMapaTracking();
+						holder = new HolderMapaTracking();
 						holder.setData(rSet.getDate("data"));
 						mapas = new ArrayList<>();
 						mapa = new MapaTracking();

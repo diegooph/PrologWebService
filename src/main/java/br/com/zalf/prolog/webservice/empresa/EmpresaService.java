@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
+import br.com.zalf.prolog.models.imports.HolderMapaTracking;
 
 public class EmpresaService {
 
@@ -67,7 +67,7 @@ public class EmpresaService {
 		}
 	}
 
-	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
 		try{
 			return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
 		}catch (SQLException e){
