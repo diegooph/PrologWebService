@@ -65,9 +65,9 @@ public class FaleConoscoService {
 		}
 	}
 
-	public List<FaleConosco> getByColaborador(long cpf) {
+	public List<FaleConosco> getByColaborador(Long cpf, String status) {
 		try {
-			return dao.getByColaborador(cpf);
+			return dao.getByColaborador(cpf, status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ArrayList<FaleConosco>();

@@ -70,9 +70,10 @@ public class FaleConoscoResource {
 
 	@GET
 	@Secured
-	@Path("/{cpf}")
-	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getByColaborador(cpf);
+	@Path("/colaborador/{status}/{cpf}")
+	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
+											  @PathParam("status") String status) {
+		return service.getByColaborador(cpf, status);
 	}
 
 //	@DELETE

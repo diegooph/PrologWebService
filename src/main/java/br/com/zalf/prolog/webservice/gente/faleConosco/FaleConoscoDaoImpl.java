@@ -144,7 +144,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return list;
 	}
 
-	public List<FaleConosco> getByColaborador(long cpf) throws Exception {
+	public List<FaleConosco> getByColaborador(Long cpf, String status) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -154,8 +154,9 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			stmt = conn.prepareStatement("SELECT F.*, C.cpf AS CPF_COLABORADOR, C.nome AS NOME_COLABORADOR, " +
 					"C2.cpf AS CPF_FEEDBACK, C2.nome AS NOME_FEEDBACK FROM FALE_CONOSCO F JOIN colaborador C ON F.cpf_colaborador = C.cpf " +
 					"LEFT JOIN colaborador C2 ON C2.cpf = F.CPF_FEEDBACK WHERE " +
-					"CPF_COLABORADOR = ? ORDER BY F.data_hora");
+					"CPF_COLABORADOR = ? f.status like = ? ORDER BY F.data_hora");
 			stmt.setLong(1, cpf);
+			stmt.setString(2, status);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				FaleConosco faleConosco = createFaleConosco(rSet);

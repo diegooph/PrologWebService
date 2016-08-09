@@ -187,34 +187,48 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		HolderMapaTracking holder = null;
 		List<MapaTracking> mapas = null;
 		MapaTracking mapa = null;
+		Integer tempMapa = null;
+		Integer tempTracking = null;
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT a.data,m.mapa, m.placa, m.frota, tracking.mapa_tracking FROM aux_data a left JOIN mapa m on a.data = m.data\n" +
-					"left join (select DISTINCT data as data_tracking, mapa as mapa_tracking\n" +
-					"from tracking where código_transportadora = 4) as tracking on mapa_tracking = m.mapa\n" +
-					"join veiculo v on v.placa = m.placa\n" +
-					"where m.cod_unidade = ? AND M.frota = 'Padrao' AND extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
-					"ORDER BY A.data;");
+			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA,M.placa, TRACKING.MAPA_TRACKING\n" +
+					"FROM MAPA M FULL OUTER JOIN\n" +
+					"\t(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
+					"\tJOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
+					"\tWHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
+					"\tORDER BY 1;");
 			stmt.setLong(1, codUnidade);
-			stmt.setInt(2, ano);
-			stmt.setInt(3, mes);
+			stmt.setLong(2, codUnidade);
+			stmt.setInt(3, ano);
+			stmt.setInt(4, mes);
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
+				tempMapa = rSet.getInt("mapa");
+				tempTracking = rSet.getInt("mapa_tracking");
+				if (tempMapa == 0){
+					tempMapa = null;
+				}
+				if (tempTracking == 0){
+					tempTracking = null;
+				}
+
 				if (holders == null){// primeira iteração do rSet
 					holders = new ArrayList<>();
 					holder = new HolderMapaTracking();
 					holder.setData(rSet.getDate("DATA"));
 					mapas  = new ArrayList<>();
 					mapa = new MapaTracking();
-					mapa.setMapa(rSet.getInt("mapa"));
-					mapa.setTracking(rSet.getInt("mapa_tracking"));
+					mapa.setMapa(tempMapa);
+					mapa.setPlaca(rSet.getString("placa"));
+					mapa.setTracking(tempTracking);
 					mapas.add(mapa);
 				}else{// a partir da primeira linha do rset
 					if (rSet.getDate("data").equals(holder.getData())){
 						mapa = new MapaTracking();
-						mapa.setMapa(rSet.getInt("mapa"));
-						mapa.setTracking(rSet.getInt("mapa_tracking"));
+						mapa.setMapa(tempMapa);
+						mapa.setTracking(tempTracking);
+						mapa.setPlaca(rSet.getString("placa"));
 						mapas.add(mapa);
 					}else{// mudou a data, fechar as listas e começar novamente
 						holder.setMapas(mapas);
@@ -223,8 +237,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 						holder.setData(rSet.getDate("data"));
 						mapas = new ArrayList<>();
 						mapa = new MapaTracking();
-						mapa.setMapa(rSet.getInt("mapa"));
-						mapa.setTracking(rSet.getInt("mapa_tracking"));
+						mapa.setMapa(tempMapa);
+						mapa.setTracking(tempTracking);
+						mapa.setPlaca(rSet.getString("placa"));
 						mapas.add(mapa);
 					}
 				}
