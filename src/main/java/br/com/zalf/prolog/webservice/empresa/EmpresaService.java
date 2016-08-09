@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zalf.prolog.models.*;
+import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
 
 public class EmpresaService {
 
@@ -63,6 +64,15 @@ public class EmpresaService {
 		}catch (SQLException e){
 			e.printStackTrace();
 			return Response.Error("Erro ao inserir o setor");
+		}
+	}
+
+	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
+		try{
+			return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
 		}
 	}
 	

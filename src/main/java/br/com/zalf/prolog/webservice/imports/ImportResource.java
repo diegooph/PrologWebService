@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.imports.TrackingImport;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -21,6 +22,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.imports.MapaImport;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -110,7 +112,7 @@ public class ImportResource {
 				IOUtils.closeQuietly(out);
 				System.out.println("Arquivo: " + file);
 				
-				List<Tracking> tracking = Import.tracking(file.getPath());
+				List<TrackingImport> tracking = Import.tracking(file.getPath());
 				
 				if (tracking == null) {
 					Response.Error("Erro ao processar dados.");

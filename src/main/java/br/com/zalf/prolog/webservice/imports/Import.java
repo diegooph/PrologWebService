@@ -11,8 +11,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.com.zalf.prolog.models.imports.TrackingImport;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import br.com.zalf.prolog.models.imports.MapaImport;
 
 /**
  * Created by jean on 18/01/16.
@@ -149,16 +151,16 @@ public class Import {
  * Converte um arquivo e .csv para uma lista de Tracking
  * @param path um arquivo .csv com os dados do tracking
  * @return uma lista de Tracking
- * @see Tracking 
+ * @see TrackingImport
  */
-	public static List<Tracking> tracking (String path){
-		List<Tracking> listTracking = new ArrayList<>();
+	public static List<TrackingImport> tracking (String path){
+		List<TrackingImport> listTracking = new ArrayList<>();
 		try {
 			Reader in = new FileReader(path);
 			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
 			List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
 			for (int i = 1; i < tabela.size(); i++) {
-				Tracking tracking = new Tracking();
+				TrackingImport tracking = new TrackingImport();
 				CSVRecord linha = tabela.get(i);
 				if(!String.valueOf(linha.get(0)).trim().isEmpty()){
 					tracking.mapa = Integer.parseInt(linha.get(0));

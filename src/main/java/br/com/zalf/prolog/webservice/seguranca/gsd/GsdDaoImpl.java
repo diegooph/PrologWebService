@@ -383,7 +383,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Pdv pdv = new Pdv();
-				pdv.setCodigo(rSet.getLong("CODIGO"));
+				pdv.setCodigo(rSet.getInt("CODIGO"));
 				pdv.setNome(rSet.getString("NOME"));
 				pdvs.add(pdv);
 			}

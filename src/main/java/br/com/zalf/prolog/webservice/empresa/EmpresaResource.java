@@ -13,28 +13,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import br.com.zalf.prolog.models.*;
+import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EmpresaResource {
-	
+
 	EmpresaService service = new EmpresaService();
-	
+
 	@POST
 	@Secured
 	@Path("/getEquipesByCodUnidade/{codUnidade}")
 	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException{
 		return service.getEquipesByCodUnidade(codUnidade);
 	}
-	
+
 	@PUT
 	@Path("/updateEquipe")
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException{
 		return service.updateEquipe(request);
 	}
-	
+
 	@POST
 	@Path("/insertEquipe")
 	public Response createEquipe (Request<Equipe> request){
@@ -44,13 +45,13 @@ public class EmpresaResource {
 			return Response.Error("Erro ao inserir equipe");
 		}
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/funcoes/{codUnidade}")
 	public List<Funcao> getFuncoesByCodUnidade(
 			@PathParam("codUnidade") Long codUnidade){
-				return service.getFuncoesByCodUnidade(codUnidade);
+		return service.getFuncoesByCodUnidade(codUnidade);
 	}
 
 	@GET
@@ -66,6 +67,15 @@ public class EmpresaResource {
 	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade){
 		return service.insertSetor(nome,codUnidade);
 	}
-	
+
+	@GET
+	@Secured
+	@Path("/resumoDados/{codUnidade}/{ano}/{mes}")
+	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
+                                                                    @PathParam("mes") int mes,
+                                                                    @PathParam("codUnidade") Long codUnidade){
+		return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
+	}
+
 
 }

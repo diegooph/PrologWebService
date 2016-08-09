@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.imports.MapaImport;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 

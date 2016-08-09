@@ -8,12 +8,13 @@ import java.util.List;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.models.imports.TrackingImport;
 
 public class TrackingDaoImpl extends DatabaseConnection {
 
-	public boolean insertOrUpdateTracking (List<Tracking> listTracking, Colaborador colaborador) throws SQLException {
+	public boolean insertOrUpdateTracking (List<TrackingImport> listTracking, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdateTracking");
-		for(Tracking tracking : listTracking){
+		for(TrackingImport tracking : listTracking){
 			if(updateTracking(tracking, colaborador)){
 				// Linha já existe e será atualizada
 				System.out.println("update tracking");
@@ -26,7 +27,7 @@ public class TrackingDaoImpl extends DatabaseConnection {
 		return true;
 	}
 
-	public boolean insertTracking (Tracking tracking, Colaborador colaborador) throws SQLException{
+	public boolean insertTracking (TrackingImport tracking, Colaborador colaborador) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -95,7 +96,7 @@ public class TrackingDaoImpl extends DatabaseConnection {
 		return true;
 	}
 
-	private boolean updateTracking(Tracking tracking, Colaborador colaborador) throws SQLException{
+	private boolean updateTracking(TrackingImport tracking, Colaborador colaborador) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {

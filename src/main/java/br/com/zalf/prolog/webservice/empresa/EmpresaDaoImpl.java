@@ -10,9 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.zalf.prolog.models.*;
+import br.com.zalf.prolog.models.imports.HolderResumoMapaTracking;
+import br.com.zalf.prolog.models.imports.MapaImport;
+import br.com.zalf.prolog.models.imports.MapaTracking;
+import br.com.zalf.prolog.models.imports.TrackingImport;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+
+import javax.xml.ws.Holder;
 
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
@@ -24,7 +31,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "FROM TOKEN_AUTENTICACAO TA WHERE CODIGO = ?	"
 			+ "AND TA.CPF_COLABORADOR=? "
 			+ "AND TA.TOKEN=?";
-	
+
 	private final String BUSCA_FUNCOES_BY_COD_UNIDADE = "SELECT F.CODIGO, F.NOME "
 			+ "FROM UNIDADE_FUNCAO UF JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
 			+ "WHERE UF.COD_UNIDADE = ? "
@@ -77,12 +84,12 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		equipe.setNome(rset.getString("NOME"));
 		return equipe;
 	}
-	
+
 	public boolean createEquipe(Request<Equipe> request) throws SQLException{
-		Autenticacao autenticacao = new Autenticacao("", request.getCpf(), 
+		Autenticacao autenticacao = new Autenticacao("", request.getCpf(),
 				request.getToken());
 		AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
-		if (autenticacaoDao.verifyIfExists(autenticacao)) {
+		if (autenticacaoDao.verifyIfTokenExists(request.getToken())) {
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			try {
@@ -96,20 +103,20 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 				int count = stmt.executeUpdate();
 				if(count == 0){
 					throw new SQLException("Erro ao inserir a equipe");
-				}	
+				}
 			}
 			finally {
 				closeConnection(conn, stmt, null);
-			}		
+			}
 			return true;
 		}
 		return false;
 	}
-	
+
 	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe, 
 	//a equipe está ligada como fk de colaborador e fk de calendário
 
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException{ 
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException{
 		List<Funcao> listFuncao = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -128,7 +135,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		return listFuncao;
 	}
-	
+
 	private Funcao createFuncao(ResultSet rSet) throws SQLException{
 		Funcao funcao = new Funcao();
 		funcao.setCodigo(rSet.getLong("CODIGO"));
@@ -180,20 +187,61 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 	}
 
-//	public ResumoMapaTracking getResumoAtualizacaoDados(int ano, int mes){
-//		Connection conn = null;
-//		PreparedStatement stmt= null;
-//		ResultSet rSet = null;
-//		List<Date> mapas = null;
-//		List<Date> trackings = null;
-//		ResumoMapaTracking resumo = null;
-//		try{
-//			conn = getConnection();
-//			stmt = conn.prepareStatement("");
-//		}finally {
-//			closeConnection(conn,stmt,rSet);
-//		}
-//
-//
-//	}
+	public List<HolderResumoMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt= null;
+		ResultSet rSet = null;
+		List<HolderResumoMapaTracking> holders = null;
+		HolderResumoMapaTracking holder = null;
+		List<MapaTracking> mapas = null;
+		MapaTracking mapa = null;
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT a.data,m.mapa, m.placa, m.frota, tracking.mapa_tracking FROM aux_data a left JOIN mapa m on a.data = m.data\n" +
+					"left join (select DISTINCT data as data_tracking, mapa as mapa_tracking\n" +
+					"from tracking where código_transportadora = 4) as tracking on mapa_tracking = m.mapa\n" +
+					"join veiculo v on v.placa = m.placa\n" +
+					"where m.cod_unidade = ? AND M.frota = 'Padrao' AND extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
+					"ORDER BY A.data;");
+			stmt.setLong(1, codUnidade);
+			stmt.setInt(2, ano);
+			stmt.setInt(3, mes);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				if (holders == null){// primeira iteração do rSet
+					holders = new ArrayList<>();
+					holder = new HolderResumoMapaTracking();
+					holder.setData(rSet.getDate("DATA"));
+					mapas  = new ArrayList<>();
+					mapa = new MapaTracking();
+					mapa.setMapa(rSet.getInt("mapa"));
+					mapa.setTracking(rSet.getInt("mapa_tracking"));
+					mapas.add(mapa);
+				}else{// a partir da primeira linha do rset
+					if (rSet.getDate("data").equals(holder.getData())){
+						mapa = new MapaTracking();
+						mapa.setMapa(rSet.getInt("mapa"));
+						mapa.setTracking(rSet.getInt("mapa_tracking"));
+						mapas.add(mapa);
+					}else{// mudou a data, fechar as listas e começar novamente
+						holder.setMapas(mapas);
+						holders.add(holder);
+						holder = new HolderResumoMapaTracking();
+						holder.setData(rSet.getDate("data"));
+						mapas = new ArrayList<>();
+						mapa = new MapaTracking();
+						mapa.setMapa(rSet.getInt("mapa"));
+						mapa.setTracking(rSet.getInt("mapa_tracking"));
+						mapas.add(mapa);
+					}
+				}
+				holder.setMapas(mapas);
+				holders.add(holder);
+			}
+		}finally {
+			closeConnection(conn,stmt,rSet);
+		}
+		return holders;
+	}
 }

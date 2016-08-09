@@ -31,7 +31,7 @@ public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 					stmt.setString(1, pdv.getNome());
 					rSet = stmt.executeQuery();
 					if (rSet.next()) {
-						pdv.setCodigo(rSet.getLong("CODIGO"));
+						pdv.setCodigo(rSet.getInt("CODIGO"));
 					} else {
 						throw new SQLException("Erro ao inserir PDV");
 					}
@@ -62,7 +62,7 @@ public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 			if (rSet.next()) {
 				pdv = new Pdv();
 				pdv.setNome(rSet.getString("NOME"));
-				pdv.setCodigo(rSet.getLong("CODIGO"));
+				pdv.setCodigo(rSet.getInt("CODIGO"));
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
