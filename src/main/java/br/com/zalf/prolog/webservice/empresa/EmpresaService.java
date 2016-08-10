@@ -7,6 +7,8 @@ import java.util.List;
 import br.com.zalf.prolog.models.*;
 import br.com.zalf.prolog.models.imports.HolderMapaTracking;
 
+import javax.ws.rs.core.NoContentException;
+
 public class EmpresaService {
 
 	private EmpresaDaoImpl dao = new EmpresaDaoImpl();
@@ -69,12 +71,11 @@ public class EmpresaService {
 
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
 		try{
-			if (dao.getResumoAtualizacaoDados(ano, mes, codUnidade)==null){
-				return new ArrayList<>();
-			}else{
-				return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
-			}
+			return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
 		}catch (SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}catch (NoContentException e){
 			e.printStackTrace();
 			return new ArrayList<>();
 		}

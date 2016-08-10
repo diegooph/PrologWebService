@@ -13,6 +13,8 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 
+import javax.ws.rs.core.NoContentException;
+
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
@@ -179,7 +181,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 	}
 
-	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException{
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException{
 		Connection conn = null;
 		PreparedStatement stmt= null;
 		ResultSet rSet = null;
@@ -248,6 +250,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			}
 		}finally {
 			closeConnection(conn,stmt,rSet);
+		}
+		if (holder == null){
+			throw new NoContentException("Sem dados para retornar");
 		}
 		return holders;
 	}
