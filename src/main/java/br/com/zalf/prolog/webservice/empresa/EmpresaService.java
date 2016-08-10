@@ -69,7 +69,11 @@ public class EmpresaService {
 
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
 		try{
-			return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
+			if (dao.getResumoAtualizacaoDados(ano, mes, codUnidade)==null){
+				return new ArrayList<>();
+			}else{
+				return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
+			}
 		}catch (SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();

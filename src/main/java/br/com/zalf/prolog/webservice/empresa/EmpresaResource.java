@@ -75,11 +75,7 @@ public class EmpresaResource {
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
                                                                           @PathParam("mes") int mes,
                                                                           @PathParam("codUnidade") Long codUnidade){
-		if (service.getResumoAtualizacaoDados(ano, mes, codUnidade)==null){
-			return new ArrayList<>();
-		}else{
 			return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
-		}
 	}
 
 
