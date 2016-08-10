@@ -63,4 +63,15 @@ public class CalendarioResource {
 			return Response.Error("Erro ao editar o evento");
 		}
 	}
+
+	@DELETE
+	@Secured
+	@Path("/{codUnidade}/{codEvento}")
+	public Response delete (@PathParam("codUnidade") Long codUnidade, @PathParam("codEvento") Long codEvento){
+		if (service.delete(codUnidade, codEvento)){
+			return Response.Ok("Evento deletado com sucesso");
+		}else{
+			return Response.Error("Erro ao deletar o evento");
+		}
+	}
 }
