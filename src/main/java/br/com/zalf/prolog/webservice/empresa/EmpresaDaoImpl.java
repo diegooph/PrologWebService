@@ -245,9 +245,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 						mapas.add(mapa);
 					}
 				}
-				holder.setMapas(mapas);
-				holders.add(holder);
 			}
+			if (holder != null) {
+                holder.setMapas(mapas);
+                holders.add(holder);
+            }
 		}finally {
 			closeConnection(conn,stmt,rSet);
 		}
