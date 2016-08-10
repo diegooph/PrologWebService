@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.empresa;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -74,7 +75,11 @@ public class EmpresaResource {
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
                                                                           @PathParam("mes") int mes,
                                                                           @PathParam("codUnidade") Long codUnidade){
-		return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
+		if (service.getResumoAtualizacaoDados(ano, mes, codUnidade)==null){
+			return new ArrayList<>();
+		}else{
+			return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
+		}
 	}
 
 
