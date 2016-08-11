@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.checklist.Checklist;
+import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.models.checklist.os.OrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
@@ -50,8 +51,10 @@ public class Main {
 		OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 		Connection conn = DatabaseConnection.getConnection();
         // placa, status, conn, unidade, tipoVeiculo
-		L.d("main", dao.getResumoOs("MLU4921","A", conn, 2L, "%").toString());
-		//L.d("main", new Gson().toJson(dao.getResumoOs("MLH4507","A", conn)));
+		L.d("main", dao.getResumoOs("MLU4921","A", null, 2L, "%", null, null).toString());
+		//L.d("tag", dao.getManutencaoHolder(3L, 0, 0, ItemOrdemServico.Status.PENDENTE.asString()).toString());
+        //L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());
+		//L.d("main", new Gson().toJson(dao.getManutencaoHolder(2L, 0,0,"%")));
         //System.out.print(new Gson().toJson(dao.getItensOs("MLH4507", 1L, "P", conn)));
 
 //		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);

@@ -4,9 +4,7 @@ import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
-import br.com.zalf.prolog.models.checklist.os.OrdemServico;
-import br.com.zalf.prolog.models.checklist.os.OsHolder;
+import br.com.zalf.prolog.models.checklist.os.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -14,40 +12,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jean on 10/08/16.
  */
 public class OrdemServicoDaoImpl extends DatabaseConnection {
 
-    private static final String BUSCA_ITENS_OS = "select os.codigo AS COD_OS, os.status as status_os, os.cod_checklist, cp.codigo as cod_pergunta, cp.ordem as ordem_pergunta, cp.pergunta,\n" +
-            "  cp.single_choice, null as url_imagem, cp.prioridade,\n" +
-            "  cap.codigo as cod_alternativa, cap.alternativa, cr.resposta, cosi.status_resolucao as status_item, co.nome as nome_mecanico," +
-            " cosi.cpf_mecanico, " +
-            " cosi.data_hora_inicio, cosi.data_hora_fim, cosi.km as km_fechamento from\n" +
-            "  checklist c join checklist_ordem_servico os\n" +
-            "      on c.codigo = os.cod_checklist AND\n" +
-            "      c.cod_unidade = os.cod_unidade\n" +
-            "  join checklist_ordem_servico_itens cosi on\n" +
-            "      os.codigo = cosi.cod_os AND\n" +
-            "      os.cod_unidade = cosi.cod_unidade\n" +
-            "  join checklist_perguntas cp on cp.cod_unidade = os.cod_unidade AND\n" +
-            "    cp.codigo = cosi.cod_pergunta AND\n" +
-            "    cp.cod_checklist_modelo = c.cod_checklist_modelo\n" +
-            "  join checklist_alternativa_pergunta cap on cap.cod_unidade = cp.cod_unidade AND\n" +
-            "    cap.cod_checklist_modelo = cp.cod_checklist_modelo AND\n" +
-            "    cap.cod_pergunta = cp.codigo AND\n" +
-            "    cap.codigo = cosi.cod_alternativa\n" +
-            "  join checklist_respostas cr on c.cod_unidade = cr.cod_unidade AND\n" +
-            "    cr.cod_checklist_modelo = c.cod_checklist_modelo AND\n" +
-            "    cr.cod_checklist = c.codigo AND\n" +
-            "    cr.cod_pergunta = cp.codigo AND\n" +
-            "    cr.cod_alternativa = cap.codigo\n" +
-            "    LEFT JOIN COLABORADOR Co ON Co.CPF = COSI.CPF_MECANICO\n" +
-            "where os.codigo = ? and os.cod_unidade = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?) and cosi.status_resolucao LIKE ? \n" +
-            "order by os.codigo, cp.codigo, cap.codigo";
+    private static final String PRIORIDADE_CRITICA = "CRITICA";
+    private static final String PRIORIDADE_ALTA = "ALTA";
+    private static final String PRIORIDADE_BAIXA = "BAIXA";
+
+    private static final int MINUTOS_NUM_DIA = 1440;
+    private static final int MINUTOS_NUMA_HORA = 60;
+
+    private static final String BUSCA_ITENS_OS = "select * from estratificacao_os e\n" +
+            "where  e.cod_os::TEXT LIKE ? and e.cod_unidade::TEXT LIKE ? and e.placa_veiculo like ? " +
+            "and e.status_item LIKE ?\n" +
+            "order by e.placa_veiculo;";
 
     private Long createOs (String placa, Long codChecklist, Connection conn) throws SQLException {
         L.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
@@ -131,7 +114,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade, String tipoVeiculo) throws SQLException{
+    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade, String tipoVeiculo, Integer limit, Long offset) throws SQLException{
+
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<OsHolder> holders = null;
@@ -139,18 +123,34 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         OsHolder holder = null;
         OrdemServico os = null;
         try{
-            stmt = conn.prepareStatement("SELECT cos.codigo as cod_os, cos.cod_checklist, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
+            if (conn == null){
+                conn = getConnection();
+            }
+            String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
                     "FROM checklist_ordem_servico cos join checklist c ON cos.cod_checklist = C.codigo\n" +
                     "and c.cod_unidade = cos.cod_unidade\n" +
                     "JOIN VEICULO V ON V.placa = C.placa_veiculo\n" +
                     "JOIN veiculo_tipo VT ON VT.cod_unidade = C.cod_unidade AND v.cod_tipo = vt.codigo\n" +
                     "where c.placa_veiculo LIKE ? and cos.status LIKE ? and c.cod_unidade = ? AND " +
-                    "VT.codigo::TEXT LIKE ? \n" +
-                    "ORDER BY C.placa_veiculo");
+                    "VT.codigo::TEXT LIKE ? \n "  +
+                    "ORDER BY C.placa_veiculo\n" +
+                    "%s";
+            if (limit != null){
+                query = String.format(query, " LIMIT = ?  OFFSET ? ");
+            }else{
+                query = String.format(query, "");
+            }
+            stmt = conn.prepareStatement(query);
             stmt.setString(1, placa);
             stmt.setString(2, status);
             stmt.setLong(3, codUnidade);
             stmt.setString(4, tipoVeiculo);
+            if (limit !=null) {
+                stmt.setInt(5, limit);
+            }
+            if (offset!= null) {
+                stmt.setLong(6, offset);
+            }
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 if (holder == null){//primeiro item do ResultSet
@@ -158,13 +158,13 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     oss = new ArrayList<>();
                     holder = new OsHolder();
                     os = createOrdemServico(rSet);
-                    os.setItens(getItensOs(os.getPlaca(), os.getCodigo(), ItemOrdemServico.Status.PENDENTE.asString(), conn));
+                    os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
                     oss.add(os);
                 }else{ // Próximos itens
                     if (rSet.getString("placa_veiculo").equals(os.getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
-                        os.setItens(getItensOs(os.getPlaca(), os.getCodigo(), ItemOrdemServico.Status.PENDENTE.asString(), conn));
+                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
                         oss.add(os);
                     }else{//placa diferente, fechar a lista, setar no holder, criar novo holder, nova os e add na lista
                         holder.setOs(oss);
@@ -173,7 +173,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
                         oss = new ArrayList<>();
-                        os.setItens(getItensOs(os.getPlaca(), os.getCodigo(), "%", conn));
+                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                         oss.add(os);
                     }
                 }
@@ -188,7 +188,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return holders;
     }
 
-    public List<ItemOrdemServico> getItensOs(String placa, Long codOs, String status, Connection conn) throws SQLException{
+    public List<ItemOrdemServico> getItensOs(String placa, String codOs, String status, Connection conn, Long codUnidade) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<ItemOrdemServico> itens = new ArrayList<>();
@@ -199,9 +199,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Colaborador mecanico = null;
         try{
             stmt = conn.prepareStatement(BUSCA_ITENS_OS);
-            stmt.setLong(1, codOs);
-            stmt.setString(2, placa);
-            stmt.setString(3, status);
+            stmt.setString(1, String.valueOf(codOs));
+            stmt.setString(2, String.valueOf(codUnidade));
+            stmt.setString(3, placa);
+            stmt.setString(4, status);
             rSet = stmt.executeQuery();
             while (rSet.next()){
                 item = new ItemOrdemServico();
@@ -211,13 +212,17 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                 alternativas.add(alternativa);
                 pergunta.setAlternativasResposta(alternativas);
                 item.setPergunta(pergunta);
+                item.setPlaca(rSet.getString("placa_veiculo"));
+                item.setDataApontamento(rSet.getTimestamp("data_hora"));
+                item.setTempoLimiteResolucao(createTempo(TimeUnit.HOURS.toMinutes(rSet.getLong("PRAZO"))));
+                setTempoRestante(item, rSet.getInt("prazo"));
                 if (rSet.getString("nome_mecanico")!= null){
                     mecanico = new Colaborador();
                     mecanico.setCpf(rSet.getLong("cpf_mecanico"));
                     mecanico.setNome(rSet.getString("nome_mecanico"));
                     item.setMecanico(mecanico);
-                    item.setDataHoraInicio(rSet.getTimestamp("data_hora_inicio"));
-                    item.setDataHoraTermino(rSet.getTimestamp("data_hora_fim"));
+                    item.setDataHoraInicioConserto(rSet.getTimestamp("data_hora_inicio"));
+                    item.setDataHoraTerminoConserto(rSet.getTimestamp("data_hora_fim"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
                 }
@@ -270,7 +275,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Long tempCodOs = null;
         Long gerouOs = null;
         // vem apenas um holder, ja que a busca foi feita apenas para uma placa
-        List<OsHolder> oss = getResumoOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn, codUnidade, "%");
+        List<OsHolder> oss = getResumoOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn, codUnidade, "%", null, null);
         // todas as os de uma unica placa
         List<OrdemServico> ordens = null;
         if (oss != null) {
@@ -324,64 +329,117 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return null;
     }
 
-    private List<PerguntaRespostaChecklist> getOs(String placa, Connection conn) throws SQLException{
-        List<PerguntaRespostaChecklist> itensAbertos = new ArrayList<>();
-        PerguntaRespostaChecklist pergunta = null;
-        List<PerguntaRespostaChecklist.Alternativa> alternativas = null;
-        PerguntaRespostaChecklist.Alternativa alternativa = null;
+    public List<ManutencaoHolder> getManutencaoHolder (Long codUnidade, int limit, long offset, String status) throws SQLException{
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
+        List<ManutencaoHolder> holders = null;
+        ManutencaoHolder holder = null;
+        List<ItemOrdemServico> itens = null;
+
         try{
-            stmt = conn.prepareStatement("SELECT I.cod_pergunta,  I.cod_alternativa, cp.pergunta, cap.alternativa FROM checklist C\n" +
-                    "  JOIN checklist_ordem_servico OS on c.cod_unidade = os.cod_unidade AND C.CODIGO = OS.COD_CHECKLIST\n" +
-                    "  JOIN checklist_ordem_servico_itens I ON I.COD_OS = OS.CODIGO AND I.cod_unidade = OS.COD_UNIDADE\n" +
-                    "  JOIN checklist_perguntas cp on cp.cod_checklist_modelo = c.cod_checklist_modelo\n" +
-                    "   and cp.cod_unidade = c.cod_unidade\n" +
-                    "   and cp.codigo = i.cod_pergunta\n" +
-                    "  JOIN checklist_alternativa_pergunta cap on cap.cod_unidade = i.cod_unidade\n" +
-                    "    and cap.cod_checklist_modelo = c.cod_checklist_modelo\n" +
-                    "    and cap.cod_pergunta = i.cod_pergunta\n" +
-                    "    and cap.codigo = i.cod_alternativa\n" +
-                    "WHERE C.PLACA_VEICULO = ? AND OS.STATUS = ? AND I.status_resolucao = ?;");
-            stmt.setString(1,placa);
-            stmt.setString(2, OrdemServico.Status.ABERTA.asString());
-            stmt.setString(3, ItemOrdemServico.Status.PENDENTE.asString());
-            rSet = stmt.executeQuery();
-            if(rSet.next()){
-                if (pergunta == null){
-                    pergunta = new PerguntaRespostaChecklist();
-                    pergunta.setCodigo(rSet.getLong("cod_pergunta"));
-                    pergunta.setPergunta(rSet.getString("pergunta"));
-                    alternativa = new PerguntaRespostaChecklist.Alternativa();
-                    alternativa.codigo = rSet.getLong("cod_alternativa");
-                    alternativa.alternativa = rSet.getString("alternativa");
-                    alternativas = new ArrayList<>();
-                    alternativas.add(alternativa);
-                }else{
-                    if (rSet.getLong("cod_pergunta") == pergunta.getCodigo()){
-                        alternativa = new PerguntaRespostaChecklist.Alternativa();
-                        alternativa.codigo = rSet.getLong("cod_alternativa");
-                        alternativa.alternativa = rSet.getString("alternativa");
-                        alternativas.add(alternativa);
-                    }else{
-                        pergunta.setAlternativasResposta(alternativas);
-                        itensAbertos.add(pergunta);
-                        pergunta = new PerguntaRespostaChecklist();
-                        pergunta.setCodigo(rSet.getLong("cod_pergunta"));
-                        pergunta.setPergunta(rSet.getString("pergunta"));
-                        alternativa = new PerguntaRespostaChecklist.Alternativa();
-                        alternativa.codigo = rSet.getLong("cod_alternativa");
-                        alternativa.alternativa = rSet.getString("alternativa");
-                        alternativas = new ArrayList<>();
-                        alternativas.add(alternativa);
+            conn = getConnection();
+            itens = getItensOs("%", "%", status, conn, codUnidade);
+            if (itens!=null) {
+                for (ItemOrdemServico item : itens) {
+                    if (holder == null){//primeiro item
+                        holders = new ArrayList<>();
+                        holder = new ManutencaoHolder();
+                        holder.setPlaca(item.getPlaca());
+                        itens = new ArrayList<>();
+                        itens.add(item);
+                    }else{// a partir da segunda linha da lista de itens
+                        if (holder.getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
+                            itens.add(item);
+                        }else{ // item é de placa diferente, fechar e add o holder na lista geral
+                            holder.setListManutencao(itens);
+                            setQtItens(holder);
+                            holders.add(holder);
+                            holder = new ManutencaoHolder();
+                            holder.setPlaca(item.getPlaca());
+                            itens = new ArrayList<>();
+                            itens.add(item);
+                        }
                     }
                 }
+                holders.add(holder);
             }
-            pergunta.setAlternativasResposta(alternativas);
-            itensAbertos.add(pergunta);
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(conn,stmt,rSet);
         }
-        return itensAbertos;
+        ordenaLista(holders);
+        return holders;
+    }
+
+    public void setTempoRestante(ItemOrdemServico itemManutencao, int prazoHoras) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(itemManutencao.getDataApontamento());
+        calendar.add(Calendar.HOUR, prazoHoras);// data apontamento + prazo
+        Date dataMaxima = calendar.getTime(); // data máxima de resolução
+        long tempoRestante = dataMaxima.getTime() - System.currentTimeMillis();
+        itemManutencao.setTempoRestante(createTempo(TimeUnit.MILLISECONDS.toMinutes(tempoRestante)));
+    }
+
+    private Tempo createTempo(long temp){
+        Tempo tempo = new Tempo();
+        if (temp < MINUTOS_NUMA_HORA) {
+            tempo.setMinuto((int)temp);
+        } else if (temp < MINUTOS_NUM_DIA) {
+            long hours = TimeUnit.MINUTES.toHours(temp);
+            temp = hours % 60;
+            tempo.setHora((int)hours);
+            tempo.setMinuto((int)temp);
+        } else if (temp >= MINUTOS_NUM_DIA) {
+            long days = TimeUnit.MINUTES.toDays(temp);
+            long hours = TimeUnit.MINUTES.toHours(temp) % 24;
+            tempo.setDia((int)days);
+            tempo.setHora((int)hours);;
+        }
+        return tempo;
+    }
+
+    private void setQtItens(ManutencaoHolder holder){
+        for(ItemOrdemServico item : holder.getListManutencao()){
+            switch (item.getPergunta().getPrioridade()) {
+                case PRIORIDADE_CRITICA:
+                    holder.setQtdCritica(holder.getQtdCritica() + 1);;
+                    break;
+                case PRIORIDADE_ALTA:
+                    holder.setQtdAlta(holder.getQtdAlta() + 1);;
+                    break;
+                case PRIORIDADE_BAIXA:
+                    holder.setQtdBaixa(holder.getQtdBaixa() + 1);;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void ordenaLista (List<ManutencaoHolder> list){
+
+        Collections.sort(list, new OrdemServicoDaoImpl.CustomComparator());
+        Collections.reverse(list);
+    }
+
+
+    private class CustomComparator implements Comparator<ManutencaoHolder> {
+
+        /**
+         * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
+         */
+        @Override
+        public int compare(ManutencaoHolder o1, ManutencaoHolder o2) {
+            Integer valor1 = Double.compare(o1.getQtdCritica(), o2.getQtdCritica());
+            if(valor1!=0){
+                return valor1;
+            }
+            Integer valor2 = Double.compare(o1.getQtdAlta(), o2.getQtdAlta());
+            if(valor2 != 0){
+                return valor2;
+            }
+            Integer valor3 = Double.compare(o1.getQtdBaixa(), o2.getQtdBaixa());
+            return valor3;
+        }
     }
 }

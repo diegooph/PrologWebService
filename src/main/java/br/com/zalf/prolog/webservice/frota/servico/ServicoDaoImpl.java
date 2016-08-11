@@ -43,19 +43,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		try{
 			conn = getConnection();
 			//query busca todos os itens de manutenção
-//			String query = "SELECT CM.DATA_APONTAMENTO, CM.PLACA, CM.ITEM, CP.PERGUNTA, CP.PRIORIDADE, PG.PRAZO, "
-//					+ "CM.QT_APONTAMENTOS, CM.STATUS_RESOLUCAO, CM.DATA_RESOLUCAO, "
-//					+ "CM.CPF_FROTA, C.NOME FROM CHECKLIST_MANUTENCAO CM	"
-//					+ "JOIN VEICULO V ON V.PLACA = CM.PLACA "
-//					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM	"
-//					+ "JOIN PRIORIDADE_PERGUNTA_CHECKLIST PG ON PG.PRIORIDADE = CP.PRIORIDADE "
-//					+ "JOIN (SELECT DISTINCT(CM.PLACA ) AS LISTA_PLACAS "
-//					+ "FROM CHECKLIST_MANUTENCAO CM "
-//					+ " WHERE COD_UNIDADE = ? "
-//					+ " LIMIT ? OFFSET ?) "
-//					+ "AS PLACAS_PROBLEMAS ON LISTA_PLACAS = CM.PLACA	"
-//					+ "LEFT JOIN COLABORADOR C ON C.CPF = CM.CPF_FROTA WHERE "
-//					+ "V.COD_UNIDADE = ? AND CM.CPF_FROTA %s ORDER BY PLACA, PG.PRAZO, CM.ITEM";
 			String query = "SELECT * FROM checklist_manutencao CM\n" +
 					"JOIN VEICULO V ON V.placa = CM.placa and cm.cpf_frota %1s\n" +
 					"JOIN checklist_perguntas CP ON CP.codigo = CM.item\n" +
