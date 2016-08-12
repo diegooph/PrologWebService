@@ -51,8 +51,14 @@ public class Main {
 		OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 		Connection conn = DatabaseConnection.getConnection();
         // placa, status, conn, unidade, tipoVeiculo
-		L.d("main", dao.getResumoOs("MLU4921","A", null, 2L, "%", null, null).toString());
-		//L.d("tag", dao.getManutencaoHolder(3L, 0, 0, ItemOrdemServico.Status.PENDENTE.asString()).toString());
+        /**
+         * Buscar as OS, usando como filtro o codUnidade, TipoVeiculo e Placa(opcional).
+         */
+        //dao.getResumoOs(placa, stauts, conn, codUnidade, tipoVeiculo, limit, offet)
+		//L.d("main", dao.getResumoOs("MLU4921","A", null, 2L, "%", 2, 0L).toString());
+        L.d("main", new Gson().toJson(dao.getResumoOs("%","A", null, 3L, "%", 222, 0L)));
+        //L.d("tag", dao.getItensOsManutencaoHolder(ItemOrdemServico.Status.PENDENTE.asString(), conn, 3L, 1, 0L).toString());
+		L.d("tag", dao.getManutencaoHolder(3L, 1, 0, ItemOrdemServico.Status.PENDENTE.asString()).toString());
         //L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());
 		//L.d("main", new Gson().toJson(dao.getManutencaoHolder(2L, 0,0,"%")));
         //System.out.print(new Gson().toJson(dao.getItensOs("MLH4507", 1L, "P", conn)));

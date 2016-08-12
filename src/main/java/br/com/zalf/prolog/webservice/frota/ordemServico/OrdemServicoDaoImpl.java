@@ -27,11 +27,40 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
     private static final int MINUTOS_NUM_DIA = 1440;
     private static final int MINUTOS_NUMA_HORA = 60;
 
+    /**
+     * Busca os itens de uma ou mais OS, respeitando os parâmetros de filtro,
+     * codigo da os / código da unidade / placa / status da OS
+     */
     private static final String BUSCA_ITENS_OS = "select * from estratificacao_os e\n" +
             "where  e.cod_os::TEXT LIKE ? and e.cod_unidade::TEXT LIKE ? and e.placa_veiculo like ? " +
             "and e.status_item LIKE ?\n" +
             "order by e.placa_veiculo;";
 
+    /**
+     * Mesma função da query acima, porém essa aplica limit e offset sobre as placas,
+     * usada para pegar a lista de Manutencao Holder (tela das bolinhas)
+     */
+    private static final String BUSCA_ITENS_MANUTENCAO_HOLDER = "select * from estratificacao_os e\n" +
+            "where e.placa_veiculo IN (\n" +
+            "SELECT distinct c.placa_veiculo from\n" +
+            "checklist c\n" +
+            "join checklist_ordem_servico os on c.codigo = os.cod_checklist AND\n" +
+            "c.cod_unidade = os.cod_unidade\n" +
+            "join checklist_ordem_servico_itens cosi on\n" +
+            "os.codigo = cosi.cod_os AND\n" +
+            "os.cod_unidade = cosi.cod_unidade\n" +
+            "where cosi.STATUS_RESOLUCAO like ? and c.cod_unidade::text like ?\n" +
+            "limit ? offset ?)\n" +
+            "ORDER BY E.placa_veiculo";
+
+    /**
+     * Cria uma ordem de serviço no banco de dados e retorna o código gerado na criação
+     * @param placa
+     * @param codChecklist código do checklist que originou a O.S.
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
     private Long createOs (String placa, Long codChecklist, Connection conn) throws SQLException {
         L.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
         ResultSet rSet = null;
@@ -57,6 +86,15 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
+    /**
+     * Insere um serviço em uma O.S. específica
+     * @param codPergunta código do item a ser adicional
+     * @param codAlternativa código da alternativa marcada
+     * @param codOs código da OS ao qual deve ser inserido o item
+     * @param placa
+     * @param conn
+     * @throws SQLException
+     */
     private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
         L.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
         PreparedStatement stmt = null;
@@ -77,7 +115,17 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private void incrementaQtApontamento2(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
+    /**
+     * Incrementa a quantidade de apontamentos de um item, caso ele ainda esteja em aberto e tenha sido
+     * inserido em um novo checklist.
+     * @param placa
+     * @param codOs
+     * @param codPergunta
+     * @param codAlternativa
+     * @param conn
+     * @throws SQLException
+     */
+    private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
         L.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -114,7 +162,20 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade, String tipoVeiculo, Integer limit, Long offset) throws SQLException{
+    /**
+     * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
+     * @param placa uma placa especifica ou '%' para buscar OS de todas as placas
+     * @param status status da OS, podendo ser Aberta ou Fechada
+     * @param conn
+     * @param codUnidade código da unidade a serem buscadas as OS
+     * @param tipoVeiculo tipo do veículo ou '%' para todos os tipos
+     * @param limit quantidade de OS que deseja retornar
+     * @param offset
+     * @return
+     * @throws SQLException
+     */
+    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade,
+                                      String tipoVeiculo, Integer limit, Long offset) throws SQLException{
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -126,6 +187,9 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             if (conn == null){
                 conn = getConnection();
             }
+            /**
+             * query que busca apenas os dados da OS, e não os itens
+             */
             String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
                     "FROM checklist_ordem_servico cos join checklist c ON cos.cod_checklist = C.codigo\n" +
                     "and c.cod_unidade = cos.cod_unidade\n" +
@@ -135,8 +199,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     "VT.codigo::TEXT LIKE ? \n "  +
                     "ORDER BY C.placa_veiculo\n" +
                     "%s";
+            /**
+             * limit e offset podem vir null, quando o método é chamado do insertItemOs
+             * */
             if (limit != null){
-                query = String.format(query, " LIMIT = ?  OFFSET ? ");
+                query = String.format(query, " LIMIT ?  OFFSET ? ");
             }else{
                 query = String.format(query, "");
             }
@@ -157,23 +224,28 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     holders = new ArrayList<>();
                     oss = new ArrayList<>();
                     holder = new OsHolder();
+                    holder.setPlaca(rSet.getString("placa_veiculo"));
                     os = createOrdemServico(rSet);
-                    os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
+                    /**
+                     * seta os itens da ordem de serviço.
+                     */
+                    os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
                     oss.add(os);
                 }else{ // Próximos itens
                     if (rSet.getString("placa_veiculo").equals(os.getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
-                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
+                        os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
                         oss.add(os);
                     }else{//placa diferente, fechar a lista, setar no holder, criar novo holder, nova os e add na lista
                         holder.setOs(oss);
                         holders.add(holder);
                         holder = new OsHolder();
+                        holder.setPlaca(rSet.getString("placa_veiculo"));
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
                         oss = new ArrayList<>();
-                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
+                        os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                         oss.add(os);
                     }
                 }
@@ -188,15 +260,19 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return holders;
     }
 
+    /**
+     * Busca os itens que compõe uma ou mais OS, usdao quando são buscadas as OS (e não o manutencaoHolder que busca só os itens)
+     * @param placa Placa da OS, "%" para todas as placas
+     * @param codOs Código da OS, "%" para todas as OS
+     * @param status Status da OS, "%" para todos os status
+     * @param conn
+     * @param codUnidade Código da unidade
+     * @return
+     * @throws SQLException
+     */
     public List<ItemOrdemServico> getItensOs(String placa, String codOs, String status, Connection conn, Long codUnidade) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<ItemOrdemServico> itens = new ArrayList<>();
-        ItemOrdemServico item = null;
-        PerguntaRespostaChecklist pergunta = null;
-        PerguntaRespostaChecklist.Alternativa alternativa = null;
-        List<PerguntaRespostaChecklist.Alternativa> alternativas = null;
-        Colaborador mecanico = null;
         try{
             stmt = conn.prepareStatement(BUSCA_ITENS_OS);
             stmt.setString(1, String.valueOf(codOs));
@@ -204,6 +280,53 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             stmt.setString(3, placa);
             stmt.setString(4, status);
             rSet = stmt.executeQuery();
+            return createItensOs(rSet);
+        }finally {
+            closeConnection(null, stmt, rSet);
+        }
+    }
+
+    /**
+     * Busca dos itens para montar a tela das "bolinhas", são buscados apenas os itens, independente da OS ao qual pertencem
+     * @param status Usado para buscar os itens abertos ou fechados
+     * @param conn
+     * @param codUnidade Código da unidade
+     * @param limit Quantidade de PLACAS que serão retornadas
+     * @param offset
+     * @return
+     * @throws SQLException
+     */
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String status, Connection conn,
+                                                             Long codUnidade, int limit, long offset) throws SQLException{
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try{
+            stmt = conn.prepareStatement(BUSCA_ITENS_MANUTENCAO_HOLDER);
+            stmt.setString(1, status);
+            stmt.setString(2, String.valueOf(codUnidade));
+            stmt.setInt(3, limit);
+            stmt.setLong(4, offset);
+            rSet = stmt.executeQuery();
+            return createItensOs(rSet);
+        }finally {
+            closeConnection(null, stmt, rSet);
+        }
+    }
+
+    /**
+     * Método genérico para criar os itens de uma OS.
+     * @param rSet
+     * @return
+     * @throws SQLException
+     */
+    private List<ItemOrdemServico> createItensOs (ResultSet rSet) throws SQLException{
+        List<ItemOrdemServico> itens = new ArrayList<>();
+        ItemOrdemServico item = null;
+        PerguntaRespostaChecklist pergunta = null;
+        PerguntaRespostaChecklist.Alternativa alternativa = null;
+        List<PerguntaRespostaChecklist.Alternativa> alternativas = null;
+        Colaborador mecanico = null;
+        try{
             while (rSet.next()){
                 item = new ItemOrdemServico();
                 pergunta = createPergunta(rSet);
@@ -229,18 +352,24 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                 itens.add(item);
             }
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(null, null, rSet);
         }
         return itens;
     }
 
+    /**
+     * Cria a ordem de serviço
+     * @param rSet
+     * @return
+     * @throws SQLException
+     */
     private OrdemServico createOrdemServico(ResultSet rSet) throws SQLException{
         OrdemServico os = new OrdemServico();
         os.setCodChecklist(rSet.getLong("cod_checklist"));
         os.setCodigo(rSet.getLong("cod_os"));
         os.setStatus(OrdemServico.Status.fromString(rSet.getString("status")));
         os.setKmVeiculo(rSet.getLong("km_veiculo"));
-        os.setPlaca(rSet.getString("placa_veiculo"));
+        //os.setPlaca(rSet.getString("placa_veiculo"));
         os.setDataAbertura(rSet.getTimestamp("data_hora"));
         return os;
     }
@@ -269,6 +398,14 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return alternativa;
     }
 
+    /**
+     * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
+     * o item com problema a uma OS existente
+     * @param checklist Um checklist
+     * @param conn
+     * @param codUnidade Código da unidade que gerou o checklist
+     * @throws SQLException
+     */
     public void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -296,7 +433,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                             }
                         }
                         if (tempCodOs != null) {
-                            incrementaQtApontamento2(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
+                            incrementaQtApontamento(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
                             L.d("incrementa", "chamou metodo para incrementar a qt de apontamentos");
                         } else {
                             if (gerouOs != null) { //checklist ja gerou uma os -> deve inserir o item nessa os gerada
@@ -314,6 +451,13 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
+    /**
+     * Verifica se o item com problema já consta em alguma OS, caso já exista, retorna o código dessa OS
+     * @param codPergunta
+     * @param codAlternativa
+     * @param oss Todas as OS em aberto de uma placa
+     * @return
+     */
     private Long jaPossuiItemEmAberto(Long codPergunta, Long codAlternativa, List<OrdemServico> oss){
         L.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         for (OrdemServico os:oss) {
@@ -329,6 +473,15 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return null;
     }
 
+    /**
+     * Busca a lista de itens agrupadas por placa e criticidade (tela das bolinhas)
+     * @param codUnidade Código da unidade
+     * @param limit Quantidade de placas
+     * @param offset
+     * @param status
+     * @return
+     * @throws SQLException
+     */
     public List<ManutencaoHolder> getManutencaoHolder (Long codUnidade, int limit, long offset, String status) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -336,10 +489,9 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         List<ManutencaoHolder> holders = null;
         ManutencaoHolder holder = null;
         List<ItemOrdemServico> itens = null;
-
         try{
             conn = getConnection();
-            itens = getItensOs("%", "%", status, conn, codUnidade);
+            itens = getItensOsManutencaoHolder(status, conn, codUnidade, limit, offset);
             if (itens!=null) {
                 for (ItemOrdemServico item : itens) {
                     if (holder == null){//primeiro item
@@ -362,15 +514,24 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                         }
                     }
                 }
-                holders.add(holder);
+                if(holder!=null) {
+                    holder.setListManutencao(itens);
+                    setQtItens(holder);
+                    holders.add(holder);
+                    ordenaLista(holders);
+                }
             }
         }finally {
             closeConnection(conn,stmt,rSet);
         }
-        ordenaLista(holders);
         return holders;
     }
 
+    /**
+     * Atribui o tempo restante para conserto de um item
+     * @param itemManutencao
+     * @param prazoHoras
+     */
     public void setTempoRestante(ItemOrdemServico itemManutencao, int prazoHoras) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(itemManutencao.getDataApontamento());
@@ -380,6 +541,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         itemManutencao.setTempoRestante(createTempo(TimeUnit.MILLISECONDS.toMinutes(tempoRestante)));
     }
 
+    /**
+     * Cria o objeto Tempo, transforma uma quantidade de horas (prazo) em dias, horas e minutos
+     * @param temp
+     * @return
+     */
     private Tempo createTempo(long temp){
         Tempo tempo = new Tempo();
         if (temp < MINUTOS_NUMA_HORA) {
@@ -398,6 +564,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         return tempo;
     }
 
+    /**
+     * Faz a contagem de acordo com a prioridade de cada item
+     * @param holder
+     */
     private void setQtItens(ManutencaoHolder holder){
         for(ItemOrdemServico item : holder.getListManutencao()){
             switch (item.getPergunta().getPrioridade()) {
@@ -416,12 +586,15 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
+    /**
+     * Ordena lista das bolinhas, jogando para cima as placas com maior quantidade de itens críticos
+     * @param list
+     */
     private void ordenaLista (List<ManutencaoHolder> list){
 
         Collections.sort(list, new OrdemServicoDaoImpl.CustomComparator());
         Collections.reverse(list);
     }
-
 
     private class CustomComparator implements Comparator<ManutencaoHolder> {
 
