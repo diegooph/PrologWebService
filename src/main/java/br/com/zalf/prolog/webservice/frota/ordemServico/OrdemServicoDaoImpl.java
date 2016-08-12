@@ -340,6 +340,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                 item.setDataApontamento(rSet.getTimestamp("data_hora"));
                 item.setTempoLimiteResolucao(createTempo(TimeUnit.HOURS.toMinutes(rSet.getLong("PRAZO"))));
                 setTempoRestante(item, rSet.getInt("prazo"));
+                item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
                 if (rSet.getString("nome_mecanico")!= null){
                     mecanico = new Colaborador();
                     mecanico.setCpf(rSet.getLong("cpf_mecanico"));
