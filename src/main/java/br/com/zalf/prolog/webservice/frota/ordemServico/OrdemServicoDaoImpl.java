@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jean on 10/08/16.
  */
+@SuppressWarnings("Duplicates")
 public class OrdemServicoDaoImpl extends DatabaseConnection {
 
     private static final String PRIORIDADE_CRITICA = "CRITICA";
@@ -391,9 +392,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         alternativa.alternativa = rSet.getString("ALTERNATIVA");
         if(alternativa.alternativa.equals("Outros")){
             alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
-            try{
                 alternativa.respostaOutros = rSet.getString("resposta");
-            }catch (SQLException e){}
         }
         return alternativa;
     }
@@ -407,8 +406,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @throws SQLException
      */
     public void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException{
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         Long tempCodOs = null;
         Long gerouOs = null;
         // vem apenas um holder, ja que a busca foi feita apenas para uma placa
@@ -419,35 +416,31 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             ordens = oss.get(0).getOs();
             L.d("ordens", ordens.toString());
         }
-        try{
-            for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
-                L.d("Pergunta", pergunta.getCodigo().toString());
-                for (PerguntaRespostaChecklist.Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
-                    L.d("Verificando Alternativa:", String.valueOf(alternativa.codigo));
-                    if (alternativa.selected) {
-                        L.d("Alternativa esta elecionada", String.valueOf(alternativa.codigo));
-                        if (ordens != null) {//verifica se ja tem algum item em aberto
-                            tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
-                            if (tempCodOs != null) {
-                                L.d("tempCodOs", tempCodOs.toString());
-                            }
-                        }
+        for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
+            L.d("Pergunta", pergunta.getCodigo().toString());
+            for (PerguntaRespostaChecklist.Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
+                L.d("Verificando Alternativa:", String.valueOf(alternativa.codigo));
+                if (alternativa.selected) {
+                    L.d("Alternativa esta elecionada", String.valueOf(alternativa.codigo));
+                    if (ordens != null) {//verifica se ja tem algum item em aberto
+                        tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
                         if (tempCodOs != null) {
-                            incrementaQtApontamento(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
-                            L.d("incrementa", "chamou metodo para incrementar a qt de apontamentos");
+                            L.d("tempCodOs", tempCodOs.toString());
+                        }
+                    }
+                    if (tempCodOs != null) {
+                        incrementaQtApontamento(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
+                        L.d("incrementa", "chamou metodo para incrementar a qt de apontamentos");
+                    } else {
+                        if (gerouOs != null) { //checklist ja gerou uma os -> deve inserir o item nessa os gerada
+                            insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
                         } else {
-                            if (gerouOs != null) { //checklist ja gerou uma os -> deve inserir o item nessa os gerada
-                                insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
-                            } else {
-                                gerouOs = createOs(checklist.getPlacaVeiculo(), checklist.getCodigo(), conn);
-                                insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
-                            }
+                            gerouOs = createOs(checklist.getPlacaVeiculo(), checklist.getCodigo(), conn);
+                            insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
                         }
                     }
                 }
             }
-        }finally{
-            closeConnection(null, stmt, null);
         }
     }
 

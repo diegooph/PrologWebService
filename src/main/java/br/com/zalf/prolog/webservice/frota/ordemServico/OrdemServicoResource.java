@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.ordemServico;
 
+import br.com.zalf.prolog.models.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.models.checklist.os.OsHolder;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -32,5 +33,16 @@ public class OrdemServicoResource {
         return service.getResumoOs(placa, status, null, codUnidade, tipoVeiculo, limit, offset);
     }
 
+    @GET
+    @Secured
+    @Path("/manutencao/{codUnidade}/{status}")
+    public List<ManutencaoHolder> getManutencaoHolder (@PathParam("codUnidade") Long codUnidade,
+                                                       @QueryParam("limit") int limit,
+                                                       @QueryParam("offset") long offset,
+                                                       @PathParam("status") String status){
+        return service.getManutencaoHolder(codUnidade, limit, offset, status);
+    }
 
-}
+
+
+    }
