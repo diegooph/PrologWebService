@@ -55,6 +55,42 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             "ORDER BY E.placa_veiculo";
 
     /**
+     * Visão utilizada como base para as pesquisas.
+     */
+    private static final String VIEW_ESTRATIFICACAO_OS = "CREATE OR REPLACE VIEW public.estratificacao_os AS  SELECT os.codigo AS cod_os,\n" +
+            "    os.cod_unidade,\n" +
+            "    os.status AS status_os,\n" +
+            "    os.cod_checklist,\n" +
+            "    cp.codigo AS cod_pergunta,\n" +
+            "    cp.ordem AS ordem_pergunta,\n" +
+            "    cp.pergunta,\n" +
+            "    cp.single_choice,\n" +
+            "    NULL::unknown AS url_imagem,\n" +
+            "    cp.prioridade,\n" +
+            "    c.placa_veiculo,\n" +
+            "    cap.codigo AS cod_alternativa,\n" +
+            "    cap.alternativa,\n" +
+            "    cr.resposta,\n" +
+            "    cosi.status_resolucao AS status_item,\n" +
+            "    co.nome AS nome_mecanico,\n" +
+            "    cosi.cpf_mecanico,\n" +
+            "    c.data_hora,\n" +
+            "    ppc.prazo,\n" +
+            "    cosi.data_hora_inicio,\n" +
+            "    cosi.data_hora_fim,\n" +
+            "    cosi.km AS km_fechamento,\n" +
+            "    cosi.qt_apontamentos\n" +
+            "   FROM (((((((checklist c\n" +
+            "     JOIN checklist_ordem_servico os ON (((c.codigo = os.cod_checklist) AND (c.cod_unidade = os.cod_unidade))))\n" +
+            "     JOIN checklist_ordem_servico_itens cosi ON (((os.codigo = cosi.cod_os) AND (os.cod_unidade = cosi.cod_unidade))))\n" +
+            "     JOIN checklist_perguntas cp ON ((((cp.cod_unidade = os.cod_unidade) AND (cp.codigo = cosi.cod_pergunta)) AND (cp.cod_checklist_modelo = c.cod_checklist_modelo))))\n" +
+            "     JOIN prioridade_pergunta_checklist ppc ON (((ppc.prioridade)::text = (cp.prioridade)::text)))\n" +
+            "     JOIN checklist_alternativa_pergunta cap ON (((((cap.cod_unidade = cp.cod_unidade) AND (cap.cod_checklist_modelo = cp.cod_checklist_modelo)) AND (cap.cod_pergunta = cp.codigo)) AND (cap.codigo = cosi.cod_alternativa))))\n" +
+            "     JOIN checklist_respostas cr ON ((((((c.cod_unidade = cr.cod_unidade) AND (cr.cod_checklist_modelo = c.cod_checklist_modelo)) AND (cr.cod_checklist = c.codigo)) AND (cr.cod_pergunta = cp.codigo)) AND (cr.cod_alternativa = cap.codigo))))\n" +
+            "     LEFT JOIN colaborador co ON ((co.cpf = cosi.cpf_mecanico)));";
+
+
+    /**
      * Cria uma ordem de serviço no banco de dados e retorna o código gerado na criação
      * @param placa
      * @param codChecklist código do checklist que originou a O.S.
