@@ -35,7 +35,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
     private static final String BUSCA_ITENS_OS = "select * from estratificacao_os e\n" +
             "where  e.cod_os::TEXT LIKE ? and e.cod_unidade::TEXT LIKE ? and e.placa_veiculo like ? " +
             "and e.status_item LIKE ?\n" +
-            "order by e.placa_veiculo;";
+            "order by e.placa_veiculo, e.prioridade ;";
 
     /**
      * Mesma função da query acima, porém essa aplica limit e offset sobre as placas,
@@ -52,7 +52,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             "os.cod_unidade = cosi.cod_unidade\n" +
             "where cosi.STATUS_RESOLUCAO like ? and c.cod_unidade::text like ?\n" +
             "limit ? offset ?)\n" +
-            "ORDER BY E.placa_veiculo";
+            "ORDER BY E.placa_veiculo, e.prioridade";
 
     /**
      * Visão utilizada como base para as pesquisas.
@@ -216,7 +216,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<OsHolder> holders = null;
+        List<OsHolder> holders = new ArrayList<>();
         List<OrdemServico> oss = null;
         OsHolder holder = null;
         OrdemServico os = null;
@@ -258,7 +258,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 if (holder == null){//primeiro item do ResultSet
-                    holders = new ArrayList<>();
                     oss = new ArrayList<>();
                     holder = new OsHolder();
                     holder.setPlaca(rSet.getString("placa_veiculo"));
@@ -366,6 +365,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         try{
             while (rSet.next()){
                 item = new ItemOrdemServico();
+                item.setCodOs(rSet.getLong("cod_os"));
                 pergunta = createPergunta(rSet);
                 alternativa = createAlternativa(rSet);
                 alternativas = new ArrayList<>();
@@ -385,6 +385,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
+                    item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
                 }
                 itens.add(item);
             }
@@ -492,7 +493,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         for (OrdemServico os:oss) {
             for (ItemOrdemServico item:os.getItens()) {
                 for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
-                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa){
+                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && !alternativa.alternativa.equals("Outros")){
                         L.d("item existe", "item existe na lista");
                         return os.getCodigo();
                     }
@@ -515,7 +516,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<ManutencaoHolder> holders = null;
+        List<ManutencaoHolder> holders = new ArrayList<>();
         ManutencaoHolder holder = null;
         List<ItemOrdemServico> itens = null;
         try{
@@ -524,7 +525,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             if (itens!=null) {
                 for (ItemOrdemServico item : itens) {
                     if (holder == null){//primeiro item
-                        holders = new ArrayList<>();
                         holder = new ManutencaoHolder();
                         holder.setPlaca(item.getPlaca());
                         itens = new ArrayList<>();
@@ -651,7 +651,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         try{
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_CONSERTO = ?, KM = ?, STATUS_RESOLUCAO = ?" +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?" +
                     "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
                     "COD_ALTERNATIVA = ?");
             stmt.setLong(1, item.getMecanico().getCpf());

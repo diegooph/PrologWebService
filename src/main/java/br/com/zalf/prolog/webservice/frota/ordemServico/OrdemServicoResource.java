@@ -14,7 +14,7 @@ import java.util.List;
  * Created by jean on 11/08/16.
  */
 
-@Path("/checklist/OrdemServico")
+@Path("/checklist/ordemServico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class OrdemServicoResource {
