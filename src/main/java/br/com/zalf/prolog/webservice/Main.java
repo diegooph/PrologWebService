@@ -8,11 +8,7 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
-import br.com.zalf.prolog.models.checklist.os.OrdemServico;
-import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import com.google.gson.Gson;
@@ -54,9 +50,9 @@ public class Main {
         /**
          * Buscar as OS, usando como filtro o codUnidade, TipoVeiculo e Placa(opcional).
          */
-        //dao.getResumoOs(placa, stauts, conn, codUnidade, tipoVeiculo, limit, offet)
-		//L.d("main", dao.getResumoOs("MLU4921","A", null, 2L, "%", 2, 0L).toString());
-        L.d("main", new Gson().toJson(dao.getResumoOs("%","A", null, 3L, "%", 222, 0L)));
+        //dao.getOs(placa, stauts, conn, codUnidade, tipoVeiculo, limit, offet)
+		//L.d("main", dao.getOs("MLU4921","A", null, 2L, "%", 2, 0L).toString());
+        L.d("main", new Gson().toJson(dao.getOs("%","A", null, 3L, "%", 222, 0L)));
         //L.d("tag", dao.getItensOsManutencaoHolder(ItemOrdemServico.Status.PENDENTE.asString(), conn, 3L, 1, 0L).toString());
 		L.d("tag", dao.getManutencaoHolder(3L, 1, 0, ItemOrdemServico.Status.PENDENTE.asString()).toString());
         //L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());

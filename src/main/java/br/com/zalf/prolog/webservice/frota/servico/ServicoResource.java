@@ -16,7 +16,7 @@ import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-
+@Deprecated
 @Path("/frota")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -19,7 +19,7 @@ import br.com.zalf.prolog.models.frota.ManutencaoHolder;
 import br.com.zalf.prolog.models.frota.Tempo;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-
+@Deprecated
 public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 
 	private static final String PRIORIDADE_CRITICA = "CRITICA";
