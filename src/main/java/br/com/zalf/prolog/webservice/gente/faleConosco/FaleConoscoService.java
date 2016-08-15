@@ -61,7 +61,7 @@ public class FaleConoscoService {
 			return dao.getAll(dataInicial, dataFinal, limit, offset,equipe, codUnidade, status, categoria);
 		}catch (Exception e){
 			e.printStackTrace();
-			return new ArrayList<FaleConosco>();
+			return null;
 		}
 	}
 
@@ -70,7 +70,7 @@ public class FaleConoscoService {
 			return dao.getByColaborador(cpf, status);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ArrayList<FaleConosco>();
+			return null;
 		}
 	}
 }

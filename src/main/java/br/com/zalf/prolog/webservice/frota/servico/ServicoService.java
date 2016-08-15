@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.frota.servico;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import br.com.zalf.prolog.models.frota.ItemManutencao;
 import br.com.zalf.prolog.models.frota.ManutencaoHolder;
+
 @Deprecated
 public class ServicoService {
 	private ServicoDaoImpl dao = new ServicoDaoImpl();

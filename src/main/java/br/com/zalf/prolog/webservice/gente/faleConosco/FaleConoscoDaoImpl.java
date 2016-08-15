@@ -132,7 +132,6 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			stmt.setTimestamp(6, new Timestamp(dataFinal));
 			stmt.setInt(7, limit);
 			stmt.setInt(8, offset);
-			L.d("tag", stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				FaleConosco faleConosco = createFaleConosco(rSet);
@@ -154,7 +153,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 			stmt = conn.prepareStatement("SELECT F.*, C.cpf AS CPF_COLABORADOR, C.nome AS NOME_COLABORADOR, " +
 					"C2.cpf AS CPF_FEEDBACK, C2.nome AS NOME_FEEDBACK FROM FALE_CONOSCO F JOIN colaborador C ON F.cpf_colaborador = C.cpf " +
 					"LEFT JOIN colaborador C2 ON C2.cpf = F.CPF_FEEDBACK WHERE " +
-					"CPF_COLABORADOR = ? f.status like = ? ORDER BY F.data_hora");
+					"CPF_COLABORADOR = ? and f.status like ? ORDER BY F.data_hora");
 			stmt.setLong(1, cpf);
 			stmt.setString(2, status);
 			rSet = stmt.executeQuery();
@@ -208,8 +207,6 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		faleConosco.setColaborador(realizador);
 		faleConosco.setCategoria(FaleConosco.Categoria.fromString(rSet.getString("CATEGORIA")));
 		String feedback = rSet.getString("feedback");
-		L.d("tag", String.valueOf(faleConosco.getCodigo()));
-		L.d("tag", rSet.getString("feedback"));
 		if(feedback != null){
 			faleConosco.setFeedback(feedback);
 			Colaborador colaboradorFeedback = new Colaborador();
