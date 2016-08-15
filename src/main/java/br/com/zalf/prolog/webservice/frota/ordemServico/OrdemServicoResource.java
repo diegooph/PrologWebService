@@ -14,7 +14,7 @@ import java.util.List;
  * Created by jean on 11/08/16.
  */
 
-@Path("/OrdemServico")
+@Path("/checklist/OrdemServico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class OrdemServicoResource {
@@ -46,7 +46,7 @@ public class OrdemServicoResource {
 
     @POST
     @Secured
-    @Path("/conserta/{codUnidade}")
+    @Path("/consertaItem/{codUnidade}")
     public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item){
         if (service.consertaItem(codUnidade, item)){
             return Response.Ok("Serviço consertado com sucesso");
