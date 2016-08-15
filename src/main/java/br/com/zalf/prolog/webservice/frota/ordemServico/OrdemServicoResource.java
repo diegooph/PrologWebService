@@ -8,8 +8,6 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -26,14 +24,14 @@ public class OrdemServicoResource {
     @GET
     @Secured
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    public List<OsHolder> getResumoOs(@PathParam("placa") String placa,
-                                      @PathParam("status") String status,
-                                      @PathParam("codUnidade") Long codUnidade,
-                                      @PathParam("tipoVeiculo") String tipoVeiculo,
-                                      @QueryParam("limit") Integer limit,
-                                      @QueryParam("offset") Long offset){
+    public List<OsHolder> getOs(@PathParam("placa") String placa,
+                                @PathParam("status") String status,
+                                @PathParam("codUnidade") Long codUnidade,
+                                @PathParam("tipoVeiculo") String tipoVeiculo,
+                                @QueryParam("limit") Integer limit,
+                                @QueryParam("offset") Long offset){
 
-        return service.getResumoOs(placa, status, null, codUnidade, tipoVeiculo, limit, offset);
+        return service.getOs(placa, status, null, codUnidade, tipoVeiculo, limit, offset);
     }
 
     @GET

@@ -211,8 +211,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return
      * @throws SQLException
      */
-    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade,
-                                      String tipoVeiculo, Integer limit, Long offset) throws SQLException{
+    public List<OsHolder> getOs(String placa, String status, Connection conn, Long codUnidade,
+                                String tipoVeiculo, Integer limit, Long offset) throws SQLException{
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -445,7 +445,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Long tempCodOs = null;
         Long gerouOs = null;
         // vem apenas um holder, ja que a busca foi feita apenas para uma placa
-        List<OsHolder> oss = getResumoOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn, codUnidade, "%", null, null);
+        List<OsHolder> oss = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn, codUnidade, "%", null, null);
         // todas as os de uma unica placa
         List<OrdemServico> ordens = null;
         if (oss != null) {

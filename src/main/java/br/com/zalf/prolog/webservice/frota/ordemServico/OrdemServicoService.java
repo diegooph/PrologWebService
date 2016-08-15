@@ -16,10 +16,10 @@ public class OrdemServicoService {
 
     OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 
-    public List<OsHolder> getResumoOs(String placa, String status, Connection conn, Long codUnidade,
-                                      String tipoVeiculo, Integer limit, Long offset){
+    public List<OsHolder> getOs(String placa, String status, Connection conn, Long codUnidade,
+                                String tipoVeiculo, Integer limit, Long offset){
         try{
-            return dao.getResumoOs(placa, status, conn, codUnidade, tipoVeiculo, limit, offset);
+            return dao.getOs(placa, status, conn, codUnidade, tipoVeiculo, limit, offset);
         }catch (SQLException e){
             e.printStackTrace();
             return new ArrayList<>();
