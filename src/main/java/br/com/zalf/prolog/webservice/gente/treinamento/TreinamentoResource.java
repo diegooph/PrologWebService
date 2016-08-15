@@ -4,13 +4,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -30,6 +24,7 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 
 	@POST
+	@Secured
 	public Response marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) {
 		treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
 		if (service.marcarTreinamentoComoVisto(treinamentoColaborador)) {
@@ -41,31 +36,29 @@ public class TreinamentoResource {
 	
 	@GET
 	@Secured
+	@Path("/{codUnidade}/{codFuncao}")
 	public List<Treinamento> getAll (
 			@QueryParam("dataInicial") long dataInicial, 
 			@QueryParam("dataFinal") long dataFinal, 
-			@QueryParam("codFuncao") String codFuncao,
-			@QueryParam("codUnidade") Long codUnidade, 
+			@PathParam("codFuncao") String codFuncao,
+			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit") long limit, 
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
 				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
 	}
 
-	@POST
-	@Path("/vistosColaborador")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Treinamento> getVistosByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getVistosByColaborador(cpf, token);
+	@GET
+	@Path("/vistosColaborador/{cpf}")
+	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getVistosByColaborador(cpf);
 	}
 
-	@POST
-	@Path("/naoVistosColaborador")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Treinamento> getNaoVistosByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getNaoVistosByColaborador(cpf, token);
+	@GET
+	@Secured
+	@Path("/naoVistosColaborador/{cpf}")
+	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getNaoVistosByColaborador(cpf);
 	}
 
 	@POST
@@ -93,5 +86,8 @@ public class TreinamentoResource {
 				return Response.Error("Erro ao reailizar upload do arquivo");
 			}
 		}
-	} 
+	}
+
+	//TODO: Fazer metodos para mostrar os colaboradores que viram/ñ determinado treinamento
+
 }

@@ -12,19 +12,17 @@ public interface TreinamentoDao {
 	/**
 	 * Busca os treinamentos ainda não visualizados por um colaborador específico
 	 * @param cpf um cpf, serão buscados os treinamentos ainda não visualizados por ele
-	 * @param token para verificar se o solicitante esta devidamente logado
 	 * @return lista de Treinamento
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<Treinamento> getNaoVistosColaborador(Long cpf, String token) throws SQLException;
+	List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException;
 	/**
 	 * Busca os treinamentos já visualizados por um colaborador específico
 	 * @param cpf um cpf, serão buscados os treinamentos já visualizados por ele
-	 * @param token para verificar se o solicitante esta devidamente logado
 	 * @return lista de Treinamento
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<Treinamento> getVistosColaborador(Long cpf, String token) throws SQLException;
+	List<Treinamento> getVistosColaborador(Long cpf) throws SQLException;
 	/**
 	 * Insere uma linha na tabela treinamento_colaborador, na qual armazena a data
 	 *  que um treinamento foi visualizado, associando o código do treianmento com um cpf

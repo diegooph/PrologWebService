@@ -11,9 +11,9 @@ import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 public class TreinamentoService {
 	private TreinamentoDaoImpl dao = new TreinamentoDaoImpl();
 	
-	public List<Treinamento> getVistosByColaborador(Long cpf, String token) {
+	public List<Treinamento> getVistosByColaborador(Long cpf) {
 		try {
-			return dao.getVistosColaborador(cpf, token);
+			return dao.getVistosColaborador(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Treinamento>();
@@ -30,9 +30,9 @@ public class TreinamentoService {
 		}
 	}
 	
-	public List<Treinamento> getNaoVistosByColaborador(Long cpf, String token) {
+	public List<Treinamento> getNaoVistosByColaborador(Long cpf) {
 		try {
-			return dao.getNaoVistosColaborador(cpf, token);
+			return dao.getNaoVistosColaborador(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Treinamento>();
