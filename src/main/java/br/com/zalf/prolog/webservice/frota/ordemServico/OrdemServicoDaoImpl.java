@@ -382,8 +382,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     mecanico.setCpf(rSet.getLong("cpf_mecanico"));
                     mecanico.setNome(rSet.getString("nome_mecanico"));
                     item.setMecanico(mecanico);
-                    item.setDataHoraInicioConserto(rSet.getTimestamp("data_hora_inicio"));
-                    item.setDataHoraTerminoConserto(rSet.getTimestamp("data_hora_fim"));
+                    item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
                 }
@@ -643,6 +642,52 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             }
             Integer valor3 = Double.compare(o1.getQtdBaixa(), o2.getQtdBaixa());
             return valor3;
+        }
+    }
+
+    public boolean consertaItem (Long codUnidade,ItemOrdemServico item) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
+                    "CPF_MECANICO = ?, TEMPO_CONSERTO = ?, KM = ?, STATUS_RESOLUCAO = ?" +
+                    "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
+                    "COD_ALTERNATIVA = ?");
+            stmt.setLong(1, item.getMecanico().getCpf());
+            stmt.setLong(2, item.getTempoRealizacaoConsertoInMillis());
+            stmt.setLong(3, item.getKmVeiculoFechamento());
+            stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, item.getCodOs());
+            stmt.setLong(7, item.getPergunta().getCodigo());
+            stmt.setLong(8, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            int count = stmt.executeUpdate();
+            if (count > 0){
+                updateStatusOs(codUnidade, item.getCodOs(), conn);
+                return true;
+            }
+        }finally {
+            closeConnection(conn,stmt,null);
+        }
+        return false;
+    }
+
+    private void updateStatusOs (Long codUnidade, Long codOs, Connection conn) throws SQLException{
+        PreparedStatement stmt = null;
+        try{
+            stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ? WHERE\n" +
+                    "    COD_UNIDADE = ? AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens\n" +
+                    "    WHERE COD_UNIDADE = ? AND COD_OS = ? AND status_resolucao = ?) = 0");
+            stmt.setString(1, OrdemServico.Status.FECHADA.asString());
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codOs);
+            stmt.setLong(4, codUnidade);
+            stmt.setLong(5, codOs);
+            stmt.setString(6, ItemOrdemServico.Status.PENDENTE.asString());
+            stmt.execute();
+        }finally {
+            closeConnection(null, stmt, null);
         }
     }
 }

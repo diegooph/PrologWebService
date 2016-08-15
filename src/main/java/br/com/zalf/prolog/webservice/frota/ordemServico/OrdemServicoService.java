@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.ordemServico;
 
+import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.models.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.models.checklist.os.OsHolder;
 
@@ -31,6 +32,15 @@ public class OrdemServicoService {
         }catch (SQLException e){
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public boolean consertaItem (Long codUnidade,ItemOrdemServico item){
+        try{
+            return dao.consertaItem(codUnidade, item);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
         }
     }
 }

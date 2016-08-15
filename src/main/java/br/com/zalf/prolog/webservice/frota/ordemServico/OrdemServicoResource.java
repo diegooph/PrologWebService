@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.ordemServico;
 
+import br.com.zalf.prolog.models.Response;
+import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.models.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.models.checklist.os.OsHolder;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -7,6 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -43,6 +46,19 @@ public class OrdemServicoResource {
         return service.getManutencaoHolder(codUnidade, limit, offset, status);
     }
 
+    @POST
+    @Secured
+    @Path("/conserta/{codUnidade}")
+    public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item){
+        if (service.consertaItem(codUnidade, item)){
+            return Response.Ok("Serviço consertado com sucesso");
+        }else{
+            return Response.Error("Erro ao consertar o item");
+        }
 
 
     }
+
+
+
+}
