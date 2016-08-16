@@ -272,6 +272,32 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return true;
 	}
 
+	public List<Veiculo> getVeiculoKm(Long codUnidade, String placa, String codTipo)throws SQLException{
+	    Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Veiculo> veiculos = new ArrayList<>();
+        Veiculo v = null;
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT PLACA, KM FROM VEICULO V WHERE cod_unidade = ? AND " +
+                    "cod_tipo::TEXT LIKE ? AND PLACA LIKE ? ORDER BY PLACA");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codTipo);
+            stmt.setString(3, placa);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                v = new Veiculo();
+                v.setPlaca(rSet.getString("placa"));
+                v.setKmAtual(rSet.getLong("km"));
+                veiculos.add(v);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return veiculos;
+    }
+
 
 	public void updateKmByPlaca(String placa, long km) throws SQLException{
 		Connection conn = null;
