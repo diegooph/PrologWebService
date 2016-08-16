@@ -57,4 +57,13 @@ public class TreinamentoService {
 		}
 	}
 
+	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade){
+		try{
+			return dao.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

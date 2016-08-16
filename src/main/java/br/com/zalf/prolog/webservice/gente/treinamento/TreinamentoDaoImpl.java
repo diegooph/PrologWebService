@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Funcao;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
@@ -145,7 +146,7 @@ TreinamentoDao {
 					+ "(COD_TREINAMENTO, CPF_COLABORADOR, DATA_VISUALIZACAO) VALUES "
 					+ "(?, ?, ?)");
 			stmt.setLong(1, treinamentoColaborador.getCodTreinamento());
-			stmt.setLong(2, treinamentoColaborador.getCpfColaborador());
+			stmt.setLong(2, treinamentoColaborador.getColaborador().getCpf());
 			stmt.setDate(3, DateUtils.toSqlDate(treinamentoColaborador.getDataVisualizacao()));
 			int count = stmt.executeUpdate();
 			if(count == 0){
@@ -214,5 +215,39 @@ TreinamentoDao {
 		}		
 		return true;
 	}
+
+	@Override
+	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade) throws SQLException{
+		Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        TreinamentoColaborador tColaborador = null;
+        Colaborador colaborador = null;
+        List<TreinamentoColaborador> colaboradores = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT TC.cod_treinamento, TC.data_visualizacao, C.cpf, C.nome " +
+                    "FROM treinamento T JOIN restricao_treinamento RT ON T.codigo = RT.cod_treinamento\n" +
+                    "LEFT JOIN colaborador C ON C.cod_unidade = T.cod_unidade AND C.cod_funcao = RT.cod_funcao " +
+                    "AND C.status_ativo = TRUE LEFT JOIN treinamento_colaborador TC ON TC.cod_treinamento = T.codigo " +
+                    "AND TC.cpf_colaborador = C.cpf WHERE T.cod_unidade = ? AND T.CODIGO = ? \n" +
+                    "ORDER BY C.nome");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTreinamento);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                tColaborador = new TreinamentoColaborador();
+                colaborador = new Colaborador();
+                colaborador.setCpf(rSet.getLong("cpf"));
+                colaborador.setNome(rSet.getString("nome"));
+                tColaborador.setColaborador(colaborador);
+                tColaborador.setDataVisualizacao(rSet.getDate("data_visualizacao"));
+                colaboradores.add(tColaborador);
+            }
+            return colaboradores;
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+    }
 
 }

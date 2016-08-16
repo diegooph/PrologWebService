@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 /**
@@ -33,4 +34,6 @@ public interface TreinamentoDao {
 	boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException;
 	
 	boolean insert(Treinamento treinamento) throws SQLException;
+
+	List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade) throws SQLException;
 }

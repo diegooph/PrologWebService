@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -88,6 +89,14 @@ public class TreinamentoResource {
 		}
 	}
 
-	//TODO: Fazer metodos para mostrar os colaboradores que viram/ñ determinado treinamento
+	@GET
+	@Path("/visualizacoes/{codUnidade}/{codTreinamento}")
+	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
+			@PathParam("codUnidade") Long codTreinamento,
+			@PathParam("codTreinamento") Long codUnidade){
+		return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
+	}
+
+
 
 }
