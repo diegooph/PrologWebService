@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +21,7 @@ import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.Android;
 
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -114,5 +116,14 @@ public class VeiculoResource {
 	@Path("/eixos")
 	public List<Eixos> getEixos(){
 		return service.getEixos();
+	}
+
+	@Android
+	@GET
+	@Secured
+	@Path("/byTipo/{codUnidade}/{codTipo}")
+	public List<Veiculo> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
+										   @PathParam("codTipo") String codTipo){
+		return service.getVeiculosByTipo(codUnidade, codTipo);
 	}
 }

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.models.Marca;
 import br.com.zalf.prolog.models.Modelo;
 import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
+import br.com.zalf.prolog.webservice.util.Android;
 
 public class VeiculoService {
 	private VeiculoDaoImpl dao = new VeiculoDaoImpl();
@@ -100,6 +101,16 @@ public class VeiculoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	@Android
+	public List<Veiculo> getVeiculosByTipo(Long codUnidade, String codTipo){
+		try{
+			return dao.getVeiculosByTipo(codUnidade, codTipo);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

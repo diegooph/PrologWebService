@@ -14,6 +14,7 @@ import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.L;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -384,6 +385,32 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(null, stmt, rSet);
 		}
 		return total;
+	}
+
+	@Android
+	public List<Veiculo> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Veiculo> veiculos = new ArrayList<>();
+		Veiculo veiculo = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT V.PLACA FROM veiculo V JOIN veiculo_tipo VT ON V.cod_unidade = VT.cod_unidade\n" +
+					"AND V.cod_tipo = VT.codigo\n" +
+					"WHERE VT.cod_unidade = ? AND VT.codigo::TEXT LIKE ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, codTipo);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				veiculo = new Veiculo();
+				veiculo.setPlaca(rSet.getString("placa"));
+				veiculos.add(veiculo);
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return veiculos;
 	}
 
 }
