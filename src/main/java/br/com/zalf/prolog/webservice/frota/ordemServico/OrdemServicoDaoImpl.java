@@ -2,10 +2,13 @@ package br.com.zalf.prolog.webservice.frota.ordemServico;
 
 import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.os.*;
+import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
@@ -42,17 +45,19 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * usada para pegar a lista de Manutencao Holder (tela das bolinhas)
      */
     private static final String BUSCA_ITENS_MANUTENCAO_HOLDER = "select * from estratificacao_os e\n" +
-            "where e.placa_veiculo IN (\n" +
-            "SELECT distinct c.placa_veiculo from\n" +
-            "checklist c\n" +
-            "join checklist_ordem_servico os on c.codigo = os.cod_checklist AND\n" +
-            "c.cod_unidade = os.cod_unidade\n" +
-            "join checklist_ordem_servico_itens cosi on\n" +
-            "os.codigo = cosi.cod_os AND\n" +
-            "os.cod_unidade = cosi.cod_unidade\n" +
-            "where cosi.STATUS_RESOLUCAO like ? and c.cod_unidade::text like ?\n" +
-            "limit ? offset ?)\n" +
-            "ORDER BY E.placa_veiculo, e.prioridade";
+            "            where e.placa_veiculo IN (\n" +
+            "            SELECT distinct c.placa_veiculo from \n" +
+            "            checklist c \n" +
+            "            join checklist_ordem_servico os on c.codigo = os.cod_checklist AND \n" +
+            "            c.cod_unidade = os.cod_unidade \n" +
+            "            join checklist_ordem_servico_itens cosi on \n" +
+            "            os.codigo = cosi.cod_os AND \n" +
+            "            os.cod_unidade = cosi.cod_unidade\n" +
+            "            join veiculo v on v.placa = c.placa_veiculo\n" +
+            "            where cosi.STATUS_RESOLUCAO like ? and c.cod_unidade::text like ?\n" +
+            "              and v.placa like ? and v.cod_tipo::text like ?\n" +
+            "            limit ? offset ?) \n" +
+            "            ORDER BY E.placa_veiculo, e.prioridade";
 
     /**
      * Visão utilizada como base para as pesquisas.
@@ -227,7 +232,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             /**
              * query que busca apenas os dados da OS, e não os itens
              */
-            String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
+            String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.data_hora_fechamento, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
                     "FROM checklist_ordem_servico cos join checklist c ON cos.cod_checklist = C.codigo\n" +
                     "and c.cod_unidade = cos.cod_unidade\n" +
                     "JOIN VEICULO V ON V.placa = C.placa_veiculo\n" +
@@ -265,13 +270,13 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     /**
                      * seta os itens da ordem de serviço.
                      */
-                    os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
+                    os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                     oss.add(os);
                 }else{ // Próximos itens
                     if (rSet.getString("placa_veiculo").equals(os.getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
-                        os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), ItemOrdemServico.Status.PENDENTE.asString(), conn, codUnidade));
+                        os.setItens(getItensOs(holder.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                         oss.add(os);
                     }else{//placa diferente, fechar a lista, setar no holder, criar novo holder, nova os e add na lista
                         holder.setOs(oss);
@@ -332,7 +337,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return
      * @throws SQLException
      */
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(String status, Connection conn,
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String codTipo, String status, Connection conn,
                                                              Long codUnidade, int limit, long offset) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -340,8 +345,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             stmt = conn.prepareStatement(BUSCA_ITENS_MANUTENCAO_HOLDER);
             stmt.setString(1, status);
             stmt.setString(2, String.valueOf(codUnidade));
-            stmt.setInt(3, limit);
-            stmt.setLong(4, offset);
+            stmt.setString(3, placa);
+            stmt.setString(4, codTipo);
+            stmt.setInt(5, limit);
+            stmt.setLong(6, offset);
             rSet = stmt.executeQuery();
             return createItensOs(rSet);
         }finally {
@@ -409,6 +416,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         os.setKmVeiculo(rSet.getLong("km_veiculo"));
         //os.setPlaca(rSet.getString("placa_veiculo"));
         os.setDataAbertura(rSet.getTimestamp("data_hora"));
+        os.setDataFechamento(rSet.getTimestamp("data_hora_fechamento"));
         return os;
     }
 
@@ -429,7 +437,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         alternativa.alternativa = rSet.getString("ALTERNATIVA");
         if(alternativa.alternativa.equals("Outros")){
             alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
-                alternativa.respostaOutros = rSet.getString("resposta");
+            alternativa.respostaOutros = rSet.getString("resposta");
         }
         return alternativa;
     }
@@ -512,32 +520,38 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return
      * @throws SQLException
      */
-    public List<ManutencaoHolder> getManutencaoHolder (Long codUnidade, int limit, long offset, String status) throws SQLException{
+    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
+                                                       long offset, String status) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<ManutencaoHolder> holders = new ArrayList<>();
         ManutencaoHolder holder = null;
         List<ItemOrdemServico> itens = null;
+        Veiculo v = null;
         try{
             conn = getConnection();
-            itens = getItensOsManutencaoHolder(status, conn, codUnidade, limit, offset);
+            itens = getItensOsManutencaoHolder(placa, codTipo,status, conn, codUnidade, limit, offset);
             if (itens!=null) {
                 for (ItemOrdemServico item : itens) {
                     if (holder == null){//primeiro item
                         holder = new ManutencaoHolder();
-                        holder.setPlaca(item.getPlaca());
+                        v = new Veiculo();
+                        v.setPlaca(item.getPlaca());
+                        holder.setVeiculo(v);
                         itens = new ArrayList<>();
                         itens.add(item);
                     }else{// a partir da segunda linha da lista de itens
-                        if (holder.getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
+                        if (holder.getVeiculo().getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
                             itens.add(item);
                         }else{ // item é de placa diferente, fechar e add o holder na lista geral
                             holder.setListManutencao(itens);
                             setQtItens(holder);
                             holders.add(holder);
                             holder = new ManutencaoHolder();
-                            holder.setPlaca(item.getPlaca());
+                            v = new Veiculo();
+                            v.setPlaca(item.getPlaca());
+                            holder.setVeiculo(v);
                             itens = new ArrayList<>();
                             itens.add(item);
                         }
@@ -547,6 +561,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     holder.setListManutencao(itens);
                     setQtItens(holder);
                     holders.add(holder);
+                    setKmVeiculos(holders,placa,codTipo,codUnidade);
                     ordenaLista(holders);
                 }
             }
@@ -554,6 +569,33 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             closeConnection(conn,stmt,rSet);
         }
         return holders;
+    }
+
+    private void setKmVeiculos(List<ManutencaoHolder> holders, String placa, String codTipo, Long codUnidade) throws SQLException{
+        VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
+        List<Veiculo> veiculos = veiculoDao.getVeiculoKm(codUnidade, placa, codTipo);
+
+        for (int i = 0; i < holders.size(); i++) {
+            L.d("holder:", holders.get(i).getVeiculo().getPlaca());
+            for (int j = 0; j < veiculos.size(); j++) {
+                L.d("veiculo:", veiculos.get(j).getPlaca());
+                if(holders.get(i).getVeiculo().getPlaca().equals(veiculos.get(j).getPlaca())){
+                    holders.get(i).getVeiculo().setKmAtual(veiculos.get(j).getKmAtual());
+                    veiculos.remove(j);
+                    j--;
+                }
+            }
+        }
+//        for (int i = 0; i < veiculos.size(); i++) {
+//            for (ManutencaoHolder holder:holders) {
+//                L.d("comparando o holder de placa:", holder.getVeiculo().getPlaca());
+//                if (veiculos.get(i).getPlaca().equals(holder.getVeiculo().getPlaca())){
+//                    holder.getVeiculo().setKmAtual(veiculos.get(i).getKmAtual());
+//                    veiculos.remove(i);
+//                    i--;
+//                }
+//            }
+//        }
     }
 
     /**
@@ -676,15 +718,16 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
     private void updateStatusOs (Long codUnidade, Long codOs, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         try{
-            stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ? WHERE\n" +
+            stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ?, DATA_HORA_FECHAMENTO = ? WHERE\n" +
                     "    COD_UNIDADE = ? AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens\n" +
                     "    WHERE COD_UNIDADE = ? AND COD_OS = ? AND status_resolucao = ?) = 0");
             stmt.setString(1, OrdemServico.Status.FECHADA.asString());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codOs);
-            stmt.setLong(4, codUnidade);
-            stmt.setLong(5, codOs);
-            stmt.setString(6, ItemOrdemServico.Status.PENDENTE.asString());
+            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setLong(3, codUnidade);
+            stmt.setLong(4, codOs);
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, codOs);
+            stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
             stmt.execute();
         }finally {
             closeConnection(null, stmt, null);

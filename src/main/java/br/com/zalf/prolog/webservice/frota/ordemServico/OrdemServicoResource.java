@@ -36,12 +36,14 @@ public class OrdemServicoResource {
 
     @GET
     @Secured
-    @Path("/manutencao/{codUnidade}/{status}")
+    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     public List<ManutencaoHolder> getManutencaoHolder (@PathParam("codUnidade") Long codUnidade,
                                                        @QueryParam("limit") int limit,
                                                        @QueryParam("offset") long offset,
-                                                       @PathParam("status") String status){
-        return service.getManutencaoHolder(codUnidade, limit, offset, status);
+                                                       @PathParam("status") String status,
+                                                       @PathParam("placa") String placa,
+                                                       @PathParam("tipoVeiculo") String codTipo){
+        return service.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
     }
 
     @POST

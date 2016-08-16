@@ -26,9 +26,10 @@ public class OrdemServicoService {
         }
     }
 
-    public List<ManutencaoHolder> getManutencaoHolder (Long codUnidade, int limit, long offset, String status){
+    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
+                                                       long offset, String status){
         try{
-            return dao.getManutencaoHolder(codUnidade, limit, offset, status);
+            return dao.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
         }catch (SQLException e){
             e.printStackTrace();
             return new ArrayList<>();
