@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.ordemServico;
 
 import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.models.checklist.os.ManutencaoHolder;
+import br.com.zalf.prolog.models.checklist.os.OrdemServico;
 import br.com.zalf.prolog.models.checklist.os.OsHolder;
 
 import java.sql.Connection;
@@ -16,8 +17,8 @@ public class OrdemServicoService {
 
     OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 
-    public List<OsHolder> getOs(String placa, String status, Connection conn, Long codUnidade,
-                                String tipoVeiculo, Integer limit, Long offset){
+    public List<OrdemServico> getOs(String placa, String status, Connection conn, Long codUnidade,
+                                    String tipoVeiculo, Integer limit, Long offset){
         try{
             return dao.getOs(placa, status, conn, codUnidade, tipoVeiculo, limit, offset);
         }catch (SQLException e){
