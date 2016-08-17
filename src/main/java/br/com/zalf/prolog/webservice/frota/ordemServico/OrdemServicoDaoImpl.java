@@ -46,19 +46,9 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * usada para pegar a lista de Manutencao Holder (tela das bolinhas)
      */
     private static final String BUSCA_ITENS_MANUTENCAO_HOLDER = "select * from estratificacao_os e\n" +
-            "            where e.status_item like ? and e.placa_veiculo IN (\n" +
-            "            SELECT distinct c.placa_veiculo from \n" +
-            "            checklist c \n" +
-            "            join checklist_ordem_servico os on c.codigo = os.cod_checklist AND \n" +
-            "            c.cod_unidade = os.cod_unidade \n" +
-            "            join checklist_ordem_servico_itens cosi on \n" +
-            "            os.codigo = cosi.cod_os AND \n" +
-            "            os.cod_unidade = cosi.cod_unidade\n" +
-            "            join veiculo v on v.placa = c.placa_veiculo\n" +
-            "            where cosi.STATUS_RESOLUCAO like ? and c.cod_unidade::text like ?\n" +
-            "              and v.placa like ? and v.cod_tipo::text like ?\n" +
-            "            limit ? offset ?) \n" +
-            "            ORDER BY E.placa_veiculo, e.prioridade";
+            "            where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
+            "            ORDER BY E.placa_veiculo, e.prioridade \n" +
+            "               limit ? offset ?";
 
     /**
      * Visão utilizada como base para as pesquisas.
@@ -328,33 +318,26 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    /**
-     * Busca dos itens para montar a tela das "bolinhas", são buscados apenas os itens, independente da OS ao qual pertencem
-     * @param status Usado para buscar os itens abertos ou fechados
-     * @param conn
-     * @param codUnidade Código da unidade
-     * @param limit Quantidade de PLACAS que serão retornadas
-     * @param offset
-     * @return
-     * @throws SQLException
-     */
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String codTipo, String status, Connection conn,
-                                                             Long codUnidade, int limit, long offset) throws SQLException{
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
+                                                             int limit, long offset, String prioridade) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
+        Connection conn = null;
         try{
-            stmt = conn.prepareStatement(BUSCA_ITENS_MANUTENCAO_HOLDER);
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from estratificacao_os e \n" +
+                            "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
+                            "ORDER BY E.placa_veiculo, e.prioridade \n" +
+                            "limit ? offset ?");
             stmt.setString(1, status);
-            stmt.setString(2, status);
-            stmt.setString(3, String.valueOf(codUnidade));
-            stmt.setString(4, placa);
-            stmt.setString(5, codTipo);
-            stmt.setInt(6, limit);
-            stmt.setLong(7, offset);
+            stmt.setString(2, prioridade);
+            stmt.setString(3, placa);
+            stmt.setInt(4, limit);
+            stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
             return createItensOs(rSet);
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
@@ -522,56 +505,56 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return
      * @throws SQLException
      */
-    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
-                                                       long offset, String status) throws SQLException{
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<ManutencaoHolder> holders = new ArrayList<>();
-        ManutencaoHolder holder = null;
-        List<ItemOrdemServico> itens = null;
-        Veiculo v;
-        try{
-            conn = getConnection();
-            itens = getItensOsManutencaoHolder(placa, codTipo,status, conn, codUnidade, limit, offset);
-            if (itens!=null) {
-                for (ItemOrdemServico item : itens) {
-                    if (holder == null){//primeiro item
-                        holder = new ManutencaoHolder();
-                        v = new Veiculo();
-                        v.setPlaca(item.getPlaca());
-                        holder.setVeiculo(v);
-                        itens = new ArrayList<>();
-                        itens.add(item);
-                    }else{// a partir da segunda linha da lista de itens
-                        if (holder.getVeiculo().getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
-                            itens.add(item);
-                        }else{ // item é de placa diferente, fechar e add o holder na lista geral
-                            //holder.setListManutencao(itens);
-                            //setQtItens(holder);
-                            holders.add(holder);
-                            holder = new ManutencaoHolder();
-                            v = new Veiculo();
-                            v.setPlaca(item.getPlaca());
-                            holder.setVeiculo(v);
-                            itens = new ArrayList<>();
-                            itens.add(item);
-                        }
-                    }
-                }
-                if(holder!=null) {
-                    //holder.setListManutencao(itens);
-                    //setQtItens(holder);
-                    holders.add(holder);
-                    setKmVeiculos(holders,placa,codTipo,codUnidade);
-                    ordenaLista(holders);
-                }
-            }
-        }finally {
-            closeConnection(conn,stmt,rSet);
-        }
-        return holders;
-    }
+//    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
+//                                                       long offset, String status) throws SQLException{
+//        Connection conn = null;
+//        PreparedStatement stmt = null;
+//        ResultSet rSet = null;
+//        List<ManutencaoHolder> holders = new ArrayList<>();
+//        ManutencaoHolder holder = null;
+//        List<ItemOrdemServico> itens = null;
+//        Veiculo v;
+//        try{
+//            conn = getConnection();
+//            itens = getItensOsManutencaoHolder(placa, codTipo,status, conn, codUnidade, limit, offset);
+//            if (itens!=null) {
+//                for (ItemOrdemServico item : itens) {
+//                    if (holder == null){//primeiro item
+//                        holder = new ManutencaoHolder();
+//                        v = new Veiculo();
+//                        v.setPlaca(item.getPlaca());
+//                        holder.setVeiculo(v);
+//                        itens = new ArrayList<>();
+//                        itens.add(item);
+//                    }else{// a partir da segunda linha da lista de itens
+//                        if (holder.getVeiculo().getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
+//                            itens.add(item);
+//                        }else{ // item é de placa diferente, fechar e add o holder na lista geral
+//                            //holder.setListManutencao(itens);
+//                            //setQtItens(holder);
+//                            holders.add(holder);
+//                            holder = new ManutencaoHolder();
+//                            v = new Veiculo();
+//                            v.setPlaca(item.getPlaca());
+//                            holder.setVeiculo(v);
+//                            itens = new ArrayList<>();
+//                            itens.add(item);
+//                        }
+//                    }
+//                }
+//                if(holder!=null) {
+//                    //holder.setListManutencao(itens);
+//                    //setQtItens(holder);
+//                    holders.add(holder);
+//                    setKmVeiculos(holders,placa,codTipo,codUnidade);
+//                    ordenaLista(holders);
+//                }
+//            }
+//        }finally {
+//            closeConnection(conn,stmt,rSet);
+//        }
+//        return holders;
+//    }
 
     public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
                                                             long offset, String status) throws SQLException{

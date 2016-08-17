@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -67,5 +68,16 @@ public class OrdemServicoResource {
                                                             @QueryParam("offset") long offset,
                                                             @PathParam("status") String status){
         return service.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+    }
+
+    @GET
+    @Secured
+    @Path("/manutencao/{placa}/{status}/{prioridade}")
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") String placa,
+                                                             @QueryParam("limit") int limit,
+                                                             @QueryParam("offset") long offset,
+                                                             @PathParam("status") String status,
+                                                             @PathParam("prioridade") String prioridade){
+        return service.getItensOsManutencaoHolder(placa, status, limit, offset, prioridade);
     }
 }

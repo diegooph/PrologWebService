@@ -26,15 +26,15 @@ public class OrdemServicoService {
         }
     }
 
-    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
-                                                       long offset, String status){
-        try{
-            return dao.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
-        }catch (SQLException e){
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
+//    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
+//                                                       long offset, String status){
+//        try{
+//            return dao.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            return new ArrayList<>();
+//        }
+//    }
 
     public boolean consertaItem (Long codUnidade,ItemOrdemServico item){
         try{
@@ -49,6 +49,15 @@ public class OrdemServicoService {
                                                             long offset, String status){
         try{
             return dao.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status, int limit, long offset, String prioridade){
+        try{
+            return dao.getItensOsManutencaoHolder(placa, status, limit, offset, prioridade);
         }catch (SQLException e){
             e.printStackTrace();
             return null;
