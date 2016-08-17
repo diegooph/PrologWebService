@@ -8,6 +8,7 @@ import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.models.checklist.os.*;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -45,7 +46,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * usada para pegar a lista de Manutencao Holder (tela das bolinhas)
      */
     private static final String BUSCA_ITENS_MANUTENCAO_HOLDER = "select * from estratificacao_os e\n" +
-            "            where e.placa_veiculo IN (\n" +
+            "            where e.status_item like ? and e.placa_veiculo IN (\n" +
             "            SELECT distinct c.placa_veiculo from \n" +
             "            checklist c \n" +
             "            join checklist_ordem_servico os on c.codigo = os.cod_checklist AND \n" +
@@ -344,11 +345,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         try{
             stmt = conn.prepareStatement(BUSCA_ITENS_MANUTENCAO_HOLDER);
             stmt.setString(1, status);
-            stmt.setString(2, String.valueOf(codUnidade));
-            stmt.setString(3, placa);
-            stmt.setString(4, codTipo);
-            stmt.setInt(5, limit);
-            stmt.setLong(6, offset);
+            stmt.setString(2, status);
+            stmt.setString(3, String.valueOf(codUnidade));
+            stmt.setString(4, placa);
+            stmt.setString(5, codTipo);
+            stmt.setInt(6, limit);
+            stmt.setLong(7, offset);
             rSet = stmt.executeQuery();
             return createItensOs(rSet);
         }finally {
@@ -528,7 +530,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         List<ManutencaoHolder> holders = new ArrayList<>();
         ManutencaoHolder holder = null;
         List<ItemOrdemServico> itens = null;
-        Veiculo v = null;
+        Veiculo v;
         try{
             conn = getConnection();
             itens = getItensOsManutencaoHolder(placa, codTipo,status, conn, codUnidade, limit, offset);
@@ -569,6 +571,47 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             closeConnection(conn,stmt,rSet);
         }
         return holders;
+    }
+
+    public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
+                                                            long offset, String status) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<ManutencaoHolder> placas = new ArrayList<>();
+        ManutencaoHolder holder;
+        Veiculo v;
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("");
+            stmt.setString(1, status);
+            stmt.setString(2, "%");
+            stmt.setString(3, status);
+            stmt.setString(4, PRIORIDADE_CRITICA);
+            stmt.setString(5, status);
+            stmt.setString(6, PRIORIDADE_ALTA);
+            stmt.setString(7, status);
+            stmt.setString(8, PRIORIDADE_BAIXA);
+            stmt.setLong(9, codUnidade);
+            stmt.setString(10, placa);
+            stmt.setString(11, codTipo);
+            stmt.setInt(12, limit);
+            stmt.setLong(13, offset);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                holder = new ManutencaoHolder();
+                v = new Veiculo();
+                holder.setVeiculo(v);
+                v.setPlaca(rSet.getString("PLACA"));
+                holder.setQtdCritica(rSet.getInt("CRITICAS"));
+                holder.setQtdAlta(rSet.getInt("ALTAS"));
+                holder.setQtdBaixa(rSet.getInt("BAIXAS"));
+                placas.add(holder);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return placas;
     }
 
     private void setKmVeiculos(List<ManutencaoHolder> holders, String placa, String codTipo, Long codUnidade) throws SQLException{
