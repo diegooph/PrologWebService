@@ -27,7 +27,7 @@ public class UploadTreinamento {
 			Treinamento treinamento,
 			InputStream fileInputStream) {
 		// Data do upload é a data atual do servidor
-		treinamento.setDataLiberacao(new Date(System.currentTimeMillis()));
+		treinamento.setDataHoraCadastro(new Date(System.currentTimeMillis()));
 		String fileName =  TreinamentoHelper.createFileName(treinamento);
 		L.d(TAG, "File name: " + fileName);
 

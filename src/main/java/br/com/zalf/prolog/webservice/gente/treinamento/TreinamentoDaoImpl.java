@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -176,14 +173,15 @@ TreinamentoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO (TITULO, DESCRICAO, URL_ARQUIVO, "
-					+ "DATA_LIBERACAO, COD_UNIDADE) "
-					+ "VALUES (?,?,?,?,?)");
+					+ "DATA_LIBERACAO, COD_UNIDADE, data_hora_cadastro) "
+					+ "VALUES (?,?,?,?,?,?)");
 
 			stmt.setString(1, treinamento.getTitulo());
 			stmt.setString(2, treinamento.getDescricao());
 			stmt.setString(3, treinamento.getUrlArquivo());
 			stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
 			stmt.setLong(5, treinamento.getCodUnidade());
+			stmt.setTimestamp(6, DateUtils.toTimestamp(treinamento.getDataHoraCadastro()));
 			int count = stmt.executeUpdate();
 			if(count == 0 && !insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo())){
 				throw new SQLException("Erro ao inserir treinamento");
