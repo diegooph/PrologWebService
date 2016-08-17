@@ -34,17 +34,17 @@ public class OrdemServicoResource {
         return service.getOs(placa, status, null, codUnidade, tipoVeiculo, limit, offset);
     }
 
-    @GET
-    @Secured
-    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    public List<ManutencaoHolder> getManutencaoHolder (@PathParam("codUnidade") Long codUnidade,
-                                                       @QueryParam("limit") int limit,
-                                                       @QueryParam("offset") long offset,
-                                                       @PathParam("status") String status,
-                                                       @PathParam("placa") String placa,
-                                                       @PathParam("tipoVeiculo") String codTipo){
-        return service.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
-    }
+//    @GET
+//    @Secured
+//    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+//    public List<ManutencaoHolder> getManutencaoHolder (@PathParam("codUnidade") Long codUnidade,
+//                                                       @QueryParam("limit") int limit,
+//                                                       @QueryParam("offset") long offset,
+//                                                       @PathParam("status") String status,
+//                                                       @PathParam("placa") String placa,
+//                                                       @PathParam("tipoVeiculo") String codTipo){
+//        return service.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+//    }
 
     @POST
     @Secured
@@ -55,10 +55,17 @@ public class OrdemServicoResource {
         }else{
             return Response.Error("Erro ao consertar o item");
         }
-
-
     }
 
-
-
+    @GET
+    @Secured
+    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("placa") String placa,
+                                                            @PathParam("tipoVeiculo") String codTipo,
+                                                            @PathParam("codUnidade") Long codUnidade,
+                                                            @QueryParam("limit") int limit,
+                                                            @QueryParam("offset") long offset,
+                                                            @PathParam("status") String status){
+        return service.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+    }
 }

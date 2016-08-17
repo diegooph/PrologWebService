@@ -547,8 +547,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                         if (holder.getVeiculo().getPlaca().equals(item.getPlaca())) {//mesma placa, add o item ao mesmo holder
                             itens.add(item);
                         }else{ // item é de placa diferente, fechar e add o holder na lista geral
-                            holder.setListManutencao(itens);
-                            setQtItens(holder);
+                            //holder.setListManutencao(itens);
+                            //setQtItens(holder);
                             holders.add(holder);
                             holder = new ManutencaoHolder();
                             v = new Veiculo();
@@ -560,8 +560,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     }
                 }
                 if(holder!=null) {
-                    holder.setListManutencao(itens);
-                    setQtItens(holder);
+                    //holder.setListManutencao(itens);
+                    //setQtItens(holder);
                     holders.add(holder);
                     setKmVeiculos(holders,placa,codTipo,codUnidade);
                     ordenaLista(holders);
@@ -583,7 +583,33 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Veiculo v;
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("SELECT V.placa, v.km,TOTAL, COALESCE(CRITICA.CRITICAS, CRITICA.CRITICAS, 0) as criticas, coalesce(ALTAS.ALTAS, ALTAS.ALTAS, 0) as altas,\n" +
+                    "  coalesce(BAIXAS.BAIXAS, BAIXAS.BAIXAS, 0) as baixas FROM VEICULO V\n" +
+                    "  JOIN\n" +
+                    "  (SELECT es.placa_veiculo AS PLACA_TOTAL, COUNT(COD_unidade) as TOTAL FROM estratificacao_os es\n" +
+                    "where es.status_item like ? and\n" +
+                    "      es.prioridade like ?\n" +
+                    "group by es.placa_veiculo) AS TOTAL ON PLACA_TOTAL = V.placa\n" +
+                    "  LEFT JOIN\n" +
+                    "  (SELECT es.placa_veiculo AS PLACA_CRITICA, COUNT(COD_unidade) as CRITICAS FROM estratificacao_os es\n" +
+                    "where es.status_item like ? and\n" +
+                    "      es.prioridade like ?\n" +
+                    "group by es.placa_veiculo) AS CRITICA ON PLACA_CRITICA = V.placa\n" +
+                    "LEFT join\n" +
+                    "  (SELECT es.placa_veiculo as PLACA_ALTA, COUNT(COD_unidade) as ALTAS FROM estratificacao_os es\n" +
+                    "where es.status_item like ? and\n" +
+                    "      es.prioridade like ?\n" +
+                    "group by es.placa_veiculo) AS ALTAS ON PLACA_ALTA = V.placa\n" +
+                    "LEFT join\n" +
+                    "  (SELECT es.placa_veiculo as PLACA_BAIXA, COUNT(COD_unidade) as BAIXAS FROM estratificacao_os es\n" +
+                    "where es.status_item like ? and\n" +
+                    "      es.prioridade like ?\n" +
+                    "group by es.placa_veiculo) AS BAIXAS ON PLACA_BAIXA = V.placa\n" +
+                    "  JOIN\n" +
+                    "  veiculo_tipo vt on vt.cod_unidade = v.cod_unidade and vt.codigo = v.cod_tipo\n" +
+                    "  WHERE V.cod_unidade = ? and v.placa like ? and v.cod_tipo::text like ?\n" +
+                    "  ORDER BY criticas desc, altas desc, baixas desc, V.placa\n" +
+                    "  LIMIT ? OFFSET ?");
             stmt.setString(1, status);
             stmt.setString(2, "%");
             stmt.setString(3, status);
@@ -601,8 +627,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             while (rSet.next()){
                 holder = new ManutencaoHolder();
                 v = new Veiculo();
-                holder.setVeiculo(v);
                 v.setPlaca(rSet.getString("PLACA"));
+                v.setKmAtual(rSet.getLong("km"));
+                v.setAtivo(true);
+                holder.setVeiculo(v);
                 holder.setQtdCritica(rSet.getInt("CRITICAS"));
                 holder.setQtdAlta(rSet.getInt("ALTAS"));
                 holder.setQtdBaixa(rSet.getInt("BAIXAS"));
@@ -682,23 +710,23 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * Faz a contagem de acordo com a prioridade de cada item
      * @param holder
      */
-    private void setQtItens(ManutencaoHolder holder){
-        for(ItemOrdemServico item : holder.getListManutencao()){
-            switch (item.getPergunta().getPrioridade()) {
-                case PRIORIDADE_CRITICA:
-                    holder.setQtdCritica(holder.getQtdCritica() + 1);;
-                    break;
-                case PRIORIDADE_ALTA:
-                    holder.setQtdAlta(holder.getQtdAlta() + 1);;
-                    break;
-                case PRIORIDADE_BAIXA:
-                    holder.setQtdBaixa(holder.getQtdBaixa() + 1);;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+//    private void setQtItens(ManutencaoHolder holder){
+//        for(ItemOrdemServico item : holder.getListManutencao()){
+//            switch (item.getPergunta().getPrioridade()) {
+//                case PRIORIDADE_CRITICA:
+//                    holder.setQtdCritica(holder.getQtdCritica() + 1);;
+//                    break;
+//                case PRIORIDADE_ALTA:
+//                    holder.setQtdAlta(holder.getQtdAlta() + 1);;
+//                    break;
+//                case PRIORIDADE_BAIXA:
+//                    holder.setQtdBaixa(holder.getQtdBaixa() + 1);;
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    }
 
     /**
      * Ordena lista das bolinhas, jogando para cima as placas com maior quantidade de itens críticos

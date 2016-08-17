@@ -44,4 +44,14 @@ public class OrdemServicoService {
             return false;
         }
     }
+
+    public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
+                                                            long offset, String status){
+        try{
+            return dao.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
