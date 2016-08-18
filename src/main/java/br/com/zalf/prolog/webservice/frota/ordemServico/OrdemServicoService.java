@@ -23,7 +23,7 @@ public class OrdemServicoService {
             return dao.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
         }catch (SQLException e){
             e.printStackTrace();
-            return new ArrayList<>();
+            return null;
         }
     }
 
@@ -37,9 +37,9 @@ public class OrdemServicoService {
 //        }
 //    }
 
-    public boolean consertaItem (Long codUnidade,ItemOrdemServico item){
+    public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa){
         try{
-            return dao.consertaItem(codUnidade, item);
+            return dao.consertaItem(codUnidade, item, placa);
         }catch (SQLException e){
             e.printStackTrace();
             return false;

@@ -38,24 +38,13 @@ public class OrdemServicoResource {
         return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
     }
 
-//    @GET
-//    @Secured
-//    @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-//    public List<ManutencaoHolder> getManutencaoHolder (@PathParam("codUnidade") Long codUnidade,
-//                                                       @QueryParam("limit") int limit,
-//                                                       @QueryParam("offset") long offset,
-//                                                       @PathParam("status") String status,
-//                                                       @PathParam("placa") String placa,
-//                                                       @PathParam("tipoVeiculo") String codTipo){
-//        return service.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
-//    }
-
     @POST
     @Android
     @Secured
-    @Path("/consertaItem/{codUnidade}")
-    public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item){
-        if (service.consertaItem(codUnidade, item)){
+    @Path("/consertaItem/{codUnidade}/{placa}")
+    public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item,
+    @PathParam("placa") String placa){
+        if (service.consertaItem(codUnidade, item, placa)){
             return Response.Ok("Serviço consertado com sucesso");
         }else{
             return Response.Error("Erro ao consertar o item");

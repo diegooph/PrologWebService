@@ -39,7 +39,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
     private static final String BUSCA_ITENS_OS = "select * from estratificacao_os e\n" +
             "where  e.cod_os::TEXT LIKE ? and e.cod_unidade::TEXT LIKE ? and e.placa_veiculo like ? " +
             "and e.status_item LIKE ?\n" +
-            "order by e.placa_veiculo, e.prioridade ;";
+            "order by e.placa_veiculo, e.prazo ASC;";
 
     /**
      * Mesma função da query acima, porém essa aplica limit e offset sobre as placas,
@@ -207,19 +207,19 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @throws SQLException caso não seja possivel realizar a busca
      */
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
-                                String tipoVeiculo, Integer limit, Long offset) throws SQLException{
+                                    String tipoVeiculo, Integer limit, Long offset) throws SQLException{
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<OrdemServico> oss = null;
+        List<OrdemServico> oss = new ArrayList<>();
         OrdemServico os = null;
         try{
             conn = getConnection();
             /**
              * query que busca apenas os dados da OS, e não os itens
              */
-            String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.data_hora_fechamento, cos.status, C.placa_veiculo, c.km_veiculo, c.data_hora " +
+            String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.data_hora_fechamento, cos.status, C.placa_veiculo, V.km, c.data_hora " +
                     "FROM checklist_ordem_servico cos join checklist c ON cos.cod_checklist = C.codigo\n" +
                     "and c.cod_unidade = cos.cod_unidade\n" +
                     "JOIN VEICULO V ON V.placa = C.placa_veiculo\n" +
@@ -246,7 +246,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             }
             rSet = stmt.executeQuery();
             while(rSet.next()){
-                if (oss == null){//primeiro item do ResultSet
+                if (os == null){//primeiro item do ResultSet
                     oss = new ArrayList<>();
                     os = createOrdemServico(rSet);
                     /**
@@ -319,9 +319,9 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         try{
             conn = getConnection();
             stmt = conn.prepareStatement("select * from estratificacao_os e \n" +
-                            "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
-                            "ORDER BY E.placa_veiculo, e.prioridade \n" +
-                            "limit ? offset ?");
+                    "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
+                    "ORDER BY E.placa_veiculo, e.prioridade \n" +
+                    "limit ? offset ?");
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
             stmt.setString(3, placa);
@@ -392,7 +392,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         os.setCodigo(rSet.getLong("cod_os"));
         os.setStatus(OrdemServico.Status.fromString(rSet.getString("status")));
         Veiculo v = new Veiculo();
-        v.setKmAtual(rSet.getLong("km_veiculo"));
+        v.setKmAtual(rSet.getLong("km"));
         v.setPlaca(rSet.getString("placa_veiculo"));
         v.setAtivo(true);
         os.setVeiculo(v);
@@ -476,7 +476,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         for (OrdemServico os:oss) {
             for (ItemOrdemServico item:os.getItens()) {
                 for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
-                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && !alternativa.alternativa.equals("Outros")){
+                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && !alternativa.alternativa.equals("Outros")
+                            && item.getStatus().asString().equals(ItemOrdemServico.Status.PENDENTE.asString())){
                         L.d("item existe", "item existe na lista");
                         return os.getCodigo();
                     }
@@ -653,32 +654,38 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    public boolean consertaItem (Long codUnidade,ItemOrdemServico item) throws SQLException{
+    public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa) throws SQLException{
+        VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
         Connection conn = null;
         PreparedStatement stmt = null;
         try{
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?" +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto =? " +
                     "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
                     "COD_ALTERNATIVA = ?");
             stmt.setLong(1, item.getMecanico().getCpf());
             stmt.setLong(2, item.getTempoRealizacaoConsertoInMillis());
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, item.getCodOs());
-            stmt.setLong(7, item.getPergunta().getCodigo());
-            stmt.setLong(8, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setLong(6, codUnidade);
+            stmt.setLong(7, item.getCodOs());
+            stmt.setLong(8, item.getPergunta().getCodigo());
+            stmt.setLong(9, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
                 updateStatusOs(codUnidade, item.getCodOs(), conn);
-                return true;
+                veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
+            }else{
+                throw new SQLException("Erro ao consertar o item");
             }
+            conn.commit();
         }finally {
             closeConnection(conn,stmt,null);
         }
-        return false;
+        return true;
     }
 
     private void updateStatusOs (Long codUnidade, Long codOs, Connection conn) throws SQLException{
