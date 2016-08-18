@@ -199,7 +199,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
      * @param placa uma placa especifica ou '%' para buscar OS de todas as placas
      * @param status status da OS, podendo ser Aberta ou Fechada
-     * @param conn uma Conenction
      * @param codUnidade código da unidade a serem buscadas as OS
      * @param tipoVeiculo tipo do veículo ou '%' para todos os tipos
      * @param limit quantidade de OS que deseja retornar
@@ -207,17 +206,16 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return uma lista de OrdemServico
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    public List<OrdemServico> getOs(String placa, String status, Connection conn, Long codUnidade,
+    public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                                 String tipoVeiculo, Integer limit, Long offset) throws SQLException{
 
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<OrdemServico> oss = null;
         OrdemServico os = null;
         try{
-            if (conn == null){
-                conn = getConnection();
-            }
+            conn = getConnection();
             /**
              * query que busca apenas os dados da OS, e não os itens
              */
@@ -272,7 +270,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                 }
             }
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
         return oss;
     }
@@ -364,6 +362,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                 item.setTempoLimiteResolucao(createTempo(TimeUnit.HOURS.toMinutes(rSet.getLong("PRAZO"))));
                 setTempoRestante(item, rSet.getInt("prazo"));
                 item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
+                item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
                 if (rSet.getString("nome_mecanico")!= null){
                     mecanico = new Colaborador();
                     mecanico.setCpf(rSet.getLong("cpf_mecanico"));
@@ -371,7 +370,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     item.setMecanico(mecanico);
                     item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
-                    item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
                     item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
                 }
                 itens.add(item);
@@ -437,7 +435,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         Long tempCodOs = null;
         Long gerouOs = null;
         // todas as os de uma unica placa
-        List<OrdemServico> ordens = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), conn, codUnidade, "%", null, null);
+        List<OrdemServico> ordens = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), codUnidade, "%", null, null);
         for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
             L.d("Pergunta", pergunta.getCodigo().toString());
             for (PerguntaRespostaChecklist.Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta

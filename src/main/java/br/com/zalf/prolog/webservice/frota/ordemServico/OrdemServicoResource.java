@@ -35,7 +35,7 @@ public class OrdemServicoResource {
                                     @QueryParam("limit") Integer limit,
                                     @QueryParam("offset") Long offset){
 
-        return service.getOs(placa, status, null, codUnidade, tipoVeiculo, limit, offset);
+        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
     }
 
 //    @GET

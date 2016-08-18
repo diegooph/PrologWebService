@@ -17,10 +17,10 @@ public class OrdemServicoService {
 
     OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 
-    public List<OrdemServico> getOs(String placa, String status, Connection conn, Long codUnidade,
+    public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                                     String tipoVeiculo, Integer limit, Long offset){
         try{
-            return dao.getOs(placa, status, conn, codUnidade, tipoVeiculo, limit, offset);
+            return dao.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
         }catch (SQLException e){
             e.printStackTrace();
             return new ArrayList<>();
