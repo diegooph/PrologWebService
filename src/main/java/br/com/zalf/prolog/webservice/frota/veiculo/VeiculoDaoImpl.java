@@ -299,11 +299,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
 
-	public void updateKmByPlaca(String placa, long km) throws SQLException{
-		Connection conn = null;
+	public void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE VEICULO SET "
 					+ "KM = ? "
 					+ "WHERE PLACA = ?");
@@ -315,7 +313,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			}	
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}		
 	}
 

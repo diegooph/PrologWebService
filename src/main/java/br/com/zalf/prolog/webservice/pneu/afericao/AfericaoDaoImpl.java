@@ -49,7 +49,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			if(rSet.next()){
 				afericao.setCodigo(rSet.getLong("CODIGO"));
 				insertValores(afericao, codUnidade, conn);
-				veiculoDaoImpl.updateKmByPlaca(afericao.getVeiculo().getPlaca(), afericao.getKmMomentoAfericao());
+				veiculoDaoImpl.updateKmByPlaca(afericao.getVeiculo().getPlaca(), afericao.getKmMomentoAfericao(), conn);
 			}
 			conn.commit();
 		}catch(SQLException e){

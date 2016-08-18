@@ -69,7 +69,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				insertRespostas(checklist, conn);
 				insertItemManutencao(checklist, conn);
 				osDao.insertItemOs(checklist, conn, codUnidade);
-				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo());
+				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
 			}else{
 				throw new SQLException("Erro ao inserir o checklist");
 			}
