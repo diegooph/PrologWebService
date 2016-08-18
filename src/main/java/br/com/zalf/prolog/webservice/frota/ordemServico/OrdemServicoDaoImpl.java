@@ -207,7 +207,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return uma lista de OrdemServico
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    private List<OrdemServico> getOs(String placa, String status, Connection conn, Long codUnidade,
+    public List<OrdemServico> getOs(String placa, String status, Connection conn, Long codUnidade,
                                 String tipoVeiculo, Integer limit, Long offset) throws SQLException{
 
         PreparedStatement stmt = null;
@@ -254,19 +254,19 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     /**
                      * seta os itens da ordem de serviço.
                      */
-                    os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
+                    os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                     oss.add(os);
                 }else{ // Próximos itens
-                    if (rSet.getString("placa_veiculo").equals(os.getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
+                    if (rSet.getString("placa_veiculo").equals(os.getVeiculo().getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
-                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
+                        os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                         oss.add(os);
                     }else{//placa diferente, fechar a lista, setar no holder, criar novo holder, nova os e add na lista
                         os = new OrdemServico();
                         os = createOrdemServico(rSet);
                         oss = new ArrayList<>();
-                        os.setItens(getItensOs(os.getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
+                        os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                         oss.add(os);
                     }
                 }
@@ -313,7 +313,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return Lista de ItemOrdemServico
      * @throws SQLException caso não seja possível buscar os itens
      */
-    private List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
                                                              int limit, long offset, String prioridade) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -393,8 +393,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         os.setCodChecklist(rSet.getLong("cod_checklist"));
         os.setCodigo(rSet.getLong("cod_os"));
         os.setStatus(OrdemServico.Status.fromString(rSet.getString("status")));
-        os.setKmVeiculo(rSet.getLong("km_veiculo"));
-        os.setPlaca(rSet.getString("placa_veiculo"));
+        Veiculo v = new Veiculo();
+        v.setKmAtual(rSet.getLong("km_veiculo"));
+        v.setPlaca(rSet.getString("placa_veiculo"));
+        v.setAtivo(true);
+        os.setVeiculo(v);
         os.setDataAbertura(rSet.getTimestamp("data_hora"));
         os.setDataFechamento(rSet.getTimestamp("data_hora_fechamento"));
         return os;
@@ -494,7 +497,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @return lista de ManutencaoHolder
      * @throws SQLException caso não seja possível realizar a busca
      */
-    private List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
+    public List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
                                                             long offset, String status) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -652,7 +655,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private boolean consertaItem (Long codUnidade,ItemOrdemServico item) throws SQLException{
+    public boolean consertaItem (Long codUnidade,ItemOrdemServico item) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         try{
