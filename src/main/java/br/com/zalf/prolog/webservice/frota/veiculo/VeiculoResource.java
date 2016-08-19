@@ -122,7 +122,7 @@ public class VeiculoResource {
 	@GET
 	@Secured
 	@Path("/byTipo/{codUnidade}/{codTipo}")
-	public List<Veiculo> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
+	public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
 										   @PathParam("codTipo") String codTipo){
 		return service.getVeiculosByTipo(codUnidade, codTipo);
 	}

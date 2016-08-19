@@ -105,7 +105,7 @@ public class VeiculoService {
 	}
 
 	@Android
-	public List<Veiculo> getVeiculosByTipo(Long codUnidade, String codTipo){
+	public List<String> getVeiculosByTipo(Long codUnidade, String codTipo){
 		try{
 			return dao.getVeiculosByTipo(codUnidade, codTipo);
 		}catch (SQLException e){

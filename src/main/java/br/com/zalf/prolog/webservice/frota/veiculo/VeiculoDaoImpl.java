@@ -412,12 +412,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	@Android
-	public List<Veiculo> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException{
+	public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Veiculo> veiculos = new ArrayList<>();
-		Veiculo veiculo = null;
+		List<String> placas = new ArrayList<>();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT V.PLACA FROM veiculo V JOIN veiculo_tipo VT ON V.cod_unidade = VT.cod_unidade\n" +
@@ -427,14 +426,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt.setString(2, codTipo);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				veiculo = new Veiculo();
-				veiculo.setPlaca(rSet.getString("placa"));
-				veiculos.add(veiculo);
+				placas.add(rSet.getString("placa"));
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return veiculos;
+		return placas;
 	}
 
 }
