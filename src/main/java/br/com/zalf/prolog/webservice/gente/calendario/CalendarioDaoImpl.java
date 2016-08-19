@@ -1,9 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Evento;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.ResponseWithCod;
+import br.com.zalf.prolog.models.*;
+import br.com.zalf.prolog.models.relatorios.Unidade;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
@@ -83,20 +81,27 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
 		List<Evento> eventos = new ArrayList<>();
-		Evento e = null;
+		Evento e;
+		Unidade unidade;
+		Funcao funcaoTreinamento;
+		Equipe equipeTreinamento;
+
+
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM\n" +
-					"(SELECT c.data, c.codigo, c.descricao, c.local, coalesce(c.cod_funcao, c.cod_funcao, -1) as cod_funcao, " +
-					"coalesce(c.cod_unidade, cod_unidade, -1) as cod_unidade, " +
-					"coalesce(c.cod_equipe, c.cod_equipe, -1) as cod_equipe " +
-					"FROM calendario c " +
-					"join unidade u on u.codigo = c.cod_unidade " +
-					"join empresa e on e.codigo = u.cod_empresa " +
-					"WHERE E.CODIGO = ? AND C.data::DATE BETWEEN ? and ?) as f " +
-					"WHERE F.cod_unidade::TEXT LIKE ? " +
-					"AND F.cod_equipe::TEXT LIKE ? AND " +
-					"\tF.cod_funcao::TEXT LIKE ?");
+			stmt = conn.prepareStatement("SELECT * FROM \n" +
+					"(SELECT c.data, c.codigo, c.descricao, c.local, coalesce(c.cod_funcao, c.cod_funcao, -1) as cod_funcao, f.nome as funcao,\n" +
+					"coalesce(c.cod_unidade, c.cod_unidade, -1) as cod_unidade, u.nome as unidade,\n" +
+					"coalesce(c.cod_equipe, c.cod_equipe, -1) as cod_equipe, eq.nome as equipe\n" +
+					"FROM calendario c  \n" +
+					"join unidade u on u.codigo = c.cod_unidade  \n" +
+					"join empresa e on e.codigo = u.cod_empresa\n" +
+					"left join funcao f on f.codigo = c.cod_funcao\n" +
+					"left join equipe eq on eq.cod_unidade = c.cod_unidade and eq.codigo = c.cod_equipe\n" +
+					"WHERE E.CODIGO = ? AND C.data::DATE BETWEEN ? and ?) as f\n" +
+					"WHERE F.cod_unidade::TEXT LIKE ?\n" +
+					"AND F.cod_equipe::TEXT LIKE ? AND\n" +
+					"  F.cod_funcao::TEXT LIKE ?");
 			stmt.setLong(1, codEmpresa);
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
@@ -110,6 +115,26 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				e.setData(rSet.getDate("data"));
 				e.setDescricao(rSet.getString("descricao"));
 				e.setLocal(rSet.getString("local"));
+				unidade = new Unidade();
+				unidade.setCodigo(rSet.getLong("cod_unidade"));
+				unidade.setNome(rSet.getString("unidade"));
+				e.setUnidae(unidade);
+				funcaoTreinamento = new Funcao();
+				funcaoTreinamento.setCodigo(rSet.getLong("cod_funcao"));
+				if (funcaoTreinamento.getCodigo() == -1){
+					funcaoTreinamento.setNome("Todas");
+				}else{
+					funcaoTreinamento.setNome(rSet.getString("funcao"));
+				}
+				e.setFuncao(funcaoTreinamento);
+				equipeTreinamento = new Equipe();
+				equipeTreinamento.setCodigo(rSet.getLong("cod_equipe"));
+				if (equipeTreinamento.getCodigo() == -1){
+					equipeTreinamento.setNome("Todas");
+				}else {
+					equipeTreinamento.setNome(rSet.getString("equipe"));
+				}
+				e.setEquipe(equipeTreinamento);
 				eventos.add(e);
 			}
 		}finally {
