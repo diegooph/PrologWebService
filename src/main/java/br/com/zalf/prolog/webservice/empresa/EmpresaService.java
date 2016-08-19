@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.com.zalf.prolog.models.*;
 import br.com.zalf.prolog.models.imports.HolderMapaTracking;
+import br.com.zalf.prolog.models.relatorios.Empresa;
 
 import javax.ws.rs.core.NoContentException;
 
@@ -78,6 +79,15 @@ public class EmpresaService {
 		}catch (NoContentException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+
+	public List<Empresa> getFiltros(Long cpf){
+		try{
+			return dao.getFiltros(cpf);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

@@ -11,14 +11,7 @@ public class RelatorioService {
 
 	private RelatorioDaoImpl dao = new RelatorioDaoImpl();
 	
-	public List<Empresa> getFiltros(Long cpf, String token){
-		try{
-			return dao.getFiltros(cpf, token);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+
 
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade, Long cpf, String token){

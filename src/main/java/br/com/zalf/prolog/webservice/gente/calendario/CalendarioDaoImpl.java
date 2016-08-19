@@ -118,7 +118,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				unidade = new Unidade();
 				unidade.setCodigo(rSet.getLong("cod_unidade"));
 				unidade.setNome(rSet.getString("unidade"));
-				e.setUnidae(unidade);
+				e.setUnidade(unidade);
 				funcaoTreinamento = new Funcao();
 				funcaoTreinamento.setCodigo(rSet.getLong("cod_funcao"));
 				if (funcaoTreinamento.getCodigo() == -1){

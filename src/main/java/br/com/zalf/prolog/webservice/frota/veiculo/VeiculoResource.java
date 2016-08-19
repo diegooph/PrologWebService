@@ -22,6 +22,7 @@ import br.com.zalf.prolog.models.TipoVeiculo;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
+import br.com.zalf.prolog.webservice.util.Site;
 
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -44,6 +45,8 @@ public class VeiculoResource {
 	}
 	
 	@GET
+	@Android
+	@Site
 	@Secured
 	@Path("/{codUnidade}/tipo")
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {

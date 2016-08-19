@@ -21,14 +21,7 @@ import br.com.zalf.prolog.models.util.DateUtils;
 public class RelatorioResource {
 	private RelatorioService service = new RelatorioService();
 	
-	@POST
-	@Path("/getFiltros")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Empresa> getFiltros(
-			@FormParam("cpf") Long cpf,
-			@FormParam("token") String token){
-		return service.getFiltros(cpf, token);
-	}
+
 	
 	@POST
 	@Path("/byEquipe")
