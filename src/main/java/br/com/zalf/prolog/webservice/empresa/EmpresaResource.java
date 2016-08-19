@@ -75,7 +75,7 @@ public class EmpresaResource {
 
 	@GET
 	@Secured
-	@Path("/getFiltros/{cpf}")
+	@Path("/filtros/{cpf}")
 	public List<Empresa> getFiltros(
 			@PathParam("cpf") Long cpf){
 		return service.getFiltros(cpf);

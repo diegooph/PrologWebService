@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
 import br.com.zalf.prolog.models.relatorios.Empresa;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.empresa.EmpresaService;
 
 
 @Path("/relatorios")
@@ -21,7 +22,14 @@ import br.com.zalf.prolog.models.util.DateUtils;
 public class RelatorioResource {
 	private RelatorioService service = new RelatorioService();
 	
-
+	@POST
+	@Path("/getFiltros")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Empresa> getFiltros(
+			@FormParam("cpf") Long cpf,
+			@FormParam("token") String token){
+		return new EmpresaService().getFiltros(cpf);
+	}
 	
 	@POST
 	@Path("/byEquipe")
