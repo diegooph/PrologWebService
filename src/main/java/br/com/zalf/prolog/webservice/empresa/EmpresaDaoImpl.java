@@ -320,7 +320,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		ResultSet rSet = null;
 
 		List<Empresa> listEmpresa = new ArrayList<>();
-		int cod_permissao = 0;
+		int codPermissao = 0;
 
 		try{
 			conn = getConnection();
@@ -329,9 +329,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){ // rset com o código da permissão
-				cod_permissao = rSet.getInt("COD_PERMISSAO");
+				codPermissao = rSet.getInt("COD_PERMISSAO");
 			}
-			switch (cod_permissao) {
+			switch (codPermissao) {
 				case 0:
 					listEmpresa = getPermissao0(cpf);
 					break;
