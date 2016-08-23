@@ -48,7 +48,7 @@ public class UploadTreinamento {
 			L.e(TAG, "Arquivo não encontrado", e);
 			return false;
 		} catch (IOException e) {
-			L.e(TAG, "Erro ao ler arquivo", e);
+			L.e(TAG, "Erro ao salvar arquivo", e);
 			return false;
 		}
 
@@ -61,7 +61,7 @@ public class UploadTreinamento {
 		try {
 			AmazonS3Utils.putObject(putObjectRequest);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			L.e(TAG, "Erro ao enviar arquivo", e);
 			return false;
 		} catch (AmazonServiceException ase) {
 			L.e(TAG, "Caught an AmazonServiceException, which " +
