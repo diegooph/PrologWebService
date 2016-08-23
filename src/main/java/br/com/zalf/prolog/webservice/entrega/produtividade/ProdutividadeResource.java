@@ -3,15 +3,14 @@ package br.com.zalf.prolog.webservice.entrega.produtividade;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.models.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.L;
 
 @Path("/produtividade")
@@ -30,6 +29,19 @@ public class ProdutividadeResource{
 			@FormParam("token") String token) {
 		return service.getProdutividadeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), cpf, token);
+	}
+
+	@GET
+	@Android
+	@Secured
+	@Path("consolidado/{codUnidade}/{codEquipe}/{codFuncao}")
+	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
+																			@PathParam("codEquipe") String codEquipe,
+																			@PathParam("codFuncao") String codFuncao,
+																			@QueryParam("dataInicial") long dataInicial,
+																			@QueryParam("dataFinal") long dataFinal){
+
+		return service.getConsolidadoProdutividade(codUnidade, codEquipe, codFuncao, dataInicial, dataFinal);
 	}
 }
 

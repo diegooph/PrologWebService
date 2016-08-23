@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.com.zalf.prolog.models.Colaborador;
+import br.com.zalf.prolog.models.imports.HolderMapaTracking;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
 import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
@@ -19,6 +21,8 @@ import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
 import br.com.zalf.prolog.models.indicador.ItemTempoRota;
 import br.com.zalf.prolog.models.indicador.ItemTracking;
 import br.com.zalf.prolog.models.indicador.Meta;
+import br.com.zalf.prolog.models.produtividade.ColaboradorProdutividade;
+import br.com.zalf.prolog.models.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
@@ -114,6 +118,83 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		finally {
 			closeConnection(conn, stmt, rSet);
 		}
+	}
+
+	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String codEquipe, String codFuncao,
+																			 long dataInicial, long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<HolderColaboradorProdutividade> holders = new ArrayList<>();
+		HolderColaboradorProdutividade holder = null;
+		List<ColaboradorProdutividade> colaboradores = new ArrayList<>();
+		ColaboradorProdutividade colaborador = null;
+		Colaborador c = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT C.CPF, C.NOME, c.data_nascimento,F.nome as funcao,count(m.mapa) as mapas,sum(m.cxentreg) as caixas,\n" +
+					"--case para verificar automaticamente se é motorista ou ajudante\n" +
+					"sum(CASE when (c.matricula_ambev) = m.matricmotorista then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
+					"when (c.matricula_ambev) = m.matricajud1 then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+					"when (c.matricula_ambev) = m.matricajud2 then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+					"else 0\n" +
+					"end) as valor\n" +
+					"FROM mapa_colaborador MC\n" +
+					"JOIN colaborador C ON C.matricula_ambev = MC.cod_ambev\n" +
+					"AND C.cod_unidade = MC.cod_unidade\n" +
+					"JOIN MAPA M ON M.cod_unidade = MC.cod_unidade\n" +
+					"AND M.MAPA = MC.mapa\n" +
+					"JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
+					"JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
+					"WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
+					"and f.codigo::text like ? and e.codigo::text like ?\n" +
+					"GROUP BY 1,2,3,4\n" +
+					"order by f.nome, valor desc, c.nome;");
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			stmt.setString(4, codFuncao);
+			stmt.setString(5, codEquipe);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				if (colaborador == null){
+					holder = new HolderColaboradorProdutividade();
+					holder.setFuncao(rSet.getString("funcao"));
+					colaboradores = new ArrayList<>();
+					colaboradores.add(createColaboradorProdutividade(rSet));
+				}else{
+					if (holder.getFuncao().equals(rSet.getString("funcao"))){
+						colaboradores.add(createColaboradorProdutividade(rSet));
+					}else{
+						holder.setProdutividades(colaboradores);
+						holders.add(holder);
+						holder = new HolderColaboradorProdutividade();
+						holder.setFuncao(rSet.getString("funcao"));
+						colaboradores = new ArrayList<>();
+						colaboradores.add(createColaboradorProdutividade(rSet));
+					}
+				}
+			}
+			if (holder!= null){
+				holder.setProdutividades(colaboradores);
+				holders.add(holder);
+			}
+		}finally {
+			closeConnection(conn,stmt,rSet);
+		}
+		return holders;
+	}
+
+	private ColaboradorProdutividade createColaboradorProdutividade(ResultSet rSet)throws SQLException{
+		ColaboradorProdutividade c = new ColaboradorProdutividade();
+		Colaborador co = new Colaborador();
+		co.setCpf(rSet.getLong("cpf"));
+		co.setNome(rSet.getString("nome"));
+		c.setColaborador(co);
+		c.setQtdCaixas(rSet.getInt("caixas"));
+		c.setQtdMapas(rSet.getInt("mapas"));
+		c.setValor(rSet.getDouble("valor"));
+		return c;
 	}
 
 	private ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException {
