@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -36,7 +37,11 @@ public class Main {
 //		long codUnidade = 1;
 //		long offset = 0;
 //		int limit = 10;
-		
+
+		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
+		L.d("tag", String.valueOf(System.currentTimeMillis()));
+		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
+
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
 
@@ -46,8 +51,8 @@ public class Main {
 //		c.setNome("Teste");
 //		System.out.println(new Gson().toJson(c));
 
-		OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
-		Connection conn = DatabaseConnection.getConnection();
+		//OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
+		//Connection conn = DatabaseConnection.getConnection();
         // placa, status, conn, unidade, tipoVeiculo
         /**
          * Buscar as OS, usando como filtro o codUnidade, TipoVeiculo e Placa(opcional).
@@ -60,8 +65,8 @@ public class Main {
         //L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());
 		//L.d("main", new Gson().toJson(dao.getManutencaoHolder(2L, 0,0,"%")));
         //System.out.print(new Gson().toJson(dao.getItensOs("MLH4507", 1L, "P", conn)));
-		VeiculoDaoImpl daov  = new VeiculoDaoImpl();
-		L.d("main", daov.getVeiculoKm(4L, "%", "%").toString());
+		//VeiculoDaoImpl daov  = new VeiculoDaoImpl();
+		//L.d("main", daov.getVeiculoKm(4L, "%", "%").toString());
 
 //		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);
 //		Date datainicial = Date.valueOf(dataInicial);

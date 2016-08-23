@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import br.com.zalf.prolog.webservice.util.Android;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -50,6 +51,8 @@ public class TreinamentoResource {
 	}
 
 	@GET
+	@Secured
+	@Android
 	@Path("/vistosColaborador/{cpf}")
 	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getVistosByColaborador(cpf);
@@ -57,6 +60,7 @@ public class TreinamentoResource {
 
 	@GET
 	@Secured
+	@Android
 	@Path("/naoVistosColaborador/{cpf}")
 	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
 		return service.getNaoVistosByColaborador(cpf);
