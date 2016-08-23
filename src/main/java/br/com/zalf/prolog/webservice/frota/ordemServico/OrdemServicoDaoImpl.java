@@ -226,7 +226,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     "JOIN veiculo_tipo VT ON VT.cod_unidade = C.cod_unidade AND v.cod_tipo = vt.codigo\n" +
                     "where c.placa_veiculo LIKE ? and cos.status LIKE ? and c.cod_unidade = ? AND " +
                     "VT.codigo::TEXT LIKE ? \n "  +
-                    "ORDER BY cos.codigo asc\n" +
+                    "ORDER BY cos.codigo desc\n" +
                     "%s";
             if (limit != null){
                 query = String.format(query, " LIMIT ?  OFFSET ? ");
