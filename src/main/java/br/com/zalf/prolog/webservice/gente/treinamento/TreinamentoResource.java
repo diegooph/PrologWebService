@@ -71,6 +71,9 @@ public class TreinamentoResource {
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("treinamento") FormDataBodyPart jsonPart) {
 
+		if (!fileDetail.getFileName().endsWith(".pdf"))
+			return Response.Error("ERRO! Arquivo não está no formato PDF!");
+
 		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
 		Treinamento treinamento = jsonPart.getValueAs(Treinamento.class);
 		if (treinamento == null) {

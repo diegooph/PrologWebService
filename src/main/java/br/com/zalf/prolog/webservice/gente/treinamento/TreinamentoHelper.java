@@ -2,13 +2,18 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 
 import br.com.zalf.prolog.models.treinamento.Treinamento;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class TreinamentoHelper { 
 
 	public static String createFileName(Treinamento treinamento) {
+		SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+		String extensao = "pdf";
 		return String.format(
-				"%s_%d_%s", 
-				treinamento.getTitulo(), 
+				"%d_%s.%s",
 				treinamento.getCodUnidade(),
-				treinamento.getDataLiberacao().toString());
+				s.format(treinamento.getDataHoraCadastro()),
+				extensao);
 	}
 }

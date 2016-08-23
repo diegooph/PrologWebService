@@ -21,7 +21,6 @@ import br.com.zalf.prolog.webservice.util.L;
 public class UploadTreinamento {
 	private static final String TAG = UploadTreinamento.class.getSimpleName();
 	private static final String BUCKET_TREINAMENTOS = "treinamentos-prolog";
-	private boolean enviou = false;
 
 	public boolean doIt(
 			Treinamento treinamento,
@@ -46,10 +45,10 @@ public class UploadTreinamento {
 			IOUtils.copy(fileInputStream, out);
 			IOUtils.closeQuietly(out);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			L.e(TAG, "Arquivo não encontrado", e);
 			return false;
 		} catch (IOException e) {
-			e.printStackTrace();
+			L.e(TAG, "Erro ao ler arquivo", e);
 			return false;
 		}
 
@@ -65,19 +64,17 @@ public class UploadTreinamento {
 			e.printStackTrace();
 			return false;
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which " +
+			L.e(TAG, "Caught an AmazonServiceException, which " +
 					"means your request made it " +
 					"to Amazon S3, but was rejected with an error response" +
-					" for some reason.");
-			L.e(TAG, "Erro ao enviar arquivo", ase);
+					" for some reason.", ase);
 			return false;
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which " +
+			L.e(TAG, "Caught an AmazonClientException, which " +
 					"means the client encountered " +
 					"an internal error while trying to " +
 					"communicate with S3, " +
-					"such as not being able to access the network.");
-			L.e(TAG, "Erro ao enviar arquivo", ace);
+					"such as not being able to access the network.", ace);
 			return false;
 		}
 		
