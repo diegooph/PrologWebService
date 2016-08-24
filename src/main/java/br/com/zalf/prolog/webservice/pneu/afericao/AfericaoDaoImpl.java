@@ -259,7 +259,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Restricao restricao = new Restricao();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER.TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO, "
@@ -271,25 +270,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				restricao.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
-				restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
-				restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
-				restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
-				restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
+				return createRestricao(rSet);
 			}else{
 				new SQLException("Erro ao buscar os dados de restrição");
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return restricao;
+		return new Restricao();
 	}
 
 	public Restricao getRestricoesByPlaca(String placa) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		Restricao restricao = new Restricao();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM,ER.TOLERANCIA_INSPECAO, ER.TOLERANCIA_CALIBRAGEM, "
@@ -301,17 +295,23 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setString(1, placa);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				restricao.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
-				restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
-				restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
-				restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
-				restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
+				return createRestricao(rSet);
 			}else{
 				new SQLException("Erro ao buscar os dados de restrição");
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
+		return new Restricao();
+	}
+
+	private Restricao createRestricao(ResultSet rSet) throws SQLException{
+		Restricao restricao = new Restricao();
+		restricao.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
+		restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
+		restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
+		restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
+		restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
 		return restricao;
 	}
 
@@ -333,26 +333,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
-
 		PlacaModeloHolder holder = new PlacaModeloHolder(); //possui a lista de placaStatus
 		List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
 		List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
 		try {
 			//caolesce - trabalha semenlhante ao IF, verifica se o valor é null
 			conn = getConnection();
-			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, 0)::INTEGER as INTERVALO	"
+			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, -1)::INTEGER as INTERVALO	"
 					+ "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO	"
 					+ "LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO "
 					+ "FROM AFERICAO "
 					+ "GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA	"
 					+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
 					+ "ORDER BY M.NOME, INTERVALO DESC");
-
-			
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
 			rSet = stmt.executeQuery();
-
 			while(rSet.next()){
 				if(listPlacasMesmoModelo.size() == 0 ){//primeiro resultado do resultset
 					holder.setModelo(rSet.getString("NOME"));
@@ -383,7 +379,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			listModelo.add(holder);
 			selecaoPlacaAfericao.setPlacas(listModelo);
 			selecaoPlacaAfericao.setMeta(getRestricoesByCodUnidade(codUnidade).getPeriodoDiasAfericao());
-
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
