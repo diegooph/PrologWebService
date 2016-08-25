@@ -22,11 +22,10 @@ public class ProdutividadeResource{
 	@POST
 	@Path("/byPeriodo")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<ItemProdutividade> getProdutividadeByPeriodo(
-			@FormParam("dataInicial") long dataInicial, 
-			@FormParam("dataFinal") long dataFinal,
-			@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
+	public List<ItemProdutividade> getProdutividadeByPeriodo(@FormParam("dataInicial") long dataInicial,
+															 @FormParam("dataFinal") long dataFinal,
+															 @FormParam("cpf") Long cpf,
+															 @FormParam("token") String token) {
 		return service.getProdutividadeByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), cpf, token);
 	}
@@ -40,7 +39,6 @@ public class ProdutividadeResource{
 																			@PathParam("codFuncao") String codFuncao,
 																			@QueryParam("dataInicial") long dataInicial,
 																			@QueryParam("dataFinal") long dataFinal){
-
 		return service.getConsolidadoProdutividade(codUnidade, codEquipe, codFuncao, dataInicial, dataFinal);
 	}
 }

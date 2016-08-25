@@ -128,28 +128,52 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		List<HolderColaboradorProdutividade> holders = new ArrayList<>();
 		HolderColaboradorProdutividade holder = null;
 		List<ColaboradorProdutividade> colaboradores = new ArrayList<>();
-		ColaboradorProdutividade colaborador = null;
 		Colaborador c = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CPF, C.NOME, c.data_nascimento,F.nome as funcao,count(m.mapa) as mapas,sum(m.cxentreg) as caixas,\n" +
-					"--case para verificar automaticamente se é motorista ou ajudante\n" +
-					"sum(CASE when (c.matricula_ambev) = m.matricmotorista then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
-					"when (c.matricula_ambev) = m.matricajud1 then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
-					"when (c.matricula_ambev) = m.matricajud2 then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
-					"else 0\n" +
-					"end) as valor\n" +
-					"FROM mapa_colaborador MC\n" +
-					"JOIN colaborador C ON C.matricula_ambev = MC.cod_ambev\n" +
-					"AND C.cod_unidade = MC.cod_unidade\n" +
-					"JOIN MAPA M ON M.cod_unidade = MC.cod_unidade\n" +
-					"AND M.MAPA = MC.mapa\n" +
-					"JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
-					"JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
-					"WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
-					"and f.codigo::text like ? and e.codigo::text like ?\n" +
-					"GROUP BY 1,2,3,4\n" +
-					"order by f.nome, valor desc, c.nome;");
+			stmt = conn.prepareStatement("SELECT C.CPF,c.matricula_ambev, C.NOME, c.data_nascimento,F.nome funcao,count(m.mapa) as mapas,sum(m.cxentreg) as caixas,\n" +
+					"  --case para verificar automaticamente se é motorista ou ajudante e calcular o valor, em caso de entrega != AS\n" +
+					"  sum(CASE when (c.matricula_ambev) = m.matricmotorista and m.entrega <> 'AS' then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
+					"  when (c.matricula_ambev) = m.matricajud1 and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+					"  when (c.matricula_ambev) = m.matricajud2 and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+					"  else 0\n" +
+					"  end) +\n" +
+					"  -- case para calcular o valor quando é AS\n" +
+					"  sum(CASE when (c.matricula_ambev) = m.matricmotorista and m.entrega = 'AS' then\n" +
+					"    --case para calcular o valor com base no número de entregas\n" +
+					"    (case when m.entregas = 1 then uv.rm_motorista_valor_as_1_entrega\n" +
+					"      when m.entregas = 2 then uv.rm_motorista_valor_as_2_entregas\n" +
+					"      when m.entregas > 2 then uv.rm_motorista_valor_as_maior_2_entregas\n" +
+					"      else 0\n" +
+					"      end)\n" +
+					"  when (c.matricula_ambev) = m.matricajud1 and m.entrega = 'AS' then\n" +
+					"    --case para calcular o valor com base no número de entregas\n" +
+					"    (case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
+					"      when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
+					"      when m.entregas > 2 then uv.rm_ajudante_valor_as_maior_2_entregas\n" +
+					"      else 0\n" +
+					"      end)\n" +
+					"  when (c.matricula_ambev) = m.matricajud2 and m.entrega = 'AS' then\n" +
+					"    --case para calcular o valor com base no número de entregas\n" +
+					"    (case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
+					"    when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
+					"    when m.entregas > 2 then uv.rm_ajudante_valor_as_maior_2_entregas\n" +
+					"    else 0\n" +
+					"    end)\n" +
+					"  else 0\n" +
+					"  end) as valor\n" +
+					"  FROM mapa_colaborador MC\n" +
+					"  JOIN colaborador C ON C.matricula_ambev = MC.cod_ambev\n" +
+					"  AND C.cod_unidade = MC.cod_unidade\n" +
+					"  JOIN MAPA M ON M.cod_unidade = MC.cod_unidade\n" +
+					"  AND M.MAPA = MC.mapa\n" +
+					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
+					"  JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
+					"  JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
+					"  WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
+					"  and f.codigo::text like ? and e.codigo::text like ?\n" +
+					"  GROUP BY 1,2,3,4,5\n" +
+					"  order by f.nome, valor desc, c.nome;");
 			stmt.setLong(1, codUnidade);
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
@@ -157,7 +181,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setString(5, codEquipe);
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
-				if (colaborador == null){
+				if (holder == null){
 					holder = new HolderColaboradorProdutividade();
 					holder.setFuncao(rSet.getString("funcao"));
 					colaboradores = new ArrayList<>();
