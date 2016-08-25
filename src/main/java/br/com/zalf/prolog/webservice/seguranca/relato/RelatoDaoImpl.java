@@ -356,9 +356,12 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		Alternativa alternativa = createAlternativa(rSet);
 		relato.setAlternativa(alternativa);
 		relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
-		Pdv pdv = new Pdv();
-		pdv.setCodigo(rSet.getInt("COD_PDV"));
-		relato.setPdv(pdv);
+		int codPdv = rSet.getInt("COD_PDV");
+		if (codPdv > 0){
+			Pdv pdv = new Pdv();
+			pdv.setCodigo(codPdv);
+			relato.setPdv(pdv);
+		}
 		return relato;
 	}
 
