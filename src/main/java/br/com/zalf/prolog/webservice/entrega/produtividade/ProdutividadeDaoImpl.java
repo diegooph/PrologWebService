@@ -120,7 +120,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}
 	}
 
-	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String codEquipe, String codFuncao,
+	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			 long dataInicial, long dataFinal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -171,14 +171,14 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"  JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
 					"  JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"  WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
-					"  and f.codigo::text like ? and e.codigo::text like ?\n" +
+					"  and f.codigo::text like ? and e.nome::text like ?\n" +
 					"  GROUP BY 1,2,3,4,5\n" +
 					"  order by f.nome, valor desc, c.nome;");
 			stmt.setLong(1, codUnidade);
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setString(4, codFuncao);
-			stmt.setString(5, codEquipe);
+			stmt.setString(5, equipe);
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
 				if (holder == null){

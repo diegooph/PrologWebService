@@ -23,10 +23,10 @@ public class ProdutividadeService {
 		}
 	}
 
-	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String codEquipe, String codFuncao,
+	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			long dataInicial, long dataFinal){
 		try{
-			return dao.getConsolidadoProdutividade(codUnidade, codEquipe, codFuncao, dataInicial, dataFinal);
+			return dao.getConsolidadoProdutividade(codUnidade, equipe, codFuncao, dataInicial, dataFinal);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;

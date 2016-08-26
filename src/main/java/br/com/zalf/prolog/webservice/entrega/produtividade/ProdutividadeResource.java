@@ -35,11 +35,11 @@ public class ProdutividadeResource{
 	@Secured
 	@Path("consolidado/{codUnidade}/{codEquipe}/{codFuncao}")
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
-																			@PathParam("codEquipe") String codEquipe,
+																			@PathParam("codEquipe") String equipe,
 																			@PathParam("codFuncao") String codFuncao,
 																			@QueryParam("dataInicial") long dataInicial,
 																			@QueryParam("dataFinal") long dataFinal){
-		return service.getConsolidadoProdutividade(codUnidade, codEquipe, codFuncao, dataInicial, dataFinal);
+		return service.getConsolidadoProdutividade(codUnidade, equipe, codFuncao, dataInicial, dataFinal);
 	}
 }
 
