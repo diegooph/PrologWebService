@@ -33,9 +33,9 @@ public class ProdutividadeResource{
 	@GET
 	@Android
 	@Secured
-	@Path("consolidado/{codUnidade}/{codEquipe}/{codFuncao}")
+	@Path("consolidado/{codUnidade}/{equipe}/{codFuncao}")
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
-																			@PathParam("codEquipe") String equipe,
+																			@PathParam("equipe") String equipe,
 																			@PathParam("codFuncao") String codFuncao,
 																			@QueryParam("dataInicial") long dataInicial,
 																			@QueryParam("dataFinal") long dataFinal){
