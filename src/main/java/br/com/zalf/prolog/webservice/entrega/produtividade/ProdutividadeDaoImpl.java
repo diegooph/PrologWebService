@@ -169,7 +169,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"  AND M.MAPA = MC.mapa\n" +
 					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
 					"  JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
-					"  JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
+					"  left JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"  WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
 					"  and f.codigo::text like ? and e.nome::text like ?\n" +
 					"  GROUP BY 1,2,3,4,5\n" +
