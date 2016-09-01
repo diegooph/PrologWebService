@@ -1,17 +1,16 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.zalf.prolog.models.Alternativa;
 import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.util.L;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RelatoDaoImpl extends DatabaseConnection {
 
