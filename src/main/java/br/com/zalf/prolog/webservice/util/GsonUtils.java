@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.util;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -13,13 +14,17 @@ import br.com.zalf.prolog.models.pneu.servico.Servico;
 
 public class GsonUtils {
 
-	private static final GsonBuilder sBuilder = new GsonBuilder()
-			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-			.setPrettyPrinting()
-			.serializeSpecialFloatingPointValues()
-			.enableComplexMapKeySerialization();
+	private static final GsonBuilder sBuilder;
 
     static {
+    	sBuilder = new GsonBuilder()
+				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+				.serializeSpecialFloatingPointValues()
+				.enableComplexMapKeySerialization();
+
+		if (BuildConfig.DEBUG)
+			sBuilder.setPrettyPrinting();
+
         RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
                 .of(Servico.class)
                 .registerSubtype(Calibragem.class)
