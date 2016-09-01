@@ -6,7 +6,6 @@ import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.gsd.Pdv;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.*;
 import java.time.LocalDate;
