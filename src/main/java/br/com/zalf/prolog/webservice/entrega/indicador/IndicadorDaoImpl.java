@@ -1,37 +1,16 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import br.com.zalf.prolog.models.indicador.DevolucaoCxHolder;
-import br.com.zalf.prolog.models.indicador.DevolucaoHlHolder;
-import br.com.zalf.prolog.models.indicador.DevolucaoNfHolder;
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
-import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
-import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
-import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
-import br.com.zalf.prolog.models.indicador.ItemTempoRota;
-import br.com.zalf.prolog.models.indicador.ItemTracking;
-import br.com.zalf.prolog.models.indicador.JornadaLiquidaHolder;
-import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.indicador.TempoInternoHolder;
-import br.com.zalf.prolog.models.indicador.TempoLargadaHolder;
-import br.com.zalf.prolog.models.indicador.TempoRotaHolder;
-import br.com.zalf.prolog.models.indicador.TrackingHolder;
+import br.com.zalf.prolog.models.indicador.*;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.models.util.MetaUtils;
 import br.com.zalf.prolog.models.util.TimeUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
 
@@ -88,7 +67,6 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 				createJornadaLiquida(rSet);
 				createTracking(rSet);
 			}
-
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
