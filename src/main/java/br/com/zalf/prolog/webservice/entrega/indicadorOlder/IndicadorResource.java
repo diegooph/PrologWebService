@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.entrega.indicador;
+package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
 import java.util.Date;
 
