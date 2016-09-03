@@ -1,23 +1,15 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
 import br.com.zalf.prolog.models.Relato;
 import br.com.zalf.prolog.models.Response;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.Android;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.Date;
+import java.util.List;
 
 @Path("/relatos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -81,7 +73,9 @@ public class RelatoResource {
 	}
 
 
+	// busca os classificados por mim
 	@GET
+	@Android
 	@Secured
 	@Path("/classificados/{cpf}/{status}")
 	public List<Relato> getClassificadosByColaborador(@PathParam("cpf") Long cpf, 
@@ -134,7 +128,9 @@ public class RelatoResource {
 				codUnidade, limit, offset, status);
 	}
 
+	//busca os pendentes
 	@GET
+	@Android
 	@Secured
 	@Path("/{codUnidade}/{status}")
 	public List<Relato> getAll(@PathParam("codUnidade") Long codUnidade,
