@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.models.indicador.indicadores.Indicador;
-import br.com.zalf.prolog.models.indicador.indicadores.quantidade.*;
-import br.com.zalf.prolog.models.indicador.indicadores.tempo.*;
+import br.com.zalf.prolog.models.indicador.indicadores.item.*;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
@@ -26,6 +24,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
 			"  JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
 			"  JOIN regional R ON R.codigo = U.cod_regional\n" +
+			"  JOIN unidade_metas um on um.cod_unidade = u.cod_unidade\n" +
 			"  JOIN equipe E ON E.cod_unidade = U.codigo AND C.cod_equipe = E.codigo AND C.cod_unidade = E.cod_unidade\n" +
 			"  LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
 			"              FROM tracking t\n" +
@@ -78,25 +77,26 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 	private List<Indicador> createExtratoIndicador(ResultSet rSet, String indicador) throws SQLException{
 
 		if (indicador.equals(CaixaViagem.CAIXA_VIAGEM)){
-			return createExtratoCaixaViagem(rSet);
+			return Converter.createExtratoCaixaViagem(rSet);
 		}else if(indicador.equals(DevHl.DEVOLUCAO_HL)){
-			return createExtratoDevHl(rSet);
+			//return createExtratoDevHl(rSet);
 		}else if(indicador.equals(DevPdv.DEVOLUCAO_PDV)){
-			return createExtratoDevPdv(rSet);
+			//return createExtratoDevPdv(rSet);
 		}else if(indicador.equals(DispersaoKm.DISPERSAO_KM)){
-			return createExtratoDispersaoKm(rSet);
+			//return createExtratoDispersaoKm(rSet);
 		}else if(indicador.equals(Tracking.TRACKING)){
-			return createExtratoTracking(rSet);
-		}else if(indicador.equals(DispersaoTempo)){
-			return createExtratoDispersaoTempo(rSet);
+			//return createExtratoTracking(rSet);
+		}else if(indicador.equals(DispersaoTempo.DISPERSAO_TEMPO)){
+			//return createExtratoDispersaoTempo(rSet);
 		}else if(indicador.equals(Jornada.JORNADA)){
-			return createExtratoJornada(rSet);
+			//return createExtratoJornada(rSet);
 		}else if(indicador.equals(TempoInterno.TEMPO_INTERNO)){
-			return createExtratoTempoInterno(rSet);
+			//return createExtratoTempoInterno(rSet);
 		}else if(indicador.equals(TempoLargada.TEMPO_LARGADA)){
-			return createExtratoTempoLargada(rSet);
+			//return createExtratoTempoLargada(rSet);
 		}else if(indicador.equals(TempoRota.TEMPO_ROTA)) {
-			return createExtratoTempoRota(rSet);
+			//return createExtratoTempoRota(rSet);
 		}
+		return new ArrayList<>();
 	}
 }
