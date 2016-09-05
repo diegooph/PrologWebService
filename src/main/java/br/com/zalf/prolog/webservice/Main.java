@@ -1,20 +1,15 @@
 package br.com.zalf.prolog.webservice;
 
-import java.sql.Connection;
+import br.com.zalf.prolog.models.indicador.indicadores.item.TempoRota;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-
-import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
-import com.google.gson.Gson;
 
 
 public class Main {
@@ -38,9 +33,12 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
-		L.d("tag", String.valueOf(System.currentTimeMillis()));
-		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
+		IndicadorDaoImpl dao = new IndicadorDaoImpl();
+		dao.getEstratoIndicador(1464739200000L,1467331200000L, "%", 2L,
+				"3", "%", "%", TempoRota.TEMPO_ROTA);
+
+
+
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
