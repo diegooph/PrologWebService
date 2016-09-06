@@ -1,15 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
+import br.com.zalf.prolog.models.indicador.IndicadorHolder;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 
 public class IndicadorService {
 	private IndicadorDaoImpl dao = new IndicadorDaoImpl();
 	
-	public IndicadorHolder getIndicadoresByPeriodo(LocalDate dataInicial, 
-			LocalDate dataFinal, Long cpf, String token) {
+	public IndicadorHolder getIndicadoresByPeriodo(LocalDate dataInicial,
+												   LocalDate dataFinal, Long cpf, String token) {
 		try {
 			return dao.getIndicadoresByPeriodo(dataInicial, dataFinal, cpf, token);
 		} catch (SQLException e) {

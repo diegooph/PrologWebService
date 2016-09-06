@@ -1,29 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.models.checklist.*;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.Date;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 
@@ -586,12 +574,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException{
 		List<VeiculoLiberacao> listVeiculos = new ArrayList<>();
 		List<PerguntaRespostaChecklist> listProblemas = new ArrayList<>();
-		List<String> listPlacasComCheck = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		VeiculoLiberacao veiculoLiberacao = new VeiculoLiberacao();
-		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+		VeiculoLiberacao veiculo = null;
+		PerguntaRespostaChecklist pergunta = null;
+		boolean hasCheck = false;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM "
@@ -602,76 +590,76 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM AND CP.PRIORIDADE = 'CRITICA' AND CP.COD_UNIDADE = CM.COD_UNIDADE "
 					+ "WHERE CM.CPF_FROTA IS NULL) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA "
 					+ "WHERE V.COD_UNIDADE = ? "
-					+ "ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO", ResultSet.TYPE_SCROLL_SENSITIVE,	ResultSet.CONCUR_UPDATABLE);
+					+ "ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO");
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
 			stmt.setLong(3, codUnidade);
 			rSet = stmt.executeQuery();
 
-			if(rSet.first()){
-				pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-				veiculoLiberacao.setPlaca(rSet.getString("PLACA"));
-				if(pergunta.getPergunta() != null){
-					listProblemas.add(pergunta);}
-				if(rSet.getString("PLACA_CHECK") != null){
-					listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
-			}
-			while (rSet.next()) { new ModeloChecklist();
-				if(rSet.getString("PLACA").equals(veiculoLiberacao.getPlaca())){
-					pergunta = new PerguntaRespostaChecklist();
-					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-					if(pergunta.getPergunta() != null){
-						listProblemas.add(pergunta);}
-				}else{
-					if(rSet.getString("PLACA_CHECK") != null){
-						listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
-					veiculoLiberacao.setItensCriticos(listProblemas);
-					listVeiculos.add(veiculoLiberacao);
-					listProblemas = new ArrayList<>();
-
-					pergunta = new PerguntaRespostaChecklist();
-					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-
-					veiculoLiberacao = new VeiculoLiberacao();
-					veiculoLiberacao.setPlaca(rSet.getString("PLACA"));
-					if(pergunta.getPergunta() != null){
-						listProblemas.add(pergunta);}
+			while (rSet.next()){
+				if(veiculo == null){//primeira linha do rSet
+					veiculo = new VeiculoLiberacao();
+					veiculo.setPlaca(rSet.getString("PLACA"));
+					if(rSet.getString("item_manutencao") != null){
+						pergunta = new PerguntaRespostaChecklist();
+						pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+						listProblemas.add(pergunta);
+					}
+					if(veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))){
+						hasCheck = true;
+					}else{
+						hasCheck = false;
+					}
+				}else{//a partir da segunda linha do Rset
+					if(veiculo.getPlaca().equals(rSet.getString("placa"))){
+						if(rSet.getString("item_manutencao") != null){
+							pergunta = new PerguntaRespostaChecklist();
+							pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+							listProblemas.add(pergunta);
+						}
+					}else{
+						if(listProblemas.size() > 0){
+							VeiculoLiberacao v = new VeiculoLiberacao();
+							v.setItensCriticos(listProblemas);
+							v.setPlaca(veiculo.getPlaca());
+							v.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
+							listVeiculos.add(v);
+							if(!hasCheck){
+								veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
+								listVeiculos.add(veiculo);
+							}
+						}else {
+							if(hasCheck){
+								veiculo.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
+								listVeiculos.add(veiculo);
+							}else{
+								veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
+								listVeiculos.add(veiculo);
+							}
+						}
+						veiculo = new VeiculoLiberacao();
+						veiculo.setPlaca(rSet.getString("placa"));
+						if(veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))){
+							hasCheck = true;
+						}else{
+							hasCheck = false;
+						}
+						listProblemas = new ArrayList<>();
+						if(rSet.getString("item_manutencao") != null){
+							pergunta = new PerguntaRespostaChecklist();
+							pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+							listProblemas.add(pergunta);
+						}
+					}
 				}
 			}
-			veiculoLiberacao.setItensCriticos(listProblemas);
-			listVeiculos.add(veiculoLiberacao);
+			listVeiculos.add(veiculo);
 		}
 		finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		setStatusLiberacao(listVeiculos, listPlacasComCheck);
 		return listVeiculos;
 	}
-
-	private void setStatusLiberacao(List<VeiculoLiberacao> list, List<String> listPlacasComCheck){
-		for(VeiculoLiberacao veiculoLiberacao : list){
-			if(veiculoLiberacao.getItensCriticos().size() > 0){
-				veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
-			}else{
-				if(placaTemCheck(veiculoLiberacao.getPlaca(), listPlacasComCheck)){
-					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
-				}else{
-					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
-				}
-			}
-		}
-	}
-
-	private boolean placaTemCheck (String placa, List<String> listPlacasComCheck){
-		List<String> listPlaca = new ArrayList<>();
-		listPlaca = listPlacasComCheck.stream().filter(c -> c.equals(placa)).collect(Collectors.toCollection(ArrayList::new));
-		if(listPlaca.isEmpty()){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
 }
 
 
