@@ -8,9 +8,10 @@
 	<name>Prolog Web Service Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
-		<jersey.version>2.22.1</jersey.version>
+		<jersey.version>2.23.2</jersey.version>
 	</properties>
 	<dependencies>
+
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -60,18 +61,19 @@
 			<version>2.5</version>
 		</dependency>
 
-
-		<!-- commons csv (import mapa) -->
+		<!-- commons csv (import mapa-tracking) -->
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-			<version>1.2</version>
+			<version>1.4</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.10.74</version>
+			<version>1.11.31</version>
 		</dependency>
 
 		<dependency>
@@ -92,7 +94,6 @@
 			<artifactId>java-property-utils</artifactId>
 			<version>1.10</version>
 		</dependency>
-
 
 	</dependencies>
 	<build>
