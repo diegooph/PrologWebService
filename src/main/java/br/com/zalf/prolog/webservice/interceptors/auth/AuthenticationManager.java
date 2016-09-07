@@ -33,7 +33,7 @@ public class AuthenticationManager {
         return INSTANCE;
     }
 
-    public boolean validateToken(String token) {
+    public boolean verifyIfTokenExists(String token) {
         return cache.getUnchecked(token);
     }
 

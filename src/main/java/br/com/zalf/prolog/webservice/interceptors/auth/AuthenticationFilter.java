@@ -11,7 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.util.L;
 
 @Secured
@@ -47,7 +46,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         // Check if it was issued by the server and if it's not expired
         // Throw an Exception if the token is invalid
     	L.d(TAG, "Token: " + token);
-    	if (AuthenticationManager.getInstance().validateToken(token))
+    	if (!AuthenticationManager.getInstance().verifyIfTokenExists(token))
     		throw new NotAuthorizedException("Token inválido");
     }
 }
