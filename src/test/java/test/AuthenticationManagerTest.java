@@ -11,7 +11,6 @@ import static test.TestConstants.*;
  * Created by luiz on 07/09/16.
  */
 public class AuthenticationManagerTest extends TestCase {
-    private final AutenticacaoService service = new AutenticacaoService();
 
     @Test
     public void testAuthenticationFakeToken() throws InterruptedException {
@@ -29,26 +28,27 @@ public class AuthenticationManagerTest extends TestCase {
 
         // Começou sem os tokens de teste setados
         assertFalse(getManager().isTokenInCache(token));
-        assertFalse(getManager().isTokenInCache(token));
 
         // Busca pelo token falso no BD
-        if (token.endsWith(FAKE_TOKEN))
+        if (token.equals(FAKE_TOKEN))
             assertFalse(getManager().verifyIfTokenExists(token));
         else
             assertTrue(getManager().verifyIfTokenExists(token));
         // Agora ele deve estar na cache
         assertTrue(getManager().isTokenInCache(token));
 
-        // Temos apenas um token em cache, o FAKE
+        // Temos apenas um token em cache
         assertEquals(getManager().getCacheSize(), 1);
 
         // Assumindo que a unidade de tempo para expirar esteja em segundos
-        sleep(1);
+        sleepSeconds(1);
+        // 1 segundo não é tempo suficiente para a cache remover o token, então ele ainda tem que
+        // estar lá
         assertTrue(getManager().isTokenInCache(token));
         assertEquals(getManager().getCacheSize(), 1);
 
+        sleepSeconds(2);
         // Agora não deve estar mais em cache
-        sleep(2);
         assertFalse(getManager().isTokenInCache(token));
         assertEquals(getManager().getCacheSize(), 0);
     }
@@ -57,7 +57,7 @@ public class AuthenticationManagerTest extends TestCase {
         return AuthenticationManager.getInstance();
     }
 
-    private void sleep(int seconds) throws InterruptedException {
+    private void sleepSeconds(int seconds) throws InterruptedException {
         Thread.sleep(seconds * 1000);
     }
 }
