@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+
+import javax.ws.rs.core.Application;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.ws.rs.core.Application;
-
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 public class ProLogApplication extends Application {
 	

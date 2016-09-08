@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.checklist.*;
-import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;

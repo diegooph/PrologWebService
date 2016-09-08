@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
-import java.io.IOException;
+import br.com.zalf.prolog.webservice.util.L;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -10,8 +10,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-
-import br.com.zalf.prolog.webservice.util.L;
+import java.io.IOException;
 
 @Secured
 @Provider
