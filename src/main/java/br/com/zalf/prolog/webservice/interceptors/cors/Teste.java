@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.cors;
+package br.com.zalf.prolog.webservice.interceptors.cors;
 
 import org.glassfish.jersey.server.ResourceConfig;
 

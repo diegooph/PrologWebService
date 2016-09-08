@@ -11,22 +11,21 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
+import br.com.zalf.prolog.webservice.util.L;
 
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+    private static final String TAG = AuthenticationFilter.class.getSimpleName();
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-
-    	System.out.println("Chamado");
         // Get the HTTP Authorization header from the request
         String authorizationHeader = 
             requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        System.out.println("authorizationHeader: " + authorizationHeader);
+        L.d(TAG, "authorizationHeader: " + authorizationHeader);
         // Check if the HTTP Authorization header is present and formatted correctly 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new NotAuthorizedException("Authorization header must be provided");
@@ -46,8 +45,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private void validateToken(String token) throws Exception {
         // Check if it was issued by the server and if it's not expired
         // Throw an Exception if the token is invalid
-    	System.out.println("Token: " + token);
-    	if (!new AutenticacaoService().verifyIfTokenExists(token))
+    	L.d(TAG, "Token: " + token);
+    	if (!AuthenticationManager.getInstance().verifyIfTokenExists(token))
     		throw new NotAuthorizedException("Token inválido");
     }
 }

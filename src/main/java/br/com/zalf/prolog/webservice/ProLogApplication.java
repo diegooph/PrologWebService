@@ -9,7 +9,7 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-public class MyApplication extends Application {
+public class ProLogApplication extends Application {
 	
 	@Override
 	public Set<Object> getSingletons() {
