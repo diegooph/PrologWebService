@@ -5,10 +5,12 @@ import br.com.zalf.prolog.models.Colaborador;
 import br.com.zalf.prolog.models.Veiculo;
 import br.com.zalf.prolog.models.checklist.Checklist;
 import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.checklist.os.*;
+import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
+import br.com.zalf.prolog.models.checklist.os.ManutencaoHolder;
+import br.com.zalf.prolog.models.checklist.os.OrdemServico;
+import br.com.zalf.prolog.models.checklist.os.Tempo;
 import br.com.zalf.prolog.models.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -320,7 +322,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from estratificacao_os e \n" +
                     "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
-                    "ORDER BY E.placa_veiculo, e.prioridade \n" +
+                    "ORDER BY E.placa_veiculo, e.data_hora_conserto desc \n" +
                     "limit ? offset ?");
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
@@ -371,6 +373,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
                     item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
+                    item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
                 }
                 itens.add(item);
             }
@@ -662,7 +665,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto =? " +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto =?, feedback_conserto = ? " +
                     "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
                     "COD_ALTERNATIVA = ?");
             stmt.setLong(1, item.getMecanico().getCpf());
@@ -670,10 +673,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
             stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(6, codUnidade);
-            stmt.setLong(7, item.getCodOs());
-            stmt.setLong(8, item.getPergunta().getCodigo());
-            stmt.setLong(9, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            stmt.setString(6, item.getFeedbackResolucao());
+            stmt.setLong(7, codUnidade);
+            stmt.setLong(8, item.getCodOs());
+            stmt.setLong(9, item.getPergunta().getCodigo());
+            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
                 updateStatusOs(codUnidade, item.getCodOs(), conn);
