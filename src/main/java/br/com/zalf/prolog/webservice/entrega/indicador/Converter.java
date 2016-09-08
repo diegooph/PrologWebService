@@ -7,9 +7,4 @@ package br.com.zalf.prolog.webservice.entrega.indicador;
 public class Converter {
 
 
-
-
-
-
-
 }
