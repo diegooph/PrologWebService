@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.network.Request;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.Request;
 /**
  * Contém os métodos para manipular os usuários no banco de dados 
  */

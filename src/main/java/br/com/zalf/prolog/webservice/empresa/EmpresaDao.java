@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.commons.colaborador.Empresa;
+import br.com.zalf.prolog.commons.colaborador.Equipe;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.network.Request;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Equipe;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.relatorios.Empresa;
 
 public interface EmpresaDao {
 	

@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
+import br.com.zalf.prolog.entrega.indicador.older.IndicadorHolder;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
 
 /**
  * Contém os métodos para busca dos indicadores
@@ -21,7 +21,7 @@ public interface IndicadorDao {
  * @throws SQLException caso não seja possível realizar a busca
  */
 IndicadorHolder getIndicadoresByPeriodo(LocalDate dataInicial, LocalDate dataFinal,
-								Long cpf, String token) throws SQLException;
+										Long cpf, String token) throws SQLException;
 
 			
 }

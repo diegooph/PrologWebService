@@ -1,20 +1,14 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
-import br.com.zalf.prolog.models.relatorios.Empresa;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Empresa;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
 import br.com.zalf.prolog.webservice.empresa.EmpresaService;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.Date;
+import java.util.List;
 
 @Path("/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -44,7 +38,7 @@ public class RelatorioResource {
 		System.out.println("Inciial: " + new Date(dataInicial));
 		System.out.println("Final: " + new Date(dataFinal));
 		
-		return service.getRelatorioByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
+		return service.getRelatorioByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)),equipe, codUnidade, cpf, token);
 	}
 }

@@ -1,5 +1,10 @@
 package br.com.zalf.prolog.webservice.imports;
 
+import br.com.zalf.prolog.commons.imports.MapaImport;
+import br.com.zalf.prolog.commons.imports.TrackingImport;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+
 import java.io.FileReader;
 import java.io.Reader;
 import java.sql.Time;
@@ -10,11 +15,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.imports.TrackingImport;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import br.com.zalf.prolog.models.imports.MapaImport;
 
 /**
  * Created by jean on 18/01/16.

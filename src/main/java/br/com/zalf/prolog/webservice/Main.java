@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice;
 
-import java.sql.Connection;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+import com.google.gson.Gson;
+
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -8,18 +11,10 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import br.com.zalf.prolog.models.checklist.os.ItemOrdemServico;
-import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
-import com.google.gson.Gson;
-
 
 public class Main {
 
-	public static void main(String[] args)  throws SQLException{
+	public static void main(String[] args)  throws SQLException {
 		L.d("Main", "Testando");
 		L.e("Main", "FUDEU", new Exception("Problema na main"));
 	

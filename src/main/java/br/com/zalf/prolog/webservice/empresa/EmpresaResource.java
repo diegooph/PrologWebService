@@ -1,16 +1,19 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import br.com.zalf.prolog.commons.colaborador.Empresa;
+import br.com.zalf.prolog.commons.colaborador.Equipe;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.colaborador.Setor;
+import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderMapaTracking;
-import br.com.zalf.prolog.models.relatorios.Empresa;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import java.sql.SQLException;
+import java.util.List;
 
 @Path("/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -68,8 +71,8 @@ public class EmpresaResource {
 	@Secured
 	@Path("/resumoDados/{codUnidade}/{ano}/{mes}")
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
-                                                                          @PathParam("mes") int mes,
-                                                                          @PathParam("codUnidade") Long codUnidade){
+															  @PathParam("mes") int mes,
+															  @PathParam("codUnidade") Long codUnidade){
 			return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
 	}
 

@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd.pdv;
 
+import br.com.zalf.prolog.seguranca.gsd.Pdv;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.gsd.Pdv;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class PdvDaoImpl extends DatabaseConnection implements PdvDao {
 

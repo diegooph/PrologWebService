@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.commons.login.Autenticacao;
+
 import java.sql.SQLException;
 
-import br.com.zalf.prolog.models.Autenticacao;
 /**
  * Autenticação do usuário no sistema.
  */

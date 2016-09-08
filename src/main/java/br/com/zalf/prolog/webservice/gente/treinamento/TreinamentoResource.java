@@ -1,23 +1,20 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.gente.treinamento.Treinamento;
+import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.treinamento.Treinamento;
-import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 @Path("/treinamentos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

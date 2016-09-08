@@ -1,15 +1,15 @@
 package br.com.zalf.prolog.webservice.imports;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.imports.MapaImport;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.imports.MapaImport;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 

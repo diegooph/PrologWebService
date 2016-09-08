@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.app;
 
+import br.com.zalf.prolog.commons.login.AppVersion;
+
 import java.sql.SQLException;
 
-import br.com.zalf.prolog.models.AppVersion;
 /**
  * Verifica se a versão utilizada é a última disponível.
  */

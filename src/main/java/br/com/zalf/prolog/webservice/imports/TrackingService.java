@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.imports;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.imports.TrackingImport;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.imports.TrackingImport;
 
 public class TrackingService {
 	

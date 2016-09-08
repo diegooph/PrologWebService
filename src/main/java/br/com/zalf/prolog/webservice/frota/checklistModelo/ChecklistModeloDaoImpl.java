@@ -1,17 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.checklistModelo;
 
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.veiculo.TipoVeiculo;
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.TipoVeiculo;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao{
 

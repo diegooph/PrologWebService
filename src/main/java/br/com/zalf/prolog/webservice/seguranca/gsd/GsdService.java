@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd;
 
+import br.com.zalf.prolog.commons.questoes.Pergunta;
+import br.com.zalf.prolog.seguranca.gsd.Gsd;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Pergunta;
-import br.com.zalf.prolog.models.gsd.Gsd;
 
 public class GsdService {
 	private GsdDaoImpl dao = new GsdDaoImpl();
@@ -19,25 +19,7 @@ public class GsdService {
 			return false;
 		}
 	}
-	
-//	public boolean update(Gsd gsd) {
-//		try {
-//			return dao.update(gsd);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
-	
-//	public Gsd getByCod(Long codigo, String token) {
-//		try {
-//			return dao.getByCod(codigo, token);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-	
+
 	public List<Gsd> getByColaborador(Long cpf, String token) {
 		try {
 			return dao.getByColaborador(cpf, token);
@@ -74,16 +56,7 @@ public class GsdService {
 			return new ArrayList<Gsd>();
 		}
 	}
-	
-//	public boolean delete(Long codigo) {
-//		try {
-//			return dao.delete(codigo);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
-	
+
 	public List<Pergunta> getPerguntas() {
 		try {
 			return dao.getPerguntas();

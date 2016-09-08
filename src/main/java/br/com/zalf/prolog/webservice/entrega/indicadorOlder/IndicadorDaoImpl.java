@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
-import br.com.zalf.prolog.models.indicador.*;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.models.util.MetaUtils;
-import br.com.zalf.prolog.models.util.TimeUtils;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.util.MetaUtils;
+import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.older.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 

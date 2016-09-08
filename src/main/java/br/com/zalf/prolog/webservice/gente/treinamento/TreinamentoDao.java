@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.gente.treinamento.Treinamento;
+import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.treinamento.Treinamento;
-import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
 /**
  * Contém os métodos para manipular os treinamentos
  */

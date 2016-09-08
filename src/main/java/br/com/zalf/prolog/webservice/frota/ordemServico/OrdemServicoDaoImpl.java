@@ -1,14 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.ordemServico;
 
-import br.com.zalf.prolog.models.Alternativa;
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.checklist.os.*;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.questoes.Alternativa;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.checklist.Checklist;
+import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.frota.checklist.os.ItemOrdemServico;
+import br.com.zalf.prolog.frota.checklist.os.ManutencaoHolder;
+import br.com.zalf.prolog.frota.checklist.os.OrdemServico;
+import br.com.zalf.prolog.frota.checklist.os.Tempo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 

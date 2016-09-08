@@ -1,17 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import java.util.Date;
-import java.util.List;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
+import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.Android;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.produtividade.HolderColaboradorProdutividade;
-import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.Android;
-import br.com.zalf.prolog.webservice.util.L;
+import java.util.Date;
+import java.util.List;
 
 @Path("/produtividade")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

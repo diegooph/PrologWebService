@@ -1,23 +1,16 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.pneu.afericao.Afericao;
-import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
-import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
+import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.LogBody;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.Date;
+import java.util.List;
 
 @Path("/afericao")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -30,7 +23,7 @@ public class AfericaoResource {
 	@Secured
 	@LogBody
 	@Path("/{codUnidade}")
-	public Response insert(Afericao afericao, 
+	public Response insert(Afericao afericao,
 			@PathParam("codUnidade") Long codUnidade) {
 		afericao.setDataHora(new Date(System.currentTimeMillis()));
 		if (service.Insert(afericao, codUnidade)) {

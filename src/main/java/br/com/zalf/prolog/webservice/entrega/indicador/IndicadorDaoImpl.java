@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
+import br.com.zalf.prolog.entrega.indicador.older.IndicadorHolder;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicadorOlder.IndicadorDao;
 

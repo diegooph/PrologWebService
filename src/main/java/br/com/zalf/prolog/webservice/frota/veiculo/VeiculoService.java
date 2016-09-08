@@ -1,15 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.commons.veiculo.*;
+import br.com.zalf.prolog.webservice.util.Android;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.Marca;
-import br.com.zalf.prolog.models.Modelo;
-import br.com.zalf.prolog.models.TipoVeiculo;
-import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.webservice.util.Android;
 
 public class VeiculoService {
 	private VeiculoDaoImpl dao = new VeiculoDaoImpl();

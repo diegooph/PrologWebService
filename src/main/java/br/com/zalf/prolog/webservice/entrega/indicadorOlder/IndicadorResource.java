@@ -1,16 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
-import java.util.Date;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.entrega.indicador.older.IndicadorHolder;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.indicador.IndicadorHolder;
-import br.com.zalf.prolog.models.util.DateUtils;
+import java.util.Date;
 
 @Path("/indicadores")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -26,7 +21,7 @@ public class IndicadorResource {
 			@FormParam("dataFinal") long dataFinal, 
 			@FormParam("cpf") Long cpf,
 			@FormParam("token") String token) {
-		return service.getIndicadoresByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)), 
+		return service.getIndicadoresByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), cpf, token);
 	}
 }

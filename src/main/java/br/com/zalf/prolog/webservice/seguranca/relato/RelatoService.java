@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
+import br.com.zalf.prolog.seguranca.relato.Relato;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Relato;
 
 public class RelatoService {
 	private RelatoDaoImpl dao = new RelatoDaoImpl();

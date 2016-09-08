@@ -1,29 +1,19 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.frota.checklist.*;
+import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 
