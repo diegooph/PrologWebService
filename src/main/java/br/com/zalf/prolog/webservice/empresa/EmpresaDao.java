@@ -14,18 +14,64 @@ import java.util.List;
 
 public interface EmpresaDao {
 
+	/**
+	 *
+	 * @param ano ano da busca
+	 * @param mes mes da busca
+	 * @param codUnidade unidade que deseja-se buscar
+	 * @return
+	 * @throws SQLException
+	 * @throws NoContentException
+	 */
 	List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException;
 
-	AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException;
+	/**
+	 * Cadastra um setor no banco de dados
+	 * @param nome nome do setor
+	 * @param codUnidade código da unidade referente ao setor
+	 * @return objeto que encapsula um resposta OK ou NOK
+	 * @throws SQLException
+	 */
+	AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
 
+	/**
+	 * Lista os setores referentes ao código da unidade
+	 * @param codUnidade código de uma unidade
+	 * @return lista de setores da unidade
+	 * @throws SQLException
+	 */
 	List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException;
 
+	/**
+	 * Lista as equipes de uma unidade
+	 * @param codUnidade código de uma unidade
+	 * @return lista de equipes da unidade
+	 * @throws SQLException
+	 */
 	List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException;
-	
+
+	/**
+	 * Atualiza uma equipe
+	 * @param request objeto que encapsula uma equipe
+	 * @return
+	 * @throws SQLException
+	 */
 	boolean updateEquipe (Request<Equipe> request) throws SQLException;
-	
+
+	/**
+	 * Cria uma equipe
+	 * @param request objeto que encapsula uma equipe
+	 * @return
+	 * @throws SQLException
+	 */
 	boolean createEquipe (Request<Equipe> request) throws SQLException;
-	
+
+	/**
+	 * lista as funções de uma unidade
+	 * @param codUnidade código de uma unidade
+	 * @return lista de funções da unidade
+	 * @throws SQLException
+	 */
 	List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException;
 
 	/**

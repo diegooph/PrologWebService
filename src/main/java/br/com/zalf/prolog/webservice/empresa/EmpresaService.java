@@ -14,11 +14,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe EmpresaService responsavel por comunicar-se com a interface DAO
+ */
 public class EmpresaService {
 
 	private EmpresaDao dao = new EmpresaDaoImpl();
 	
-	public List<Equipe> getEquipesByCodUnidade(Long codUnidade){
+	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getEquipesByCodUnidade(codUnidade);
 		}catch(SQLException e){
@@ -27,7 +30,7 @@ public class EmpresaService {
 		}
 	}
 	
-	public boolean updateEquipe (Request<Equipe> request){
+	public boolean updateEquipe (Request<Equipe> request) {
 		try{
 			return dao.updateEquipe(request);
 		}catch(SQLException e){
@@ -36,7 +39,7 @@ public class EmpresaService {
 		}
 	}
 	
-	public boolean createEquipe (Request<Equipe> request){
+	public boolean createEquipe (Request<Equipe> request) {
 		try{
 			return dao.createEquipe(request);
 		}catch(SQLException e){
@@ -45,7 +48,7 @@ public class EmpresaService {
 		}
 	}
 	
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade){
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) {
 		try{
 			return dao.getFuncoesByCodUnidade(codUnidade);
 		}catch(SQLException e){
@@ -54,7 +57,7 @@ public class EmpresaService {
 		}
 	}
 
-	public List<Setor> getSetorByCodUnidade(Long codUnidade){
+	public List<Setor> getSetorByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getSetorByCodUnidade(codUnidade);
 		}catch (SQLException e){
@@ -63,7 +66,7 @@ public class EmpresaService {
 		}
 	}
 
-	public AbstractResponse insertSetor(String nome, Long codUnidade){
+	public AbstractResponse insertSetor(String nome, Long codUnidade) {
 		try{
 			return dao.insertSetor(nome,codUnidade);
 		}catch (SQLException e){
@@ -72,7 +75,7 @@ public class EmpresaService {
 		}
 	}
 
-	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade){
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) {
 		try{
 			return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
 		}catch (SQLException e){
@@ -84,7 +87,7 @@ public class EmpresaService {
 		}
 	}
 
-	public List<Empresa> getFiltros(Long cpf){
+	public List<Empresa> getFiltros(Long cpf) {
 		try{
 			return dao.getFiltros(cpf);
 		}catch(SQLException e){
