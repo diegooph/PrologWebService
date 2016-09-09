@@ -1,5 +1,17 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.colaborador.Equipe;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.colaborador.Setor;
+import br.com.zalf.prolog.commons.login.LoginHolder;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.permissao.Visao;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,20 +19,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Equipe;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.commons.colaborador.Setor;
-import br.com.zalf.prolog.commons.questoes.Alternativa;
-import br.com.zalf.prolog.permissao.Visao;
-import br.com.zalf.prolog.permissao.pilares.Pilar;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
 
@@ -358,7 +356,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setLong(14, c.getEquipe().getCodigo());
 	}
 
-	public LoginHolder getLoginHolder(Long cpf)throws SQLException{
+	@Override
+	public LoginHolder getLoginHolder(Long cpf) throws SQLException {
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.colaborador = getByCod(cpf);
 
@@ -380,7 +379,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					if(funcao == 2){
 						return true;
 					}
-
 				}
 			}
 		}

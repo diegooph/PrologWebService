@@ -16,22 +16,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {
 		SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
 		String token = tokenGenerador.nextSessionId();
-		//if (update(cpf, token)) {
-			// Já existia e atualizou, não precisa inserir
-//			Autenticacao autenticacao = new Autenticacao();
-//			autenticacao.setToken(token);
-//			autenticacao.setCpf(cpf);
-//			autenticacao.setStatus(Autenticacao.OK);
-		 //return autenticacao;
-		//} else {
-			// Deve inserir, retorna se foi sucesso ou não
-			return insert(cpf, token);
-		//}
+		return insert(cpf, token);
 	}
 
 	@Override
-	public boolean verifyIfTokenExists(String token) throws SQLException{
-		
+	public boolean verifyIfTokenExists(String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -49,27 +38,22 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		}
 		return false;
 	}
-	
-	@Deprecated
-	private boolean update(Long cpf, String token) throws SQLException {
+
+	@Override
+	public boolean delete(String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE TOKEN_AUTENTICACAO SET "
-					+ "TOKEN = ? WHERE CPF_COLABORADOR = ?;");
+			stmt = conn.prepareStatement("DELETE FROM TOKEN_AUTENTICACAO TA "
+					+ "WHERE TA.TOKEN = ?");
 			stmt.setString(1, token);
-			stmt.setLong(2, cpf);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				return false;				
-			}	
+			return (stmt.executeUpdate() > 0);
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
-		return true;
 	}
-	
+
 	private Autenticacao insert(Long cpf, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -85,8 +69,8 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				autenticacao.setStatus(Autenticacao.ERROR);
-				return autenticacao;				
-			}	
+				return autenticacao;
+			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
@@ -94,18 +78,23 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		return autenticacao;
 	}
 
-	@Override
-	public boolean delete(String token) throws SQLException {
+	@Deprecated
+	private boolean update(Long cpf, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("DELETE FROM TOKEN_AUTENTICACAO TA "
-					+ "WHERE TA.TOKEN = ?");
+			stmt = conn.prepareStatement("UPDATE TOKEN_AUTENTICACAO SET "
+					+ "TOKEN = ? WHERE CPF_COLABORADOR = ?;");
 			stmt.setString(1, token);
-			return (stmt.executeUpdate() > 0);
+			stmt.setLong(2, cpf);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				return false;
+			}
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
+		return true;
 	}
 }

@@ -16,10 +16,9 @@ import java.util.List;
 
 public class EmpresaService {
 
-	private EmpresaDaoImpl dao = new EmpresaDaoImpl();
+	private EmpresaDao dao = new EmpresaDaoImpl();
 	
 	public List<Equipe> getEquipesByCodUnidade(Long codUnidade){
-		
 		try{
 			return dao.getEquipesByCodUnidade(codUnidade);
 		}catch(SQLException e){
@@ -29,7 +28,6 @@ public class EmpresaService {
 	}
 	
 	public boolean updateEquipe (Request<Equipe> request){
-		
 		try{
 			return dao.updateEquipe(request);
 		}catch(SQLException e){

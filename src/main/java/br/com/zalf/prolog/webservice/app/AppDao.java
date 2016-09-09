@@ -4,9 +4,13 @@ import br.com.zalf.prolog.commons.login.AppVersion;
 
 import java.sql.SQLException;
 
-/**
- * Verifica se a versão utilizada é a última disponível.
- */
 public interface AppDao {
+
+	/**
+	 * Verifica se a versão utilizada é a última disponível.
+	 * @param appVersion
+	 * @return True se versão atualizada, do contrario, False.
+	 * @throws SQLException
+	 */
 	boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException;
 }

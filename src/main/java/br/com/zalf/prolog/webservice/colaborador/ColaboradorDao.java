@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.network.Request;
 
 import java.sql.SQLException;
@@ -11,27 +12,32 @@ import java.util.List;
  * Contém os métodos para manipular os usuários no banco de dados 
  */
 public interface ColaboradorDao {
+
 	/**
 	 * Insere um colaborador no bando de dados
-	 * @param request dados do colaborador a ser inserido e dados do solicitante
+	 * @param colaborador dados do colaborador a ser inserido e dados do solicitante
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível inserir no banco de dados
 	 */
 	boolean insert(Colaborador colaborador) throws SQLException;
+
 	/**
 	 * Atualiza os dados de um colaborador
-	 * @param request com os dados a serem atualizados e dados do solicitante
+	 * @param cpfAntigo cpf do colaborador a ser atualizado
+	 * @param colaborador dados do colaborador a ser atualizados
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
 	boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException;
+
 	/**
 	 * Deleta um colaborador
-	 * @param request contém o colaborador a ser deletado e dados do solicitante
+	 * @param cpf contém o cpf do colaborador a ser deletado e dados do solicitante
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
 	boolean delete(Long cpf) throws SQLException;
+
 	/**
 	 * Busca um colaborador pelo seu CPF
 	 * @param cpf chave a ser buscada no banco de dados
@@ -39,6 +45,7 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível buscar os dados
 	 */
 	Colaborador getByCod(Long cpf) throws SQLException;
+
 	/**
 	 * Busca todos os colaboradores de uma unidade
 	 * @param request contém os dados do solicitante e código da unidade a ser filtrada
@@ -46,6 +53,7 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível buscar os dados
 	 */
 	List<Colaborador> getAll(Request<?> request) throws SQLException;
+
 	/**
 	 * Verifica a existência de um CPF e data de nascimento
 	 * @param cpf do colaborador a ser verificada a existência
@@ -54,6 +62,7 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
 	 */
 	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
+
 	/**
 	 * Busca os dados de uma função pelo seu código 
 	 * @param codigo da função a ser buscada
@@ -61,6 +70,7 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
 	Funcao getFuncaoByCod(Long codigo) throws SQLException;
+
 	/**
 	 * Busca os colaboradores ativos pelo código de uma determinada unidade
 	 * @param codUnidade código da unidade a buscar os colaboradores
@@ -70,4 +80,12 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException;
+
+	/**
+	 * retorna o login do colaborador com o cpf marcado
+	 * @param cpf
+	 * @return o login do colaborador com o cpf marcado
+	 * @throws SQLException
+	 */
+	LoginHolder getLoginHolder(Long cpf) throws SQLException;
 }

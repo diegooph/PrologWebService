@@ -5,8 +5,14 @@ import br.com.zalf.prolog.commons.login.Autenticacao;
 import java.sql.SQLException;
 
 public class AutenticacaoService {
+
 	private AutenticacaoDao dao = new AutenticacaoDaoImpl();
-	
+
+	/**
+	 * Insere ou recria uma autenticação de usuario
+	 * @param cpf um cpf
+	 * @return Autenticação com token gerado, ou token = -1 sinalizando erro
+	 */
 	public Autenticacao insertOrUpdate(Long cpf) {
 		try {
 			return dao.insertOrUpdate(cpf);					
@@ -15,16 +21,26 @@ public class AutenticacaoService {
 			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
 		}
 	}
-	
-	public boolean delete(String token) {
-	try {
-		return dao.delete(token);
-	} catch (SQLException e) {
-		e.printStackTrace();
-		return false;
-	}
-}
 
+	/**
+	 * Deleta o token de autenticação do usuario
+	 * @param token um token
+	 * @return True se deletado, false se não
+	 */
+	public boolean delete(String token) {
+		try {
+			return dao.delete(token);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Verifica a existencia de um token
+	 * @param token recebe um token como parametro
+	 * @return True caso token exista, False, se não existir
+	 */
 	public boolean verifyIfTokenExists(String token){
 		try {
 			return dao.verifyIfTokenExists(token);
@@ -33,6 +49,4 @@ public class AutenticacaoService {
 			return false;
 		}
 	}
-	
-	
 }

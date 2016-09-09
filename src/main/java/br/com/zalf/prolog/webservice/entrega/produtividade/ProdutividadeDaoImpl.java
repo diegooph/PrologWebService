@@ -107,8 +107,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}
 	}
 
+	@Override
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
-																			long dataInicial, long dataFinal) throws SQLException{
+																			long dataInicial, long dataFinal) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
