@@ -1,18 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.commons.util.MetaUtils;
-import br.com.zalf.prolog.commons.util.TimeUtils;
-import br.com.zalf.prolog.entrega.indicador.older.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
+public class IndicadorDaoImpl extends DatabaseConnection{
 
 	private static final String BUSCA_INDICADORES = "SELECT M.DATA, M.CXCARREG, "
 			+ "M.CXENTREG,M.QTHLCARREGADOS, M.QTHLENTREGUES, M.QTNFCARREGADAS, "

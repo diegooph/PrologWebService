@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
-import com.google.gson.Gson;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -33,10 +33,9 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
-		L.d("tag", String.valueOf(System.currentTimeMillis()));
-		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
-
+		IndicadorDaoImpl teste = new IndicadorDaoImpl();
+		System.out.println(GsonUtils.getGson().toJson(teste.getAcumuladoIndicadores()));
+		;
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
 

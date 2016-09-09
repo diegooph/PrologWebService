@@ -1,5 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
+import br.com.zalf.prolog.commons.util.MetaUtils;
+import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
+import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jean on 02/09/16.
  * classe que converte os itens que vem em um ResultSet para os objetos
@@ -8,7 +18,7 @@ public class Converter {
 
     private static final String TAG = Converter.class.getSimpleName();
 
-    public static List<Indicador> createExtratoCaixaViagem(ResultSet rSet)throws SQLException{
+    static List<Indicador> createExtratoCaixaViagem(ResultSet rSet)throws SQLException {
         List<Indicador> itens = new ArrayList<>();
         while (rSet.next()){
             CaixaViagem item = new CaixaViagem();
@@ -23,7 +33,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoDevHl(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoDevHl(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             DevHl item = new DevHl();
@@ -38,7 +48,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoDevPdv(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoDevPdv(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             DevPdv item = new DevPdv();
@@ -53,7 +63,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoDispersaoKm(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoDispersaoKm(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             DispersaoKm item = new DispersaoKm();
@@ -68,7 +78,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoTracking(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoTracking(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             Tracking item = new Tracking();
@@ -83,7 +93,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoDispersaoTempo(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoDispersaoTempo(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             DispersaoTempo item = new DispersaoTempo();
@@ -98,7 +108,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoJornada(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoJornada(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             Jornada item = new Jornada();
@@ -108,14 +118,14 @@ public class Converter {
                     .setTempoLargada(MetaUtils.calculaTempoLargada(rSet.getTime("HRSAI"), rSet.getTime("HRMATINAL")))
                     .setTempoInterno(rSet.getTime("TEMPOINTERNO"))
                     .setTempoRota(TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
-					TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI"))))
+                            TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI"))))
                     .calculaResultado();
             itens.add(item);
         }
         return itens;
     }
 
-    public static List<Indicador> createExtratoTempoInterno(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoTempoInterno(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             TempoInterno item = new TempoInterno();
@@ -130,7 +140,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoTempoLargada(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoTempoLargada(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             TempoLargada item = new TempoLargada();
@@ -145,7 +155,7 @@ public class Converter {
         return itens;
     }
 
-    public static List<Indicador> createExtratoTempoRota(ResultSet rSet) throws SQLException{
+    static List<Indicador> createExtratoTempoRota(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
             TempoRota item = new TempoRota();
@@ -159,4 +169,99 @@ public class Converter {
         }
         return itens;
     }
+
+    /*
+    Criação dos objetos acumulados
+     */
+
+    static IndicadorAcumulado createAcumuladoCaixaViagem(ResultSet rSet) throws SQLException {
+        CaixaViagemAcumulado item = new CaixaViagemAcumulado();
+        item.setCxsCarregadasTotal(rSet.getInt("CARREGADAS_TOTAL"))
+                .setViagensTotal(rSet.getInt("VIAGENS_TOTAL"))
+                .setMeta(rSet.getDouble("META_CAIXA_VIAGEM"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoDevHl(ResultSet rSet) throws SQLException{
+        DevHlAcumulado item = new DevHlAcumulado();
+        item.setTotalOk(rSet.getInt("HL_CARREGADOS_TOTAL"))
+                .setTotalNok(rSet.getInt("HL_DEVOLVIDOS_TOTAL"))
+                .setMeta(rSet.getDouble("META_DEV_HL"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoDevPdv(ResultSet rSet) throws SQLException{
+        DevPdvAcumulado item = new DevPdvAcumulado();
+        item.setTotalOk(rSet.getInt("PDV_CARREGADOS_TOTAL"))
+                .setTotalNok(rSet.getInt("PDV_DEVOLVIDOS_TOTAL"))
+                .setMeta(rSet.getDouble("META_DEV_PDV"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoDispersaoKm(ResultSet rSet) throws SQLException{
+        DispersaoKmAcumulado item = new DispersaoKmAcumulado();
+        item.setKmPercorridoTotal(rSet.getInt("KM_PERCORRIDO_TOTAL"))
+                .setKmPlanejadoTotal(rSet.getInt("KM_PLANEJADO_TOTAL"))
+                .setMeta(rSet.getDouble("META_DISPERSAO_KM"))
+                .calculaResultado();
+        return  item;
+    }
+
+    static IndicadorAcumulado createAcumuladoDispersaoTempoMapas(ResultSet rSet) throws SQLException{
+        DispersaoTempoAcumuladoMapas item = new DispersaoTempoAcumuladoMapas();
+        item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_DISPERSAO_TEMPO"))
+                .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_DISPERSAO_TEMPO"))
+                .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
+                .calculaResultadoMapas();
+        return item;
+    }
+
+    //TODO: Verificar inconsistência ao subtrair os Time
+    static IndicadorAcumulado createAcumuladoDispersaoTempoMedia(ResultSet rSet) throws SQLException{
+        DispersaoTempoAcumuladoMedia item = new DispersaoTempoAcumuladoMedia();
+        item.setPlanejado(rSet.getTime("MEDIA_DISPERSAO_TEMPO_PLANEJADO"))
+                .setRealizado(rSet.getTime("MEDIA_DISPERSAO_TEMPO_REALIZADO"))
+                .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoJornadaMapas(ResultSet rSet) throws SQLException{
+        JornadaAcumuladoMapas item = new JornadaAcumuladoMapas();
+        item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_JORNADA"))
+                .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_JORNADA"))
+                .setMeta(rSet.getDouble("META_JORNADA_LIQUIDA_MAPAS"))
+                .calculaResultadoMapas();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoJornadaMedia(ResultSet rSet) throws SQLException{
+        JornadaAcumuladoMedia item = new JornadaAcumuladoMedia();
+        item.setResultado(rSet.getTime("MEDIA_JORNADA"))
+                .setMeta(rSet.getTime("META_JORNADA_LIQUIDA_HORAS"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoTempoInternoMapas(ResultSet rSet) throws SQLException{
+        TempoInternoAcumuladoMapas item = new TempoInternoAcumuladoMapas();
+        item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_INTERNO"))
+                .setMapasNok(rSet.getInt("TOTAL_MAPAS_VALIDOS_TEMPO_INTERNO") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_INTERNO"))
+                .setMeta(rSet.getDouble("META_TEMPO_INTERNO_MAPAS"))
+                .calculaResultadoMapas();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoTempoInternoMedia(ResultSet rSet) throws SQLException{
+        TempoInternoAcumuladoMedia item = new TempoInternoAcumuladoMedia();
+        item.setResultado(rSet.getTime("MEDIA_TEMPO_INTERNO"))
+                .setMeta(rSet.getTime("META_TEMPO_INTERNO_HORAS"));
+        return item;
+    }
+
+
 }
+
