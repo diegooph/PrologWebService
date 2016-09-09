@@ -8,6 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Classe AppDapImpl, responsavel pela execução da lógica
+ * e comunicação com a camada de dados da aplicação
+ */
 public class AppDaoImpl extends DatabaseConnection implements AppDao {
 
 	@Override
