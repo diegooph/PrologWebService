@@ -230,6 +230,11 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			acumulados.add(Converter.createAcumuladoJornadaMedia(rSet));
 			acumulados.add(Converter.createAcumuladoTempoInternoMapas(rSet));
 			acumulados.add(Converter.createAcumuladoTempoInternoMedia(rSet));
+			acumulados.add(Converter.createAcumuladoTempoLargadaMapas(rSet));
+			acumulados.add(Converter.createAcumuladoTempoLargadaMedia(rSet));
+			acumulados.add(Converter.createAcumuladoTempoRotaMapas(rSet));
+			acumulados.add(Converter.createAcumuladoTempoRotaMedia(rSet));
+			acumulados.add(Converter.createAcumuladoTracking(rSet));
 		}
 		return acumulados;
 	}

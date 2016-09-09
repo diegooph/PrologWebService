@@ -219,7 +219,6 @@ public class Converter {
         return item;
     }
 
-    //TODO: Verificar inconsistência ao subtrair os Time
     static IndicadorAcumulado createAcumuladoDispersaoTempoMedia(ResultSet rSet) throws SQLException{
         DispersaoTempoAcumuladoMedia item = new DispersaoTempoAcumuladoMedia();
         item.setPlanejado(rSet.getTime("MEDIA_DISPERSAO_TEMPO_PLANEJADO"))
@@ -262,6 +261,47 @@ public class Converter {
         return item;
     }
 
+    static IndicadorAcumulado createAcumuladoTempoLargadaMapas(ResultSet rSet) throws SQLException{
+        TempoLargadaAcumuladoMapas item = new TempoLargadaAcumuladoMapas();
+        item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_LARGADA"))
+                .setMapasNok(rSet.getInt("TOTAL_MAPAS_VALIDOS_TEMPO_LARGADA") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_LARGADA"))
+                .setMeta(rSet.getDouble("META_TEMPO_LARGADA_MAPAS"))
+                .calculaResultadoMapas();
+        return item;
+    }
 
+    static IndicadorAcumulado createAcumuladoTempoLargadaMedia(ResultSet rSet) throws SQLException{
+        TempoLargadaAcumuladoMedia item = new TempoLargadaAcumuladoMedia();
+        item.setResultado(rSet.getTime("MEDIA_TEMPO_LARGADA"))
+                .setMeta(rSet.getTime("META_TEMPO_LARGADA_HORAS"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoTempoRotaMapas(ResultSet rSet) throws SQLException{
+        TempoRotaAcumuladoMapas item = new TempoRotaAcumuladoMapas();
+        item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_ROTA"))
+                .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_ROTA"))
+                .setMeta(rSet.getDouble("META_TEMPO_ROTA_MAPAS"))
+                .calculaResultadoMapas();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoTempoRotaMedia(ResultSet rSet) throws SQLException{
+        TempoRotaAcumuladoMedia item = new TempoRotaAcumuladoMedia();
+        item.setResultado(rSet.getTime("MEDIA_TEMPO_ROTA"))
+                .setMeta(rSet.getTime("META_TEMPO_ROTA_HORAS"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoTracking(ResultSet rSet) throws SQLException{
+        TrackingAcumulado item = new TrackingAcumulado();
+        item.setTotalOk(rSet.getInt("TOTAL_APONTAMENTOS_OK"))
+                .setTotalNok(rSet.getInt("TOTAL_APONTAMENTOS") - rSet.getInt("TOTAL_APONTAMENTOS_OK"))
+                .setMeta(rSet.getDouble("META_TRACKING"))
+                .calculaResultado();
+        return item;
+    }
 }
 
