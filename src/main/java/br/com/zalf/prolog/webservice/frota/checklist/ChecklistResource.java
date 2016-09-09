@@ -1,30 +1,21 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.frota.checklist.Checklist;
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
+import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.L;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.L;
 
 @Path("/checklist")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

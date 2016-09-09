@@ -1,22 +1,24 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.commons.colaborador.*;
+import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.commons.imports.MapaTracking;
+import br.com.zalf.prolog.commons.login.Autenticacao;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+
+import javax.ws.rs.core.NoContentException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderMapaTracking;
-import br.com.zalf.prolog.models.imports.MapaTracking;
-import br.com.zalf.prolog.models.relatorios.Empresa;
-import br.com.zalf.prolog.models.relatorios.Regional;
-import br.com.zalf.prolog.models.relatorios.Unidade;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-
-import javax.ws.rs.core.NoContentException;
 
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 

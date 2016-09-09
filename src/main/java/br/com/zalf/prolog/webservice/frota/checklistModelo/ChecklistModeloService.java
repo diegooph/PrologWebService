@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklistModelo;
 
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
 
 public class ChecklistModeloService {
 	private ChecklistModeloDaoImpl dao = new ChecklistModeloDaoImpl();

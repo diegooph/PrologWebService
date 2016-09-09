@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.models.indicador.indicadores.item.TempoRota;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
+import com.google.gson.Gson;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
-	public static void main(String[] args)  throws SQLException{
+	public static void main(String[] args)  throws SQLException {
 		L.d("Main", "Testando");
 		L.e("Main", "FUDEU", new Exception("Problema na main"));
 	
@@ -33,12 +33,9 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		IndicadorDaoImpl dao = new IndicadorDaoImpl();
-		dao.getEstratoIndicador(1464739200000L,1467331200000L, "%", 2L,
-				"3", "%", "%", TempoRota.TEMPO_ROTA);
-
-
-
+		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
+		L.d("tag", String.valueOf(System.currentTimeMillis()));
+		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));

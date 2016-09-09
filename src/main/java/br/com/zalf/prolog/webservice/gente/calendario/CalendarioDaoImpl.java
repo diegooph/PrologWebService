@@ -1,8 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.relatorios.Unidade;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Equipe;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.colaborador.Unidade;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.gente.calendario.Evento;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.*;

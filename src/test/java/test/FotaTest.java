@@ -1,9 +1,8 @@
 package test;
 
-import org.junit.Test;
-
-import br.com.zalf.prolog.webservice.frota.servico.ServicoService;
+import br.com.zalf.prolog.webservice.pneu.servico.ServicoService;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 public class FotaTest extends TestCase{
 	

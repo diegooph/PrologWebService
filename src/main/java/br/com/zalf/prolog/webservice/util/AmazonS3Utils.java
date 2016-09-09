@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.util;
 
-import java.io.File;
-import java.net.UnknownHostException;
-
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import java.io.File;
+import java.net.UnknownHostException;
 
 /**
  * Created by liliani on 15/12/15.

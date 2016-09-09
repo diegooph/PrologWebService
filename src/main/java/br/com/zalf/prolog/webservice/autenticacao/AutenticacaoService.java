@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import java.sql.SQLException;
+import br.com.zalf.prolog.commons.login.Autenticacao;
 
-import br.com.zalf.prolog.models.Autenticacao;
+import java.sql.SQLException;
 
 public class AutenticacaoService {
 	private AutenticacaoDao dao = new AutenticacaoDaoImpl();

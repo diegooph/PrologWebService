@@ -1,11 +1,14 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import java.sql.*;
-
-import br.com.zalf.prolog.models.Autenticacao;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.login.Autenticacao;
+import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 

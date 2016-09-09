@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 /**
  * Contém os métodos para consultar a remuneração variável
  */
@@ -21,6 +22,6 @@ public interface ProdutividadeDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<ItemProdutividade> getProdutividadeByPeriodo (LocalDate dataInicial, LocalDate dataFinal,
-			Long cpf, String token) throws SQLException;
+													   Long cpf, String token) throws SQLException;
 
 }

@@ -1,18 +1,19 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 
@@ -25,7 +26,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		try {
 			// verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias)
 			if (ChronoUnit.DAYS.between(LocalDate.now(), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
-				return Response.Error("Erro ao inserir a solicitação de folga");				
+				return Response.Error("Erro ao inserir a solicitação de folga");
 			}
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "

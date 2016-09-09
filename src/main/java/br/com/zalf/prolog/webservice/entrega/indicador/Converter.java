@@ -1,14 +1,5 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.models.indicador.indicadores.item.*;
-import br.com.zalf.prolog.models.util.MetaUtils;
-import br.com.zalf.prolog.models.util.TimeUtils;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by jean on 02/09/16.
  * classe que converte os itens que vem em um ResultSet para os objetos

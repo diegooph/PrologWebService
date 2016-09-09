@@ -1,23 +1,26 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import java.sql.*;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.gente.treinamento.Treinamento;
+import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.treinamento.Treinamento;
-import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements 
 TreinamentoDao {
 
 
 	public List<Treinamento> getAll (LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-			Long codUnidade, long limit, long offset) throws SQLException{
+									 Long codUnidade, long limit, long offset) throws SQLException{
 
 		List<Treinamento> listTreinamento = new ArrayList<>();
 		Connection conn = null;

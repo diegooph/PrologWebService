@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.pneu.servico;
 
+import br.com.zalf.prolog.frota.pneu.servico.PlacaServicoHolder;
+import br.com.zalf.prolog.frota.pneu.servico.Servico;
+import br.com.zalf.prolog.frota.pneu.servico.ServicoHolder;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
-import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
 
 public class ServicoService {
 	

@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 
-import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
-import br.com.zalf.prolog.models.relatorios.Empresa;
 /**
  * 
  * Contém os métodos que geram os relatórios operacionais (indicadores)
@@ -25,6 +24,6 @@ public interface RelatorioDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, Long cpf, String token) throws SQLException;
+												   Long codUnidade, Long cpf, String token) throws SQLException;
 		
 }

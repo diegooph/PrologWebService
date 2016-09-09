@@ -1,21 +1,17 @@
 package br.com.zalf.prolog.webservice.pneu.pneu;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
-
-import br.com.zalf.prolog.models.Marca;
-import br.com.zalf.prolog.models.Modelo;
-import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
-import br.com.zalf.prolog.models.pneu.Sulco;
+import br.com.zalf.prolog.commons.veiculo.Marca;
+import br.com.zalf.prolog.commons.veiculo.Modelo;
+import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.frota.pneu.Pneu.Dimensao;
+import br.com.zalf.prolog.frota.pneu.Sulco;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 
@@ -207,7 +203,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao{
 	public boolean registraMovimentacaoHistorico (Pneu pneu, Long codUnidade, String statusDestino, long kmVeiculo,String placaVeiculo, Connection conn, String token) throws SQLException{
 		PreparedStatement stmt = null;
 		stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU VALUES (?,?,?,?,?,?,?, (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?))");
-		stmt.setTimestamp(1, br.com.zalf.prolog.models.util.DateUtils.toTimestamp(new Time(System.currentTimeMillis())));		
+		stmt.setTimestamp(1, br.com.zalf.prolog.commons.util.DateUtils.toTimestamp(new Time(System.currentTimeMillis())));
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
 		stmt.setString(4, pneu.getStatus());

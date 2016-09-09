@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.util;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import br.com.zalf.prolog.webservice.BuildConfig;
 
 public class L {
 	

@@ -1,22 +1,16 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.UnknownHostException;
-import java.util.Date;
-
-import org.apache.commons.io.IOUtils;
-
+import br.com.zalf.prolog.gente.treinamento.Treinamento;
+import br.com.zalf.prolog.webservice.util.AmazonS3Utils;
+import br.com.zalf.prolog.webservice.util.L;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import org.apache.commons.io.IOUtils;
 
-import br.com.zalf.prolog.models.treinamento.Treinamento;
-import br.com.zalf.prolog.webservice.util.AmazonS3Utils;
-import br.com.zalf.prolog.webservice.util.L;
+import java.io.*;
+import java.net.UnknownHostException;
+import java.util.Date;
 
 public class UploadTreinamento {
 	private static final String TAG = UploadTreinamento.class.getSimpleName();

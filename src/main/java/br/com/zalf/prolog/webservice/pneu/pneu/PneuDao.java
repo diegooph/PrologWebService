@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.pneu.pneu;
 
+import br.com.zalf.prolog.frota.pneu.Pneu;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.pneu.Pneu;
 
 public interface PneuDao {
 	

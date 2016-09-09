@@ -1,29 +1,25 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.Restricao;
-import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
-import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
-import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.frota.pneu.Restricao;
+import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
+import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
+import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
+import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Classe responsável por estratificar os dados dos pneus.

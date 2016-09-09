@@ -1,7 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.indicadorOlder;
 
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.entrega.indicador.older.IndicadorHolder;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 
 @Path("/indicadores")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

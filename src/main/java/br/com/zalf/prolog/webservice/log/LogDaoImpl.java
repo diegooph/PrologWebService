@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.log;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class LogDaoImpl extends DatabaseConnection {
 

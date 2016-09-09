@@ -1,34 +1,20 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
-import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
-import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
-import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
-import br.com.zalf.prolog.models.indicador.ItemTempoRota;
-import br.com.zalf.prolog.models.indicador.ItemTracking;
-import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
-import br.com.zalf.prolog.models.relatorios.ConsolidadoMapasDia;
-import br.com.zalf.prolog.models.relatorios.Empresa;
-import br.com.zalf.prolog.models.relatorios.Mapa;
-import br.com.zalf.prolog.models.relatorios.Regional;
-import br.com.zalf.prolog.models.relatorios.Unidade;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.models.util.MetaUtils;
-import br.com.zalf.prolog.models.util.TimeUtils;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.util.MetaUtils;
+import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.older.*;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoMapasDia;
+import br.com.zalf.prolog.entrega.relatorio.Mapa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
@@ -74,7 +60,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, Long cpf, String token) throws SQLException {
+												   Long codUnidade, Long cpf, String token) throws SQLException {
 
 		System.out.println(dataInicial);
 		System.out.println(dataFinal);

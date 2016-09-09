@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.pneu.pneu;
 
+import br.com.zalf.prolog.commons.veiculo.Marca;
+import br.com.zalf.prolog.commons.veiculo.Modelo;
+import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.frota.pneu.Pneu.Dimensao;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Marca;
-import br.com.zalf.prolog.models.Modelo;
-import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.Pneu.Dimensao;
 
 public class PneuService {
 	private PneuDaoImpl dao = new PneuDaoImpl();
