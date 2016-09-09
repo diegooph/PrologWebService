@@ -4,6 +4,9 @@ import br.com.zalf.prolog.commons.login.Autenticacao;
 
 import java.sql.SQLException;
 
+/**
+ * Classe AutenticacaoService, responsavel por comunicarse com a camada DAO  
+ */
 public class AutenticacaoService {
 
 	private AutenticacaoDao dao = new AutenticacaoDaoImpl();

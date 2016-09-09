@@ -10,6 +10,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * Classe AutenticacaoDaoImpl, responsavel pela execução da lógica e comunicação com o banco de dados da aplicação
+ */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
 	@Override
