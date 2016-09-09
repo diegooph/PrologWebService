@@ -20,9 +20,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
+ */
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
-
-	private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
 	@Override
 	public boolean insert(Colaborador colaborador) throws SQLException {
@@ -144,53 +145,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return null;
 	}
 
-	public Visao getVisaoByCpf(Long cpf)throws SQLException{
-		Visao visao = new Visao();
-		List<Pilar> listPilares = new ArrayList<>();
-		List<Integer> listFuncoes = new ArrayList<>();
-		Pilar pilar = null;
-
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT COD_FUNCAO_PROLOG AS FUNCAO, COD_PILAR_PROLOG AS PILAR "
-					+ "FROM CARGO_FUNCAO_PROLOG CFP JOIN COLABORADOR C ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE "
-					+ "WHERE C.CPF = ? ORDER BY 2, 1", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf);
-			rSet = stmt.executeQuery();
-			if(rSet.first()){
-				pilar = new Pilar();
-				pilar.codigo = rSet.getInt("PILAR");
-				pilar.funcoesDisponiveis = listFuncoes;
-				pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
-			}
-			while (rSet.next()) {
-				if(rSet.getInt("PILAR") == pilar.codigo){
-					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
-				}else{
-					listPilares.add(pilar);
-					pilar = new Pilar();
-					listFuncoes = new ArrayList<>();
-					pilar.funcoesDisponiveis = listFuncoes;
-					pilar.codigo = rSet.getInt("PILAR");
-					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));			
-				}
-			}
-			if (pilar!=null){
-				listPilares.add(pilar);
-				visao.setPilares(listPilares);
-			}else{
-				return null;
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return visao;
-	}
-
 	/**
 	 * Busca todos os colaboradores de uma unidade
 	 */
@@ -300,6 +254,70 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return null;
 	}
 
+	@Override
+	public LoginHolder getLoginHolder(Long cpf) throws SQLException {
+		LoginHolder loginHolder = new LoginHolder();
+		loginHolder.colaborador = getByCod(cpf);
+
+		if(loginHolder.colaborador.getVisao() != null) {
+			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+				RelatoDaoImpl relatoDao = new RelatoDaoImpl();
+				loginHolder.alternativasRelato = relatoDao.getAlternativas(
+						loginHolder.colaborador.getCodUnidade(),
+						loginHolder.colaborador.getSetor().getCodigo());
+			}
+		}
+		return loginHolder;
+	}
+
+	private Visao getVisaoByCpf(Long cpf)throws SQLException{
+		Visao visao = new Visao();
+		List<Pilar> listPilares = new ArrayList<>();
+		List<Integer> listFuncoes = new ArrayList<>();
+		Pilar pilar = null;
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT COD_FUNCAO_PROLOG AS FUNCAO, COD_PILAR_PROLOG AS PILAR "
+					+ "FROM CARGO_FUNCAO_PROLOG CFP JOIN COLABORADOR C ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE "
+					+ "WHERE C.CPF = ? ORDER BY 2, 1", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			if(rSet.first()){
+				pilar = new Pilar();
+				pilar.codigo = rSet.getInt("PILAR");
+				pilar.funcoesDisponiveis = listFuncoes;
+				pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
+			}
+			while (rSet.next()) {
+				if(rSet.getInt("PILAR") == pilar.codigo){
+					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
+				}else{
+					listPilares.add(pilar);
+					pilar = new Pilar();
+					listFuncoes = new ArrayList<>();
+					pilar.funcoesDisponiveis = listFuncoes;
+					pilar.codigo = rSet.getInt("PILAR");
+					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
+				}
+			}
+			if (pilar!=null){
+				listPilares.add(pilar);
+				visao.setPilares(listPilares);
+			}else{
+				return null;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return visao;
+	}
+
+
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
 		f.setCodigo(rSet.getLong("CODIGO"));
@@ -354,22 +372,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setLong(12, c.getCodPermissao());
 		stmt.setLong(13, c.getCodEmpresa());
 		stmt.setLong(14, c.getEquipe().getCodigo());
-	}
-
-	@Override
-	public LoginHolder getLoginHolder(Long cpf) throws SQLException {
-		LoginHolder loginHolder = new LoginHolder();
-		loginHolder.colaborador = getByCod(cpf);
-
-		if(loginHolder.colaborador.getVisao() != null) {
-			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
-				RelatoDaoImpl relatoDao = new RelatoDaoImpl();
-				loginHolder.alternativasRelato = relatoDao.getAlternativas(
-						loginHolder.colaborador.getCodUnidade(),
-						loginHolder.colaborador.getSetor().getCodigo());
-			}
-		}
-		return loginHolder;
 	}
 
 	private boolean verificaSeFazRelato(List<Pilar> listPilar){
