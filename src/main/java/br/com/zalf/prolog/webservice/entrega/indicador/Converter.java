@@ -4,9 +4,11 @@ import br.com.zalf.prolog.commons.util.MetaUtils;
 import br.com.zalf.prolog.commons.util.TimeUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
+import br.com.zalf.prolog.webservice.util.GsonUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -292,6 +294,10 @@ public class Converter {
         item.setResultado(rSet.getTime("MEDIA_TEMPO_ROTA"))
                 .setMeta(rSet.getTime("META_TEMPO_ROTA_HORAS"))
                 .calculaResultado();
+        Duration dur = Duration.ofMillis(item.getResultado().getTime());
+        System.out.println(GsonUtils.getGson().toJson(dur.toHours()));
+        System.out.println(GsonUtils.getGson().toJson(dur.toMinutes()));
+
         return item;
     }
 

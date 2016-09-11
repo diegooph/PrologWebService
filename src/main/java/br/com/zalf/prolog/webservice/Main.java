@@ -35,6 +35,7 @@ public class Main {
 
 		IndicadorDaoImpl teste = new IndicadorDaoImpl();
 		System.out.println(GsonUtils.getGson().toJson(teste.getAcumuladoIndicadores()));
+
 		;
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
