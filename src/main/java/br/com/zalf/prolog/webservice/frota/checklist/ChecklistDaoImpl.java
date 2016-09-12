@@ -70,11 +70,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return true;
 	}
 
-
-
-
-
-
 	/**
 	 * Método para inserir itens com apontados como problema no checklist em uma tabela destinada ao controle de manutenção
 	 * @param checklist um Checklist
@@ -123,7 +118,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
 		//Percorre a lista de alternativas de uma pergunta, se alguma estiver selecionada retorna true.
 		for(PerguntaRespostaChecklist.Alternativa alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
-			if(alternativa.selected == true){
+			if(alternativa.selected){
 				return true;
 			}
 		}
