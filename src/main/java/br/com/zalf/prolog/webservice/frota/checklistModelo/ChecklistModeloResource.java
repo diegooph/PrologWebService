@@ -49,8 +49,8 @@ public class ChecklistModeloResource {
 	@GET
 	@Secured
 	@Path("/perguntas/{codUnidade}/{codModelo}")
-	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codFuncao){
-		return service.getPerguntas(codUnidade, codFuncao);
+	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codModelo){
+		return service.getPerguntas(codUnidade, codModelo);
 	}
 
 	@POST
