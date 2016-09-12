@@ -294,10 +294,6 @@ public class Converter {
         item.setResultado(rSet.getTime("MEDIA_TEMPO_ROTA"))
                 .setMeta(rSet.getTime("META_TEMPO_ROTA_HORAS"))
                 .calculaResultado();
-        Duration dur = Duration.ofMillis(item.getResultado().getTime());
-        System.out.println(GsonUtils.getGson().toJson(dur.toHours()));
-        System.out.println(GsonUtils.getGson().toJson(dur.toMinutes()));
-
         return item;
     }
 
