@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import br.com.zalf.prolog.models.Relato;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.seguranca.relato.Relato;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.Android;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -73,9 +72,7 @@ public class RelatoResource {
 	}
 
 
-	// busca os classificados por mim
 	@GET
-	@Android
 	@Secured
 	@Path("/classificados/{cpf}/{status}")
 	public List<Relato> getClassificadosByColaborador(@PathParam("cpf") Long cpf, 
@@ -124,13 +121,11 @@ public class RelatoResource {
 			@QueryParam("limit") long limit,
 			@QueryParam("offset") long offset,
 			@QueryParam("status") String status) {
-		return service.getAllByUnidade(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), equipe, 
+		return service.getAllByUnidade(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), equipe,
 				codUnidade, limit, offset, status);
 	}
 
-	//busca os pendentes
 	@GET
-	@Android
 	@Secured
 	@Path("/{codUnidade}/{status}")
 	public List<Relato> getAll(@PathParam("codUnidade") Long codUnidade,

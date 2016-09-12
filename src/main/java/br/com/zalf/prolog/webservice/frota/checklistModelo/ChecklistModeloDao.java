@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklistModelo;
 
+
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
 
 /**
  * Contém os métodos para manipular os checklists no banco de dados 

@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.SolicitacaoFolga;
 
 public class SolicitacaoFolgaService {
 private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();

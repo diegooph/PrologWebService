@@ -1,5 +1,16 @@
 package br.com.zalf.prolog.webservice.pneu.servico;
 
+import br.com.zalf.prolog.commons.questoes.Alternativa;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.frota.pneu.servico.*;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,22 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Alternativa;
-import br.com.zalf.prolog.models.checklist.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.servico.Calibragem;
-import br.com.zalf.prolog.models.pneu.servico.Inspecao;
-import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
-import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
-import br.com.zalf.prolog.models.pneu.servico.ServicoHolder;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
-import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 

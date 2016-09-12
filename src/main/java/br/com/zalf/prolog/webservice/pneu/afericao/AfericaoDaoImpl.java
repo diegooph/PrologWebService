@@ -1,5 +1,21 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.frota.pneu.Restricao;
+import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
+import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.frota.pneu.afericao.PlacaModeloHolder;
+import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.frota.pneu.servico.Servico;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.util.LogDatabase;
+import br.com.zalf.prolog.webservice.util.PostgresUtil;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,22 +23,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Veiculo;
-import br.com.zalf.prolog.models.pneu.Pneu;
-import br.com.zalf.prolog.models.pneu.Restricao;
-import br.com.zalf.prolog.models.pneu.afericao.Afericao;
-import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
-import br.com.zalf.prolog.models.pneu.afericao.PlacaModeloHolder;
-import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.util.LogDatabase;
-import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	

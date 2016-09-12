@@ -1,30 +1,24 @@
 package br.com.zalf.prolog.webservice.util;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.frota.pneu.servico.Calibragem;
+import br.com.zalf.prolog.frota.pneu.servico.Inspecao;
+import br.com.zalf.prolog.frota.pneu.servico.Movimentacao;
+import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.ResponseWithCod;
-import br.com.zalf.prolog.models.pneu.servico.Calibragem;
-import br.com.zalf.prolog.models.pneu.servico.Inspecao;
-import br.com.zalf.prolog.models.pneu.servico.Movimentacao;
-import br.com.zalf.prolog.models.pneu.servico.Servico;
-
 public class GsonUtils {
 
-	private static final GsonBuilder sBuilder;
+	private static final GsonBuilder sBuilder = new GsonBuilder()
+			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+			.setPrettyPrinting()
+			.serializeSpecialFloatingPointValues()
+			.enableComplexMapKeySerialization();
 
     static {
-    	sBuilder = new GsonBuilder()
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-				.serializeSpecialFloatingPointValues()
-				.enableComplexMapKeySerialization();
-
-		if (BuildConfig.DEBUG)
-			sBuilder.setPrettyPrinting();
-
         RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
                 .of(Servico.class)
                 .registerSubtype(Calibragem.class)

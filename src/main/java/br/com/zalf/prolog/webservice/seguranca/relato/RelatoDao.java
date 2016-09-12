@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.seguranca.relato.Relato;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Relato;
-import br.com.zalf.prolog.models.Request;
 
 /**
  * Contém métodos para manipular os Relatos 

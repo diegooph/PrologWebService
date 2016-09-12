@@ -1,28 +1,26 @@
 package br.com.zalf.prolog.webservice.imports;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.imports.TrackingImport;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.imports.MapaImport;
+import br.com.zalf.prolog.commons.imports.TrackingImport;
+import br.com.zalf.prolog.commons.network.Response;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.imports.MapaImport;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
 
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

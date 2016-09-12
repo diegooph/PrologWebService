@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.treinamento.Treinamento;
-import br.com.zalf.prolog.models.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.gente.treinamento.Treinamento;
+import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.Connection;
@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements 
@@ -21,7 +20,7 @@ TreinamentoDao {
 
 
 	public List<Treinamento> getAll (LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-			Long codUnidade, long limit, long offset) throws SQLException{
+									 Long codUnidade, long limit, long offset) throws SQLException{
 
 		List<Treinamento> listTreinamento = new ArrayList<>();
 		Connection conn = null;
@@ -92,17 +91,16 @@ TreinamentoDao {
 		ResultSet rSet = null;
 		String treinamentosNaoVistosQuery = 
 				"SELECT * FROM TREINAMENTO T JOIN "
-						+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO AND t.data_liberacao::date <= ? "
-						+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF"
-						+ "= ? AND C.cod_unidade = T.cod_unidade WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+						+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
+						+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
+						+ "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
 						+ "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-						+ "C.CPF = ? )";
+						+ "C.CPF = ?);";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
-			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
+			stmt.setLong(1, cpf);
 			stmt.setLong(2, cpf);
-			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Treinamento treinamento = createTreinamento(rSet);

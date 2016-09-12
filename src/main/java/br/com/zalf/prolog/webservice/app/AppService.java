@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.app;
 
-import java.sql.SQLException;
+import br.com.zalf.prolog.commons.login.AppVersion;
 
-import br.com.zalf.prolog.models.AppVersion;
+import java.sql.SQLException;
 
 public class AppService {
 	private AppDaoImpl dao = new AppDaoImpl();

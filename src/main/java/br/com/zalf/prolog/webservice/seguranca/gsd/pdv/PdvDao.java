@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd.pdv;
 
+import br.com.zalf.prolog.seguranca.gsd.Pdv;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.gsd.Pdv;
 /**
  * Contém os métodos para manipular objetos PDV
  */

@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
+import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.produtividade.HolderColaboradorProdutividade;
-import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
 
 public class ProdutividadeService {
 	private ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();

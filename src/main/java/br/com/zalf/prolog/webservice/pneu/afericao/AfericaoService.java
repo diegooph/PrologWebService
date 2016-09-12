@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
+import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
+import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
+import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.pneu.afericao.Afericao;
-import br.com.zalf.prolog.models.pneu.afericao.NovaAfericao;
-import br.com.zalf.prolog.models.pneu.afericao.SelecaoPlacaAfericao;
 
 public class AfericaoService {
 	AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();

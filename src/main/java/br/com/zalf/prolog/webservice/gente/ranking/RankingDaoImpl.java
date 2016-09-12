@@ -1,5 +1,14 @@
 package br.com.zalf.prolog.webservice.gente.ranking;
 
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.util.MetaUtils;
+import br.com.zalf.prolog.entrega.indicador.older.*;
+import br.com.zalf.prolog.gente.ranking.ItemPosicao;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,31 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import br.com.zalf.prolog.models.indicador.DevolucaoCxHolder;
-import br.com.zalf.prolog.models.indicador.DevolucaoHlHolder;
-import br.com.zalf.prolog.models.indicador.DevolucaoNfHolder;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
-import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
-import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
-import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
-import br.com.zalf.prolog.models.indicador.ItemTempoRota;
-import br.com.zalf.prolog.models.indicador.ItemTracking;
-import br.com.zalf.prolog.models.indicador.JornadaLiquidaHolder;
-import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.indicador.TempoInternoHolder;
-import br.com.zalf.prolog.models.indicador.TempoLargadaHolder;
-import br.com.zalf.prolog.models.indicador.TempoRotaHolder;
-import br.com.zalf.prolog.models.indicador.TrackingHolder;
-import br.com.zalf.prolog.models.ranking.ItemPosicao;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.models.util.MetaUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 public class RankingDaoImpl extends DatabaseConnection {
 
@@ -368,7 +352,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 
 	/**
 	 * Seta as medalhas de um ItemPosicao de acordo com o método específico de cálculo 
-	 * para cada indicador
+	 * para cada indicadorOlder
 	 * @param list uma lista de ItemPosicao, ao qual serão setadas as medalhas de cada item
 	 */
 	private void setMedalhas(List<ItemPosicao> list){
@@ -387,8 +371,8 @@ public class RankingDaoImpl extends DatabaseConnection {
 	/**
 	 * Calcula qual medalha sera creditada com base na meta e no resultado, este serve apenas para indicadores
 	 * em que o resultado tem que ser MENOR do que a meta.
-	 * @param resultado - recebe o resultado do indicador em questão
-	 * @param meta - recebe a meta do indicador em questão
+	 * @param resultado - recebe o resultado do indicadorOlder em questão
+	 * @param meta - recebe a meta do indicadorOlder em questão
 	 * @param itemPosicao - recebe o item ao qual será creditada a medalha
 	 */
 	private void setMedalhaDev(double resultado, Double meta, ItemPosicao itemPosicao){
@@ -412,8 +396,8 @@ public class RankingDaoImpl extends DatabaseConnection {
 	/**
 	 * Calcula qual medalha sera creditada com base na meta e no resultado, este serve apenas para indicadores
 	 * em que o resultado tem que ser MAIOR do que a meta.
-	 * @param resultado - recebe o resultado do indicador em questão
-	 * @param meta - recebe a meta do indicador em questão
+	 * @param resultado - recebe o resultado do indicadorOlder em questão
+	 * @param meta - recebe a meta do indicadorOlder em questão
 	 * @param itemPosicao - recebe o item ao qual será creditada a medalha
 	 */
 	private void setMedalhaTempo(double resultado, Double meta, ItemPosicao itemPosicao){

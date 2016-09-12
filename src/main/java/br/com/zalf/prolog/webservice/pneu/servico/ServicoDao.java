@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.pneu.servico;
 
-import java.sql.SQLException;
+import br.com.zalf.prolog.frota.pneu.servico.PlacaServicoHolder;
 
-import br.com.zalf.prolog.models.pneu.servico.PlacaServicoHolder;
+import java.sql.SQLException;
 
 public interface ServicoDao {
 	

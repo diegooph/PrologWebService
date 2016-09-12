@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.metas;
 
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.entrega.produtividade.Metas;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Metas;
-import br.com.zalf.prolog.models.Request;
 
 public class MetaService {
 private MetasDaoImpl dao = new MetasDaoImpl();

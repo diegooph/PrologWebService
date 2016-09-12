@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import br.com.zalf.prolog.models.Alternativa;
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Relato;
-import br.com.zalf.prolog.models.gsd.Pdv;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.questoes.Alternativa;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.seguranca.gsd.Pdv;
+import br.com.zalf.prolog.seguranca.relato.Relato;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.*;

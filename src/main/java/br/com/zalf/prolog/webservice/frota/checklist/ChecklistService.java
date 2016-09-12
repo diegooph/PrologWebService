@@ -1,15 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.frota.checklist.Checklist;
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
+import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import br.com.zalf.prolog.models.checklist.Checklist;
-import br.com.zalf.prolog.models.checklist.ModeloChecklist;
-import br.com.zalf.prolog.models.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.models.checklist.VeiculoLiberacao;
 
 public class ChecklistService {
 	private ChecklistDaoImpl dao = new ChecklistDaoImpl();

@@ -1,28 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.Eixos;
-import br.com.zalf.prolog.models.Marca;
-import br.com.zalf.prolog.models.Modelo;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.TipoVeiculo;
-import br.com.zalf.prolog.models.Veiculo;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.veiculo.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.Site;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

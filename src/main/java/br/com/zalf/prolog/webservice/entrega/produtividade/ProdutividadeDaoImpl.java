@@ -1,35 +1,22 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.commons.util.MetaUtils;
+import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.older.*;
+import br.com.zalf.prolog.entrega.produtividade.ColaboradorProdutividade;
+import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
+import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
+
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.imports.HolderMapaTracking;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoCx;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoHl;
-import br.com.zalf.prolog.models.indicador.ItemDevolucaoNf;
-import br.com.zalf.prolog.models.indicador.ItemJornadaLiquida;
-import br.com.zalf.prolog.models.indicador.ItemTempoInterno;
-import br.com.zalf.prolog.models.indicador.ItemTempoLargada;
-import br.com.zalf.prolog.models.indicador.ItemTempoRota;
-import br.com.zalf.prolog.models.indicador.ItemTracking;
-import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.produtividade.ColaboradorProdutividade;
-import br.com.zalf.prolog.models.produtividade.HolderColaboradorProdutividade;
-import br.com.zalf.prolog.models.produtividade.ItemProdutividade;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.models.util.MetaUtils;
-import br.com.zalf.prolog.models.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
 
@@ -121,7 +108,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 	}
 
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
-																			 long dataInicial, long dataFinal) throws SQLException{
+																			long dataInicial, long dataFinal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

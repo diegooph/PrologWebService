@@ -1,19 +1,15 @@
 package br.com.zalf.prolog.webservice.metas;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.older.Meta;
+import br.com.zalf.prolog.entrega.produtividade.Metas;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
+import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Metas;
-import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.indicador.Meta;
-import br.com.zalf.prolog.models.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 

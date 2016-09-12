@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.FaleConosco;
-import br.com.zalf.prolog.models.Request;
 
 /**
  * Contém os métodos para manipular os fale conosco

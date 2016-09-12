@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.login.LoginHolder;
+import br.com.zalf.prolog.commons.network.Request;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Funcao;
-import br.com.zalf.prolog.models.LoginHolder;
-import br.com.zalf.prolog.models.Request;
 
 public class ColaboradorService {
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();

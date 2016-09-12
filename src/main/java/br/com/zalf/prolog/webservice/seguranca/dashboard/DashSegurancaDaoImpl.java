@@ -1,22 +1,15 @@
 package br.com.zalf.prolog.webservice.seguranca.dashboard;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Local;
-import br.com.zalf.prolog.models.dashboard.DashSeguranca;
-import br.com.zalf.prolog.models.util.DateUtils;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.seguranca.dashboard.DashSeguranca;
+import br.com.zalf.prolog.seguranca.ocorrencia.Local;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+
+import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.*;
 
 public class DashSegurancaDaoImpl extends DatabaseConnection{
 

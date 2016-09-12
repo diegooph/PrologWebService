@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.app;
 
+import br.com.zalf.prolog.commons.login.AppVersion;
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import br.com.zalf.prolog.models.AppVersion;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 public class AppDaoImpl extends DatabaseConnection implements AppDao {
 

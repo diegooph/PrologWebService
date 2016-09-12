@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
-
-import br.com.zalf.prolog.models.relatorios.ConsolidadoHolder;
-import br.com.zalf.prolog.models.relatorios.Empresa;
 
 public class RelatorioService {
 
@@ -14,7 +12,7 @@ public class RelatorioService {
 
 
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, Long cpf, String token){
+												   Long codUnidade, Long cpf, String token){
 		try{
 			return dao.getRelatorioByPeriodo(dataInicial, dataFinal, equipe, codUnidade, cpf, token);
 		}catch (SQLException e) {

@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Request;
-import br.com.zalf.prolog.models.SolicitacaoFolga;
 /**
  * Contém os métodos para manipular as solicitações de folga
  */

@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.commons.veiculo.Veiculo;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Veiculo;
 /**
  * Contém os métodos para manipular os veículos
  */

@@ -1,22 +1,15 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd;
 
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.questoes.Pergunta;
+import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.seguranca.gsd.Gsd;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.Pergunta;
-import br.com.zalf.prolog.models.Response;
-import br.com.zalf.prolog.models.gsd.Gsd;
-import br.com.zalf.prolog.models.util.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 @Path("/gsd")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -33,21 +26,6 @@ public class GsdResource {
 			return Response.Error("Erro ao inserir gsd");
 		}
 	}
-
-	//	@PUT
-	//	public Response update(Gsd gsd) {
-	//		if (service.update(gsd)) {
-	//			return Response.Ok("Gsd atualizado com sucesso");
-	//		} else {
-	//			return Response.Error("Erro ao atualizar o gsd");
-	//		}
-	//	}
-
-	//	@GET
-	//	@Path("{codigo}")
-	//	public Gsd getByCod(@PathParam("codigo") Long codigo) {
-	//		return service.getByCod(codigo);
-	//	}
 
 	@GET
 	@Path("/perguntas")
@@ -67,14 +45,6 @@ public class GsdResource {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
 	}
 
-	//	@POST
-	//	@Path("/colaborador")
-	//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	//	public List<Gsd> getByColaborador(@FormParam("cpf") Long cpf,
-	//			@FormParam("token") String token) {
-	//		return service.getByColaborador(cpf, token);
-	//	}
-
 	@POST
 	@Path("/avaliador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -90,14 +60,4 @@ public class GsdResource {
 			@FormParam("token") String token) {
 		return service.getAllExcetoAvaliador(cpf, token);
 	}
-
-	//	@DELETE
-	//	@Path("{codigo}")
-	//	public Response delete(@PathParam("codigo") Long codigo) {
-	//		if (service.delete(codigo)) {
-	//			return Response.Ok("Gsd deletado com sucesso");
-	//		} else {
-	//			return Response.Error("Falha ao deletar gsd");
-	//		}
-	//	}
 }

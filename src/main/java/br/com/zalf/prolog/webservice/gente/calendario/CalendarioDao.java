@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
+import br.com.zalf.prolog.gente.calendario.Evento;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import br.com.zalf.prolog.models.Evento;
 /**
  * Calendário contendo os eventos cadastrados no banco de dados
  */

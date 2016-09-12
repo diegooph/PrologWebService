@@ -1,19 +1,13 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
-import br.com.zalf.prolog.models.pneu.relatorios.Aderencia;
-import br.com.zalf.prolog.models.pneu.relatorios.Faixa;
-import br.com.zalf.prolog.models.pneu.relatorios.ResumoServicos;
+import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
+import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
+import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/pneus/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

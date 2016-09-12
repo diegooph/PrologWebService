@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.gente.calendario.Evento;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.AbstractResponse;
-import br.com.zalf.prolog.models.Evento;
-import br.com.zalf.prolog.models.Response;
 
 public class CalendarioService {
 

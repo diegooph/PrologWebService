@@ -1,14 +1,18 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.commons.colaborador.Empresa;
+import br.com.zalf.prolog.commons.colaborador.Equipe;
+import br.com.zalf.prolog.commons.colaborador.Funcao;
+import br.com.zalf.prolog.commons.colaborador.Setor;
+import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.commons.network.Response;
+
+import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import br.com.zalf.prolog.models.*;
-import br.com.zalf.prolog.models.imports.HolderMapaTracking;
-import br.com.zalf.prolog.models.relatorios.Empresa;
-
-import javax.ws.rs.core.NoContentException;
 
 public class EmpresaService {
 

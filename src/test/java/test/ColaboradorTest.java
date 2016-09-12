@@ -1,13 +1,12 @@
 package test;
 
-import java.util.List;
-
-import org.junit.Test;
-
-import br.com.zalf.prolog.models.Colaborador;
-import br.com.zalf.prolog.models.Request;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import junit.framework.TestCase;
+import org.junit.Test;
+
+import java.util.List;
 
 public class ColaboradorTest extends TestCase {
 	private static final String TOKEN = "i35sck1knc0usuptgt6gjprnu9";
