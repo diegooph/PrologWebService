@@ -21,7 +21,7 @@ public class Main {
 
 		LocalDate dataInicial = LocalDate.of(2016, Month.SEPTEMBER, 01);
 		Date datainicial = Date.valueOf(dataInicial);
-		LocalDate dataFinal = LocalDate.of(2016, Month.SEPTEMBER, 01);
+		LocalDate dataFinal = LocalDate.of(2016, Month.SEPTEMBER, 02);
 		Date datafinal = Date.valueOf(dataFinal);
 
 		//ColaboradorDaoImpl baseDao = new ColaboradorDaoImpl();
@@ -55,7 +55,13 @@ public class Main {
 		/*
 		Busca acumulado relatorios:
 		 */
-		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getAcumuladoIndicadores(datainicial.getTime(),
+//		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getAcumuladoIndicadores(datainicial.getTime(),
+//				datafinal.getTime(), 2L, "%", "3", "%")));
+
+				/*
+		Busca acumulado por dia:
+		 */
+		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getConsolidadoDia(datainicial.getTime(),
 				datafinal.getTime(), 2L, "%", "3", "%")));
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();

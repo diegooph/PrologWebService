@@ -207,7 +207,9 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
-			acumulados = createAcumulados(rSet);
+			if(rSet.next()) {
+				acumulados = createAcumulados(rSet);
+			}
 		}finally {
 			closeConnection(conn,stmt,rSet);
 		}
@@ -222,7 +224,6 @@ public class IndicadorDaoImpl extends DatabaseConnection{
      */
 	public List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException{
 		List<IndicadorAcumulado> acumulados = new ArrayList<>();
-		if(rSet.next()) {
 			acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
@@ -238,7 +239,6 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMedia(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
-		}
 		return acumulados;
 	}
 
