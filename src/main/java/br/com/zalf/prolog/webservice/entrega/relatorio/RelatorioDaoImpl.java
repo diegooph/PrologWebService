@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.entrega.indicador.indicadores.ConsolidadoDia;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.Indicador;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -150,5 +151,29 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 
         return new IndicadorDaoImpl().getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
                 codUnidade, equipe, cpf, indicador);
+    }
+
+    public List<ConsolidadoDia> getConsolidadoDia()throws SQLException{
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        List<ConsolidadoDia> consolidados = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("");
+            rSet = stmt.executeQuery();
+            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+            while (rSet.next()){
+                ConsolidadoDia consolidado = new ConsolidadoDia();
+                consolidado.setData(rSet.getDate("DATA"));
+                consolidado.setQtdMapas(rSet.getInt("VIAGENS_TOTAL"));
+                consolidado.setIndicadores(indicadorDao.createAcumulados(rSet));
+                consolidados.add(consolidado);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return consolidados;
+
     }
 }
