@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.indicador.indicadores.item.Indicador;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 
@@ -144,6 +145,10 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         return acumulados;
     }
 
+    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, Long codEmpresa,
+                                               String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 
-
+        return new IndicadorDaoImpl().getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
+                codUnidade, equipe, cpf, indicador);
+    }
 }
