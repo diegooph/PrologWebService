@@ -457,12 +457,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
      * @param oss Todas as OS em aberto de uma placa
      * @return Long com o código da OS no qual o item se encontra em aberto
      */
-    private Long jaPossuiItemEmAberto(Long codPergunta, Long codAlternativa, List<OrdemServico> oss){
+    private Long jaPossuiItemEmAberto(Long codPergunta, long codAlternativa, List<OrdemServico> oss){
         L.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         for (OrdemServico os:oss) {
             for (ItemOrdemServico item:os.getItens()) {
                 for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
-                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && !alternativa.alternativa.equals("Outros")
+                    if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && alternativa.tipo != Alternativa.TIPO_OUTROS
                             && item.getStatus().asString().equals(ItemOrdemServico.Status.PENDENTE.asString())){
                         L.d("item existe", "item existe na lista");
                         return os.getCodigo();
