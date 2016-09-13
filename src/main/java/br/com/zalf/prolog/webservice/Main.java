@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.entrega.indicador.indicadores.item.Jornada;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -42,14 +42,21 @@ public class Main {
 		/*
 		Busca acumulado
 		 */
-		IndicadorDaoImpl teste = new IndicadorDaoImpl();
+		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+		RelatorioDaoImpl relatorioDao = new RelatorioDaoImpl();
 //		System.out.println(GsonUtils.getGson().toJson(teste.getAcumuladoIndicadoresIndividual(datainicial.getTime(),
 //				datafinal.getTime(),1984679074L)));
 		/*
 		Busca extrato:
 		 */
-		System.out.println(GsonUtils.getGson().toJson(teste.getExtratoIndicador(datainicial.getTime(),
-				datafinal.getTime(), "%", 2L, "3", "%", "%", Jornada.JORNADA)));
+//		System.out.println(GsonUtils.getGson().toJson(teste.getExtratoIndicador(datainicial.getTime(),
+//				datafinal.getTime(), "%", 2L, "3", "%", "%", Jornada.JORNADA)));
+
+		/*
+		Busca acumulado relatorios:
+		 */
+		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getAcumuladoIndicadores(datainicial.getTime(),
+				datafinal.getTime(), 2L, "%", "3", "%")));
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));

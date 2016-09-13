@@ -1,23 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.ranking;
 
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.commons.util.MetaUtils;
-import br.com.zalf.prolog.entrega.indicador.older.*;
-import br.com.zalf.prolog.gente.ranking.ItemPosicao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class RankingDaoImpl extends DatabaseConnection {
 //

@@ -4,11 +4,9 @@ import br.com.zalf.prolog.commons.util.MetaUtils;
 import br.com.zalf.prolog.commons.util.TimeUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
-import br.com.zalf.prolog.webservice.util.GsonUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +14,9 @@ import java.util.List;
  * Created by jean on 02/09/16.
  * classe que converte os itens que vem em um ResultSet para os objetos
  */
-public class Converter {
+public class IndicadorConverter {
 
-    private static final String TAG = Converter.class.getSimpleName();
+    private static final String TAG = IndicadorConverter.class.getSimpleName();
 
     static List<Indicador> createExtratoCaixaViagem(ResultSet rSet)throws SQLException {
         List<Indicador> itens = new ArrayList<>();

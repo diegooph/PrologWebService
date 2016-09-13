@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.entrega.relatorio;
+package br.com.zalf.prolog.webservice.entrega.relatorioOlder;
 
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
 
