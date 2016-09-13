@@ -215,7 +215,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<OrdemServico> oss = new ArrayList<>();
-        OrdemServico os = null;
+
         try{
             conn = getConnection();
             /**
@@ -248,28 +248,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection {
             }
             rSet = stmt.executeQuery();
             while(rSet.next()){
-                if (os == null){//primeiro item do ResultSet
-                    oss = new ArrayList<>();
-                    os = createOrdemServico(rSet);
+                    OrdemServico os = createOrdemServico(rSet);
                     /**
                      * seta os itens da ordem de serviço.
                      */
                     os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
                     oss.add(os);
-                }else{ // Próximos itens
-                    if (rSet.getString("placa_veiculo").equals(os.getVeiculo().getPlaca())){ // caso a placa seja igual ao item anterior, criar nova os e add na lista
-                        os = new OrdemServico();
-                        os = createOrdemServico(rSet);
-                        os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
-                        oss.add(os);
-                    }else{//placa diferente, fechar a lista, setar no holder, criar novo holder, nova os e add na lista
-                        os = new OrdemServico();
-                        os = createOrdemServico(rSet);
-                        oss = new ArrayList<>();
-                        os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));
-                        oss.add(os);
-                    }
-                }
             }
         }finally {
             closeConnection(conn, stmt, rSet);
