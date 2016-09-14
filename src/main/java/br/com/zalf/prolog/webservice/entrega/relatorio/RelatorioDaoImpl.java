@@ -244,7 +244,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
             rSet = stmt.executeQuery();
-            acumulados = new IndicadorDaoImpl().createAcumulados(rSet);
+            while (rSet.next()) {
+                acumulados = new IndicadorDaoImpl().createAcumulados(rSet);
+            }
         }finally {
             closeConnection(conn,stmt,rSet);
         }

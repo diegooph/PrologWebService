@@ -22,7 +22,7 @@ public class IndicadorResource {
     @GET
     @Secured
     @Android
-    @Path("/acumulado/{cpf}")
+    @Path("/acumulados/{cpf}")
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@QueryParam("dataInicial") Long dataInicial,
                                                                       @QueryParam("dataFinal") Long dataFinal,
                                                                       @PathParam("cpf") Long cpf){
