@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.entrega.indicador.indicadores.item.Indicador;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.commons.util.MetaUtils;
 import br.com.zalf.prolog.commons.util.TimeUtils;
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
 
@@ -215,7 +216,7 @@ public class IndicadorConverter {
         item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_DISPERSAO_TEMPO"))
                 .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_DISPERSAO_TEMPO"))
                 .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
-                .calculaResultadoMapas();
+                .calculaResultado();
         return item;
     }
 
@@ -233,7 +234,7 @@ public class IndicadorConverter {
         item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_JORNADA"))
                 .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_JORNADA"))
                 .setMeta(rSet.getDouble("META_JORNADA_LIQUIDA_MAPAS"))
-                .calculaResultadoMapas();
+                .calculaResultado();
         return item;
     }
 
@@ -250,7 +251,7 @@ public class IndicadorConverter {
         item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_INTERNO"))
                 .setMapasNok(rSet.getInt("TOTAL_MAPAS_VALIDOS_TEMPO_INTERNO") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_INTERNO"))
                 .setMeta(rSet.getDouble("META_TEMPO_INTERNO_MAPAS"))
-                .calculaResultadoMapas();
+                .calculaResultado();
         return item;
     }
 
@@ -266,7 +267,7 @@ public class IndicadorConverter {
         item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_LARGADA"))
                 .setMapasNok(rSet.getInt("TOTAL_MAPAS_VALIDOS_TEMPO_LARGADA") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_LARGADA"))
                 .setMeta(rSet.getDouble("META_TEMPO_LARGADA_MAPAS"))
-                .calculaResultadoMapas();
+                .calculaResultado();
         return item;
     }
 
@@ -283,7 +284,7 @@ public class IndicadorConverter {
         item.setMapasOk(rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_ROTA"))
                 .setMapasNok(rSet.getInt("VIAGENS_TOTAL") - rSet.getInt("TOTAL_MAPAS_BATERAM_TEMPO_ROTA"))
                 .setMeta(rSet.getDouble("META_TEMPO_ROTA_MAPAS"))
-                .calculaResultadoMapas();
+                .calculaResultado();
         return item;
     }
 

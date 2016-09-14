@@ -2,11 +2,10 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.entrega.indicador.indicadores.item.Indicador;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

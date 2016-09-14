@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.entrega.indicador.indicadores.item.Indicador;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 
@@ -22,7 +22,7 @@ public class IndicadorResource {
     @GET
     @Secured
     @Android
-    @Path("/acumulado/individual/{cpf}")
+    @Path("/acumulado/{cpf}")
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@QueryParam("dataInicial") Long dataInicial,
                                                                       @QueryParam("dataFinal") Long dataFinal,
                                                                       @PathParam("cpf") Long cpf){
