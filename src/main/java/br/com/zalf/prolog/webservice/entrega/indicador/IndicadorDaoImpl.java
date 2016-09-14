@@ -211,21 +211,21 @@ public class IndicadorDaoImpl extends DatabaseConnection{
      */
 	public List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException{
 		List<IndicadorAcumulado> acumulados = new ArrayList<>();
-			acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMapas(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoJornadaMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDispersaoKm(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoJornadaMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoJornadaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMedia(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoJornadaMedia(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet));
 		return acumulados;
 	}
 
