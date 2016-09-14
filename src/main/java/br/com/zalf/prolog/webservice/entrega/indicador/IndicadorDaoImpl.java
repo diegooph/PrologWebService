@@ -51,103 +51,89 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"  C.CPF::TEXT LIKE ? \n" +
 			"ORDER BY M.DATA;\n";
 
-	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select\n" +
-			"\" +\n" +
-			"\t\t\t\t\t\"  -- CaixaViagem\\n\" +\n" +
-			"\t\t\t\t\t\"  sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\t-- Dev Hl\\n\" +\n" +
-			"\t\t\t\t\t\"  sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Dev Pdv\\n\" +\n" +
-			"\t\t\t\t\t\"  sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Dispersão Km\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse 0 end) as km_planejado_total,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse 0 end) as km_percorrido_total,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Dispersão de tempo\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when (m.hrentr - m.hrsai) <= m.tempoprevistoroad and (m.hrentr - m.hrsai) > '00:00' and m.tempoprevistoroad > '00:00' then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\telse 0\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\tend) as total_mapas_bateram_dispersao_tempo,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tavg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\tend)::time as media_dispersao_tempo_realizado,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tavg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\tend)::time as media_dispersao_tempo_planejado,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Jornada --  primeiro verifica se é >00:00, depois verifica se é menor do que a meta\\n\" +\n" +
-			"\t\t\t\t\t\"sum(case when\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t (case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\twhen m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\tend) > '00:00'\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\tand\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\twhen m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\tend) <= um.meta_jornada_liquida_horas then 1 else 0 end) as total_mapas_bateram_jornada,\\n\" +\n" +
-			"\t\t\t\t\t\" sum(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\twhen m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t else null\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\tend)::time as media_jornada,\\n\" +\n" +
-			"\t\t\t\t\t\"  --Tempo Interno\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when m.tempointerno <= um.meta_tempo_interno_horas and m.tempointerno > '00:00' then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse 0\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\tend) as total_mapas_bateram_tempo_interno,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when m.tempointerno <= '05:00' and m.tempointerno > '00:00' then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse 0\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\tend) as total_mapas_validos_tempo_interno,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\tavg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse null\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\tend)::time as media_tempo_interno,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Tempo largada\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\telse (m.hrsai - m.hrmatinal)::time\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\tend) <= um.meta_tempo_largada_horas then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\telse 0 end)\\tas total_mapas_bateram_tempo_largada,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\tsum(case when\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\telse (m.hrsai - m.hrmatinal)::time\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\tend) <= '05:00' then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\telse 0 end)\\tas total_mapas_validos_tempo_largada,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\tavg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\twhen (m.hrsai - m.hrmatinal)::time > '05:00' then '00:30'\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\telse (m.hrsai - m.hrmatinal)::time\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\tend)::time media_tempo_largada,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Tempo Rota\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(case when (m.hrentr - m.hrsai) > '00:00' and (m.hrentr - m.hrsai) <= meta_tempo_rota_horas then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\telse 0 end)\\tas total_mapas_bateram_tempo_rota,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"\\tavg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai)\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\tend)::time\\tas media_tempo_rota,\\n\" +\n" +
-			"\t\t\t\t\t\"\\n\" +\n" +
-			"\t\t\t\t\t\"  -- Tracking\\n\" +\n" +
-			"\t\t\t\t\t\"sum(tracking.apontamentos_ok) as total_apontamentos_ok,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tsum(tracking.total_apontamentos) as total_apontamentos,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tum.*\\n\" +\n" +
-			"\t\t\t\t\t\"from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\tLEFT JOIN (SELECT t.mapa as tracking_mapa,\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\tsum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\telse 0 end) as apontamentos_ok,\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\tcount(t.disp_apont_cadastrado) as total_apontamentos\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\tfrom tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\tgroup by 1) as tracking on tracking_mapa = m.mapa\\n\" +\n" +
-			"\t\t\t\t\t\"\\tJOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade\\n\" +\n" +
-			"\t\t\t\t\t\"\\tJOIN colaborador C ON C.cod_unidade = MC.cod_unidade AND C.matricula_ambev = MC.cod_ambev\\n\" +\n" +
-			"\t\t\t\t\t\"\\tJOIN UNIDADE U ON U.codigo = M.cod_unidade\\n\" +\n" +
-			"\t\t\t\t\t\"\\tWHERE  M.DATA BETWEEN ? AND ? AND\\n\" +\n" +
-			"\t\t\t\t\t\"\\t\\t\\t  C.CPF = ?\\n\" +\n" +
-			"\t\t\t\t\t\"group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tum.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\\n\" +\n" +
-			"\t\t\t\t\t\"\\tum.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\\n\" +\n" +
-			"\t\t\t\t\t\"\tum.meta_tempo_largada_mapas;";
+	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select " +
+			"-- CaixaViagem \n" +
+			"  sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total, \n" +
+			"-- Dev Hl \n"+
+			"sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\n"  +
+			"  -- Dev Pdvn  \n"+
+			"  sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n"+
+			"  -- Dispersão Km \n " +
+			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad \n" +
+			"else 0 end) as km_planejado_total,\n"+
+			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai) \n"  +
+			"else 0 end) as km_percorrido_total,\n"+
+			"  -- Dispersão de tempo  \n"+
+			"sum(case when (m.hrentr - m.hrsai) <= m.tempoprevistoroad and (m.hrentr - m.hrsai) > '00:00' and m.tempoprevistoroad > '00:00' then 1 \n"  +
+			"else 0 \n" +
+			"end) as total_mapas_bateram_dispersao_tempo,\n" +
+			"avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\n"  +
+			"end)::time as media_dispersao_tempo_realizado,\n"  +
+			"avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad \n"  +
+			"end)::time as media_dispersao_tempo_planejado,\n"  +
+			"  -- Jornada --  primeiro verifica se é >00:00, depois verifica se é menor do que a meta \n"  +
+			"sum(case when \n"  +
+			" (case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno) \n" +
+			"end) > '00:00' \n"  +
+			"and \n"  +
+			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
+			"end) <= um.meta_jornada_liquida_horas then 1 else 0 end) as total_mapas_bateram_jornada,\n"  +
+			" sum(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n"  +
+			" else null \n"  +
+			"end)::time as media_jornada, \n"  +
+			"  --Tempo Interno \n"  +
+			"sum(case when m.tempointerno <= um.meta_tempo_interno_horas and m.tempointerno > '00:00' then 1 \n"  +
+			"else 0 \n"  +
+			"end) as total_mapas_bateram_tempo_interno, \n"  +
+			"sum(case when m.tempointerno <= '05:00' and m.tempointerno > '00:00' then 1 \n"  +
+			"else 0 \n"  +
+			"end) as total_mapas_validos_tempo_interno, \n"  +
+			"avg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno \n"  +
+			"else null \n"  +
+			"end)::time as media_tempo_interno, \n"  +
+			"  -- Tempo largada \n" +
+			"sum(case when \n"  +
+			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
+			"else (m.hrsai - m.hrmatinal)::time \n"  +
+			"end) <= um.meta_tempo_largada_horas then 1 \n"  +
+			"else 0 end) as total_mapas_bateram_tempo_largada, \n"  +
+			"sum(case when \n"  +
+			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
+			"else (m.hrsai - m.hrmatinal)::time \n"  +
+			"end) <= '05:00' then 1 \n"  +
+			"else 0 end) as total_mapas_validos_tempo_largada, \n"  +
+			"avg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
+			"when (m.hrsai - m.hrmatinal)::time > '05:00' then '00:30' \n"  +
+			"else (m.hrsai - m.hrmatinal)::time \n"  +
+			"end)::time media_tempo_largada, \n"  +
+			"  -- Tempo Rota \n"  +
+			"sum(case when (m.hrentr - m.hrsai) > '00:00' and (m.hrentr - m.hrsai) <= meta_tempo_rota_horas then 1 \n"  +
+			"else 0 end) as total_mapas_bateram_tempo_rota, \n"  +
+			"avg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai) \n"  +
+			"end)::time as media_tempo_rota, \n"  +
+			"  -- Tracking \n"  +
+			"sum(tracking.apontamentos_ok) as total_apontamentos_ok, \n"  +
+			"sum(tracking.total_apontamentos) as total_apontamentos, \n"  +
+			"um.*n \n" +
+			"from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade \n"  +
+			"LEFT JOIN (SELECT t.mapa as tracking_mapa, \n"  +
+			"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"  +
+			"else 0 end) as apontamentos_ok, \n"  +
+			"count(t.disp_apont_cadastrado) as total_apontamentos \n"  +
+			"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"  +
+			"group by 1) as tracking on tracking_mapa = m.mapa \n"  +
+			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
+			"JOIN colaborador C ON C.cod_unidade = MC.cod_unidade AND C.matricula_ambev = MC.cod_ambev \n"  +
+			"JOIN UNIDADE U ON U.codigo = M.cod_unidade \n"  +
+			"WHERE  M.DATA BETWEEN ? AND ? AND \n"  +
+			"  C.CPF = ? \n"  +
+			"group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem, "  +
+			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas, "  +
+			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas, "  +
+			"um.meta_tempo_largada_mapas;";
 
 
 	/**

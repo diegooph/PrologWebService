@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Date;
@@ -21,9 +20,10 @@ public class Main {
 
 		LocalDate dataInicial = LocalDate.of(2016, Month.SEPTEMBER, 01);
 		Date datainicial = Date.valueOf(dataInicial);
-		LocalDate dataFinal = LocalDate.of(2016, Month.SEPTEMBER, 02);
+		LocalDate dataFinal = LocalDate.of(2016, Month.SEPTEMBER, 15);
 		Date datafinal = Date.valueOf(dataFinal);
-
+		L.d("main", String.valueOf(datainicial.getTime()));
+		L.d("main", String.valueOf(datafinal.getTime()));
 		//ColaboradorDaoImpl baseDao = new ColaboradorDaoImpl();
 		//long cpf = Long.parseLong("12345678987");
 //
@@ -44,8 +44,8 @@ public class Main {
 		 */
 		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
 		RelatorioDaoImpl relatorioDao = new RelatorioDaoImpl();
-//		System.out.println(GsonUtils.getGson().toJson(teste.getAcumuladoIndicadoresIndividual(datainicial.getTime(),
-//				datafinal.getTime(),1984679074L)));
+		//System.out.println(GsonUtils.getGson().toJson(indicadorDao.getAcumuladoIndicadoresIndividual(datainicial.getTime(),
+		//		datafinal.getTime(),1984679074L)));
 		/*
 		Busca extrato:
 		 */
@@ -61,8 +61,8 @@ public class Main {
 				/*
 		Busca acumulado por dia:
 		 */
-		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getConsolidadoDia(datainicial.getTime(),
-				datafinal.getTime(), 2L, "%", "3", "%")));
+		//System.out.println(GsonUtils.getGson().toJson(relatorioDao.getConsolidadoDia(datainicial.getTime(),
+		//		datafinal.getTime(), 2L, "%", "3", "%")));
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
