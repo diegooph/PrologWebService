@@ -238,7 +238,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Time matinal;
 		Time rota;
 		Time tempoInterno;
-		tempoInterno = new Time(rSet.getTime("TEMPOINTERNO").getTime()+0) ;
+		tempoInterno = rSet.getTime("TEMPOINTERNO");
 		rota = TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
 				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
 		matinal = MetaUtils.calculaTempoLargada(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),

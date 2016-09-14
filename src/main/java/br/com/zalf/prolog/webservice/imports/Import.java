@@ -22,6 +22,7 @@ import java.util.List;
 public class Import {
 
 	public static final String NAO_RELATADO = "N.R."; 
+	private static final Time EMPTY_TIME = new Time(0L);
 /**
  * Converte um arquivo em .csv para uma lista de objetos MapaImport
  * @param path um arquivo em .csv (2art)
@@ -29,6 +30,8 @@ public class Import {
  * @see MapaImport
  */
 	public static List<MapaImport> mapa (String path){
+
+
 		List<MapaImport> listMapa = new ArrayList<>();
 		try {
 			Reader in = new FileReader(path);
@@ -100,7 +103,7 @@ public class Import {
 				mapa.lucroUnitCEDBZ = Double.parseDouble(linha.get(45).replace(",","."));
 				mapa.CustoVlcCxEntr = Double.parseDouble(linha.get(46).replace(",","."));
 				if (toTime(linha.get(47)) == null){
-					mapa.tempoInterno = new Time(0L);
+					mapa.tempoInterno = EMPTY_TIME;
 				}else {
 					mapa.tempoInterno = toTime(linha.get(47));
 				}
