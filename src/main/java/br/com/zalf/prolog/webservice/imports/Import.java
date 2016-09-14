@@ -99,7 +99,11 @@ public class Import {
 				mapa.custoVLC = Double.parseDouble(linha.get(44).replace(",","."));
 				mapa.lucroUnitCEDBZ = Double.parseDouble(linha.get(45).replace(",","."));
 				mapa.CustoVlcCxEntr = Double.parseDouble(linha.get(46).replace(",","."));
-				mapa.tempoInterno = toTime(linha.get(47));
+				if (toTime(linha.get(47)) == null){
+					mapa.tempoInterno = new Time(0L);
+				}else {
+					mapa.tempoInterno = toTime(linha.get(47));
+				}
 				mapa.valorDropDown = Double.parseDouble(linha.get(48).replace(",","."));
 				mapa.veicCadDD = linha.get(49).replace(" ","");
 				mapa.kmLaco = Double.parseDouble(linha.get(50).replace(",","."));
