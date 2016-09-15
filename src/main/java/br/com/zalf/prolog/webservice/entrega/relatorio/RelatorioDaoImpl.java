@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.indicador.indicadores.ConsolidadoDia;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 
@@ -253,7 +254,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         return acumulados;
     }
 
-    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, Long codEmpresa,
+    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
                                                String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 
         return new IndicadorDaoImpl().getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
@@ -279,14 +280,80 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
             while (rSet.next()){
                 ConsolidadoDia consolidado = new ConsolidadoDia();
-                consolidado.setData(rSet.getDate("DATA"));
-                consolidado.setQtdMapas(rSet.getInt("VIAGENS_TOTAL"));
-                consolidado.setIndicadores(indicadorDao.createAcumulados(rSet));
+                consolidado.setData(rSet.getDate("DATA"))
+                            .setQtdMapas(rSet.getInt("VIAGENS_TOTAL"))
+                            .setIndicadores(indicadorDao.createAcumulados(rSet));
                 consolidados.add(consolidado);
             }
         }finally {
             closeConnection(conn,stmt,rSet);
         }
         return consolidados;
+    }
+
+    public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
+                                                          String codUnidade, String equipe) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<MapaEstratificado> mapas = new ArrayList<>();
+        IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
+                    "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
+                    "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, um.*\n" +
+                    "FROM\n" +
+                    "MAPA M\n" +
+                    "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
+                    "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+                    "JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
+                    "JOIN regional R ON R.codigo = U.cod_regional\n" +
+                    "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
+                    "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
+                    "LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
+                    "FROM tracking t\n" +
+                    "JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
+                    "JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
+                    "FROM tracking t\n" +
+                    "JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+                    "WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
+                    "GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
+                    "JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
+                    "FROM tracking t\n" +
+                    "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
+                    "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
+                    "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
+                    "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade\n" +
+                    "WHERE\n" +
+                    "m.DATA = ? AND\n" +
+                    "EM.codigo::TEXT LIKE ? AND\n" +
+                    "R.codigo::TEXT LIKE ? AND\n" +
+                    "U.codigo::TEXT LIKE ? AND\n" +
+                    "E.nome::TEXT LIKE ? \n" +
+                    "ORDER BY M.MAPA;");
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(data)));
+            stmt.setString(2, codEmpresa);
+            stmt.setString(3, codRegional);
+            stmt.setString(4 ,codUnidade);
+            stmt.setString(5, equipe);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                MapaEstratificado mapa = new MapaEstratificado();
+                mapa.setNumeroMapa(rSet.getInt("MAPA"))
+                        .setMotorista(rSet.getString("MOTORISTA"))
+                        .setAjudante1(rSet.getString("AJ1"))
+                        .setAjudante2(rSet.getString("AJ2"))
+                        .setData(rSet.getDate("DATA"))
+                        .setPlaca(rSet.getString("PLACA"))
+                        .setEquipe(rSet.getString("EQUIPE"))
+                        .setIndicadores(indicadorDao.createExtratoDia(rSet));
+                mapas.add(mapa);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return mapas;
     }
 }

@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
-import br.com.zalf.prolog.entrega.indicador.indicadores.ConsolidadoDia;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 
@@ -40,7 +41,7 @@ public class RelatorioResource {
     public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
                                                @QueryParam("dataFinal") Long dataFinal,
                                                @PathParam("codRegional") String codRegional,
-                                               @PathParam("codEmpresa") Long codEmpresa,
+                                               @PathParam("codEmpresa") String codEmpresa,
                                                @PathParam("codUnidade") String codUnidade,
                                                @PathParam("equipe") String equipe,
                                                @PathParam("cpf") String cpf,
@@ -61,4 +62,17 @@ public class RelatorioResource {
                                                   @PathParam("equipe") String equipe){
         return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
     }
+
+    @GET
+    @Secured
+    @Android
+    @Path("/mapas/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
+    public List<MapaEstratificado> getMapasEstratificados(@QueryParam("data") Long data,
+                                                          @PathParam("codEmpresa") String codEmpresa,
+                                                          @PathParam("codRegional") String codRegional,
+                                                          @PathParam("codUnidade") String codUnidade,
+                                                          @PathParam("equipe") String equipe){
+        return service.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
+    }
+
 }
