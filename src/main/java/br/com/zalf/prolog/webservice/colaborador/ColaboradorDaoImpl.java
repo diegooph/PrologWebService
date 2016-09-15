@@ -116,7 +116,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 	}
 
-
+	/**
+	 * Busca um colaborador por código
+	 * @param cpf chave a ser buscada no banco de dados
+	 * @return um colaborador
+	 * @throws SQLException
+	 */
 	@Override
 	public Colaborador getByCod(Long cpf) throws SQLException {
 		Connection conn = null;

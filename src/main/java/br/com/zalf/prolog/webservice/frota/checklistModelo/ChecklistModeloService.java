@@ -46,9 +46,9 @@ public class ChecklistModeloService {
 		}
 	}
 	
-	public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codFuncao){
+	public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo){
 		try{
-			return dao.getPerguntas(codUnidade, codFuncao);
+			return dao.getPerguntas(codUnidade, codModelo);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();

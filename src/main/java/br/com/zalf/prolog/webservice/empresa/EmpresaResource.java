@@ -20,7 +20,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EmpresaResource {
 
-	EmpresaService service = new EmpresaService();
+	private EmpresaService service = new EmpresaService();
 
 	@POST
 	@Secured

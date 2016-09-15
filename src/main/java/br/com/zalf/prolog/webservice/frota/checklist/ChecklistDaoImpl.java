@@ -3,23 +3,22 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.checklist.*;
-import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao{
 
 	VeiculoDaoImpl veiculoDao;
 
-
+	private static final String TAG = ChecklistDaoImpl.class.getSimpleName();
 
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
@@ -71,11 +70,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return true;
 	}
 
-
-
-
-
-
 	/**
 	 * Método para inserir itens com apontados como problema no checklist em uma tabela destinada ao controle de manutenção
 	 * @param checklist um Checklist
@@ -124,7 +118,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
 		//Percorre a lista de alternativas de uma pergunta, se alguma estiver selecionada retorna true.
 		for(PerguntaRespostaChecklist.Alternativa alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
-			if(alternativa.selected == true){
+			if(alternativa.selected){
 				return true;
 			}
 		}
@@ -576,92 +570,106 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException{
 		List<VeiculoLiberacao> listVeiculos = new ArrayList<>();
 		List<PerguntaRespostaChecklist> listProblemas = new ArrayList<>();
-		List<String> listPlacasComCheck = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		VeiculoLiberacao veiculoLiberacao = new VeiculoLiberacao();
-		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+		VeiculoLiberacao veiculo = null;
+		PerguntaRespostaChecklist pergunta = null;
+		boolean hasCheck = false;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM "
-					+ "(SELECT DISTINCT PLACA_VEICULO AS PLACA_CHECK FROM CHECKLIST C "
-					+ "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO WHERE DATA_HORA::DATE = ? "
-					+ "AND V.cod_unidade = ?) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK "
-					+ "LEFT JOIN (SELECT PLACA AS PLACA_MANUTENCAO, CP.PERGUNTA AS ITEM_MANUTENCAO FROM CHECKLIST_MANUTENCAO CM "
-					+ "JOIN CHECKLIST_PERGUNTAS CP ON CP.CODIGO = CM.ITEM AND CP.PRIORIDADE = 'CRITICA' AND CP.COD_UNIDADE = CM.COD_UNIDADE "
-					+ "WHERE CM.CPF_FROTA IS NULL) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA "
-					+ "WHERE V.COD_UNIDADE = ? "
-					+ "ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO", ResultSet.TYPE_SCROLL_SENSITIVE,	ResultSet.CONCUR_UPDATABLE);
+			stmt = conn.prepareStatement("SELECT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM \n" +
+					"(SELECT DISTINCT PLACA_VEICULO AS PLACA_CHECK FROM CHECKLIST C \n" +
+					"JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO WHERE DATA_HORA::DATE = ?\n" +
+					"AND V.cod_unidade = ?) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK\n" +
+					"LEFT JOIN (SELECT e.placa_veiculo as PLACA_MANUTENCAO, e.pergunta AS ITEM_MANUTENCAO\n" +
+					"FROM estratificacao_os e\n" +
+					"where e.cod_unidade = ? and e.status_item like 'P' and e.prioridade like 'CRITICA' and e.cpf_mecanico is null\n" +
+					"order by e.placa_veiculo) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA\n" +
+					"WHERE V.COD_UNIDADE = ?\n" +
+					"ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO;");
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
 			stmt.setLong(3, codUnidade);
+			stmt.setLong(4, codUnidade);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 
-			if(rSet.first()){
-				pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-				veiculoLiberacao.setPlaca(rSet.getString("PLACA"));
-				if(pergunta.getPergunta() != null){
-					listProblemas.add(pergunta);}
-				if(rSet.getString("PLACA_CHECK") != null){
-					listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
-			}
-			while (rSet.next()) { new ModeloChecklist();
-				if(rSet.getString("PLACA").equals(veiculoLiberacao.getPlaca())){
-					pergunta = new PerguntaRespostaChecklist();
-					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-					if(pergunta.getPergunta() != null){
-						listProblemas.add(pergunta);}
-				}else{
-					if(rSet.getString("PLACA_CHECK") != null){
-						listPlacasComCheck.add(rSet.getString("PLACA_CHECK"));}
-					veiculoLiberacao.setItensCriticos(listProblemas);
-					listVeiculos.add(veiculoLiberacao);
-					listProblemas = new ArrayList<>();
-
-					pergunta = new PerguntaRespostaChecklist();
-					pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
-
-					veiculoLiberacao = new VeiculoLiberacao();
-					veiculoLiberacao.setPlaca(rSet.getString("PLACA"));
-					if(pergunta.getPergunta() != null){
-						listProblemas.add(pergunta);}
+			while (rSet.next()){
+				if(veiculo == null){//primeira linha do rSet
+					veiculo = new VeiculoLiberacao();
+					veiculo.setPlaca(rSet.getString("PLACA"));
+					if(rSet.getString("item_manutencao") != null){
+						pergunta = new PerguntaRespostaChecklist();
+						pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+						listProblemas.add(pergunta);
+					}
+					if(veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))){
+						hasCheck = true;
+					}else{
+						hasCheck = false;
+					}
+				}else{//a partir da segunda linha do Rset
+					if(veiculo.getPlaca().equals(rSet.getString("placa"))){
+						if(rSet.getString("item_manutencao") != null){
+							pergunta = new PerguntaRespostaChecklist();
+							pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+							listProblemas.add(pergunta);
+						}
+					}else{
+						verificaInsereListaLiberacao(hasCheck, listProblemas, listVeiculos, veiculo);
+						veiculo = new VeiculoLiberacao();
+						veiculo.setPlaca(rSet.getString("placa"));
+						if(veiculo.getPlaca().equals(rSet.getString("PLACA_CHECK"))){
+							hasCheck = true;
+						}else{
+							hasCheck = false;
+						}
+						listProblemas = new ArrayList<>();
+						if(rSet.getString("item_manutencao") != null){
+							pergunta = new PerguntaRespostaChecklist();
+							pergunta.setPergunta(rSet.getString("ITEM_MANUTENCAO"));
+							listProblemas.add(pergunta);
+						}
+					}
 				}
 			}
-			veiculoLiberacao.setItensCriticos(listProblemas);
-			listVeiculos.add(veiculoLiberacao);
+			verificaInsereListaLiberacao(hasCheck, listProblemas, listVeiculos, veiculo);
+			listVeiculos.add(veiculo);
 		}
 		finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		setStatusLiberacao(listVeiculos, listPlacasComCheck);
 		return listVeiculos;
 	}
 
-	private void setStatusLiberacao(List<VeiculoLiberacao> list, List<String> listPlacasComCheck){
-		for(VeiculoLiberacao veiculoLiberacao : list){
-			if(veiculoLiberacao.getItensCriticos().size() > 0){
-				veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
-			}else{
-				if(placaTemCheck(veiculoLiberacao.getPlaca(), listPlacasComCheck)){
-					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
-				}else{
-					veiculoLiberacao.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
-				}
+	/**
+	 * Verifica se o veiculo tem problema e se tem check, setando o status e adicionando na lista
+	 * @param hasCheck boolean indicando se o veiculo possui checklist realizado no tia corrente
+	 * @param listProblemas lista de problemas que o veículo possui
+	 * @param listVeiculos lista final com os veiculos {@link VeiculoLiberacao}
+     * @param veiculo um veiculo {@link VeiculoLiberacao}
+     */
+	private void verificaInsereListaLiberacao(boolean hasCheck, List<PerguntaRespostaChecklist> listProblemas,
+											  List<VeiculoLiberacao> listVeiculos, VeiculoLiberacao veiculo) {
+		if (listProblemas.size() > 0) {
+			VeiculoLiberacao v = new VeiculoLiberacao();
+			v.setItensCriticos(listProblemas);
+			v.setPlaca(veiculo.getPlaca());
+			v.setStatus(VeiculoLiberacao.STATUS_NAO_LIBERADO);
+			listVeiculos.add(v);
+			if (!hasCheck) {
+				veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
+				listVeiculos.add(veiculo);
+			}
+		} else {
+			if (hasCheck) {
+				veiculo.setStatus(VeiculoLiberacao.STATUS_LIBERADO);
+				listVeiculos.add(veiculo);
+			} else {
+				veiculo.setStatus(VeiculoLiberacao.STATUS_PENDENTE);
+				listVeiculos.add(veiculo);
 			}
 		}
 	}
-
-	private boolean placaTemCheck (String placa, List<String> listPlacasComCheck){
-		List<String> listPlaca = new ArrayList<>();
-		listPlaca = listPlacasComCheck.stream().filter(c -> c.equals(placa)).collect(Collectors.toCollection(ArrayList::new));
-		if(listPlaca.isEmpty()){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
 }
-
-

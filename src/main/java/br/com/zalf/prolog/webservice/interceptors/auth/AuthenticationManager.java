@@ -12,7 +12,8 @@ import java.util.concurrent.TimeUnit;
  * Created by luiz on 07/09/16.
  */
 public class AuthenticationManager {
-    public static final TimeUnit EXPIRE_AFTER_ACCESS_TIME_UNITY = BuildConfig.DEBUG ? TimeUnit.SECONDS : TimeUnit.MINUTES;
+
+    private static final TimeUnit EXPIRE_AFTER_ACCESS_TIME_UNITY = BuildConfig.DEBUG ? TimeUnit.SECONDS : TimeUnit.MINUTES;
     private static final AuthenticationManager INSTANCE;
     private LoadingCache<String, Boolean> cache;
 
