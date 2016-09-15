@@ -22,7 +22,7 @@ public class IndicadorService {
         }
     }
 
-    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, Long codEmpresa,
+    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
                                                String codUnidade, String equipe, String cpf, String indicador){
         try{
             return dao.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa, codUnidade, equipe, cpf,

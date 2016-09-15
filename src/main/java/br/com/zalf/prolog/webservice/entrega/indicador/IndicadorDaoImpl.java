@@ -48,7 +48,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"  R.codigo::TEXT LIKE ? AND\n" +
 			"  U.codigo::TEXT LIKE ? AND\n" +
 			"  E.nome::TEXT LIKE ? AND\n" +
-			"  EM.codigo = ? AND\n" +
+			"  EM.codigo::TEXT LIKE ? AND\n" +
 			"  C.CPF::TEXT LIKE ? \n" +
 			"ORDER BY M.DATA;\n";
 
@@ -150,7 +150,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
      * @return uma lista de Indicador {@link Indicador}
      * @throws SQLException caso não seja possível realizar a busca no BD
      */
-	public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, Long codEmpresa,
+	public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
 											   String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -164,7 +164,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			stmt.setString(3, codRegional);
 			stmt.setString(4, codUnidade);
 			stmt.setString(5, equipe);
-			stmt.setLong(6, codEmpresa);
+			stmt.setString(6, codEmpresa);
 			stmt.setString(7, cpf);
 			rSet = stmt.executeQuery();
 			itens = createExtratoIndicador(rSet, indicador);

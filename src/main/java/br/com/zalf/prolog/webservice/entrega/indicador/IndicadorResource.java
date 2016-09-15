@@ -32,17 +32,12 @@ public class IndicadorResource {
     @GET
     @Secured
     @Android
-    @Path("/extrato/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}")
+    @Path("/extratos/{indicador}/{cpf}")
     public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
                                                @QueryParam("dataFinal") Long dataFinal,
-                                               @PathParam("codRegional") String codRegional,
-                                               @PathParam("codEmpresa") Long codEmpresa,
-                                               @PathParam("codUnidade") String codUnidade,
-                                               @PathParam("equipe") String equipe,
                                                @PathParam("cpf") String cpf,
                                                @PathParam("indicador") String indicador) {
-        return service.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa, codUnidade, equipe,
-                cpf, indicador);
+        return service.getExtratoIndicador(dataInicial, dataFinal, "%", "%", "%", "%", cpf, indicador);
     }
 
 }
