@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.relatorioOlder;
 
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
+
+import br.com.zalf.prolog.entrega.relatorio.older.ConsolidadoHolder;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

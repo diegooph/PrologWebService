@@ -22,6 +22,12 @@ public class IndicadorConverter {
     static List<Indicador> createExtratoCaixaViagem(ResultSet rSet)throws SQLException {
         List<Indicador> itens = new ArrayList<>();
         while (rSet.next()){
+            itens.add(createCaixaViagem(rSet));
+        }
+        return itens;
+    }
+
+    static CaixaViagem createCaixaViagem(ResultSet rSet)throws SQLException{
             CaixaViagem item = new CaixaViagem();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -29,14 +35,18 @@ public class IndicadorConverter {
                     .setViagens(1)
                     .setMeta(rSet.getDouble("META_CAIXA_VIAGEM"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoDevHl(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createDevHl(rSet));
+        }
+        return itens;
+    }
+
+    static DevHl createDevHl(ResultSet rSet)throws SQLException{
             DevHl item = new DevHl();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -44,14 +54,18 @@ public class IndicadorConverter {
                     .setNok(rSet.getDouble("QTHLCARREGADOS") - item.getOk())
                     .setMeta(rSet.getDouble("META_DEV_HL"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoDevPdv(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createDevPdv(rSet));
+        }
+        return itens;
+    }
+
+    static DevPdv createDevPdv(ResultSet rSet) throws SQLException{
             DevPdv item = new DevPdv();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -59,14 +73,18 @@ public class IndicadorConverter {
                     .setNok(rSet.getInt("ENTREGASNAOREALIZADAS"))
                     .setMeta(rSet.getDouble("META_DEV_PDV"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoDispersaoKm(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createDispersaoKm(rSet));
+        }
+        return itens;
+    }
+
+    static DispersaoKm createDispersaoKm(ResultSet rSet) throws SQLException{
             DispersaoKm item = new DispersaoKm();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -74,14 +92,18 @@ public class IndicadorConverter {
                     .setKmPlanejado(rSet.getDouble("KMPREVISTOROAD"))
                     .setKmPercorrido(rSet.getDouble("KMENTR") - rSet.getDouble("KMSAI"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoTracking(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createTracking(rSet));
+        }
+        return itens;
+    }
+
+    static Tracking createTracking(ResultSet rSet)throws SQLException{
             Tracking item = new Tracking();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -89,14 +111,18 @@ public class IndicadorConverter {
                     .setNok(rSet.getInt("TOTAL_TRACKING") - item.getOk())
                     .setMeta(rSet.getDouble("META_TRACKING"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoDispersaoTempo(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createDispersaoKm(rSet));
+        }
+        return itens;
+    }
+
+    static DispersaoTempo createDispersaoTempo(ResultSet rSet)throws SQLException{
             DispersaoTempo item = new DispersaoTempo();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -104,14 +130,18 @@ public class IndicadorConverter {
                     .setTempoPrevisto(rSet.getTime("TEMPOPREVISTOROAD"))
                     .setTempoRealizado(rSet.getTime("TEMPO_ROTA"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoJornada(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createJornada(rSet));
+        }
+        return itens;
+    }
+
+    static Jornada createJornada(ResultSet rSet)throws SQLException{
             Jornada item = new Jornada();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -121,14 +151,18 @@ public class IndicadorConverter {
                     .setTempoRota(TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
                             TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI"))))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoTempoInterno(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createTempoInterno(rSet));
+        }
+        return itens;
+    }
+
+    static TempoInterno createTempoInterno(ResultSet rSet)throws SQLException{
             TempoInterno item = new TempoInterno();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -136,14 +170,18 @@ public class IndicadorConverter {
                     .setHrEntrada(rSet.getTime("HRENTR"))
                     .setHrFechamento(TimeUtils.somaHoras(item.getHrEntrada(), rSet.getTime("TEMPOINTERNO")))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoTempoLargada(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createTempoLargada(rSet));
+        }
+        return itens;
+    }
+
+    static TempoLargada createTempoLargada(ResultSet rSet)throws SQLException{
             TempoLargada item = new TempoLargada();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -151,14 +189,18 @@ public class IndicadorConverter {
                     .setHrMatinal(rSet.getTime("HRMATINAL"))
                     .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     static List<Indicador> createExtratoTempoRota(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
+            itens.add(createTempoRota(rSet));
+        }
+        return itens;
+    }
+
+    static TempoRota createTempoRota(ResultSet rSet)throws SQLException{
             TempoRota item = new TempoRota();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
@@ -166,9 +208,7 @@ public class IndicadorConverter {
                     .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
                     .setHrEntrada(rSet.getTime("HRENTR"))
                     .calculaResultado();
-            itens.add(item);
-        }
-        return itens;
+        return item;
     }
 
     /*

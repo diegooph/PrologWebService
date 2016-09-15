@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.relatorioOlder;
 
 import br.com.zalf.prolog.commons.colaborador.Empresa;
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
+import br.com.zalf.prolog.entrega.relatorio.older.ConsolidadoHolder;
 import br.com.zalf.prolog.webservice.empresa.EmpresaService;
 
 import javax.ws.rs.*;

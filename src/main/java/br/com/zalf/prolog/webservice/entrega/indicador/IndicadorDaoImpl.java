@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -259,6 +260,28 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		}else if(indicador.equals(TempoRota.TEMPO_ROTA)) {
 			return IndicadorConverter.createExtratoTempoRota(rSet);
 		}
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
+
+	/**
+	 * Cria apenas um item de cada indicador, que irá compor os indicadores de um mapa
+	 * @param rSet ResultSet contendo os dados de apenas um unico mapa
+	 * @return lista com os indicadores desse mapa
+	 * @throws SQLException caso não seja possivel realizar a busca de alguma coluna
+     */
+	public List<IndicadorItem> createExtratoDia(ResultSet rSet)throws SQLException{
+		List<IndicadorItem> itens = new ArrayList<>();
+		itens.add(IndicadorConverter.createTempoRota(rSet));
+		itens.add(IndicadorConverter.createTempoLargada(rSet));
+		itens.add(IndicadorConverter.createTempoInterno(rSet));
+		itens.add(IndicadorConverter.createJornada(rSet));
+		itens.add(IndicadorConverter.createCaixaViagem(rSet));
+		itens.add(IndicadorConverter.createDevHl(rSet));
+		itens.add(IndicadorConverter.createDevPdv(rSet));
+		itens.add(IndicadorConverter.createDispersaoKm(rSet));
+		itens.add(IndicadorConverter.createDispersaoTempo(rSet));
+		itens.add(IndicadorConverter.createTracking(rSet));
+		return itens;
+	}
+
 }
