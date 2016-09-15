@@ -6,8 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class LogDaoImpl extends DatabaseConnection {
+public class LogDaoImpl extends DatabaseConnection implements LogDao {
 
+	@Override
 	public boolean insert(String log, String indicador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MapaService {
 	
-	private MapaDaoImpl dao = new MapaDaoImpl();
+	private MapaDao dao = new MapaDaoImpl();
 	
 	public boolean insertOrUpdate(List<MapaImport> listMapas, Colaborador colaborador) {
 		try {

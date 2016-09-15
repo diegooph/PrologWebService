@@ -11,8 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
+public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 
+	@Override
 	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException {
 		//System.out.println("Entrou no insertOrUpdate");
 		//System.out.println(listMapas.get(0));
@@ -33,7 +34,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 		return true;
 	}
 
-	public boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula) throws SQLException {
+	private boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula) throws SQLException {
 		//System.out.println("Entrou no insertOrUpdateMapaColaborador");
 		//System.out.println(listMapas.get(0));
 
@@ -47,7 +48,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 		return true;
 	}
 
-	public boolean insertMapa (MapaImport mapa, Colaborador colaborador) throws SQLException{
+	private boolean insertMapa (MapaImport mapa, Colaborador colaborador) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -158,7 +159,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 		return true;
 	}
 
-	public boolean insertMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
+	private boolean insertMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
 
 			Connection conn = null;
 			PreparedStatement stmt = null;
@@ -179,7 +180,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao{
 			return true;
 		}
 
-	public boolean updateMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
+	private boolean updateMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
 
 			Connection conn = null;
 			PreparedStatement stmt = null;

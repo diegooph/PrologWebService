@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class LogService {
 
-	LogDaoImpl dao = new LogDaoImpl();
+	private LogDao dao = new LogDaoImpl();
 
 	public boolean insert(String log, String indicador) {
 		try {

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.imports.MapaImport;
 import br.com.zalf.prolog.commons.imports.TrackingImport;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.util.L;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -26,27 +27,30 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ImportResource {
-	
-	  	@POST
-	  	@Path("/mapa")
-	    @Consumes({MediaType.MULTIPART_FORM_DATA})
-	    public Response uploadMapa(
-	    		@FormDataParam("file") InputStream fileInputStream,
-	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
-	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
-	  		System.out.println("CHAMOU O IMPORT DO MAPAAAAAA");
+
+	private static final String TAG = ImportResource.class.getSimpleName();
+
+	@POST
+	@Path("/mapa")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	public Response uploadMapa(
+		@FormDataParam("file") InputStream fileInputStream,
+	    @FormDataParam("file") FormDataContentDisposition fileDetail,
+	    @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+
+			L.d(TAG, "CHAMOU O IMPORT DO MAPAAAAAA");
 	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-	  		System.out.println(jsonPart.toString());
+			L.d(TAG, jsonPart.toString());
 	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
-		  try {
+		  	try {
 				// Salva o arquivo
 			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
 			  	// ser que substitua enquanto está ainda usando o arquivo
 				String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
-				System.out.println("fileName: " + fileName);
-				System.out.println("Colaborador:");
-				System.out.println("CPF: " + colaborador.getCpf());
-				System.out.println("CodUnidade: " + colaborador.getCodUnidade());
+			  	L.d(TAG, "fileName: " + fileName);
+			  	L.d(TAG, "Colaborador");
+			  	L.d(TAG, "CPF: " + colaborador.getCpf());
+			  	L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
 				// Pasta temporária da JVM
 				File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
 				if (!tmpDir.exists()) {
@@ -58,7 +62,7 @@ public class ImportResource {
 				FileOutputStream out = new FileOutputStream(file);
 				IOUtils.copy(fileInputStream, out);
 				IOUtils.closeQuietly(out);
-				System.out.println("Arquivo: " + file);
+				L.d(TAG, "Arquivo: " + file);
 								
 				List<MapaImport> mapas = Import.mapa(file.getPath());
 				if (mapas == null) {
@@ -79,16 +83,17 @@ public class ImportResource {
 		  return Response.Error("Requisição inválida");
 	    } 
 	  	
-	  	@POST
-	  	@Path("/tracking")
-	    @Consumes({MediaType.MULTIPART_FORM_DATA})
-	    public Response uploadTracking(
-	    		@FormDataParam("file") InputStream fileInputStream,
-	    		@FormDataParam("file") FormDataContentDisposition fileDetail,
-	            @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+	@POST
+	@Path("/tracking")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	public Response uploadTracking(
+		@FormDataParam("file") InputStream fileInputStream,
+	    @FormDataParam("file") FormDataContentDisposition fileDetail,
+	    @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+
 	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
 	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
-		  try {
+		  	try {
 				// Salva o arquivo
 			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
 			  	// ser que substitua enquanto está ainda usando o arquivo

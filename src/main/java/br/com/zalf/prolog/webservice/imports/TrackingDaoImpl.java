@@ -10,8 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class TrackingDaoImpl extends DatabaseConnection {
+public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
 
+	@Override
 	public boolean insertOrUpdateTracking (List<TrackingImport> listTracking, Colaborador colaborador) throws SQLException {
 		System.out.println("Entrou no insertOrUpdateTracking");
 		for(TrackingImport tracking : listTracking){
@@ -27,7 +28,7 @@ public class TrackingDaoImpl extends DatabaseConnection {
 		return true;
 	}
 
-	public boolean insertTracking (TrackingImport tracking, Colaborador colaborador) throws SQLException{
+	private boolean insertTracking (TrackingImport tracking, Colaborador colaborador) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -21,13 +21,14 @@ import java.util.List;
  */
 public class Import {
 
-	public static final String NAO_RELATADO = "N.R."; 
-/**
- * Converte um arquivo em .csv para uma lista de objetos MapaImport
- * @param path um arquivo em .csv (2art)
- * @return uma lista de MapaImport
- * @see MapaImport
- */
+	public static final String NAO_RELATADO = "N.R.";
+
+	/**
+ 	* Converte um arquivo em .csv para uma lista de objetos MapaImport
+ 	* @param path um arquivo em .csv (2art)
+ 	* @return uma lista de MapaImport
+ 	* @see MapaImport
+ 	*/
 	public static List<MapaImport> mapa (String path){
 		List<MapaImport> listMapa = new ArrayList<>();
 		try {
@@ -147,13 +148,15 @@ public class Import {
 		return listMapa;
 
 	}
-/**
- * Converte um arquivo e .csv para uma lista de Tracking
- * @param path um arquivo .csv com os dados do tracking
- * @return uma lista de Tracking
- * @see TrackingImport
- */
+
+	/**
+ 	* Converte um arquivo e .csv para uma lista de Tracking
+ 	* @param path um arquivo .csv com os dados do tracking
+ 	* @return uma lista de Tracking
+ 	* @see TrackingImport
+ 	*/
 	public static List<TrackingImport> tracking (String path){
+
 		List<TrackingImport> listTracking = new ArrayList<>();
 		try {
 			Reader in = new FileReader(path);
@@ -336,6 +339,7 @@ public class Import {
 		return listTracking;
 
 	}
+
 	/**
 	 * Método usado para verificar se uma string contém algum número
 	 * @param str uma String
@@ -344,6 +348,7 @@ public class Import {
 	public static boolean containsNumber(String str) {
         return str.matches(".*\\d+.*");
     }
+
 	/**
 	 * Converte uma string para Date
 	 * @param data uma String contendo uma data
@@ -390,6 +395,7 @@ public class Import {
 		}
 		return date;
 	}
+
 	/**
 	 * Converte uma String para um Time
 	 * @param hora uma String contendo uma hora

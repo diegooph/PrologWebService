@@ -17,6 +17,6 @@ public interface MapaDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o import
 	 */
-	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException;
+	boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException;
 	
 }

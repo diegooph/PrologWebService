@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MetaService {
-private MetasDaoImpl dao = new MetasDaoImpl();
+
+	private MetasDao dao = new MetasDaoImpl();
 	
 	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) {
 		try {
