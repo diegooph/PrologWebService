@@ -5,6 +5,9 @@ import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Classe FaleConoscoService responsavel por comunicar-se com a interface DAO
+ */
 public class FaleConoscoService {
 
 	private FaleConoscoDao dao = new FaleConoscoDaoImpl();

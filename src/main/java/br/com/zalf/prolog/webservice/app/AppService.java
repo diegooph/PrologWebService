@@ -5,17 +5,12 @@ import br.com.zalf.prolog.commons.login.AppVersion;
 import java.sql.SQLException;
 
 /**
- * Classe AppService, responsavel pela comunicação com a camada Dao do pacote app
+ * Classe AppService responsavel por comunicar-se com a interface DAO
  */
 public class AppService {
 
 	private AppDao dao = new AppDaoImpl();
 
-	/**
-	 * método que verifaica se a versão está atualizada
-	 * @param appVersion
-	 * @return
-	 */
 	public boolean isThisCurrentVersion(AppVersion appVersion) {
 		try {
 			return dao.isThisCurrentVersion(appVersion);

@@ -6,6 +6,9 @@ import br.com.zalf.prolog.commons.imports.TrackingImport;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Classe TrackingService responsavel por comunicar-se com a interface DAO
+ */
 public class TrackingService {
 	
 	private TrackingDao dao = new TrackingDaoImpl();

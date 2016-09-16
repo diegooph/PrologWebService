@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe SolicitacaoFolgaService responsavel por comunicar-se com a interface DAO
+ */
 public class SolicitacaoFolgaService {
 
 	private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();

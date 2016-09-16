@@ -47,14 +47,14 @@ public interface GsdDao {
 
 	/**
 	 * Busca todos os GSD respeitando os filtros aplicados
-	 * @param dataInicial 
-	 * @param dataFinal
-	 * @param equipe
-	 * @param codUnidade
-	 * @param limit
-	 * @param offset
-	 * @return
-	 * @throws SQLException
+	 * @param dataInicial data inicial da busca
+	 * @param dataFinal data final da busca
+	 * @param equipe equipe
+	 * @param codUnidade código da unidade
+	 * @param limit limite de busca de dados do banco
+	 * @param offset offset de busca no banco
+	 * @return lista com todos os gsd
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Gsd> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade, long limit, long offset) throws SQLException;

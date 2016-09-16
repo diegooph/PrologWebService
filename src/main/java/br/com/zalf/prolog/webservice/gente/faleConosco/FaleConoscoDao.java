@@ -50,8 +50,8 @@ public interface FaleConoscoDao {
 	 * Busca os fale conosco entre as datas de entrada
 	 * @param dataInicial data inicial
 	 * @param dataFinal data final
-	 * @param limit limite
-	 * @param offset
+	 * @param limit limite de busca no banco
+	 * @param offset offset de busca no banco
 	 * @param equipe equipe
 	 * @param codUnidade código da unidade
 	 * @param status status

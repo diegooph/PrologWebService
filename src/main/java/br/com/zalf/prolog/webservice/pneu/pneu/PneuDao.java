@@ -16,7 +16,7 @@ public interface PneuDao {
 	 * retorna uma lista de pneus da placa requerida
 	 * @param placa placa do veículo
 	 * @return lista de pneus
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	List<Pneu> getPneusByPlaca(String placa) throws SQLException;
 
@@ -25,7 +25,7 @@ public interface PneuDao {
 	 * @param pneu um pneu
 	 * @param codUnidade código da unidade
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean insert(Pneu pneu, Long codUnidade) throws SQLException;
 
@@ -35,7 +35,7 @@ public interface PneuDao {
 	 * @param codUnidade código da unidade
 	 * @param conn conexão do banco
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean updateMedicoes (Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
@@ -45,7 +45,7 @@ public interface PneuDao {
 	 * @param codUnidade código da unidade
 	 * @param codOriginal código original do pneu
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean update (Pneu pneu, Long codUnidade, Long codOriginal) throws SQLException;
 
@@ -54,7 +54,7 @@ public interface PneuDao {
 	 * @param pneu um pneu
 	 * @param codUnidade código da unidade
 	 * @param conn conexão
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	void updateCalibragem (Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
@@ -65,7 +65,7 @@ public interface PneuDao {
 	 * @param status status do pneu
 	 * @param conn conexão do banco
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean updateStatus (Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
@@ -78,7 +78,7 @@ public interface PneuDao {
 	 * @param placa placa do véiculo
 	 * @param pneu pneu
 	 * @param pneuNovo novo valor a ser inserido em pneu
-	 * @param conn conexão do banco
+	 * @param conn conexão do banco caso ocorra erro no banco
 	 * @throws SQLException
 	 */
 	void updateVeiculoPneu (String placa, Pneu pneu, Pneu pneuNovo, Connection conn) throws SQLException;
@@ -88,7 +88,7 @@ public interface PneuDao {
 	 * @param codUnidade código unidade
 	 * @param status status do pneu
 	 * @return uma lista de pneus
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
 
@@ -96,7 +96,7 @@ public interface PneuDao {
 	 * cria um novo pneu
 	 * @param rSet conjunto de informações do banco
 	 * @return um novo pneu
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	Pneu createPneu (ResultSet rSet) throws SQLException;
 
@@ -104,14 +104,14 @@ public interface PneuDao {
 	 * retorna uma lista de marcas de pneus da empresa
 	 * @param codEmpresa código da empresa
 	 * @return uma lista de marcas
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws SQLException;
 
 	/**
 	 * lista todas as dimensões
 	 * @return uma lista com todas as dimensões
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	List<Pneu.Dimensao> getDimensoes() throws SQLException;
 
@@ -121,7 +121,7 @@ public interface PneuDao {
 	 * @param codEmpresa código da empresa
 	 * @param codMarca código da marca
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
 
@@ -129,7 +129,7 @@ public interface PneuDao {
 	 * vinvula pneus a um veiculo
 	 * @param veiculo um veículo
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException caso ocorra erro no banco
 	 */
 	boolean vinculaPneuVeiculo(Veiculo veiculo) throws SQLException;
 

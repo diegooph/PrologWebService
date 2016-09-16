@@ -28,7 +28,7 @@ public interface CalendarioDao {
 	 * @param equipe equipe
 	 * @param funcao função
 	 * @return uma lista de eventos
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
 						 String equipe, String funcao) throws SQLException;
@@ -38,7 +38,7 @@ public interface CalendarioDao {
 	 * @param codUnidade código da unidade
 	 * @param codEvento código do evento
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	boolean delete (Long codUnidade, Long codEvento) throws SQLException;
 
@@ -49,7 +49,7 @@ public interface CalendarioDao {
 	 * @param codFuncao código da função
 	 * @param codEquipe código da equipe
 	 * @return uma resposta abstrata, contendo o valor da operação
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
 
@@ -60,7 +60,7 @@ public interface CalendarioDao {
 	 * @param codFuncao código da função
 	 * @param codEquipe código da equipe
 	 * @return o valor da operação
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
 

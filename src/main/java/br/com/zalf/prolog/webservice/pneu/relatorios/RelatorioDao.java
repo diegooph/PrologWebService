@@ -18,7 +18,7 @@ public interface RelatorioDao {
 	 * @param codUnidades código da unidade
 	 * @param status status do pneu
 	 * @return lista de faixas
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException;
 
@@ -28,10 +28,10 @@ public interface RelatorioDao {
 	 * @param fimFaixa fim da faixa
 	 * @param codEmpresa código da empresa
 	 * @param codUnidade código da unidade
-	 * @param limit
-	 * @param offset
+	 * @param limit limite de busca de dados no banco
+	 * @param offset offset de busca no banco
 	 * @return lista de pneus
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException;
 
@@ -41,7 +41,7 @@ public interface RelatorioDao {
 	 * @param mes mes a ser buscado
 	 * @param codUnidade código da unidade
 	 * @return lista de aderencias
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException;
 
@@ -50,7 +50,7 @@ public interface RelatorioDao {
 	 * @param codUnidades código da unidade
 	 * @param status status do pneu
 	 * @return lista de faixas
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status)throws SQLException;
 
@@ -60,7 +60,7 @@ public interface RelatorioDao {
 	 * @param mes mes a ser buscado
 	 * @param codUnidades código da unidade
 	 * @return lista de serviços
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
 

@@ -13,7 +13,7 @@ public interface ServicoDao {
 	 * busca as placas com serviços da unidade
 	 * @param codUnidade código da unidade
 	 * @return placas com serviços
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	PlacaServicoHolder getPlacasServico(Long codUnidade) throws SQLException;
 
@@ -22,7 +22,7 @@ public interface ServicoDao {
 	 * @param placa placa do veículo
 	 * @param codUnidade código da unidade
 	 * @return serviços da placa
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException;
 
@@ -31,7 +31,7 @@ public interface ServicoDao {
 	 * @param placa placa do veículo
 	 * @param tipoServico tipo do serviço
 	 * @return lista de serviços da placa
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException;
 
@@ -41,7 +41,7 @@ public interface ServicoDao {
 	 * @param codUnidade código da unidade
 	 * @param token token
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	boolean insertManutencao(Servico servico, Long codUnidade, String token) throws SQLException;
 

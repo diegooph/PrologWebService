@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Classe ColaboradorService, responsavel pela comuicação com a interface DAO
+ * Classe ColaboradorService responsavel por comunicar-se com a interface DAO
  */
 public class ColaboradorService {
 

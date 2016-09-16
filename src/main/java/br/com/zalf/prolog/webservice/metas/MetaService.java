@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe MetaService responsavel por comunicar-se com a interface DAO
+ */
 public class MetaService {
 
 	private MetasDao dao = new MetasDaoImpl();

@@ -10,6 +10,7 @@ import java.util.List;
  * Contém os métodos para import da tabela Mapa (ambev: 2art)
  */
 public interface MapaDao {
+
 	/**
 	 * Insere um mapa caso não exista, atualiza caso exista
 	 * @param listMapas lista de MapaImport

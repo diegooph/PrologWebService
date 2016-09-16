@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe VeiculoService responsavel por comunicar-se com a interface DAO
+ */
 public class VeiculoService {
 
 	private VeiculoDaoImpl dao = new VeiculoDaoImpl();

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface AutenticacaoDao {
 	/**
 	 * Cria um novo token para o usuário
-	 * @param cpf
+	 * @param cpf cpf do usuario
 	 * @return objeto autenticação com o token gerado e o status do login
 	 * @throws SQLException caso não seja possível realizar o insert na tabela
 	 */

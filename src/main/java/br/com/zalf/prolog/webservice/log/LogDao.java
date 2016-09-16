@@ -7,5 +7,12 @@ import java.sql.SQLException;
  */
 public interface LogDao {
 
+	/**
+	 *
+	 * @param log descrição do log
+	 * @param indicador identificador do log
+	 * @return valor da operação
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
 	boolean insert(String log, String indicador) throws SQLException;
 }

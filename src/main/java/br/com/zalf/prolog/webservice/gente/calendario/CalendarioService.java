@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe CalendarioService responsavel por comunicar-se com a interface DAO
+ */
 public class CalendarioService {
 
 	private CalendarioDao dao = new CalendarioDaoImpl();

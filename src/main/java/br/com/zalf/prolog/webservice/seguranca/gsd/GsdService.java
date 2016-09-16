@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe GsdService responsavel por comunicar-se com a interface DAO
+ */
 public class GsdService {
 
 	private GsdDao dao = new GsdDaoImpl();

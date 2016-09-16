@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe RelatorioService responsavel por comunicar-se com a interface DAO
+ */
 public class RelatorioService {
 	
 	private RelatorioDao dao = new RelatorioDaoImpl();

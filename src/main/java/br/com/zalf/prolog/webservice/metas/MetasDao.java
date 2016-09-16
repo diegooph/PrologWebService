@@ -11,6 +11,7 @@ import java.util.List;
  * Contém os métodos para gerenciamento das metas operacionais (indicadores)
  */
 public interface MetasDao {
+
 	/**
 	 * Busca metas de acordo com a unidade informada
 	 * @param codUnidade código da unidade a ser buscadas as metas
@@ -25,7 +26,7 @@ public interface MetasDao {
 	 * busca meta de acordo com o cpf informado
 	 * @param cpf um cpf
 	 * @return uma meta
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	Meta getMetasByCpf(long cpf) throws SQLException;
 
@@ -33,7 +34,7 @@ public interface MetasDao {
 	 * busca uma meta de acordo com a unidade informada
 	 * @param codUnidade código da unidade
 	 * @return uma meta
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	Meta getMetasByUnidade(Long codUnidade) throws SQLException;
 

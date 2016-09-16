@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Classe ChecklistService responsavel por comunicar-se com a interface DAO
+ */
 public class ChecklistService {
 
 	private ChecklistDao dao = new ChecklistDaoImpl();

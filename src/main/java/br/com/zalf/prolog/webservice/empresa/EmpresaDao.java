@@ -15,13 +15,12 @@ import java.util.List;
 public interface EmpresaDao {
 
 	/**
-	 *
 	 * @param ano ano da busca
 	 * @param mes mes da busca
 	 * @param codUnidade unidade que deseja-se buscar
 	 * @return
-	 * @throws SQLException
-	 * @throws NoContentException
+	 * @throws SQLException caso ocorrer erro no banco
+	 * @throws NoContentException se não tiver conteudo
 	 */
 	List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException;
 
@@ -30,7 +29,7 @@ public interface EmpresaDao {
 	 * @param nome nome do setor
 	 * @param codUnidade código da unidade referente ao setor
 	 * @return objeto que encapsula um resposta OK ou NOK
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
 
@@ -38,7 +37,7 @@ public interface EmpresaDao {
 	 * Lista os setores referentes ao código da unidade
 	 * @param codUnidade código de uma unidade
 	 * @return lista de setores da unidade
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException;
 
@@ -46,23 +45,23 @@ public interface EmpresaDao {
 	 * Lista as equipes de uma unidade
 	 * @param codUnidade código de uma unidade
 	 * @return lista de equipes da unidade
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException;
 
 	/**
 	 * Atualiza uma equipe
 	 * @param request objeto que encapsula uma equipe
-	 * @return
-	 * @throws SQLException
+	 * @return valor da operação
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	boolean updateEquipe (Request<Equipe> request) throws SQLException;
 
 	/**
 	 * Cria uma equipe
 	 * @param request objeto que encapsula uma equipe
-	 * @return
-	 * @throws SQLException
+	 * @return valor da operação
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	boolean createEquipe (Request<Equipe> request) throws SQLException;
 
@@ -70,7 +69,7 @@ public interface EmpresaDao {
 	 * lista as funções de uma unidade
 	 * @param codUnidade código de uma unidade
 	 * @return lista de funções da unidade
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException;
 

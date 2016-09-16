@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by jean on 11/08/16.
+ * Classe OrdemServicoService responsavel por comunicar-se com a interface DAO
  */
 public class OrdemServicoService {
 

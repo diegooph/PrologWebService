@@ -8,9 +8,9 @@ public interface AppDao {
 
 	/**
 	 * Verifica se a versão utilizada é a última disponível.
-	 * @param appVersion
+	 * @param appVersion versão atual do usuario
 	 * @return True se versão atualizada, do contrario, False.
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException;
 }

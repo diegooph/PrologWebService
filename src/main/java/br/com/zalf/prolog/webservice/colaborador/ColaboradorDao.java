@@ -83,9 +83,9 @@ public interface ColaboradorDao {
 
 	/**
 	 * retorna o login do colaborador com o cpf marcado
-	 * @param cpf
+	 * @param cpf cpf do usuario a se logar
 	 * @return o login do colaborador com o cpf marcado
-	 * @throws SQLException
+	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	LoginHolder getLoginHolder(Long cpf) throws SQLException;
 }

@@ -17,7 +17,7 @@ public interface DashSegurancaDao {
 	 * @param codUnidade código da unidade
 	 * @param equipe nome da equipe
 	 * @return um Dashboard
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException;
 

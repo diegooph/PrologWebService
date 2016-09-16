@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe AfericaoService responsavel por comunicar-se com a interface DAO
+ */
 public class AfericaoService {
 
-	AfericaoDao afericaoDao = new AfericaoDaoImpl();
+	private AfericaoDao afericaoDao = new AfericaoDaoImpl();
 
 	public boolean Insert(Afericao afericao, Long codUnidade){
 		try{

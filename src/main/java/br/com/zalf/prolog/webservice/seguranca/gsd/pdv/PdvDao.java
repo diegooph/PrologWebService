@@ -9,6 +9,7 @@ import java.util.List;
  * Contém os métodos para manipular objetos PDV
  */
 public interface PdvDao {
+
 	/**
 	 * Insere uma lista de PDV no banco de dados
 	 * @param pdvs lista de PDV
@@ -16,6 +17,7 @@ public interface PdvDao {
 	 * @throws SQLException caso não seja possível realizar o insert
 	 */
 	List<Pdv> insertList(List<Pdv> pdvs) throws SQLException;
+
 	/**
 	 * Operation not supported yet
 	 * @param pdvs lista de PDV

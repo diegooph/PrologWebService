@@ -15,7 +15,7 @@ public interface AfericaoDao {
 	 * @param afericao uma aferição
 	 * @param codUnidade código da unidade
 	 * @return valor da operação
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	boolean insert(Afericao afericao, Long codUnidade) throws SQLException;
 
@@ -23,7 +23,7 @@ public interface AfericaoDao {
 	 * adiciona uma aferição ao veículo da placa
 	 * @param placa placa do veículo
 	 * @return retorna uma nova aferição
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	NovaAfericao getNovaAfericao(String placa) throws SQLException;
 
@@ -31,7 +31,7 @@ public interface AfericaoDao {
 	 * retorna as restrições de medidas da unidade
 	 * @param codUnidade código da unidade
 	 * @return a restrição da unidade
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException;
 
@@ -39,7 +39,7 @@ public interface AfericaoDao {
 	 * retorna as restrições de medidas da placa
 	 * @param placa placa do veículo
 	 * @return a restrição da placa
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	Restricao getRestricoesByPlaca(String placa) throws SQLException;
 
@@ -50,10 +50,10 @@ public interface AfericaoDao {
 	 * pega a lista de aferições executadas
 	 * @param codUnidades código da unidade
 	 * @param placas placa do veículo
-	 * @param limit
-	 * @param offset
+	 * @param limit limite de busca de dados no banco
+	 * @param offset offset de busca no banco de dados
 	 * @return uma lista de aferições
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException;
 
@@ -62,7 +62,7 @@ public interface AfericaoDao {
 	 * @param codAfericao código da aferição
 	 * @param codUnidade código da unidade
 	 * @return a aferição
-	 * @throws SQLException
+	 * @throws SQLException se ocorrer erro no banco
 	 */
 	Afericao getByCod (Long codAfericao, Long codUnidade) throws SQLException;
 

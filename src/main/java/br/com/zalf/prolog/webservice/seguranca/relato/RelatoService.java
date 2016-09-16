@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe RelatoService responsavel por comunicar-se com a interface DAO
+ */
 public class RelatoService {
 
 	private RelatoDaoImpl dao = new RelatoDaoImpl();
