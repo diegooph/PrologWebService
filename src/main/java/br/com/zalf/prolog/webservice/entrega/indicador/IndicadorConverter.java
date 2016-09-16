@@ -69,8 +69,8 @@ public class IndicadorConverter {
             DevPdv item = new DevPdv();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
-                    .setOk(rSet.getInt("ENTREGASCOMPLETAS") + rSet.getInt("ENTREGASNAOREALIZADAS"))
-                    .setNok(rSet.getInt("ENTREGASNAOREALIZADAS"))
+                    .setOk(rSet.getDouble("ENTREGASCOMPLETAS") + rSet.getInt("ENTREGASNAOREALIZADAS"))
+                    .setNok(rSet.getDouble("ENTREGASNAOREALIZADAS"))
                     .setMeta(rSet.getDouble("META_DEV_PDV"))
                     .calculaResultado();
         return item;
