@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GsdService {
-	private GsdDaoImpl dao = new GsdDaoImpl();
+
+	private GsdDao dao = new GsdDaoImpl();
 	
 	public boolean insert(Gsd gsd) {
 		try {

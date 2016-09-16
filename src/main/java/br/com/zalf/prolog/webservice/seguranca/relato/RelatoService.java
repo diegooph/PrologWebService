@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RelatoService {
+
 	private RelatoDaoImpl dao = new RelatoDaoImpl();
 	
 	public boolean insert(Relato relato) {
@@ -18,15 +19,6 @@ public class RelatoService {
 			return false;
 		}
 	}
-	
-//	public boolean update(Relato relato) {
-//		try {
-//			return dao.update(relato);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
 	
 	public boolean delete(Long codRelato) {
 		try {

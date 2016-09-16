@@ -11,9 +11,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
-public class DashSegurancaDaoImpl extends DatabaseConnection{
+public class DashSegurancaDaoImpl extends DatabaseConnection implements DashSegurancaDao {
 
-	public static final String BUSCA_TOTAIS = "--public int qtRelatosHoje; //total de relatos recebidos hoje \n"
+	private static final String BUSCA_TOTAIS = "--public int qtRelatosHoje; //total de relatos recebidos hoje \n"
 			+ "select ("
 			+ "SELECT COUNT(CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF=R.CPF_COLABORADOR "
@@ -38,34 +38,34 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 			+ "RELATO JOIN COLABORADOR ON CPF_COLABORADOR = CPF	"
 			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <=  ? AND COD_UNIDADE = ?) as relatos_Mesmo_Periodo_Mes_Anterior";
 
-	public static final String BUSCA_RELATOS_BY_FUNCAO ="SELECT C.COD_FUNCAO as cod_funcao, F.NOME as nome_funcao,  COUNT(R.CODIGO) "
+	private static final String BUSCA_RELATOS_BY_FUNCAO ="SELECT C.COD_FUNCAO as cod_funcao, F.NOME as nome_funcao,  COUNT(R.CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF=R.CPF_COLABORADOR	"
 			+ "JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO WHERE DATA_HORA_DATABASE >= ? "
 			+ "AND DATA_HORA_DATABASE <=  ? AND C.COD_UNIDADE = ? GROUP BY C.COD_FUNCAO, F.NOME";
 
-	public static final String BUSCA_RELATOS_BY_EQUIPE ="SELECT E.CODIGO as cod_Equipe, E.NOME as nome_Equipe,  COUNT(R.CODIGO)	"
+	private static final String BUSCA_RELATOS_BY_EQUIPE ="SELECT E.CODIGO as cod_Equipe, E.NOME as nome_Equipe,  COUNT(R.CODIGO)	"
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF=R.CPF_COLABORADOR	"
 			+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 			+ "WHERE DATA_HORA_DATABASE >= ? AND DATA_HORA_DATABASE <=  ? AND C.COD_UNIDADE = ?	"
 			+ "GROUP BY E.CODIGO, E.NOME";
 
-	public static final String BUSCA_RELATOS_BY_MES="SELECT DATE_TRUNC('month', R.DATA_HORA_DATABASE::DATE)::DATE, COUNT(CODIGO) "
+	private static final String BUSCA_RELATOS_BY_MES="SELECT DATE_TRUNC('month', R.DATA_HORA_DATABASE::DATE)::DATE, COUNT(CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF = R.CPF_COLABORADOR "
 			+ "WHERE R.DATA_HORA_DATABASE >= ? AND R.DATA_HORA_DATABASE <= ? AND C.COD_UNIDADE = ? "
 			+ "GROUP BY DATE_TRUNC('month', R.DATA_HORA_DATABASE::DATE) "
 			+ "ORDER BY DATE_TRUNC('month', R.DATA_HORA_DATABASE::DATE)";
 
-	public static final String BUSCA_LOCAL_RELATOS="SELECT R.LATITUDE::TEXT, R.LONGITUDE::TEXT "
+	private static final String BUSCA_LOCAL_RELATOS="SELECT R.LATITUDE::TEXT, R.LONGITUDE::TEXT "
 			+ "FROM RELATO R JOIN COLABORADOR C ON R.CPF_COLABORADOR = C.CPF "
 			+ "WHERE C.COD_UNIDADE = ? ORDER BY R.LATITUDE";
 
-	public static final String BUSCA_RELATOS_BY_COLABORADOR="SELECT C.CPF, C.NOME, COUNT(R.CODIGO) "
+	private static final String BUSCA_RELATOS_BY_COLABORADOR="SELECT C.CPF, C.NOME, COUNT(R.CODIGO) "
 			+ "FROM RELATO R JOIN COLABORADOR C ON C.CPF = R.CPF_COLABORADOR "
 			+ "WHERE R.DATA_HORA_DATABASE >= ? AND R.DATA_HORA_DATABASE <= ? AND C.COD_UNIDADE = ? "
 			+ "GROUP BY 1, 2 "
 			+ "ORDER BY COUNT(R.CODIGO) DESC";
 
-	public static final String BUSCA_GSD="SELECT( "
+	private static final String BUSCA_GSD="SELECT( "
 			+ "--Total de GSD realizadas hoje \n"
 			+ " SELECT COUNT(G.CODIGO) "
 			+ "FROM GSD G JOIN COLABORADOR C ON C.CPF = G.CPF_AVALIADOR "
@@ -90,9 +90,10 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
     // de forma que o mais recentemente fechado seja exibido primeiro
 	 */
 	
-	DashSeguranca dash;
+	private DashSeguranca dash;
 
-	public DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException{
+	@Override
+	public DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe) throws SQLException {
 		dash = new DashSeguranca();
 		dash.dataInicial = DateUtils.toSqlDate(dataInicial);
 		dash.dataFinal = DateUtils.toSqlDate(dataFinal);
@@ -296,7 +297,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 
 	}
 
-	public java.sql.Date getPrimeiroDiaMesAnterior(LocalDate date){
+	private java.sql.Date getPrimeiroDiaMesAnterior(LocalDate date){
 
 		Calendar first = Calendar.getInstance();
 		first.setTime(DateUtils.toSqlDate(date));
@@ -305,7 +306,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		return new java.sql.Date(first.getTimeInMillis());
 	}
 
-	public java.sql.Date getUltimoDiaMesAnterior(LocalDate date){
+	private java.sql.Date getUltimoDiaMesAnterior(LocalDate date){
 
 		Calendar last = Calendar.getInstance();
 		last.setTime(DateUtils.toSqlDate(date));
@@ -315,7 +316,7 @@ public class DashSegurancaDaoImpl extends DatabaseConnection{
 		return new java.sql.Date(last.getTimeInMillis());
 	}
 
-	public java.sql.Date getMesmoDiaMesAnterior(){
+	private java.sql.Date getMesmoDiaMesAnterior(){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.add(Calendar.MONTH, -1);

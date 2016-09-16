@@ -65,28 +65,6 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		return true;
 	}
 
-	private void insertPdvsGsd(List<Pdv> tempListPdv, Long codGsd) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO PDV_GSD (COD_GSD, COD_PDV) "
-					+ "VALUES (?, ?)");
-			stmt.setLong(1, codGsd);
-			int count;
-			for (Pdv pdv : tempListPdv) {
-				stmt.setLong(2, pdv.getCodigo());
-				count = stmt.executeUpdate();
-				if (count == 0) {
-					throw new SQLException("Erro ao inserir na tabela PDV_GSD");
-				}
-			}
-
-		} finally {
-			closeConnection(conn, stmt, null);
-		}
-	}
-
 	@Override
 	public boolean update(Request<Gsd> request) throws SQLException {
 		throw new UnsupportedOperationException("Operation not supported yet");
@@ -103,7 +81,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
-	//@Override
+	@Override
 	public List<Gsd> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 			Long codUnidade, long limit, long offset) throws SQLException {
 
@@ -226,6 +204,29 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		return listGsd;
 	}
 
+	@Override
+	public List<Pergunta> getPerguntas() throws SQLException {
+		List<Pergunta> perguntas = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM GSD_PERGUNTAS;");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Pergunta pergunta = new Pergunta();
+				pergunta.setCodigo(rSet.getLong("CODIGO"));
+				pergunta.setPergunta(rSet.getString("PERGUNTA"));
+				pergunta.setTipo(rSet.getString("TIPO"));
+				perguntas.add(pergunta);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return perguntas;
+	}
+
 	//TODO: Usar request para filtrar apenas os avaliadores de uma determinada unidade
 	@Override
 	public List<Gsd> getAllExcetoAvaliador(Long cpf, String token) throws SQLException {
@@ -269,27 +270,26 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		return listGsd;
 	}
 
-	@Override
-	public List<Pergunta> getPerguntas() throws SQLException {
-		List<Pergunta> perguntas = new ArrayList<>();
+	private void insertPdvsGsd(List<Pdv> tempListPdv, Long codGsd) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM GSD_PERGUNTAS;");
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Pergunta pergunta = new Pergunta();
-				pergunta.setCodigo(rSet.getLong("CODIGO"));
-				pergunta.setPergunta(rSet.getString("PERGUNTA"));
-				pergunta.setTipo(rSet.getString("TIPO"));
-				perguntas.add(pergunta);
+			stmt = conn.prepareStatement("INSERT INTO PDV_GSD (COD_GSD, COD_PDV) "
+					+ "VALUES (?, ?)");
+			stmt.setLong(1, codGsd);
+			int count;
+			for (Pdv pdv : tempListPdv) {
+				stmt.setLong(2, pdv.getCodigo());
+				count = stmt.executeUpdate();
+				if (count == 0) {
+					throw new SQLException("Erro ao inserir na tabela PDV_GSD");
+				}
 			}
+
 		} finally {
-			closeConnection(conn, stmt, rSet);
+			closeConnection(conn, stmt, null);
 		}
-		return perguntas;
 	}
 
 	private Gsd createGsd(ResultSet rSet) throws SQLException {
@@ -433,28 +433,4 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 		stmt.setString(4, resposta);
 		stmt.executeUpdate();
 	}
-	//	
-	//	private void updateRespostas(Gsd gsd) throws SQLException {
-	//		Connection conn = null;
-	//		PreparedStatement stmt = null;
-	//		try {
-	//			conn = getConnection();
-	//			stmt = conn.prepareStatement("UPDATE GSD_RESPOSTAS SET RESPOSTA = ? "
-	//					+ "WHERE COD_GSD = ? AND CPF_COLABORADOR = ? AND "
-	//					+ "COD_PERGUNTA = ?");
-	//			for (Map.Entry<Long, Gsd.PerguntaRespostaHolder> entry : gsd.getColaboradorMap().entrySet()) {
-	//				Long cpf = entry.getKey();
-	//				PerguntaRespostaHolder holder = entry.getValue();
-	//				stmt.setString(1, holder.getResposta().getResposta());
-	//				stmt.setLong(2, gsd.getCodigo());
-	//				stmt.setLong(3, cpf);
-	//				stmt.setLong(4, holder.getPergunta().getCodigo());
-	//				stmt.executeUpdate();
-	//			}
-	//		} finally {
-	//			closeConnection(conn, stmt, null);
-	//		}
-	//	}
-	//	
-
 }

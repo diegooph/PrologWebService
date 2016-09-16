@@ -15,6 +15,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class GsdResource {
+
 	private GsdService service = new GsdService();
 
 	@POST

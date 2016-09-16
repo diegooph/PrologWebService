@@ -14,6 +14,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatoResource {
+
 	private RelatoService service = new RelatoService();
 
 	@POST
@@ -26,16 +27,6 @@ public class RelatoResource {
 			return Response.Error("Erro ao inserir relato");
 		}
 	}
-
-	//	@PUT
-	//	public Response update(Relato relato) {
-	//		if (service.update(relato)) {
-	//			return Response.Ok("Relato atualizado com sucesso");
-	//		} else {
-	//			return Response.Error("Erro ao atualizar o relato");
-	//		}
-	//	}
-	//	
 
 	@GET
 	@Secured

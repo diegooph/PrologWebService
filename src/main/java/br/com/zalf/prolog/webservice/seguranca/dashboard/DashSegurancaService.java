@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class DashSegurancaService {
 
-	DashSegurancaDaoImpl dao = new DashSegurancaDaoImpl();
+	DashSegurancaDao dao = new DashSegurancaDaoImpl();
 
 	public DashSeguranca getDashSeguranca(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String equipe){
 		try{
