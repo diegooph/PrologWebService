@@ -14,14 +14,14 @@ import java.util.List;
 public interface SolicitacaoFolgaDao {
 	/**
 	 * Insere uma SolicitacaoFolga no banco de dados
-	 * @param solicitadao uma SolicitacaoFolga
+	 * @param solicitacao uma SolicitacaoFolga
 	 * @return Reponse.Ok com o codigo gerado, ou .Error caso não seja possível inserir
 	 * @throws SQLException caso não seja possível inserir a solicitação de folga
 	 */
 	AbstractResponse insert(SolicitacaoFolga solicitacao) throws SQLException;
 	/**
 	 * Atualiza/Edita uma solicitação de folga
-	 * @param request contendo a solicitação de folga a ser atualizada/editada, 
+	 * @param solicitacaoFolga solicitação de folga a ser atualizada/editada,
 	 * além dos dados do solicitante
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível atualizar
@@ -29,7 +29,7 @@ public interface SolicitacaoFolgaDao {
 	boolean update(SolicitacaoFolga solicitacaoFolga) throws SQLException;
 	/**
 	 * Delta uma solicitação de folga do banco de dados
-	 * @param id da solicitação de folga a ser deletada
+	 * @param codigo da solicitação de folga a ser deletada
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível deletar
 	 */

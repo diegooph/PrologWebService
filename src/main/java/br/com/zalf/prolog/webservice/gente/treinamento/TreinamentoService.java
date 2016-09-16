@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TreinamentoService {
-	private TreinamentoDaoImpl dao = new TreinamentoDaoImpl();
+
+	private TreinamentoDao dao = new TreinamentoDaoImpl();
 	
 	public List<Treinamento> getVistosByColaborador(Long cpf) {
 		try {

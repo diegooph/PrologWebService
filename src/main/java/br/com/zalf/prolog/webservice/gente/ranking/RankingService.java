@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RankingService {
 	
-private RankingDaoImpl dao = new RankingDaoImpl();
+	private RankingDao dao = new RankingDaoImpl();
 	
 	public List<ItemPosicao> getRanking (LocalDate dataInicial, LocalDate dataFinal, String equipe,
 										 Long codUnidade) throws SQLException{

@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SolicitacaoFolgaService {
-private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
+
+	private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 	
 	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		try {
@@ -30,7 +31,8 @@ private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
 		}
 	}
 	
-	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe, String status, Long cpfColaborador){
+	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade,
+										 String codEquipe, String status, Long cpfColaborador){
 		try{
 			return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
 		}catch(SQLException e){

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CalendarioService {
 
-	private CalendarioDaoImpl dao = new CalendarioDaoImpl();
+	private CalendarioDao dao = new CalendarioDaoImpl();
 	
 	public List<Evento> getEventosByCpf(Long cpf){
 		try{

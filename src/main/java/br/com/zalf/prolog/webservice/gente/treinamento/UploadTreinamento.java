@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 public class UploadTreinamento {
+
 	private static final String TAG = UploadTreinamento.class.getSimpleName();
 	private static final String BUCKET_TREINAMENTOS = "treinamentos-prolog";
 

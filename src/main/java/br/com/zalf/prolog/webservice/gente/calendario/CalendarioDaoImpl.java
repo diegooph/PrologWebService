@@ -14,9 +14,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao{
+public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao {
 
-	private static final String tag = CalendarioDaoImpl.class.getSimpleName();
+	private static final String TAG = CalendarioDaoImpl.class.getSimpleName();
 	/**
 	 * Busca dos eventos, foi fracionada a busca em 5 partes, sendo elas:
 	 * 1 - Busca os eventos exclusivos para uma unidade + função + equipe
@@ -53,6 +53,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			+ "AND CAL.COD_EQUIPE IS NULL "
 			+ "WHERE C.CPF=? ";
 
+	@Override
 	public List<Evento> getEventosByCpf(Long cpf) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -80,8 +81,9 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return listEvento;
 	}
 
+	@Override
 	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-								String equipe, String funcao) throws SQLException{
+								String equipe, String funcao) throws SQLException {
 		Connection conn = null;
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
@@ -148,7 +150,8 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return eventos;
 	}
 
-	public boolean delete (Long codUnidade, Long codEvento) throws SQLException{
+	@Override
+	public boolean delete (Long codUnidade, Long codEvento) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 
@@ -167,7 +170,8 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		return false;
 	}
 
-	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException{
+	@Override
+	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -203,7 +207,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		}
 	}
 
-	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException{
+	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try{
@@ -238,4 +242,5 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			closeConnection(conn, stmt, null);
 		}
 	}
+
 }
