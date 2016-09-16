@@ -14,7 +14,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
 	
-	RelatorioService service = new RelatorioService();
+	private RelatorioService service = new RelatorioService();
 	
 	@GET
 	@Secured

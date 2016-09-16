@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PneuService {
-	private PneuDaoImpl dao = new PneuDaoImpl();
+
+	private PneuDao dao = new PneuDaoImpl();
 	
 	
 	public boolean insert(Pneu pneu, Long codUnidade){

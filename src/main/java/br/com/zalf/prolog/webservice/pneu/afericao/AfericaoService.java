@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AfericaoService {
-	AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
+
+	AfericaoDao afericaoDao = new AfericaoDaoImpl();
 
 	public boolean Insert(Afericao afericao, Long codUnidade){
 		try{
-			return afericaoDaoImpl.insert(afericao, codUnidade);
+			return afericaoDao.insert(afericao, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
@@ -22,7 +23,7 @@ public class AfericaoService {
 	
 	public NovaAfericao getNovaAfericao(String placa){
 		try{
-			return afericaoDaoImpl.getNovaAfericao(placa);
+			return afericaoDao.getNovaAfericao(placa);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new NovaAfericao();
@@ -31,7 +32,7 @@ public class AfericaoService {
 	
 	public Afericao getByCod (Long codAfericao, Long codUnidade){
 		try{
-			return afericaoDaoImpl.getByCod(codAfericao, codUnidade);
+			return afericaoDao.getByCod(codAfericao, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
@@ -40,7 +41,7 @@ public class AfericaoService {
 	
 	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade){
 		try{
-			return afericaoDaoImpl.getSelecaoPlacaAfericao(codUnidade);
+			return afericaoDao.getSelecaoPlacaAfericao(codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new SelecaoPlacaAfericao();
@@ -49,7 +50,7 @@ public class AfericaoService {
 	
 	public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset){
 		try{
-			return afericaoDaoImpl.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
+			return afericaoDao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();

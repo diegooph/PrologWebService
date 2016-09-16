@@ -17,7 +17,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AfericaoResource {
 
-	AfericaoService service = new AfericaoService();
+	private AfericaoService service = new AfericaoService();
 
 	@POST
 	@Secured

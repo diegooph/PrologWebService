@@ -26,7 +26,7 @@ import java.util.List;
  * @author jean
  *
  */
-public class RelatorioDaoImpl extends DatabaseConnection{
+public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
 	private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
@@ -97,7 +97,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			+ "WHERE AD.DATA BETWEEN ? AND ? ";
 
 
-	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException{
+	@Override
+	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException {
 
 		List<Double> valores = new ArrayList<>();
 		Connection conn = null;
@@ -123,43 +124,6 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		}
 	};
 
-	private List<Faixa> getFaixas(List<Double> valores){
-		Double minimo = (double) 0;
-		Double cota = (valores.get(0) / 5)+ 1;
-		Double maximo = cota;
-		int totalPneus = valores.size();
-		List<Faixa> faixas = new ArrayList<>();
-		//cria as faixas
-		L.d("kk", valores.toString());
-		while(minimo < valores.get(0)){
-			Faixa faixa = new Faixa();
-			faixa.setInicio(minimo);
-			faixa.setFim(maximo);
-			minimo = maximo;
-			maximo = maximo + cota;
-			faixas.add(faixa);
-		}
-		//soma cada sulco para a sua devida faixa
-		for(Faixa faixa : faixas){
-			for (int i = 0; i < valores.size(); i++) {
-				if(valores.get(i)>= faixa.getInicio() && valores.get(i) < faixa.getFim()){
-					faixa.setTotalPneus(faixa.getTotalPneus()+1);;
-					valores.remove(i);
-					i--;
-				}
-			}
-			faixa.setPorcentagem((double)faixa.getTotalPneus()/totalPneus);
-		}
-		// cria a faixa de itens não aferidos, com o que sobrou da lista valores
-		Faixa faixa = new Faixa();
-		faixa.setNaoAferidos(true);
-		faixa.setTotalPneus(valores.size());
-		faixa.setPorcentagem((double) valores.size() / totalPneus);
-		faixas.add(faixa);
-
-		return faixas;
-	}
-
 	/**
 	 * Busca os pneus respeitando os filtros de limite de sulcos aplicados, além do codEmpresa e codUnidade
 	 * @param inicioFaixa menor sulco a ser considerado
@@ -169,7 +133,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException{
+	@Override
+	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -196,9 +161,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		return pneus;
 	}
 
-	public void getResumoCalibragens(){};
-
-	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException{
+	@Override
+	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -216,7 +180,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		double meta = 0;
 		int totalVeiculos = 0;
 		int ultimoDia = 0;
-		int dia = 1;		
+		int dia = 1;
 		/* verifica se o mes procurado é o mesmo mes corrente, se for, pega o dia atual, caso contrário
 		 pega o ultimo dia do mês */
 		if (dataAtual.getYear()+1900 == ano && dataAtual.getMonth()+1 == mes) {
@@ -225,7 +189,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			ultimoDia = DateUtils.getUltimoDiaMes(datainicial).getDate();
 		}
 
-		try{			
+		try{
 			conn = getConnection();
 			totalVeiculos = veiculoDaoImpl.getTotalVeiculosByUnidade(codUnidade, conn);
 			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
@@ -241,19 +205,19 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				while(dia < rSet.getInt("DIA")){
-					aderencias.add(createAderenciaVazia(meta, dia));	
+					aderencias.add(createAderenciaVazia(meta, dia));
 					dia++;
-				}					
+				}
 				aderencia = new Aderencia();
 				aderencia.setDia(rSet.getInt("DIA"));
 				aderencia.setRealizadas(rSet.getInt("REALIZADAS"));
 				aderencia.setMeta(meta);
-				aderencias.add(aderencia);	
+				aderencias.add(aderencia);
 				dia++;
 
 				if (rSet.isLast()) {
 					while(dia <= ultimoDia){
-						aderencias.add(createAderenciaVazia(meta, dia));	
+						aderencias.add(createAderenciaVazia(meta, dia));
 						dia++;
 					}
 				}
@@ -264,26 +228,20 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		return aderencias;
 	}
 
-	private Aderencia createAderenciaVazia(double meta, int dia){
-		Aderencia aderencia = new Aderencia();
-		aderencia.setDia(dia);
-		aderencia.setMeta(meta);
-		return aderencia;
-	}
-
-	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status)throws SQLException{
+	@Override
+	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status)throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Faixa> faixas = null;
 		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
 		if (!codUnidades.get(0).equals("%")) {
-			Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));	
+			Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
 			faixas = criaFaixas(base, 30);
 		}else{
 			faixas = criaFaixas(0, 30);
-		}		
+		}
 		List<Integer> valores = new ArrayList<>();
 		int naoAferidos = 0;
 
@@ -312,9 +270,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 				}
 			}
 		}finally{
-			closeConnection(conn, stmt, rSet);		
+			closeConnection(conn, stmt, rSet);
 		}
-		
+
 		int totalValores = valores.size() + naoAferidos;
 		L.d(TAG, "Total valores: " + totalValores);
 		populaFaixas(faixas, valores);
@@ -322,110 +280,14 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		Faixa faixa = new Faixa();
 		faixa.setNaoAferidos(true);
 		faixa.setTotalPneus(naoAferidos);
-		faixa.setPorcentagem((double) naoAferidos/ (double) totalValores);	
-		faixas.add(faixa);		
+		faixa.setPorcentagem((double) naoAferidos/ (double) totalValores);
+		faixas.add(faixa);
 		L.d(TAG, "Finalizado: " + faixas.toString());
 		return faixas;
 	}
 
-	private void setPorcentagemFaixas(List<Faixa> faixas, int total){
-		L.d(TAG, String.valueOf(total));
-		for (Faixa faixa : faixas) {
-			if (faixa.getTotalPneus() == 0) {
-				faixa.setPorcentagem(0);
-			}else{
-				double porcentagem = (double) faixa.getTotalPneus() / total;
-				faixa.setPorcentagem(porcentagem);
-			}
-		}
-	}
-
-	public List<Faixa> criaFaixas(int base, int escala){
-		List<Faixa> faixas = new ArrayList<>();
-		// cria a primeira faixa de 0 até a restrição imposta pela empresa (3% por exemplo)
-		Faixa faixa = new Faixa();
-		faixa.setInicio(0);
-		faixa.setFim(base);
-		faixas.add(faixa);
-		// cria a primeira faixas negativa, que vai de -3 a 0
-		faixa = new Faixa();
-		faixa.setInicio(base*-1);
-		faixa.setFim(0);
-		faixas.add(faixa);
-
-		int inicio = base;
-		int fim = base;
-
-		// 1- verificar o próximo multiplo de 10 a partir da base(restricao)
-		while (fim % 10 != 0) {
-			fim++;			
-		}	
-		// cria a segunda faixa positiva, que vai de 3 a 10(calculado com o while acima)
-		faixa = new Faixa();
-		faixa.setInicio(inicio);
-		faixa.setFim(fim);
-		faixas.add(faixa);
-		// cria a segunda faixa negativa, que vai de -10 a -3
-		faixa = new Faixa();
-		faixa.setInicio(fim*-1);
-		faixa.setFim(inicio*-1);
-		faixas.add(faixa);
-
-		while (fim < 100) {
-			inicio = fim;
-			fim = inicio + escala;
-			faixa = new Faixa();
-			faixa.setInicio(inicio);
-			faixa.setFim(fim);			
-			faixas.add(faixa);
-
-			faixa = new Faixa();
-			faixa.setInicio(fim * -1);
-			faixa.setFim(inicio * -1);			
-			faixas.add(faixa);
-		}
-
-		Collections.sort(faixas, new CustomComparatorFaixas());
-		return faixas;
-	}
-
-	public List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores){
-		Collections.sort(valores);
-		int integer = 0;
-		// percorre todas as faixas
-		for (Faixa faixa: faixas) {
-			// percorre todos os valores
-			for (int i = 0; i<valores.size(); i++) {
-				integer = valores.get(i);
-				// se a faixa começa com 0, veirica se é >= inicio e <= fim
-				if (faixa.getInicio() == 0) {
-					if (integer >= faixa.getInicio() && integer <= faixa.getFim()) {
-						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
-						valores.remove(i);
-						i--;
-					}
-				}				
-				// se a faixa for do lado negativo, a comparação se da de forma diferente >= inicio <fim
-				else if (faixa.getInicio() < 0) {
-					// verifica se o valor esta apto a entrar na faixa
-					if (integer >= faixa.getInicio() && integer < faixa.getFim()) {
-						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
-						valores.remove(i);
-						i--;
-					}					
-					// > inicio <= fim
-				}else if(integer > faixa.getInicio() && integer <= faixa.getFim()){
-					faixa.setTotalPneus(faixa.getTotalPneus() + 1);
-					valores.remove(i);
-					i--;
-				}
-			}
-		}
-		L.d(TAG, "Populadas: " + faixas.toString());
-		return faixas;
-	}
-
-	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException{
+	@Override
+	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -475,7 +337,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 				abertos.calibragem = rSet.getInt("CAL_ABERTAS");
 				abertos.inspecao = rSet.getInt("INSP_ABERTAS");
 				abertos.movimentacao = rSet.getInt("MOV_ABERTAS");
-				// quantidade de serviços fechados no dia 
+				// quantidade de serviços fechados no dia
 				fechados.calibragem = rSet.getInt("CAL_FECHADAS");
 				fechados.inspecao = rSet.getInt("INSP_FECHADAS");
 				fechados.movimentacao = rSet.getInt("MOV_FECHADAS");
@@ -488,7 +350,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 				tempCalAbertas = tempCalAbertas + abertos.calibragem - fechados.calibragem;
 				tempInspAbertas = tempInspAbertas + abertos.inspecao - fechados.inspecao;
 				tempMovAbertas = tempMovAbertas + abertos.movimentacao - fechados.movimentacao;
-				// associa os valores com os temporários 
+				// associa os valores com os temporários
 				fechadosAc.calibragem = tempCalFechadas;
 				fechadosAc.inspecao = tempInspFechadas;
 				fechadosAc.movimentacao = tempMovFechadas;
@@ -511,7 +373,146 @@ public class RelatorioDaoImpl extends DatabaseConnection{
 		return servicos;
 	}
 
+	private List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores){
+		Collections.sort(valores);
+		int integer = 0;
+		// percorre todas as faixas
+		for (Faixa faixa: faixas) {
+			// percorre todos os valores
+			for (int i = 0; i<valores.size(); i++) {
+				integer = valores.get(i);
+				// se a faixa começa com 0, veirica se é >= inicio e <= fim
+				if (faixa.getInicio() == 0) {
+					if (integer >= faixa.getInicio() && integer <= faixa.getFim()) {
+						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+						valores.remove(i);
+						i--;
+					}
+				}
+				// se a faixa for do lado negativo, a comparação se da de forma diferente >= inicio <fim
+				else if (faixa.getInicio() < 0) {
+					// verifica se o valor esta apto a entrar na faixa
+					if (integer >= faixa.getInicio() && integer < faixa.getFim()) {
+						faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+						valores.remove(i);
+						i--;
+					}
+					// > inicio <= fim
+				}else if(integer > faixa.getInicio() && integer <= faixa.getFim()){
+					faixa.setTotalPneus(faixa.getTotalPneus() + 1);
+					valores.remove(i);
+					i--;
+				}
+			}
+		}
+		L.d(TAG, "Populadas: " + faixas.toString());
+		return faixas;
+	}
 
+	private List<Faixa> criaFaixas(int base, int escala){
+		List<Faixa> faixas = new ArrayList<>();
+		// cria a primeira faixa de 0 até a restrição imposta pela empresa (3% por exemplo)
+		Faixa faixa = new Faixa();
+		faixa.setInicio(0);
+		faixa.setFim(base);
+		faixas.add(faixa);
+		// cria a primeira faixas negativa, que vai de -3 a 0
+		faixa = new Faixa();
+		faixa.setInicio(base*-1);
+		faixa.setFim(0);
+		faixas.add(faixa);
+
+		int inicio = base;
+		int fim = base;
+
+		// 1- verificar o próximo multiplo de 10 a partir da base(restricao)
+		while (fim % 10 != 0) {
+			fim++;
+		}
+		// cria a segunda faixa positiva, que vai de 3 a 10(calculado com o while acima)
+		faixa = new Faixa();
+		faixa.setInicio(inicio);
+		faixa.setFim(fim);
+		faixas.add(faixa);
+		// cria a segunda faixa negativa, que vai de -10 a -3
+		faixa = new Faixa();
+		faixa.setInicio(fim*-1);
+		faixa.setFim(inicio*-1);
+		faixas.add(faixa);
+
+		while (fim < 100) {
+			inicio = fim;
+			fim = inicio + escala;
+			faixa = new Faixa();
+			faixa.setInicio(inicio);
+			faixa.setFim(fim);
+			faixas.add(faixa);
+
+			faixa = new Faixa();
+			faixa.setInicio(fim * -1);
+			faixa.setFim(inicio * -1);
+			faixas.add(faixa);
+		}
+
+		Collections.sort(faixas, new CustomComparatorFaixas());
+		return faixas;
+	}
+
+	private List<Faixa> getFaixas(List<Double> valores){
+		Double minimo = (double) 0;
+		Double cota = (valores.get(0) / 5)+ 1;
+		Double maximo = cota;
+		int totalPneus = valores.size();
+		List<Faixa> faixas = new ArrayList<>();
+		//cria as faixas
+		L.d("kk", valores.toString());
+		while(minimo < valores.get(0)){
+			Faixa faixa = new Faixa();
+			faixa.setInicio(minimo);
+			faixa.setFim(maximo);
+			minimo = maximo;
+			maximo = maximo + cota;
+			faixas.add(faixa);
+		}
+		//soma cada sulco para a sua devida faixa
+		for(Faixa faixa : faixas){
+			for (int i = 0; i < valores.size(); i++) {
+				if(valores.get(i)>= faixa.getInicio() && valores.get(i) < faixa.getFim()){
+					faixa.setTotalPneus(faixa.getTotalPneus()+1);;
+					valores.remove(i);
+					i--;
+				}
+			}
+			faixa.setPorcentagem((double)faixa.getTotalPneus()/totalPneus);
+		}
+		// cria a faixa de itens não aferidos, com o que sobrou da lista valores
+		Faixa faixa = new Faixa();
+		faixa.setNaoAferidos(true);
+		faixa.setTotalPneus(valores.size());
+		faixa.setPorcentagem((double) valores.size() / totalPneus);
+		faixas.add(faixa);
+
+		return faixas;
+	}
+
+	private Aderencia createAderenciaVazia(double meta, int dia){
+		Aderencia aderencia = new Aderencia();
+		aderencia.setDia(dia);
+		aderencia.setMeta(meta);
+		return aderencia;
+	}
+
+	private void setPorcentagemFaixas(List<Faixa> faixas, int total){
+		L.d(TAG, String.valueOf(total));
+		for (Faixa faixa : faixas) {
+			if (faixa.getTotalPneus() == 0) {
+				faixa.setPorcentagem(0);
+			}else{
+				double porcentagem = (double) faixa.getTotalPneus() / total;
+				faixa.setPorcentagem(porcentagem);
+			}
+		}
+	}
 
 
 	//ordena as faixas pelo inicio de cada uma

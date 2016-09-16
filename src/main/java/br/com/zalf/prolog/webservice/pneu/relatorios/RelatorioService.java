@@ -11,16 +11,7 @@ import java.util.List;
 
 public class RelatorioService {
 	
-	RelatorioDaoImpl dao = new RelatorioDaoImpl();
-	
-	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset){
-		try{
-			return dao.getPneusByFaixa(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
+	private RelatorioDao dao = new RelatorioDaoImpl();
 	
 	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status){
 		try{
@@ -52,6 +43,16 @@ public class RelatorioService {
 	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades){
 		try{
 			return dao.getResumoServicosByUnidades(ano, mes, codUnidades);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
+	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa,
+									  String codUnidade, long limit, long offset){
+		try{
+			return dao.getPneusByFaixa(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
