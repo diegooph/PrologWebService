@@ -14,6 +14,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class VeiculoResource {
+
 	private VeiculoService service = new VeiculoService();
 	
 	@POST

@@ -21,8 +21,8 @@ import java.util.Map;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource {
-	private ChecklistService service = new ChecklistService();
 
+	private ChecklistService service = new ChecklistService();
 
 	@GET
 	@Secured
@@ -106,7 +106,6 @@ public class ChecklistResource {
 		return service.getByColaborador(cpf, limit, offset);
 	}
 
-	
 	@GET
 	@Secured
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")

@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ChecklistService {
-	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
+
+	private ChecklistDao dao = new ChecklistDaoImpl();
 
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao){
 		try{

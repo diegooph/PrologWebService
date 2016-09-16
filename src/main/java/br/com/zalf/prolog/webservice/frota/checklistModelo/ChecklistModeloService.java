@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChecklistModeloService {
-	private ChecklistModeloDaoImpl dao = new ChecklistModeloDaoImpl();
+
+	private ChecklistModeloDao dao = new ChecklistModeloDaoImpl();
 	
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
 		try{

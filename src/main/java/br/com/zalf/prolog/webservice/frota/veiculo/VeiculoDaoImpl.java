@@ -23,6 +23,85 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
 			+ "WHERE V.PLACA = ?";
 
+
+	@Override
+	public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		veiculo.setPlaca(veiculo.getPlaca().replaceAll("\\-|\\s+", "").trim().toUpperCase());
+		if (veiculo.getPlaca().trim().isEmpty() || veiculo.getPlaca().length() != 7) {
+			throw new SQLException("Campo placa esta errado.");
+		}
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
+			stmt.setString(1, veiculo.getPlaca());
+			stmt.setLong(2, codUnidade);
+			stmt.setLong(3, veiculo.getKmAtual());
+			stmt.setBoolean(4, true);
+			stmt.setLong(5, veiculo.getTipo().getCodigo());
+			stmt.setLong(6, veiculo.getModelo().getCodigo());
+			stmt.setLong(7, veiculo.getEixos().codigo);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o veículo");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean update(Veiculo veiculo, String placaOriginal) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE VEICULO SET "
+					+ "PLACA = ?, KM = ?,  COD_TIPO = ?, COD_MODELO = ?, "
+					+ "COD_EIXOS = ? "
+					+ "WHERE PLACA = ?");
+			stmt.setString(1, veiculo.getPlaca());
+			stmt.setLong(2, veiculo.getKmAtual());
+			stmt.setLong(3, veiculo.getTipo().getCodigo());
+			stmt.setLong(4, veiculo.getModelo().getCodigo());
+			stmt.setLong(5, veiculo.getEixos().codigo);
+			stmt.setString(6, placaOriginal);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar o veículo");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean delete(String placa) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		L.d("delete", placa);
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
+					+ "WHERE PLACA = ?");
+			stmt.setBoolean(1, false);
+			stmt.setString(2, placa);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao deletar o veículo");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
 	@Override
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade)
 			throws SQLException {
@@ -49,94 +128,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return veiculos;
-	}
-
-	public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
-			stmt.setString(1, placa);
-			rSet = stmt.executeQuery();
-			if(rSet.next()) {
-				Veiculo veiculo = createVeiculo(rSet);
-				if (withPneus) {
-					veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));	
-				}
-				return veiculo;
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return new Veiculo();
-	}
-
-
-	//@Override
-	public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
-		List<TipoVeiculo> listTipo = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
-			stmt.setLong(1, codUnidade);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return listTipo;
-	}
-
-	public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
-			stmt.setLong(1, codUnidade);
-			stmt.setString(2, tipoVeiculo.getNome());
-			stmt.setBoolean(3, true);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao cadastrar o tipo de veículo");
-			}
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}
-		return true;
-	}
-
-	public List<Eixos> getEixos() throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		List<Eixos> eixos = new ArrayList<>();
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM EIXOS_VEICULO");
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Eixos eixo = new Eixos();
-				eixo.codigo = rSet.getLong("CODIGO");
-				eixo.nome = rSet.getString("NOME");
-				eixo.dianteiro = rSet.getInt("DIANTEIRO");
-				eixo.traseiro = rSet.getInt("TRASEIRO");
-				eixos.add(eixo);
-			}
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}
-		return eixos;
 	}
 
 	@Override
@@ -166,136 +157,98 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return veiculos;
 	}
 
-	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
-		Veiculo veiculo = new Veiculo();
-		veiculo.setPlaca(rSet.getString("PLACA"));
-		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
-		veiculo.setKmAtual(rSet.getLong("KM"));
-		Eixos eixos = new Eixos();
-		eixos.codigo = rSet.getLong("COD_EIXOS");
-		eixos.dianteiro = rSet.getInt("DIANTEIRO");
-		eixos.traseiro = rSet.getInt("TRASEIRO");
-		veiculo.setEixos(eixos);
-		TipoVeiculo tipo = new TipoVeiculo();
-		tipo.setCodigo(rSet.getLong("COD_TIPO"));
-		tipo.setNome(rSet.getString("TIPO"));
-		veiculo.setTipo(tipo);
-		Marca marca = new Marca();
-		marca.setCodigo(rSet.getLong("COD_MARCA"));
-		marca.setNome(rSet.getString("MARCA"));
-		veiculo.setMarca(marca);
-		Modelo modelo = new Modelo();
-		modelo.setCodigo(rSet.getLong("COD_MODELO"));
-		modelo.setNome(rSet.getString("MODELO"));
-		veiculo.setModelo(modelo);		
-		return veiculo;
-	}
-
-	public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {
+	@Override
+	public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		veiculo.setPlaca(veiculo.getPlaca().replaceAll("\\-|\\s+", "").trim().toUpperCase());
-		if (veiculo.getPlaca().trim().isEmpty() || veiculo.getPlaca().length() != 7) {
-			throw new SQLException("Campo placa esta errado.");
-		}
+		ResultSet rSet = null;
+		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
-			stmt.setString(1, veiculo.getPlaca());
-			stmt.setLong(2, codUnidade);
-			stmt.setLong(3, veiculo.getKmAtual());
-			stmt.setBoolean(4, true);
-			stmt.setLong(5, veiculo.getTipo().getCodigo());
-			stmt.setLong(6, veiculo.getModelo().getCodigo());
-			stmt.setLong(7, veiculo.getEixos().codigo);
+			stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
+			stmt.setString(1, placa);
+			rSet = stmt.executeQuery();
+			if(rSet.next()) {
+				Veiculo veiculo = createVeiculo(rSet);
+				if (withPneus) {
+					veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));	
+				}
+				return veiculo;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return new Veiculo();
+	}
+
+	@Override
+	public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) throws SQLException {
+		List<TipoVeiculo> listTipo = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM VEICULO_TIPO WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				listTipo.add(new TipoVeiculo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listTipo;
+	}
+
+	@Override
+	public boolean insertTipoVeiculo(TipoVeiculo tipoVeiculo, Long codUnidade) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO VEICULO_TIPO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?)");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, tipoVeiculo.getNome());
+			stmt.setBoolean(3, true);
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir o veículo");
-			}	
+				throw new SQLException("Erro ao cadastrar o tipo de veículo");
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
+		}
 		return true;
 	}
 
 	@Override
-	public boolean update(Veiculo veiculo, String placaOriginal) throws SQLException {
+	public List<Eixos> getEixos() throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Eixos> eixos = new ArrayList<>();
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE VEICULO SET "
-					+ "PLACA = ?, KM = ?,  COD_TIPO = ?, COD_MODELO = ?, "
-					+ "COD_EIXOS = ? "
-					+ "WHERE PLACA = ?");
-			stmt.setString(1, veiculo.getPlaca());
-			stmt.setLong(2, veiculo.getKmAtual());
-			stmt.setLong(3, veiculo.getTipo().getCodigo());
-			stmt.setLong(4, veiculo.getModelo().getCodigo());
-			stmt.setLong(5, veiculo.getEixos().codigo);
-			stmt.setString(6, placaOriginal);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao atualizar o veículo");
-			}	
+			stmt = conn.prepareStatement("SELECT * FROM EIXOS_VEICULO");
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Eixos eixo = new Eixos();
+				eixo.codigo = rSet.getLong("CODIGO");
+				eixo.nome = rSet.getString("NOME");
+				eixo.dianteiro = rSet.getInt("DIANTEIRO");
+				eixo.traseiro = rSet.getInt("TRASEIRO");
+				eixos.add(eixo);
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
-		return true;
+		}
+		return eixos;
 	}
 
 	@Override
-	public boolean delete(String placa) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		L.d("delete", placa);
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
-					+ "WHERE PLACA = ?");
-			stmt.setBoolean(1, false);
-			stmt.setString(2, placa);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao deletar o veículo");
-			}	
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
-	}
-
-	public List<Veiculo> getVeiculoKm(Long codUnidade, String placa, String codTipo)throws SQLException{
-	    Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<Veiculo> veiculos = new ArrayList<>();
-        Veiculo v = null;
-        try{
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT PLACA, KM FROM VEICULO V WHERE cod_unidade = ? AND " +
-                    "cod_tipo::TEXT LIKE ? AND PLACA LIKE ? ORDER BY PLACA");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codTipo);
-            stmt.setString(3, placa);
-            rSet = stmt.executeQuery();
-            while (rSet.next()){
-                v = new Veiculo();
-                v.setPlaca(rSet.getString("placa"));
-                v.setKmAtual(rSet.getLong("km"));
-                veiculos.add(v);
-            }
-        }finally {
-            closeConnection(conn,stmt,rSet);
-        }
-        return veiculos;
-    }
-
-
-	public void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException{
+	public void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement("UPDATE VEICULO SET "
@@ -313,7 +266,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}		
 	}
 
-	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException{
+	@Override
+	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -369,8 +323,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return marcas;
 	}
 
-
-	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException{
+	@Override
+	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -389,8 +343,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		}
 		return true;
 	}
-	
-	public int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException{
+
+	@Override
+	public int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		int total = 0;
@@ -408,7 +363,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	@Android
-	public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException{
+	@Override
+	public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -428,6 +384,57 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return placas;
+	}
+
+	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(rSet.getString("PLACA"));
+		veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
+		veiculo.setKmAtual(rSet.getLong("KM"));
+		Eixos eixos = new Eixos();
+		eixos.codigo = rSet.getLong("COD_EIXOS");
+		eixos.dianteiro = rSet.getInt("DIANTEIRO");
+		eixos.traseiro = rSet.getInt("TRASEIRO");
+		veiculo.setEixos(eixos);
+		TipoVeiculo tipo = new TipoVeiculo();
+		tipo.setCodigo(rSet.getLong("COD_TIPO"));
+		tipo.setNome(rSet.getString("TIPO"));
+		veiculo.setTipo(tipo);
+		Marca marca = new Marca();
+		marca.setCodigo(rSet.getLong("COD_MARCA"));
+		marca.setNome(rSet.getString("MARCA"));
+		veiculo.setMarca(marca);
+		Modelo modelo = new Modelo();
+		modelo.setCodigo(rSet.getLong("COD_MODELO"));
+		modelo.setNome(rSet.getString("MODELO"));
+		veiculo.setModelo(modelo);
+		return veiculo;
+	}
+
+	public List<Veiculo> getVeiculoKm(Long codUnidade, String placa, String codTipo)throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Veiculo> veiculos = new ArrayList<>();
+		Veiculo v = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT PLACA, KM FROM VEICULO V WHERE cod_unidade = ? AND " +
+					"cod_tipo::TEXT LIKE ? AND PLACA LIKE ? ORDER BY PLACA");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, codTipo);
+			stmt.setString(3, placa);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				v = new Veiculo();
+				v.setPlaca(rSet.getString("placa"));
+				v.setKmAtual(rSet.getLong("km"));
+				veiculos.add(v);
+			}
+		}finally {
+			closeConnection(conn,stmt,rSet);
+		}
+		return veiculos;
 	}
 
 }
