@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.util.TimeUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -117,7 +118,7 @@ public class IndicadorConverter {
     static List<Indicador> createExtratoDispersaoTempo(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
-            itens.add(createDispersaoKm(rSet));
+            itens.add(createDispersaoTempo(rSet));
         }
         return itens;
     }

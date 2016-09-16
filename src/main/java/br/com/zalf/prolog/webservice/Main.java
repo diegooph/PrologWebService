@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
@@ -38,6 +39,9 @@ public class Main {
 //		long codUnidade = 1;
 //		long offset = 0;
 //		int limit = 10;
+
+		Time time = new Time(0L);
+		L.d("main", String.valueOf(time.getTime()));
 
 		/*
 		Busca acumulado
