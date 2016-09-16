@@ -50,14 +50,11 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			+ "c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, ok.mapa_ok, total.total_entregas, "
 			+ "ok.apontamento_ok) AS TRACKING ON TRACKING_MAPA = M.MAPA	WHERE C.CPF = ? AND DATA BETWEEN ? "
 			+ "AND ? ORDER BY M.DATA;";
-
-
-	Meta meta;
+	private Meta meta;
 	
 	@Override
 	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, 
-			Long cpf, String token)
-			throws SQLException {
+			Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
