@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class RelatoService {
 
-	private RelatoDaoImpl dao = new RelatoDaoImpl();
+	private RelatoDao dao = new RelatoDaoImpl();
 	
 	public boolean insert(Relato relato) {
 		try {

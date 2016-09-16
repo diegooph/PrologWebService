@@ -9,6 +9,7 @@ import br.com.zalf.prolog.entrega.produtividade.ColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -76,7 +77,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
             L.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
 			
-			MetasDaoImpl metasDao = new MetasDaoImpl();
+			MetasDao metasDao = new MetasDaoImpl();
 			meta = metasDao.getMetasByCpf(cpf);
 
 			while(rSet.next()){

@@ -11,7 +11,9 @@ import br.com.zalf.prolog.frota.pneu.afericao.PlacaModeloHolder;
 import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.LogDatabase;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
@@ -34,7 +36,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
+		VeiculoDao veiculoDao = new VeiculoDaoImpl();
 		try{
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -49,7 +51,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			if(rSet.next()){
 				afericao.setCodigo(rSet.getLong("CODIGO"));
 				insertValores(afericao, codUnidade, conn);
-				veiculoDaoImpl.updateKmByPlaca(afericao.getVeiculo().getPlaca(), afericao.getKmMomentoAfericao(), conn);
+				veiculoDao.updateKmByPlaca(afericao.getVeiculo().getPlaca(), afericao.getKmMomentoAfericao(), conn);
 			}
 			conn.commit();
 		}catch(SQLException e){
@@ -65,9 +67,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 	@Override
 	public NovaAfericao getNovaAfericao(String placa) throws SQLException {
-		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
+		VeiculoDao veiculoDao = new VeiculoDaoImpl();
 		NovaAfericao afericaoHolder = new NovaAfericao();
-		afericaoHolder.setVeiculo(veiculoDaoImpl.getVeiculoByPlaca(placa, true));
+		afericaoHolder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
 		if(afericaoHolder.getVeiculo().getPlaca() != null){
 			afericaoHolder.setRestricao(getRestricoesByPlaca(placa));
 			return afericaoHolder;
@@ -234,7 +236,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		Afericao afericao = new Afericao();
 		Veiculo veiculo = new Veiculo();
 		List<Pneu> pneus = new ArrayList<>();
-		PneuDaoImpl pneuDao = new PneuDaoImpl();
+		PneuDao pneuDao = new PneuDaoImpl();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, "
@@ -267,7 +269,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 	private void insertValores (Afericao afericao, Long codUnidade, Connection conn) throws SQLException{
 
 		PreparedStatement stmt = null;
-		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
+		PneuDao pneuDao = new PneuDaoImpl();
 
 		stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
 				+ "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL,ALTURA_SULCO_EXTERNO, ALTURA_SULCO_INTERNO, POSICAO) VALUES "
@@ -282,7 +284,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
 			stmt.setInt(8, pneu.getPosicao());
 			//Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
-			pneuDaoImpl.updateMedicoes(pneu, codUnidade, conn);
+			pneuDao.updateMedicoes(pneu, codUnidade, conn);
 			stmt.executeUpdate();
 			Restricao restricao = getRestricoesByCodUnidade(codUnidade);
 			List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);

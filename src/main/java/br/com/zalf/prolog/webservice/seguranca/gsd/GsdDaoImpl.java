@@ -7,6 +7,7 @@ import br.com.zalf.prolog.seguranca.gsd.Gsd;
 import br.com.zalf.prolog.seguranca.gsd.Gsd.PerguntaRespostasGsd;
 import br.com.zalf.prolog.seguranca.gsd.Pdv;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.PdvDao;
 import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.PdvDaoImpl;
 
 import java.sql.Connection;
@@ -48,7 +49,7 @@ public class GsdDaoImpl extends DatabaseConnection implements GsdDao {
 				gsd.setCodigo(rSet.getLong("CODIGO"));
 
 				// Insere os PDVs agora pois já tem o código do GSD inserido
-				PdvDaoImpl pdvDao = new PdvDaoImpl();
+				PdvDao pdvDao = new PdvDaoImpl();
 
 				// Agora os pdvs foram inseridos e os que já existiam apenas
 				// tiveram seu código obtido para poder inserir na tabela

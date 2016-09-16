@@ -10,6 +10,7 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
 import java.sql.Connection;
@@ -266,7 +267,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		if(loginHolder.colaborador.getVisao() != null) {
 			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
-				RelatoDaoImpl relatoDao = new RelatoDaoImpl();
+				RelatoDao relatoDao = new RelatoDaoImpl();
 				loginHolder.alternativasRelato = relatoDao.getAlternativas(
 						loginHolder.colaborador.getCodUnidade(),
 						loginHolder.colaborador.getSetor().getCodigo());

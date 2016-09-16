@@ -6,8 +6,11 @@ import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.servico.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -21,8 +24,8 @@ import java.util.List;
 
 public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 
-	private PneuDaoImpl pneuDao;
-	private VeiculoDaoImpl veiculoDao;
+	private PneuDao pneuDao;
+	private VeiculoDao veiculoDao;
 	private Long codUnidade;
 
 	@Override
@@ -91,8 +94,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			L.d("teste", "contem movimentacao");
 			holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));;
 		}
-		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
-		holder.setRestricao(afericaoDaoImpl.getRestricoesByPlaca(placa));
+		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
 
 		return holder;
 	}

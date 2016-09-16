@@ -8,8 +8,11 @@ import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
@@ -140,7 +143,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		ResultSet rSet = null;
 		List<Pneu> pneus = new ArrayList<>();
 		Pneu pneu = new Pneu();
-		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
+		PneuDao pneuDao = new PneuDaoImpl();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(SULCOS_PNEUS_BY_FAIXAS);
@@ -152,7 +155,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt.setLong(6, offset);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				pneu = pneuDaoImpl.createPneu(rSet);
+				pneu = pneuDao.createPneu(rSet);
 				pneus.add(pneu);
 			}
 		} finally {
@@ -169,9 +172,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		List<Aderencia> aderencias = new ArrayList<>();
 		Aderencia aderencia = null;
-		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
-		VeiculoDaoImpl veiculoDaoImpl = new VeiculoDaoImpl();
-		Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(codUnidade);
+		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		VeiculoDao veiculoDao = new VeiculoDaoImpl();
+		Restricao restricao = afericaoDao.getRestricoesByCodUnidade(codUnidade);
 
 		Date dataAtual = new Date(System.currentTimeMillis());
 		LocalDate dataInicial = LocalDate.of(ano, mes, 01);
@@ -191,7 +194,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		try{
 			conn = getConnection();
-			totalVeiculos = veiculoDaoImpl.getTotalVeiculosByUnidade(codUnidade, conn);
+			totalVeiculos = veiculoDao.getTotalVeiculosByUnidade(codUnidade, conn);
 			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
 			stmt = conn.prepareStatement("SELECT EXTRACT(DAY from A.DATA_HORA) AS DIA, COUNT(EXTRACT(DAY from A.DATA_HORA)) AS REALIZADAS "
 					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
@@ -234,9 +237,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Faixa> faixas = null;
-		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
+		AfericaoDao afericaoDao = new AfericaoDaoImpl();
 		if (!codUnidades.get(0).equals("%")) {
-			Restricao restricao = afericaoDaoImpl.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
+			Restricao restricao = afericaoDao.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
 			faixas = criaFaixas(base, 30);
 		}else{

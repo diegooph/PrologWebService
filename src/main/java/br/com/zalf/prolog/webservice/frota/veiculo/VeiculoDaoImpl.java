@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.commons.veiculo.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.L;
@@ -162,7 +163,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		PneuDaoImpl pneuDaoImpl = new PneuDaoImpl();
+		PneuDao pneuDao = new PneuDaoImpl();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(VEICULOS_BY_PLACA);
@@ -171,7 +172,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			if(rSet.next()) {
 				Veiculo veiculo = createVeiculo(rSet);
 				if (withPneus) {
-					veiculo.setListPneus(pneuDaoImpl.getPneusByPlaca(placa));	
+					veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
 				}
 				return veiculo;
 			}

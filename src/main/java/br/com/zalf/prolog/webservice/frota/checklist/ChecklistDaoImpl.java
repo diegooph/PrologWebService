@@ -4,8 +4,11 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.checklist.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -17,7 +20,7 @@ import java.util.Date;
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
 	private static final String TAG = ChecklistDaoImpl.class.getSimpleName();
-	private VeiculoDaoImpl veiculoDao;
+	private VeiculoDao veiculoDao;
 
 
 	/**
@@ -35,7 +38,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		veiculoDao = new VeiculoDaoImpl();
 		Long codUnidade = null;
-		OrdemServicoDaoImpl osDao = new OrdemServicoDaoImpl();
+		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
 		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
@@ -239,7 +242,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	@Override
 	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
-		ChecklistModeloDaoImpl checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
+		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoMapasDia;
 import br.com.zalf.prolog.entrega.relatorio.Mapa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -65,7 +66,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDao metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByUnidade(codUnidade);
 		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 

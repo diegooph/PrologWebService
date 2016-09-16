@@ -11,6 +11,7 @@ import br.com.zalf.prolog.frota.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.frota.checklist.os.OrdemServico;
 import br.com.zalf.prolog.frota.checklist.os.Tempo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -310,7 +311,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
 
     @Override
     public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa) throws SQLException {
-        VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = new VeiculoDaoImpl();
         Connection conn = null;
         PreparedStatement stmt = null;
         try{

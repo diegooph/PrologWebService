@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class VeiculoService {
 
-	private VeiculoDaoImpl dao = new VeiculoDaoImpl();
+	private VeiculoDao dao = new VeiculoDaoImpl();
 	
 	public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) {
 		try {

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.entrega.indicador.older.*;
 import br.com.zalf.prolog.gente.ranking.ItemPosicao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -68,7 +69,7 @@ public class RankingDaoImpl extends DatabaseConnection implements RankingDao {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDao metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByUnidade(codUnidade);
 		create = new RelatorioDaoImpl(meta);
 		List<ItemPosicao> listPosicao = new ArrayList<>();
