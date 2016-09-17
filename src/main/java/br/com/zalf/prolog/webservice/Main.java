@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.util.L;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
@@ -40,8 +41,19 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		Time time = new Time(0L);
-		L.d("main", String.valueOf(time.getTime()));
+//		Duration dur = Duration.ofHours(12L);
+//		Duration dur2 = Duration.ofHours(13L);
+//		Time time = new Time(dur.toMillis());
+//		L.d("time: ", time.toString());
+//		LocalTime lTime = LocalTime.ofSecondOfDay(dur.getSeconds());
+//		L.d("LocalTime: ", String.valueOf(dur.minus(dur2).toMinutes()));
+//		L.d("LocalTime: ", formatDuration(dur.minus(dur2)));
+
+		Time t = new Time(4000000L);
+		Duration now = Duration.ofMillis(t.getTime());
+		Duration now2 = Duration.ofMillis(4000000L);
+		L.d("from time: ", String.valueOf(now.toMinutes()));
+		L.d("from system: ", String.valueOf(now2.toMinutes()));
 
 		/*
 		Busca acumulado
@@ -194,6 +206,17 @@ public class Main {
 //            itemManutencao.setTempoRestanteResolucao(-1);
 //
 //        itemManutencao.setTempoRestanteResolucao(TimeUnit.MILLISECONDS.toHours(tempoRestante));
+	}
+
+	public static String formatDuration(Duration duration) {
+		long seconds = duration.getSeconds();
+		long absSeconds = Math.abs(seconds);
+		String positive = String.format(
+				"%d:%02d:%02d",
+				absSeconds / 3600,
+				(absSeconds % 3600) / 60,
+				absSeconds % 60);
+		return seconds < 0 ? "-" + positive : positive;
 	}
 
 }
