@@ -29,13 +29,13 @@ public class IndicadorConverter {
     }
 
     static CaixaViagem createCaixaViagem(ResultSet rSet)throws SQLException{
-            CaixaViagem item = new CaixaViagem();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setCxsCarregadas(rSet.getInt("CXCARREG"))
-                    .setViagens(1)
-                    .setMeta(rSet.getDouble("META_CAIXA_VIAGEM"))
-                    .calculaResultado();
+        CaixaViagem item = new CaixaViagem();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setCxsCarregadas(rSet.getInt("CXCARREG"))
+                .setViagens(1)
+                .setMeta(rSet.getDouble("META_CAIXA_VIAGEM"))
+                .calculaResultado();
         return item;
     }
 
@@ -48,13 +48,13 @@ public class IndicadorConverter {
     }
 
     static DevHl createDevHl(ResultSet rSet)throws SQLException{
-            DevHl item = new DevHl();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setOk(rSet.getDouble("QTHLENTREGUES"))
-                    .setNok(rSet.getDouble("QTHLCARREGADOS") - item.getOk())
-                    .setMeta(rSet.getDouble("META_DEV_HL"))
-                    .calculaResultado();
+        DevHl item = new DevHl();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setOk(rSet.getDouble("QTHLENTREGUES"))
+                .setNok(rSet.getDouble("QTHLCARREGADOS") - item.getOk())
+                .setMeta(rSet.getDouble("META_DEV_HL"))
+                .calculaResultado();
         return item;
     }
 
@@ -67,13 +67,13 @@ public class IndicadorConverter {
     }
 
     static DevPdv createDevPdv(ResultSet rSet) throws SQLException{
-            DevPdv item = new DevPdv();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setOk(rSet.getDouble("ENTREGASCOMPLETAS") + rSet.getInt("ENTREGASNAOREALIZADAS"))
-                    .setNok(rSet.getDouble("ENTREGASNAOREALIZADAS"))
-                    .setMeta(rSet.getDouble("META_DEV_PDV"))
-                    .calculaResultado();
+        DevPdv item = new DevPdv();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setOk(rSet.getDouble("ENTREGASCOMPLETAS") + rSet.getInt("ENTREGASNAOREALIZADAS"))
+                .setNok(rSet.getDouble("ENTREGASNAOREALIZADAS"))
+                .setMeta(rSet.getDouble("META_DEV_PDV"))
+                .calculaResultado();
         return item;
     }
 
@@ -86,13 +86,13 @@ public class IndicadorConverter {
     }
 
     static DispersaoKm createDispersaoKm(ResultSet rSet) throws SQLException{
-            DispersaoKm item = new DispersaoKm();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getDouble("META_DISPERSAO_KM"))
-                    .setKmPlanejado(rSet.getDouble("KMPREVISTOROAD"))
-                    .setKmPercorrido(rSet.getDouble("KMENTR") - rSet.getDouble("KMSAI"))
-                    .calculaResultado();
+        DispersaoKm item = new DispersaoKm();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(rSet.getDouble("META_DISPERSAO_KM"))
+                .setKmPlanejado(rSet.getDouble("KMPREVISTOROAD"))
+                .setKmPercorrido(rSet.getDouble("KMENTR") - rSet.getDouble("KMSAI"))
+                .calculaResultado();
         return item;
     }
 
@@ -105,13 +105,13 @@ public class IndicadorConverter {
     }
 
     static Tracking createTracking(ResultSet rSet)throws SQLException{
-            Tracking item = new Tracking();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setOk(rSet.getInt("APONTAMENTO_OK"))
-                    .setNok(rSet.getInt("TOTAL_TRACKING") - item.getOk())
-                    .setMeta(rSet.getDouble("META_TRACKING"))
-                    .calculaResultado();
+        Tracking item = new Tracking();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setOk(rSet.getInt("APONTAMENTO_OK"))
+                .setNok(rSet.getInt("TOTAL_TRACKING") - item.getOk())
+                .setMeta(rSet.getDouble("META_TRACKING"))
+                .calculaResultado();
         return item;
     }
 
@@ -124,13 +124,13 @@ public class IndicadorConverter {
     }
 
     static DispersaoTempo createDispersaoTempo(ResultSet rSet)throws SQLException{
-            DispersaoTempo item = new DispersaoTempo();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
-                    .setTempoPrevisto(Duration.ofSeconds(rSet.getInt("TEMPOPREVISTOROAD")))
-                    .setTempoRealizado(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
-                    .calculaResultado();
+        DispersaoTempo item = new DispersaoTempo();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
+                .setPrevisto(Duration.ofSeconds(rSet.getInt("TEMPOPREVISTOROAD")))
+                .setRealizado(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
+                .calculaResultado();
         return item;
     }
 
@@ -143,14 +143,14 @@ public class IndicadorConverter {
     }
 
     static Jornada createJornada(ResultSet rSet)throws SQLException{
-            Jornada item = new Jornada();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(Duration.ofSeconds(rSet.getInt("META_JORNADA_LIQUIDA_HORAS")))
-                    .setTempoLargada(Duration.ofSeconds(rSet.getInt("TEMPO_LARGADA")))
-                    .setTempoInterno(Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")))
-                    .setTempoRota(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
-                    .calculaResultado();
+        Jornada item = new Jornada();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_JORNADA_LIQUIDA_HORAS")))
+                .setTempoLargada(Duration.ofSeconds(rSet.getInt("TEMPO_LARGADA")))
+                .setTempoInterno(Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")))
+                .setTempoRota(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
+                .calculaResultado();
         return item;
     }
 
@@ -163,14 +163,14 @@ public class IndicadorConverter {
     }
 
     static TempoInterno createTempoInterno(ResultSet rSet)throws SQLException{
-            TempoInterno item = new TempoInterno();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_INTERNO_HORAS")))
-                    .setHrEntrada(rSet.getTime("HRENTR"))
-                    .setHrFechamento(new Time(item.getHrEntrada().getTime() + Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")).toMillis()))
+        TempoInterno item = new TempoInterno();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_INTERNO_HORAS")))
+                .setHrEntrada(rSet.getTime("HRENTR"))
+                .setHrFechamento(new Time(item.getHrEntrada().getTime() + Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")).toMillis()))
 //                    .setHrFechamento(TimeUtils.somaHoras(item.getHrEntrada(), rSet.getTime("TEMPOINTERNO")))
-                    .calculaResultado();
+                .calculaResultado();
         return item;
     }
 
@@ -183,13 +183,13 @@ public class IndicadorConverter {
     }
 
     static TempoLargada createTempoLargada(ResultSet rSet)throws SQLException{
-            TempoLargada item = new TempoLargada();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_LARGADA_HORAS")))
-                    .setHrMatinal(rSet.getTime("HRMATINAL"))
-                    .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
-                    .calculaResultado();
+        TempoLargada item = new TempoLargada();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_LARGADA_HORAS")))
+                .setHrMatinal(rSet.getTime("HRMATINAL"))
+                .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
+                .calculaResultado();
         return item;
     }
 
@@ -202,13 +202,13 @@ public class IndicadorConverter {
     }
 
     static TempoRota createTempoRota(ResultSet rSet)throws SQLException{
-            TempoRota item = new TempoRota();
-            item.setData(rSet.getDate("DATA"))
-                    .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_ROTA_HORAS")))
-                    .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
-                    .setHrEntrada(rSet.getTime("HRENTR"))
-                    .calculaResultado();
+        TempoRota item = new TempoRota();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_ROTA_HORAS")))
+                .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
+                .setHrEntrada(rSet.getTime("HRENTR"))
+                .calculaResultado();
         return item;
     }
 
@@ -263,8 +263,8 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoDispersaoTempoMedia(ResultSet rSet) throws SQLException{
         DispersaoTempoAcumuladoMedia item = new DispersaoTempoAcumuladoMedia();
-        item.setPlanejado(rSet.getTime("MEDIA_DISPERSAO_TEMPO_PLANEJADO"))
-                .setRealizado(rSet.getTime("MEDIA_DISPERSAO_TEMPO_REALIZADO"))
+        item.setPrevisto(Duration.ofSeconds(rSet.getInt("MEDIA_DISPERSAO_TEMPO_PLANEJADO")))
+                .setRealizado(Duration.ofSeconds(rSet.getInt("MEDIA_DISPERSAO_TEMPO_REALIZADO")))
                 .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
                 .calculaResultado();
         return item;
@@ -281,8 +281,8 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoJornadaMedia(ResultSet rSet) throws SQLException{
         JornadaAcumuladoMedia item = new JornadaAcumuladoMedia();
-        item.setResultado(rSet.getTime("MEDIA_JORNADA"))
-                .setMeta(rSet.getTime("META_JORNADA_LIQUIDA_HORAS"))
+        item.setResultado(Duration.ofSeconds(rSet.getInt("MEDIA_JORNADA")))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_JORNADA_LIQUIDA_HORAS")))
                 .calculaResultado();
         return item;
     }
@@ -298,8 +298,9 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoTempoInternoMedia(ResultSet rSet) throws SQLException{
         TempoInternoAcumuladoMedia item = new TempoInternoAcumuladoMedia();
-        item.setResultado(rSet.getTime("MEDIA_TEMPO_INTERNO"))
-                .setMeta(rSet.getTime("META_TEMPO_INTERNO_HORAS"));
+        item.setResultado(Duration.ofSeconds(rSet.getInt("MEDIA_TEMPO_INTERNO")))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_INTERNO_HORAS")))
+                .calculaResultado();
         return item;
     }
 
@@ -314,8 +315,8 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoTempoLargadaMedia(ResultSet rSet) throws SQLException{
         TempoLargadaAcumuladoMedia item = new TempoLargadaAcumuladoMedia();
-        item.setResultado(rSet.getTime("MEDIA_TEMPO_LARGADA"))
-                .setMeta(rSet.getTime("META_TEMPO_LARGADA_HORAS"))
+        item.setResultado(Duration.ofSeconds(rSet.getInt("MEDIA_TEMPO_LARGADA")))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_LARGADA_HORAS")))
                 .calculaResultado();
         return item;
     }
@@ -331,8 +332,8 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoTempoRotaMedia(ResultSet rSet) throws SQLException{
         TempoRotaAcumuladoMedia item = new TempoRotaAcumuladoMedia();
-        item.setResultado(rSet.getTime("MEDIA_TEMPO_ROTA"))
-                .setMeta(rSet.getTime("META_TEMPO_ROTA_HORAS"))
+        item.setResultado(Duration.ofSeconds(rSet.getInt("MEDIA_TEMPO_ROTA")))
+                .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_ROTA_HORAS")))
                 .calculaResultado();
         return item;
     }
