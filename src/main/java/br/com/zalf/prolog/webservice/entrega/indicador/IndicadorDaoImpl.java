@@ -19,6 +19,76 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 
+	public static final String FRAGMENTO_ATRIBUTOS_ACUMULADOS = "-- CaixaViagem\n" +
+			"sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total,\n" +
+			"-- Dev Hl\n" +
+			"sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\n" +
+			"-- Dev Pdv\n" +
+			"sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
+			"-- Dispersão Km\n" +
+			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad\n" +
+			"else 0 end) as km_planejado_total,\n" +
+			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai)\n" +
+			"else 0 end) as km_percorrido_total,\n" +
+			"-- Dispersão de tempo\n" +
+			"sum(case when (m.hrentr - m.hrsai) <= m.tempoprevistoroad and (m.hrentr - m.hrsai) > '00:00' and m.tempoprevistoroad > '00:00' then 1\n" +
+			"else 0\n" +
+			"end) as total_mapas_bateram_dispersao_tempo,\n" +
+			"to_seconds(avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\n" +
+			"end)::text) as media_dispersao_tempo_realizado,\n" +
+			"to_seconds(avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad\n" +
+			"end)::text) as media_dispersao_tempo_planejado,\n" +
+			"-- Jornada --  primeiro verifica se é >00:00, depois verifica se é menor do que a meta\n" +
+			"sum(case when\n" +
+			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"end) > '00:00'\n" +
+			"and\n" +
+			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"end) <= um.meta_jornada_liquida_horas then 1 else 0 end) as total_mapas_bateram_jornada,\n" +
+			"to_seconds(avg(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"else null\n" +
+			"end)::text) as media_jornada,\n" +
+			"--Tempo Interno\n" +
+			"sum(case when m.tempointerno <= um.meta_tempo_interno_horas and m.tempointerno > '00:00' then 1\n" +
+			"else 0\n" +
+			"end) as total_mapas_bateram_tempo_interno,\n" +
+			"sum(case when m.tempointerno <= '05:00' and m.tempointerno > '00:00' then 1\n" +
+			"else 0\n" +
+			"end) as total_mapas_validos_tempo_interno,\n" +
+			"to_seconds(avg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno\n" +
+			"else null\n" +
+			"end)::text) as media_tempo_interno,\n" +
+			"-- Tempo largada\n" +
+			"sum(case when\n" +
+			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"else (m.hrsai - m.hrmatinal)::time\n" +
+			"end) <= um.meta_tempo_largada_horas then 1\n" +
+			"else 0 end) as total_mapas_bateram_tempo_largada,\n" +
+			"sum(case when\n" +
+			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"else (m.hrsai - m.hrmatinal)::time\n" +
+			"end) <= '05:00' then 1\n" +
+			"else 0 end) as total_mapas_validos_tempo_largada,\n" +
+			"to_seconds(avg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"when (m.hrsai - m.hrmatinal)::time > '05:00' then '00:30'\n" +
+			"else (m.hrsai - m.hrmatinal)::time\n" +
+			"end)::text) media_tempo_largada,\n" +
+			"-- Tempo Rota\n" +
+			"sum(case when (m.hrentr - m.hrsai) > '00:00' and (m.hrentr - m.hrsai) <= meta_tempo_rota_horas then 1\n" +
+			"else 0 end) as total_mapas_bateram_tempo_rota,\n" +
+			"to_seconds(avg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai)\n" +
+			"end)::text) as media_tempo_rota,\n" +
+			"-- Tracking\n" +
+			"sum(tracking.apontamentos_ok) as total_apontamentos_ok,\n" +
+			"sum(tracking.total_apontamentos) as total_apontamentos,\n" +
+			"um.meta_tracking,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
+			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
+			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,um.meta_tempo_interno_mapas,to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
+			"um.meta_tempo_largada_mapas ";
+
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
 			"M.DATA,  M.mapa,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
@@ -67,72 +137,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"ORDER BY M.DATA;";
 
 	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select " +
-			"-- CaixaViagem \n" +
-			"  sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total, \n" +
-			"-- Dev Hl \n"+
-			"sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\n"  +
-			"  -- Dev Pdvn  \n"+
-			"  sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n"+
-			"  -- Dispersão Km \n " +
-			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad \n" +
-			"else 0 end) as km_planejado_total,\n"+
-			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai) \n"  +
-			"else 0 end) as km_percorrido_total,\n"+
-			"  -- Dispersão de tempo  \n"+
-			"sum(case when (m.hrentr - m.hrsai) <= m.tempoprevistoroad and (m.hrentr - m.hrsai) > '00:00' and m.tempoprevistoroad > '00:00' then 1 \n"  +
-			"else 0 \n" +
-			"end) as total_mapas_bateram_dispersao_tempo,\n" +
-			"avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\n"  +
-			"end)::time as media_dispersao_tempo_realizado,\n"  +
-			"avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad \n"  +
-			"end)::time as media_dispersao_tempo_planejado,\n"  +
-			"  -- Jornada --  primeiro verifica se é >00:00, depois verifica se é menor do que a meta \n"  +
-			"sum(case when \n"  +
-			" (case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
-			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno) \n" +
-			"end) > '00:00' \n"  +
-			"and \n"  +
-			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
-			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno) \n"  +
-			"end) <= um.meta_jornada_liquida_horas then 1 else 0 end) as total_mapas_bateram_jornada,\n"  +
-			" sum(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
-			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n"  +
-			" else null \n"  +
-			"end)::time as media_jornada, \n"  +
-			"  --Tempo Interno \n"  +
-			"sum(case when m.tempointerno <= um.meta_tempo_interno_horas and m.tempointerno > '00:00' then 1 \n"  +
-			"else 0 \n"  +
-			"end) as total_mapas_bateram_tempo_interno, \n"  +
-			"sum(case when m.tempointerno <= '05:00' and m.tempointerno > '00:00' then 1 \n"  +
-			"else 0 \n"  +
-			"end) as total_mapas_validos_tempo_interno, \n"  +
-			"avg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno \n"  +
-			"else null \n"  +
-			"end)::time as media_tempo_interno, \n"  +
-			"  -- Tempo largada \n" +
-			"sum(case when \n"  +
-			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
-			"else (m.hrsai - m.hrmatinal)::time \n"  +
-			"end) <= um.meta_tempo_largada_horas then 1 \n"  +
-			"else 0 end) as total_mapas_bateram_tempo_largada, \n"  +
-			"sum(case when \n"  +
-			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
-			"else (m.hrsai - m.hrmatinal)::time \n"  +
-			"end) <= '05:00' then 1 \n"  +
-			"else 0 end) as total_mapas_validos_tempo_largada, \n"  +
-			"avg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas \n"  +
-			"when (m.hrsai - m.hrmatinal)::time > '05:00' then '00:30' \n"  +
-			"else (m.hrsai - m.hrmatinal)::time \n"  +
-			"end)::time media_tempo_largada, \n"  +
-			"  -- Tempo Rota \n"  +
-			"sum(case when (m.hrentr - m.hrsai) > '00:00' and (m.hrentr - m.hrsai) <= meta_tempo_rota_horas then 1 \n"  +
-			"else 0 end) as total_mapas_bateram_tempo_rota, \n"  +
-			"avg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai) \n"  +
-			"end)::time as media_tempo_rota, \n"  +
-			"  -- Tracking \n"  +
-			"sum(tracking.apontamentos_ok) as total_apontamentos_ok, \n"  +
-			"sum(tracking.total_apontamentos) as total_apontamentos, \n"  +
-			"um.*n \n" +
+			 FRAGMENTO_ATRIBUTOS_ACUMULADOS +
 			"from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade \n"  +
 			"LEFT JOIN (SELECT t.mapa as tracking_mapa, \n"  +
 			"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"  +
@@ -245,7 +250,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 
 	/**
 	 * Cria os itens para compor o extrato
-	 * @param rSet um ResultSet contendo o resultado da busca
+	 * @param rSet um ResultSet contendo o resutado da busca
 	 * @param indicador String para indicar qual o indicador que deve ser montado o extrato
 	 * @return uma lista de Indicador {@link Indicador}
 	 * @throws SQLException caso não seja possível recuparar alguma coluna do ResultSet
