@@ -20,38 +20,51 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
-			"  M.DATA,  M.mapa,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
-			"  M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
-			"  M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, um.* \n" +
+			"M.DATA,  M.mapa,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
+			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
+			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,\n" +
+			"M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK,\n" +
+			"\tto_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"else (m.hrsai - m.hrmatinal)::time\n" +
+			"end)::text) as tempo_largada,\n" +
+			"to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
+			"to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas,\n" +
+			"to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,\n" +
+			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
+			"um.meta_caixa_viagem, um.meta_dev_hl, um.meta_dev_pdv,\n" +
+			"um.meta_dispersao_km, um.meta_dispersao_tempo,\n" +
+			"um.meta_tempo_largada_mapas,um.meta_tempo_rota_mapas,\n" +
+			"um.meta_tempo_interno_mapas, um.meta_jornada_liquida_mapas,\n" +
+			"um.meta_raio_tracking,um.meta_tracking\n" +
 			"FROM\n" +
-			"  MAPA_COLABORADOR MC\n" +
-			"  JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV\n" +
-			"  JOIN MAPA M ON M.MAPA = MC.MAPA\n" +
-			"  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
-			"  JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
-			"  JOIN regional R ON R.codigo = U.cod_regional\n" +
-			"  JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
-			"  JOIN equipe E ON E.cod_unidade = U.codigo AND C.cod_equipe = E.codigo AND C.cod_unidade = E.cod_unidade\n" +
-			"  LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
-			"              FROM tracking t\n" +
-			"                JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
-			"                JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
-			"                FROM tracking t\n" +
-			"                  JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
-			"                WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
-			"                GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
-			"            JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
-			"             FROM tracking t\n" +
-			"             GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
-			"             GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
+			"MAPA_COLABORADOR MC\n" +
+			"JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV\n" +
+			"JOIN MAPA M ON M.MAPA = MC.MAPA\n" +
+			"JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+			"JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
+			"JOIN regional R ON R.codigo = U.cod_regional\n" +
+			"JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
+			"JOIN equipe E ON E.cod_unidade = U.codigo AND C.cod_equipe = E.codigo AND C.cod_unidade = E.cod_unidade\n" +
+			"LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
+			"FROM tracking t\n" +
+			"JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
+			"JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
+			"FROM tracking t\n" +
+			"JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+			"WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
+			"GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
+			"JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
+			"FROM tracking t\n" +
+			"GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
+			"GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
 			"WHERE\n" +
-			"  DATA BETWEEN ? AND ? AND\n" +
-			"  R.codigo::TEXT LIKE ? AND\n" +
-			"  U.codigo::TEXT LIKE ? AND\n" +
-			"  E.nome::TEXT LIKE ? AND\n" +
-			"  EM.codigo::TEXT LIKE ? AND\n" +
-			"  C.CPF::TEXT LIKE ? \n" +
-			"ORDER BY M.DATA;\n";
+			"DATA BETWEEN ? AND ? AND\n" +
+			"R.codigo::TEXT LIKE ? AND\n" +
+			"U.codigo::TEXT LIKE ? AND\n" +
+			"E.nome::TEXT LIKE ? AND\n" +
+			"EM.codigo::TEXT LIKE ? AND\n" +
+			"C.CPF::TEXT LIKE ?\n" +
+			"ORDER BY M.DATA;";
 
 	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select " +
 			"-- CaixaViagem \n" +

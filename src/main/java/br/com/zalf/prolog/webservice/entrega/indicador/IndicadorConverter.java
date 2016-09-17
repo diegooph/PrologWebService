@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.commons.util.MetaUtils;
 import br.com.zalf.prolog.commons.util.TimeUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,8 +128,8 @@ public class IndicadorConverter {
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
                     .setMeta(rSet.getDouble("META_DISPERSAO_TEMPO"))
-                    .setTempoPrevisto(rSet.getTime("TEMPOPREVISTOROAD"))
-                    .setTempoRealizado(rSet.getTime("TEMPO_ROTA"))
+                    .setTempoPrevisto(Duration.ofSeconds(rSet.getInt("TEMPOPREVISTOROAD")))
+                    .setTempoRealizado(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
                     .calculaResultado();
         return item;
     }
@@ -146,11 +146,10 @@ public class IndicadorConverter {
             Jornada item = new Jornada();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getTime("META_JORNADA_LIQUIDA_HORAS"))
-                    .setTempoLargada(MetaUtils.calculaTempoLargada(rSet.getTime("HRSAI"), rSet.getTime("HRMATINAL")))
-                    .setTempoInterno(rSet.getTime("TEMPOINTERNO"))
-                    .setTempoRota(TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
-                            TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI"))))
+                    .setMeta(Duration.ofSeconds(rSet.getInt("META_JORNADA_LIQUIDA_HORAS")))
+                    .setTempoLargada(Duration.ofSeconds(rSet.getInt("TEMPO_LARGADA")))
+                    .setTempoInterno(Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")))
+                    .setTempoRota(Duration.ofSeconds(rSet.getInt("TEMPO_ROTA")))
                     .calculaResultado();
         return item;
     }
@@ -167,9 +166,10 @@ public class IndicadorConverter {
             TempoInterno item = new TempoInterno();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getTime("META_TEMPO_INTERNO_HORAS"))
+                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_INTERNO_HORAS")))
                     .setHrEntrada(rSet.getTime("HRENTR"))
-                    .setHrFechamento(TimeUtils.somaHoras(item.getHrEntrada(), rSet.getTime("TEMPOINTERNO")))
+                    .setHrFechamento(new Time(item.getHrEntrada().getTime() + Duration.ofSeconds(rSet.getInt("TEMPOINTERNO")).toMillis()))
+//                    .setHrFechamento(TimeUtils.somaHoras(item.getHrEntrada(), rSet.getTime("TEMPOINTERNO")))
                     .calculaResultado();
         return item;
     }
@@ -186,7 +186,7 @@ public class IndicadorConverter {
             TempoLargada item = new TempoLargada();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getTime("META_TEMPO_LARGADA_HORAS"))
+                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_LARGADA_HORAS")))
                     .setHrMatinal(rSet.getTime("HRMATINAL"))
                     .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
                     .calculaResultado();
@@ -205,7 +205,7 @@ public class IndicadorConverter {
             TempoRota item = new TempoRota();
             item.setData(rSet.getDate("DATA"))
                     .setMapa(rSet.getInt("MAPA"))
-                    .setMeta(rSet.getTime("META_TEMPO_ROTA_HORAS"))
+                    .setMeta(Duration.ofSeconds(rSet.getInt("META_TEMPO_ROTA_HORAS")))
                     .setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")))
                     .setHrEntrada(rSet.getTime("HRENTR"))
                     .calculaResultado();
