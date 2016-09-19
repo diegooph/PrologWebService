@@ -47,7 +47,7 @@ public class RelatorioResource {
                                                @PathParam("cpf") String cpf,
                                                @PathParam("indicador") String indicador){
         return service.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
-                                                       codUnidade, equipe, cpf, indicador);
+                codUnidade, equipe, cpf, indicador);
     }
 
     @GET
@@ -59,8 +59,10 @@ public class RelatorioResource {
                                                   @PathParam("codRegional") String codRegional,
                                                   @PathParam("codEmpresa") String codEmpresa,
                                                   @PathParam("codUnidade") String codUnidade,
-                                                  @PathParam("equipe") String equipe){
-        return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
+                                                  @PathParam("equipe") String equipe,
+                                                  @QueryParam("limit") int limit,
+                                                  @QueryParam("offset") int offset){
+        return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, limit, offset);
     }
 
     @GET

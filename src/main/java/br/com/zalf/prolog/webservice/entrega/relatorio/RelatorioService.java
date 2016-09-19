@@ -36,9 +36,9 @@ public class RelatorioService {
     }
 
     public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                  String codRegional, String codUnidade, String equipe) {
+                                                  String codRegional, String codUnidade, String equipe, int limit, int offset) {
         try {
-            return dao.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
+            return dao.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

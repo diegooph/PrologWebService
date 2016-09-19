@@ -70,7 +70,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
             "um.meta_tempo_largada_mapas\n" +
-            "ORDER BY 1;";
+            "ORDER BY 1 LIMIT ? OFFSET ?;";
     
     public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
             "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
@@ -156,7 +156,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
      * @throws SQLException caso não seja possível realizar a busca
      */
     public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                  String codRegional, String codUnidade, String equipe)throws SQLException{
+                                                  String codRegional, String codUnidade, String equipe, int limit, int offset)throws SQLException{
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
@@ -170,6 +170,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt.setString(4, codRegional);
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
+            stmt.setInt(7, limit);
+            stmt.setInt(8, offset);
             rSet = stmt.executeQuery();
             IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
             while (rSet.next()){
