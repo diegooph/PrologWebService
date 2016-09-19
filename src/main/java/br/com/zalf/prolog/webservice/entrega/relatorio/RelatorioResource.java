@@ -27,7 +27,7 @@ public class RelatorioResource {
     @Path("/acumulados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
     public List<IndicadorAcumulado> getAcumuladoIndicadores(@QueryParam("dataInicial") Long dataInicial,
                                                             @QueryParam("dataFinal") Long dataFinal,
-                                                            @PathParam("codEmpresa") Long codEmpresa,
+                                                            @PathParam("codEmpresa") String codEmpresa,
                                                             @PathParam("codRegional") String codRegional,
                                                             @PathParam("codUnidade") String codUnidade,
                                                             @PathParam("equipe") String equipe){
@@ -57,7 +57,7 @@ public class RelatorioResource {
     public List<ConsolidadoDia> getConsolidadoDia(@QueryParam("dataInicial") Long dataInicial,
                                                   @QueryParam("dataFinal") Long dataFinal,
                                                   @PathParam("codRegional") String codRegional,
-                                                  @PathParam("codEmpresa") Long codEmpresa,
+                                                  @PathParam("codEmpresa") String codEmpresa,
                                                   @PathParam("codUnidade") String codUnidade,
                                                   @PathParam("equipe") String equipe){
         return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);

@@ -237,8 +237,8 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoJornadaMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDispersaoKm(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoDispersaoKm(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMedia(rSet));
@@ -250,7 +250,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 
 	/**
 	 * Cria os itens para compor o extrato
-	 * @param rSet um ResultSet contendo o resutado da busca
+	 * @param rSet um ResultSet contendo o resultado da busca
 	 * @param indicador String para indicar qual o indicador que deve ser montado o extrato
 	 * @return uma lista de Indicador {@link Indicador}
 	 * @throws SQLException caso não seja possível recuparar alguma coluna do ResultSet

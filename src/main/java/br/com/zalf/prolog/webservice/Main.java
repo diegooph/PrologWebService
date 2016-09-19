@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -79,6 +80,11 @@ public class Main {
 		 */
 		//System.out.println(GsonUtils.getGson().toJson(relatorioDao.getConsolidadoDia(datainicial.getTime(),
 		//		datafinal.getTime(), 2L, "%", "3", "%")));
+
+		ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+		produtividadeDao.getProdutividadeByPeriodo(1,2,0L);
+
+
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));

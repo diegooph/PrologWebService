@@ -38,7 +38,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
             "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
-            "EM.codigo = ? AND\n" +
+            "EM.codigo::TEXT LIKE ? AND\n" +
             "R.codigo::TEXT LIKE ? AND\n" +
             "U.codigo::TEXT LIKE ? AND\n" +
             "E.nome LIKE ?\n" +
@@ -62,7 +62,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
             "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
-            " EM.codigo = ? AND\n" +
+            " EM.codigo::TEXT LIKE ? AND\n" +
             " R.codigo::TEXT LIKE ? AND\n" +
             " U.codigo::TEXT LIKE ? AND\n" +
             "E.nome LIKE ?\n" +
@@ -71,8 +71,47 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
             "um.meta_tempo_largada_mapas\n" +
             "ORDER BY 1;";
+    
+    public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
+            "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
+            "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK,\n" +
+            "FROM\n" +
+            "MAPA M \n" +
+            "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
+            "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+            "JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
+            "JOIN regional R ON R.codigo = U.cod_regional\n" +
+            "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
+            "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
+            "LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
+            "FROM tracking t\n" +
+            "JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
+            "JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
+            "FROM tracking t\n" +
+            "JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
+            "GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
+            "JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
+            "FROM tracking t\n" +
+            "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
+            "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
+            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade";
 
-    public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, Long codEmpresa,
+    /**
+     * Método utilizado para buscar os dados da aba acumulados, tela Relatórios.
+     * Busca os dados pós clique de um card da aba Diário, mostrando o acumulado
+     * do dia clicado, tela Relatórios, pilar Entrega.
+     * @param dataInicial um Long
+     * @param dataFinal um Long
+     * @param codEmpresa código da empresa a ser usado no filtro
+     * @param codRegional código da regional a ser usado no filtro
+     * @param codUnidade código da unidade a ser usado no filtro
+     * @param equipe nome da equipe a ser usado no filtro
+     * @return lista de {@link IndicadorAcumulado}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
                                                             String codRegional, String codUnidade, String equipe)throws SQLException{
         Connection conn = null;
         ResultSet rSet = null;
@@ -83,7 +122,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
-            stmt.setLong(3, codEmpresa);
+            stmt.setString(3, codEmpresa);
             stmt.setString(4, codRegional);
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
@@ -97,6 +136,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         return acumulados;
     }
 
+
     public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
                                                String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 
@@ -104,7 +144,18 @@ public class RelatorioDaoImpl extends DatabaseConnection{
                 codUnidade, equipe, cpf, indicador);
     }
 
-    public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, Long codEmpresa,
+    /**
+     * Busca os dados para a aba Diário da tela Relatórios, pilar Entrega
+     * @param dataInicial um Long
+     * @param dataFinal um Long
+     * @param codEmpresa código da empresa usado no filtro
+     * @param codRegional código da regional usado no filtro
+     * @param codUnidade código da unidade usado no filtro
+     * @param equipe nome da equipe usado no filtro
+     * @return lista de {@link ConsolidadoDia}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
                                                   String codRegional, String codUnidade, String equipe)throws SQLException{
         Connection conn = null;
         ResultSet rSet = null;
@@ -115,7 +166,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt = conn.prepareStatement(BUSCA_AUMULADO_POR_DIA);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
-            stmt.setLong(3, codEmpresa);
+            stmt.setString(3, codEmpresa);
             stmt.setString(4, codRegional);
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
@@ -134,6 +185,17 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         return consolidados;
     }
 
+    /**
+     * Estratifica os mapas de um dia, contém os dados da equipe, data e mapa, além dos indicadores
+     * no formato de item e não de acumulado, chamado quando acontece um clique no FAB
+     * @param data uma data, serão buscados apenas os mapas dessa data
+     * @param codEmpresa código da empresa a ser usado no filtro
+     * @param codRegional código da regional a ser usado no filtro
+     * @param codUnidade código da unidade a ser usado no filtro
+     * @param equipe nome da equipe a ser usado no filtro
+     * @return lista de {@link MapaEstratificado}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
     public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
                                                           String codUnidade, String equipe) throws SQLException{
         Connection conn = null;
@@ -144,31 +206,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         try{
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT\n" +
-                    "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
-                    "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
-                    "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, um.*\n" +
-                    "FROM\n" +
-                    "MAPA M\n" +
-                    "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
-                    "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
-                    "JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
-                    "JOIN regional R ON R.codigo = U.cod_regional\n" +
-                    "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
-                    "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
-                    "LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
-                    "FROM tracking t\n" +
-                    "JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
-                    "JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
-                    "FROM tracking t\n" +
-                    "JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
-                    "WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
-                    "GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
-                    "JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
-                    "FROM tracking t\n" +
-                    "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
-                    "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
-                    "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
-                    "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade\n" +
+                    FRAGMENTO_BUSCA_EXTRATO_DIA +
                     "WHERE\n" +
                     "m.DATA = ? AND\n" +
                     "EM.codigo::TEXT LIKE ? AND\n" +

@@ -15,7 +15,7 @@ public class RelatorioService {
 
     RelatorioDaoImpl dao = new RelatorioDaoImpl();
 
-    public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, Long codEmpresa,
+    public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
                                                             String codRegional, String codUnidade, String equipe){
         try{
             return dao.getAcumuladoIndicadores(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
@@ -35,7 +35,7 @@ public class RelatorioService {
         }
     }
 
-    public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, Long codEmpresa,
+    public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
                                                   String codRegional, String codUnidade, String equipe) {
         try {
             return dao.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
