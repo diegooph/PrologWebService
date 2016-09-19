@@ -6,8 +6,11 @@ import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.servico.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -19,11 +22,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
+public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 
-	PneuDaoImpl pneuDao;
-	VeiculoDaoImpl veiculoDao;
-	Long codUnidade;
+	private PneuDao pneuDao;
+	private VeiculoDao veiculoDao;
+	private Long codUnidade;
 
 	@Override
 	public PlacaServicoHolder getPlacasServico(Long codUnidade) throws SQLException{
@@ -78,7 +81,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return placaServicoHolder;
 	}
 
-	public ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException{
+	@Override
+	public ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException {
 		ServicoHolder holder = new ServicoHolder();
 		veiculoDao = new VeiculoDaoImpl();
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
@@ -90,56 +94,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 			L.d("teste", "contem movimentacao");
 			holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));;
 		}
-		AfericaoDaoImpl afericaoDaoImpl = new AfericaoDaoImpl();
-		holder.setRestricao(afericaoDaoImpl.getRestricoesByPlaca(placa));
+		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
 
 		return holder;
 	}
 
-	private boolean containInspecao(List<Servico> listServicos){
-
-		for (Servico servico : listServicos) {
-			if (servico instanceof Inspecao) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean containMovimentacao(List<Servico> listServicos){
-
-		for (Servico servico : listServicos) {
-			if (servico instanceof Movimentacao) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private List<Alternativa> getListAlternativasInspecao() throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		List<Alternativa> listAlternativas = new ArrayList<>();
-
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
-					+ "WHERE A.STATUS_ATIVO = TRUE");
-			rSet = stmt.executeQuery();
-			while(rSet.next()){
-				PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
-				alternativa.codigo = rSet.getLong("CODIGO");
-				alternativa.alternativa = rSet.getString("ALTERNATIVA");
-				listAlternativas.add(alternativa);
-			}
-		}finally {
-			closeConnection(conn, stmt, null);
-		}
-		return listAlternativas;
-	}
-
-	public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException{
+	@Override
+	public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -186,6 +148,80 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return listServicos;
 	}
 
+	@Override
+	public boolean insertManutencao(Servico servico, Long codUnidade, String token) throws SQLException {
+
+		this.codUnidade = codUnidade;
+		Connection conn = getConnection();
+		conn.setAutoCommit(false);
+		pneuDao = new PneuDaoImpl();
+
+		try{
+			switch (servico.getTipo()) {
+				case Servico.TIPO_CALIBRAGEM:
+					insertCalibragem((Calibragem) servico, conn);
+					break;
+				case Servico.TIPO_INSPECAO:
+					insertInspecao((Inspecao) servico, conn);
+					break;
+				case Servico.TIPO_MOVIMENTACAO:
+					insertMovimentacao((Movimentacao) servico, conn, token);
+					break;
+			}
+			conn.commit();
+		}catch(SQLException e){
+			e.printStackTrace();
+			conn.rollback();
+			return false;
+		}finally{
+			closeConnection(conn, null, null);
+		}
+		return true;
+	}
+
+	private boolean containInspecao(List<Servico> listServicos){
+
+		for (Servico servico : listServicos) {
+			if (servico instanceof Inspecao) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containMovimentacao(List<Servico> listServicos){
+
+		for (Servico servico : listServicos) {
+			if (servico instanceof Movimentacao) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private List<Alternativa> getListAlternativasInspecao() throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Alternativa> listAlternativas = new ArrayList<>();
+
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
+					+ "WHERE A.STATUS_ATIVO = TRUE");
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+				alternativa.codigo = rSet.getLong("CODIGO");
+				alternativa.alternativa = rSet.getString("ALTERNATIVA");
+				listAlternativas.add(alternativa);
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return listAlternativas;
+	}
+
 	private Calibragem createCalibragem(ResultSet rSet) throws SQLException{
 		Calibragem calibragem = new Calibragem();
 		calibragem.setPneu(pneuDao.createPneu(rSet));
@@ -211,36 +247,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		movimentacao.setTipo(rSet.getString("TIPO_SERVICO"));
 		movimentacao.setQtApontamentos(rSet.getInt("QT_APONTAMENTOS"));
 		return movimentacao;
-	}
-
-	public boolean insertManutencao(Servico servico, Long codUnidade, String token) throws SQLException {
-
-		this.codUnidade = codUnidade;
-		Connection conn = getConnection();
-		conn.setAutoCommit(false);
-		pneuDao = new PneuDaoImpl();
-
-		try{
-			switch (servico.getTipo()) {
-			case Servico.TIPO_CALIBRAGEM:
-				insertCalibragem((Calibragem) servico, conn);
-				break;
-			case Servico.TIPO_INSPECAO:
-				insertInspecao((Inspecao) servico, conn);
-				break;
-			case Servico.TIPO_MOVIMENTACAO:
-				insertMovimentacao((Movimentacao) servico, conn, token);
-				break;
-			}
-			conn.commit();
-		}catch(SQLException e){
-			e.printStackTrace();
-			conn.rollback();
-			return false;
-		}finally{
-			closeConnection(conn, null, null);
-		}
-		return true;
 	}
 
 	private boolean insertCalibragem(Calibragem servico, Connection conn) throws SQLException{
@@ -305,7 +311,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		return true;
 	}
 
-
 	private boolean insertMovimentacao(Movimentacao servico, Connection conn, String token) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
@@ -350,6 +355,5 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao{
 		}
 		return true;
 	}
-
 
 }

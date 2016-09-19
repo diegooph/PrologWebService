@@ -12,12 +12,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelatoDaoImpl extends DatabaseConnection {
+public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
 	private static final String TAG = RelatoDaoImpl.class.getSimpleName();
 
-
-	//	@Override
+	@Override
 	public boolean insert(Relato relato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -58,59 +57,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return true;
 	}
 
-	//@Override
-	public boolean classificaRelato(Relato relato) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE RELATO SET CPF_CLASSIFICACAO = ?, "
-					+ " DATA_HORA_CLASSIFICACAO = ?, STATUS = ?, COD_ALTERNATIVA = ?, RESPOSTA_OUTROS = ? "
-					+ " WHERE CODIGO = ?");
-
-			stmt.setLong(1, relato.getColaboradorClassificacao().getCpf());
-			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-			stmt.setString(3, relato.getStatus());
-			stmt.setLong(4, relato.getAlternativa().codigo);
-			stmt.setString(5, relato.getDescricao());
-			stmt.setLong(6, relato.getCodigo());
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao classificar o relato");
-			}	
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
-	}
-
-	public boolean fechaRelato(Relato relato) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE RELATO SET CPF_FECHAMENTO = ?, "
-					+ " DATA_HORA_FECHAMENTO = ?, STATUS = ?, FEEDBACK_FECHAMENTO = ?  "
-					+ " WHERE CODIGO = ?");
-
-			stmt.setLong(1, relato.getColaboradorFechamento().getCpf());
-			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-			stmt.setString(3, Relato.FECHADO);
-			stmt.setString(4, relato.getFeedbackFechamento());
-			stmt.setLong(5, relato.getCodigo());
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao fechar o relato");
-			}	
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
-	}
-
-	//@Override
+	@Override
 	public boolean delete(Long codRelato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -124,7 +71,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		}
 	}
 
-	//	@Override
+	@Override
 	public Relato getByCod(Long codRelato) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -150,9 +97,50 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return null;
 	}
 
-	//	@Override
-	public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude, 
-			double longitude, boolean isOrderByDate, String status, String campoFiltro) throws SQLException {
+	@Override
+	public List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) throws SQLException {
+		List<Relato> relatos = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		String query = "SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+				+ " FROM RELATO R JOIN "
+				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
+				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
+				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
+				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
+				+ "WHERE R.COD_UNIDADE = ? AND R.STATUS LIKE ? "
+				+ "ORDER BY %s "
+				+ "LIMIT ? OFFSET ? ";
+		try {
+
+			conn = getConnection();
+			if(isOrderByDate){
+				query = String.format(query, "DATA_HORA_DATABASE DESC");
+			}else{
+				query = String.format(query, "DISTANCIA ASC");
+			}
+			stmt = conn.prepareStatement(query);
+			stmt.setDouble(1, longitude);
+			stmt.setDouble(2, latitude);
+			stmt.setLong(3, codUnidade);
+			stmt.setString(4, status);
+			stmt.setInt(5, limit);
+			stmt.setLong(6, offset);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Relato relato = createRelato(rSet);
+				relatos.add(relato);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return relatos;
+	}
+
+	@Override
+	public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude,
+												   double longitude, boolean isOrderByDate, String status, String campoFiltro) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -192,25 +180,7 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return relatos;
 	}
 
-	private String getCampoFiltro(String campoFiltro){
-		String s = null;
-		switch (campoFiltro) {
-		case "realizados":
-			s = "CPF_COLABORADOR";
-			break;
-		case "classificados":
-			s = "CPF_CLASSIFICACAO";
-			break;
-		case "fechados":
-			s = "CPF_FECHAMENTO";
-			break;
-		default:
-			break;
-		}
-		return s;
-	}
-
-	//	@Override
+	@Override
 	public List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) throws SQLException {
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
@@ -253,49 +223,9 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return relatos;
 	}
 
-	public List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) throws SQLException {
-		List<Relato> relatos = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		String query = "SELECT *, C2.NOME AS NOME_CLASSIFICACAO, C3.NOME AS NOME_FECHAMENTO, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
-				+ " FROM RELATO R JOIN "
-				+ "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
-				+ "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
-				+ "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
-				+ "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
-				+ "WHERE R.COD_UNIDADE = ? AND R.STATUS LIKE ? "
-				+ "ORDER BY %s "
-				+ "LIMIT ? OFFSET ? ";
-		try {
-
-			conn = getConnection();
-			if(isOrderByDate){
-				query = String.format(query, "DATA_HORA_DATABASE DESC");
-			}else{
-				query = String.format(query, "DISTANCIA ASC");
-			}
-			stmt = conn.prepareStatement(query);
-			stmt.setDouble(1, longitude);
-			stmt.setDouble(2, latitude);
-			stmt.setLong(3, codUnidade);
-			stmt.setString(4, status);
-			stmt.setInt(5, limit);
-			stmt.setLong(6, offset);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Relato relato = createRelato(rSet);
-				relatos.add(relato);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return relatos;
-	}
-
-	//@Override
+	@Override
 	public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade,long limit, long offset, String status) throws SQLException{
+										Long codUnidade,long limit, long offset, String status) throws SQLException {
 
 		List<Relato> relatos = new ArrayList<>();
 		Connection conn = null;
@@ -331,6 +261,115 @@ public class RelatoDaoImpl extends DatabaseConnection {
 			closeConnection(conn, stmt, rSet);
 		}
 		return relatos;
+	}
+
+	@Override
+	public boolean classificaRelato(Relato relato) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE RELATO SET CPF_CLASSIFICACAO = ?, "
+					+ " DATA_HORA_CLASSIFICACAO = ?, STATUS = ?, COD_ALTERNATIVA = ?, RESPOSTA_OUTROS = ? "
+					+ " WHERE CODIGO = ?");
+
+			stmt.setLong(1, relato.getColaboradorClassificacao().getCpf());
+			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setString(3, relato.getStatus());
+			stmt.setLong(4, relato.getAlternativa().codigo);
+			stmt.setString(5, relato.getDescricao());
+			stmt.setLong(6, relato.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao classificar o relato");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
+	@Override
+	public boolean fechaRelato(Relato relato) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE RELATO SET CPF_FECHAMENTO = ?, "
+					+ " DATA_HORA_FECHAMENTO = ?, STATUS = ?, FEEDBACK_FECHAMENTO = ?  "
+					+ " WHERE CODIGO = ?");
+
+			stmt.setLong(1, relato.getColaboradorFechamento().getCpf());
+			stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setString(3, Relato.FECHADO);
+			stmt.setString(4, relato.getFeedbackFechamento());
+			stmt.setLong(5, relato.getCodigo());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao fechar o relato");
+			}	
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}		
+		return true;
+	}
+
+	/**
+	 * Busca as alternativas para compor um relato, utilizado quando o usuário loga e quando cria um novo relato.
+	 * Mantém o banco de dados(mobile) atualizado.
+	 * @param codUnidade código de uma unidade
+	 * @param codSetor cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
+	 * @return lista de Alterniva
+	 * @throws SQLException
+	 */
+	@Override
+	public List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException {
+		List<Alternativa> listAlternativas = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
+					+ "FROM RELATO_ALTERNATIVA "
+					+ "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+			stmt.setLong(1, codSetor);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Alternativa alternativa = new Alternativa();
+				alternativa.codigo = rSet.getLong("CODIGO");
+				alternativa.alternativa = rSet.getString("ALTERNATIVA");
+				if(alternativa.alternativa.equals("Outros")){
+					alternativa.tipo = alternativa.TIPO_OUTROS;
+				}
+				listAlternativas.add(alternativa);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listAlternativas;
+	}
+
+	private String getCampoFiltro(String campoFiltro){
+		String s = null;
+		switch (campoFiltro) {
+		case "realizados":
+			s = "CPF_COLABORADOR";
+			break;
+		case "classificados":
+			s = "CPF_CLASSIFICACAO";
+			break;
+		case "fechados":
+			s = "CPF_FECHAMENTO";
+			break;
+		default:
+			break;
+		}
+		return s;
 	}
 
 	private Relato createRelato(ResultSet rSet) throws SQLException{
@@ -382,40 +421,4 @@ public class RelatoDaoImpl extends DatabaseConnection {
 		return alternativa;
 	}
 
-	/**
-	 * Busca as alternativas para compor um relato, utilizado quando o usuário loga e quando cria um novo relato. 
-	 * Mantém o banco de dados(mobile) atualizado.
-	 * @param codUnidade 
-	 * @param codSetor cod do setor do colaborador que está realizando o relato, serve para fitlrar as alternativas.
-	 * @return lista de Alterniva
-	 * @throws SQLException
-	 */
-	public List<Alternativa> getAlternativas(Long codUnidade, Long codSetor) throws SQLException{
-		List<Alternativa> listAlternativas = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
-					+ "FROM RELATO_ALTERNATIVA "
-					+ "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
-			stmt.setLong(1, codSetor);
-			stmt.setLong(2, codUnidade);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Alternativa alternativa = new Alternativa();
-				alternativa.codigo = rSet.getLong("CODIGO");
-				alternativa.alternativa = rSet.getString("ALTERNATIVA");
-				if(alternativa.alternativa.equals("Outros")){
-					alternativa.tipo = alternativa.TIPO_OUTROS;
-				}
-				listAlternativas.add(alternativa);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return listAlternativas;
-	}
 }

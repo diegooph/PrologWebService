@@ -9,6 +9,7 @@ import br.com.zalf.prolog.entrega.produtividade.ColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -50,14 +51,11 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			+ "c.matricula_ambev = mc.cod_ambev GROUP BY t.mapa, ok.mapa_ok, total.total_entregas, "
 			+ "ok.apontamento_ok) AS TRACKING ON TRACKING_MAPA = M.MAPA	WHERE C.CPF = ? AND DATA BETWEEN ? "
 			+ "AND ? ORDER BY M.DATA;";
-
-
-	Meta meta;
+	private Meta meta;
 	
 	@Override
 	public List<ItemProdutividade> getProdutividadeByPeriodo(LocalDate dataInicial, LocalDate dataFinal, 
-			Long cpf, String token)
-			throws SQLException {
+			Long cpf, String token) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -79,7 +77,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
             L.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
 			
-			MetasDaoImpl metasDao = new MetasDaoImpl();
+			MetasDao metasDao = new MetasDaoImpl();
 			meta = metasDao.getMetasByCpf(cpf);
 
 			while(rSet.next()){
@@ -107,8 +105,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}
 	}
 
+	@Override
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
-																			long dataInicial, long dataFinal) throws SQLException{
+																			long dataInicial, long dataFinal) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

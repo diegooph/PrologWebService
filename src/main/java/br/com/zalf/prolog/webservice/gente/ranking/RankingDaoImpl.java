@@ -6,6 +6,7 @@ import br.com.zalf.prolog.entrega.indicador.older.*;
 import br.com.zalf.prolog.gente.ranking.ItemPosicao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -19,9 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class RankingDaoImpl extends DatabaseConnection {
+public class RankingDaoImpl extends DatabaseConnection implements RankingDao {
 
-	private static final String tag = RankingDaoImpl.class.getSimpleName();
+	private static final String TAG = RankingDaoImpl.class.getSimpleName();
 
 	/**
 	 * Busca os dados da tabela mapa e tracking para montar todos os indicadores,
@@ -61,14 +62,14 @@ public class RankingDaoImpl extends DatabaseConnection {
 	private RelatorioDaoImpl create;
 
 
-
+	@Override
 	public List<ItemPosicao> getRanking (LocalDate dataInicial, LocalDate dataFinal, String equipe,
-										 Long codUnidade) throws SQLException{
+										 Long codUnidade) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDao metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByUnidade(codUnidade);
 		create = new RelatorioDaoImpl(meta);
 		List<ItemPosicao> listPosicao = new ArrayList<>();
@@ -90,7 +91,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 		finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		L.d(tag, listPosicao.toString());
+		L.d(TAG, listPosicao.toString());
 		return listPosicao;
 	}
 	/**
@@ -100,7 +101,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 	 * @return uma lista de ItemPosicao, contendo todos os colaboradores e seus resultados
 	 * @throws SQLException caso ocorra erro ao percorrer o ResultSet
 	 */
-	public List<ItemPosicao> createRanking(ResultSet rSet) throws SQLException{
+	private List<ItemPosicao> createRanking(ResultSet rSet) throws SQLException{
 		List<ItemPosicao> listPosicao = new ArrayList<>();
 		ItemPosicao itemPosicao = new ItemPosicao();
 		if(rSet.first()){
@@ -349,7 +350,6 @@ public class RankingDaoImpl extends DatabaseConnection {
 		return holder;
 	}
 
-
 	/**
 	 * Seta as medalhas de um ItemPosicao de acordo com o método específico de cálculo 
 	 * para cada indicadorOlder
@@ -368,6 +368,7 @@ public class RankingDaoImpl extends DatabaseConnection {
 			setMedalhaTempo(itemPosicao.getTracking().getResultado(), itemPosicao.getTracking().getMeta(), itemPosicao);
 		}
 	}
+
 	/**
 	 * Calcula qual medalha sera creditada com base na meta e no resultado, este serve apenas para indicadores
 	 * em que o resultado tem que ser MENOR do que a meta.

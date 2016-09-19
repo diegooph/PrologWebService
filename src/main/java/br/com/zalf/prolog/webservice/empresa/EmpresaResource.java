@@ -20,24 +20,24 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EmpresaResource {
 
-	EmpresaService service = new EmpresaService();
+	private EmpresaService service = new EmpresaService();
 
 	@POST
 	@Secured
 	@Path("/getEquipesByCodUnidade/{codUnidade}")
-	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException{
+	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException {
 		return service.getEquipesByCodUnidade(codUnidade);
 	}
 
 	@PUT
 	@Path("/updateEquipe")
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException{
+	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
 		return service.updateEquipe(request);
 	}
 
 	@POST
 	@Path("/insertEquipe")
-	public Response createEquipe (Request<Equipe> request){
+	public Response createEquipe (Request<Equipe> request) {
 		if (service.createEquipe(request)) {
 			return Response.Ok("Equipe inserida com sucesso");
 		} else {
@@ -49,21 +49,21 @@ public class EmpresaResource {
 	@Secured
 	@Path("/funcoes/{codUnidade}")
 	public List<Funcao> getFuncoesByCodUnidade(
-			@PathParam("codUnidade") Long codUnidade){
+			@PathParam("codUnidade") Long codUnidade) {
 		return service.getFuncoesByCodUnidade(codUnidade);
 	}
 
 	@GET
 	@Secured
 	@Path("/setores/{codUnidade}")
-	public List<Setor> getSetorByCodUnidade(@PathParam("codUnidade") Long codUnidade){
+	public List<Setor> getSetorByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getSetorByCodUnidade(codUnidade);
 	}
 
 	@POST
 	@Secured
 	@Path("/setores/{codUnidade}")
-	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade){
+	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
 		return service.insertSetor(nome,codUnidade);
 	}
 
@@ -72,7 +72,7 @@ public class EmpresaResource {
 	@Path("/resumoDados/{codUnidade}/{ano}/{mes}")
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
 															  @PathParam("mes") int mes,
-															  @PathParam("codUnidade") Long codUnidade){
+															  @PathParam("codUnidade") Long codUnidade) {
 			return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
 	}
 
@@ -80,7 +80,7 @@ public class EmpresaResource {
 	@Secured
 	@Path("/filtros/{cpf}")
 	public List<Empresa> getFiltros(
-			@PathParam("cpf") Long cpf){
+			@PathParam("cpf") Long cpf) {
 		return service.getFiltros(cpf);
 	}
 

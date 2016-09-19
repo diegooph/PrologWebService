@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface AutenticacaoDao {
 	/**
 	 * Cria um novo token para o usuário
-	 * @param cpf
+	 * @param cpf cpf do usuario
 	 * @return objeto autenticação com o token gerado e o status do login
 	 * @throws SQLException caso não seja possível realizar o insert na tabela
 	 */
@@ -21,11 +21,11 @@ public interface AutenticacaoDao {
 	 * @return boolean com o resultado da requisição
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	public boolean verifyIfTokenExists(String token) throws SQLException;
+	boolean verifyIfTokenExists(String token) throws SQLException;
 	
 	/**
 	 * Deleta um token da tabela, usado quando o usuário solicita logout do sistema
-	 * @param autenticacao contém o CPF e o token a ser deletado da tabela
+	 * @param token contém o CPF e o token a ser deletado da tabela
 	 * @return resultado do delete, true ou false
 	 * @throws SQLException caso não seja possível fazer o delete do token na tabela
 	 */

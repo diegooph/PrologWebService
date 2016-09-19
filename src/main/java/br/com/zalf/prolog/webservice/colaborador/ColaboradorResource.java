@@ -8,6 +8,7 @@ import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.L;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +18,8 @@ import java.util.List;
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
+
+	private static final String TAG = ColaboradorResource.class.getSimpleName();
 	private ColaboradorService service = new ColaboradorService();
 	
 	@POST
@@ -46,7 +49,7 @@ public class ColaboradorResource {
 	@Secured
 	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
-		System.out.println(cpf);
+		L.d(TAG, cpf.toString());
 		return service.getByCod(cpf);
 	}
 	
@@ -96,12 +99,11 @@ public class ColaboradorResource {
 	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf, 
 			@FormParam("dataNascimento") long dataNascimento) {
 		
-		System.out.println(cpf + "data: " + dataNascimento);
-		
+		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
 		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
-			System.out.println(autenticacao.getToken());
+			L.d(TAG, autenticacao.getToken());
 			return autenticacao;
 		} else {
 			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");

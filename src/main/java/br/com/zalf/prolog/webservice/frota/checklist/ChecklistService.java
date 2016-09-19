@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Classe ChecklistService responsavel por comunicar-se com a interface DAO
+ */
 public class ChecklistService {
-	private ChecklistDaoImpl dao = new ChecklistDaoImpl();
+
+	private ChecklistDao dao = new ChecklistDaoImpl();
 
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao){
 		try{

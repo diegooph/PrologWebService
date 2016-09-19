@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class LogResource {
 
-	LogService service = new LogService();
+	private LogService service = new LogService();
 
 	@POST
 	@Secured

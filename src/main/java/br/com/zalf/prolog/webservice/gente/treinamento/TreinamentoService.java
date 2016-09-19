@@ -8,8 +8,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe TreinamentoService responsavel por comunicar-se com a interface DAO
+ */
 public class TreinamentoService {
-	private TreinamentoDaoImpl dao = new TreinamentoDaoImpl();
+
+	private TreinamentoDao dao = new TreinamentoDaoImpl();
 	
 	public List<Treinamento> getVistosByColaborador(Long cpf) {
 		try {

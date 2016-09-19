@@ -9,10 +9,11 @@ import java.util.List;
 
 /**
  * Created by jean on 11/08/16.
+ * Classe OrdemServicoService responsavel por comunicar-se com a interface DAO
  */
 public class OrdemServicoService {
 
-    OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
+    private OrdemServicoDao dao = new OrdemServicoDaoImpl();
 
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
                                     String tipoVeiculo, Integer limit, Long offset){
@@ -23,16 +24,6 @@ public class OrdemServicoService {
             return null;
         }
     }
-
-//    public List<ManutencaoHolder> getManutencaoHolder (String placa, String codTipo, Long codUnidade, int limit,
-//                                                       long offset, String status){
-//        try{
-//            return dao.getManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//            return new ArrayList<>();
-//        }
-//    }
 
     public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa){
         try{

@@ -7,8 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe MetaService responsavel por comunicar-se com a interface DAO
+ */
 public class MetaService {
-private MetasDaoImpl dao = new MetasDaoImpl();
+
+	private MetasDao dao = new MetasDaoImpl();
 	
 	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) {
 		try {

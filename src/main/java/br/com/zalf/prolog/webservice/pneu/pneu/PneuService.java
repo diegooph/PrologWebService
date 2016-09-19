@@ -10,8 +10,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe PneuService responsavel por comunicar-se com a interface DAO
+ */
 public class PneuService {
-	private PneuDaoImpl dao = new PneuDaoImpl();
+
+	private PneuDao dao = new PneuDaoImpl();
 	
 	
 	public boolean insert(Pneu pneu, Long codUnidade){

@@ -13,8 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao{
+public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao {
 
+	@Override
 	public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) throws SQLException {
 		List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
 		List<PerguntaRespostaChecklist.Alternativa> alternativas = new ArrayList<>();
@@ -127,7 +128,65 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		return listModelos;
 	}
 
-	public List<TipoVeiculo> getTipoVeiculoByCodModeloChecklist(Long codUnidade, Long codModelo) throws SQLException{
+	@Override
+	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException{
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?) RETURNING CODIGO");
+			stmt.setLong(1, modeloChecklist.getCodUnidade());
+			stmt.setString(2, modeloChecklist.getNome());
+			stmt.setBoolean(3, true);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				System.out.println("Entrou no rSet.next: " + rSet.getLong("CODIGO"));
+				modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
+				insertModeloTipoVeiculo(conn, modeloChecklist);
+				insertModeloFuncao(conn, modeloChecklist);
+				insertModeloPerguntas(conn, modeloChecklist);
+				insertModeloAlternativas(conn, modeloChecklist);
+			}
+			conn.commit();
+			System.out.println("comitado!");
+		}catch(SQLException e){
+			e.printStackTrace();
+			conn.rollback();
+			return false;
+		}finally{
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException{
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Funcao> listFuncao = new ArrayList<>();
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO SET STATUS_ATIVO = FALSE WHERE COD_UNIDADE  = ? AND CODIGO = ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codModelo);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				return false;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return true;
+	}
+
+	private List<TipoVeiculo> getTipoVeiculoByCodModeloChecklist(Long codUnidade, Long codModelo) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -158,30 +217,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		return listTipos;
 	}
 
-	@Override
-	public boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException{
-
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		List<Funcao> listFuncao = new ArrayList<>();
-
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO SET STATUS_ATIVO = FALSE WHERE COD_UNIDADE  = ? AND CODIGO = ?");
-			stmt.setLong(1, codUnidade);
-			stmt.setLong(2, codModelo);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				return false;
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return true;
-	}
-
-	public List<Funcao> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
+	private List<Funcao> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -230,41 +266,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
 		}
 		return alternativa;
-	}
-
-	@Override
-	public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException{
-
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-
-		try {
-			conn = getConnection();
-			conn.setAutoCommit(false);
-			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?,?) RETURNING CODIGO");
-			stmt.setLong(1, modeloChecklist.getCodUnidade());
-			stmt.setString(2, modeloChecklist.getNome());
-			stmt.setBoolean(3, true);
-			rSet = stmt.executeQuery();
-			if(rSet.next()){
-				System.out.println("Entrou no rSet.next: " + rSet.getLong("CODIGO"));
-				modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
-				insertModeloTipoVeiculo(conn, modeloChecklist);
-				insertModeloFuncao(conn, modeloChecklist);
-				insertModeloPerguntas(conn, modeloChecklist);
-				insertModeloAlternativas(conn, modeloChecklist);
-			}
-			conn.commit();
-			System.out.println("comitado!");
-		}catch(SQLException e){
-			e.printStackTrace();
-			conn.rollback();
-			return false;
-		}finally{
-			closeConnection(conn, stmt, null);
-		}
-		return true;
 	}
 
 	private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
@@ -332,6 +333,5 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			}
 		}
 	};
+
 }
-
-

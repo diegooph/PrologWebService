@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe ServicoService responsavel por comunicar-se com a interface DAO
+ */
 public class ServicoService {
 	
-	ServicoDaoImpl dao = new ServicoDaoImpl();
+	private ServicoDao dao = new ServicoDaoImpl();
 	
 	public PlacaServicoHolder getConsolidadoListaVeiculos(Long codUnidade){
 		try{

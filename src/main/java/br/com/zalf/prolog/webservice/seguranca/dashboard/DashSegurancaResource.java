@@ -14,7 +14,7 @@ import java.util.Date;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class DashSegurancaResource {
 
-	DashSegurancaService service = new DashSegurancaService();
+	private DashSegurancaService service = new DashSegurancaService();
 	
 	@GET
 	@Secured

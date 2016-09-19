@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class FaleConoscoDaoImpl extends DatabaseConnection  {
+public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConoscoDao {
 
+	@Override
 	public boolean insert(FaleConosco faleConosco, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -41,6 +42,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return true;
 	}
 
+	@Override
 	public boolean update(FaleConosco faleConosco) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -66,6 +68,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return true;
 	}
 
+	@Override
 	public boolean delete(Request<FaleConosco> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -81,6 +84,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		}	
 	}
 
+	@Override
 	public FaleConosco getByCod(Long codigo, Long codUnidade) throws Exception {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -106,6 +110,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return null;
 	}
 
+	@Override
 	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
 									String equipe, Long codUnidade, String status, String categoria) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
@@ -142,6 +147,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return list;
 	}
 
+	@Override
 	public List<FaleConosco> getByColaborador(Long cpf, String status) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
@@ -166,6 +172,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  {
 		return list;
 	}
 
+	@Override
 	public boolean insertFeedback(FaleConosco faleConosco, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;

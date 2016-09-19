@@ -2,9 +2,12 @@ package br.com.zalf.prolog.webservice.log;
 
 import java.sql.SQLException;
 
+/**
+ * Classe LogService responsavel por comunicar-se com a interface DAO
+ */
 public class LogService {
 
-	LogDaoImpl dao = new LogDaoImpl();
+	private LogDao dao = new LogDaoImpl();
 
 	public boolean insert(String log, String indicador) {
 		try {

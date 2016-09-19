@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
 public enum ApplicationExceptions {
+
 	TEST1(1, 1, "message 1", "link teste 1", "developer message teste 1"),
 	TEST2(2, 2, "message 2", "link teste 2", "developer message teste 2");
 	

@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Classe ColaboradorService responsavel por comunicar-se com a interface DAO
+ */
 public class ColaboradorService {
-	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
+
+	private ColaboradorDao dao = new ColaboradorDaoImpl();
 	
 	public boolean insert(Colaborador colaborador) {
 		try {

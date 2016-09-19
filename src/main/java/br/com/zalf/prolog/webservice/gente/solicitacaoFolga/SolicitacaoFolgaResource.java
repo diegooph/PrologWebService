@@ -15,6 +15,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class SolicitacaoFolgaResource {
+
 	private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
 	
 	@POST
@@ -58,7 +59,6 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@PUT
-	//@Path("/update")
 	@Secured
 	public Response update(SolicitacaoFolga solicitacaoFolga) {
 		if (service.update(solicitacaoFolga)) {

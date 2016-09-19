@@ -15,12 +15,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreinamentoDaoImpl extends DatabaseConnection implements 
-TreinamentoDao {
+public class TreinamentoDaoImpl extends DatabaseConnection implements TreinamentoDao {
 
-
+	@Override
 	public List<Treinamento> getAll (LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-									 Long codUnidade, long limit, long offset) throws SQLException{
+									 Long codUnidade, long limit, long offset) throws SQLException {
 
 		List<Treinamento> listTreinamento = new ArrayList<>();
 		Connection conn = null;
@@ -76,20 +75,13 @@ TreinamentoDao {
 		return listTreinamento;
 	}
 
-	private Funcao createFuncao (ResultSet rSet) throws SQLException{
-		Funcao funcao = new Funcao();
-		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
-		funcao.setNome(rSet.getString("NOME_FUNCAO"));
-		return funcao;
-	}
-
 	@Override
 	public List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException {
 		List<Treinamento> treinamentos = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		String treinamentosNaoVistosQuery = 
+		String treinamentosNaoVistosQuery =
 				"SELECT * FROM TREINAMENTO T JOIN "
 						+ "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
 						+ "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
@@ -118,7 +110,7 @@ TreinamentoDao {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		String treinamentosVistosQuery = 
+		String treinamentosVistosQuery =
 				"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
 						+ "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?;";
 		try {
@@ -158,17 +150,6 @@ TreinamentoDao {
 		return true;
 	}
 
-	private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
-		Treinamento treinamento = new Treinamento();
-		treinamento.setCodigo(rSet.getLong("CODIGO"));
-		treinamento.setTitulo(rSet.getString("TITULO"));
-		treinamento.setDescricao(rSet.getString("DESCRICAO"));
-		treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
-		treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
-		treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-		return treinamento;
-	}
-
 	@Override
 	public boolean insert(Treinamento treinamento) throws SQLException {
 		Connection conn = null;
@@ -188,32 +169,11 @@ TreinamentoDao {
 			int count = stmt.executeUpdate();
 			if(count == 0 && !insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo())){
 				throw new SQLException("Erro ao inserir treinamento");
-			}	
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}		
-		return true;
-	}
-
-	private boolean insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
-			for(Funcao funcao : listFuncao){
-				stmt.setLong(1, codTreinamento);
-				stmt.setLong(2, funcao.getCodigo());
-				int count = stmt.executeUpdate();
-				if(count == 0){
-					return false;
-				}
 			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
+		}
 		return true;
 	}
 
@@ -250,5 +210,44 @@ TreinamentoDao {
             closeConnection(conn,stmt,rSet);
         }
     }
+
+	private Funcao createFuncao (ResultSet rSet) throws SQLException{
+		Funcao funcao = new Funcao();
+		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
+		funcao.setNome(rSet.getString("NOME_FUNCAO"));
+		return funcao;
+	}
+
+	private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
+		Treinamento treinamento = new Treinamento();
+		treinamento.setCodigo(rSet.getLong("CODIGO"));
+		treinamento.setTitulo(rSet.getString("TITULO"));
+		treinamento.setDescricao(rSet.getString("DESCRICAO"));
+		treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
+		treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
+		treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+		return treinamento;
+	}
+
+	private boolean insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
+			for(Funcao funcao : listFuncao){
+				stmt.setLong(1, codTreinamento);
+				stmt.setLong(2, funcao.getCodigo());
+				int count = stmt.executeUpdate();
+				if(count == 0){
+					return false;
+				}
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
 
 }

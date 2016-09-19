@@ -1,15 +1,20 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.frota.checklist.Checklist;
+import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
+import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
+import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contém os métodos para manipular os checklists no banco de dados 
  */
 public interface ChecklistDao {
+
 	/**
 	 * Insere um checklist no banco de dados
 	 * @param checklist um checklist
@@ -17,6 +22,7 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível inserir o checklist no banco de dados
 	 */
 	boolean insert(Checklist checklist) throws SQLException;
+
 	/**
 	 * Atualiza um checklist no banco de dados
 	 * @param checklist checklist a ser atualizado
@@ -24,6 +30,7 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível atualizar o checklist
 	 */
 	boolean update(Checklist checklist) throws SQLException;
+
 	/**
 	 * Deleta um checklist do banco de dados
 	 * @param codChecklist codigo do checklist a ser deletado
@@ -31,6 +38,7 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível deletar o checklist
 	 */
 	boolean delete(long codChecklist) throws SQLException;
+
 	/**
 	 * Busca um checklist pelo seu código único
 	 * @param codChecklist codigo do checklist a ser buscado
@@ -62,6 +70,35 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
 	List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException;
-	
+
+	/**
+	 * busca a url das imagens das perguntas
+	 * @param codUnidade código da unidade
+	 * @param codFuncao código da função
+	 * @return retorna uma lista de Strings contendo as URLs
+	 * @throws SQLException caso der erro no banco
+	 */
+	List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException;
+
+	/**
+	 * busca um novo checklist de perguntas
+	 * @param codUnidade código da unidade
+	 * @param codModelo código do modelo
+	 * @param placa placa do veículo
+	 * @return retorno um novo checklist
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
+	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException;
+
+	//TODO - adicionar comentário javadoc
+	Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
+
+	/**
+	 * busca o status de liberação do veículo
+	 * @param codUnidade código da unidade
+	 * @return lista de veiculos com liberação
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
+	List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException;
 	
 }

@@ -17,7 +17,6 @@ import java.util.List;
 
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 
-
 	@Override
 	public AbstractResponse insert(SolicitacaoFolga s) throws SQLException {
 		Connection conn = null;
@@ -231,4 +230,5 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		solicitacaoFolga.setStatus(rSet.getString("STATUS"));
 		return solicitacaoFolga;
 	}
+
 }

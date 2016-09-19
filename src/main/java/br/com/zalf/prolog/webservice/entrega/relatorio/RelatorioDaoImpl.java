@@ -8,6 +8,7 @@ import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoMapasDia;
 import br.com.zalf.prolog.entrega.relatorio.Mapa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
 
-	public static final String BUSCA_RELATORIO = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
+	private static final String BUSCA_RELATORIO = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
 			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, EQ.NOME AS EQUIPE, "
 			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
 			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
@@ -42,12 +43,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "WHERE EQ.NOME LIKE ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? AND C.matricula_ambev <> 0 AND C1.matricula_ambev <> 0 " +
             "   AND c2.matricula_ambev <> 0 "
 			+ "ORDER BY M.DATA, EQ.NOME ";
-
-
-
-
-
 	private Meta meta;
+
 	
 	public RelatorioDaoImpl(){}
 	
@@ -55,10 +52,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		this.meta = meta;
 	}
 
-
-
-
-	
+	@Override
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 												   Long codUnidade, Long cpf, String token) throws SQLException {
 
@@ -72,7 +66,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDao metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByUnidade(codUnidade);
 		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 
@@ -132,31 +126,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return  consolidadoHolder;
 	}
 
-	public Mapa createMapa(ResultSet rSet) throws SQLException{
-	    Mapa mapa = new Mapa();
-		mapa.setNumeroMapa(rSet.getInt("MAPA"));
-
-        L.d("tag", "Criou o mapa: " + mapa.getNumeroMapa());
-		mapa.setData(rSet.getDate("DATA"));
-		mapa.setEquipe(rSet.getString("EQUIPE"));
-		mapa.setMotorista(rSet.getString("NOMEMOTORISTA"));
-		mapa.setAjudante1(rSet.getString("NOMEAJUD1"));
-		mapa.setAjudante2(rSet.getString("NOMEAJUD2"));
-		mapa.setPlaca(rSet.getString("PLACA"));
-		mapa.setDevCx(createDevCx(rSet));
-		mapa.setDevNf(createDevNf(rSet));
-		mapa.setDevHl(createDevHl(rSet));
-		mapa.setTempoInterno(createTempoInterno(rSet));
-		mapa.setTempoRota(createTempoRota(rSet));
-		mapa.setTempoLargada(createTempoLargada(rSet));
-		mapa.setJornadaLiquida(createJornadaLiquida(rSet));
-		mapa.setTracking(createTracking(rSet));
-		mapa.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-
-		return mapa;
-	}
-
-	public ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException {
 		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
 		itemDevolucaoCx.setData(rSet.getDate("DATA"));
 		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
@@ -168,7 +139,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoCx;
 	}
 
-	public ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException {
 		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
 		itemDevolucaoNf.setData(rSet.getDate("DATA"));
 		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
@@ -180,7 +152,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoNf;
 	}
 
-	public ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException {
 		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
 		itemDevolucaoHl.setData(rSet.getDate("DATA"));
 		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
@@ -192,7 +165,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemDevolucaoHl;
 	}
 
-	public ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException {
 		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
 		Time tempoInterno;
 		itemTempoInterno.setData(rSet.getDate("DATA"));
@@ -215,7 +189,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoInterno;
 	}
 
-	public ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException {
 		ItemTempoRota itemTempoRota = new ItemTempoRota();
 		itemTempoRota.setData(rSet.getDate("DATA"));
 		itemTempoRota.setHrEntrada(rSet.getTime("HRENTR"));
@@ -229,7 +204,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoRota;
 	}
 
-	public ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException {
 		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
 		itemTempoLargada.setData(rSet.getDate("DATA"));
 		itemTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
@@ -242,7 +218,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemTempoLargada;
 	}
 
-	public ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException{
+	@Override
+	public ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
 		Time matinal;
 		Time rota;
 		Time tempoInterno;
@@ -263,7 +240,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return itemJornadaLiquida;
 	}
 
-	public ItemTracking createTracking (ResultSet rSet) throws SQLException{
+	@Override
+	public ItemTracking createTracking (ResultSet rSet) throws SQLException {
 		ItemTracking itemTracking = new ItemTracking();
 		itemTracking.setData(rSet.getDate("DATA"));
 		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
@@ -275,6 +253,30 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		itemTracking.setMeta(meta.getMetaTracking());
 		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
 		return itemTracking;
+	}
+
+	private Mapa createMapa(ResultSet rSet) throws SQLException{
+		Mapa mapa = new Mapa();
+		mapa.setNumeroMapa(rSet.getInt("MAPA"));
+
+		L.d("tag", "Criou o mapa: " + mapa.getNumeroMapa());
+		mapa.setData(rSet.getDate("DATA"));
+		mapa.setEquipe(rSet.getString("EQUIPE"));
+		mapa.setMotorista(rSet.getString("NOMEMOTORISTA"));
+		mapa.setAjudante1(rSet.getString("NOMEAJUD1"));
+		mapa.setAjudante2(rSet.getString("NOMEAJUD2"));
+		mapa.setPlaca(rSet.getString("PLACA"));
+		mapa.setDevCx(createDevCx(rSet));
+		mapa.setDevNf(createDevNf(rSet));
+		mapa.setDevHl(createDevHl(rSet));
+		mapa.setTempoInterno(createTempoInterno(rSet));
+		mapa.setTempoRota(createTempoRota(rSet));
+		mapa.setTempoLargada(createTempoLargada(rSet));
+		mapa.setJornadaLiquida(createJornadaLiquida(rSet));
+		mapa.setTracking(createTracking(rSet));
+		mapa.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+
+		return mapa;
 	}
 
 	private void setTotaisConsolidadoDia (ConsolidadoMapasDia consolidadoMapasDia){

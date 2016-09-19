@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.util.MetaUtils;
 import br.com.zalf.prolog.commons.util.TimeUtils;
 import br.com.zalf.prolog.entrega.indicador.older.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.metas.MetasDao;
 import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
 
 import java.sql.*;
@@ -40,7 +41,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		MetasDaoImpl metasDao = new MetasDaoImpl();
+		MetasDao metasDao = new MetasDaoImpl();
 		meta = metasDao.getMetasByCpf(cpf);
 
 		try {

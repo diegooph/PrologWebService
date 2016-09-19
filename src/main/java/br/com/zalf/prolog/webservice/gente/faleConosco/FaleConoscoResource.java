@@ -12,6 +12,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class FaleConoscoResource {
+
 	private FaleConoscoService service = new FaleConoscoService();
 
 	@POST
@@ -24,21 +25,6 @@ public class FaleConoscoResource {
 			return Response.Error("Erro ao inserir fale conosco");
 		}
 	}
-
-//	@PUT
-//	public Response update(FaleConosco faleConosco) {
-//		if (service.update(faleConosco)) {
-//			return Response.Ok("Fale conosco atualizado com sucesso");
-//		} else {
-//			return Response.Error("Erro ao atualizar fale conosco");
-//		}
-//	}
-//	
-//	@GET
-//	@Path("{codigo}")
-//	public FaleConosco getByCod(@PathParam("codigo") Long codigo) {
-//		return service.getByCod(codigo);
-//	}
 
 	@GET
 	@Secured
@@ -74,14 +60,4 @@ public class FaleConoscoResource {
 											  @PathParam("status") String status) {
 		return service.getByColaborador(cpf, status);
 	}
-
-//	@DELETE
-//	@Path("{codigo}")
-//	public Response delete(@PathParam("codigo") Long codigo) {
-//		if (service.delete(codigo)) {
-//			return Response.Ok("Fale conosco deletado com sucesso");
-//		} else {
-//			return Response.Error("Erro ao deletar fale conosco");
-//		}
-//	}
 }

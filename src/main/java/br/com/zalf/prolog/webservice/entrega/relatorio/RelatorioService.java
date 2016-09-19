@@ -8,8 +8,6 @@ import java.time.LocalDate;
 public class RelatorioService {
 
 	private RelatorioDaoImpl dao = new RelatorioDaoImpl();
-	
-
 
 	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 												   Long codUnidade, Long cpf, String token){

@@ -16,7 +16,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ServicoResource {
 
-	ServicoService service = new ServicoService();
+	private ServicoService service = new ServicoService();
 
 	@GET
 	@Path("/{codUnidade}")

@@ -6,9 +6,12 @@ import br.com.zalf.prolog.commons.imports.MapaImport;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Classe MapaService responsavel por comunicar-se com a interface DAO
+ */
 public class MapaService {
 	
-	private MapaDaoImpl dao = new MapaDaoImpl();
+	private MapaDao dao = new MapaDaoImpl();
 	
 	public boolean insertOrUpdate(List<MapaImport> listMapas, Colaborador colaborador) {
 		try {

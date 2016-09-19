@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 
 import java.sql.SQLException;
@@ -24,4 +25,16 @@ public interface ProdutividadeDao {
 	List<ItemProdutividade> getProdutividadeByPeriodo (LocalDate dataInicial, LocalDate dataFinal,
 													   Long cpf, String token) throws SQLException;
 
+	/**
+	 * busca a produtividade associada ao colaborador
+	 * @param codUnidade código da unidade
+	 * @param equipe equipe do colaborador
+	 * @param codFuncao código da função
+	 * @param dataInicial data inicial da busca
+	 * @param dataFinal data fincal da busca
+	 * @return um objeto que possui a produtividade do colaborador
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
+	List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
+																	 long dataInicial, long dataFinal) throws SQLException;
 }

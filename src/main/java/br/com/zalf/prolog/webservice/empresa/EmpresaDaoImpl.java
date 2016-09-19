@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.empresa;
 import br.com.zalf.prolog.commons.colaborador.*;
 import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.imports.MapaTracking;
-import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
@@ -36,7 +35,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "WHERE UF.COD_UNIDADE = ? "
 			+ "ORDER BY F.NOME";
 
-	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF = ""
+	private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF = ""
 			+ "select emp.codigo as cod_empresa, emp.nome nome_empresa, "
 			+ "reg.codigo as cod_regional, reg.regiao nome_regional, "
 			+ "u.codigo as cod_unidade, u.nome as nome_unidade, "
@@ -46,17 +45,17 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "join regional reg on reg.codigo = u.cod_regional "
 			+ "join equipe e on e.codigo = c.cod_equipe where c.cpf = ?";
 
-	public static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
+	private static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
 			+ " FROM UNIDADE U JOIN REGIONAL REG ON REG.CODIGO = U.COD_REGIONAL "
 			+ " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
 			+ " WHERE REG.CODIGO = ? AND E.CODIGO = ? ORDER BY 2 ";
 
-	public static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME "
+	private static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME "
 			+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
 			+ "WHERE U.CODIGO = ?"
 			+ "ORDER BY 1";
 
-	public static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
+	private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
 			+ " reg.codigo as cod_regional, reg.regiao nome_regional,"
 			+ " u.codigo as cod_unidade, u.nome as nome_unidade "
 			+ "from colaborador c join unidade u on u.codigo = c.cod_unidade "
@@ -64,18 +63,18 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "join regional reg on reg.codigo = u.cod_regional "
 			+ "where c.cpf = ?";
 
-	public static final String BUSCA_CODIGO_PERMISSAO_BY_CPF = "select c.cod_permissao "
+	private static final String BUSCA_CODIGO_PERMISSAO_BY_CPF = "select c.cod_permissao "
 			+ "from colaborador c "
 			+ "where c.cpf = ?";
 
-	public static final String BUSCA_REGIONAL = "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
+	private static final String BUSCA_REGIONAL = "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
 			+ "from unidade u join empresa e on e.codigo = u.cod_empresa "
 			+ "join regional reg on reg.codigo = u.cod_regional	"
 			+ "where e.codigo in (select c.cod_empresa	"
 			+ "from colaborador c	where c.cpf = ?"
 			+ " ORDER BY 1)";
 
-	public static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
+	private static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
 			+ "from regional reg "
 			+ "left join unidade u on u.cod_regional = reg.codigo "
 			+ "join empresa e on e.codigo = u.cod_empresa join colaborador c on c.cod_unidade = u.codigo and c.cpf=? "
@@ -85,7 +84,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "join regional r on r.codigo = u.cod_regional	"
 			+ "where c.cpf=?)";
 
-	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException{
+	@Override
+	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException {
 		List<Equipe> listEquipe = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -105,7 +105,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return listEquipe;
 	}
 
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException{
+	@Override
+	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -126,16 +127,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return true;
 	}
 
-	private Equipe createEquipe (ResultSet rset) throws SQLException{
-		Equipe equipe = new Equipe();
-		equipe.setCodigo(rset.getLong("CODIGO"));
-		equipe.setNome(rset.getString("NOME"));
-		return equipe;
-	}
-
-	public boolean createEquipe(Request<Equipe> request) throws SQLException{
-		Autenticacao autenticacao = new Autenticacao("", request.getCpf(),
-				request.getToken());
+	@Override
+	public boolean createEquipe(Request<Equipe> request) throws SQLException {
 		AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
 		if (autenticacaoDao.verifyIfTokenExists(request.getToken())) {
 			Connection conn = null;
@@ -161,10 +154,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return false;
 	}
 
-	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe, 
+	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
 	//a equipe está ligada como fk de colaborador e fk de calendário
 
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException{
+	@Override
+	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException {
 		List<Funcao> listFuncao = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -174,24 +168,17 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			stmt = conn.prepareStatement(BUSCA_FUNCOES_BY_COD_UNIDADE);
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
-			while(rSet.next()){
+			while (rSet.next()) {
 				listFuncao.add(createFuncao(rSet));
 			}
-		}
-		finally {
+		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return listFuncao;
 	}
 
-	private Funcao createFuncao(ResultSet rSet) throws SQLException{
-		Funcao funcao = new Funcao();
-		funcao.setCodigo(rSet.getLong("CODIGO"));
-		funcao.setNome(rSet.getString("NOME"));
-		return funcao;
-	}
-
-	public List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException{
+	@Override
+	public List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -215,7 +202,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return setores;
 	}
 
-	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException{
+	@Override
+	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -235,7 +223,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 	}
 
-	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException{
+	@Override
+	public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException {
 		Connection conn = null;
 		PreparedStatement stmt= null;
 		ResultSet rSet = null;
@@ -316,7 +305,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	/**
 	 * Busca dos filtros para os relatórios a partir da permissão cadastrada.
 	 */
-	public List<Empresa> getFiltros(Long cpf) throws SQLException{
+	@Override
+	public List<Empresa> getFiltros(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -354,8 +344,23 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		return listEmpresa;
 	}
+
+	private Equipe createEquipe (ResultSet rset) throws SQLException {
+		Equipe equipe = new Equipe();
+		equipe.setCodigo(rset.getLong("CODIGO"));
+		equipe.setNome(rset.getString("NOME"));
+		return equipe;
+	}
+
+	private Funcao createFuncao(ResultSet rSet) throws SQLException {
+		Funcao funcao = new Funcao();
+		funcao.setCodigo(rSet.getLong("CODIGO"));
+		funcao.setNome(rSet.getString("NOME"));
+		return funcao;
+	}
+
 	// buscar permisões para colaboradores com permissão = 3 = tudo
-	public List<Empresa> getPermissao3(Long cpf) throws SQLException{
+	private List<Empresa> getPermissao3(Long cpf) throws SQLException {
 		List<Empresa> listEmpresa = new ArrayList<>();
 		Empresa empresa = new Empresa();
 		List<Regional> listRegional = new ArrayList<>();
@@ -385,8 +390,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		listEmpresa.add(empresa);
 		return listEmpresa;
 	}
+
 	// burcar permissoes para colaboradores com permissao = 2 = regional
-	public List<Empresa> getPermissao2(Long cpf) throws SQLException{
+	private List<Empresa> getPermissao2(Long cpf) throws SQLException {
 		List<Empresa> listEmpresa = new ArrayList<>();
 		Empresa empresa = new Empresa();
 		List<Regional> listRegional = new ArrayList<>();
@@ -417,8 +423,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		listEmpresa.add(empresa);
 		return listEmpresa;
 	}
+
 	// buscar permissoes para colaboradores com permissao = 1 = local, gerente
-	public List<Empresa> getPermissao1(Long cpf) throws SQLException{
+	private List<Empresa> getPermissao1(Long cpf) throws SQLException {
 		List<Empresa> listEmpresa = new ArrayList<>();
 		List<Regional> listRegional = new ArrayList<>();
 		List<Unidade> listUnidade = new ArrayList<>();
@@ -456,8 +463,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		regional.setListUnidade(listUnidade);
 		return listEmpresa;
 	}
+
 	// buscar permissoes para colaboradores com permissao = 0 = local, supervisor, busca apenas a sala que o cpf pertence
-	public List<Empresa> getPermissao0(Long cpf) throws SQLException{
+	private List<Empresa> getPermissao0(Long cpf) throws SQLException {
 		List<Empresa> listEmpresa = new ArrayList<>();
 		List<Regional> listRegional = new ArrayList<>();
 		List<Unidade> listUnidade = new ArrayList<>();
@@ -500,8 +508,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return listEmpresa;
 	}
 
-	public void setUnidadesByRegional(Regional regional, int codEmpresa) throws SQLException{
-
+	private void setUnidadesByRegional(Regional regional, int codEmpresa) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -528,8 +535,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	}
 
-	public void setEquipesByUnidade (Unidade unidade) throws SQLException{
-
+	private void setEquipesByUnidade (Unidade unidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;

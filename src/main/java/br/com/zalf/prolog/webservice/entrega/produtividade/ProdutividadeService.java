@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutividadeService {
-	private ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
+
+	private ProdutividadeDao dao = new ProdutividadeDaoImpl();
 	
 	public List<ItemProdutividade> getProdutividadeByPeriodo(
 			LocalDate dataInicial, 

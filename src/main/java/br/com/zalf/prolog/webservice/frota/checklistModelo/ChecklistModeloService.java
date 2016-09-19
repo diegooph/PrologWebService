@@ -7,8 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe ChecklistModeloService responsavel por comunicar-se com a interface DAO
+ */
 public class ChecklistModeloService {
-	private ChecklistModeloDaoImpl dao = new ChecklistModeloDaoImpl();
+
+	private ChecklistModeloDao dao = new ChecklistModeloDaoImpl();
 	
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
 		try{

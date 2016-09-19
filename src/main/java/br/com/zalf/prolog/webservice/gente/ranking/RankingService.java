@@ -6,9 +6,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Classe RankingService responsavel por comunicar-se com a interface DAO
+ */
 public class RankingService {
 	
-private RankingDaoImpl dao = new RankingDaoImpl();
+	private RankingDao dao = new RankingDaoImpl();
 	
 	public List<ItemPosicao> getRanking (LocalDate dataInicial, LocalDate dataFinal, String equipe,
 										 Long codUnidade) throws SQLException{
