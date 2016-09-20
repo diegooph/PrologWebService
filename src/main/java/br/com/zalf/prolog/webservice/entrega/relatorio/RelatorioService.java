@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
 import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 
 import java.sql.SQLException;
@@ -49,6 +50,16 @@ public class RelatorioService {
                                                           String codUnidade, String equipe){
         try{
             return dao.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
+                                              String codRegional, String codUnidade, String equipe, String indicador){
+        try{
+            return dao.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
         }catch (SQLException e){
             e.printStackTrace();
             return null;

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
 import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +26,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
     private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
     private static final String BUSCA_ACUMULADO_INDICADORES = "select\n" +
-             IndicadorDaoImpl.FRAGMENTO_ATRIBUTOS_ACUMULADOS +
+             IndicadorDaoImpl.COLUNAS_ACUMULADOS +
             " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
             "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
@@ -49,7 +50,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "um.meta_tempo_largada_mapas;";
 
     private static final String BUSCA_ACUMULADO_POR_DIA = "select m.data,\n" +
-            IndicadorDaoImpl.FRAGMENTO_ATRIBUTOS_ACUMULADOS +
+            IndicadorDaoImpl.COLUNAS_ACUMULADOS +
             " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
             "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
@@ -71,12 +72,10 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
             "um.meta_tempo_largada_mapas\n" +
-            "ORDER BY 1 LIMIT ? OFFSET ?;";
+            "ORDER BY 1 %s;";
     
-    public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
-            "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
-            "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK \n" +
-            "FROM\n" +
+    public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
+            " FROM \n" +
             "MAPA M \n" +
             "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
             "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
@@ -97,7 +96,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
             "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
             "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
-            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade";
+            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade ";
 
     /**
      * Método utilizado para buscar os dados da aba acumulados, tela Relatórios.
@@ -164,15 +163,14 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         List<ConsolidadoDia> consolidados = new ArrayList<>();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_ACUMULADO_POR_DIA);
+            String query = String.format(BUSCA_ACUMULADO_POR_DIA, " LIMIT " + limit + " OFFSET " + offset);
+            stmt = conn.prepareStatement(query);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
             stmt.setString(3, codEmpresa);
             stmt.setString(4, codRegional);
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
-            stmt.setInt(7, limit);
-            stmt.setInt(8, offset);
             rSet = stmt.executeQuery();
             IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
             while (rSet.next()){
@@ -208,9 +206,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT\n" +
+            stmt = conn.prepareStatement("SELECT \n" +
                     FRAGMENTO_BUSCA_EXTRATO_DIA +
-                    "WHERE\n" +
+                    " WHERE\n" +
                     "m.DATA = ? AND\n" +
                     "EM.codigo::TEXT LIKE ? AND\n" +
                     "R.codigo::TEXT LIKE ? AND\n" +
@@ -222,6 +220,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt.setString(3, codRegional);
             stmt.setString(4 ,codUnidade);
             stmt.setString(5, equipe);
+            L.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 MapaEstratificado mapa = new MapaEstratificado();
@@ -249,7 +248,8 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         List<DadosGrafico> dados = new ArrayList<>();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_ACUMULADO_POR_DIA);
+            String query = String.format(BUSCA_ACUMULADO_POR_DIA, "");
+            stmt = conn.prepareStatement(query);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
             stmt.setString(3, codEmpresa);
