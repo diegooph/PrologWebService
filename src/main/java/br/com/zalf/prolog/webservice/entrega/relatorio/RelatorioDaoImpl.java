@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
 import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
@@ -47,7 +48,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
             "um.meta_tempo_largada_mapas;";
 
-    private static final String BUSCA_AUMULADO_POR_DIA = "select m.data,\n" +
+    private static final String BUSCA_ACUMULADO_POR_DIA = "select m.data,\n" +
             IndicadorDaoImpl.FRAGMENTO_ATRIBUTOS_ACUMULADOS +
             " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
             "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
@@ -74,7 +75,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
     
     public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = "M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
             "M.kmprevistoroad, M.kmsai, M.kmentr, M.tempoprevistoroad,\n" +
-            "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK,\n" +
+            "M.HRSAI,  M.HRENTR, (M.hrentr - M.hrsai)::time AS TEMPO_ROTA,  M.TEMPOINTERNO,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK \n" +
             "FROM\n" +
             "MAPA M \n" +
             "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
@@ -163,7 +164,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
         List<ConsolidadoDia> consolidados = new ArrayList<>();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_AUMULADO_POR_DIA);
+            stmt = conn.prepareStatement(BUSCA_ACUMULADO_POR_DIA);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
             stmt.setString(3, codEmpresa);
@@ -238,5 +239,36 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             closeConnection(conn,stmt,rSet);
         }
         return mapas;
+    }
+
+    public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
+                                                String codRegional, String codUnidade, String equipe, String indicador)throws SQLException{
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        List<DadosGrafico> dados = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement(BUSCA_ACUMULADO_POR_DIA);
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+            stmt.setString(3, codEmpresa);
+            stmt.setString(4, codRegional);
+            stmt.setString(5, codUnidade);
+            stmt.setString(6, equipe);
+            stmt.setInt(7, 1000);
+            stmt.setInt(8, 0);
+            rSet = stmt.executeQuery();
+            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+            while (rSet.next()){
+                DadosGrafico dado = new DadosGrafico();
+                dado.setData(rSet.getDate("DATA"))
+                        .setIndicador(indicadorDao.createAcumuladoIndicador(rSet, indicador));
+                dados.add(dado);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return dados;
     }
 }
