@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Date;
@@ -82,7 +83,7 @@ public class Main {
 		//		datafinal.getTime(), 2L, "%", "3", "%")));
 
 		ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
-		produtividadeDao.getProdutividadeByPeriodo(1,2,0L);
+		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,5,3794694058L)));
 
 
 

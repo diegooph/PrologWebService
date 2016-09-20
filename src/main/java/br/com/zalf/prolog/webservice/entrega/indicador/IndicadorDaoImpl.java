@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
-import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
@@ -19,7 +19,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 
 	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 
-	public static final String FRAGMENTO_ATRIBUTOS_ACUMULADOS = "-- CaixaViagem\n" +
+	public static final String COLUNAS_ACUMULADOS = "-- CaixaViagem\n" +
 			"sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total,\n" +
 			"-- Dev Hl\n" +
 			"sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\n" +
@@ -89,23 +89,30 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,um.meta_tempo_interno_mapas,to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 			"um.meta_tempo_largada_mapas ";
 
-	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
-			"M.DATA,  M.mapa,M.cxcarreg,    M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,\n" +
+	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
-			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,\n" +
-			"M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK,\n" +
-			"\tto_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, " +
+			"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas " +
 			"else (m.hrsai - m.hrmatinal)::time\n" +
 			"end)::text) as tempo_largada,\n" +
+			"um.meta_tracking," +
+			"um.meta_tempo_rota_mapas, " +
+			"um.meta_caixa_viagem,\n" +
+			"um.meta_dev_hl, " +
+			"um.meta_dev_pdv, " +
+			"um.meta_dispersao_km, " +
+			"um.meta_dispersao_tempo, " +
+			"um.meta_jornada_liquida_mapas, " +
+			"um.meta_raio_tracking, " +
+			"um.meta_tempo_interno_mapas, " +
+			"um.meta_tempo_largada_mapas," +
+			"to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, " +
+			"to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, " +
 			"to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
-			"to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas,\n" +
-			"to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,\n" +
-			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
-			"um.meta_caixa_viagem, um.meta_dev_hl, um.meta_dev_pdv,\n" +
-			"um.meta_dispersao_km, um.meta_dispersao_tempo,\n" +
-			"um.meta_tempo_largada_mapas,um.meta_tempo_rota_mapas,\n" +
-			"um.meta_tempo_interno_mapas, um.meta_jornada_liquida_mapas,\n" +
-			"um.meta_raio_tracking,um.meta_tracking\n" +
+			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas \n";
+
+	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
+			COLUNAS_EXTRATO +
 			"FROM\n" +
 			"MAPA_COLABORADOR MC\n" +
 			"JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV\n" +
@@ -137,7 +144,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"ORDER BY M.DATA;";
 
 	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select " +
-			 FRAGMENTO_ATRIBUTOS_ACUMULADOS +
+			COLUNAS_ACUMULADOS +
 			"from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade \n"  +
 			"LEFT JOIN (SELECT t.mapa as tracking_mapa, \n"  +
 			"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"  +
@@ -280,6 +287,42 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		}
 		return Collections.emptyList();
 	}
+
+	public IndicadorAcumulado createAcumuladoIndicador(ResultSet rSet, String indicador) throws SQLException{
+
+		if (indicador.equals(CaixaViagemAcumulado.CAIXA_VIAGEM_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoCaixaViagem(rSet);
+		}else if(indicador.equals(DevHlAcumulado.DEV_HL_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoDevHl(rSet);
+		}else if(indicador.equals(DevPdvAcumulado.DEV_PDV_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoDevPdv(rSet);
+		}else if(indicador.equals(DispersaoKmAcumulado.DISPERSAO_KM_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoDispersaoKm(rSet);
+		}else if(indicador.equals(TrackingAcumulado.TRACKING_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoTracking(rSet);
+		}else if(indicador.equals(DispersaoTempoAcumuladoMapas.DISPERSAO_TEMPO_ACUMULADO_MAPAS)){
+			return IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet);
+		}else if(indicador.equals(DispersaoTempoAcumuladoMedia.DISPERSAO_TEMPO_ACUMULADO_MEDIA)){
+			return IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet);
+		}else if(indicador.equals(JornadaAcumuladoMapas.JORNADA_ACUMULADO_MAPAS)){
+			return IndicadorConverter.createAcumuladoJornadaMapas(rSet);
+		}else if(indicador.equals(JornadaAcumuladoMedia.JORNADA_ACUMULADO_MEDIA)){
+			return IndicadorConverter.createAcumuladoJornadaMedia(rSet);
+		}else if(indicador.equals(TempoInternoAcumuladoMapas.TEMPO_INTERNO_ACUMULADO_MAPAS)){
+			return IndicadorConverter.createAcumuladoTempoInternoMapas(rSet);
+		}else if(indicador.equals(TempoInternoAcumuladoMedia.TEMPO_INTERNO_ACUMULADO_MEDIA)){
+			return IndicadorConverter.createAcumuladoTempoInternoMedia(rSet);
+		}else if(indicador.equals(TempoLargadaAcumuladoMapas.TEMPO_LARGADA_ACUMULADO_MAPAS)){
+			return IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet);
+		}else if(indicador.equals(TempoRotaAcumuladoMapas.TEMPO_ROTA_ACUMULADO_MAPAS)) {
+			return IndicadorConverter.createAcumuladoTempoRotaMapas(rSet);
+		}else if(indicador.equals(TempoRotaAcumuladoMedia.TEMPO_ROTA_ACUMULADO_MEDIA)) {
+			return IndicadorConverter.createAcumuladoTempoRotaMedia(rSet);
+		}
+		return null;
+	}
+
+
 
 	/**
 	 * Cria apenas um item de cada indicador, que irá compor os indicadores de um mapa
