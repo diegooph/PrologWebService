@@ -4,19 +4,15 @@ import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutividadeService {
 	private ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
 	
-	public List<ItemProdutividade> getProdutividadeByPeriodo(
-			LocalDate dataInicial, 
-			LocalDate dataFinal, 
-			Long cpf, String token) {
+	public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf) {
 		try {
-			return dao.getProdutividadeByPeriodo(dataInicial, dataFinal, cpf, token);
+			return dao.getProdutividadeByPeriodo(ano, mes, cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<ItemProdutividade>();
