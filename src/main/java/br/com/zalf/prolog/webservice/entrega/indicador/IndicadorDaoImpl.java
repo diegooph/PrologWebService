@@ -314,6 +314,8 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			return IndicadorConverter.createAcumuladoTempoInternoMedia(rSet);
 		}else if(indicador.equals(TempoLargadaAcumuladoMapas.TEMPO_LARGADA_ACUMULADO_MAPAS)){
 			return IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet);
+		}else if(indicador.equals(TempoLargadaAcumuladoMedia.TEMPO_LARGADA_ACUMULADO_MEDIA)){
+			return IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet);
 		}else if(indicador.equals(TempoRotaAcumuladoMapas.TEMPO_ROTA_ACUMULADO_MAPAS)) {
 			return IndicadorConverter.createAcumuladoTempoRotaMapas(rSet);
 		}else if(indicador.equals(TempoRotaAcumuladoMedia.TEMPO_ROTA_ACUMULADO_MEDIA)) {

@@ -83,7 +83,7 @@ public class Main {
 		//		datafinal.getTime(), 2L, "%", "3", "%")));
 
 		ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
-		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,5,3794694058L)));
+		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,1,3794694058L)));
 
 
 
