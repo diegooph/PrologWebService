@@ -7,6 +7,7 @@ import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,7 +87,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"AND M.DATA BETWEEN ? AND ?\n" +
 					"order by m.data;");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21)));
+			stmt.setDate(2, getDataInicial(ano, mes));
 			stmt.setDate(3, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
@@ -106,6 +107,15 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			closeConnection(conn,stmt,rSet);
 		}
 		return itens;
+	}
+
+	private java.sql.Date getDataInicial(int ano, int mes){
+		if(mes == 1){
+			return DateUtils.toSqlDate(LocalDate.of(ano-1, 12, 21));
+		}else{
+			return DateUtils.toSqlDate(LocalDate.of(ano, mes, 21));
+		}
+
 	}
 
 
