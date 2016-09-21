@@ -256,8 +256,6 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             stmt.setString(4, codRegional);
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
-            stmt.setInt(7, 1000);
-            stmt.setInt(8, 0);
             rSet = stmt.executeQuery();
             IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
             while (rSet.next()){
