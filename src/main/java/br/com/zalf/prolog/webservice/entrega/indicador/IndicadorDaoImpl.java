@@ -134,6 +134,9 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"FROM tracking t\n" +
 			"GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
 			"GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
+            "LEFT JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade " +
 			"WHERE\n" +
 			"DATA BETWEEN ? AND ? AND\n" +
 			"R.codigo::TEXT LIKE ? AND\n" +
