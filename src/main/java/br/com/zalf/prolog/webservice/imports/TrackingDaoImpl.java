@@ -4,37 +4,54 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.imports.TrackingImport;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.util.L;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
-public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
+import static br.com.zalf.prolog.webservice.imports.ImportUtils.*;
 
-	@Override
-	public boolean insertOrUpdateTracking (List<TrackingImport> listTracking, Colaborador colaborador) throws SQLException {
-		System.out.println("Entrou no insertOrUpdateTracking");
-		for(TrackingImport tracking : listTracking){
-			if(updateTracking(tracking, colaborador)){
-				// Linha já existe e será atualizada
-				System.out.println("update tracking");
-			}else{
-				System.out.println("insert tracking");
-				// Linha não existe e será inserida
-				insertTracking(tracking, colaborador);
+public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
+
+	private static final String TAG = TrackingDaoImpl.class.getSimpleName();
+
+	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException {
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			Reader in = new FileReader(path);
+			List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+			for (int i = 1; i < tabela.size(); i++) {
+				TrackingImport tracking = createTracking(tabela.get(i));
+				L.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+					if (updateTracking(tracking, colaborador, conn)) {
+						// Linha já existe e será atualizada
+						L.d(TAG, "Update Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+					} else {
+						L.d(TAG, "Insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+						// Linha não existe e será inserida
+						insertTracking(tracking, colaborador, conn);
+				}
 			}
+		}finally {
+			closeConnection(conn, null, null);
 		}
 		return true;
 	}
 
-	private boolean insertTracking (TrackingImport tracking, Colaborador colaborador) throws SQLException{
+	private boolean insertTracking (TrackingImport tracking, Colaborador colaborador, Connection conn) throws SQLException{
 
-		Connection conn = null;
 		PreparedStatement stmt = null;
-
 		try {
-			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO TRACKING VALUES("
 					+ " ?,  ?,  ?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
 					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
@@ -68,7 +85,6 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
 			stmt.setTime(25, tracking.tempoEspera);
 			stmt.setTime(26, tracking.tempoAlmoco);
 			stmt.setTime(27, tracking.tempoTotalRota);
-			System.out.println(tracking.tempoTotalRota);
 			stmt.setDouble(28, tracking.dispApontCadastrado);
 			stmt.setString(29, tracking.latEntrega);
 			stmt.setString(30, tracking.lonEntrega);
@@ -92,16 +108,14 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
 			}
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
 
-	private boolean updateTracking(TrackingImport tracking, Colaborador colaborador) throws SQLException{
-		Connection conn = null;
+	private boolean updateTracking(TrackingImport tracking, Colaborador colaborador, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE TRACKING "
 					+ "SET "
 					+" Classe = ?, "
@@ -148,7 +162,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
 					+" Aderência_Janela_Entrega = ?, "
 					+" PDV_Lacrado = ?, "
 					+" Código_Transportadora = ?, "
-					+ "data_hora_import = CURRENT_TIMESTAMP "
+					+ "data_hora_import = ? "
 					+" WHERE Mapa = ? AND data = ? AND placa = ? AND cod_cliente =?;");
 
 			stmt.setInt(1, tracking.classe);
@@ -195,20 +209,198 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao{
 			stmt.setString(42, tracking.aderenciaJanelaEntrega);
 			stmt.setString(43, tracking.pdvLacrado);
 			stmt.setLong(44, colaborador.getCodUnidade());
-			stmt.setInt(45, tracking.mapa);
-			stmt.setDate(46, DateUtils.toSqlDate(tracking.data));
-			stmt.setString(47, tracking.placa);
-			stmt.setInt(48, tracking.codCliente);
-
+			stmt.setTimestamp(45, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setInt(46, tracking.mapa);
+			stmt.setDate(47, DateUtils.toSqlDate(tracking.data));
+			stmt.setString(48, tracking.placa);
+			stmt.setInt(49, tracking.codCliente);
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				return false;				
-			}	
+				return false;
+			}
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
 
+	private TrackingImport createTracking (CSVRecord linha){
+		TrackingImport tracking = new TrackingImport();
+		if(!String.valueOf(linha.get(0)).trim().isEmpty()){
+			tracking.mapa = Integer.parseInt(linha.get(0));
+		}
+		if(!String.valueOf(linha.get(1)).trim().isEmpty()){
+			tracking.data = toTimestamp(linha.get(1));
+		}
+		if(!String.valueOf(linha.get(2)).trim().isEmpty()){
+			tracking.mapa = Integer.parseInt(linha.get(2));
+		}
+		if(!String.valueOf(linha.get(3)).trim().isEmpty()){
+			tracking.placa = String.valueOf(linha.get(3));
+		}
+		if(!String.valueOf(linha.get(4)).trim().isEmpty()){
+			tracking.codCliente = Integer.parseInt(linha.get(4));
+		}
+		if(!String.valueOf(linha.get(5)).trim().isEmpty()){
+			tracking.seqReal = Integer.parseInt(linha.get(5));
+		}
+		if(!String.valueOf(linha.get(6)).trim().isEmpty()){
+			tracking.seqPlan = Integer.parseInt(linha.get(6));
+		}
+//				if(!String.valueOf(linha.get(7)).trim().equals(NAO_RELATADO)){
+//					tracking.inicioRota = toTime(linha.get(7));
+//				}
+		if(containsNumber(linha.get(7))){
+			tracking.inicioRota = toTime(linha.get(7));
+		}
+		if(!String.valueOf(linha.get(8)).trim().isEmpty()){
+			tracking.horarioMatinal = toTime(linha.get(8));
+		}
+		if(!String.valueOf(linha.get(9)).trim().isEmpty()){
+			tracking.saidaCDD = toTime(linha.get(9));
+		}
+//				if(!String.valueOf(linha.get(10)).trim().equals(NAO_RELATADO)){
+//					tracking.chegadaPDV = toTime(linha.get(10));
+//				}
+		if(containsNumber(linha.get(10))){
+			tracking.chegadaPDV = toTime(linha.get(10));
+		}
+//				if(!String.valueOf(linha.get(11)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoPrevRetorno = toTime(linha.get(11));
+//				}
+		if(containsNumber(linha.get(11))){
+			tracking.tempoPrevRetorno = toTime(linha.get(11));
+		}
+//				if(!String.valueOf(linha.get(12)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoRetorno = toTime(linha.get(12));
+//				}
+		if(containsNumber(linha.get(12))){
+			tracking.tempoRetorno = toTime(linha.get(12));
+		}
+//				if(!String.valueOf(linha.get(13)).trim().equals(NAO_RELATADO)){
+//					tracking.distPrevRetorno = Double.parseDouble(linha.get(13).replace(",", "."));
+//				}
+		if(containsNumber(linha.get(13))){
+			tracking.distPrevRetorno = Double.parseDouble(linha.get(13).replace(",", "."));
+		}
+//				if(!String.valueOf(linha.get(14)).trim().equals(NAO_RELATADO)){
+//					tracking.distPercRetorno = Double.parseDouble(linha.get(14).replace(",", "."));
+//				}
+		if(containsNumber(linha.get(14))){
+			tracking.distPercRetorno = Double.parseDouble(linha.get(14).replace(",", "."));
+		}
+//				if(!String.valueOf(linha.get(15)).trim().equals(NAO_RELATADO)){
+//					tracking.inicioEntrega = toTime(linha.get(15));
+//				}
+		if(containsNumber(linha.get(15))){
+			tracking.inicioEntrega = toTime(linha.get(15));
+		}
+//				if(!String.valueOf(linha.get(16)).trim().equals(NAO_RELATADO)){
+//					tracking.fimEntrega = toTime(linha.get(16));
+//				}
+		if(containsNumber(linha.get(16))){
+			tracking.fimEntrega = toTime(linha.get(16));
+		}
+//				if(!String.valueOf(linha.get(17)).trim().equals(NAO_RELATADO)){
+//					tracking.fimRota = toTime(linha.get(17));
+//				}
+		if(containsNumber(linha.get(17))){
+			tracking.fimRota = toTime(linha.get(17));
+		}
+//				if(!String.valueOf(linha.get(18)).trim().equals(NAO_RELATADO)){
+//					tracking.entradaCDD = toTime(linha.get(18));
+//				}
+		if(containsNumber(linha.get(18))){
+			tracking.entradaCDD = toTime(linha.get(18));
+		}
+		if(!String.valueOf(linha.get(19)).trim().isEmpty()){
+			tracking.caixasCarregadas = Double.parseDouble(linha.get(19).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(20)).trim().isEmpty()){
+			tracking.caixasDevolvidas = Double.parseDouble(linha.get(20).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(21)).trim().isEmpty()){
+			tracking.repasse = Double.parseDouble(linha.get(21).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(22)).trim().isEmpty()){
+			tracking.tempoEntrega = toTime(linha.get(22));
+		}
+		if(!String.valueOf(linha.get(23)).trim().isEmpty()){
+			tracking.tempoDescarga = toTime(linha.get(23));
+		}
+		if(!String.valueOf(linha.get(24)).trim().isEmpty()){
+			tracking.tempoEspera = toTime(linha.get(24));
+		}
+		if(!String.valueOf(linha.get(25)).trim().isEmpty()){
+			tracking.tempoAlmoco = toTime(linha.get(25));
+		}
+		if(!String.valueOf(linha.get(26)).trim().isEmpty()){
+			tracking.tempoTotalRota = toTime(linha.get(26));
+		}
+//				if(!String.valueOf(linha.get(27)).trim().equals(NAO_RELATADO)){
+//					tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
+//				}
+		if(containsNumber(linha.get(27))){
+			tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(28)).trim().isEmpty()){
+			tracking.latEntrega = linha.get(28).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(29)).trim().isEmpty()){
+			tracking.lonEntrega = linha.get(29).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(30)).trim().isEmpty()){
+			tracking.unidadeNegocio = Integer.parseInt(linha.get(30));
+		}
+		if(!String.valueOf(linha.get(31)).trim().isEmpty()){
+			tracking.transportadora = linha.get(31).trim();
+		}
+		if(!String.valueOf(linha.get(32)).trim().isEmpty()){
+			tracking.latClienteApontamento = linha.get(32).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(33)).trim().isEmpty()){
+			tracking.lonClienteApontamento = linha.get(33).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(34)).trim().isEmpty()){
+			tracking.latAtualCliente = linha.get(34).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(35)).trim().isEmpty()){
+			tracking.lonAtualCliente = linha.get(35).replace(",", ".");
+		}
+		if(!String.valueOf(linha.get(36)).trim().isEmpty()){
+			tracking.distanciaPrev = Double.parseDouble(linha.get(36).replace(",", "."));
+		}
+//				if(!String.valueOf(linha.get(37)).trim().equals(NAO_RELATADO)){
+//					tracking.tempoDeslocamento = toTime(linha.get(37));
+//				}
+		if(containsNumber(linha.get(37))){
+			tracking.tempoDeslocamento = toTime(linha.get(37));
+		}
+		if(!String.valueOf(linha.get(38)).trim().isEmpty()){
+			tracking.velMedia = Double.parseDouble(linha.get(38).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(39)).trim().isEmpty()){
+			tracking.distanciaPercApontamento = Double.parseDouble(linha.get(39).replace(",", "."));
+		}
+		if(!String.valueOf(linha.get(40)).trim().isEmpty()){
+			tracking.aderenciaSequenciaEntrega = linha.get(40).trim();
+		}
+		if(!String.valueOf(linha.get(41)).trim().isEmpty()){
+			tracking.aderenciaJanelaEntrega = linha.get(41).trim();
+		}
+		if(!String.valueOf(linha.get(42)).trim().isEmpty()){
+			tracking.pdvLacrado = linha.get(42).trim();
+		}
+		return tracking;
+	}
+
+	/**
+	 * Método usado para verificar se uma string contém algum número
+	 * @param str uma String
+	 * @return um boolean
+	 */
+	public static boolean containsNumber(String str) {
+		return str.matches(".*\\d+.*");
+	}
 
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.util.L;
 import com.google.gson.Gson;
 
@@ -16,8 +16,7 @@ public class Main {
 
 	public static void main(String[] args)  throws SQLException {
 		L.d("Main", "Testando");
-		L.e("Main", "FUDEU", new Exception("Problema na main"));
-	
+
 		//ColaboradorDaoImpl baseDao = new ColaboradorDaoImpl();
 		//long cpf = Long.parseLong("12345678987");
 //
@@ -33,18 +32,18 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
-		L.d("tag", String.valueOf(System.currentTimeMillis()));
-		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
+//		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
+//		L.d("tag", String.valueOf(System.currentTimeMillis()));
+//		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
 
 
-//		Colaborador c = new Colaborador();
-//		c.setCodUnidade(2);
-//		c.setNome("Teste");
-//		System.out.println(new Gson().toJson(c));
+		Colaborador c = new Colaborador();
+		c.setCodUnidade(1);
+		c.setNome("Teste");
+		System.out.println(new Gson().toJson(c));
 
 		//OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 		//Connection conn = DatabaseConnection.getConnection();

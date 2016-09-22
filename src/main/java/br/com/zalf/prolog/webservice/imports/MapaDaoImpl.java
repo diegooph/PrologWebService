@@ -12,18 +12,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.imports.Import.*;
+import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
+import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
 
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 
 	private static final String TAG = MapaDaoImpl.class.getSimpleName();
+
+	public static final Time EMPTY_TIME = new Time(0L);
 
 	//TODO: se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
 	// mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
@@ -581,5 +582,36 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.hrPCFinanceira = toTimestamp(linha.get(100));
 		mapa.stMapa = linha.get(101);
 		return mapa;
+	}
+
+	/**
+	 * Converte uma string para Date
+	 * @param data uma String contendo uma data
+	 * @return um Date
+	 */
+	public static Date toDate(String data){
+
+		String date = String.valueOf(data);
+		int ano;
+		int mes;
+		int dia;
+		Calendar calendar = Calendar.getInstance();
+
+		if(date.length() == 7){
+			ano = Integer.parseInt(date.substring(3,7));
+			mes = Integer.parseInt(date.substring(1,3));
+			dia = Integer.parseInt(date.substring(0,1));
+
+		}else{
+			ano = Integer.parseInt(date.substring(4,8));
+			mes = Integer.parseInt(date.substring(2,4));
+			dia = Integer.parseInt(date.substring(0,2));
+		}
+		calendar.set(Calendar.YEAR, ano);
+		// calendario no java começa em 0, no 2art o mês começa em 1
+		calendar.set(Calendar.MONTH, mes-1);
+		calendar.set(Calendar.DAY_OF_MONTH, dia);
+
+		return calendar.getTime();
 	}
 }
