@@ -89,6 +89,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, getDataInicial(ano, mes));
 			stmt.setDate(3, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				ItemProdutividade item = new ItemProdutividade();
@@ -113,7 +114,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		if(mes == 1){
 			return DateUtils.toSqlDate(LocalDate.of(ano-1, 12, 21));
 		}else{
-			return DateUtils.toSqlDate(LocalDate.of(ano, mes, 21));
+			return DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21));
 		}
 
 	}
