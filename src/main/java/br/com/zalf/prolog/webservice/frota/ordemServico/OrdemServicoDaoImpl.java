@@ -123,8 +123,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "VT.codigo::TEXT LIKE ? \n "  +
                     "ORDER BY cos.codigo desc\n" +
                     "%s";
-            if (limit != null){
-                query = String.format(query, " LIMIT ?  OFFSET ? ");
+           if (limit != null && offset != null){
+                query = String.format(query, " LIMIT " + limit +  "OFFSET " + offset);
             }else{
                 query = String.format(query, "");
             }
@@ -133,12 +133,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(2, status);
             stmt.setLong(3, codUnidade);
             stmt.setString(4, tipoVeiculo);
-            if (limit !=null) {
-                stmt.setInt(5, limit);
-            }
-            if (offset!= null) {
-                stmt.setLong(6, offset);
-            }
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 OrdemServico os = createOrdemServico(rSet);
