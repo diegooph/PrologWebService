@@ -4,65 +4,83 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.imports.MapaImport;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.util.L;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.imports.Import.*;
 
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 
-	@Override
-	public boolean insertOrUpdateMapa (List<MapaImport> listMapas, Colaborador colaborador) throws SQLException {
-		//System.out.println("Entrou no insertOrUpdate");
-		//System.out.println(listMapas.get(0));
-		for(MapaImport mapa : listMapas){
+	private static final String TAG = MapaDaoImpl.class.getSimpleName();
 
-			if(updateMapa(mapa, colaborador)){
-				// Mapa ja existia e foi atualizado
-				System.out.println("update mapa");
-			}else{
-				System.out.println("insert mapa");
-				// Mapa não existia e foi inserido na base
-				insertMapa(mapa, colaborador);
+	//TODO: se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
+	// mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
+	// a equipe antiga continuará na tabela, recebendo por um mapa que não realizo
+
+	public boolean insertOrUpdateMapa (String path, Colaborador colaborador)throws SQLException, FileNotFoundException, IOException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			Reader in = new FileReader(path);
+			List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
+			for (int i = 1; i < tabela.size(); i++) {
+				MapaImport mapa = createMapa(tabela.get(i));
+				if(updateMapa(mapa, colaborador, conn)){
+					// Mapa ja existia e foi atualizado
+					L.d(TAG, "update mapa: " + mapa.mapa);
+				}else{
+					L.d(TAG, "insert mapa: " + mapa.mapa);
+					// Mapa não existia e foi inserido na base
+					insertMapa(mapa, colaborador, conn);
+				}
+				insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricMotorista, conn);
+				insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud1, conn);
+				insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud2, conn);
 			}
-			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricMotorista);
-			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud1);
-			insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud2);
+			return true;
+		} finally {
+			closeConnection(conn,null,null);
+		}
+	}
+
+	private boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula, Connection conn) throws SQLException {
+		if(matricula > 0){
+			if(verifyExistsMapaColaborador(mapa, codUnidade, matricula, conn)){
+				L.d(TAG, "update mapa_colaborador: " + mapa);
+			}else{
+				L.d(TAG, "insert mapa_colaborador: " + mapa);
+				insertMapaColaborador(mapa, codUnidade, matricula, conn);
+			}
 		}
 		return true;
 	}
 
-	private boolean insertOrUpdateMapaColaborador (int mapa, long codUnidade, int matricula) throws SQLException {
-		//System.out.println("Entrou no insertOrUpdateMapaColaborador");
-		//System.out.println(listMapas.get(0));
-
-		if(matricula > 0){
-		if(updateMapaColaborador(mapa, codUnidade, matricula)){
-			System.out.println("update mapa");
-		}else{
-			System.out.println("insert mapa");
-			insertMapaColaborador(mapa, codUnidade, matricula);
-		}}
-		return true;
-	}
-
-	private boolean insertMapa (MapaImport mapa, Colaborador colaborador) throws SQLException{
-
-		Connection conn = null;
+	private boolean insertMapa (MapaImport mapa, Colaborador colaborador, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
-
 		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO MAPA VALUES(?, ?,	?,	?,	"
-					+ " ?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, "
-					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?, ?)");
-
+			stmt = conn.prepareStatement("INSERT INTO MAPA VALUES(?, ?,	?,	?,"
+					+ " ?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,"
+					+ "	?,	?,	?,	?,	?,	?,	?,	?,	?,	?,  ?,  ?,  ?,  ?,"
+					+ " ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,  ?,"
+					+ " ?,  ?)");
 			stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
 			stmt.setInt(2, mapa.transp);
 			stmt.setString(3, mapa.entrega);
@@ -148,66 +166,77 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 			stmt.setDouble(83, mapa.capacidadeVeiculoKg);
 			stmt.setDouble(84, mapa.pesoCargaKg);
 			stmt.setLong(85, colaborador.getCodUnidade());
+			stmt.setTimestamp(86, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setInt(87, mapa.capacVeiculoCx);
+			stmt.setInt(88, mapa.entregasCompletas);
+			stmt.setInt(89, mapa.entregasParciais);
+			stmt.setInt(90, mapa.entregasNaoRealizadas);
+			stmt.setInt(91, mapa.codFilial);
+			stmt.setString(92, mapa.nomeFilial);
+			stmt.setInt(93, mapa.codSupervTrs);
+			stmt.setString(94, mapa.nomeSupervTrs);
+			stmt.setInt(95, mapa.codSpot);
+			stmt.setString(96, mapa.nomeSpot);
+			stmt.setInt(97, mapa.equipCarregados);
+			stmt.setInt(98, mapa.equipDevolvidos);
+			stmt.setInt(99, mapa.equipRecolhidos);
+			stmt.setDouble(100, mapa.cxEntregTracking);
+			stmt.setTimestamp(101, DateUtils.toTimestamp(mapa.hrCarreg));
+			stmt.setTimestamp(102, DateUtils.toTimestamp(mapa.hrPCFisica));
+			stmt.setTimestamp(103, DateUtils.toTimestamp(mapa.hrPCFinanceira));
+			stmt.setString(104, mapa.stMapa);
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao inserir a tabela");
+				throw new SQLException("Erro ao inserir o mapa " + mapa + " na tabela");
 			}
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
 	}
 
-	private boolean insertMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
-
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			try {
-				conn = getConnection();
-				stmt = conn.prepareStatement("INSERT INTO MAPA_COLABORADOR VALUES(?, ?,	?);");
-				stmt.setInt(1, mapa);
-				stmt.setLong(2, codUnidade);
-				stmt.setInt(3, matricula);
-				int count = stmt.executeUpdate();
-				if(count == 0){
-					throw new SQLException("Erro ao inserir a tabela");
-				}
-			}
-			finally {
-				closeConnection(conn, stmt, null);
-			}		
-			return true;
-		}
-
-	private boolean updateMapaColaborador (int mapa,long codUnidade,  int matricula) throws SQLException{
-
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			ResultSet rSet = null;
-			try {
-				conn = getConnection();
-				stmt = conn.prepareStatement("SELECT EXISTS(SELECT MC.MAPA FROM "
-					+ "MAPA_COLABORADOR MC WHERE MC.MAPA = ? AND MC.COD_AMBEV = ? AND MC.COD_UNIDADE = ?);");
-				stmt.setInt(1, mapa);
-				stmt.setInt(2, matricula);
-				stmt.setLong(3, codUnidade);
-				rSet = stmt.executeQuery();
-				if (rSet.next()) {
-					return rSet.getBoolean("EXISTS");
-				}
-			}
-			finally{
-				closeConnection(conn, stmt, rSet);
-			}
-		return true;
-	}
-
-	private boolean updateMapa(MapaImport mapa, Colaborador colaborador) throws SQLException{
-		Connection conn = null;
+	private boolean insertMapaColaborador (int mapa,long codUnidade,  int matricula, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO MAPA_COLABORADOR VALUES(?, ?,	?);");
+			stmt.setInt(1, mapa);
+			stmt.setLong(2, codUnidade);
+			stmt.setInt(3, matricula);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o mapa_colaborador: " + mapa + " matricula: " + matricula);
+			}
+		}
+		finally {
+			closeConnection(null, stmt,null);
+		}
+		return true;
+	}
+
+	private boolean verifyExistsMapaColaborador(int mapa, long codUnidade, int matricula, Connection conn) throws SQLException{
+		ResultSet rSet = null;
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT MC.MAPA FROM "
+					+ "MAPA_COLABORADOR MC WHERE MC.MAPA = ? AND MC.COD_AMBEV = ? AND MC.COD_UNIDADE = ?);");
+			stmt.setInt(1, mapa);
+			stmt.setInt(2, matricula);
+			stmt.setLong(3, codUnidade);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return rSet.getBoolean("EXISTS");
+			}
+		}
+		finally{
+			closeConnection(null, stmt, rSet);
+		}
+		return true;
+	}
+
+	private boolean updateMapa(MapaImport mapa, Colaborador colaborador, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try {
 			stmt = conn.prepareStatement("UPDATE MAPA "
 					+ "SET "
 					+"Data= ?, "
@@ -293,8 +322,26 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 					+"QtNfEntregGeral= ?, "
 					+"CapacidadeVeiculoKG= ?, "
 					+"PesoCargaKG= ?, "
+					+"CapacVeiculoCx= ?, "
+					+"EntregasCompletas= ?, "
+					+"EntregasParciais= ?, "
+					+"EntregasNaoRealizadas= ?, "
+					+"CodFilial= ?, "
+					+"NomeFilial= ?, "
+					+"CodSupervTrs= ?, "
+					+"NomeSupervTrs= ?, "
+					+"CodSpot= ?, "
+					+"NomeSpot= ?, "
+					+"EquipCarregados= ?, "
+					+"EquipDevolvidos= ?, "
+					+"EquipRecolhidos= ?, "
+					+"CxEntregTracking= ?, "
+					+"HrCarreg= ?, "
+					+"HrPCFisica= ?, "
+					+"HrPCFinanceira= ?, "
+					+"StMapa= ?, "
 					+"cod_unidade= ?, "
-					+ "data_hora_import = CURRENT_TIMESTAMP "
+					+"data_hora_import= ? "
 					+" WHERE Mapa = ? AND cod_unidade = ?;");
 
 			stmt.setDate(1, DateUtils.toSqlDate(mapa.data));
@@ -380,17 +427,159 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 			stmt.setInt(81, mapa.qtNfEntregGeral);
 			stmt.setDouble(82, mapa.capacidadeVeiculoKg);
 			stmt.setDouble(83, mapa.pesoCargaKg);
-			stmt.setLong(84, colaborador.getCodUnidade());
-			stmt.setInt(85, mapa.mapa);
-			stmt.setLong(86, colaborador.getCodUnidade());
-
+			stmt.setInt(84, mapa.capacVeiculoCx);
+			stmt.setInt(85, mapa.entregasCompletas);
+			stmt.setInt(86, mapa.entregasParciais);
+			stmt.setInt(87, mapa.entregasNaoRealizadas);
+			stmt.setInt(88, mapa.codFilial);
+			stmt.setString(89, mapa.nomeFilial);
+			stmt.setInt(90, mapa.codSupervTrs);
+			stmt.setString(91, mapa.nomeSupervTrs);
+			stmt.setInt(92, mapa.codSpot);
+			stmt.setString(93, mapa.nomeSpot);
+			stmt.setInt(94, mapa.equipCarregados);
+			stmt.setInt(95, mapa.equipDevolvidos);
+			stmt.setInt(96, mapa.equipRecolhidos);
+			stmt.setDouble(97, mapa.cxEntregTracking);
+			stmt.setDate(98, DateUtils.toSqlDate(mapa.hrCarreg));
+			stmt.setDate(99, DateUtils.toSqlDate(mapa.hrPCFisica));
+			stmt.setDate(100, DateUtils.toSqlDate(mapa.hrPCFinanceira));
+			stmt.setString(101, mapa.stMapa);
+			stmt.setLong(102, colaborador.getCodUnidade());
+			stmt.setTimestamp(103, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			// condição do where:
+			stmt.setInt(104, mapa.mapa);
+			stmt.setLong(105, colaborador.getCodUnidade());
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				return false;				
-			}	
+				return false;
+			}
 		} finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
 		return true;
+	}
+
+	private MapaImport createMapa(CSVRecord linha){
+		MapaImport mapa = new MapaImport();
+		mapa.data = toDate(linha.get(0));
+		mapa.transp = Integer.parseInt(linha.get(1));
+		mapa.entrega = linha.get(2).replace(" ","");
+		mapa.cargaAtual = linha.get(3).replace(" ","");
+		mapa.frota = linha.get(4).replace(" ","");
+		mapa.custoSpot = Double.parseDouble(linha.get(5).replace(",","."));
+		mapa.regiao = Integer.parseInt(linha.get(6));
+		mapa.veiculo = Integer.parseInt(linha.get(7));
+		mapa.placa = linha.get(8).replace(" ","");
+		mapa.veiculoIndisp = Double.parseDouble(linha.get(9).replace(",","."));
+		// inserir 0 caso venha em branco
+		if(linha.get(10).trim().isEmpty()){
+			mapa.placaIndisp = 0;
+		}else{
+			mapa.placaIndisp = Double.parseDouble(linha.get(10).replace(",","."));
+		}
+		// inserir 0 caso venha em branco
+		if(linha.get(11).trim().isEmpty()){
+			mapa.frotaIndisp = 0;
+		}else{
+			mapa.frotaIndisp = Double.parseDouble(linha.get(11).replace(",","."));}
+		mapa.tipoIndisp = Integer.parseInt(linha.get(12));
+		mapa.mapa = Integer.parseInt(linha.get(13));
+		mapa.entregas = Integer.parseInt(linha.get(14));
+		mapa.cxCarreg = Double.parseDouble(linha.get(15).replace(",","."));
+		mapa.cxEntreg = Double.parseDouble(linha.get(16).replace(",","."));
+		mapa.ocupacao = Double.parseDouble(linha.get(17).replace(",","."));
+		mapa.cxRota = Double.parseDouble(linha.get(18).replace(",","."));
+		mapa.cxAs = Double.parseDouble(linha.get(19).replace(",","."));
+		mapa.veicBM = Double.parseDouble(linha.get(20).replace(",","."));
+		mapa.rShow = Integer.parseInt(linha.get(21));
+		mapa.entrVol = linha.get(22).replace(" ","");
+		mapa.hrSai = toTimestamp(linha.get(23));
+		mapa.hrEntr = toTimestamp(linha.get(24));
+		mapa.kmSai = Integer.parseInt(linha.get(25));
+		mapa.kmEntr = Integer.parseInt(linha.get(26));
+		mapa.custoVariavel = Double.parseDouble(linha.get(27).replace(",","."));
+		mapa.lucro = Double.parseDouble(linha.get(28).replace(",","."));
+		mapa.lucroUnit = Double.parseDouble(linha.get(29).replace(",","."));
+		mapa.valorFrete = Double.parseDouble(linha.get(30).replace(",","."));
+		mapa.tipoImposto = linha.get(31).replace(" ","");
+		mapa.percImposto = Double.parseDouble(linha.get(32).replace(",","."));
+		mapa.valorImposto = Double.parseDouble(linha.get(33).replace(",","."));
+		mapa.valorFaturado = Double.parseDouble(linha.get(34).replace(",","."));
+		mapa.valorUnitCxEntregue = Double.parseDouble(linha.get(35).replace(",","."));
+		mapa.valorPgCxEntregSemImp = Double.parseDouble(linha.get(36).replace(",","."));
+		mapa.valorPgCxEntregComImp = Double.parseDouble(linha.get(37).replace(",","."));
+		// realizar replace de " " e " ' " por vazio
+		mapa.tempoPrevistoRoad = toTime(linha.get(38));
+		mapa.kmPrevistoRoad = Double.parseDouble(linha.get(39).replace(",","."));
+		mapa.valorUnitPontoMot = Double.parseDouble(linha.get(40).replace(",","."));
+		mapa.valorUnitPontoAjd = Double.parseDouble(linha.get(41).replace(",","."));
+		mapa.valorEquipeEntrMot = Double.parseDouble(linha.get(42).replace(",","."));
+		mapa.valorEquipeEntrAjd = Double.parseDouble(linha.get(43).replace(",","."));
+		mapa.custoVLC = Double.parseDouble(linha.get(44).replace(",","."));
+		mapa.lucroUnitCEDBZ = Double.parseDouble(linha.get(45).replace(",","."));
+		mapa.CustoVlcCxEntr = Double.parseDouble(linha.get(46).replace(",","."));
+		if(toTime(linha.get(47)) == null){
+			mapa.tempoInterno = EMPTY_TIME;
+		}else{
+			mapa.tempoInterno = toTime(linha.get(47));
+		}
+		mapa.valorDropDown = Double.parseDouble(linha.get(48).replace(",","."));
+		mapa.veicCadDD = linha.get(49).replace(" ","");
+		mapa.kmLaco = Double.parseDouble(linha.get(50).replace(",","."));
+		mapa.kmDeslocamento = Double.parseDouble(linha.get(51).replace(",","."));
+		//fazer replace
+		mapa.tempoLaco = toTime(linha.get(52));
+		//fazer replace
+		mapa.tempoDeslocamento = toTime(linha.get(53));
+		mapa.sitMultiCDD = Double.parseDouble(linha.get(54).replace(",","."));
+		mapa.unbOrigem = Integer.parseInt(linha.get(55));
+		mapa.matricMotorista = Integer.parseInt(linha.get(56));
+		mapa.matricAjud1 = Integer.parseInt(linha.get(57));
+		mapa.matricAjud2 = Integer.parseInt(linha.get(58));
+		mapa.valorCTEDifere = linha.get(59).replace(" ","");
+		mapa.qtNfCarregadas = Integer.parseInt(linha.get(60));
+		mapa.qtNfEntregues = Integer.parseInt(linha.get(61));
+		mapa.indDevCx = Double.parseDouble(linha.get(62).replace(",","."));
+		mapa.indDevNf = Double.parseDouble(linha.get(63).replace(",","."));;
+		mapa.fator = Double.parseDouble(linha.get(64).replace(",","."));
+		mapa.recarga = linha.get(65).replace(" ","");
+		mapa.hrMatinal = toTime(linha.get(66));
+		mapa.hrJornadaLiq = toTime(linha.get(67));
+		mapa.hrMetaJornada = toTime(linha.get(68));
+		mapa.vlBateuJornMot = Double.parseDouble(linha.get(69).replace(",","."));
+		mapa.vlNaoBateuJornMot = Double.parseDouble(linha.get(70).replace(",","."));
+		mapa.vlRecargaMot = Double.parseDouble(linha.get(71).replace(",","."));
+		mapa.vlBateuJornAju = Double.parseDouble(linha.get(72).replace(",","."));
+		mapa.vlNaoBateuJornAju = Double.parseDouble(linha.get(73).replace(",","."));
+		mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",","."));
+		mapa.vlTotalMapa = Double.parseDouble(linha.get(75).replace(",","."));
+		mapa.qtHlCarregados = Double.parseDouble(linha.get(76).replace(",","."));
+		mapa.qtHlEntregues = Double.parseDouble(linha.get(77).replace(",","."));
+		mapa.indiceDevHl = Double.parseDouble(linha.get(78).replace(",","."));
+		mapa.regiao2 = linha.get(79).replace(" ","");
+		mapa.qtNfCarregGeral = Integer.parseInt(linha.get(80));
+		mapa.qtNfEntregGeral = Integer.parseInt(linha.get(81));
+		mapa.capacidadeVeiculoKg = Double.parseDouble(linha.get(82).replace(",","."));
+		mapa.pesoCargaKg = Double.parseDouble(linha.get(83).replace(",","."));
+		mapa.capacVeiculoCx = Integer.parseInt(linha.get(84));
+		mapa.entregasCompletas = Integer.parseInt(linha.get(85));
+		mapa.entregasParciais = Integer.parseInt(linha.get(86));
+		mapa.entregasNaoRealizadas = Integer.parseInt(linha.get(87));
+		mapa.codFilial = Integer.parseInt(linha.get(88));
+		mapa.nomeFilial = linha.get(89);
+		mapa.codSupervTrs = Integer.parseInt(linha.get(90));
+		mapa.nomeSupervTrs = linha.get(91);
+		mapa.codSpot = Integer.parseInt(linha.get(92));
+		mapa.nomeSpot = linha.get(93);
+		mapa.equipCarregados = Integer.parseInt(linha.get(94));
+		mapa.equipDevolvidos = Integer.parseInt(linha.get(95));
+		mapa.equipRecolhidos = Integer.parseInt(linha.get(96));
+		mapa.cxEntregTracking = Double.parseDouble(linha.get(97));
+		mapa.hrCarreg = toTimestamp(linha.get(98));
+		mapa.hrPCFisica = toTimestamp(linha.get(99));
+		mapa.hrPCFinanceira = toTimestamp(linha.get(100));
+		mapa.stMapa = linha.get(101);
+		return mapa;
 	}
 }

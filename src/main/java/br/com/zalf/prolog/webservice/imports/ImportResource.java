@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.imports;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.imports.MapaImport;
 import br.com.zalf.prolog.commons.imports.TrackingImport;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.webservice.util.L;
@@ -37,8 +36,6 @@ public class ImportResource {
 		@FormDataParam("file") InputStream fileInputStream,
 	    @FormDataParam("file") FormDataContentDisposition fileDetail,
 	    @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
-
-			L.d(TAG, "CHAMOU O IMPORT DO MAPAAAAAA");
 	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
 			L.d(TAG, jsonPart.toString());
 	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
@@ -62,26 +59,13 @@ public class ImportResource {
 				FileOutputStream out = new FileOutputStream(file);
 				IOUtils.copy(fileInputStream, out);
 				IOUtils.closeQuietly(out);
-				L.d(TAG, "Arquivo: " + file);
-								
-				List<MapaImport> mapas = Import.mapa(file.getPath());
-				if (mapas == null) {
-					Response.Error("Erro ao processar dados.");
-				} else {
-					MapaService mapaService = new MapaService();
-					if (mapaService.insertOrUpdate(mapas, colaborador)) {
-						return Response.Ok("Arquivo recebido com sucesso.");
-					} else {
-						Response.Error("Erro ao inserir dados.");
-					}
-				}			
+				MapaService mapaService = new MapaService();
+				return mapaService.insertOrUpdateMapa(file.getPath(), colaborador);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return Response.Error("Erro ao enviar o arquivo.");
 			}
-		  
-		  return Response.Error("Requisição inválida");
-	    } 
+	    }
 	  	
 	@POST
 	@Path("/tracking")
