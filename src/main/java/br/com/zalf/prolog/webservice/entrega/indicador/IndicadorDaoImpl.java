@@ -337,16 +337,16 @@ public class IndicadorDaoImpl extends DatabaseConnection{
      */
 	public List<IndicadorItem> createExtratoDia(ResultSet rSet)throws SQLException{
 		List<IndicadorItem> itens = new ArrayList<>();
-		itens.add(IndicadorConverter.createTempoRota(rSet));
+		itens.add(IndicadorConverter.createDevHl(rSet));
+		itens.add(IndicadorConverter.createDevPdv(rSet));
+		itens.add(IndicadorConverter.createTracking(rSet));
 		itens.add(IndicadorConverter.createTempoLargada(rSet));
+		itens.add(IndicadorConverter.createTempoRota(rSet));
 		itens.add(IndicadorConverter.createTempoInterno(rSet));
 		itens.add(IndicadorConverter.createJornada(rSet));
 		itens.add(IndicadorConverter.createCaixaViagem(rSet));
-		itens.add(IndicadorConverter.createDevHl(rSet));
-		itens.add(IndicadorConverter.createDevPdv(rSet));
 		itens.add(IndicadorConverter.createDispersaoKm(rSet));
 		itens.add(IndicadorConverter.createDispersaoTempo(rSet));
-		itens.add(IndicadorConverter.createTracking(rSet));
 		return itens;
 	}
 
