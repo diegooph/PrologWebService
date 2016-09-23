@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports;
+package br.com.zalf.prolog.webservice.imports.tracking;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.imports.TrackingImport;

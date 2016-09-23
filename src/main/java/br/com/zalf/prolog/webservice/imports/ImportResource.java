@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.imports;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.imports.mapa.MapaService;
+import br.com.zalf.prolog.webservice.imports.tracking.TrackingService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.Site;
