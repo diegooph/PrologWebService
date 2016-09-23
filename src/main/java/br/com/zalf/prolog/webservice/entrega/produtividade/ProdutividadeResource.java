@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/produtividade")
+@Path("/produtividades")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ProdutividadeResource{
@@ -28,7 +28,7 @@ public class ProdutividadeResource{
 	@GET
 	@Android
 	@Secured
-	@Path("consolidado/{codUnidade}/{equipe}/{codFuncao}")
+	@Path("consolidados/{codUnidade}/{equipe}/{codFuncao}")
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
 																			@PathParam("equipe") String equipe,
 																			@PathParam("codFuncao") String codFuncao,
