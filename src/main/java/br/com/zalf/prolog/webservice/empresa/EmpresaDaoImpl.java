@@ -237,12 +237,12 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA,M.placa, TRACKING.MAPA_TRACKING\n" +
+			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA, coalesce(M.placa, tracking.placa_tracking,M.placa) as placa, TRACKING.MAPA_TRACKING\n" +
 					"FROM MAPA M FULL OUTER JOIN\n" +
-					"\t(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
-					"\tJOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
-					"\tWHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
-					"\tORDER BY 1;");
+					"(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
+					"JOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
+					"WHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
+					"ORDER BY 1;");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codUnidade);
 			stmt.setInt(3, ano);
