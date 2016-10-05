@@ -524,6 +524,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
+                    item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
                 }
                 itens.add(item);
             }

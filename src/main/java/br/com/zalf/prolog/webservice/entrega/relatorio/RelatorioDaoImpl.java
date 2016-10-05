@@ -1,448 +1,272 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.commons.util.MetaUtils;
-import br.com.zalf.prolog.commons.util.TimeUtils;
-import br.com.zalf.prolog.entrega.indicador.older.*;
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoMapasDia;
-import br.com.zalf.prolog.entrega.relatorio.Mapa;
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
+import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
+import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.metas.MetasDao;
-import br.com.zalf.prolog.webservice.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
-import java.sql.*;
-import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
+/**
+ * Created by jean on 13/09/16.
+ */
+public class RelatorioDaoImpl extends DatabaseConnection{
 
-	private static final String BUSCA_RELATORIO = "SELECT M.DATA, M.PLACA, M.MAPA, C.NOME AS NOMEMOTORISTA, "
-			+ "C1.NOME AS NOMEAJUD1, C2.NOME AS NOMEAJUD2, EQ.NOME AS EQUIPE, "
-			+ "M.CXCARREG, M.CXENTREG, (M.CXCARREG - M.CXENTREG) AS DEVCX, "
-			+ "M.QTHLCARREGADOS, M.QTHLENTREGUES, (M.QTHLCARREGADOS - M.QTHLENTREGUES) AS DEVHL, "
-			+ "M.QTNFCARREGADAS, M.QTNFENTREGUES, (M.QTNFCARREGADAS - M.QTNFENTREGUES) AS DEVNF, "
-			+ "M.HRSAI, M.HRENTR, M.TEMPOINTERNO, M.HRMATINAL,M.COD_UNIDADE, TRACKING.TOTAL AS TOTAL_TRACKING, TRACKING.APONTAMENTO_OK "
-			+ " FROM MAPA M join token_autenticacao ta on ta.cpf_colaborador = ? and ta.token = ? "
-			+ "JOIN VEICULO V ON V.PLACA = M.PLACA "
-			+ "JOIN COLABORADOR C ON M.MATRICMOTORISTA = C.MATRICULA_AMBEV "
-			+ "JOIN COLABORADOR C1 ON M.MATRICAJUD1 = C1.MATRICULA_AMBEV "
-			+ "JOIN COLABORADOR C2 ON M.MATRICAJUD2 = C2.MATRICULA_AMBEV "
-			+ " JOIN UNIDADE E ON E.CODIGO = M.COD_UNIDADE "
-			+ "JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
-			+ "LEFT JOIN( SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK "
-			+ "FROM tracking t join MAPA M on m.mapa = t.mapa "
-			+ "JOIN (SELECT t.mapa as mapa_ok, count(t.disp_apont_cadastrado) as apontamentos_ok "
-			+ "FROM tracking t	WHERE t.disp_apont_cadastrado <= '0.3' "
-			+ "GROUP BY t.mapa) as ok on mapa_ok = t.mapa "
-			+ "JOIN (SELECT t.mapa as total_entregas, count(t.cod_cliente) as total from tracking t "
-			+ "group by t.mapa) as total on total_entregas = t.mapa "
-			+ "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA "
-			+ "WHERE EQ.NOME LIKE ? AND M.COD_UNIDADE = ? AND DATA BETWEEN ? AND ? AND C.matricula_ambev <> 0 AND C1.matricula_ambev <> 0 " +
-            "   AND c2.matricula_ambev <> 0 "
-			+ "ORDER BY M.DATA, EQ.NOME ";
-	private Meta meta;
+    private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
-	
-	public RelatorioDaoImpl(){}
-	
-	public RelatorioDaoImpl (Meta meta){
-		this.meta = meta;
-	}
+    private static final String BUSCA_ACUMULADO_INDICADORES = "select\n" +
+             IndicadorDaoImpl.COLUNAS_ACUMULADOS +
+            " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
+            "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
+            "else 0 end) as apontamentos_ok,\n" +
+            "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "group by 1) as tracking on tracking_mapa = m.mapa\n" +
+            "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista\n" +
+            "JOIN EQUIPE E ON E.cod_unidade = M.cod_unidade AND C.cod_equipe = e.codigo\n" +
+            "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
+            "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
+            "JOIN regional R ON R.codigo = U.cod_regional\n" +
+            "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
+            "EM.codigo::TEXT LIKE ? AND\n" +
+            "R.codigo::TEXT LIKE ? AND\n" +
+            "U.codigo::TEXT LIKE ? AND\n" +
+            "E.nome LIKE ?\n" +
+            "group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
+            "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
+            "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
+            "um.meta_tempo_largada_mapas;";
 
-	@Override
-	public ConsolidadoHolder getRelatorioByPeriodo(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-												   Long codUnidade, Long cpf, String token) throws SQLException {
+    private static final String BUSCA_ACUMULADO_POR_DIA = "select m.data,\n" +
+            IndicadorDaoImpl.COLUNAS_ACUMULADOS +
+            " from mapa m join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
+            "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
+            "else 0 end) as apontamentos_ok,\n" +
+            "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "group by 1) as tracking on tracking_mapa = m.mapa\n" +
+            "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista\n" +
+            "JOIN EQUIPE E ON E.cod_unidade = m.cod_unidade AND C.cod_equipe = e.codigo\n" +
+            "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
+            "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
+            "JOIN regional R ON R.codigo = U.cod_regional\n" +
+            "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
+            " EM.codigo::TEXT LIKE ? AND\n" +
+            " R.codigo::TEXT LIKE ? AND\n" +
+            " U.codigo::TEXT LIKE ? AND\n" +
+            "E.nome LIKE ?\n" +
+            "group by 1, um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
+            "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
+            "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
+            "um.meta_tempo_largada_mapas\n" +
+            "ORDER BY 1 %s;";
+    
+    public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
+            " FROM \n" +
+            "MAPA M \n" +
+            "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
+            "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+            "JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
+            "JOIN regional R ON R.codigo = U.cod_regional\n" +
+            "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
+            "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
+            "LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
+            "FROM tracking t\n" +
+            "JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
+            "JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
+            "FROM tracking t\n" +
+            "JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
+            "GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
+            "JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
+            "FROM tracking t\n" +
+            "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
+            "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
+            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
+            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade ";
 
-		System.out.println(dataInicial);
-		System.out.println(dataFinal);
-		System.out.println(equipe);
-		System.out.println(codUnidade);
-		System.out.println(cpf);
-		System.out.println(token);
+    /**
+     * Método utilizado para buscar os dados da aba acumulados, tela Relatórios.
+     * Busca os dados pós clique de um card da aba Diário, mostrando o acumulado
+     * do dia clicado, tela Relatórios, pilar Entrega.
+     * @param dataInicial um Long
+     * @param dataFinal um Long
+     * @param codEmpresa código da empresa a ser usado no filtro
+     * @param codRegional código da regional a ser usado no filtro
+     * @param codUnidade código da unidade a ser usado no filtro
+     * @param equipe nome da equipe a ser usado no filtro
+     * @return lista de {@link IndicadorAcumulado}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
+                                                            String codRegional, String codUnidade, String equipe)throws SQLException{
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        List<IndicadorAcumulado> acumulados = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES);
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+            stmt.setString(3, codEmpresa);
+            stmt.setString(4, codRegional);
+            stmt.setString(5, codUnidade);
+            stmt.setString(6, equipe);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                acumulados = new IndicadorDaoImpl().createAcumulados(rSet);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return acumulados;
+    }
 
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		MetasDao metasDao = new MetasDaoImpl();
-		meta = metasDao.getMetasByUnidade(codUnidade);
-		ConsolidadoHolder consolidadoHolder = new ConsolidadoHolder();
 
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_RELATORIO, ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			stmt.setLong(1, cpf); 
-			stmt.setString(2, token); 
-			stmt.setString(3, equipe);
-			stmt.setLong(4, codUnidade);
-			stmt.setDate(5, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
-            L.d("RelatorioDaoImpl", stmt.toString());
-			rSet = stmt.executeQuery();
-			List<ConsolidadoMapasDia> listConsolidadoMapasDia = new ArrayList<>();
-			ConsolidadoMapasDia consolidadoMapasDia = new ConsolidadoMapasDia();
-			List<Mapa> listMapas = new ArrayList<>();
-			Mapa mapa;
-			if(rSet.first()){
-			    L.d("RelatorioDaoImpl", "rSet nao vazio");
-				mapa = createMapa(rSet);
-				listMapas.add(mapa);
-			}
-			while(rSet.next()){
-				if(rSet.getDate("DATA").getTime() == listMapas.get(listMapas.size()-1).getData().getTime()){
-					mapa = createMapa(rSet);
-					listMapas.add(mapa);
-					if(rSet.isLast()){
-						consolidadoMapasDia.data = listMapas.get(0).getData();
-						consolidadoMapasDia.mapas = listMapas;
-						setTotaisConsolidadoDia(consolidadoMapasDia);
-						listConsolidadoMapasDia.add(consolidadoMapasDia);						
-					}
-				}else{
-					consolidadoMapasDia.data = listMapas.get(0).getData();
-					consolidadoMapasDia.mapas = listMapas;
-					setTotaisConsolidadoDia(consolidadoMapasDia);
-					listConsolidadoMapasDia.add(consolidadoMapasDia);
-					consolidadoMapasDia = new ConsolidadoMapasDia();
-					listMapas = new ArrayList<>();
-					mapa = new Mapa();
-					mapa = createMapa(rSet);
-					listMapas.add(mapa);
-				}
-			}
-			consolidadoHolder.codUnidade = codUnidade;
-			consolidadoHolder.listConsolidadoMapasDia = listConsolidadoMapasDia;
-			if(!listConsolidadoMapasDia.isEmpty()){
-				setTotaisHolder(consolidadoHolder);	
-			}
-			
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		System.out.print(consolidadoHolder);
-		return  consolidadoHolder;
-	}
+    public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
+                                               String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 
-	@Override
-	public ItemDevolucaoCx createDevCx(ResultSet rSet) throws SQLException {
-		ItemDevolucaoCx itemDevolucaoCx = new ItemDevolucaoCx();
-		itemDevolucaoCx.setData(rSet.getDate("DATA"));
-		itemDevolucaoCx.setCarregadas(rSet.getDouble("CXCARREG"));
-		itemDevolucaoCx.setEntregues(rSet.getDouble("CXENTREG"));
-		itemDevolucaoCx.setDevolvidas(itemDevolucaoCx.getCarregadas() - itemDevolucaoCx.getEntregues());
-		if(itemDevolucaoCx.getCarregadas() > 0){itemDevolucaoCx.setResultado(itemDevolucaoCx.getDevolvidas() / itemDevolucaoCx.getCarregadas());}
-		itemDevolucaoCx.setMeta(meta.getMetaDevCx());
-		itemDevolucaoCx.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoCx.getResultado(), meta.getMetaDevCx()));
-		return itemDevolucaoCx;
-	}
+        return new IndicadorDaoImpl().getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
+                codUnidade, equipe, cpf, indicador);
+    }
 
-	@Override
-	public ItemDevolucaoNf createDevNf(ResultSet rSet) throws SQLException {
-		ItemDevolucaoNf itemDevolucaoNf = new ItemDevolucaoNf();
-		itemDevolucaoNf.setData(rSet.getDate("DATA"));
-		itemDevolucaoNf.setCarregadas(rSet.getDouble("QTNFCARREGADAS"));
-		itemDevolucaoNf.setEntregues(rSet.getDouble("QTNFENTREGUES"));
-		itemDevolucaoNf.setDevolvidas(itemDevolucaoNf.getCarregadas() - itemDevolucaoNf.getEntregues());
-		if(itemDevolucaoNf.getCarregadas()>0){itemDevolucaoNf.setResultado(itemDevolucaoNf.getDevolvidas() / itemDevolucaoNf.getCarregadas());}
-		itemDevolucaoNf.setMeta(meta.getMetaDevNf());
-		itemDevolucaoNf.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoNf.getResultado(), meta.getMetaDevNf()));
-		return itemDevolucaoNf;
-	}
+    /**
+     * Busca os dados para a aba Diário da tela Relatórios, pilar Entrega
+     * @param dataInicial um Long
+     * @param dataFinal um Long
+     * @param codEmpresa código da empresa usado no filtro
+     * @param codRegional código da regional usado no filtro
+     * @param codUnidade código da unidade usado no filtro
+     * @param equipe nome da equipe usado no filtro
+     * @return lista de {@link ConsolidadoDia}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
+                                                  String codRegional, String codUnidade, String equipe, int limit, int offset)throws SQLException{
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        List<ConsolidadoDia> consolidados = new ArrayList<>();
+        try{
+            conn = getConnection();
+            String query = String.format(BUSCA_ACUMULADO_POR_DIA, " LIMIT " + limit + " OFFSET " + offset);
+            stmt = conn.prepareStatement(query);
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+            stmt.setString(3, codEmpresa);
+            stmt.setString(4, codRegional);
+            stmt.setString(5, codUnidade);
+            stmt.setString(6, equipe);
+            rSet = stmt.executeQuery();
+            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+            while (rSet.next()){
+                ConsolidadoDia consolidado = new ConsolidadoDia();
+                consolidado.setData(rSet.getDate("DATA"))
+                            .setQtdMapas(rSet.getInt("VIAGENS_TOTAL"))
+                            .setIndicadores(indicadorDao.createAcumulados(rSet));
+                consolidados.add(consolidado);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return consolidados;
+    }
 
-	@Override
-	public ItemDevolucaoHl createDevHl(ResultSet rSet) throws SQLException {
-		ItemDevolucaoHl itemDevolucaoHl = new ItemDevolucaoHl();
-		itemDevolucaoHl.setData(rSet.getDate("DATA"));
-		itemDevolucaoHl.setCarregadas(rSet.getDouble("QTHLCARREGADOS"));
-		itemDevolucaoHl.setEntregues(rSet.getDouble("QTHLENTREGUES"));
-		itemDevolucaoHl.setDevolvidas(itemDevolucaoHl.getCarregadas() - itemDevolucaoHl.getEntregues());
-		if(itemDevolucaoHl.getCarregadas() > 0){itemDevolucaoHl.setResultado(itemDevolucaoHl.getDevolvidas() / itemDevolucaoHl.getCarregadas());}
-		itemDevolucaoHl.setMeta(meta.getMetaDevHl());
-		itemDevolucaoHl.setBateuMeta(MetaUtils.bateuMeta(itemDevolucaoHl.getResultado(), meta.getMetaDevHl()));
-		return itemDevolucaoHl;
-	}
+    /**
+     * Estratifica os mapas de um dia, contém os dados da equipe, data e mapa, além dos indicadores
+     * no formato de item e não de acumulado, chamado quando acontece um clique no FAB
+     * @param data uma data, serão buscados apenas os mapas dessa data
+     * @param codEmpresa código da empresa a ser usado no filtro
+     * @param codRegional código da regional a ser usado no filtro
+     * @param codUnidade código da unidade a ser usado no filtro
+     * @param equipe nome da equipe a ser usado no filtro
+     * @return lista de {@link MapaEstratificado}
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
+                                                          String codUnidade, String equipe) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<MapaEstratificado> mapas = new ArrayList<>();
+        IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT \n" +
+                    FRAGMENTO_BUSCA_EXTRATO_DIA +
+                    " WHERE\n" +
+                    "m.DATA = ? AND\n" +
+                    "EM.codigo::TEXT LIKE ? AND\n" +
+                    "R.codigo::TEXT LIKE ? AND\n" +
+                    "U.codigo::TEXT LIKE ? AND\n" +
+                    "E.nome::TEXT LIKE ? \n" +
+                    "ORDER BY M.MAPA;");
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(data)));
+            stmt.setString(2, codEmpresa);
+            stmt.setString(3, codRegional);
+            stmt.setString(4 ,codUnidade);
+            stmt.setString(5, equipe);
+            L.d(TAG, stmt.toString());
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                MapaEstratificado mapa = new MapaEstratificado();
+                mapa.setNumeroMapa(rSet.getInt("MAPA"))
+                        .setMotorista(rSet.getString("MOTORISTA"))
+                        .setAjudante1(rSet.getString("AJ1"))
+                        .setAjudante2(rSet.getString("AJ2"))
+                        .setData(rSet.getDate("DATA"))
+                        .setPlaca(rSet.getString("PLACA"))
+                        .setEquipe(rSet.getString("EQUIPE"))
+                        .setIndicadores(indicadorDao.createExtratoDia(rSet));
+                mapas.add(mapa);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return mapas;
+    }
 
-	@Override
-	public ItemTempoInterno createTempoInterno(ResultSet rSet) throws SQLException {
-		ItemTempoInterno itemTempoInterno = new ItemTempoInterno();
-		Time tempoInterno;
-		itemTempoInterno.setData(rSet.getDate("DATA"));
-		itemTempoInterno.setHrEntrada((rSet.getTime("HRENTR")));
-		L.d("t", "Pegando tempo interno");
-		tempoInterno = new Time(0);
-		tempoInterno = rSet.getTime("TEMPOINTERNO");
-		if (tempoInterno != null) {
-			// entrada + tempo interno = horario do fechamento
-			itemTempoInterno.setHrFechamento(TimeUtils.somaHoras(itemTempoInterno.getHrEntrada(), tempoInterno));
-			itemTempoInterno.setResultado(tempoInterno);
-			itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
-			itemTempoInterno.setBateuMeta(MetaUtils.bateuMeta(tempoInterno, meta.getMetaTempoInternoHoras()));
-		}else{
-			itemTempoInterno.setHrFechamento(new Time(0));
-			itemTempoInterno.setResultado(new Time(0));
-			itemTempoInterno.setMeta(meta.getMetaTempoInternoHoras());
-			itemTempoInterno.setBateuMeta(false);
-		}
-		return itemTempoInterno;
-	}
-
-	@Override
-	public ItemTempoRota createTempoRota(ResultSet rSet) throws SQLException {
-		ItemTempoRota itemTempoRota = new ItemTempoRota();
-		itemTempoRota.setData(rSet.getDate("DATA"));
-		itemTempoRota.setHrEntrada(rSet.getTime("HRENTR"));
-		itemTempoRota.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
-		// saber o tempo que o caminhão ficou na rua, por isso hora de
-		// entrada(volta da rota) - hora de saída( saída para rota)
-		itemTempoRota.setResultado(
-				TimeUtils.differenceBetween(itemTempoRota.getHrEntrada(), itemTempoRota.getHrSaida()));
-		itemTempoRota.setMeta(meta.getMetaTempoRotaHoras());
-		itemTempoRota.setBateuMeta(MetaUtils.bateuMeta(itemTempoRota.getResultado(), meta.getMetaTempoRotaHoras()));
-		return itemTempoRota;
-	}
-
-	@Override
-	public ItemTempoLargada createTempoLargada(ResultSet rSet) throws SQLException {
-		ItemTempoLargada itemTempoLargada = new ItemTempoLargada();
-		itemTempoLargada.setData(rSet.getDate("DATA"));
-		itemTempoLargada.setHrMatinal(rSet.getTime("HRMATINAL"));
-		itemTempoLargada.setHrSaida(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
-		itemTempoLargada.setResultado(
-				MetaUtils.calculaTempoLargada(itemTempoLargada.getHrSaida(), itemTempoLargada.getHrMatinal()));
-		itemTempoLargada.setMeta(meta.getMetaTempoLargadaHoras());
-		itemTempoLargada.setBateuMeta(
-				MetaUtils.bateuMeta(itemTempoLargada.getResultado(), meta.getMetaTempoLargadaHoras()));
-		return itemTempoLargada;
-	}
-
-	@Override
-	public ItemJornadaLiquida createJornadaLiquida(ResultSet rSet) throws SQLException {
-		Time matinal;
-		Time rota;
-		Time tempoInterno;
-		tempoInterno = new Time(rSet.getTime("TEMPOINTERNO").getTime()+0) ;
-		rota = TimeUtils.differenceBetween(TimeUtils.toSqlTime(rSet.getTimestamp("HRENTR")),
-				TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")));
-		matinal = MetaUtils.calculaTempoLargada(TimeUtils.toSqlTime(rSet.getTimestamp("HRSAI")),
-				rSet.getTime("HRMATINAL"));
-		ItemJornadaLiquida itemJornadaLiquida = new ItemJornadaLiquida();
-		itemJornadaLiquida.setData(rSet.getDate("DATA"));
-		itemJornadaLiquida.setTempoInterno(tempoInterno);
-		itemJornadaLiquida.setTempoRota(rota);
-		itemJornadaLiquida.setTempoLargada(matinal);
-		itemJornadaLiquida.setResultado(TimeUtils.somaHoras(TimeUtils.somaHoras(matinal, rota), tempoInterno));
-		itemJornadaLiquida.setMeta(meta.getMetaJornadaLiquidaHoras());
-		itemJornadaLiquida.setBateuMeta(
-				MetaUtils.bateuMeta(itemJornadaLiquida.getResultado(), meta.getMetaJornadaLiquidaHoras()));
-		return itemJornadaLiquida;
-	}
-
-	@Override
-	public ItemTracking createTracking (ResultSet rSet) throws SQLException {
-		ItemTracking itemTracking = new ItemTracking();
-		itemTracking.setData(rSet.getDate("DATA"));
-		itemTracking.setTotal(rSet.getDouble("TOTAL_TRACKING"));
-		itemTracking.setOk(rSet.getDouble("APONTAMENTO_OK"));
-		itemTracking.setNok(itemTracking.getTotal() - itemTracking.getOk());
-		if(itemTracking.getTotal() == 0){
-			itemTracking.setResultado(0);
-		}else{itemTracking.setResultado(itemTracking.getOk() / itemTracking.getTotal());}
-		itemTracking.setMeta(meta.getMetaTracking());
-		itemTracking.setBateuMeta(!(MetaUtils.bateuMeta(itemTracking.getResultado(), itemTracking.getMeta())));
-		return itemTracking;
-	}
-
-	private Mapa createMapa(ResultSet rSet) throws SQLException{
-		Mapa mapa = new Mapa();
-		mapa.setNumeroMapa(rSet.getInt("MAPA"));
-
-		L.d("tag", "Criou o mapa: " + mapa.getNumeroMapa());
-		mapa.setData(rSet.getDate("DATA"));
-		mapa.setEquipe(rSet.getString("EQUIPE"));
-		mapa.setMotorista(rSet.getString("NOMEMOTORISTA"));
-		mapa.setAjudante1(rSet.getString("NOMEAJUD1"));
-		mapa.setAjudante2(rSet.getString("NOMEAJUD2"));
-		mapa.setPlaca(rSet.getString("PLACA"));
-		mapa.setDevCx(createDevCx(rSet));
-		mapa.setDevNf(createDevNf(rSet));
-		mapa.setDevHl(createDevHl(rSet));
-		mapa.setTempoInterno(createTempoInterno(rSet));
-		mapa.setTempoRota(createTempoRota(rSet));
-		mapa.setTempoLargada(createTempoLargada(rSet));
-		mapa.setJornadaLiquida(createJornadaLiquida(rSet));
-		mapa.setTracking(createTracking(rSet));
-		mapa.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-
-		return mapa;
-	}
-
-	private void setTotaisConsolidadoDia (ConsolidadoMapasDia consolidadoMapasDia){
-		List<Mapa> listMapas = consolidadoMapasDia.mapas;
-		consolidadoMapasDia.data = listMapas.get(0).getData();
-
-		for(Mapa mapa : listMapas){
-			consolidadoMapasDia.cxCarregadas += mapa.getDevCx().getCarregadas();
-			consolidadoMapasDia.cxEntregues += mapa.getDevCx().getEntregues();
-			consolidadoMapasDia.cxDevolvidas += mapa.getDevCx().getDevolvidas();
-
-			consolidadoMapasDia.nfCarregadas += mapa.getDevNf().getCarregadas();
-			consolidadoMapasDia.nfEntregues += mapa.getDevNf().getEntregues();
-			consolidadoMapasDia.nfDevolvidas += mapa.getDevNf().getDevolvidas();
-
-			consolidadoMapasDia.hlCarregadas += mapa.getDevHl().getCarregadas();
-			consolidadoMapasDia.hlEntregues += mapa.getDevHl().getEntregues();
-			consolidadoMapasDia.hlDevolvidas += mapa.getDevHl().getDevolvidas();
-			
-			consolidadoMapasDia.OkTracking += mapa.getTracking().getOk();
-			consolidadoMapasDia.NokTracking += mapa.getTracking().getNok();
-			consolidadoMapasDia.totalTracking += mapa.getTracking().getTotal();
-
-			if(mapa.getTempoLargada().isBateuMeta()){
-				consolidadoMapasDia.mapasOkLargada += 1;
-			}else{consolidadoMapasDia.mapasNokLargada += 1;}
-			consolidadoMapasDia.totalMapasLargada += 1;
-
-			if(mapa.getTempoRota().isBateuMeta()){
-				consolidadoMapasDia.mapasOkRota += 1;
-			}else{consolidadoMapasDia.mapasNokRota += 1;}
-			consolidadoMapasDia.totalMapasRota += 1;
-
-			if(mapa.getTempoInterno().isBateuMeta()){
-				consolidadoMapasDia.mapasOkInterno += 1;
-			}else{consolidadoMapasDia.mapasNokInterno += 1;}
-			consolidadoMapasDia.totalMapasInterno += 1;
-
-			if(mapa.getJornadaLiquida().isBateuMeta()){
-				consolidadoMapasDia.mapasOkJornadaLiquida += 1;
-			}else{consolidadoMapasDia.mapasNokJornadaLiquida += 1;}
-			consolidadoMapasDia.totalMapasJornadaLiquida += 1;
-						
-		}
-		consolidadoMapasDia.codUnidade = consolidadoMapasDia.mapas.get(0).getCodUnidade();
-
-		
-		if(consolidadoMapasDia.cxCarregadas > 0){
-		consolidadoMapasDia.resultadoDevCx = (double)consolidadoMapasDia.cxDevolvidas / (double)consolidadoMapasDia.cxCarregadas;
-		consolidadoMapasDia.metaDevCx = meta.getMetaDevCx();
-		consolidadoMapasDia.bateuDevCx = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevCx, meta.getMetaDevCx());
-		}
-		
-		if(consolidadoMapasDia.nfCarregadas > 0){
-		consolidadoMapasDia.resultadoDevNf = (double)consolidadoMapasDia.nfDevolvidas / (double)consolidadoMapasDia.nfCarregadas;
-		consolidadoMapasDia.metaDevNf = meta.getMetaDevNf();
-		consolidadoMapasDia.bateuDevNf = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevNf, meta.getMetaDevNf());
-		}
-
-		if(consolidadoMapasDia.hlCarregadas > 0){
-		consolidadoMapasDia.resultadoDevHl = (double)consolidadoMapasDia.hlDevolvidas / (double)consolidadoMapasDia.hlCarregadas;
-		consolidadoMapasDia.metaDevHl = meta.getMetaDevHl();
-		consolidadoMapasDia.bateuDevHl = MetaUtils.bateuMeta(consolidadoMapasDia.resultadoDevHl, meta.getMetaDevHl());
-		}
-		
-		consolidadoMapasDia.resultadoLargada = (double)consolidadoMapasDia.mapasOkLargada / (double)consolidadoMapasDia.totalMapasLargada;
-		consolidadoMapasDia.metaTempoLargada = meta.getMetaTempoLargadaMapas();
-		consolidadoMapasDia.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoLargada, meta.getMetaTempoLargadaMapas());
-
-		consolidadoMapasDia.resultadoRota = (double)consolidadoMapasDia.mapasOkRota / (double)consolidadoMapasDia.totalMapasRota;
-		consolidadoMapasDia.metaTempoRota = meta.getMetaTempoRotaMapas();
-		consolidadoMapasDia.bateuRota = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoRota, meta.getMetaTempoRotaMapas());
-
-		consolidadoMapasDia.resultadoInterno = (double)consolidadoMapasDia.mapasOkInterno / (double)consolidadoMapasDia.totalMapasInterno;
-		consolidadoMapasDia.metaTempoInterno = meta.getMetaTempoInternoMapas();
-		consolidadoMapasDia.bateuInterno = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoInterno, meta.getMetaTempoInternoMapas());
-
-		consolidadoMapasDia.resultadoJornada = (double)consolidadoMapasDia.mapasOkJornadaLiquida / (double)consolidadoMapasDia.totalMapasJornadaLiquida;
-		consolidadoMapasDia.metaJornada = meta.getMetaJornadaLiquidaMapas();
-		consolidadoMapasDia.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
-		
-		if(consolidadoMapasDia.totalTracking > 0){
-		consolidadoMapasDia.resultadoTracking = (double)consolidadoMapasDia.OkTracking / (double)consolidadoMapasDia.totalTracking;
-		consolidadoMapasDia.metaTracking = meta.getMetaTracking();
-		consolidadoMapasDia.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoMapasDia.resultadoTracking, meta.getMetaTracking());
-		}
-	}
-
-	private void setTotaisHolder (ConsolidadoHolder consolidadoHolder){
-		List<ConsolidadoMapasDia> listConsolidados = consolidadoHolder.listConsolidadoMapasDia;
-
-		for(ConsolidadoMapasDia consolidado : listConsolidados){
-
-			consolidadoHolder.cxCarregadas += consolidado.cxCarregadas;
-			consolidadoHolder.cxEntregues += consolidado.cxEntregues;
-			consolidadoHolder.cxDevolvidas += consolidado.cxDevolvidas;
-
-			consolidadoHolder.nfCarregadas += consolidado.nfCarregadas;
-			consolidadoHolder.nfEntregues += consolidado.nfEntregues;
-			consolidadoHolder.nfDevolvidas += consolidado.nfDevolvidas;
-
-			consolidadoHolder.hlCarregadas += consolidado.hlCarregadas;
-			consolidadoHolder.hlEntregues += consolidado.hlEntregues;
-			consolidadoHolder.hlDevolvidas += consolidado.hlDevolvidas;
-
-			consolidadoHolder.mapasOkLargada += consolidado.mapasOkLargada;
-			consolidadoHolder.mapasNokLargada += consolidado.mapasNokLargada;
-			consolidadoHolder.totalMapasLargada += consolidado.totalMapasLargada;
-
-			consolidadoHolder.mapasOkRota += consolidado.mapasOkRota;
-			consolidadoHolder.mapasNokRota += consolidado.mapasNokRota;
-			consolidadoHolder.totalMapasRota += consolidado.totalMapasRota;
-
-			consolidadoHolder.mapasOkInterno += consolidado.mapasOkInterno;
-			consolidadoHolder.mapasNokInterno += consolidado.mapasNokInterno;
-			consolidadoHolder.totalMapasInterno += consolidado.totalMapasInterno;
-
-			consolidadoHolder.mapasOkJornadaLiquida += consolidado.mapasOkJornadaLiquida;
-			consolidadoHolder.mapasNokJornadaLiquida += consolidado.mapasNokJornadaLiquida;
-			consolidadoHolder.totalMapasJornadaLiquida += consolidado.totalMapasJornadaLiquida;
-			
-			consolidadoHolder.OkTracking += consolidado.OkTracking;
-			consolidadoHolder.NokTracking += consolidado.NokTracking;
-			consolidadoHolder.totalTracking += consolidado.totalTracking;
-		}
-
-		
-		if(consolidadoHolder.cxCarregadas > 0){
-		consolidadoHolder.resultadoDevCx = (double)consolidadoHolder.cxDevolvidas / (double)consolidadoHolder.cxCarregadas;
-		consolidadoHolder.metaDevCx = meta.getMetaDevCx();
-		consolidadoHolder.bateuDevCx = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevCx, meta.getMetaDevCx());
-		}
-
-		if(consolidadoHolder.nfCarregadas > 0){
-		consolidadoHolder.resultadoDevNf = (double)consolidadoHolder.nfDevolvidas / (double)consolidadoHolder.nfCarregadas;
-		consolidadoHolder.metaDevNf = meta.getMetaDevNf();
-		consolidadoHolder.bateuDevNf = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevNf, meta.getMetaDevNf());
-		}
-
-		if(consolidadoHolder.hlCarregadas > 0){
-		consolidadoHolder.resultadoDevHl = (double)consolidadoHolder.hlDevolvidas / (double)consolidadoHolder.hlCarregadas;
-		consolidadoHolder.metaDevHl = meta.getMetaDevHl();
-		consolidadoHolder.bateuDevHl = MetaUtils.bateuMeta(consolidadoHolder.resultadoDevHl, meta.getMetaDevHl());
-		}
-		
-		consolidadoHolder.resultadoLargada = (double)consolidadoHolder.mapasOkLargada / (double)consolidadoHolder.totalMapasLargada;
-		consolidadoHolder.metaTempoLargada = meta.getMetaTempoLargadaMapas();
-		consolidadoHolder.bateuLargada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoLargada, meta.getMetaTempoLargadaMapas());
-
-		consolidadoHolder.resultadoRota = (double)consolidadoHolder.mapasOkRota / (double)consolidadoHolder.totalMapasRota;
-		consolidadoHolder.metaTempoRota = meta.getMetaTempoRotaMapas();
-		consolidadoHolder.bateuRota = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoRota, meta.getMetaTempoRotaMapas());
-
-		consolidadoHolder.resultadoInterno = (double)consolidadoHolder.mapasOkInterno / (double)consolidadoHolder.totalMapasInterno;
-		consolidadoHolder.metaTempoInterno = meta.getMetaTempoInternoMapas();
-		consolidadoHolder.bateuInterno = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoInterno, meta.getMetaTempoInternoMapas());
-
-		consolidadoHolder.resultadoJornada = (double)consolidadoHolder.mapasOkJornadaLiquida / (double)consolidadoHolder.totalMapasJornadaLiquida;
-		consolidadoHolder.metaJornada = meta.getMetaJornadaLiquidaMapas();
-		consolidadoHolder.bateuJornada = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoJornada, meta.getMetaJornadaLiquidaMapas());
-		
-		if(consolidadoHolder.totalTracking > 0){
-		consolidadoHolder.resultadoTracking = (double)consolidadoHolder.OkTracking / (double)consolidadoHolder.totalTracking;
-		consolidadoHolder.metaTracking = meta.getMetaTracking();
-		consolidadoHolder.bateuTracking = MetaUtils.bateuMetaMapas(consolidadoHolder.resultadoTracking, meta.getMetaTracking());
-		}
-	}
-
+    public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
+                                                String codRegional, String codUnidade, String equipe, String indicador)throws SQLException{
+        Connection conn = null;
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        List<DadosGrafico> dados = new ArrayList<>();
+        try{
+            conn = getConnection();
+            String query = String.format(BUSCA_ACUMULADO_POR_DIA, "");
+            stmt = conn.prepareStatement(query);
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+            stmt.setString(3, codEmpresa);
+            stmt.setString(4, codRegional);
+            stmt.setString(5, codUnidade);
+            stmt.setString(6, equipe);
+            rSet = stmt.executeQuery();
+            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+            while (rSet.next()){
+                DadosGrafico dado = new DadosGrafico();
+                dado.setData(rSet.getDate("DATA"))
+                        .setIndicador(indicadorDao.createAcumuladoIndicador(rSet, indicador));
+                dados.add(dado);
+            }
+        }finally {
+            closeConnection(conn,stmt,rSet);
+        }
+        return dados;
+    }
 }

@@ -20,12 +20,12 @@ public class RankingResource {
 	@GET
 	@Path("/getRanking/{codUnidade}/{equipe}")
 	@Secured
-	public List<ItemPosicao> getRanking(
+	public void getRanking(
 			@QueryParam("dataInicial") long dataInicial, 
 			@QueryParam("dataFinal") long dataFinal, 
 			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade) throws SQLException {
-		return service.getRanking(DateUtils.toLocalDate(new Date(dataInicial)),
-				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade);
+//		return service.getRanking(DateUtils.toLocalDate(new Date(dataInicial)),
+//				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade);
 	}
 }
