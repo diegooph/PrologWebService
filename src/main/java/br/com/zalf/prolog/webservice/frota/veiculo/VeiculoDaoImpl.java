@@ -36,7 +36,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
-			stmt.setString(1, veiculo.getPlaca());
+			stmt.setString(1, veiculo.getPlaca().toUpperCase());
 			stmt.setLong(2, codUnidade);
 			stmt.setLong(3, veiculo.getKmAtual());
 			stmt.setBoolean(4, true);
