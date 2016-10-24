@@ -190,8 +190,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
      */
 	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
-		List<FuncaoApp> funcoes = new ArrayList<>();
-		Pilar pilar = null;
+
 		ResultSet rSet = null;
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -210,31 +209,39 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 				stmt.setString(2, String.valueOf(codCargo));
 			}
 			rSet = stmt.executeQuery();
-			while(rSet.next()){
-				if(pilar == null){//primeira linha do rSet
-					pilar = createPilar(rSet);
-					funcoes.add(createFuncaoApp(rSet));
-				}else{
-					if(rSet.getString("PILAR").equals(pilar.nome)){
-						funcoes.add(createFuncaoApp(rSet));
-					}else{
-						pilar.funcoes = funcoes;
-						pilares.add(pilar);
-						pilar = createPilar(rSet);
-						funcoes = new ArrayList<>();
-						funcoes.add(createFuncaoApp(rSet));
-					}
-				}
-			}
-			if (pilar != null) {
-				pilar.funcoes = funcoes;
-			}
-			pilares.add(pilar);
+			pilares = createPilares(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 
 		return pilares;
+	}
+
+	public List<Pilar> createPilares(ResultSet rSet) throws SQLException{
+		List<Pilar> pilares = new ArrayList<>();
+		List<FuncaoApp> funcoes = new ArrayList<>();
+		Pilar pilar = null;
+		while(rSet.next()){
+			if(pilar == null){//primeira linha do rSet
+				pilar = createPilar(rSet);
+				funcoes.add(createFuncaoApp(rSet));
+			}else{
+				if(rSet.getString("PILAR").equals(pilar.nome)){
+					funcoes.add(createFuncaoApp(rSet));
+				}else{
+					pilar.funcoes = funcoes;
+					pilares.add(pilar);
+					pilar = createPilar(rSet);
+					funcoes = new ArrayList<>();
+					funcoes.add(createFuncaoApp(rSet));
+				}
+			}
+		}
+		if (pilar != null) {
+			pilar.funcoes = funcoes;
+		}
+		pilares.add(pilar);
+		return  pilares;
 	}
 
 	private FuncaoApp createFuncaoApp(ResultSet rSet) throws SQLException{
