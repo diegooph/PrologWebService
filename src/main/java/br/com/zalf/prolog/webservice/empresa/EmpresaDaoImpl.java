@@ -7,6 +7,8 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
@@ -169,12 +171,84 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				listFuncao.add(createFuncao(rSet));
+				Funcao funcao = createFuncao(rSet);
+				funcao.setPermissões(getPermissoes(funcao.getCodigo(), codUnidade));
+				listFuncao.add(funcao);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return listFuncao;
+	}
+
+	/**
+	 * Busca as funções do prolog de acordo com os parametros
+	 * @param codCargo codigo do cargo
+	 * @param codUnidade codigo da unidade
+	 * @return
+	 * @throws SQLException
+     */
+	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException {
+		List<Pilar> pilares = new ArrayList<>();
+		List<FuncaoApp> funcoes = new ArrayList<>();
+		Pilar pilar = null;
+		ResultSet rSet = null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
+					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"WHERE CF.cod_unidade = ? AND cod_funcao_colaborador::text like ?\n" +
+					"ORDER BY PP.pilar, FP.funcao");
+			stmt.setLong(1, codUnidade);
+			if(codCargo == null){
+				stmt.setString(2, "%");
+			}else {
+				stmt.setString(2, String.valueOf(codCargo));
+			}
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				if(pilar == null){//primeira linha do rSet
+					pilar = createPilar(rSet);
+					funcoes.add(createFuncaoApp(rSet));
+				}else{
+					if(rSet.getString("PILAR").equals(pilar.nome)){
+						funcoes.add(createFuncaoApp(rSet));
+					}else{
+						pilar.funcoes = funcoes;
+						pilares.add(pilar);
+						pilar = createPilar(rSet);
+						funcoes = new ArrayList<>();
+						funcoes.add(createFuncaoApp(rSet));
+					}
+				}
+			}
+			if (pilar != null) {
+				pilar.funcoes = funcoes;
+			}
+			pilares.add(pilar);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+
+		return pilares;
+	}
+
+	private FuncaoApp createFuncaoApp(ResultSet rSet) throws SQLException{
+		FuncaoApp funcao = new FuncaoApp();
+		funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
+		funcao.setDescricao(rSet.getString("FUNCAO"));
+		return funcao;
+	}
+
+	private Pilar createPilar(ResultSet rSet) throws SQLException{
+		Pilar pilar = new Pilar();
+		pilar.codigo = rSet.getInt("COD_PILAR");
+		pilar.nome = rSet.getString("PILAR");
+		return pilar;
 	}
 
 	@Override

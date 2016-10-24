@@ -8,6 +8,7 @@ import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -52,6 +53,15 @@ public class EmpresaService {
 		try{
 			return dao.getFuncoesByCodUnidade(codUnidade);
 		}catch(SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade){
+		try{
+			return dao.getPermissoes(codCargo, codUnidade);
+		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
 		}

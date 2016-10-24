@@ -7,6 +7,7 @@ import br.com.zalf.prolog.commons.colaborador.Setor;
 import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -80,5 +81,14 @@ public interface EmpresaDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Empresa> getFiltros(Long cpf) throws SQLException;
+
+	/**
+	 * Busca as funções do prolog de acordo com os parametros
+	 * @param codCargo codigo do cargo
+	 * @param codUnidade codigo da unidade
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException;
 	
 }

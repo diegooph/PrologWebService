@@ -8,6 +8,7 @@ import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -51,6 +52,13 @@ public class EmpresaResource {
 	public List<Funcao> getFuncoesByCodUnidade(
 			@PathParam("codUnidade") Long codUnidade) {
 		return service.getFuncoesByCodUnidade(codUnidade);
+	}
+
+	@GET
+	@Secured
+	@Path("/permissoes/{codUnidade}")
+	public List<Pilar> getPermissoes(@PathParam("codUnidade") Long codUnidade){
+		return service.getPermissoes(null , codUnidade);
 	}
 
 	@GET
