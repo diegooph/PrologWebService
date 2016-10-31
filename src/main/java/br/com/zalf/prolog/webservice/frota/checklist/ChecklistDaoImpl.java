@@ -378,7 +378,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				}
 			}
 			verificaInsereListaLiberacao(hasCheck, listProblemas, listVeiculos, veiculo);
-			listVeiculos.add(veiculo);
 		}
 		finally{
 			closeConnection(conn, stmt, rSet);
