@@ -266,7 +266,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 							+ "JOIN CHECKLIST_MODELO_VEICULO_TIPO CMVT ON CMVT.COD_MODELO = CM.CODIGO AND CMVT.COD_UNIDADE = CM.COD_UNIDADE "
 							+ "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
 							+ "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-							+ "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
+							+ "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND V.STATUS_ATIVO = TRUE "
 							+ "ORDER BY CM.NOME, V.PLACA", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, codUnidade);
@@ -324,12 +324,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt = conn.prepareStatement("SELECT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM \n" +
 					"(SELECT DISTINCT PLACA_VEICULO AS PLACA_CHECK FROM CHECKLIST C \n" +
 					"JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO WHERE DATA_HORA::DATE = ?\n" +
-					"AND V.cod_unidade = ?) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK\n" +
-					"LEFT JOIN (SELECT e.placa_veiculo as PLACA_MANUTENCAO, e.pergunta AS ITEM_MANUTENCAO\n" +
+					"AND V.cod_unidade = ?  AND V.STATUS_ATIVO = TRUE ) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK\n" +
+					"LEFT JOIN (SELECT DISTINCT e.placa_veiculo as PLACA_MANUTENCAO, e.pergunta AS ITEM_MANUTENCAO\n" +
 					"FROM estratificacao_os e\n" +
 					"where e.cod_unidade = ? and e.status_item like 'P' and e.prioridade like 'CRITICA' and e.cpf_mecanico is null\n" +
 					"order by e.placa_veiculo) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA\n" +
-					"WHERE V.COD_UNIDADE = ?\n" +
+					"WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE \n" +
 					"ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO;");
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
@@ -643,8 +643,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	 * @param hasCheck boolean indicando se o veiculo possui checklist realizado no tia corrente
 	 * @param listProblemas lista de problemas que o veículo possui
 	 * @param listVeiculos lista final com os veiculos {@link VeiculoLiberacao}
-     * @param veiculo um veiculo {@link VeiculoLiberacao}
-     */
+	 * @param veiculo um veiculo {@link VeiculoLiberacao}
+	 */
 	private void verificaInsereListaLiberacao(boolean hasCheck, List<PerguntaRespostaChecklist> listProblemas,
 											  List<VeiculoLiberacao> listVeiculos, VeiculoLiberacao veiculo) {
 		if (listProblemas.size() > 0) {
