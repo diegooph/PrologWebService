@@ -280,8 +280,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-					+ " FROM MARCA_VEICULO MA JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
-					+ "WHERE MO.COD_EMPRESA = ? "
+					+ " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
+					+ "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
 					+ "ORDER BY COD_MARCA, COD_MODELO");
 			stmt.setLong(1, codEmpresa);
 			rSet = stmt.executeQuery();
@@ -290,17 +290,21 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					L.d("metodo", "marcas.size == 0");
 					marca.setCodigo(rSet.getLong("COD_MARCA"));
 					marca.setNome(rSet.getString("MARCA"));
-					Modelo modelo = new Modelo();
-					modelo.setCodigo(rSet.getLong("COD_MODELO"));
-					modelo.setNome(rSet.getString("MODELO"));
-					modelos.add(modelo);
-				}else{
-					L.d("metodo", "marcas.size > 0");
-					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+					if(rSet.getString("MODELO") != null) {
 						Modelo modelo = new Modelo();
 						modelo.setCodigo(rSet.getLong("COD_MODELO"));
 						modelo.setNome(rSet.getString("MODELO"));
 						modelos.add(modelo);
+					}
+				}else{
+					L.d("metodo", "marcas.size > 0");
+					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+						if(rSet.getString("MODELO") != null) {
+							Modelo modelo = new Modelo();
+							modelo.setCodigo(rSet.getLong("COD_MODELO"));
+							modelo.setNome(rSet.getString("MODELO"));
+							modelos.add(modelo);
+						}
 					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
 						marca.setModelos(modelos);
 						marcas.add(marca);
@@ -308,10 +312,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 						modelos = new ArrayList<>();
 						marca.setCodigo(rSet.getLong("COD_MARCA"));
 						marca.setNome(rSet.getString("MARCA"));
-						Modelo modelo = new Modelo();
-						modelo.setCodigo(rSet.getLong("COD_MODELO"));
-						modelo.setNome(rSet.getString("MODELO"));
-						modelos.add(modelo);						
+						if(rSet.getString("MODELO") != null) {
+							Modelo modelo = new Modelo();
+							modelo.setCodigo(rSet.getLong("COD_MODELO"));
+							modelo.setNome(rSet.getString("MODELO"));
+							modelos.add(modelo);
+						}
 					}
 				}
 			}
