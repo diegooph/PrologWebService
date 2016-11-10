@@ -325,19 +325,23 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	@Override
-	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException {
+	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException, NullPointerException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
-			stmt.setString(1, modelo.getNome());
-			stmt.setLong(2, codMarca);
-			stmt.setLong(3, codEmpresa);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao cadastrar o modelo do veículo");
-			}	
+			if(modelo.getNome().trim().isEmpty()){
+				throw new NullPointerException("Modelo sem nome!");
+			}else {
+				conn = getConnection();
+				stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
+				stmt.setString(1, modelo.getNome());
+				stmt.setLong(2, codMarca);
+				stmt.setLong(3, codEmpresa);
+				int count = stmt.executeUpdate();
+				if (count == 0) {
+					throw new SQLException("Erro ao cadastrar o modelo do veículo");
+				}
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
