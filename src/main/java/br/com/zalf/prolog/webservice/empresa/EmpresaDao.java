@@ -90,5 +90,15 @@ public interface EmpresaDao {
 	 * @throws SQLException
 	 */
 	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException;
-	
-}
+
+	/**
+	 * Insere ou atualiza as funções do prolog cadastradas para determinado cargo
+	 * @param pilares lista com os pilares e funções
+	 * @param codUnidade codigo da unidade
+	 * @param codCargo codigo do cargo
+	 * @return boolean com o resultado da operação
+	 * @throws SQLException caso não seja possível realizar a operação
+     */
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException;
+
+	}

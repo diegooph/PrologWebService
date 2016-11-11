@@ -105,5 +105,14 @@ public class EmpresaService {
 			return null;
 		}
 	}
+
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo){
+		try{
+			return dao.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 }

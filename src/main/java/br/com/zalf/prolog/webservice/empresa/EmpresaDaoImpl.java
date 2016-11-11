@@ -637,4 +637,45 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		unidade.setListEquipe(listEquipes);
 	}
+
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			// Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
+			deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
+			stmt = conn.prepareStatement("INTERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
+					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codCargo);
+			for(Pilar pilar : pilares){
+				for(FuncaoApp funcao : pilar.funcoes){
+					stmt.setInt(3, funcao.getCodigo());
+					stmt.setInt(4, pilar.codigo);
+					int count = stmt.executeUpdate();
+					if(count == 0){
+						throw new SQLException("Erro ao inserir a função: " + funcao.getCodigo() + " do pilar: " + pilar.codigo);
+					}
+				}
+			}
+		}finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	private boolean deleteCargoFuncaoProlog(long codCargo, Long codUnidade, Connection conn, PreparedStatement stmt) throws SQLException{
+		try{
+			stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG WHERE COD_UNIDADE = ? AND " +
+					"COD_FUNCAO_COLABORADOR = ? ");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codCargo);
+			int count = stmt.executeUpdate();
+			if(count > 0) {
+				return true;
+			}
+		}finally{}
+		return false;
+	}
 }
