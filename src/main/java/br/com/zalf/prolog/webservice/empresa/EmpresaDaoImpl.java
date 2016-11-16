@@ -645,7 +645,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			conn = getConnection();
 			// Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
 			deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
-			stmt = conn.prepareStatement("INTERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
+			stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
 					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
