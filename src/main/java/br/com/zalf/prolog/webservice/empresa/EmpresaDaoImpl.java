@@ -643,6 +643,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		PreparedStatement stmt = null;
 		try{
 			conn = getConnection();
+			conn.setAutoCommit(false);
 			// Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
 			deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
 			stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
@@ -655,11 +656,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 					stmt.setInt(4, pilar.codigo);
 					int count = stmt.executeUpdate();
 					if(count == 0){
-						throw new SQLException("Erro ao inserir a função: " + funcao.getCodigo() + " do pilar: " + pilar.codigo);
+						conn.rollback();
+						return false;
 					}
 				}
 			}
-		}finally {
+			conn.commit();
+		}
+		finally {
 			closeConnection(conn, stmt, null);
 		}
 		return true;
