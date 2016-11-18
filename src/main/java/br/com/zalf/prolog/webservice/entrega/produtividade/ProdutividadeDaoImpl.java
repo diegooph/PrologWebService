@@ -7,7 +7,6 @@ import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -89,7 +88,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, getDataInicial(ano, mes));
 			stmt.setDate(3, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
-			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				ItemProdutividade item = new ItemProdutividade();
@@ -104,6 +102,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 				item.setIndicadores(indicadorDao.createExtratoDia(rSet));
 				itens.add(item);
 			}
+			insertMesAnoConsultaProdutividade(ano, mes, conn, stmt, cpf);
 		}finally {
 			closeConnection(conn,stmt,rSet);
 		}
@@ -117,6 +116,22 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			return DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21));
 		}
 
+	}
+
+	private void insertMesAnoConsultaProdutividade(int ano, int mes, Connection conn, PreparedStatement stmt, Long cpf) throws SQLException{
+		try{
+			stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
+					" (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
+			stmt.setLong(1, cpf);
+			stmt.setLong(2, cpf);
+			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setString(4, mes + "/" + ano);
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao inserir o log de consulta");
+			}
+		}finally {
+		}
 	}
 
 
