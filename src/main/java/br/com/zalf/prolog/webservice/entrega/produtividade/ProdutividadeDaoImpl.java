@@ -21,7 +21,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 
     private static String TAG = ProdutividadeDaoImpl.class.getSimpleName();
 
-	public List<ItemProdutividade> getProdutividadeByPeriodo (int ano, int mes, Long cpf) throws SQLException{
+	public List<ItemProdutividade> getProdutividadeByPeriodo (int ano, int mes, Long cpf, boolean salvaLog) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -59,7 +59,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"else 0\n" +
 					"end as valor , m.fator, m.cargaatual, m.entrega,\n" +
 					"M.DATA,  M.mapa, M.PLACA, M.cxcarreg, m.cxentreg,M.QTHLCARREGADOS,\n" +
-					"M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
+					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
 					"to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 					"M.HRSAI,  M.HRENTR,\n" +
 					"to_seconds(((M.hrentr - M.hrsai)::time)::text) AS TEMPO_ROTA,\n" +
@@ -69,7 +69,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
 					"end)::text) as tempo_largada,\n" +
 					"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
-					"um.meta_dev_hl, um.meta_dev_pdv, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
+					"um.meta_dev_hl, um.meta_dev_nf, um.meta_dev_pdv, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 					"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
 					"FROM mapa_colaborador mc join\n" +
 					"colaborador c on c.cod_unidade = mc.cod_unidade and mc.cod_ambev = c.matricula_ambev\n" +
@@ -102,14 +102,16 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 				item.setIndicadores(indicadorDao.createExtratoDia(rSet));
 				itens.add(item);
 			}
-			insertMesAnoConsultaProdutividade(ano, mes, conn, stmt, cpf);
+			if(salvaLog){
+				insertMesAnoConsultaProdutividade(ano, mes, conn, stmt, cpf);
+			}
 		}finally {
 			closeConnection(conn,stmt,rSet);
 		}
 		return itens;
 	}
 
-	private java.sql.Date getDataInicial(int ano, int mes){
+	public java.sql.Date getDataInicial(int ano, int mes){
 		if(mes == 1){
 			return DateUtils.toSqlDate(LocalDate.of(ano-1, 12, 21));
 		}else{
@@ -133,6 +135,14 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}finally {
 		}
 	}
+
+	public double getTotalItens(List<ItemProdutividade> itens){
+	    double total = 0;
+        for(ItemProdutividade item : itens){
+            total += item.getValor();
+        }
+        return total;
+    }
 
 
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,

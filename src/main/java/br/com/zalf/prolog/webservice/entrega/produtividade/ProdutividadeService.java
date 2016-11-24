@@ -13,7 +13,7 @@ public class ProdutividadeService {
 	
 	public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf) {
 		try {
-			return dao.getProdutividadeByPeriodo(ano, mes, cpf);
+			return dao.getProdutividadeByPeriodo(ano, mes, cpf, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<ItemProdutividade>();

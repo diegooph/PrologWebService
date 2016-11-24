@@ -17,10 +17,11 @@ public interface ProdutividadeDao {
 	 * @param ano um ano
 	 * @param mes um mes
 	 * @param cpf cpf do colaborador a ser buscada a remuneração variável (produtividade)
+	 * @param salvaLog boolean para indicar se deve ou não salvar o log da consulta
 	 * @return lista de ItemProdutividade
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<ItemProdutividade> getProdutividadeByPeriodo (int ano, int mes, Long cpf) throws SQLException;
+	List<ItemProdutividade> getProdutividadeByPeriodo (int ano, int mes, Long cpf, boolean salvaLog) throws SQLException;
 
 	/**
 	 * busca a produtividade associada ao colaborador
