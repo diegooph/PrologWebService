@@ -1,17 +1,15 @@
 package br.com.zalf.prolog.webservice.gente.preContracheque;
 
 import br.com.zalf.prolog.gente.pre_contracheque.Contracheque;
-import br.com.zalf.prolog.gente.pre_contracheque.ItemContracheque;
 
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by Zalf on 23/11/16.
  */
-public class PreContrachequeService {
+public class ContrachequeService {
 
-    PreContrachequeDaoImpl dao = new PreContrachequeDaoImpl();
+    ContrachequeDaoImpl dao = new ContrachequeDaoImpl();
 
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes){
         try{

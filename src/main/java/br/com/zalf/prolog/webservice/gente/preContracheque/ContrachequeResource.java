@@ -13,9 +13,9 @@ import javax.ws.rs.core.MediaType;
 @Path("/contracheque")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PreContrachequeResource {
+public class ContrachequeResource {
 
-    private PreContrachequeService service = new PreContrachequeService();
+    private ContrachequeService service = new ContrachequeService();
 
     @GET
     @Secured

@@ -20,9 +20,9 @@ import java.util.List;
 /**
  * Created by Zalf on 21/11/16.
  */
-public class PreContrachequeDaoImpl extends DatabaseConnection {
+public class ContrachequeDaoImpl extends DatabaseConnection {
 
-    private static final String TAG = PreContrachequeDaoImpl.class.getSimpleName();
+    private static final String TAG = ContrachequeDaoImpl.class.getSimpleName();
 
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException{
         Connection conn = null;
