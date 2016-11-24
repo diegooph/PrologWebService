@@ -58,6 +58,7 @@ public class PreContrachequeDaoImpl extends DatabaseConnection {
             if(bonusDevolucao != null) {
                 itens.add(bonusDevolucao);
             }
+            contracheque = new Contracheque();
             contracheque.setItens(itens);
         }finally {
             closeConnection(conn, stmt, rSet);
