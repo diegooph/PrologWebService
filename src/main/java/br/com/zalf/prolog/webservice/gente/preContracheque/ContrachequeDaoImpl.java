@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -58,6 +60,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             if(bonusDevolucao != null) {
                 itens.add(bonusDevolucao);
             }
+            Collections.sort(itens, new CustomComparator());
             contracheque = new Contracheque();
             contracheque.setItens(itens);
         }finally {
@@ -174,6 +177,18 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         itensPremio.add(item);
         return itensPremio;
     }
+
+    	private class CustomComparator implements Comparator<ItemContracheque> {
+
+		/**
+		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
+		 */
+		@Override
+		public int compare(ItemContracheque o1, ItemContracheque o2) {
+			Integer valor1 = Double.compare(o2.getValor(), o1.getValor());
+				return valor1;
+		}
+	}
 
 
 
