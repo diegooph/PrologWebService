@@ -47,7 +47,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
-            "um.meta_tempo_largada_mapas;";
+            "um.meta_tempo_largada_mapas, um.meta_dev_nf;";
 
     private static final String BUSCA_ACUMULADO_POR_DIA = "select m.data,\n" +
             IndicadorDaoImpl.COLUNAS_ACUMULADOS +
@@ -71,7 +71,7 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "group by 1, um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
-            "um.meta_tempo_largada_mapas\n" +
+            "um.meta_tempo_largada_mapas,um.meta_dev_nf\n" +
             "ORDER BY 1 %s;";
     
     public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
