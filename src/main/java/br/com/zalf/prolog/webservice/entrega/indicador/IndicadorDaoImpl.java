@@ -23,6 +23,8 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total,\n" +
 			"-- Dev Hl\n" +
 			"sum(m.qthlcarregados) hl_carregados_total, sum(qthlcarregados - qthlentregues) as hl_devolvidos_total,\n" +
+			"-- Dev Nf\n" +
+			"sum(m.qtnfcarregadas) nf_carregadas_total, sum(qtnfcarregadas - qtnfentregues) as nf_devolvidas_total,\n" +
 			"-- Dev Pdv\n" +
 			"sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
 			"-- Dispersão Km\n" +
@@ -87,9 +89,10 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_tracking,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
 			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,um.meta_tempo_interno_mapas,to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
-			"um.meta_tempo_largada_mapas ";
+			"um.meta_tempo_largada_mapas, um.meta_dev_nf ";
 
-	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1,c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, " +
+	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
+			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, " +
 			"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas " +
@@ -100,6 +103,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_caixa_viagem,\n" +
 			"um.meta_dev_hl, " +
 			"um.meta_dev_pdv, " +
+			"um.meta_dev_nf, " +
 			"um.meta_dispersao_km, " +
 			"um.meta_dispersao_tempo, " +
 			"um.meta_jornada_liquida_mapas, " +
@@ -163,7 +167,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem, "  +
 			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas, "  +
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas, "  +
-			"um.meta_tempo_largada_mapas;";
+			"um.meta_tempo_largada_mapas, um.meta_dev_nf;";
 
 
 	/**
@@ -242,6 +246,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		List<IndicadorAcumulado> acumulados = new ArrayList<>();
 			acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
+			acumulados.add(IndicadorConverter.createAcumuladoDevNf(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet));
 			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
@@ -287,7 +292,9 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			return IndicadorConverter.createExtratoTempoLargada(rSet);
 		}else if(indicador.equals(TempoRota.TEMPO_ROTA)) {
 			return IndicadorConverter.createExtratoTempoRota(rSet);
-		}
+		}else if(indicador.equals(DevNf.DEVOLUCAO_NF)) {
+		return IndicadorConverter.createExtratoDevNf(rSet);
+	}
 		return Collections.emptyList();
 	}
 
@@ -297,6 +304,8 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			return IndicadorConverter.createAcumuladoCaixaViagem(rSet);
 		}else if(indicador.equals(DevHlAcumulado.DEV_HL_ACUMULADO)){
 			return IndicadorConverter.createAcumuladoDevHl(rSet);
+		}else if(indicador.equals(DevNfAcumulado.DEV_NF_ACUMULADO)){
+			return IndicadorConverter.createAcumuladoDevNf(rSet);
 		}else if(indicador.equals(DevPdvAcumulado.DEV_PDV_ACUMULADO)){
 			return IndicadorConverter.createAcumuladoDevPdv(rSet);
 		}else if(indicador.equals(DispersaoKmAcumulado.DISPERSAO_KM_ACUMULADO)){
@@ -339,6 +348,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		List<IndicadorItem> itens = new ArrayList<>();
 		itens.add(IndicadorConverter.createDevHl(rSet));
 		itens.add(IndicadorConverter.createDevPdv(rSet));
+		itens.add(IndicadorConverter.createDevNf(rSet));
 		itens.add(IndicadorConverter.createTracking(rSet));
 		itens.add(IndicadorConverter.createTempoLargada(rSet));
 		itens.add(IndicadorConverter.createTempoRota(rSet));

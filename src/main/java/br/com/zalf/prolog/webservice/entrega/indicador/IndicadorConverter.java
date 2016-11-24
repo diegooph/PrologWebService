@@ -58,6 +58,25 @@ public class IndicadorConverter {
         return item;
     }
 
+    static List<Indicador> createExtratoDevNf(ResultSet rSet) throws SQLException{
+        List<Indicador> itens = new ArrayList<>();
+        while(rSet.next()){
+            itens.add(createDevNf(rSet));
+        }
+        return itens;
+    }
+
+    static DevNf createDevNf(ResultSet rSet)throws SQLException{
+        DevNf item = new DevNf();
+        item.setData(rSet.getDate("DATA"))
+                .setMapa(rSet.getInt("MAPA"))
+                .setOk(rSet.getDouble("QTNFENTREGUES"))
+                .setNok(rSet.getDouble("QTNFCARREGADAS") - item.getOk())
+                .setMeta(rSet.getDouble("META_DEV_NF"))
+                .calculaResultado();
+        return item;
+    }
+
     static List<Indicador> createExtratoDevPdv(ResultSet rSet) throws SQLException{
         List<Indicador> itens = new ArrayList<>();
         while(rSet.next()){
@@ -230,6 +249,15 @@ public class IndicadorConverter {
         item.setTotalOk(rSet.getInt("HL_CARREGADOS_TOTAL"))
                 .setTotalNok(rSet.getInt("HL_DEVOLVIDOS_TOTAL"))
                 .setMeta(rSet.getDouble("META_DEV_HL"))
+                .calculaResultado();
+        return item;
+    }
+
+    static IndicadorAcumulado createAcumuladoDevNf(ResultSet rSet) throws SQLException{
+        DevNfAcumulado item = new DevNfAcumulado();
+        item.setTotalOk(rSet.getInt("NF_CARREGADAS_TOTAL"))
+                .setTotalNok(rSet.getInt("NF_DEVOLVIDAS_TOTAL"))
+                .setMeta(rSet.getDouble("META_DEV_NF"))
                 .calculaResultado();
         return item;
     }
