@@ -3,11 +3,13 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.DevNfAcumulado;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.gente.pre_contracheque.Contracheque;
-import br.com.zalf.prolog.gente.pre_contracheque.ItemContracheque;
+import br.com.zalf.prolog.gente.contracheque.Contracheque;
+import br.com.zalf.prolog.gente.contracheque.ItemContracheque;
+import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -196,6 +198,69 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return itensPremio;
     }
 
+    public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade)throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try{
+            conn = getConnection();
+            for(ItemImportContracheque item : itens){
+                if(updateItemImportContracheque(item, ano, mes, conn, codUnidade)){
+                    L.d(TAG, "Atualizado o item:" + item.toString());
+                }else{
+                    insertItemImportContracheque(item, ano, mes, conn, codUnidade);
+                }
+            }
+        }finally {
+            closeConnection(null, stmt, null);
+        }
+        return true;
+    }
+
+    private boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException{
+        PreparedStatement stmt = null;
+        try{
+            stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
+                    " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
+            stmt.setString(1, item.descricao);
+            stmt.setString(2, item.subDescricao);
+            stmt.setDouble(3, item.valor);
+            stmt.setInt(4, ano);
+            stmt.setInt(5, mes);
+            stmt.setLong(6, item.cpf);
+            stmt.setLong(7, codUnidade);
+            stmt.setLong(8, item.codigo);
+            int count = stmt.executeUpdate();
+            if(count == 0){
+                return false;
+            }
+        }finally {
+            closeConnection(null, stmt, null);
+        }
+        return true;
+    }
+
+    private boolean insertItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException{
+        PreparedStatement stmt = null;
+        try{
+            stmt = conn.prepareStatement("INSERT INTO PRE_CONTRACHEQUE VALUES (?,?,?,?,?,?,?,?)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, item.cpf);
+            stmt.setInt(3, mes);
+            stmt.setInt(4, ano);
+            stmt.setLong(5, item.codigo);
+            stmt.setString(6, item.descricao);
+            stmt.setString(7, item.subDescricao);
+            stmt.setDouble(8, item.valor);
+            int count = stmt.executeUpdate();
+            if(count == 0){
+                throw new SQLException("Erro ao inserir o item: " + item.toString());
+            }
+        }finally {
+            closeConnection(null, stmt, null);
+        }
+        return true;
+    }
+
     	private class CustomComparator implements Comparator<ItemContracheque> {
 
 		/**
@@ -207,7 +272,6 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 				return valor1;
 		}
 	}
-
 
 
 }
