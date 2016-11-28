@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.preContracheque;
+package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.DevNfAcumulado;
@@ -124,6 +124,18 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return itemContracheque;
     }
 
+    /**
+     * Busca apenas os itens que compõe o premio, estes itens são indicados na tabela pre_contracheque_premissas
+     * @param cpf cpf do colaborador
+     * @param codUnidade cod unidade ao qual o colaborado pertence
+     * @param ano ano da busca
+     * @param mes mes da busca
+     * @param conn uma connection
+     * @param stmt um statement
+     * @param rSet um resultset
+     * @return uma lista com os itens
+     * @throws SQLException caso não seja possivel realizar a busca
+     */
     private List<ItemContracheque> getPremio (Long cpf, Long codUnidade, int ano, int mes, Connection conn,
                                               PreparedStatement stmt, ResultSet rSet) throws SQLException{
         List<ItemContracheque> itensPremio = null;
@@ -158,6 +170,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return itensPremio;
     }
 
+    /**
+     * Método que calcula o premio, usando os valores de HE + DSR e produtividade
+     * @param valorProdutividade valor da produtividade no período selecionado
+     * @param itensPremio lista com os itens HE e DSR (quando houver)
+     * @return
+     */
     private List<ItemContracheque> calculaPremio(double valorProdutividade, List<ItemContracheque> itensPremio){
         double valorHoras = 0;
         // calcula a soma da HE + DSR

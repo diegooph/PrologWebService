@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.preContracheque;
+package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.gente.pre_contracheque.Contracheque;
 
