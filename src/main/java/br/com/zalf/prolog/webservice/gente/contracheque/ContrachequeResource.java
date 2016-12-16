@@ -47,7 +47,7 @@ public class ContrachequeResource {
     public Response upload(@PathParam("codUnidade") Long codUnidade,
                            @PathParam("ano") int ano,
                            @PathParam("mes") int mes,
-                            @FormDataParam("file") InputStream fileInputStream,
+                           @FormDataParam("file") InputStream fileInputStream,
                            @FormDataParam("file") FormDataContentDisposition fileDetail){
 
         try{
