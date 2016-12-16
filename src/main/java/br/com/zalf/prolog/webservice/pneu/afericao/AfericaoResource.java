@@ -61,7 +61,8 @@ public class AfericaoResource {
 	
 	@GET
 	@Secured
-	public Afericao getByCod (@QueryParam("codAfericao") Long codAfericao, @QueryParam("codUnidade") Long codUnidade){
+	@Path("/{codUnidade}/{codAfericao}")
+	public Afericao getByCod (@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade){
 		return service.getByCod(codAfericao, codUnidade);
 	}
 }
