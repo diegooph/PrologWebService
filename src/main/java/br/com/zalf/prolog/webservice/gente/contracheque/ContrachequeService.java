@@ -52,7 +52,7 @@ public class ContrachequeService {
 
     private ItemImportContracheque createItemImportContracheque(CSVRecord linha){
         ItemImportContracheque item = new ItemImportContracheque();
-        if(!linha.get(0).trim().isEmpty()) {
+        if(!linha.get(0).trim().replaceAll( "[^\\d]", "").isEmpty()) {
             item.cpf = Long.parseLong(linha.get(0));
         }
         if(!linha.get(1).trim().isEmpty()) {
