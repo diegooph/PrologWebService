@@ -442,7 +442,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		return true;
 	}
 
-	private List<Pneu> ordenaLista(List<Pneu> listPneu){
+	public List<Pneu> ordenaLista(List<Pneu> listPneu){
 		int sizeListaOriginal = listPneu.size();
 		List<Pneu> copiaOriginal = new ArrayList();
 		// cria uma cópia da lista original de pneus
