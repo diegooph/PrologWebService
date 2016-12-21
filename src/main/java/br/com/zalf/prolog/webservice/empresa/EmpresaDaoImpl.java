@@ -33,7 +33,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "AND TA.TOKEN=?";
 
 	private final String BUSCA_FUNCOES_BY_COD_UNIDADE = "SELECT F.CODIGO, F.NOME "
-			+ "FROM UNIDADE_FUNCAO UF JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
+			+ "FROM UNIDADE_FUNCAO UF LEFT JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
 			+ "WHERE UF.COD_UNIDADE = ? "
 			+ "ORDER BY F.NOME";
 
@@ -172,7 +172,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Funcao funcao = createFuncao(rSet);
-				funcao.setPermissões(getPermissoes(funcao.getCodigo(), codUnidade));
+				funcao.setPermissões(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
 				listFuncao.add(funcao);
 			}
 		} finally {
@@ -188,7 +188,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	 * @return
 	 * @throws SQLException
      */
-	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException {
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
 
 		ResultSet rSet = null;
@@ -208,6 +208,31 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			}else {
 				stmt.setString(2, String.valueOf(codCargo));
 			}
+			rSet = stmt.executeQuery();
+			pilares = createPilares(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+
+		return pilares;
+	}
+
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException {
+		List<Pilar> pilares = new ArrayList<>();
+
+		ResultSet rSet = null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao\n" +
+					"FROM PILAR_PROLOG PP\n" +
+					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo\n" +
+					"JOIN unidade_pilar_prolog upp on upp.cod_pilar = pp.codigo\n" +
+					"WHERE upp.cod_unidade = ?\n" +
+					"ORDER BY PP.pilar, FP.funcao");
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			pilares = createPilares(rSet);
 		} finally {

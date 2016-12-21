@@ -58,9 +58,18 @@ public class EmpresaService {
 		}
 	}
 
-	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade){
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade){
 		try{
-			return dao.getPermissoes(codCargo, codUnidade);
+			return dao.getPermissoesByCargo(codCargo, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade){
+		try{
+			return dao.getPermissoesByUnidade(codUnidade);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;

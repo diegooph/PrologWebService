@@ -57,8 +57,16 @@ public class EmpresaResource {
 	@GET
 	@Secured
 	@Path("/permissoes/{codUnidade}")
-	public List<Pilar> getPermissoes(@PathParam("codUnidade") Long codUnidade){
-		return service.getPermissoes(null , codUnidade);
+	public List<Pilar> getPermissoesByUnidade(@PathParam("codUnidade") Long codUnidade){
+		return service.getPermissoesByUnidade(codUnidade);
+	}
+
+	@GET
+	@Secured
+	@Path("/permissoes/{codUnidade}/{codCargo}")
+	public List<Pilar> getPermissoesByCargo(@PathParam("codUnidade") Long codUnidade,
+											@PathParam("codCargo") Long codCargo){
+		return service.getPermissoesByCargo(codUnidade, codCargo);
 	}
 
 	@GET

@@ -83,13 +83,21 @@ public interface EmpresaDao {
 	List<Empresa> getFiltros(Long cpf) throws SQLException;
 
 	/**
-	 * Busca as funções do prolog de acordo com os parametros
+	 * Busca as funções do prolog de um determinado cargo
 	 * @param codCargo codigo do cargo
 	 * @param codUnidade codigo da unidade
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Pilar> getPermissoes(Long codCargo, Long codUnidade) throws SQLException;
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException;
+
+	/**
+	 * Busca as funções do prolog a partir do codigo da unidade
+	 * @param codUnidade codigo da unidade
+	 * @return lista de Pilares e suas devidas funções
+	 * @throws SQLException
+     */
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException;
 
 	/**
 	 * Insere ou atualiza as funções do prolog cadastradas para determinado cargo
