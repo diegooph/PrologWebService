@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -83,7 +84,7 @@ public class Main {
 		//		datafinal.getTime(), 2L, "%", "3", "%")));
 
 		ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
-		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,1,3794694058L)));
+		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,1,3794694058L, true)));
 
 
 
@@ -170,6 +171,10 @@ public class Main {
 		//metasDao.getByCpf(cpf, token);
 		//metasDao.updateByCod(request);
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
+
+		ChecklistModeloDaoImpl dao = new ChecklistModeloDaoImpl();
+		L.d("ain", GsonUtils.getGson().toJson(dao.getModeloChecklist(4L, 4L)));
+
 
 	}
 
