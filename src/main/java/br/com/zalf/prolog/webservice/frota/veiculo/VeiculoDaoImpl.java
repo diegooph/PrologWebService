@@ -118,7 +118,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
 					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-					+ "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE");
+					+ "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE "
+					+ "ORDER BY V.PLACA");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -145,7 +146,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
 					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-					+ "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?)");
+					+ "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?) "
+					+ "ORDER BY V.PLACA");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
