@@ -168,7 +168,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("select * from estratificacao_os e \n" +
                     "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
-                    "ORDER BY E.placa_veiculo, e.prioridade \n" +
+                    "ORDER BY E.placa_veiculo, e.prioridade, e.data_hora DESC  \n" +
                     "limit ? offset ?");
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
