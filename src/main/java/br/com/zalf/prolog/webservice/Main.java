@@ -1,11 +1,16 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
-import com.google.gson.Gson;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
@@ -17,7 +22,13 @@ public class Main {
 	public static void main(String[] args)  throws SQLException {
 		L.d("Main", "Testando");
 		L.e("Main", "FUDEU", new Exception("Problema na main"));
-	
+
+		LocalDate dataInicial = LocalDate.of(2016, Month.SEPTEMBER, 01);
+		Date datainicial = Date.valueOf(dataInicial);
+		LocalDate dataFinal = LocalDate.of(2016, Month.SEPTEMBER, 15);
+		Date datafinal = Date.valueOf(dataFinal);
+		L.d("main", String.valueOf(datainicial.getTime()));
+		L.d("main", String.valueOf(datafinal.getTime()));
 		//ColaboradorDaoImpl baseDao = new ColaboradorDaoImpl();
 		//long cpf = Long.parseLong("12345678987");
 //
@@ -33,9 +44,49 @@ public class Main {
 //		long offset = 0;
 //		int limit = 10;
 
-		ProdutividadeDaoImpl dao = new ProdutividadeDaoImpl();
-		L.d("tag", String.valueOf(System.currentTimeMillis()));
-		System.out.print(new Gson().toJson(dao.getConsolidadoProdutividade(3L, "%", "%", 000L, System.currentTimeMillis())));
+//		Duration dur = Duration.ofHours(12L);
+//		Duration dur2 = Duration.ofHours(13L);
+//		Time time = new Time(dur.toMillis());
+//		L.d("time: ", time.toString());
+//		LocalTime lTime = LocalTime.ofSecondOfDay(dur.getSeconds());
+//		L.d("LocalTime: ", String.valueOf(dur.minus(dur2).toMinutes()));
+//		L.d("LocalTime: ", formatDuration(dur.minus(dur2)));
+
+		Time t = new Time(4000000L);
+		Duration now = Duration.ofMillis(t.getTime());
+		Duration now2 = Duration.ofMillis(4000000L);
+		L.d("from time: ", String.valueOf(now.toMinutes()));
+		L.d("from system: ", String.valueOf(now2.toMinutes()));
+
+		/*
+		Busca acumulado
+		 */
+		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+		RelatorioDaoImpl relatorioDao = new RelatorioDaoImpl();
+		//System.out.println(GsonUtils.getGson().toJson(indicadorDao.getAcumuladoIndicadoresIndividual(datainicial.getTime(),
+		//		datafinal.getTime(),1984679074L)));
+		/*
+		Busca extrato:
+		 */
+//		System.out.println(GsonUtils.getGson().toJson(teste.getExtratoIndicador(datainicial.getTime(),
+//				datafinal.getTime(), "%", 2L, "3", "%", "%", Jornada.JORNADA)));
+
+		/*
+		Busca acumulado relatorios:
+		 */
+//		System.out.println(GsonUtils.getGson().toJson(relatorioDao.getAcumuladoIndicadores(datainicial.getTime(),
+//				datafinal.getTime(), 2L, "%", "3", "%")));
+
+				/*
+		Busca acumulado por dia:
+		 */
+		//System.out.println(GsonUtils.getGson().toJson(relatorioDao.getConsolidadoDia(datainicial.getTime(),
+		//		datafinal.getTime(), 2L, "%", "3", "%")));
+
+		ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+		L.d("main", GsonUtils.getGson().toJson(produtividadeDao.getProdutividadeByPeriodo(2016,1,3794694058L, true)));
+
+
 
 //		RelatoDaoImpl relatoDao = new RelatoDaoImpl();
 //		System.out.println(relatoDao.getByColaborador(12345678987L, 10, 0, 23, 22, false, Relato.PENDENTE_CLASSIFICACAO));
@@ -48,25 +99,22 @@ public class Main {
 
 		//OrdemServicoDaoImpl dao = new OrdemServicoDaoImpl();
 		//Connection conn = DatabaseConnection.getConnection();
-        // placa, status, conn, unidade, tipoVeiculo
-        /**
-         * Buscar as OS, usando como filtro o codUnidade, TipoVeiculo e Placa(opcional).
-         */
-        //dao.getOs(placa, stauts, conn, codUnidade, tipoVeiculo, limit, offet)
+		// placa, status, conn, unidade, tipoVeiculo
+		/**
+		 * Buscar as OS, usando como filtro o codUnidade, TipoVeiculo e Placa(opcional).
+		 */
+		//dao.getOs(placa, stauts, conn, codUnidade, tipoVeiculo, limit, offet)
 		//L.d("main", dao.getOs("MLU4921","A", null, 2L, "%", 2, 0L).toString());
-        //L.d("main", new Gson().toJson(dao.getOs("%","A", null, 3L, "%", 222, 0L)));
-        //L.d("tag", dao.getItensOsManutencaoHolder(ItemOrdemServico.Status.PENDENTE.asString(), conn, 3L, 1, 0L).toString());
+		//L.d("main", new Gson().toJson(dao.getOs("%","A", null, 3L, "%", 222, 0L)));
+		//L.d("tag", dao.getItensOsManutencaoHolder(ItemOrdemServico.Status.PENDENTE.asString(), conn, 3L, 1, 0L).toString());
 		//L.d("tag", dao.getManutencaoHolder(3L, 1, 0, ItemOrdemServico.Status.PENDENTE.asString()).toString());
-        //L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());
+		//L.d("main", dao.getItensOs("MLU4921", "%", "P", conn, null, null).toString());
 		//L.d("main", new Gson().toJson(dao.getManutencaoHolder(2L, 0,0,"%")));
-        //System.out.print(new Gson().toJson(dao.getItensOs("MLH4507", 1L, "P", conn)));
+		//System.out.print(new Gson().toJson(dao.getItensOs("MLH4507", 1L, "P", conn)));
 		//VeiculoDaoImpl daov  = new VeiculoDaoImpl();
 		//L.d("main", daov.getVeiculoKm(4L, "%", "%").toString());
 
-//		LocalDate dataInicial = LocalDate.of(2016, Month.FEBRUARY, 18);
-//		Date datainicial = Date.valueOf(dataInicial);
-//		LocalDate dataFinal = LocalDate.of(2016, Month.MARCH, 20);
-//		Date datafinal = Date.valueOf(dataFinal);
+
 //		Long cpf = 12345678989L;
 //		String token = "1khvje6fg1v57483shknlnodk1";
 //		
@@ -105,7 +153,7 @@ public class Main {
 //		
 		//FrotaDaoImpl frotaDao = new FrotaDaoImpl();
 		//frotaDao.getManutencaoHolder(cpf, token, codUnidade, 20, 0L, true);
-		
+
 		//checklistDaoImpl.getAllByCodUnidade(cpf, token, codUnidade, dataInicial, dataFinal, limit, offset);
 		//RelatoDaoImpl relatoDaoImpl = new RelatoDaoImpl();
 		//relatoDaoImpl.getAllByUnidade(dataInicial, dataFinal, equipe, codUnidade, cpf, token,10L, offset);
@@ -124,35 +172,39 @@ public class Main {
 		//metasDao.updateByCod(request);
 		//List<Indicador> lista = indicadorDaoImpl.getDevCxByPeriod(cpf, datainicial, datafinal);
 
+		ChecklistModeloDaoImpl dao = new ChecklistModeloDaoImpl();
+		L.d("ain", GsonUtils.getGson().toJson(dao.getModeloChecklist(4L, 4L)));
+
+
 	}
-	
+
 	public static void setLongTempoRestante() {
 		LocalDate dataocorrencia = LocalDate.of(2016, Month.FEBRUARY, 18);
 		java.util.Date dataOcorrencia = Date.valueOf(dataocorrencia);
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dataOcorrencia);// data ocorrência
 		dataOcorrencia = calendar.getTime();
 		System.out.println(dataOcorrencia);
-		
-		
+
+
 		LocalDate datamaxima = LocalDate.of(2016, Month.MARCH, 19);
 		java.util.Date dataMaxima = Date.valueOf(datamaxima);
-		
+
 		Calendar calendar2 = Calendar.getInstance();
 		calendar2.setTime(dataMaxima);
 		dataMaxima = calendar2.getTime();
 		System.out.println(dataMaxima);
-		
-		
+
+
 		long tempoRestante = dataMaxima.getTime() - dataOcorrencia.getTime();
-		
+
 		System.out.println(TimeUnit.MILLISECONDS.toHours(tempoRestante));
-		
-		
-		
-				
-				
+
+
+
+
+
 //        Calendar calendar = Calendar.getInstance();
 //        calendar.setTime(itemManutencao.getData());
 //        calendar.add(Calendar.HOUR, itemManutencao.getPrazo());
@@ -166,6 +218,17 @@ public class Main {
 //            itemManutencao.setTempoRestanteResolucao(-1);
 //
 //        itemManutencao.setTempoRestanteResolucao(TimeUnit.MILLISECONDS.toHours(tempoRestante));
-    }
-	
+	}
+
+	public static String formatDuration(Duration duration) {
+		long seconds = duration.getSeconds();
+		long absSeconds = Math.abs(seconds);
+		String positive = String.format(
+				"%d:%02d:%02d",
+				absSeconds / 3600,
+				(absSeconds % 3600) / 60,
+				absSeconds % 60);
+		return seconds < 0 ? "-" + positive : positive;
+	}
+
 }

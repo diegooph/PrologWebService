@@ -206,7 +206,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		ResultSet rSet = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
 					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
 					+ "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
 					+ "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
@@ -235,32 +235,42 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		PreparedStatement stmt = null;
 		Afericao afericao = new Afericao();
 		Veiculo veiculo = new Veiculo();
+		VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
 		List<Pneu> pneus = new ArrayList<>();
-		PneuDao pneuDao = new PneuDaoImpl();
+		PneuDaoImpl pneuDao = new PneuDaoImpl();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, "
-					+ "AV.PSI AS PRESSAO_ATUAL, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, " 
+			stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, "
+					+ "AV.PSI AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, "
 					+ "DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL "
 					+ "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
 					+ "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
 					+ "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA "
 					+ "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
 					+ "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
-					+ "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ?");
+					+ "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? "
+					+ "ORDER BY Substring(AV.posicao::text FROM 2 for 1) ASC, "
+					+ "substring(AV.posicao::text FROM 1 for 1) ASC, "
+					+ "substring(AV.posicao::text FROM 3 for 1) DESC ");
 			stmt.setLong(1, codAfericao);
 			stmt.setLong(2, codUnidade);
 			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-					afericao = createAfericaoResumida(rSet);
-					veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
-					pneus.add(pneuDao.createPneu(rSet));
-			}
-			veiculo.setListPneus(pneus);
-			afericao.setVeiculo(veiculo);
 
+			if(rSet.next()){
+				afericao = createAfericaoResumida(rSet);
+				Pneu pneu = pneuDao.createPneu(rSet);
+				pneu.setPosicao(rSet.getInt("POSICAO"));
+				pneus.add(pneu);
+				veiculo = veiculoDao.getVeiculoByPlaca(rSet.getString("PLACA_VEICULO"), false);
+				while(rSet.next()){
+					pneu = pneuDao.createPneu(rSet);
+					pneu.setPosicao(rSet.getInt("POSICAO"));
+					pneus.add(pneu);
+				}
+				veiculo.setListPneus(pneuDao.ordenaLista(pneus));
+				afericao.setVeiculo(veiculo);
+			}
 		}finally{
-			
 			closeConnection(conn, stmt, rSet);
 		}
 		return afericao;	
@@ -468,7 +478,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 
 	private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException{
 		Afericao afericao = new Afericao();
-		afericao.setCodigo(rSet.getLong("CODIGO"));
+		afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
 		afericao.setDataHora(rSet.getTimestamp("DATA_HORA"));
 		afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
 		afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));

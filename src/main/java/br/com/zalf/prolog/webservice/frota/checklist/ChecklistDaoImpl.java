@@ -321,7 +321,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		boolean hasCheck = false;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM \n" +
+			stmt = conn.prepareStatement("SELECT DISTINCT V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO, CHECK_HOJE.PLACA_CHECK FROM \n" +
 					"(SELECT DISTINCT PLACA_VEICULO AS PLACA_CHECK FROM CHECKLIST C \n" +
 					"JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO WHERE DATA_HORA::DATE = ?\n" +
 					"AND V.cod_unidade = ?  AND V.STATUS_ATIVO = TRUE ) AS CHECK_HOJE RIGHT JOIN VEICULO V ON V.PLACA = PLACA_CHECK\n" +
@@ -335,7 +335,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(2, codUnidade);
 			stmt.setLong(3, codUnidade);
 			stmt.setLong(4, codUnidade);
-			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 
 			while (rSet.next()){

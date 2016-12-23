@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
+import br.com.zalf.prolog.frota.pneu.Restricao;
 import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
 import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
@@ -57,6 +58,15 @@ public class AfericaoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+
+	public Restricao getRestricoesByCodUnidade(Long codUnidade){
+		try{
+			return afericaoDao.getRestricoesByCodUnidade(codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

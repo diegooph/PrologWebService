@@ -10,12 +10,15 @@ import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.time.Duration;
+
 public class GsonUtils {
 
 	private static final GsonBuilder sBuilder = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 			.setPrettyPrinting()
 			.serializeSpecialFloatingPointValues()
+			.registerTypeAdapter(Duration.class, new DurationSerializer())
 			.enableComplexMapKeySerialization();
 
     static {

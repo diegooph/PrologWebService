@@ -36,7 +36,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
-			stmt.setString(1, veiculo.getPlaca());
+			stmt.setString(1, veiculo.getPlaca().toUpperCase());
 			stmt.setLong(2, codUnidade);
 			stmt.setLong(3, veiculo.getKmAtual());
 			stmt.setBoolean(4, true);
@@ -118,7 +118,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
 					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-					+ "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE");
+					+ "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE "
+					+ "ORDER BY V.PLACA");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -145,7 +146,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					+ "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
 					+ "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
 					+ "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-					+ "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?)");
+					+ "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?) "
+					+ "ORDER BY V.PLACA");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -280,8 +282,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-					+ " FROM MARCA_VEICULO MA JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
-					+ "WHERE MO.COD_EMPRESA = ? "
+					+ " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
+					+ "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
 					+ "ORDER BY COD_MARCA, COD_MODELO");
 			stmt.setLong(1, codEmpresa);
 			rSet = stmt.executeQuery();
@@ -290,17 +292,21 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					L.d("metodo", "marcas.size == 0");
 					marca.setCodigo(rSet.getLong("COD_MARCA"));
 					marca.setNome(rSet.getString("MARCA"));
-					Modelo modelo = new Modelo();
-					modelo.setCodigo(rSet.getLong("COD_MODELO"));
-					modelo.setNome(rSet.getString("MODELO"));
-					modelos.add(modelo);
-				}else{
-					L.d("metodo", "marcas.size > 0");
-					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+					if(rSet.getString("MODELO") != null) {
 						Modelo modelo = new Modelo();
 						modelo.setCodigo(rSet.getLong("COD_MODELO"));
 						modelo.setNome(rSet.getString("MODELO"));
 						modelos.add(modelo);
+					}
+				}else{
+					L.d("metodo", "marcas.size > 0");
+					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
+						if(rSet.getString("MODELO") != null) {
+							Modelo modelo = new Modelo();
+							modelo.setCodigo(rSet.getLong("COD_MODELO"));
+							modelo.setNome(rSet.getString("MODELO"));
+							modelos.add(modelo);
+						}
 					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
 						marca.setModelos(modelos);
 						marcas.add(marca);
@@ -308,10 +314,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 						modelos = new ArrayList<>();
 						marca.setCodigo(rSet.getLong("COD_MARCA"));
 						marca.setNome(rSet.getString("MARCA"));
-						Modelo modelo = new Modelo();
-						modelo.setCodigo(rSet.getLong("COD_MODELO"));
-						modelo.setNome(rSet.getString("MODELO"));
-						modelos.add(modelo);						
+						if(rSet.getString("MODELO") != null) {
+							Modelo modelo = new Modelo();
+							modelo.setCodigo(rSet.getLong("COD_MODELO"));
+							modelo.setNome(rSet.getString("MODELO"));
+							modelos.add(modelo);
+						}
 					}
 				}
 			}
@@ -325,19 +333,23 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 	}
 
 	@Override
-	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException {
+	public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) throws SQLException, NullPointerException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
-			stmt.setString(1, modelo.getNome());
-			stmt.setLong(2, codMarca);
-			stmt.setLong(3, codEmpresa);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao cadastrar o modelo do veículo");
-			}	
+			if(modelo.getNome().trim().isEmpty()){
+				throw new NullPointerException("Modelo sem nome!");
+			}else {
+				conn = getConnection();
+				stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?)");
+				stmt.setString(1, modelo.getNome());
+				stmt.setLong(2, codMarca);
+				stmt.setLong(3, codEmpresa);
+				int count = stmt.executeUpdate();
+				if (count == 0) {
+					throw new SQLException("Erro ao cadastrar o modelo do veículo");
+				}
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);

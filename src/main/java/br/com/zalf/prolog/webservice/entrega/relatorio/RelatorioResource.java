@@ -1,46 +1,95 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
-import br.com.zalf.prolog.commons.colaborador.Empresa;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoHolder;
-import br.com.zalf.prolog.webservice.empresa.EmpresaService;
+import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
+import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
+import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
+import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.util.Android;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by Zalf on 14/09/16.
+ */
 @Path("/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
 
-	private RelatorioService service = new RelatorioService();
-	
-	@POST
-	@Path("/getFiltros")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Empresa> getFiltros(
-			@FormParam("cpf") Long cpf,
-			@FormParam("token") String token){
-		return new EmpresaService().getFiltros(cpf);
-	}
-	
-	@POST
-	@Path("/byEquipe")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public ConsolidadoHolder getRelatorioByPeriodo(
-			@FormParam("dataInicial") long dataInicial, 
-			@FormParam("dataFinal") long dataFinal, 
-			@FormParam("equipe") String equipe,
-			@FormParam("codUnidade") Long codUnidade,
-			@FormParam("cpf") Long cpf,
-			@FormParam("token") String token) {
-		System.out.println("Inciial: " + new Date(dataInicial));
-		System.out.println("Final: " + new Date(dataFinal));
-		
-		return service.getRelatorioByPeriodo(DateUtils.toLocalDate(new Date(dataInicial)),
-				DateUtils.toLocalDate(new Date(dataFinal)),equipe, codUnidade, cpf, token);
-	}
-}
+    RelatorioService service = new RelatorioService();
 
+    @GET
+    @Secured
+    @Android
+    @Path("/acumulados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
+    public List<IndicadorAcumulado> getAcumuladoIndicadores(@QueryParam("dataInicial") Long dataInicial,
+                                                            @QueryParam("dataFinal") Long dataFinal,
+                                                            @PathParam("codEmpresa") String codEmpresa,
+                                                            @PathParam("codRegional") String codRegional,
+                                                            @PathParam("codUnidade") String codUnidade,
+                                                            @PathParam("equipe") String equipe){
+        return service.getAcumuladoIndicadores(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
+    }
+
+    @GET
+    @Secured
+    @Android
+    @Path("/extratos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}")
+    public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
+                                               @QueryParam("dataFinal") Long dataFinal,
+                                               @PathParam("codRegional") String codRegional,
+                                               @PathParam("codEmpresa") String codEmpresa,
+                                               @PathParam("codUnidade") String codUnidade,
+                                               @PathParam("equipe") String equipe,
+                                               @PathParam("cpf") String cpf,
+                                               @PathParam("indicador") String indicador){
+        return service.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
+                codUnidade, equipe, cpf, indicador);
+    }
+
+    @GET
+    @Secured
+    @Android
+    @Path("/acumulados/diarios/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
+    public List<ConsolidadoDia> getConsolidadoDia(@QueryParam("dataInicial") Long dataInicial,
+                                                  @QueryParam("dataFinal") Long dataFinal,
+                                                  @PathParam("codRegional") String codRegional,
+                                                  @PathParam("codEmpresa") String codEmpresa,
+                                                  @PathParam("codUnidade") String codUnidade,
+                                                  @PathParam("equipe") String equipe,
+                                                  @QueryParam("limit") int limit,
+                                                  @QueryParam("offset") int offset){
+        return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, limit, offset);
+    }
+
+    @GET
+    @Secured
+    @Android
+    @Path("/mapas/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
+    public List<MapaEstratificado> getMapasEstratificados(@QueryParam("data") Long data,
+                                                          @PathParam("codEmpresa") String codEmpresa,
+                                                          @PathParam("codRegional") String codRegional,
+                                                          @PathParam("codUnidade") String codUnidade,
+                                                          @PathParam("equipe") String equipe){
+        return service.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
+    }
+
+    @GET
+    @Secured
+    @Android
+    @Path("/acumulados/graficos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
+    public List<DadosGrafico> getDadosGrafico(@QueryParam("dataInicial") Long dataInicial,
+                                              @QueryParam("dataFinal") Long dataFinal,
+                                              @PathParam("codRegional") String codRegional,
+                                              @PathParam("codEmpresa") String codEmpresa,
+                                              @PathParam("codUnidade") String codUnidade,
+                                              @PathParam("equipe") String equipe,
+                                              @PathParam("indicador") String indicador){
+        return service.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
+    }
+
+}

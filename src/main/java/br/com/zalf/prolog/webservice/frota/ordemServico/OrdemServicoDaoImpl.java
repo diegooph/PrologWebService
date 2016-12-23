@@ -123,8 +123,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "VT.codigo::TEXT LIKE ? \n "  +
                     "ORDER BY cos.codigo desc\n" +
                     "%s";
-            if (limit != null){
-                query = String.format(query, " LIMIT ?  OFFSET ? ");
+           if (limit != null && offset != null){
+                query = String.format(query, " LIMIT " + limit +  "OFFSET " + offset);
             }else{
                 query = String.format(query, "");
             }
@@ -133,12 +133,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(2, status);
             stmt.setLong(3, codUnidade);
             stmt.setString(4, tipoVeiculo);
-            if (limit !=null) {
-                stmt.setInt(5, limit);
-            }
-            if (offset!= null) {
-                stmt.setLong(6, offset);
-            }
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 OrdemServico os = createOrdemServico(rSet);
@@ -174,7 +168,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             stmt = conn.prepareStatement("select * from estratificacao_os e \n" +
                     "where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
-                    "ORDER BY E.placa_veiculo, e.prioridade \n" +
+                    "ORDER BY E.placa_veiculo, e.prioridade, e.data_hora DESC  \n" +
                     "limit ? offset ?");
             stmt.setString(1, status);
             stmt.setString(2, prioridade);
@@ -318,7 +312,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto =? " +
+                    "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
+                    "FEEDBACK_CONSERTO = ? " +
                     "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
                     "COD_ALTERNATIVA = ?");
             stmt.setLong(1, item.getMecanico().getCpf());
@@ -326,10 +321,11 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
             stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(6, codUnidade);
-            stmt.setLong(7, item.getCodOs());
-            stmt.setLong(8, item.getPergunta().getCodigo());
-            stmt.setLong(9, item.getPergunta().getAlternativasResposta().get(0).codigo);
+            stmt.setString(6, item.getFeedbackResolucao().trim());
+            stmt.setLong(7, codUnidade);
+            stmt.setLong(8, item.getCodOs());
+            stmt.setLong(9, item.getPergunta().getCodigo());
+            stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
                 updateStatusOs(codUnidade, item.getCodOs(), conn);
@@ -530,6 +526,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
+                    item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
                 }
                 itens.add(item);
             }
