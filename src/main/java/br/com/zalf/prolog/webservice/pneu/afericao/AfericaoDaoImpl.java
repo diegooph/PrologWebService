@@ -88,7 +88,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 					+ "ER.PERIODO_AFERICAO "
 					+ "FROM UNIDADE U JOIN "
 					+ "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
+					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
 					+ "WHERE U.CODIGO = ?");
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
