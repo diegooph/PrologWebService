@@ -387,7 +387,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			stmt = conn.prepareStatement("SELECT V.PLACA FROM veiculo V JOIN veiculo_tipo VT ON V.cod_unidade = VT.cod_unidade\n" +
 					"AND V.cod_tipo = VT.codigo\n" +
 					"WHERE VT.cod_unidade = ? AND VT.codigo::TEXT LIKE ? " +
-					"ORDER BY V.PLACAS");
+					"ORDER BY V.PLACA");
 			stmt.setLong(1, codUnidade);
 			stmt.setString(2, codTipo);
 			rSet = stmt.executeQuery();
