@@ -221,14 +221,14 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         try{
             stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
                     " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
-            stmt.setString(1, item.descricao);
-            stmt.setString(2, item.subDescricao);
-            stmt.setDouble(3, item.valor);
+            stmt.setString(1, item.getDescrição());
+            stmt.setString(2, item.getSubDescrição());
+            stmt.setDouble(3, item.getValor());
             stmt.setInt(4, ano);
             stmt.setInt(5, mes);
-            stmt.setLong(6, item.cpf);
+            stmt.setLong(6, item.getCpf());
             stmt.setLong(7, codUnidade);
-            stmt.setLong(8, item.codigo);
+            stmt.setLong(8, item.getCodigo());
             int count = stmt.executeUpdate();
             if(count == 0){
                 return false;
@@ -244,13 +244,13 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         try{
             stmt = conn.prepareStatement("INSERT INTO PRE_CONTRACHEQUE VALUES (?,?,?,?,?,?,?,?)");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, item.cpf);
+            stmt.setLong(2, item.getCpf());
             stmt.setInt(3, mes);
             stmt.setInt(4, ano);
-            stmt.setLong(5, item.codigo);
-            stmt.setString(6, item.descricao);
-            stmt.setString(7, item.subDescricao);
-            stmt.setDouble(8, item.valor);
+            stmt.setLong(5, item.getCodigo());
+            stmt.setString(6, item.getDescrição());
+            stmt.setString(7, item.getSubDescrição());
+            stmt.setDouble(8, item.getValor());
             int count = stmt.executeUpdate();
             if(count == 0){
                 throw new SQLException("Erro ao inserir o item: " + item.toString());
