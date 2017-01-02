@@ -5,7 +5,6 @@ import br.com.zalf.prolog.commons.colaborador.Equipe;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.colaborador.Setor;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
 import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
@@ -157,7 +156,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	 * Busca todos os colaboradores de uma unidade
 	 */
 	@Override
-	public List<Colaborador> getAll(Request<?> request) throws SQLException {
+	public List<Colaborador> getAll(Long codUnidade) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -168,14 +167,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
 					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
 					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
-					+ " FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
-					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.cod_funcao "
+					+ " FROM COLABORADOR C JOIN FUNCAO F ON F.CODIGO = C.cod_funcao "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-			stmt.setLong(1, request.getCpf());
-			stmt.setString(2, request.getToken());
-			stmt.setLong(3, request.getCodUnidade());
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);

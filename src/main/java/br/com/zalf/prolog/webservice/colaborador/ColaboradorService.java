@@ -62,9 +62,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public List<Colaborador> getAll(Request<?> request) {
+	public List<Colaborador> getAll(Long codUnidade) {
 		try {
-			return dao.getAll(request);
+			return dao.getAll(codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new ArrayList<Colaborador>();
