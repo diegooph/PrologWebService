@@ -200,25 +200,26 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 
     public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade)throws SQLException{
         Connection conn = null;
-        PreparedStatement stmt = null;
         try{
             conn = getConnection();
             for(ItemImportContracheque item : itens){
-                if(updateItemImportContracheque(item, ano, mes, conn, codUnidade)){
+                if(updateItemImportContracheque(item, ano, mes, codUnidade)){
                     L.d(TAG, "Atualizado o item:" + item.toString());
                 }else{
                     insertItemImportContracheque(item, ano, mes, conn, codUnidade);
                 }
             }
         }finally {
-            closeConnection(null, stmt, null);
+            closeConnection(conn, null, null);
         }
         return true;
     }
 
-    private boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException{
+    public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException{
         PreparedStatement stmt = null;
+        Connection conn = null;
         try{
+            conn = getConnection();
             stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
                     " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
             stmt.setString(1, item.getDescrição());
@@ -235,6 +236,28 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             }
         }finally {
             closeConnection(null, stmt, null);
+        }
+        return true;
+    }
+
+        public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND " +
+                    " CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
+            stmt.setInt(1, ano);
+            stmt.setInt(2, mes);
+            stmt.setLong(3, item.getCpf());
+            stmt.setLong(4, codUnidade);
+            stmt.setLong(5, item.getCodigo());
+            int count = stmt.executeUpdate();
+            if(count == 0){
+                return false;
+            }
+        }finally {
+            closeConnection(conn, stmt, null);
         }
         return true;
     }
@@ -261,7 +284,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return true;
     }
 
-    	private class CustomComparator implements Comparator<ItemContracheque> {
+    private class CustomComparator implements Comparator<ItemContracheque> {
 
 		/**
 		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
@@ -273,5 +296,57 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 		}
 	}
 
+    /**
+     * Método que busca os itens importados previamente
+     * @param codUnidade código da unidade
+     * @param ano da competancia
+     * @param mes da competencia
+     * @param cpf especifico a ser buscado, parâmetro opcional
+     * @return
+     * @throws SQLException
+     */
+	public List<ItemImportContracheque> getItemImportContracheque (Long codUnidade, int ano, int mes, String cpf) throws SQLException{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<ItemImportContracheque> itens = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque pc left join colaborador c ON\n" +
+                    "\t pc.cpf_colaborador = c.cpf and pc.cod_unidade = c.cod_unidade\n" +
+                    "WHERE pc.cod_unidade = ? \n" +
+                    "AND pc.ano_referencia = ?\n" +
+                    "AND pc.mes_referencia = ?\n" +
+                    "AND pc.cpf_colaborador::text LIKE ?\n" +
+                    "ORDER BY c.nome asc, pc.valor desc");
+            stmt.setLong(1, codUnidade);
+            stmt.setInt(2, ano);
+            stmt.setInt(3, mes);
+            stmt.setString(4, cpf);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                itens.add(createItemImportContracheque(rSet));
+            }
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return itens;
+    }
 
+    private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException{
+        ItemImportContracheque item = new ItemImportContracheque();
+        item.setCodigo(rSet.getLong("CODIGO_ITEM"));
+        item.setDescrição(rSet.getString("DESCRICAO"));
+        item.setSubDescrição(rSet.getString("SUB_DESCRICAO"));
+        item.setValor(rSet.getDouble("VALOR"));
+        item.setCpf(rSet.getLong("CPF_COLABORADOR"));
+        item.setNome(rSet.getString("NOME"));
+        // a query de busca faz um left join com a tebela colaborador, o que pode ocasinar
+        // em colaboradores não cadastrados, essa verificação é feita e é setado o nome
+        // no objeto, permitindo ao cliente visulizar o problema
+        if(item.getNome() == null){
+            item.setNome("Não cadastrado");
+        }
+        return item;
+    }
 }

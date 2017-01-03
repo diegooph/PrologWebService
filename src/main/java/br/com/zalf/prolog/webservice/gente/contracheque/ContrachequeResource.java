@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.contracheque.Contracheque;
+import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.L;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by Zalf on 23/11/16.
@@ -68,6 +70,47 @@ public class ContrachequeResource {
         }catch (IOException e){
             e.printStackTrace();
             return Response.Error("Erro ao inserir os dados");
+        }
+    }
+
+    @GET
+    @Secured
+    @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
+    public List<ItemImportContracheque> getItemImportContracheque (@PathParam("codUnidade") Long codUnidade,
+                                                                   @PathParam("ano") int ano,
+                                                                   @PathParam("mes") int mes,
+                                                                   @PathParam("cpf") String cpf){
+        return service.getItemImportContracheque(codUnidade, ano, mes, cpf);
+    }
+
+
+    @PUT
+    @Secured
+    @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response updateItemImportContracheque(ItemImportContracheque item,
+                                                 @PathParam("ano") int ano,
+                                                 @PathParam("mes") int mes,
+                                                 @PathParam("codUnidade") Long codUnidade){
+        if(service.updateItemImportContracheque(item, ano, mes, codUnidade)){
+            return Response.Ok("Item alterado com sucesso.");
+        }else{
+            return Response.Error("Erro ao editar o item.");
+        }
+    }
+
+    @DELETE
+    @Secured
+    @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response deleteItemImportContracheque(ItemImportContracheque item,
+                                                 @PathParam("ano") int ano,
+                                                 @PathParam("mes") int mes,
+                                                 @PathParam("codUnidade") Long codUnidade){
+        if(service.deleteItemImportContracheque(item, ano, mes, codUnidade)){
+            return Response.Ok("Item excluido com sucesso.");
+        }else{
+            return Response.Error("Erro ao excluir o item");
         }
     }
 }

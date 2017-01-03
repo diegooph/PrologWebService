@@ -53,20 +53,47 @@ public class ContrachequeService {
     private ItemImportContracheque createItemImportContracheque(CSVRecord linha){
         ItemImportContracheque item = new ItemImportContracheque();
         if(!linha.get(0).trim().replaceAll( "[^\\d]", "").isEmpty()) {
-            item.cpf = Long.parseLong(linha.get(0));
+            item.setCpf(Long.parseLong(linha.get(0)));
         }
         if(!linha.get(1).trim().isEmpty()) {
-            item.codigo = Long.parseLong(linha.get(1));
+            item.setCodigo(Long.parseLong(linha.get(1)));
         }
         if(!linha.get(2).trim().isEmpty()){
-            item.descricao = linha.get(2).trim();
+            item.setDescrição(linha.get(2).trim());
         }
         if(!linha.get(3).trim().isEmpty()){
-            item.subDescricao = linha.get(3).trim();
+            item.setSubDescrição(linha.get(3).trim());
         }
         if(!linha.get(4).trim().isEmpty()){
-            item.valor = Double.parseDouble(linha.get(4).replace(",", "."));
+            item.setValor(Double.parseDouble(linha.get(4).replace(",", ".")));
         }
         return item;
+    }
+
+    public List<ItemImportContracheque> getItemImportContracheque (Long codUnidade, int ano, int mes, String cpf){
+        try{
+            return dao.getItemImportContracheque(codUnidade, ano, mes, cpf);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade){
+        try{
+            return dao.updateItemImportContracheque(item, ano, mes, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade){
+        try{
+            return dao.deleteItemImportContracheque(item, ano, mes, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }
