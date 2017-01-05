@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.quiz;
 import br.com.zalf.prolog.gente.quiz.Quiz;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Zalf on 05/01/17.
@@ -17,6 +18,24 @@ public class QuizService {
         }catch (SQLException e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public List<Quiz> getRealizadosByColaborador(Long cpf){
+        try{
+            return dao.getRealizadosByColaborador(cpf);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz){
+        try{
+            return dao.getByCod(codUnidade, codQuiz, codModeloQuiz);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -4,11 +4,9 @@ import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.quiz.Quiz;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by Zalf on 05/01/17.
@@ -28,6 +26,22 @@ public class QuizResource {
         }else{
             return Response.Error("Erro ao inserir o Quiz");
         }
+    }
+
+    @GET
+    @Secured
+    @Path("/{cpf}")
+    public List<Quiz> getRealizadosByColaborador(@PathParam("cpf") Long cpf){
+        return service.getRealizadosByColaborador(cpf);
+    }
+
+    @GET
+    @Secured
+    @Path("/{codUnidade}/{codModeloQuiz}/{codQuiz}")
+    public Quiz getByCod(@PathParam("codUnidade") Long codUnidade,
+                         @PathParam("codQuiz") Long codQuiz,
+                         @PathParam("codModeloQuiz") Long codModeloQuiz){
+        return service.getByCod(codUnidade, codQuiz, codModeloQuiz);
     }
 
 }
