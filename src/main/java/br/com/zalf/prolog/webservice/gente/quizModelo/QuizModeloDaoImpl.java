@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.gente.quizModelo;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.quiz.AlternativaEscolhaQuiz;
-import br.com.zalf.prolog.gente.quiz.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -44,7 +42,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setLong(4, codFuncaoColaborador);
             rSet = stmt.executeQuery();
             while(rSet.next()){
-                ModeloQuiz modelo = createModeloQuiz(rSet);
+                ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
                 modelo.setFuncoesLiberadas(getFuncoesLiberadasByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
                 modelo.setPerguntas(getPerguntasAlternativasQuizByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
                 //TODO: Setar material de apoio
@@ -56,22 +54,11 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelos;
     }
 
-    private ModeloQuiz createModeloQuiz(ResultSet rSet) throws SQLException{
-        ModeloQuiz modelo = new ModeloQuiz();
-        modelo.setCodigo(rSet.getLong("CODIGO"));
-        modelo.setDataHoraAbertura(rSet.getTimestamp("DATA_HORA_ABERTURA"));
-        modelo.setDataHoraFechamento(rSet.getTimestamp("DATA_HORA_FECHAMENTO"));
-        modelo.setDescricao(rSet.getString("DESCRICAO"));
-        modelo.setNome(rSet.getString("NOME"));
-        return modelo;
-    }
-
     private List<Funcao> getFuncoesLiberadasByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Funcao> funcoes = new ArrayList<>();
         try{
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT F.* FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
                     "  ON QM.cod_unidade = QMF.cod_unidade\n" +
                     "  AND QM.codigo = QMF.cod_modelo\n" +
@@ -100,7 +87,6 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         ResultSet rSet = null;
         List<PerguntaQuiz> perguntas = new ArrayList<>();
         try{
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM quiz_perguntas QP\n" +
                     "WHERE QP.cod_modelo = ? AND QP. cod_unidade = ?\n" +
                     "ORDER BY QP.ordem");
@@ -108,7 +94,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while(rSet.next()){
-                PerguntaQuiz pergunta = createPerguntaQuiz(rSet);
+                PerguntaQuiz pergunta = QuizModeloConverter.createPerguntaQuiz(rSet);
                 pergunta.setAlternativas(getAlternativasPerguntaQuiz(codModeloQuiz, codUnidade, pergunta.getCodigo(),
                         pergunta.getTipo(), conn));
                 perguntas.add(pergunta);
@@ -119,23 +105,12 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return perguntas;
     }
 
-    private PerguntaQuiz createPerguntaQuiz(ResultSet rSet) throws SQLException{
-        PerguntaQuiz pergunta = new PerguntaQuiz();
-        pergunta.setCodigo(rSet.getLong("CODIGO"));
-        pergunta.setOrdemExibicao(rSet.getInt("ORDEM"));
-        pergunta.setUrlImagem(rSet.getString("URL_IMAGEM"));
-        pergunta.setPergunta(rSet.getString("PERGUNTA"));
-        pergunta.setTipo(rSet.getString("TIPO"));
-        return pergunta;
-    }
-
     private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta,
                                                           String tipoPergunta, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Alternativa> alternativas = new ArrayList<>();
         try{
-            conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM quiz_alternativa_pergunta\n" +
                     "WHERE cod_modelo = ? AND cod_unidade = ? AND cod_pergunta = ?\n" +
                     "ORDER BY ordem");
@@ -144,28 +119,11 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setLong(3, codPergunta);
             rSet = stmt.executeQuery();
             while (rSet.next()){
-                alternativas.add(createAlternativa(rSet, tipoPergunta));
+                alternativas.add(QuizModeloConverter.createAlternativa(rSet, tipoPergunta));
             }
         }finally {
             closeConnection(null, stmt, rSet);
         }
         return alternativas;
-    }
-
-    private Alternativa createAlternativa(ResultSet rSet, String tipoPergunta) throws SQLException{
-        if(tipoPergunta.equals(PerguntaQuiz.TIPO_MULTIPLE_CHOICE) || tipoPergunta.equals(PerguntaQuiz.TIPO_SINGLE_CHOICE)){
-            AlternativaEscolhaQuiz alternativa = new AlternativaEscolhaQuiz();
-            alternativa.setCodigo(rSet.getLong("CODIGO"));
-            alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
-            alternativa.setOrdemExibicao(rSet.getInt("ORDEM"));
-            alternativa.setCorreta(rSet.getBoolean("CORRETA"));
-            return alternativa;
-        }else{
-            AlternativaOrdenamentoQuiz alternativa = new AlternativaOrdenamentoQuiz();
-            alternativa.setCodigo(rSet.getLong("CODIGO"));
-            alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
-            alternativa.setOrdemCorreta(rSet.getInt("ORDEM"));
-            return alternativa;
-        }
     }
 }
