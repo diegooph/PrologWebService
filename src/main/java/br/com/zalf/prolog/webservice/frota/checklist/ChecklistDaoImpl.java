@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -510,7 +509,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				for(PerguntaRespostaChecklist.Alternativa alternativa : resposta.getAlternativasResposta()){
 					stmt.setLong(5, alternativa.codigo);
 					//se a alternativa esta selecionada
-					if(alternativa.selected == true){
+					if(alternativa.selected){
 						// se a alternativa é do tipo Outros
 						if(alternativa.tipo == PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS){
 							// salva a resposta escrita do usuário
