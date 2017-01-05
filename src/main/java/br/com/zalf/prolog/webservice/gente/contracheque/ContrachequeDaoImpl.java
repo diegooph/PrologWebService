@@ -74,8 +74,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
     private ItemContracheque createItemContracheque(ResultSet rSet) throws SQLException{
         ItemContracheque item = new ItemContracheque();
         item.setCodigo(rSet.getLong("CODIGO_ITEM"));
-        item.setDescrição(rSet.getString("DESCRICAO"));
-        item.setSubDescrição(rSet.getString("SUB_DESCRICAO"));
+        item.setDescricao(rSet.getString("DESCRICAO"));
+        item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));
         return item;
     }
@@ -109,12 +109,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
                 valorPremio = rSet.getDouble("VALOR");
                 if (valorPremio > 0) {
                     itemContracheque = new ItemContracheque();
-                    itemContracheque.setDescrição("Bônus devolução");
+                    itemContracheque.setDescricao("Bônus devolução");
                     for (IndicadorAcumulado indicadorAcumulado : indicadores) {
                         if (indicadorAcumulado.getTipo().equals(indicador)) {
                             //buscou o indicador na lista de acumulados
                             DevNfAcumulado devNf = (DevNfAcumulado) indicadorAcumulado;
-                            itemContracheque.setSubDescrição("Resultado: " + String.format("%1$,.2f", devNf.getResultado() * 100) + "%");
+                            itemContracheque.setSubDescricao("Resultado: " + String.format("%1$,.2f", devNf.getResultado() * 100) + "%");
                             if (devNf.isBateuMeta()) {
                                 itemContracheque.setValor(valorPremio);
                             }
@@ -186,7 +186,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         }
 
         ItemContracheque item = new ItemContracheque();
-        item.setDescrição("Prêmio produtividade");
+        item.setDescricao("Prêmio produtividade");
         // compara o total de HE com o valor da produtividade, se for >= premio é zerado
         if(valorHoras >= valorProdutividade){
             item.setValor(0.0);
@@ -222,8 +222,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
                     " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
-            stmt.setString(1, item.getDescrição());
-            stmt.setString(2, item.getSubDescrição());
+            stmt.setString(1, item.getDescricao());
+            stmt.setString(2, item.getSubDescricao());
             stmt.setDouble(3, item.getValor());
             stmt.setInt(4, ano);
             stmt.setInt(5, mes);
@@ -271,8 +271,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             stmt.setInt(3, mes);
             stmt.setInt(4, ano);
             stmt.setLong(5, item.getCodigo());
-            stmt.setString(6, item.getDescrição());
-            stmt.setString(7, item.getSubDescrição());
+            stmt.setString(6, item.getDescricao());
+            stmt.setString(7, item.getSubDescricao());
             stmt.setDouble(8, item.getValor());
             int count = stmt.executeUpdate();
             if(count == 0){
@@ -336,8 +336,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
     private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException{
         ItemImportContracheque item = new ItemImportContracheque();
         item.setCodigo(rSet.getLong("CODIGO_ITEM"));
-        item.setDescrição(rSet.getString("DESCRICAO"));
-        item.setSubDescrição(rSet.getString("SUB_DESCRICAO"));
+        item.setDescricao(rSet.getString("DESCRICAO"));
+        item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));
         item.setCpf(rSet.getLong("CPF_COLABORADOR"));
         item.setNome(rSet.getString("NOME"));
