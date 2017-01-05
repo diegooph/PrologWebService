@@ -111,7 +111,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         ResultSet rSet = null;
         List<Alternativa> alternativas = new ArrayList<>();
         try{
-            stmt = conn.prepareStatement("SELECT * FROM quiz_alternativa_pergunta\n" +
+            stmt = conn.prepareStatement("SELECT *, NULL AS SELECIONADA, NULL AS ORDEM_SELECIONADA FROM quiz_alternativa_pergunta\n" +
                     "WHERE cod_modelo = ? AND cod_unidade = ? AND cod_pergunta = ?\n" +
                     "ORDER BY ordem");
             stmt.setLong(1, codModeloQuiz);

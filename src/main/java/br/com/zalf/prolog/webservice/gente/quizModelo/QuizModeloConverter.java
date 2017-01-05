@@ -24,7 +24,7 @@ public class QuizModeloConverter {
         return modelo;
     }
 
-    static PerguntaQuiz createPerguntaQuiz(ResultSet rSet) throws SQLException{
+    public static PerguntaQuiz createPerguntaQuiz(ResultSet rSet) throws SQLException{
         PerguntaQuiz pergunta = new PerguntaQuiz();
         pergunta.setCodigo(rSet.getLong("CODIGO"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM"));
@@ -34,19 +34,21 @@ public class QuizModeloConverter {
         return pergunta;
     }
 
-    static Alternativa createAlternativa(ResultSet rSet, String tipoPergunta) throws SQLException{
+    public static Alternativa createAlternativa(ResultSet rSet, String tipoPergunta) throws SQLException{
         if(tipoPergunta.equals(PerguntaQuiz.TIPO_MULTIPLE_CHOICE) || tipoPergunta.equals(PerguntaQuiz.TIPO_SINGLE_CHOICE)){
             AlternativaEscolhaQuiz alternativa = new AlternativaEscolhaQuiz();
             alternativa.setCodigo(rSet.getLong("CODIGO"));
             alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
             alternativa.setOrdemExibicao(rSet.getInt("ORDEM"));
             alternativa.setCorreta(rSet.getBoolean("CORRETA"));
+            alternativa.setSelecionada(rSet.getBoolean("SELECIONADA"));
             return alternativa;
         }else{
             AlternativaOrdenamentoQuiz alternativa = new AlternativaOrdenamentoQuiz();
             alternativa.setCodigo(rSet.getLong("CODIGO"));
             alternativa.setAlternativa(rSet.getString("ALTERNATIVA"));
             alternativa.setOrdemCorreta(rSet.getInt("ORDEM"));
+            alternativa.setOrdemSelecionada(rSet.getInt("ORDEM_SELECIONADA"));
             return alternativa;
         }
     }
