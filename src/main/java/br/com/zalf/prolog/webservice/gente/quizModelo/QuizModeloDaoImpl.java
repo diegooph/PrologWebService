@@ -45,8 +45,8 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 ModeloQuiz modelo = createModeloQuiz(rSet);
-                modelo.setFuncoesLiberadas(getFuncoesLiberadasByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade));
-                modelo.setPerguntas(getPerguntasAlternativasQuizByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade));
+                modelo.setFuncoesLiberadas(getFuncoesLiberadasByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
+                modelo.setPerguntas(getPerguntasAlternativasQuizByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
                 //TODO: Setar material de apoio
                 modelos.add(modelo);
             }
@@ -66,8 +66,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelo;
     }
 
-    private List<Funcao> getFuncoesLiberadasByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade) throws SQLException{
-        Connection conn = null;
+    private List<Funcao> getFuncoesLiberadasByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Funcao> funcoes = new ArrayList<>();
@@ -90,13 +89,13 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 funcoes.add(funcao);
             }
         }finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
         return funcoes;
     }
 
-    private List<PerguntaQuiz> getPerguntasAlternativasQuizByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade) throws  SQLException{
-        Connection conn = null;
+    private List<PerguntaQuiz> getPerguntasAlternativasQuizByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade,
+                                                                                   Connection conn) throws  SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<PerguntaQuiz> perguntas = new ArrayList<>();
@@ -110,11 +109,12 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 PerguntaQuiz pergunta = createPerguntaQuiz(rSet);
-                pergunta.setAlternativas(getAlternativasPerguntaQuiz(codModeloQuiz, codUnidade, pergunta.getCodigo(), pergunta.getTipo()));
+                pergunta.setAlternativas(getAlternativasPerguntaQuiz(codModeloQuiz, codUnidade, pergunta.getCodigo(),
+                        pergunta.getTipo(), conn));
                 perguntas.add(pergunta);
             }
         }finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
         return perguntas;
     }
@@ -129,8 +129,8 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return pergunta;
     }
 
-    private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta, String tipoPergunta) throws SQLException{
-        Connection conn = null;
+    private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta,
+                                                          String tipoPergunta, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Alternativa> alternativas = new ArrayList<>();
@@ -147,7 +147,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 alternativas.add(createAlternativa(rSet, tipoPergunta));
             }
         }finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
         return alternativas;
     }
