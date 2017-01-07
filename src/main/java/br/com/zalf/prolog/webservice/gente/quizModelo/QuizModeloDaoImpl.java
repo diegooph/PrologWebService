@@ -35,7 +35,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
                     "  ON QM.cod_unidade = QMF.cod_unidade\n" +
                     "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "  JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
+                    "  LEFT JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
                     "    QMT.cod_unidade = QM.cod_unidade\n" +
                     "WHERE QM.data_hora_abertura <= ?\n" +
                     "  AND data_hora_fechamento >= ?\n" +
