@@ -67,4 +67,13 @@ public interface TreinamentoDao {
 	 * @throws SQLException caso operação falhar
 	 */
 	List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade) throws SQLException;
+
+	/**
+	 * Busca um treinamento a partir do seu código
+	 * @param codTreinamento código do treinamento
+	 * @param codUnidade código da unidade
+	 * @return um Treinamento
+	 * @throws SQLException caso não seja possível realizar a busca
+     */
+	public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException;
 }

@@ -226,6 +226,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 		treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
 		treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
 		treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+		treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo(), treinamento.getCodUnidade()));
 		return treinamento;
 	}
 
@@ -248,6 +249,55 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 			closeConnection(conn, stmt, null);
 		}
 		return true;
+	}
+
+	public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Treinamento treinamento = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM treinamento WHERE CODIGO = ? AND COD_UNIDADE = ?");
+			stmt.setLong(1, codTreinamento);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				treinamento = new Treinamento();
+				treinamento.setCodigo(rSet.getLong("CODIGO"));
+				treinamento.setDataHoraCadastro(rSet.getTimestamp("DATA_HORA_CADASTRO"));
+				treinamento.setDescricao(rSet.getString("DESCRICAO"));
+				treinamento.setTitulo(rSet.getString("TITULO"));
+				treinamento.setDataLiberacao(rSet.getTimestamp("DATA_LIBERACAO"));
+				treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
+				treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(codTreinamento, codUnidade));
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return treinamento;
+	}
+
+	private List<String> getUrlImagensTreinamento(Long codTreinamento, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<String> urls = new ArrayList<>();
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT URL FROM TREINAMENTO_URL_PAGINAS " +
+					"WHERE COD_TREINAMENTO = ? AND COD_UNIDADE = ? " +
+					"ORDER BY ORDEM");
+			stmt.setLong(1, codTreinamento);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				urls.add(rSet.getString("URL"));
+			}
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
+		return urls;
 	}
 
 }
