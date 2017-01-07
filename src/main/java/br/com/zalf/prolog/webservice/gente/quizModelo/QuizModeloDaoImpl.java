@@ -6,6 +6,8 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,15 +29,18 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<ModeloQuiz> modelos = new ArrayList<>();
+        TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT QM.* FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF \n" +
-                    "  ON QM.cod_unidade = QMF.cod_unidade \n" +
+            stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
+                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
                     "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "WHERE QM.data_hora_abertura <= ? \n" +
+                    "  JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
+                    "    QMT.cod_unidade = QM.cod_unidade\n" +
+                    "WHERE QM.data_hora_abertura <= ?\n" +
                     "  AND data_hora_fechamento >= ?\n" +
                     "  AND QMF.cod_unidade = ?\n" +
-                    "  AND QMF.cod_funcao_colaborador = ?");
+                    "  AND QMF.cod_funcao_colaborador = ?;");
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(3, codUnidade);
@@ -45,7 +50,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
                 modelo.setFuncoesLiberadas(getFuncoesLiberadasByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
                 modelo.setPerguntas(getPerguntasAlternativasQuizByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
-                //TODO: Setar material de apoio
+                modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(rSet.getLong("COD_TREINAMENTO"), codUnidade));
                 modelos.add(modelo);
             }
         }finally {
