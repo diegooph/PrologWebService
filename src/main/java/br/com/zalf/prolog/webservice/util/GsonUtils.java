@@ -34,7 +34,8 @@ public class GsonUtils {
 		RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
 				.of(Alternativa.class)
 				.registerSubtype(AlternativaEscolhaQuiz.class)
-				.registerSubtype(AlternativaOrdenamentoQuiz.class);
+				.registerSubtype(AlternativaOrdenamentoQuiz.class)
+				.registerSubtype(Alternativa.class);
 
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
                 .of(AbstractResponse.class)
