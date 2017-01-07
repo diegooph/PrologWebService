@@ -31,8 +31,10 @@ public class QuizResource {
     @GET
     @Secured
     @Path("/{cpf}")
-    public List<Quiz> getRealizadosByColaborador(@PathParam("cpf") Long cpf){
-        return service.getRealizadosByColaborador(cpf);
+    public List<Quiz> getRealizadosByColaborador(@PathParam("cpf") Long cpf,
+                                                 @QueryParam("limit") int limit,
+                                                 @QueryParam("offset") int offset){
+        return service.getRealizadosByColaborador(cpf, limit, offset);
     }
 
     @GET

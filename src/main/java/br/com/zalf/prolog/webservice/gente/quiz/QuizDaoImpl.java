@@ -39,8 +39,8 @@ public class QuizDaoImpl extends DatabaseConnection {
             stmt.setLong(3, quiz.getColaborador().getCpf());
             stmt.setTimestamp(4, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(5, quiz.getTempoRealizacaoInMillis());
-            stmt.setInt(6, quiz.getQtdCorretas());
-            stmt.setInt(7, quiz.getQtdErradas());
+            stmt.setInt(6, quiz.getQtdRespostasCorretas());
+            stmt.setInt(7, quiz.getQtdRespostasErradas());
             rSet = stmt.executeQuery();
             if(rSet.next()){
                 quiz.setCodigo(rSet.getLong("CODIGO"));
@@ -88,7 +88,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         }
     }
 
-    public List<Quiz> getRealizadosByColaborador(Long cpf) throws SQLException{
+    public List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -97,8 +97,11 @@ public class QuizDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM QUIZ q join quiz_modelo QM ON Q.cod_modelo = QM.codigo\n" +
                     "AND Q.cod_unidade = QM.cod_unidade WHERE cpf_colaborador = ?\n" +
-                    "ORDER BY data_hora DESC");
+                    "ORDER BY data_hora DESC " +
+                    "LIMIT ? OFFSET ?");
             stmt.setLong(1, cpf);
+            stmt.setInt(2, limit);
+            stmt.setInt(3, offset);
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 quizes.add(createQuiz(rSet));
@@ -115,8 +118,8 @@ public class QuizDaoImpl extends DatabaseConnection {
         quiz.setCodModeloQuiz(rSet.getLong("COD_MODELO"));
         quiz.setDataHoraRealizacao(rSet.getTimestamp("DATA_HORA"));
         quiz.setNome(rSet.getString("NOME"));
-        quiz.setQtdCorretas(rSet.getInt("QT_CORRETAS"));
-        quiz.setQtdErradas(rSet.getInt("QT_ERRADAS"));
+        quiz.setQtdRespostasCorretas(rSet.getInt("QT_CORRETAS"));
+        quiz.setQtdRespostasErradas(rSet.getInt("QT_ERRADAS"));
         quiz.setTempoRealizacaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
         return quiz;
     }
@@ -150,8 +153,9 @@ public class QuizDaoImpl extends DatabaseConnection {
         ResultSet rSet = null;
         List<PerguntaQuiz> perguntas = new ArrayList<>();
         try{
-            stmt = conn.prepareStatement("SELECT QP.*, QR.ordem_selecionada, QR.selecionada FROM quiz_respostas QR\n" +
-                    "JOIN quiz_perguntas QP ON QP.cod_unidade = QR.cod_unidade AND QP.CODIGO = QR.cod_pergunta\n" +
+            stmt = conn.prepareStatement("SELECT DISTINCT QP.* FROM quiz_respostas QR\n" +
+                    "JOIN quiz_perguntas QP ON QP.cod_unidade = QR.cod_unidade AND QP.CODIGO = QR.cod_pergunta " +
+                    "AND QP.cod_modelo = QR.cod_modelo\n" +
                     "WHERE QR.cod_unidade = ? AND QR.cod_quiz = ? and QR.cod_modelo = ?\n" +
                     "ORDER BY QP.ordem");
             stmt.setLong(1, codUnidade);

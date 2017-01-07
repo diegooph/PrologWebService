@@ -21,9 +21,9 @@ public class QuizService {
         }
     }
 
-    public List<Quiz> getRealizadosByColaborador(Long cpf){
+    public List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset){
         try{
-            return dao.getRealizadosByColaborador(cpf);
+            return dao.getRealizadosByColaborador(cpf, limit, offset);
         }catch (SQLException e){
             e.printStackTrace();
             return null;
