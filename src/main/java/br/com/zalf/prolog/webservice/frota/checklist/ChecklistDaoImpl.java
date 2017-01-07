@@ -453,7 +453,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	// Verifica se alguma alternativa da pergunta foi marcada
 	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
 		//Percorre a lista de alternativas de uma pergunta, se alguma estiver selecionada retorna true.
-		for(PerguntaRespostaChecklist.Alternativa alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
+		for(AlternativaChecklist alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
 			if(alternativa.selected){
 				return true;
 			}
@@ -472,12 +472,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return pergunta;
 	}
 
-	private PerguntaRespostaChecklist.Alternativa createAlternativa(ResultSet rSet) throws SQLException{
-		PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+	private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException{
+		AlternativaChecklist alternativa = new AlternativaChecklist();
 		alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
 		alternativa.alternativa = rSet.getString("ALTERNATIVA");
 		if(alternativa.alternativa.equals("Outros")){
-			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
+			alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
 			try{
 				alternativa.respostaOutros = rSet.getString("resposta");
 			}catch (SQLException e){}
@@ -506,12 +506,12 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				stmt.setLong(2, checklist.getCodModelo());
 				stmt.setLong(3, checklist.getCodigo());
 				stmt.setLong(4, resposta.getCodigo());
-				for(PerguntaRespostaChecklist.Alternativa alternativa : resposta.getAlternativasResposta()){
+				for(AlternativaChecklist alternativa : resposta.getAlternativasResposta()){
 					stmt.setLong(5, alternativa.codigo);
 					//se a alternativa esta selecionada
 					if(alternativa.selected){
 						// se a alternativa é do tipo Outros
-						if(alternativa.tipo == PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS){
+						if(alternativa.tipo == AlternativaChecklist.TIPO_OUTROS){
 							// salva a resposta escrita do usuário
 							stmt.setString(6, alternativa.respostaOutros);
 						}else{
@@ -560,9 +560,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
-		List<PerguntaRespostaChecklist.Alternativa> alternativas = new ArrayList<>();
+		List<AlternativaChecklist> alternativas = new ArrayList<>();
 		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-		PerguntaRespostaChecklist.Alternativa alternativa =  new PerguntaRespostaChecklist.Alternativa();
+		AlternativaChecklist alternativa =  new AlternativaChecklist();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA,\n" +
@@ -622,7 +622,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	// remonta as alternativas de uma Pergunta
-	private void setRespostaAlternativa(PerguntaRespostaChecklist.Alternativa alternativa, ResultSet rSet) throws SQLException{
+	private void setRespostaAlternativa(AlternativaChecklist alternativa, ResultSet rSet) throws SQLException{
 
 		if(rSet.getString("RESPOSTA").equals("NOK")){
 			alternativa.selected = true;
@@ -630,7 +630,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			alternativa.selected = false;
 		}else{
 			alternativa.selected = true;
-			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
+			alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
 			alternativa.respostaOutros = rSet.getString("RESPOSTA");
 		}
 	}
@@ -667,7 +667,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	private boolean possuiItemAberto(long codPergunta, long codAlternativa, List<PerguntaRespostaChecklist> itensAbertos){
 		for (PerguntaRespostaChecklist perguntaAberto: itensAbertos){
-			for (PerguntaRespostaChecklist.Alternativa alternativa: perguntaAberto.getAlternativasResposta()) {
+			for (AlternativaChecklist alternativa: perguntaAberto.getAlternativasResposta()) {
 				if (perguntaAberto.getCodigo() == codPergunta && alternativa.codigo == codAlternativa){
 					return true;
 				}

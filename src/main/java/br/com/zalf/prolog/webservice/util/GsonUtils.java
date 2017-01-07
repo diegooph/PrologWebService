@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.commons.questoes.Alternativa;
+import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.pneu.servico.Calibragem;
 import br.com.zalf.prolog.frota.pneu.servico.Inspecao;
 import br.com.zalf.prolog.frota.pneu.servico.Movimentacao;
@@ -35,6 +36,7 @@ public class GsonUtils {
 				.of(Alternativa.class)
 				.registerSubtype(AlternativaEscolhaQuiz.class)
 				.registerSubtype(AlternativaOrdenamentoQuiz.class)
+				.registerSubtype(AlternativaChecklist.class)
 				.registerSubtype(Alternativa.class);
 
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory

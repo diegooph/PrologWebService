@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.frota.checklist.os.ItemOrdemServico;
@@ -198,7 +199,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         List<OrdemServico> ordens = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), codUnidade, "%", null, null);
         for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
             L.d("Pergunta", pergunta.getCodigo().toString());
-            for (PerguntaRespostaChecklist.Alternativa alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
+            for (AlternativaChecklist alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
                 L.d("Verificando Alternativa:", String.valueOf(alternativa.codigo));
                 if (alternativa.selected) {
                     L.d("Alternativa esta elecionada", String.valueOf(alternativa.codigo));
@@ -499,8 +500,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         List<ItemOrdemServico> itens = new ArrayList<>();
         ItemOrdemServico item = null;
         PerguntaRespostaChecklist pergunta = null;
-        PerguntaRespostaChecklist.Alternativa alternativa = null;
-        List<PerguntaRespostaChecklist.Alternativa> alternativas = null;
+        AlternativaChecklist alternativa = null;
+        List<AlternativaChecklist> alternativas = null;
         Colaborador mecanico = null;
         try{
             while (rSet.next()){
@@ -568,12 +569,12 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return pergunta;
     }
 
-    private PerguntaRespostaChecklist.Alternativa createAlternativa(ResultSet rSet) throws SQLException{
-        PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+    private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException{
+        AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
         alternativa.alternativa = rSet.getString("ALTERNATIVA");
         if(alternativa.alternativa.equals("Outros")){
-            alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
+            alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
             alternativa.respostaOutros = rSet.getString("resposta");
         }
         return alternativa;
