@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.pneu.servico;
 
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.servico.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -211,7 +211,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 					+ "WHERE A.STATUS_ATIVO = TRUE");
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+				AlternativaChecklist alternativa = new AlternativaChecklist();
 				alternativa.codigo = rSet.getLong("CODIGO");
 				alternativa.alternativa = rSet.getString("ALTERNATIVA");
 				listAlternativas.add(alternativa);
