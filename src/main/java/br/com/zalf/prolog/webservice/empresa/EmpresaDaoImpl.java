@@ -172,7 +172,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Funcao funcao = createFuncao(rSet);
-				funcao.setPermissões(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
+				funcao.setPermissoes(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
 				listFuncao.add(funcao);
 			}
 		} finally {
