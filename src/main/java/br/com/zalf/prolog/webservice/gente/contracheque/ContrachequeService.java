@@ -59,10 +59,10 @@ public class ContrachequeService {
             item.setCodigo(Long.parseLong(linha.get(1)));
         }
         if(!linha.get(2).trim().isEmpty()){
-            item.setDescrição(linha.get(2).trim());
+            item.setDescricao(linha.get(2).trim());
         }
         if(!linha.get(3).trim().isEmpty()){
-            item.setSubDescrição(linha.get(3).trim());
+            item.setSubDescricao(linha.get(3).trim());
         }
         if(!linha.get(4).trim().isEmpty()){
             item.setValor(Double.parseDouble(linha.get(4).replace(",", ".")));
