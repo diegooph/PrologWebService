@@ -8,8 +8,6 @@ import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.gente.quiz.Quiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.quizModelo.QuizModeloConverter;
-import br.com.zalf.prolog.webservice.util.GsonUtils;
-import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -70,7 +68,6 @@ public class QuizDaoImpl extends DatabaseConnection {
                 stmt.setLong(4, pergunta.getCodigo());
                 for(Alternativa alternativa : pergunta.getAlternativas()){
                     stmt.setLong(5, alternativa.getCodigo());
-                    L.d(TAG, "Inserindo a alternativa:" + GsonUtils.getGson().toJson(alternativa));
                     if(pergunta.getTipo().equals(PerguntaQuiz.TIPO_ORDERING)){
                         AlternativaOrdenamentoQuiz alternativaOrdenamentoQuiz = (AlternativaOrdenamentoQuiz) alternativa;
                         stmt.setInt(6, alternativaOrdenamentoQuiz.getOrdemSelecionada());
@@ -95,7 +92,10 @@ public class QuizDaoImpl extends DatabaseConnection {
         List<Quiz> quizes = new ArrayList<>();
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM QUIZ q join quiz_modelo QM ON Q.cod_modelo = QM.codigo\n" +
+            stmt = conn.prepareStatement("SELECT *, " +
+                    "(CASE WHEN Q.QT_CORRETAS >= ((Q.qt_corretas + Q.qt_erradas) * QM.PORCENTAGEM_APROVACAO) " +
+                    "THEN TRUE ELSE FALSE END) AS APROVADO " +
+                    "FROM QUIZ q join quiz_modelo QM ON Q.cod_modelo = QM.codigo\n" +
                     "AND Q.cod_unidade = QM.cod_unidade WHERE cpf_colaborador = ?\n" +
                     "ORDER BY data_hora DESC " +
                     "LIMIT ? OFFSET ?");
@@ -121,6 +121,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         quiz.setQtdRespostasCorretas(rSet.getInt("QT_CORRETAS"));
         quiz.setQtdRespostasErradas(rSet.getInt("QT_ERRADAS"));
         quiz.setTempoRealizacaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
+        quiz.setAprovado(rSet.getBoolean("APROVADO"));
         return quiz;
     }
 
@@ -131,7 +132,10 @@ public class QuizDaoImpl extends DatabaseConnection {
         Quiz quiz = null;
         try{
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM QUIZ q join quiz_modelo QM ON Q.cod_modelo = QM.codigo\n" +
+            stmt = conn.prepareStatement("SELECT *, " +
+                    "(CASE WHEN Q.QT_CORRETAS >= ((Q.qt_corretas + Q.qt_erradas) * QM.PORCENTAGEM_APROVACAO) " +
+                    "THEN TRUE ELSE FALSE END) AS APROVADO " +
+                    "FROM QUIZ q join quiz_modelo QM ON Q.cod_modelo = QM.codigo\n" +
                     "AND Q.cod_unidade = QM.cod_unidade " +
                     "WHERE Q.CODIGO = ? and Q.cod_modelo = ? and Q.cod_unidade = ?");
             stmt.setLong(1, codQuiz);

@@ -14,7 +14,7 @@ public class QuizModeloService {
 
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador){
         try{
-            return dao.getModelosQuizDisponiveisByCodUnidadeByCodFuncao(codUnidade, codFuncaoColaborador);
+            return dao.getModelosQuizDisponiveis(codUnidade, codFuncaoColaborador);
         }catch (SQLException e){
             e.printStackTrace();
             return null;

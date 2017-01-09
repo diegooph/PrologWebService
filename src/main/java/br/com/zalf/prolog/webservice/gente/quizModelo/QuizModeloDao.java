@@ -18,6 +18,6 @@ public interface QuizModeloDao {
      * @return lista de ModeloQuiz completos, com perguntas e alternativas
      * @throws SQLException caso não seja possível realizar as buscas
      */
-    public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
+    public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
 
 }

@@ -21,6 +21,7 @@ public class QuizModeloConverter {
         modelo.setDataHoraFechamento(rSet.getTimestamp("DATA_HORA_FECHAMENTO"));
         modelo.setDescricao(rSet.getString("DESCRICAO"));
         modelo.setNome(rSet.getString("NOME"));
+        modelo.setPorcentagemAprovacao(rSet.getDouble("PORCENTAGEM_APROVACAO"));
         return modelo;
     }
 

@@ -24,7 +24,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
 
     private static final String TAG = QuizModeloDaoImpl.class.getSimpleName();
 
-    public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador) throws SQLException{
+    public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -48,8 +48,8 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
-                modelo.setFuncoesLiberadas(getFuncoesLiberadasByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
-                modelo.setPerguntas(getPerguntasAlternativasQuizByCodModeloByCodUnidade(modelo.getCodigo(), codUnidade, conn));
+                modelo.setFuncoesLiberadas(getFuncoesLiberadas(modelo.getCodigo(), codUnidade, conn));
+                modelo.setPerguntas(getPerguntasQuiz(modelo.getCodigo(), codUnidade, conn));
                 modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(rSet.getLong("COD_TREINAMENTO"), codUnidade));
                 modelos.add(modelo);
             }
@@ -59,7 +59,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelos;
     }
 
-    private List<Funcao> getFuncoesLiberadasByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException{
+    private List<Funcao> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Funcao> funcoes = new ArrayList<>();
@@ -86,8 +86,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return funcoes;
     }
 
-    private List<PerguntaQuiz> getPerguntasAlternativasQuizByCodModeloByCodUnidade(Long codModeloQuiz, Long codUnidade,
-                                                                                   Connection conn) throws  SQLException{
+    private List<PerguntaQuiz> getPerguntasQuiz(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<PerguntaQuiz> perguntas = new ArrayList<>();
