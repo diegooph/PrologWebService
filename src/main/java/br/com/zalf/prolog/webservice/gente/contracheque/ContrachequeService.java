@@ -38,12 +38,18 @@ public class ContrachequeService {
             // SE FOR A PRIMEIRA LINHA, CRIAR O ARRAY COM OS CÓDIGOS
             List<Long> codigos = new ArrayList<>();
             for(int i = 1; i < linha.size(); i++){
+                if(linha.get(i).trim().isEmpty()){
+                    return Response.Error("Campo código não pode estar em branco, linha: 1, coluna: " + (i+1));
+                }
                 codigos.add(Long.parseLong(linha.get(i)));
             }
             // SE FOR A SEGUNDA LINHA, CRIAR O ARRAY COM AS DESCRIÇÕES
             linha = tabela.get(1);
             List<String> descricoes  = new ArrayList<>();
             for(int i = 1; i < linha.size(); i++){
+                if (linha.get(1).trim().isEmpty()){
+                    return Response.Error("Campo descrição não pode estar em branco, linha: 2, coluna: " + (i+1) );
+                }
                 descricoes.add(linha.get(i));
             }
             // SE FOR A TERCEIRA LINHA, CRIAR O ARRAY COM AS SUB DESCRICOES
@@ -55,6 +61,11 @@ public class ContrachequeService {
 
             for (int i = 4; i < tabela.size(); i++){
                 for(int j = 0; j < codigos.size(); j++){
+                    if(tabela.get(i).get(0).trim().isEmpty()){
+                        return Response.Error("Campo CPF não pode estar em branco, linha: " + (i+1));
+                    }else if(tabela.get(i).get(j+1).trim().isEmpty()){
+                        return Response.Error("Campo valor não pode estar em branco, linha: " + (i+1) + ", coluna: " + (j+2));
+                    }
                     itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0)), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
                             Double.parseDouble(tabela.get(i).get(j+1))));
                 }
@@ -68,6 +79,9 @@ public class ContrachequeService {
         }catch(IOException e){
             e.printStackTrace();
             return Response.Error("Erro no processamento do arquivo");
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+            return Response.Error("Número mal formatado encontrado no arquivo");
         }
         return Response.Error("Erro ao inserir os dados");
     }
