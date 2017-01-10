@@ -19,7 +19,6 @@ public class ProdutividadeResource{
 	@GET
 	@Secured
 	@Path("/colaboradores/{ano}/{mes}/{cpf}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<ItemProdutividade> getProdutividadeByPeriodo(@PathParam("ano") int ano,
 															 @PathParam("mes") int mes,
 															 @PathParam("cpf") Long cpf) {
