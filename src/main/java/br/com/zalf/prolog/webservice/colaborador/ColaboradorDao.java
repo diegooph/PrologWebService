@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -48,11 +47,11 @@ public interface ColaboradorDao {
 
 	/**
 	 * Busca todos os colaboradores de uma unidade
-	 * @param request contém os dados do solicitante e código da unidade a ser filtrada
+	 * @param codUnidade código da unidade
 	 * @return uma lista de colaboradores
 	 * @throws SQLException caso não seja possível buscar os dados
 	 */
-	List<Colaborador> getAll(Request<?> request) throws SQLException;
+	List<Colaborador> getAll(Long codUnidade) throws SQLException;
 
 	/**
 	 * Verifica a existência de um CPF e data de nascimento

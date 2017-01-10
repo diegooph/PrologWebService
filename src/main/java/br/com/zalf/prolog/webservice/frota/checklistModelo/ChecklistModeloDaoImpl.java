@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklistModelo;
 
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.veiculo.TipoVeiculo;
+import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
 import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -18,9 +19,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 	@Override
 	public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) throws SQLException {
 		List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
-		List<PerguntaRespostaChecklist.Alternativa> alternativas = new ArrayList<>();
+		List<AlternativaChecklist> alternativas = new ArrayList<>();
 		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-		PerguntaRespostaChecklist.Alternativa alternativa =  new PerguntaRespostaChecklist.Alternativa();
+		AlternativaChecklist alternativa =  new AlternativaChecklist();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -106,7 +107,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
+			stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
 					+ "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
 					+ "WHERE CMF.COD_UNIDADE = ? AND CM.CODIGO = ? "
 					+ "ORDER BY MODELO");
@@ -134,7 +135,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -258,12 +258,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		return pergunta;
 	}
 
-	private PerguntaRespostaChecklist.Alternativa createAlternativa(ResultSet rSet) throws SQLException{
-		PerguntaRespostaChecklist.Alternativa alternativa = new PerguntaRespostaChecklist.Alternativa();
+	private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException{
+		AlternativaChecklist alternativa = new AlternativaChecklist();
 		alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
 		alternativa.alternativa = rSet.getString("ALTERNATIVA");
 		if(alternativa.alternativa.equals("Outros")){
-			alternativa.tipo = PerguntaRespostaChecklist.Alternativa.TIPO_OUTROS;
+			alternativa.tipo = AlternativaChecklist.TIPO_OUTROS;
 		}
 		return alternativa;
 	}
@@ -318,7 +318,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		ResultSet rSet = null;
 		for(PerguntaRespostaChecklist pergunta : modeloChecklist.getListPerguntas()){
 
-			for(PerguntaRespostaChecklist.Alternativa alternativa : pergunta.getAlternativasResposta()){
+			for(AlternativaChecklist alternativa : pergunta.getAlternativasResposta()){
 
 				stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
 						+ "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "

@@ -7,6 +7,7 @@ import br.com.zalf.prolog.commons.colaborador.Setor;
 import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -80,5 +81,32 @@ public interface EmpresaDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Empresa> getFiltros(Long cpf) throws SQLException;
-	
-}
+
+	/**
+	 * Busca as funções do prolog de um determinado cargo
+	 * @param codCargo codigo do cargo
+	 * @param codUnidade codigo da unidade
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException;
+
+	/**
+	 * Busca as funções do prolog a partir do codigo da unidade
+	 * @param codUnidade codigo da unidade
+	 * @return lista de Pilares e suas devidas funções
+	 * @throws SQLException
+     */
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException;
+
+	/**
+	 * Insere ou atualiza as funções do prolog cadastradas para determinado cargo
+	 * @param pilares lista com os pilares e funções
+	 * @param codUnidade codigo da unidade
+	 * @param codCargo codigo do cargo
+	 * @return boolean com o resultado da operação
+	 * @throws SQLException caso não seja possível realizar a operação
+     */
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException;
+
+	}

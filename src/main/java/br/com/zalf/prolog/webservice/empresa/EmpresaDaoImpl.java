@@ -7,6 +7,8 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
@@ -31,7 +33,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "AND TA.TOKEN=?";
 
 	private final String BUSCA_FUNCOES_BY_COD_UNIDADE = "SELECT F.CODIGO, F.NOME "
-			+ "FROM UNIDADE_FUNCAO UF JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
+			+ "FROM UNIDADE_FUNCAO UF LEFT JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
 			+ "WHERE UF.COD_UNIDADE = ? "
 			+ "ORDER BY F.NOME";
 
@@ -169,12 +171,116 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				listFuncao.add(createFuncao(rSet));
+				Funcao funcao = createFuncao(rSet);
+				funcao.setPermissoes(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
+				listFuncao.add(funcao);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		return listFuncao;
+	}
+
+	/**
+	 * Busca as funções do prolog de acordo com os parametros
+	 * @param codCargo codigo do cargo
+	 * @param codUnidade codigo da unidade
+	 * @return
+	 * @throws SQLException
+     */
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException {
+		List<Pilar> pilares = new ArrayList<>();
+
+		ResultSet rSet = null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
+					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"WHERE CF.cod_unidade = ? AND cod_funcao_colaborador::text like ?\n" +
+					"ORDER BY PP.pilar, FP.funcao");
+			stmt.setLong(1, codUnidade);
+			if(codCargo == null){
+				stmt.setString(2, "%");
+			}else {
+				stmt.setString(2, String.valueOf(codCargo));
+			}
+			rSet = stmt.executeQuery();
+			pilares = createPilares(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+
+		return pilares;
+	}
+
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException {
+		List<Pilar> pilares = new ArrayList<>();
+
+		ResultSet rSet = null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao\n" +
+					"FROM PILAR_PROLOG PP\n" +
+					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo\n" +
+					"JOIN unidade_pilar_prolog upp on upp.cod_pilar = pp.codigo\n" +
+					"WHERE upp.cod_unidade = ?\n" +
+					"ORDER BY PP.pilar, FP.funcao");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			pilares = createPilares(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+
+		return pilares;
+	}
+
+	public List<Pilar> createPilares(ResultSet rSet) throws SQLException{
+		List<Pilar> pilares = new ArrayList<>();
+		List<FuncaoApp> funcoes = new ArrayList<>();
+		Pilar pilar = null;
+		while(rSet.next()){
+			if(pilar == null){//primeira linha do rSet
+				pilar = createPilar(rSet);
+				funcoes.add(createFuncaoApp(rSet));
+			}else{
+				if(rSet.getString("PILAR").equals(pilar.nome)){
+					funcoes.add(createFuncaoApp(rSet));
+				}else{
+					pilar.funcoes = funcoes;
+					pilares.add(pilar);
+					pilar = createPilar(rSet);
+					funcoes = new ArrayList<>();
+					funcoes.add(createFuncaoApp(rSet));
+				}
+			}
+		}
+		if (pilar != null) {
+			pilar.funcoes = funcoes;
+		}
+		pilares.add(pilar);
+		return  pilares;
+	}
+
+	private FuncaoApp createFuncaoApp(ResultSet rSet) throws SQLException{
+		FuncaoApp funcao = new FuncaoApp();
+		funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
+		funcao.setDescricao(rSet.getString("FUNCAO"));
+		return funcao;
+	}
+
+	private Pilar createPilar(ResultSet rSet) throws SQLException{
+		Pilar pilar = new Pilar();
+		pilar.codigo = rSet.getInt("COD_PILAR");
+		pilar.nome = rSet.getString("PILAR");
+		return pilar;
 	}
 
 	@Override
@@ -237,12 +343,12 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA,M.placa, TRACKING.MAPA_TRACKING\n" +
+			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA, coalesce(M.placa, tracking.placa_tracking,M.placa) as placa, TRACKING.MAPA_TRACKING\n" +
 					"FROM MAPA M FULL OUTER JOIN\n" +
-					"\t(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
-					"\tJOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
-					"\tWHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
-					"\tORDER BY 1;");
+					"(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
+					"JOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
+					"WHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
+					"ORDER BY 1;");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codUnidade);
 			stmt.setInt(3, ano);
@@ -555,5 +661,50 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		unidade.setListEquipe(listEquipes);
+	}
+
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try{
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			// Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
+			deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
+			stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
+					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codCargo);
+			for(Pilar pilar : pilares){
+				for(FuncaoApp funcao : pilar.funcoes){
+					stmt.setInt(3, funcao.getCodigo());
+					stmt.setInt(4, pilar.codigo);
+					int count = stmt.executeUpdate();
+					if(count == 0){
+						conn.rollback();
+						return false;
+					}
+				}
+			}
+			conn.commit();
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	private boolean deleteCargoFuncaoProlog(long codCargo, Long codUnidade, Connection conn, PreparedStatement stmt) throws SQLException{
+		try{
+			stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG WHERE COD_UNIDADE = ? AND " +
+					"COD_FUNCAO_COLABORADOR = ? ");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codCargo);
+			int count = stmt.executeUpdate();
+			if(count > 0) {
+				return true;
+			}
+		}finally{}
+		return false;
 	}
 }

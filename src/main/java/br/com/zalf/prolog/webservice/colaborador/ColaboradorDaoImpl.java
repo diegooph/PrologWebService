@@ -5,11 +5,12 @@ import br.com.zalf.prolog.commons.colaborador.Equipe;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.colaborador.Setor;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
+import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
@@ -155,7 +156,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	 * Busca todos os colaboradores de uma unidade
 	 */
 	@Override
-	public List<Colaborador> getAll(Request<?> request) throws SQLException {
+	public List<Colaborador> getAll(Long codUnidade) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -166,14 +167,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
 					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
 					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
-					+ " FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
-					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.cod_funcao "
+					+ " FROM COLABORADOR C JOIN FUNCAO F ON F.CODIGO = C.cod_funcao "
 					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-			stmt.setLong(1, request.getCpf());
-			stmt.setString(2, request.getToken());
-			stmt.setLong(3, request.getCodUnidade());
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -276,50 +274,29 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return loginHolder;
 	}
 
-	private Visao getVisaoByCpf(Long cpf)throws SQLException{
+	private Visao getVisaoByCpf(Long cpf)throws SQLException {
 		Visao visao = new Visao();
-		List<Pilar> listPilares = new ArrayList<>();
-		List<Integer> listFuncoes = new ArrayList<>();
-		Pilar pilar = null;
-
+		List<Pilar> pilares = new ArrayList<>();
+		ResultSet rSet = null;
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
+		EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
+
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT COD_FUNCAO_PROLOG AS FUNCAO, COD_PILAR_PROLOG AS PILAR "
-					+ "FROM CARGO_FUNCAO_PROLOG CFP JOIN COLABORADOR C ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE "
-					+ "WHERE C.CPF = ? ORDER BY 2, 1", ResultSet.TYPE_SCROLL_SENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
+					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"JOIN colaborador C ON C.cod_unidade = CF.cod_unidade AND CF.cod_funcao_colaborador = C.cod_funcao\n" +
+					"WHERE C.CPF = ?\n" +
+					"ORDER BY PP.pilar, FP.funcao");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
-			if(rSet.first()){
-				pilar = new Pilar();
-				pilar.codigo = rSet.getInt("PILAR");
-				pilar.funcoesDisponiveis = listFuncoes;
-				pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
-			}
-			while (rSet.next()) {
-				if(rSet.getInt("PILAR") == pilar.codigo){
-					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
-				}else{
-					listPilares.add(pilar);
-					pilar = new Pilar();
-					listFuncoes = new ArrayList<>();
-					pilar.funcoesDisponiveis = listFuncoes;
-					pilar.codigo = rSet.getInt("PILAR");
-					pilar.funcoesDisponiveis.add(rSet.getInt("FUNCAO"));
-				}
-			}
-			if (pilar!=null){
-				listPilares.add(pilar);
-				visao.setPilares(listPilares);
-			}else{
-				return null;
-			}
+			pilares = empresaDao.createPilares(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
+		visao.setPilares(pilares);
 		return visao;
 	}
 
@@ -383,8 +360,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private boolean verificaSeFazRelato(List<Pilar> listPilar){
 		for(Pilar pilar : listPilar){
 			if(pilar.codigo == 2){
-				for(Integer funcao : pilar.funcoesDisponiveis){
-					if(funcao == 2){
+				for(FuncaoApp funcao : pilar.funcoes){
+					if(funcao.getCodigo() == 2){
 						return true;
 					}
 				}

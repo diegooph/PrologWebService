@@ -8,6 +8,7 @@ import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -55,6 +56,21 @@ public class EmpresaResource {
 
 	@GET
 	@Secured
+	@Path("/permissoes/{codUnidade}")
+	public List<Pilar> getPermissoesByUnidade(@PathParam("codUnidade") Long codUnidade){
+		return service.getPermissoesByUnidade(codUnidade);
+	}
+
+	@GET
+	@Secured
+	@Path("/permissoes/{codUnidade}/{codCargo}")
+	public List<Pilar> getPermissoesByCargo(@PathParam("codUnidade") Long codUnidade,
+											@PathParam("codCargo") Long codCargo){
+		return service.getPermissoesByCargo(codUnidade, codCargo);
+	}
+
+	@GET
+	@Secured
 	@Path("/setores/{codUnidade}")
 	public List<Setor> getSetorByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getSetorByCodUnidade(codUnidade);
@@ -82,6 +98,19 @@ public class EmpresaResource {
 	public List<Empresa> getFiltros(
 			@PathParam("cpf") Long cpf) {
 		return service.getFiltros(cpf);
+	}
+
+	@POST
+	@Secured
+	@Path("/funcoesProlog/{codUnidade}/{codCargo}")
+	public Response insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares,
+												   @PathParam("codUnidade") Long codUnidade,
+												   @PathParam("codCargo") Long codCargo) throws SQLException{
+		if(service.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo)){
+			return Response.Ok("Funções inseridas com sucesso");
+		}else{
+			return Response.Error("Erro ao inserir as funções");
+		}
 	}
 
 

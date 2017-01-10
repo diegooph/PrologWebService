@@ -1,7 +1,6 @@
 package test;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -13,11 +12,10 @@ public class ColaboradorTest extends TestCase {
 	private static final Long CPF = 12345678987L;
 	private static final Long COD_UNIDADE = 1L;
 	private ColaboradorService service = new ColaboradorService();
-	
+
 	@Test
 	public void testGetAll() {
-		Request<?> request = new Request<>(TOKEN, CPF, COD_UNIDADE);
-		List<Colaborador> colaboradores = service.getAll(request);
+		List<Colaborador> colaboradores = service.getAll(COD_UNIDADE);
 		assertNotNull(colaboradores);
 		// Valida se encontrou algo
 		assertTrue(colaboradores.size() > 0);

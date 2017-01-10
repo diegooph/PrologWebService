@@ -101,6 +101,9 @@ public class VeiculoService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;
+		}catch (NullPointerException e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 

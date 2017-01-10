@@ -60,11 +60,11 @@ public class ColaboradorResource {
 		return service.getLoginHolder(cpf);
 	}
 	
-	@POST
-	@Path("/getAll")
-	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public List<Colaborador> getAll(Request request) {
-		return service.getAll(request);
+	@GET
+	@Path("/{codUnidade}/")
+	@Secured
+	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade) {
+		return service.getAll(codUnidade);
 	}
 	
 	@POST

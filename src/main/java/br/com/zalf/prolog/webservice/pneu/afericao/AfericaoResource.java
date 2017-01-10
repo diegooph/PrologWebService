@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.afericao;
 
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.frota.pneu.Restricao;
 import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
 import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
@@ -61,7 +62,15 @@ public class AfericaoResource {
 	
 	@GET
 	@Secured
-	public Afericao getByCod (@QueryParam("codAfericao") Long codAfericao, @QueryParam("codUnidade") Long codUnidade){
+	@Path("/{codUnidade}/{codAfericao}")
+	public Afericao getByCod (@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade){
 		return service.getByCod(codAfericao, codUnidade);
+	}
+
+	@GET
+	@Secured
+	@Path("/restricoes/{codUnidade}")
+	public Restricao getRestricoesByCodUnidade(@PathParam("codUnidade") Long codUnidade){
+		return service.getRestricoesByCodUnidade(codUnidade);
 	}
 }

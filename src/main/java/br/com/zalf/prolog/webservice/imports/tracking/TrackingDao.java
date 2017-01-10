@@ -1,10 +1,9 @@
-package br.com.zalf.prolog.webservice.imports;
+package br.com.zalf.prolog.webservice.imports.tracking;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.imports.TrackingImport;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by didi on 9/15/16.
@@ -18,6 +17,6 @@ public interface TrackingDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o import
 	 */
-	boolean insertOrUpdateTracking(List<TrackingImport> listTracking, Colaborador colaborador) throws SQLException;
+	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException;
 
 }

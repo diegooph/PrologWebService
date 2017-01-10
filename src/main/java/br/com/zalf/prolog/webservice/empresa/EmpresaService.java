@@ -8,6 +8,7 @@ import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilar;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -57,6 +58,24 @@ public class EmpresaService {
 		}
 	}
 
+	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade){
+		try{
+			return dao.getPermissoesByCargo(codCargo, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public List<Pilar> getPermissoesByUnidade(Long codUnidade){
+		try{
+			return dao.getPermissoesByUnidade(codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public List<Setor> getSetorByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getSetorByCodUnidade(codUnidade);
@@ -93,6 +112,15 @@ public class EmpresaService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo){
+		try{
+			return dao.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 	
