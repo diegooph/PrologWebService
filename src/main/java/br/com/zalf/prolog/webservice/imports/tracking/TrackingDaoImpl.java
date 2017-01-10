@@ -227,7 +227,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 	private TrackingImport createTracking (CSVRecord linha){
 		TrackingImport tracking = new TrackingImport();
 		if(!String.valueOf(linha.get(0)).trim().isEmpty()){
-			tracking.mapa = Integer.parseInt(linha.get(0));
+			//tracking.classe = Integer.parseInt(linha.get(0));
 		}
 		if(!String.valueOf(linha.get(1)).trim().isEmpty()){
 			tracking.data = toTimestamp(linha.get(1));
