@@ -3,12 +3,14 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.DevNfAcumulado;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.gente.contracheque.Contracheque;
 import br.com.zalf.prolog.gente.contracheque.ItemContracheque;
 import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.util.GsonUtils;
 import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
@@ -53,15 +55,16 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             while (rSet.next()){
                 itens.add(createItemContracheque(rSet));
             }
+            L.d(TAG, "itens que nao interferem no calculo do premio: " + GsonUtils.getGson().toJson(itens));
+
+
+
             //Calculo do prêmio
             List<ItemContracheque> itensPremio = getPremio(cpf, codUnidade, ano, mes, conn, stmt, rSet);
             if(itensPremio != null){
                 itens.addAll(itensPremio);
             }
-            ItemContracheque bonusDevolucao = getBonus(cpf, codUnidade, ano, mes, conn, stmt, rSet);
-            if(bonusDevolucao != null) {
-                itens.add(bonusDevolucao);
-            }
+            // ORDENA OS ITENS DO MAIOR VALOR (R$) PARA O MENOR
             Collections.sort(itens, new CustomComparator());
             contracheque = new Contracheque();
             contracheque.setItens(itens);
@@ -146,10 +149,10 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         try{
             // busca os itens para calcular o premio (HE e DSR)
             stmt = conn.prepareStatement("SELECT * FROM PRE_CONTRACHEQUE\n" +
-                    "WHERE CPF_COLABORADOR = ? AND ANO_REFERENCIA = ? AND MES_REFERENCIA = ?\n" +
-                    "AND (CODIGO_ITEM IN (SELECT COD_IMPORT_HE FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
-                    "WHERE COD_UNIDADE = ?)\n" +
-                    "or CODIGO_ITEM IN (SELECT COD_IMPORT_DSR FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
+                    "WHERE CPF_COLABORADOR = ? AND ANO_REFERENCIA = ? AND MES_REFERENCIA = ? " +
+                    "AND (CODIGO_ITEM IN (SELECT COD_IMPORT_HE FROM PRE_CONTRACHEQUE_PREMISSAS " +
+                    "WHERE COD_UNIDADE = ?) " +
+                    "or CODIGO_ITEM IN (SELECT COD_IMPORT_DSR FROM PRE_CONTRACHEQUE_PREMISSAS " +
                     "WHERE COD_UNIDADE = ?))");
             stmt.setLong(1, cpf);
             stmt.setInt(2, ano);
@@ -161,41 +164,78 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
                 itensPremio = new ArrayList<>();
                 itensPremio.add(createItemContracheque(rSet));
                 produtividadeDao = new ProdutividadeDaoImpl();
-                valorProdutividade = produtividadeDao.getTotalItens(produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false));
+                List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
+//                valorProdutividade = produtividadeDao.getTotalItens();
                 while (rSet.next()){
                     itensPremio.add(createItemContracheque(rSet));
                 }
-                itensPremio = calculaPremio(valorProdutividade, itensPremio);
+                L.d(TAG, "itens que compoe o premio: " + GsonUtils.getGson().toJson(itensPremio));
+                itensPremio = calculaPremio(itensProdutividade, itensPremio, cpf, ano, mes, conn, rSet, stmt, codUnidade);
             }
 
         }finally {}
         return itensPremio;
     }
 
-    /**
-     * Método que calcula o premio, usando os valores de HE + DSR e produtividade
-     * @param valorProdutividade valor da produtividade no período selecionado
-     * @param itensPremio lista com os itens HE e DSR (quando houver)
-     * @return
-     */
-    private List<ItemContracheque> calculaPremio(double valorProdutividade, List<ItemContracheque> itensPremio){
-        double valorHoras = 0;
-        // calcula a soma da HE + DSR
-        for(ItemContracheque item : itensPremio){
-            valorHoras += item.getValor();
-        }
+    private List<ItemContracheque> calculaPremio(List<ItemProdutividade> itensProdutividade, List<ItemContracheque> itensPremio,
+                                                 Long cpf, int ano, int mes, Connection conn, ResultSet rSet,
+                                                 PreparedStatement stmt, Long codUnidade) throws SQLException{
+        ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+        List<ItemContracheque> itensPremioFinal = new ArrayList<>();
+        // recebe uma lista com os itenProdutividade e uma lista com os ItemContracheque (HE - DSR - Vales)
+        // primeiro devemos verificar se o valor da produtividade-recarga + bonus devolucao
 
-        ItemContracheque item = new ItemContracheque();
-        item.setDescricao("Prêmio produtividade");
-        // compara o total de HE com o valor da produtividade, se for >= premio é zerado
-        if(valorHoras >= valorProdutividade){
-            item.setValor(0.0);
-        // caso a produtividade seja maior do que as horas, premio recebe a diferença
-        }else{
-            item.setValor(valorProdutividade - valorHoras);
+        // 1 - separar os mapas de recarga do restante da remuneração, criar um item especifico para as recargas
+        ItemContracheque itemRecargas = createItemRecargas(itensProdutividade);
+        itensPremioFinal.add(itemRecargas);
+        L.d(TAG, "Total de Recargas: " + GsonUtils.getGson().toJson(itemRecargas));
+
+        // 2 - calcular o valor da remuneração SEM as recargas
+        double valorProdutividade = produtividadeDao.getTotalItens(itensProdutividade);
+        L.d(TAG, "valor da produtividade (subtraindo as recargas): " + valorProdutividade);
+
+        // 3 - calcular o bonus de nivel de serviço
+        ItemContracheque itemBonusNS = getBonus(cpf, codUnidade, ano, mes, conn, stmt, rSet);
+        L.d(TAG, "item do bonus de devolucao: " + GsonUtils.getGson().toJson(itemBonusNS));
+
+        // 4 - calcular a soma da DSR + HE + Vales
+        double totalHe = 0;
+        for (ItemContracheque item : itensPremio){
+            totalHe += item.getValor();
         }
-        itensPremio.add(item);
-        return itensPremio;
+        L.d(TAG, "total dos itens que compoe o premio: " + totalHe);
+
+        // 5 - verificar se o valor da RV + BonusNS > DSR + HE + vales, se for, cria o item de premio
+        if((valorProdutividade + itemBonusNS.getValor()) > totalHe){
+            ItemContracheque itemPremio = new ItemContracheque();
+            itemPremio.setDescricao("Prêmio");
+            L.d(TAG, "valor da produtividade é maior do que as horas");
+            itemPremio.setValor((valorProdutividade+itemBonusNS.getValor()) - totalHe);
+            L.d(TAG, "item premio: " + GsonUtils.getGson().toJson(itemPremio));
+            itensPremioFinal.add(itemPremio);
+            itensPremioFinal.add(itemBonusNS);
+        }
+        itensPremioFinal.addAll(itensPremio);
+        return itensPremioFinal;
+    }
+
+    private ItemContracheque createItemRecargas(List<ItemProdutividade> itensProdutividade){
+        double valorRecargas = 0;
+        int qtRecargas = 0;
+        for(int i = 0; i < itensProdutividade.size(); i++){
+            ItemProdutividade itemProdutividade = itensProdutividade.get(i);
+            if(itemProdutividade.getCargaAtual() == ItemProdutividade.CargaAtual.RECARGA){
+                valorRecargas += itemProdutividade.getValor();
+                qtRecargas++;
+                itensProdutividade.remove(i);
+                i--;
+            }
+        }
+        ItemContracheque itemContracheque = new ItemContracheque();
+        itemContracheque.setDescricao("Recargas");
+        itemContracheque.setSubDescricao(qtRecargas + " mapas");
+        itemContracheque.setValor(valorRecargas);
+        return itemContracheque;
     }
 
     public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade)throws SQLException{
