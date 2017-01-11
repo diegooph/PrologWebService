@@ -66,7 +66,7 @@ public class ContrachequeService {
                     }else if(tabela.get(i).get(j+1).trim().isEmpty()){
                         return Response.Error("Campo valor não pode estar em branco, linha: " + (i+1) + ", coluna: " + (j+2));
                     }
-                    itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0)), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
+                    itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0).replaceAll( "[^\\d]", "")), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
                             Double.parseDouble(tabela.get(i).get(j+1))));
                 }
             }
