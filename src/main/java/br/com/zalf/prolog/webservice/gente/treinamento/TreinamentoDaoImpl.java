@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements TreinamentoDao {
@@ -139,7 +140,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 					+ "(?, ?, ?)");
 			stmt.setLong(1, treinamentoColaborador.getCodTreinamento());
 			stmt.setLong(2, treinamentoColaborador.getColaborador().getCpf());
-			stmt.setDate(3, DateUtils.toSqlDate(treinamentoColaborador.getDataVisualizacao()));
+			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao marcar o treinamento como visto");
