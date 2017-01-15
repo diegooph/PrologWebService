@@ -43,9 +43,9 @@ public class TreinamentoService {
 		}
 	}
 	
-	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) {
+	public boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) {
 		try {
-			return dao.marcarTreinamentoComoVisto(treinamentoColaborador);
+			return dao.marcarTreinamentoComoVisto(codTreinamento, cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

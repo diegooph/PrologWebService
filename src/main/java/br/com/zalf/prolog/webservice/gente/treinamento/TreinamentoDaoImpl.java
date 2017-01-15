@@ -130,7 +130,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 	}
 
 	@Override
-	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException {
+	public boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -138,8 +138,8 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO_COLABORADOR "
 					+ "(COD_TREINAMENTO, CPF_COLABORADOR, DATA_VISUALIZACAO) VALUES "
 					+ "(?, ?, ?)");
-			stmt.setLong(1, treinamentoColaborador.getCodTreinamento());
-			stmt.setLong(2, treinamentoColaborador.getColaborador().getCpf());
+			stmt.setLong(1, codTreinamento);
+			stmt.setLong(2, cpf);
 			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			int count = stmt.executeUpdate();
 			if(count == 0){

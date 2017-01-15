@@ -44,16 +44,17 @@ public interface TreinamentoDao {
 
 	/**
 	 * Insere uma linha na tabela treinamento_colaborador, na qual armazena a data
-	 *  que um treinamento foi visualizado, associando o código do treianmento com um cpf
-	 * @param treinamentoColaborador contém o código do treinamento e cpf do colaborador que visualizou
+	 *  que um treinamento foi visualizado, associando o código do treinamento com um cpf
+	 * @param codTreinamento
+	 * @param cpf
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o insert
 	 */
-	boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException;
+	boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) throws SQLException;
 
 	/**
 	 * inserir um treinamento
-	 * @param treinamento trienamento a ser inserido
+	 * @param treinamento treinamento a ser inserido
 	 * @return valor da operação
 	 * @throws SQLException caso operação falhar
 	 */
