@@ -7,6 +7,7 @@ import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,27 +30,27 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT   CASE when (c.matricula_ambev) = m.matricmotorista and m.entrega <> 'AS' then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
-					"when (c.matricula_ambev) = m.matricajud1 and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
-					"when (c.matricula_ambev) = m.matricajud2 and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+			stmt = conn.prepareStatement("SELECT M.DATA, CASE when MOTORISTA.cpf = SOLICITANTE.CPF and m.entrega <> 'AS' then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
+					"when AJ1.cpf = SOLICITANTE.cpf and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
+					"when AJ2.cpf = SOLICITANTE.cpf and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
 					"else 0\n" +
 					"end +\n" +
 					"-- case para calcular o valor quando é AS\n" +
-					"CASE when (c.matricula_ambev) = m.matricmotorista and m.entrega = 'AS' then\n" +
+					"CASE when MOTORISTA.cpf = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
 					"--case para calcular o valor com base no número de entregas\n" +
 					"(case when m.entregas = 1 then uv.rm_motorista_valor_as_1_entrega\n" +
 					"when m.entregas = 2 then uv.rm_motorista_valor_as_2_entregas\n" +
 					"when m.entregas > 2 then uv.rm_motorista_valor_as_maior_2_entregas\n" +
 					"else 0\n" +
 					"end)\n" +
-					"when (c.matricula_ambev) = m.matricajud1 and m.entrega = 'AS' then\n" +
+					"when AJ1.CPF = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
 					"--case para calcular o valor com base no número de entregas\n" +
 					"(case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
 					"when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
 					"when m.entregas > 2 then uv.rm_ajudante_valor_as_maior_2_entregas\n" +
 					"else 0\n" +
 					"end)\n" +
-					"when (c.matricula_ambev) = m.matricajud2 and m.entrega = 'AS' then\n" +
+					"when AJ2.CPF = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
 					"--case para calcular o valor com base no número de entregas\n" +
 					"(case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
 					"when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
@@ -71,9 +72,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
 					"um.meta_dev_hl, um.meta_dev_nf, um.meta_dev_pdv, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 					"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
-					"FROM mapa_colaborador mc join\n" +
-					"colaborador c on c.cod_unidade = mc.cod_unidade and mc.cod_ambev = c.matricula_ambev\n" +
-					"join mapa m on m.mapa = mc.mapa\n" +
+					"FROM\n" +
+					"mapa m\n" +
 					"join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
 					"join unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
@@ -82,12 +82,20 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"count(t.disp_apont_cadastrado) as total_apontamentos\n" +
 					"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
 					"group by 1) as tracking on tracking_mapa = m.mapa\n" +
-					"where c.cpf  = ?\n" +
-					"AND M.DATA BETWEEN ? AND ?\n" +
-					"order by m.data;");
+					"\tJOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON M.cod_unidade = UFP.COD_UNIDADE\n" +
+					"\tJOIN COLABORADOR MOTORISTA ON MOTORISTA.matricula_ambev = M.matricmotorista AND MOTORISTA.cod_funcao = UFP.COD_FUNCAO_MOTORISTA\n" +
+					"\tLEFT JOIN COLABORADOR AJ1 ON AJ1.matricula_ambev = M.matricajud1 AND AJ1.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
+					"\tLEFT JOIN COLABORADOR AJ2 ON AJ2.matricula_ambev = M.matricajud2 AND AJ2.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
+					"  LEFT JOIN COLABORADOR SOLICITANTE ON SOLICITANTE.CPF = ? \n" +
+					"where M.DATA BETWEEN ? AND ? AND MOTORISTA.cpf  = ? OR AJ1.cpf  = ? OR AJ2.cpf  = ?\n" +
+					"order by m.data;\n");
 			stmt.setLong(1, cpf);
 			stmt.setDate(2, getDataInicial(ano, mes));
 			stmt.setDate(3, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			stmt.setLong(4, cpf);
+			stmt.setLong(5, cpf);
+			stmt.setLong(6, cpf);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				ItemProdutividade item = new ItemProdutividade();
@@ -204,6 +212,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setString(4, codFuncao);
 			stmt.setString(5, equipe);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
 				if (holder == null){

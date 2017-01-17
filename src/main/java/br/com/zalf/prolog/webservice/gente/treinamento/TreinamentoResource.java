@@ -13,7 +13,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 
 @Path("/treinamentos")
@@ -25,9 +24,10 @@ public class TreinamentoResource {
 
 	@POST
 	@Secured
-	public Response marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) {
-		treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
-		if (service.marcarTreinamentoComoVisto(treinamentoColaborador)) {
+	@Path("/visualizados/{codTreinamento}/{cpf}")
+	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
+											   @PathParam("cpf") Long cpf) {
+		if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
 			return Response.Ok("Treinamento marcado com sucesso");
 		} else {
 			return Response.Error("Erro ao marcar treinamento");

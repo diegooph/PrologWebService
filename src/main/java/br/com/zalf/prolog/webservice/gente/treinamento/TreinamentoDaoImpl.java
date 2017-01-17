@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements TreinamentoDao {
@@ -129,7 +130,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 	}
 
 	@Override
-	public boolean marcarTreinamentoComoVisto(TreinamentoColaborador treinamentoColaborador) throws SQLException {
+	public boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -137,9 +138,9 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO_COLABORADOR "
 					+ "(COD_TREINAMENTO, CPF_COLABORADOR, DATA_VISUALIZACAO) VALUES "
 					+ "(?, ?, ?)");
-			stmt.setLong(1, treinamentoColaborador.getCodTreinamento());
-			stmt.setLong(2, treinamentoColaborador.getColaborador().getCpf());
-			stmt.setDate(3, DateUtils.toSqlDate(treinamentoColaborador.getDataVisualizacao()));
+			stmt.setLong(1, codTreinamento);
+			stmt.setLong(2, cpf);
+			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao marcar o treinamento como visto");

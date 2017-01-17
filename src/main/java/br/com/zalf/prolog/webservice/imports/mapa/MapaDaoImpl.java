@@ -520,7 +520,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.custoVLC = Double.parseDouble(linha.get(44).replace(",","."));
 		mapa.lucroUnitCEDBZ = Double.parseDouble(linha.get(45).replace(",","."));
 		mapa.CustoVlcCxEntr = Double.parseDouble(linha.get(46).replace(",","."));
-		if(toTime(linha.get(47)) == null){
+		if(linha.get(47).trim().isEmpty()){
 			mapa.tempoInterno = EMPTY_TIME;
 		}else{
 			mapa.tempoInterno = toTime(linha.get(47));

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.contracheque.Contracheque;
 import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
+import br.com.zalf.prolog.webservice.util.L;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -12,6 +13,8 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeResource.TAG;
 
 /**
  * Created by Zalf on 23/11/16.
@@ -35,8 +38,12 @@ public class ContrachequeService {
             Reader in = new FileReader(path);
             List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             CSVRecord linha = tabela.get(0);
+            L.d(TAG, linha.toString());
             // SE FOR A PRIMEIRA LINHA, CRIAR O ARRAY COM OS CÓDIGOS
             List<Long> codigos = new ArrayList<>();
+            if(tabela.size() == 4 || linha.size() == 1){
+                return Response.Error("Planilha incorreta, verifique o formato");
+            }
             for(int i = 1; i < linha.size(); i++){
                 if(linha.get(i).trim().isEmpty()){
                     return Response.Error("Campo código não pode estar em branco, linha: 1, coluna: " + (i+1));
@@ -66,8 +73,11 @@ public class ContrachequeService {
                     }else if(tabela.get(i).get(j+1).trim().isEmpty()){
                         return Response.Error("Campo valor não pode estar em branco, linha: " + (i+1) + ", coluna: " + (j+2));
                     }
-                    itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0)), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
-                            Double.parseDouble(tabela.get(i).get(j+1))));
+                    Double valor = Double.parseDouble(tabela.get(i).get(j+1).replace(",", "."));
+                    if(valor != 0) {
+                        itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0).replaceAll("[^\\d]", "")), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
+                                valor));
+                    }
                 }
             }
             if (dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)) {
