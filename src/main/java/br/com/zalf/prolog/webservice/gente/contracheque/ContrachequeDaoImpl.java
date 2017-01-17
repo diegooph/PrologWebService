@@ -275,7 +275,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
                 return false;
             }
         }finally {
-            closeConnection(null, stmt, null);
+            closeConnection(conn, stmt, null);
         }
         return true;
     }
