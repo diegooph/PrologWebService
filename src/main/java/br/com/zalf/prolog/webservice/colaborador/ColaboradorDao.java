@@ -87,4 +87,13 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	LoginHolder getLoginHolder(Long cpf) throws SQLException;
+
+	/**
+	 * Verifica se determinado CPF existe em determinada unidade
+	 * @param cpf cpf a ser verificado
+	 * @param codUnidade codigo da unidade ao qual o cpf deve pertencer
+	 * @return
+	 * @throws SQLException
+     */
+	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException;
 }
