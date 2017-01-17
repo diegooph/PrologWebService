@@ -195,12 +195,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"    end)\n" +
 					"  else 0\n" +
 					"  end) as valor\n" +
-					"  FROM mapa_colaborador MC\n" +
-					"  JOIN colaborador C ON C.matricula_ambev = MC.cod_ambev\n" +
-					"  AND C.cod_unidade = MC.cod_unidade\n" +
-					"  JOIN MAPA M ON M.cod_unidade = MC.cod_unidade\n" +
-					"  AND M.MAPA = MC.mapa\n" +
-					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
+					"  FROM VIEW_MAPA_COLABORADOR VMC JOIN colaborador C ON VMC.CPF = C.cpf " +
+					"  JOIN MAPA M ON M.MAPA = VMC.mapa AND M.cod_unidade = VMC.cod_unidade " +
+					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao " +
 					"  JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
 					"  left JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"  WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +
