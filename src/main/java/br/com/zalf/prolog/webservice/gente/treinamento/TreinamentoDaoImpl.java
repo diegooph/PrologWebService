@@ -296,7 +296,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 				urls.add(rSet.getString("URL"));
 			}
 		}finally {
-			closeConnection(null, stmt, rSet);
+			closeConnection(conn, stmt, rSet);
 		}
 		return urls;
 	}
