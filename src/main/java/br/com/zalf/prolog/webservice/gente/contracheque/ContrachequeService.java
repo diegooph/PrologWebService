@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.contracheque.Contracheque;
 import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -34,6 +36,8 @@ public class ContrachequeService {
 
     public Response insertOrUpdateContracheque(String path, int ano, int mes, Long codUnidade) {
         List<ItemImportContracheque> itens = new ArrayList<>();
+        ColaboradorDao colaboradorDao = new ColaboradorDaoImpl();
+        List<Long> inexistentes = new ArrayList<>();
         try {
             Reader in = new FileReader(path);
             List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
@@ -74,14 +78,28 @@ public class ContrachequeService {
                         return Response.Error("Campo valor não pode estar em branco, linha: " + (i+1) + ", coluna: " + (j+2));
                     }
                     Double valor = Double.parseDouble(tabela.get(i).get(j+1).replace(",", "."));
-                    if(valor != 0) {
-                        itens.add(createItemImportContracheque(Long.parseLong(tabela.get(i).get(0).replaceAll("[^\\d]", "")), codigos.get(j), descricoes.get(j), subDescricoes.get(j),
-                                valor));
+                    Long cpf = Long.parseLong(tabela.get(i).get(0).replaceAll("[^\\d]", ""));
+                    if(valor != 0){
+                        if(colaboradorDao.verifyIfCpfExists(cpf, codUnidade)){
+                            itens.add(createItemImportContracheque(cpf, codigos.get(j), descricoes.get(j), subDescricoes.get(j),
+                                    valor));
+                        }else{
+                            inexistentes.add(cpf);
+                        }
                     }
                 }
             }
-            if (dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)) {
-                return Response.Ok("Dados inseridos com sucesso");
+            if(dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)) {
+                String textoResponse = "";
+                if(inexistentes.isEmpty()){
+                    return Response.Ok("Dados inseridos com sucesso");
+                }else{
+                    L.d(TAG, "lista de inexistentes: " + inexistentes.toString());
+                    for(Long cpf : inexistentes){
+                        textoResponse += "CPF: " + String.valueOf(cpf) + "\n";
+                    }
+                    return Response.Error("Os dados dos seguintes colaboradores não foram inseridos: \n" + textoResponse);
+                }
             }
         }catch(SQLException e){
             e.printStackTrace();
