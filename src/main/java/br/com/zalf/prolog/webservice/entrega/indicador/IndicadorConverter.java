@@ -127,7 +127,7 @@ public class IndicadorConverter {
         Tracking item = new Tracking();
         item.setData(rSet.getDate("DATA"))
                 .setMapa(rSet.getInt("MAPA"))
-                .setOk(rSet.getInt("APONTAMENTO_OK"))
+                .setOk(rSet.getInt("APONTAMENTOS_OK"))
                 .setNok(rSet.getInt("TOTAL_TRACKING") - item.getOk())
                 .setMeta(rSet.getDouble("META_TRACKING"))
                 .calculaResultado();
