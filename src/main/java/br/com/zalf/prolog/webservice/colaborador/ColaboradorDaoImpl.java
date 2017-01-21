@@ -359,15 +359,15 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	}
 
 	private boolean verificaSeFazRelato(List<Pilar> pilares) {
-			for (Pilar pilar : pilares) {
-				if (pilar.codigo == Pilares.SEGURANCA) {
-					for (FuncaoApp funcao : pilar.funcoes) {
-						if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
-							return true;
-						}
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.SEGURANCA) {
+				for (FuncaoApp funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
+						return true;
 					}
 				}
 			}
+		}
 		return false;
 	}
 
