@@ -264,8 +264,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		if (pilar != null) {
 			pilar.funcoes = funcoes;
+			pilares.add(pilar);
 		}
-		pilares.add(pilar);
 		return  pilares;
 	}
 

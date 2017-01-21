@@ -359,7 +359,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	}
 
 	private boolean verificaSeFazRelato(List<Pilar> pilares) {
-		if (!pilares.isEmpty()) {
 			for (Pilar pilar : pilares) {
 				if (pilar.codigo == Pilares.SEGURANCA) {
 					for (FuncaoApp funcao : pilar.funcoes) {
@@ -369,7 +368,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					}
 				}
 			}
-		}
 		return false;
 	}
 
