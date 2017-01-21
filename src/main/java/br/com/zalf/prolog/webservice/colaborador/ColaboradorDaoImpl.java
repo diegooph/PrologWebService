@@ -265,14 +265,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.colaborador = getByCod(cpf);
 
-		if(loginHolder.colaborador.getVisao() != null) {
-			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
-				RelatoDao relatoDao = new RelatoDaoImpl();
-				loginHolder.alternativasRelato = relatoDao.getAlternativas(
-						loginHolder.colaborador.getCodUnidade(),
-						loginHolder.colaborador.getSetor().getCodigo());
-			}
+		if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+			RelatoDao relatoDao = new RelatoDaoImpl();
+			loginHolder.alternativasRelato = relatoDao.getAlternativas(
+					loginHolder.colaborador.getCodUnidade(),
+					loginHolder.colaborador.getSetor().getCodigo());
 		}
+
 		return loginHolder;
 	}
 
@@ -359,12 +358,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setLong(14, c.getEquipe().getCodigo());
 	}
 
-	private boolean verificaSeFazRelato(List<Pilar> pilares){
-		for (Pilar pilar : pilares) {
-			if (pilar.codigo == Pilares.SEGURANCA) {
-				for (FuncaoApp funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
-						return true;
+	private boolean verificaSeFazRelato(List<Pilar> pilares) {
+		if (!pilares.isEmpty()) {
+			for (Pilar pilar : pilares) {
+				if (pilar.codigo == Pilares.SEGURANCA) {
+					for (FuncaoApp funcao : pilar.funcoes) {
+						if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
+							return true;
+						}
 					}
 				}
 			}
