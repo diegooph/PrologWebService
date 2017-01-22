@@ -89,7 +89,7 @@ public class IndicadorConverter {
         DevPdv item = new DevPdv();
         item.setData(rSet.getDate("DATA"))
                 .setMapa(rSet.getInt("MAPA"))
-                .setOk(rSet.getDouble("ENTREGASCOMPLETAS") + rSet.getInt("ENTREGASNAOREALIZADAS"))
+                .setOk(rSet.getDouble("ENTREGASCOMPLETAS") + rSet.getDouble("ENTREGASPARCIAIS"))
                 .setNok(rSet.getDouble("ENTREGASNAOREALIZADAS"))
                 .setMeta(rSet.getDouble("META_DEV_PDV"))
                 .calculaResultado();
@@ -246,7 +246,7 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoDevHl(ResultSet rSet) throws SQLException{
         DevHlAcumulado item = new DevHlAcumulado();
-        item.setTotalOk(rSet.getInt("HL_CARREGADOS_TOTAL"))
+        item.setTotalOk(rSet.getInt("HL_CARREGADOS_TOTAL") - rSet.getInt("HL_DEVOLVIDOS_TOTAL"))
                 .setTotalNok(rSet.getInt("HL_DEVOLVIDOS_TOTAL"))
                 .setMeta(rSet.getDouble("META_DEV_HL"))
                 .calculaResultado();
@@ -255,7 +255,7 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoDevNf(ResultSet rSet) throws SQLException{
         DevNfAcumulado item = new DevNfAcumulado();
-        item.setTotalOk(rSet.getInt("NF_CARREGADAS_TOTAL"))
+        item.setTotalOk(rSet.getInt("NF_CARREGADAS_TOTAL") - rSet.getInt("NF_DEVOLVIDAS_TOTAL"))
                 .setTotalNok(rSet.getInt("NF_DEVOLVIDAS_TOTAL"))
                 .setMeta(rSet.getDouble("META_DEV_NF"))
                 .calculaResultado();
@@ -264,7 +264,7 @@ public class IndicadorConverter {
 
     static IndicadorAcumulado createAcumuladoDevPdv(ResultSet rSet) throws SQLException{
         DevPdvAcumulado item = new DevPdvAcumulado();
-        item.setTotalOk(rSet.getInt("PDV_CARREGADOS_TOTAL"))
+        item.setTotalOk(rSet.getInt("PDV_CARREGADOS_TOTAL") - rSet.getInt("PDV_DEVOLVIDOS_TOTAL"))
                 .setTotalNok(rSet.getInt("PDV_DEVOLVIDOS_TOTAL"))
                 .setMeta(rSet.getDouble("META_DEV_PDV"))
                 .calculaResultado();
