@@ -12,6 +12,7 @@ import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
+import br.com.zalf.prolog.webservice.util.L;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.Connection;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
+
+	private final String TAG = EmpresaDaoImpl.class.getSimpleName();
 
 	private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
 			+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
@@ -345,7 +348,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA, coalesce(M.placa, tracking.placa_tracking,M.placa) as placa, TRACKING.MAPA_TRACKING\n" +
 					"FROM MAPA M FULL OUTER JOIN\n" +
-					"(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA\n" +
+					"(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA and m.cod_unidade = codigo\n" +
 					"JOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
 					"WHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
 					"ORDER BY 1;");
@@ -353,6 +356,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			stmt.setLong(2, codUnidade);
 			stmt.setInt(3, ano);
 			stmt.setInt(4, mes);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
 				tempMapa = rSet.getInt("mapa");
