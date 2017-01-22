@@ -60,12 +60,12 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"else 0\n" +
 					"end as valor , m.fator, m.cargaatual, m.entrega,\n" +
 					"M.DATA,  M.mapa, M.PLACA, M.cxcarreg, m.cxentreg,M.QTHLCARREGADOS,\n" +
-					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
+					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
 					"to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 					"M.HRSAI,  M.HRENTR,\n" +
 					"to_seconds(((M.hrentr - M.hrsai)::time)::text) AS TEMPO_ROTA,\n" +
 					"to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,\n" +
-					"tracking.apontamentos_ok as apontamento_ok,\n" +
+					"tracking.apontamentos_ok as apontamentos_ok,\n" +
 					"tracking.total_apontamentos as total_tracking,\n" +
 					"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
 					"end)::text) as tempo_largada,\n" +
