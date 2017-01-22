@@ -27,7 +27,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"-- Dev Nf\n" +
 			"sum(m.qtnfcarregadas) nf_carregadas_total, sum(qtnfcarregadas - qtnfentregues) as nf_devolvidas_total,\n" +
 			"-- Dev Pdv\n" +
-			"sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
+			"sum(m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
 			"-- Dispersão Km\n" +
 			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad\n" +
 			"else 0 end) as km_planejado_total,\n" +
@@ -93,7 +93,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf ";
 
 	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
-			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, " +
+			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, " +
 			"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas " +
@@ -118,7 +118,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
 			" M.DATA,  M.mapa, M.PLACA, E.nome as equipe,\n" +
-			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
+			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
 			"end)::text) as tempo_largada,\n" +
 			"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
@@ -155,9 +155,10 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"else 0 end) as apontamentos_ok, \n"  +
 			"count(t.disp_apont_cadastrado) as total_apontamentos \n"  +
 			"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"  +
-			"group by 1) as tracking on tracking_mapa = m.mapa \n"  +
-			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
-			"JOIN colaborador C ON C.cod_unidade = MC.cod_unidade AND C.matricula_ambev = MC.cod_ambev \n"  +
+			"group by 1) as tracking on tracking_mapa = m.mapa \n" +
+            "JOIN VIEW_MAPA_COLABORADOR VMC ON VMC.COD_UNIDADE = M.COD_UNIDADE AND M.MAPA = VMC.MAPA \n"  +
+//			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
+			"JOIN colaborador C ON C.cod_unidade = VMC.cod_unidade AND C.CPF = VMC.CPF \n"  +
 			"JOIN UNIDADE U ON U.codigo = M.cod_unidade \n"  +
 			"WHERE  M.DATA BETWEEN ? AND ? AND \n"  +
 			"  C.CPF = ? \n"  +
@@ -224,6 +225,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
+            L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			if(rSet.next()) {
 				acumulados = createAcumulados(rSet);
