@@ -9,6 +9,8 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
 import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
@@ -43,11 +45,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o colaborador");
-			}	
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
+		}
 		return true;
 	}
 
@@ -73,7 +75,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			// Só vai ter data de demissão quando estiver fazendo um update
 			// em um colaborador que já está deletado (inativo). 
 			if (colaborador.getDataDemissao() != null)
-				stmt.setDate(6, DateUtils.toSqlDate(colaborador.getDataDemissao()));	
+				stmt.setDate(6, DateUtils.toSqlDate(colaborador.getDataDemissao()));
 			else
 				stmt.setDate(6, null);
 			stmt.setBoolean(7, colaborador.isAtivo());
@@ -90,11 +92,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 			if(count == 0){
 				throw new SQLException("Erro ao atualizar o colaborador");
-			}	
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
+		}
 		return true;
 	}
 
@@ -263,14 +265,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.colaborador = getByCod(cpf);
 
-		if(loginHolder.colaborador.getVisao() != null) {
-			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
-				RelatoDao relatoDao = new RelatoDaoImpl();
-				loginHolder.alternativasRelato = relatoDao.getAlternativas(
-						loginHolder.colaborador.getCodUnidade(),
-						loginHolder.colaborador.getSetor().getCodigo());
-			}
+		if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+			RelatoDao relatoDao = new RelatoDaoImpl();
+			loginHolder.alternativasRelato = relatoDao.getAlternativas(
+					loginHolder.colaborador.getCodUnidade(),
+					loginHolder.colaborador.getSetor().getCodigo());
 		}
+
 		return loginHolder;
 	}
 
@@ -357,15 +358,35 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setLong(14, c.getEquipe().getCodigo());
 	}
 
-	private boolean verificaSeFazRelato(List<Pilar> listPilar){
-		for(Pilar pilar : listPilar){
-			if(pilar.codigo == 2){
-				for(FuncaoApp funcao : pilar.funcoes){
-					if(funcao.getCodigo() == 2){
+	private boolean verificaSeFazRelato(List<Pilar> pilares) {
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.SEGURANCA) {
+				for (FuncaoApp funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
 						return true;
 					}
 				}
 			}
+		}
+		return false;
+	}
+
+	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
+					+ "COLABORADOR C WHERE C.CPF = ? AND C.cod_unidade = ?)");
+			stmt.setLong(1, cpf);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getBoolean("EXISTS");
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
 		}
 		return false;
 	}

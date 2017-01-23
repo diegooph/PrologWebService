@@ -34,7 +34,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
             "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
             "group by 1) as tracking on tracking_mapa = m.mapa\n" +
-            "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista\n" +
+            "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
+            "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista " +
+            "AND C.COD_FUNCAO = UFP.COD_FUNCAO_MOTORISTA \n" +
             "JOIN EQUIPE E ON E.cod_unidade = M.cod_unidade AND C.cod_equipe = e.codigo\n" +
             "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
@@ -58,7 +60,9 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
             "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
             "group by 1) as tracking on tracking_mapa = m.mapa\n" +
+            "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista\n" +
+            " AND C.COD_FUNCAO = UFP.COD_FUNCAO_MOTORISTA \n" +
             "JOIN EQUIPE E ON E.cod_unidade = m.cod_unidade AND C.cod_equipe = e.codigo\n" +
             "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
@@ -75,28 +79,23 @@ public class RelatorioDaoImpl extends DatabaseConnection{
             "ORDER BY 1 %s;";
     
     public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
-            " FROM \n" +
-            "MAPA M \n" +
+            " FROM MAPA M \n" +
+            "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
+            "AND C1.COD_FUNCAO = UFP.COD_FUNCAO_MOTORISTA " +
             "JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
             "JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
             "JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
             "JOIN equipe E ON E.cod_unidade = U.codigo AND C1.cod_equipe = E.codigo AND C1.cod_unidade = E.cod_unidade\n" +
-            "LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
-            "FROM tracking t\n" +
-            "JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
-            "JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
-            "FROM tracking t\n" +
-            "JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
-            "WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
-            "GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
-            "JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
-            "FROM tracking t\n" +
-            "GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
-            "GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
-            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
-            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade ";
+            "LEFT JOIN (SELECT t.mapa as tracking_mapa, \n"+
+            "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"+
+            "else 0 end) as apontamentos_ok, \n"+
+            "count(t.disp_apont_cadastrado) as total_apontamentos \n"+
+            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"+
+            "group by 1) as tracking ON TRACKING_MAPA = M.MAPA \n" +
+            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade and c2.cod_funcao = ufp.cod_funcao_ajudante\n" +
+            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade and c3.cod_funcao = ufp.cod_funcao_ajudante ";
 
     /**
      * Método utilizado para buscar os dados da aba acumulados, tela Relatórios.

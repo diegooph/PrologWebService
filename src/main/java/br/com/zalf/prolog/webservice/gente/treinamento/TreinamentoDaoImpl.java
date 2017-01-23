@@ -112,8 +112,9 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		String treinamentosVistosQuery =
-				"SELECT * FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON "
-						+ "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?;";
+				"SELECT DISTINCT T.CODIGO, T.titulo, T.descricao, T.url_arquivo, T.data_liberacao, T.cod_unidade " +
+				"FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON \n" +
+				"T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?";
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(treinamentosVistosQuery);

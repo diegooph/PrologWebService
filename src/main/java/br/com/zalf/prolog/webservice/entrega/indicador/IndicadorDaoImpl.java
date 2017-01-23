@@ -5,6 +5,7 @@ import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
 import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
 import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +27,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"-- Dev Nf\n" +
 			"sum(m.qtnfcarregadas) nf_carregadas_total, sum(qtnfcarregadas - qtnfentregues) as nf_devolvidas_total,\n" +
 			"-- Dev Pdv\n" +
-			"sum(m.entregascompletas + m.entregasnaorealizadas) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
+			"sum(m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
 			"-- Dispersão Km\n" +
 			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad\n" +
 			"else 0 end) as km_planejado_total,\n" +
@@ -92,9 +93,9 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf ";
 
 	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
-			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, " +
+			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
-			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL AS TOTAL_TRACKING,  TRACKING.APONTAMENTO_OK, " +
+			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, " +
 			"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas " +
 			"else (m.hrsai - m.hrmatinal)::time\n" +
 			"end)::text) as tempo_largada,\n" +
@@ -116,38 +117,34 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas \n";
 
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
-			COLUNAS_EXTRATO +
+			" M.DATA,  M.mapa, M.PLACA, E.nome as equipe,\n" +
+			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
+			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
+			"end)::text) as tempo_largada,\n" +
+			"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
+			"um.meta_dev_hl, um.meta_dev_pdv, um.meta_dev_nf, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
+			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
 			"FROM\n" +
-			"MAPA_COLABORADOR MC\n" +
-			"JOIN COLABORADOR C ON C.COD_UNIDADE = MC.COD_UNIDADE AND MC.COD_AMBEV = C.MATRICULA_AMBEV\n" +
-			"JOIN MAPA M ON M.MAPA = MC.MAPA\n" +
+			"VIEW_MAPA_COLABORADOR VMC\n" +
+			"JOIN COLABORADOR C ON C.CPF = VMC.cpf AND C.COD_UNIDADE = VMC.cod_unidade\n" +
+			"JOIN MAPA M ON M.MAPA = VMC.MAPA AND M.COD_UNIDADE = VMC.cod_unidade\n" +
 			"JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
 			"JOIN EMPRESA EM ON EM.codigo = U.cod_empresa\n" +
 			"JOIN regional R ON R.codigo = U.cod_regional\n" +
 			"JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
-			"JOIN equipe E ON E.cod_unidade = U.codigo AND C.cod_equipe = E.codigo AND C.cod_unidade = E.cod_unidade\n" +
-			"LEFT JOIN (SELECT t.mapa AS TRACKING_MAPA, total.total AS TOTAL, ok.APONTAMENTOS_OK AS APONTAMENTO_OK\n" +
-			"FROM tracking t\n" +
-			"JOIN mapa_colaborador mc ON mc.mapa = t.mapa\n" +
-			"JOIN (SELECT t.mapa AS mapa_ok, count(t.disp_apont_cadastrado) AS apontamentos_ok\n" +
-			"FROM tracking t\n" +
-			"JOIN unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
-			"WHERE t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
-			"GROUP BY t.mapa) AS ok ON mapa_ok = t.mapa\n" +
-			"JOIN (SELECT t.mapa AS total_entregas, count(t.cod_cliente) AS total\n" +
-			"FROM tracking t\n" +
-			"GROUP BY t.mapa) AS total ON total_entregas = t.mapa\n" +
-			"GROUP BY t.mapa, OK.APONTAMENTOS_OK, total.total) AS TRACKING ON TRACKING_MAPA = M.MAPA\n" +
-            "LEFT JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
-            "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade\n" +
-            "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade " +
-			"WHERE\n" +
+			"JOIN equipe E ON E.cod_unidade = c.cod_unidade AND C.cod_equipe = E.codigo\n" +
+			"LEFT JOIN (SELECT T.MAPA AS TRACKING_MAPA, T.código_transportadora TRACKING_UNIDADE, COUNT(T.disp_apont_cadastrado) AS TOTAL_APONTAMENTOS,\n" +
+			"  SUM(CASE WHEN T.disp_apont_cadastrado <= UM.meta_raio_tracking THEN 1\n" +
+			"      ELSE 0 END) AS APONTAMENTOS_OK\n" +
+			"FROM TRACKING T JOIN UNIDADE_METAS UM ON UM.COD_UNIDADE = T.código_transportadora\n" +
+			"GROUP BY 1,2) AS TRACKING ON TRACKING_MAPA = M.MAPA AND TRACKING_UNIDADE = M.cod_unidade\n" +
+			"  where\n" +
+			"VMC.CPF::TEXT LIKE ? and\n" +
 			"DATA BETWEEN ? AND ? AND\n" +
 			"R.codigo::TEXT LIKE ? AND\n" +
 			"U.codigo::TEXT LIKE ? AND\n" +
 			"E.nome::TEXT LIKE ? AND\n" +
-			"EM.codigo::TEXT LIKE ? AND\n" +
-			"C.CPF::TEXT LIKE ?\n" +
+			"EM.codigo::TEXT LIKE ?\n" +
 			"ORDER BY M.DATA;";
 
 	private static final String BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL = "select " +
@@ -158,9 +155,10 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"else 0 end) as apontamentos_ok, \n"  +
 			"count(t.disp_apont_cadastrado) as total_apontamentos \n"  +
 			"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"  +
-			"group by 1) as tracking on tracking_mapa = m.mapa \n"  +
-			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
-			"JOIN colaborador C ON C.cod_unidade = MC.cod_unidade AND C.matricula_ambev = MC.cod_ambev \n"  +
+			"group by 1) as tracking on tracking_mapa = m.mapa \n" +
+            "JOIN VIEW_MAPA_COLABORADOR VMC ON VMC.COD_UNIDADE = M.COD_UNIDADE AND M.MAPA = VMC.MAPA \n"  +
+//			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
+			"JOIN colaborador C ON C.cod_unidade = VMC.cod_unidade AND C.CPF = VMC.CPF \n"  +
 			"JOIN UNIDADE U ON U.codigo = M.cod_unidade \n"  +
 			"WHERE  M.DATA BETWEEN ? AND ? AND \n"  +
 			"  C.CPF = ? \n"  +
@@ -192,13 +190,14 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EXTRATO_INDICADORES);
-			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
-			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
-			stmt.setString(3, codRegional);
-			stmt.setString(4, codUnidade);
-			stmt.setString(5, equipe);
-			stmt.setString(6, codEmpresa);
-			stmt.setString(7, cpf);
+			stmt.setString(1, cpf);
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			stmt.setString(4, codRegional);
+			stmt.setString(5, codUnidade);
+			stmt.setString(6, equipe);
+			stmt.setString(7, codEmpresa);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			itens = createExtratoIndicador(rSet, indicador);
 		} finally {
@@ -226,6 +225,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
+            L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			if(rSet.next()) {
 				acumulados = createAcumulados(rSet);

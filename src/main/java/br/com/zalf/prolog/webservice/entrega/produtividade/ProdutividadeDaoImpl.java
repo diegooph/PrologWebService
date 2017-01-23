@@ -60,12 +60,12 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"else 0\n" +
 					"end as valor , m.fator, m.cargaatual, m.entrega,\n" +
 					"M.DATA,  M.mapa, M.PLACA, M.cxcarreg, m.cxentreg,M.QTHLCARREGADOS,\n" +
-					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
+					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
 					"to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 					"M.HRSAI,  M.HRENTR,\n" +
 					"to_seconds(((M.hrentr - M.hrsai)::time)::text) AS TEMPO_ROTA,\n" +
 					"to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,\n" +
-					"tracking.apontamentos_ok as apontamento_ok,\n" +
+					"tracking.apontamentos_ok as apontamentos_ok,\n" +
 					"tracking.total_apontamentos as total_tracking,\n" +
 					"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
 					"end)::text) as tempo_largada,\n" +
@@ -195,12 +195,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"    end)\n" +
 					"  else 0\n" +
 					"  end) as valor\n" +
-					"  FROM mapa_colaborador MC\n" +
-					"  JOIN colaborador C ON C.matricula_ambev = MC.cod_ambev\n" +
-					"  AND C.cod_unidade = MC.cod_unidade\n" +
-					"  JOIN MAPA M ON M.cod_unidade = MC.cod_unidade\n" +
-					"  AND M.MAPA = MC.mapa\n" +
-					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao\n" +
+					"  FROM VIEW_MAPA_COLABORADOR VMC JOIN colaborador C ON VMC.CPF = C.cpf " +
+					"  JOIN MAPA M ON M.MAPA = VMC.mapa AND M.cod_unidade = VMC.cod_unidade " +
+					"  JOIN FUNCAO F ON F.codigo = C.cod_funcao " +
 					"  JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo\n" +
 					"  left JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"  WHERE M.cod_unidade = ? and m.fator >0 and m.data BETWEEN ? and ?\n" +

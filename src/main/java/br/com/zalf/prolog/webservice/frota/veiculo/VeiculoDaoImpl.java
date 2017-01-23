@@ -293,19 +293,13 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 					marca.setCodigo(rSet.getLong("COD_MARCA"));
 					marca.setNome(rSet.getString("MARCA"));
 					if(rSet.getString("MODELO") != null) {
-						Modelo modelo = new Modelo();
-						modelo.setCodigo(rSet.getLong("COD_MODELO"));
-						modelo.setNome(rSet.getString("MODELO"));
-						modelos.add(modelo);
+						modelos.add(createModelo(rSet));
 					}
 				}else{
 					L.d("metodo", "marcas.size > 0");
 					if(marca.getCodigo() == rSet.getLong("COD_MARCA")){ // se o modelo atual pertence a mesma marca do modelo anterior
 						if(rSet.getString("MODELO") != null) {
-							Modelo modelo = new Modelo();
-							modelo.setCodigo(rSet.getLong("COD_MODELO"));
-							modelo.setNome(rSet.getString("MODELO"));
-							modelos.add(modelo);
+							modelos.add(createModelo(rSet));
 						}
 					}else{ // modelo diferente, deve encerrar a marca e criar uma nova
 						marca.setModelos(modelos);
@@ -315,10 +309,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 						marca.setCodigo(rSet.getLong("COD_MARCA"));
 						marca.setNome(rSet.getString("MARCA"));
 						if(rSet.getString("MODELO") != null) {
-							Modelo modelo = new Modelo();
-							modelo.setCodigo(rSet.getLong("COD_MODELO"));
-							modelo.setNome(rSet.getString("MODELO"));
-							modelos.add(modelo);
+							modelos.add(createModelo(rSet));
 						}
 					}
 				}
@@ -330,6 +321,13 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, null);
 		}		
 		return marcas;
+	}
+
+	private Modelo createModelo(ResultSet rSet) throws SQLException{
+		Modelo modelo = new Modelo();
+		modelo.setCodigo(rSet.getLong("COD_MODELO"));
+		modelo.setNome(rSet.getString("MODELO"));
+		return modelo;
 	}
 
 	@Override
