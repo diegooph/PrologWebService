@@ -93,7 +93,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf ";
 
 	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
-			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais " +
+			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
 			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, " +
 			"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas " +
