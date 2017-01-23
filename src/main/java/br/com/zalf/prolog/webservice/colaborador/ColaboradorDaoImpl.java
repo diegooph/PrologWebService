@@ -9,6 +9,8 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
 import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
@@ -263,14 +265,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.colaborador = getByCod(cpf);
 
-		if(loginHolder.colaborador.getVisao() != null) {
-			if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
-				RelatoDao relatoDao = new RelatoDaoImpl();
-				loginHolder.alternativasRelato = relatoDao.getAlternativas(
-						loginHolder.colaborador.getCodUnidade(),
-						loginHolder.colaborador.getSetor().getCodigo());
-			}
+		if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+			RelatoDao relatoDao = new RelatoDaoImpl();
+			loginHolder.alternativasRelato = relatoDao.getAlternativas(
+					loginHolder.colaborador.getCodUnidade(),
+					loginHolder.colaborador.getSetor().getCodigo());
 		}
+
 		return loginHolder;
 	}
 
@@ -357,11 +358,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		stmt.setLong(14, c.getEquipe().getCodigo());
 	}
 
-	private boolean verificaSeFazRelato(List<Pilar> listPilar){
-		for(Pilar pilar : listPilar){
-			if(pilar.codigo == 2){
-				for(FuncaoApp funcao : pilar.funcoes){
-					if(funcao.getCodigo() == 2){
+	private boolean verificaSeFazRelato(List<Pilar> pilares) {
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.SEGURANCA) {
+				for (FuncaoApp funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
 						return true;
 					}
 				}

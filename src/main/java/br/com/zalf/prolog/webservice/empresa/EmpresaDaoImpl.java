@@ -190,7 +190,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	 * @param codUnidade codigo da unidade
 	 * @return
 	 * @throws SQLException
-     */
+	 */
 	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
 
@@ -245,18 +245,18 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return pilares;
 	}
 
-	public List<Pilar> createPilares(ResultSet rSet) throws SQLException{
+	public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
 		List<FuncaoApp> funcoes = new ArrayList<>();
 		Pilar pilar = null;
-		while(rSet.next()){
-			if(pilar == null){//primeira linha do rSet
+		while (rSet.next()) {
+			if (pilar == null) {//primeira linha do rSet
 				pilar = createPilar(rSet);
 				funcoes.add(createFuncaoApp(rSet));
-			}else{
-				if(rSet.getString("PILAR").equals(pilar.nome)){
+			} else {
+				if (rSet.getString("PILAR").equals(pilar.nome)) {
 					funcoes.add(createFuncaoApp(rSet));
-				}else{
+				} else {
 					pilar.funcoes = funcoes;
 					pilares.add(pilar);
 					pilar = createPilar(rSet);
@@ -267,8 +267,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		if (pilar != null) {
 			pilar.funcoes = funcoes;
+			pilares.add(pilar);
 		}
-		pilares.add(pilar);
 		return  pilares;
 	}
 
@@ -400,9 +400,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 				}
 			}
 			if (holder != null) {
-                holder.setMapas(mapas);
-                holders.add(holder);
-            }
+				holder.setMapas(mapas);
+				holders.add(holder);
+			}
 		}finally {
 			closeConnection(conn,stmt,rSet);
 		}
