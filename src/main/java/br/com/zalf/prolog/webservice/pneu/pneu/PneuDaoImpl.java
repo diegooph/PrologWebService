@@ -15,6 +15,7 @@ import java.util.List;
 
 public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
+	private static final String TAG = PneuDaoImpl.class.getSimpleName();
 
 	private static final String BUSCA_PNEUS_BY_PLACA="( SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, " 
@@ -23,7 +24,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
-			+ "WHERE PLACA =  ? "
+			+ "WHERE PLACA =  ? AND VP.posicao < 900"
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC "
@@ -38,12 +39,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
-			+ "WHERE PLACA =  ? "
+			+ "WHERE PLACA =  ? AND VP.posicao < 900 "
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 3 for 1) DESC "
 			+ "LIMIT (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 "
-			+ "OFFSET (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 )";
+			+ "OFFSET (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ?)/2 ) "
+			+ "UNION ALL ( "
+			+ "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
+			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
+			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
+			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
+			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "WHERE PLACA =  ? AND VP.posicao > 900 )";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, "
@@ -78,6 +88,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			stmt.setString(3, placa);
 			stmt.setString(4, placa);
 			stmt.setString(5, placa);
+			stmt.setString(6, placa);
+			L.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Pneu pneu = createPneu(rSet);
@@ -468,11 +480,16 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			halfSizeListaOriginal ++;
 		}
 
-		if(estepes.size() > 1){
+		if(estepes.size() == 1){
+			if(estepes.get(0).getPosicao() == 911){
+				copiaOriginal.add(0, estepes.get(0));
+			}else if(estepes.get(0).getPosicao() == 921){
+				copiaOriginal.add(estepes.get(0));
+			}
+		}else if(estepes.size() > 1) {
 			copiaOriginal.add(0, estepes.get(0));
 			copiaOriginal.add(estepes.get(1));
 		}
-
 		return copiaOriginal;
 	}
 
