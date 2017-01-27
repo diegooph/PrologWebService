@@ -67,13 +67,6 @@ public class ColaboradorResource {
 		return service.getAll(codUnidade);
 	}
 	
-	@POST
-	@Path("/getAtivosByUnidade")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Colaborador> getAtivosByUnidade(@FormParam("codUnidade") Long codUnidade, @FormParam("token") String token, @FormParam("cpf") Long cpf) {
-		return service.getAtivosByUnidade(codUnidade, token, cpf);
-	}
-	
 	@DELETE
 	@Path("/{cpf}")
 	@Secured

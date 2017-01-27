@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Equipe;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.colaborador.Setor;
+import br.com.zalf.prolog.commons.colaborador.*;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
@@ -135,10 +132,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
+					+ "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
+					+ "U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
+					+ "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
 					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
-					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
+					+ " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA "
 					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
 			stmt.setLong(1, cpf);
@@ -167,44 +168,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
 					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
-					+ " FROM COLABORADOR C JOIN FUNCAO F ON F.CODIGO = C.cod_funcao "
-					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
+					+ "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
+					+ "U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
+					+ "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
+					+ " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
+					+ " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA "
 					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-			stmt.setLong(1, codUnidade);
-			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				Colaborador c = createColaborador(rSet);
-				list.add(c);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return list;
-	}
-
-	@Override
-	public List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException {
-		List<Colaborador> list = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, E.NOME AS NOME_EQUIPE, E.CODIGO AS COD_EQUIPE, S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-					+ "C.COD_FUNCAO, C.COD_UNIDADE, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, C.COD_EMPRESA "
-					+ "FROM COLABORADOR C JOIN TOKEN_AUTENTICACAO TA "
-					+ "ON ? = TA.CPF_COLABORADOR AND ? = TA.TOKEN JOIN FUNCAO F ON F.CODIGO = C.COD_UNIDADE "
-					+ " JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
-					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-					+ "WHERE C.COD_UNIDADE = ? AND C.STATUS_ATIVO = TRUE ORDER BY C.NOME; ");
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, codUnidade);
+				stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -317,6 +291,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
 		funcao.setNome(rSet.getString("NOME_FUNCAO"));
 		c.setFuncao(funcao);
+
+		Empresa empresa = new Empresa();
+		empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+		empresa.setNome(rSet.getString("NOME_EMPRESA"));
+		empresa.setLogoThumbnailUrl(rSet.getString("LOGO_THUMBNAIL_URL"));
+		c.setEmpresa(empresa);
+
+		Unidade unidade = new Unidade();
+		unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
+		unidade.setNome(rSet.getString("NOME_UNIDADE"));
+		c.setUnidade(unidade);
 
 		Equipe equipe = new Equipe();
 		equipe.setCodigo(rSet.getLong("COD_EQUIPE"));

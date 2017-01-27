@@ -71,16 +71,6 @@ public interface ColaboradorDao {
 	Funcao getFuncaoByCod(Long codigo) throws SQLException;
 
 	/**
-	 * Busca os colaboradores ativos pelo código de uma determinada unidade
-	 * @param codUnidade código da unidade a buscar os colaboradores
-	 * @param token para verificar se o solicitante esta devidamente logado
-	 * @param cpf do solicitante, para verificar se esta devidamente logado
-	 * @return lista de Colaborador
-	 * @throws SQLException caso não seja possível realizar a busca
-	 */
-	List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException;
-
-	/**
 	 * retorna o login do colaborador com o cpf marcado
 	 * @param cpf cpf do usuario a se logar
 	 * @return o login do colaborador com o cpf marcado

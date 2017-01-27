@@ -7,6 +7,7 @@ import br.com.zalf.prolog.commons.network.Request;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -53,21 +54,12 @@ public class ColaboradorService {
 		}
 	}
 	
-	public List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) {
-		try {
-			return dao.getAtivosByUnidade(codUnidade, token, cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Colaborador>();
-		}
-	}
-	
 	public List<Colaborador> getAll(Long codUnidade) {
 		try {
 			return dao.getAll(codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<Colaborador>();
+			return Collections.emptyList();
 		}
 	}
 	
