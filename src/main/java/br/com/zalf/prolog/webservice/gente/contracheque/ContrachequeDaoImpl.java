@@ -76,7 +76,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 
     private ItemContracheque createItemContracheque(ResultSet rSet) throws SQLException{
         ItemContracheque item = new ItemContracheque();
-        item.setCodigo(rSet.getLong("CODIGO_ITEM"));
+        item.setCodigo(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));
@@ -269,7 +269,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             stmt.setInt(5, mes);
             stmt.setLong(6, item.getCpf());
             stmt.setLong(7, codUnidade);
-            stmt.setLong(8, item.getCodigo());
+            stmt.setString(8, item.getCodigo());
             int count = stmt.executeUpdate();
             if(count == 0){
                 return false;
@@ -291,7 +291,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             stmt.setInt(2, mes);
             stmt.setLong(3, item.getCpf());
             stmt.setLong(4, codUnidade);
-            stmt.setLong(5, item.getCodigo());
+            stmt.setString(5, item.getCodigo());
             int count = stmt.executeUpdate();
             if(count == 0){
                 return false;
@@ -310,7 +310,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             stmt.setLong(2, item.getCpf());
             stmt.setInt(3, mes);
             stmt.setInt(4, ano);
-            stmt.setLong(5, item.getCodigo());
+            stmt.setString(5, item.getCodigo());
             stmt.setString(6, item.getDescricao());
             stmt.setString(7, item.getSubDescricao());
             stmt.setDouble(8, item.getValor());
@@ -375,7 +375,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 
     private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException{
         ItemImportContracheque item = new ItemImportContracheque();
-        item.setCodigo(rSet.getLong("CODIGO_ITEM"));
+        item.setCodigo(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
         item.setValor(rSet.getDouble("VALOR"));

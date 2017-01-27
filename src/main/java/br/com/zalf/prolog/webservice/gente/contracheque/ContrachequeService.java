@@ -37,14 +37,14 @@ public class ContrachequeService {
     public Response insertOrUpdateContracheque(String path, int ano, int mes, Long codUnidade) {
         List<ItemImportContracheque> itens = new ArrayList<>();
         ColaboradorDao colaboradorDao = new ColaboradorDaoImpl();
-        List<Long> inexistentes = new ArrayList<>();
+        List<Long> cpfsInexistentes = new ArrayList<>();
         try {
             Reader in = new FileReader(path);
             List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             CSVRecord linha = tabela.get(0);
             L.d(TAG, linha.toString());
             // SE FOR A PRIMEIRA LINHA, CRIAR O ARRAY COM OS CÓDIGOS
-            List<Long> codigos = new ArrayList<>();
+            List<String> codigos = new ArrayList<>();
             if(tabela.size() == 4 || linha.size() == 1){
                 return Response.Error("Planilha incorreta, verifique o formato");
             }
@@ -52,7 +52,7 @@ public class ContrachequeService {
                 if(linha.get(i).trim().isEmpty()){
                     return Response.Error("Campo código não pode estar em branco, linha: 1, coluna: " + (i+1));
                 }
-                codigos.add(Long.parseLong(linha.get(i)));
+                codigos.add(linha.get(i).trim());
             }
             // SE FOR A SEGUNDA LINHA, CRIAR O ARRAY COM AS DESCRIÇÕES
             linha = tabela.get(1);
@@ -84,21 +84,21 @@ public class ContrachequeService {
                             itens.add(createItemImportContracheque(cpf, codigos.get(j), descricoes.get(j), subDescricoes.get(j),
                                     valor));
                         }else{
-                            inexistentes.add(cpf);
+                            cpfsInexistentes.add(cpf);
                         }
                     }
                 }
             }
             if(dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)) {
                 String textoResponse = "";
-                if(inexistentes.isEmpty()){
+                if(cpfsInexistentes.isEmpty()){
                     return Response.Ok("Dados inseridos com sucesso");
                 }else{
-                    L.d(TAG, "lista de inexistentes: " + inexistentes.toString());
-                    for(Long cpf : inexistentes){
+                    L.d(TAG, "lista de cpfsInexistentes: " + cpfsInexistentes.toString());
+                    for(Long cpf : cpfsInexistentes){
                         textoResponse += "CPF: " + String.valueOf(cpf) + "\n";
                     }
-                    return Response.Error("Os dados dos seguintes colaboradores não foram inseridos: \n" + textoResponse);
+                    return Response.Error("Os seguintes colaboradores não estão cadastrados e seus dados não foram inseridos: \n" + textoResponse);
                 }
             }
         }catch(SQLException e){
@@ -114,7 +114,7 @@ public class ContrachequeService {
         return Response.Error("Erro ao inserir os dados");
     }
 
-    private ItemImportContracheque createItemImportContracheque(Long cpf , long codigo,
+    private ItemImportContracheque createItemImportContracheque(Long cpf , String codigo,
                                                                 String descricao, String subDescricao, double valor){
         ItemImportContracheque item = new ItemImportContracheque();
         item.setCpf(cpf);

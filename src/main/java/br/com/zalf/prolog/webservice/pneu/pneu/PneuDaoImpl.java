@@ -443,23 +443,36 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 	}
 
 	public List<Pneu> ordenaLista(List<Pneu> listPneu){
-		int sizeListaOriginal = listPneu.size();
-		List<Pneu> copiaOriginal = new ArrayList();
-		// cria uma cópia da lista original de pneus
-		for(Pneu pneu : listPneu){
-			copiaOriginal.add(pneu);
+		List<Pneu> estepes = new ArrayList<>();
+		// cria uma lista apenas com os estepes e remove eles da lista original
+		for(int i = 0; i < listPneu.size(); i++){
+			if(listPneu.get(i).getPosicao() > 900){
+				estepes.add(listPneu.get(i));
+				listPneu.remove(i);
+				i--;
+			}
 		}
-
+		int sizeListaOriginal = listPneu.size();
+		List<Pneu> copiaOriginal = new ArrayList<Pneu>(listPneu);
+		// cria uma cópia da lista original de pneus
+//		for(Pneu pneu : listPneu){
+//			copiaOriginal.add(pneu);
+//		}
 		// metade da lista
 		int halfSizeListaOriginal = listPneu.size() / 2;
 
-		//itera size/2, começando do ultimo elemento da lista original
+		// esse for segue para inverter a segunda metade da lista, formando o fluxo correto de aferição
 		for(int i = sizeListaOriginal; i > sizeListaOriginal/2; i--){
 			// seta na lista cópia, posição 5 - listaOriginal(ultima pos)
 			copiaOriginal.set(halfSizeListaOriginal, listPneu.get(i-1));
 			halfSizeListaOriginal ++;
 		}
-		System.out.println(copiaOriginal);
+
+		if(estepes.size() > 1){
+			copiaOriginal.add(0, estepes.get(0));
+			copiaOriginal.add(estepes.get(1));
+		}
+
 		return copiaOriginal;
 	}
 
