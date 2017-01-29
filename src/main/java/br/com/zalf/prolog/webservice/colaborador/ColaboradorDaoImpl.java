@@ -164,12 +164,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-                    + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-                    + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
-                    + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
-                    + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+            stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV "
                     + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
                     + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
                     + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
