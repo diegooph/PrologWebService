@@ -4,7 +4,12 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.webservice.CsvWriter;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +21,15 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-	private ColaboradorDao dao = new ColaboradorDaoImpl();
+	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
+
+	void test(Long codUnidade, OutputStream outputStream) {
+		try {
+			dao.test(codUnidade, outputStream);
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public boolean insert(Colaborador colaborador) {
 		try {
