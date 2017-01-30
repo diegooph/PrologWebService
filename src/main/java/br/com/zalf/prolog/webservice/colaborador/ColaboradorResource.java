@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
@@ -26,6 +27,13 @@ public class ColaboradorResource {
 	@Produces("application/csv")
 	public StreamingOutput test(@PathParam("codUnidade") Long codUnidade) {
 		return outputStream -> service.test(codUnidade, outputStream);
+	}
+
+	@GET
+	@Path("/{codUnidade}/report")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	public Report testReport(@PathParam("codUnidade") Long codUnidade) {
+		return service.testReport(codUnidade);
 	}
 	
 	@POST

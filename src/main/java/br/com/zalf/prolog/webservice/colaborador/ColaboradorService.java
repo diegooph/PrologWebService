@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
@@ -28,6 +29,15 @@ public class ColaboradorService {
 			dao.test(codUnidade, outputStream);
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	Report testReport(Long codUnidade) {
+		try {
+			return dao.testReport(codUnidade);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
