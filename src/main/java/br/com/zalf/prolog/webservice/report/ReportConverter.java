@@ -20,7 +20,7 @@ public class ReportConverter {
 
     public static @NotNull Report createReport(@NotNull ResultSet resultSet) throws SQLException {
         if (resultSet.isClosed())
-            throw new IllegalArgumentException("ResultSet can't be null!!!");
+            throw new IllegalArgumentException("ResultSet can't be closed!!!");
 
         Report report = new Report();
         List<List<String>> data = new ArrayList<>();
