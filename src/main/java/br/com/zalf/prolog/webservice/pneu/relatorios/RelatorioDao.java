@@ -67,8 +67,8 @@ public interface RelatorioDao {
 	 */
 	List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
 
-	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
-	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException;
+	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
 }

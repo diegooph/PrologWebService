@@ -27,8 +27,9 @@ public class CsvWriter {
             throw new IllegalArgumentException("ResultSet can't be closed!!!");
 
         final Appendable out = new OutputStreamWriter(outputStream);
-        final CSVPrinter printer = CSVFormat.DEFAULT.withHeader(resultSet).print(out);
+        final CSVPrinter printer = CSVFormat.DEFAULT.withDelimiter(';').withHeader(resultSet).print(out);
         printer.printRecords(resultSet);
+        printer.flush();
         resultSet.close();
     }
 }

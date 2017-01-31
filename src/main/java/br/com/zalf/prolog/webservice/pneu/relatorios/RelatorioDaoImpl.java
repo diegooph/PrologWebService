@@ -381,36 +381,55 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return servicos;
 	}
 
-	private ResultSet getPrevisaoCompra(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException{
+	private ResultSet getPrevisaoCompra(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM\n" +
-                    "  (SELECT P.CODIGO AS \"Cod Pneu\",\n" +
-                    "    MAP.NOME as \"Marca\",\n" +
-                    "    MP.nome as \"Modelo\",\n" +
-                    "    DP.largura || '/' || DP.altura || ' R'|| DP.aro as \"Medidas\",\n" +
-                    "    DADOS.QT_AFERICOES AS \"Qtd de aferições\",\n" +
-                    "    to_char(DADOS.PRIMEIRA_AFERICAO, 'DD/MM/YYYY') AS \"Dta 1a aferição\",\n" +
-                    "    to_char(DADOS.ULTIMA_AFERICAO, 'DD/MM/YYYY') AS \"Dta última aferição\",\n" +
-                    "    DADOS.TOTAL_DIAS AS \"Dias ativo\",\n" +
-                    "    round(CASE WHEN DADOS.TOTAL_DIAS > 0 THEN\n" +
-                    "      DADOS.TOTAL_KM / DADOS.TOTAL_DIAS END)  AS \"Média de KM por dia\",\n" +
-                    "    round(DADOS.MAIOR_SULCO::DECIMAL, 2) AS \"Maior medição vida\",\n" +
-                    "    round(DADOS.MENOR_SULCO::DECIMAL, 2) AS \"Menor sulco atual\",\n" +
-                    "    round(DADOS.SULCO_GASTO::DECIMAL, 2) AS \"Milimetros gastos\",\n" +
-                    "    round(DADOS.KM_POR_MM::DECIMAL, 2)  AS \"Kms por milimetro\",\n" +
-                    "    round(((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)::DECIMAL) AS \"Kms a percorrer\",\n" +
-                    "    TRUNC(CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0  AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
-                    "    ((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS)\n" +
-                    "      ELSE 0 END) AS \"Dias restantes\",\n" +
-                    "    to_char(CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0 AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
-                    "    (((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS))::INTEGER + CURRENT_DATE::DATE\n" +
-                    "     END, 'DD/MM/YYYY') AS \"Previsão de troca\"\n" +
+			stmt = conn.prepareStatement("SELECT\n" +
+                    "    EXTRATO.\"Cod Pneu\",\n" +
+                    "    EXTRATO.\"Marca\",\n" +
+                    "    EXTRATO.\"Modelo\",\n" +
+                    "    EXTRATO.\"Medidas\",\n" +
+                    "    EXTRATO.\"Qtd de aferições\",\n" +
+                    "    EXTRATO.\"Dta 1a aferição\",\n" +
+                    "    EXTRATO.\"Dta última aferição\",\n" +
+                    "    EXTRATO.\"Dias ativo\",\n" +
+                    "    EXTRATO.\"Média de KM por dia\",\n" +
+                    "    EXTRATO.\"Maior medição vida\",\n" +
+                    "    EXTRATO.\"Menor sulco atual\",\n" +
+                    "    EXTRATO.\"Milimetros gastos\",\n" +
+                    "    EXTRATO.\"Kms por milimetro\",\n" +
+                    "    EXTRATO.\"Kms a percorrer\",\n" +
+                    "    EXTRATO.\"Dias restantes\",\n" +
+                    "    to_char(EXTRATO.\"Previsão de troca\", 'DD/MM/YYYY') as \"Previsão de troca\"\n" +
+                    "FROM\n" +
+                    "    -- Dentro desse select uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
+                    "    (SELECT P.CODIGO AS \"Cod Pneu\",\n" +
+                    "        MAP.NOME as \"Marca\",\n" +
+                    "        MP.nome as \"Modelo\",\n" +
+                    "        DP.largura || '/' || DP.altura || ' R'|| DP.aro as \"Medidas\",\n" +
+                    "        DADOS.QT_AFERICOES AS \"Qtd de aferições\",\n" +
+                    "        to_char(DADOS.PRIMEIRA_AFERICAO, 'DD/MM/YYYY') AS \"Dta 1a aferição\",\n" +
+                    "        to_char(DADOS.ULTIMA_AFERICAO, 'DD/MM/YYYY') AS \"Dta última aferição\",\n" +
+                    "        DADOS.TOTAL_DIAS AS \"Dias ativo\",\n" +
+                    "        round(CASE WHEN DADOS.TOTAL_DIAS > 0 THEN\n" +
+                    "          DADOS.TOTAL_KM / DADOS.TOTAL_DIAS END)  AS \"Média de KM por dia\",\n" +
+                    "        round(DADOS.MAIOR_SULCO::DECIMAL, 2) AS \"Maior medição vida\",\n" +
+                    "        round(DADOS.MENOR_SULCO::DECIMAL, 2) AS \"Menor sulco atual\",\n" +
+                    "        round(DADOS.SULCO_GASTO::DECIMAL, 2) AS \"Milimetros gastos\",\n" +
+                    "        round(DADOS.KM_POR_MM::DECIMAL, 2)  AS \"Kms por milimetro\",\n" +
+                    "        round(((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)::DECIMAL) AS \"Kms a percorrer\",\n" +
+                    "        TRUNC(CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0  AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
+                    "        ((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS)\n" +
+                    "          ELSE 0 END) AS \"Dias restantes\",\n" +
+                    "        CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0 AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
+                    "        (((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS))::INTEGER + CURRENT_DATE::DATE\n" +
+                    "         END AS \"Previsão de troca\"\n" +
                     "  FROM PNEU P JOIN\n" +
                     "        (SELECT\n" +
+                    "          -- Dentro desse select são criadas as \"variaveis\" para realizar os calculos, tornando mais facil a leitura\n" +
                     "        AV.cod_pneu AS COD_PNEU, AV.COD_UNIDADE AS COD_UNIDADE,\n" +
                     "        -- quantidade de afericoes que esse pneu ja teve\n" +
                     "        COUNT(AV.altura_sulco_central) AS QT_AFERICOES,\n" +
@@ -462,7 +481,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
                     "  JOIN modelo_pneu MP ON MP.CODIGO = P.COD_MODELO AND MP.COD_EMPRESA = U.cod_empresa\n" +
                     "  JOIN marca_pneu MAP ON MAP.codigo = MP.cod_marca\n" +
                     "  WHERE P.cod_unidade = ?) AS EXTRATO\n" +
-                    "WHERE EXTRATO.\"Previsão de troca\" BETWEEN ? AND ?");
+                    "WHERE EXTRATO.\"Previsão de troca\" BETWEEN ? AND ? " +
+                    "ORDER BY \"Previsão de troca\" ASC;");
 			stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
@@ -473,11 +493,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 	}
 
-	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
 		new CsvWriter().write(getPrevisaoCompra(codUnidade, dataInicial, dataFinal), outputStream);
 	}
 
-	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException{
+	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
 		return ReportConverter.createReport(getPrevisaoCompra(codUnidade, dataInicial, dataFinal));
 	}
 

@@ -62,8 +62,8 @@ public class RelatorioResource {
 	@Path("/previsaoCompras/{codUnidade}/csv")
 	@Produces("application/csv")
 	public StreamingOutput getPrevisaoCompraCsv(@PathParam("codUnidade") Long codUnidade,
-                                                @QueryParam("dataInicial") Long dataInicial,
-                                                @QueryParam("dataFinal") Long dataFinal){
+                                                @QueryParam("dataInicial") long dataInicial,
+                                                @QueryParam("dataFinal") long dataFinal){
 		return outputStream -> service.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
@@ -71,8 +71,8 @@ public class RelatorioResource {
 	@Secured
 	@Path("/previsaoCompras/{codUnidade}/report")
 	public Report getPrevisaoCompraReport(@PathParam("codUnidade") Long codUnidade,
-                                          @QueryParam("dataInicial") Long dataInicial,
-                                          @QueryParam("dataFinal") Long dataFinal) throws SQLException{
+                                          @QueryParam("dataInicial") long dataInicial,
+                                          @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
 	}
 	

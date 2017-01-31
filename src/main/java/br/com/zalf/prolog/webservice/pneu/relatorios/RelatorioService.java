@@ -55,7 +55,7 @@ public class RelatorioService {
 		}
 	}
 
-	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream){
+	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
 		try{
 			dao.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
 		}catch (SQLException | IOException e){
@@ -63,7 +63,7 @@ public class RelatorioService {
 		}
 	}
 
-	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal){
+	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal){
 		try{
 			return dao.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
 		}catch (SQLException e){
