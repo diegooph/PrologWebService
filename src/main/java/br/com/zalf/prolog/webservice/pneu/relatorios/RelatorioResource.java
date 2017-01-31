@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
@@ -7,6 +8,8 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus/relatorios")
@@ -52,6 +55,25 @@ public class RelatorioResource {
 			@PathParam("mes") int mes,
 			@QueryParam("codUnidades") List<String> codUnidades){
 		return service.getResumoServicosByUnidades(ano, mes, codUnidades);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsaoCompras/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getPrevisaoCompraCsv(@PathParam("codUnidade") Long codUnidade,
+                                                @QueryParam("dataInicial") Long dataInicial,
+                                                @QueryParam("dataFinal") Long dataFinal){
+		return outputStream -> service.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsaoCompras/{codUnidade}/report")
+	public Report getPrevisaoCompraReport(@PathParam("codUnidade") Long codUnidade,
+                                          @QueryParam("dataInicial") Long dataInicial,
+                                          @QueryParam("dataFinal") Long dataFinal) throws SQLException{
+		return service.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
 	}
 	
 }

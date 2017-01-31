@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -63,5 +66,9 @@ public interface RelatorioDao {
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
+
+	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException;
 
 }

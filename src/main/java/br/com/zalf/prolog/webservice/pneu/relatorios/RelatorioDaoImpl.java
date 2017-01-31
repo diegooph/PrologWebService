@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.Restricao;
@@ -7,6 +8,7 @@ import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
+import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -14,9 +16,12 @@ import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.report.ReportConverter;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -208,7 +213,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				while(dia < rSet.getInt("DIA")){
-					aderencias.add(createAderenciaVazia(meta, dia));
+					aderencias.add(createAderencia(meta, dia));
 					dia++;
 				}
 				aderencia = new Aderencia();
@@ -220,7 +225,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 				if (rSet.isLast()) {
 					while(dia <= ultimoDia){
-						aderencias.add(createAderenciaVazia(meta, dia));
+						aderencias.add(createAderencia(meta, dia));
 						dia++;
 					}
 				}
@@ -376,6 +381,106 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return servicos;
 	}
 
+	private ResultSet getPrevisaoCompra(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM\n" +
+                    "  (SELECT P.CODIGO AS \"Cod Pneu\",\n" +
+                    "    MAP.NOME as \"Marca\",\n" +
+                    "    MP.nome as \"Modelo\",\n" +
+                    "    DP.largura || '/' || DP.altura || ' R'|| DP.aro as \"Medidas\",\n" +
+                    "    DADOS.QT_AFERICOES AS \"Qtd de aferições\",\n" +
+                    "    to_char(DADOS.PRIMEIRA_AFERICAO, 'DD/MM/YYYY') AS \"Dta 1a aferição\",\n" +
+                    "    to_char(DADOS.ULTIMA_AFERICAO, 'DD/MM/YYYY') AS \"Dta última aferição\",\n" +
+                    "    DADOS.TOTAL_DIAS AS \"Dias ativo\",\n" +
+                    "    round(CASE WHEN DADOS.TOTAL_DIAS > 0 THEN\n" +
+                    "      DADOS.TOTAL_KM / DADOS.TOTAL_DIAS END)  AS \"Média de KM por dia\",\n" +
+                    "    round(DADOS.MAIOR_SULCO::DECIMAL, 2) AS \"Maior medição vida\",\n" +
+                    "    round(DADOS.MENOR_SULCO::DECIMAL, 2) AS \"Menor sulco atual\",\n" +
+                    "    round(DADOS.SULCO_GASTO::DECIMAL, 2) AS \"Milimetros gastos\",\n" +
+                    "    round(DADOS.KM_POR_MM::DECIMAL, 2)  AS \"Kms por milimetro\",\n" +
+                    "    round(((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)::DECIMAL) AS \"Kms a percorrer\",\n" +
+                    "    TRUNC(CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0  AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
+                    "    ((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS)\n" +
+                    "      ELSE 0 END) AS \"Dias restantes\",\n" +
+                    "    to_char(CASE WHEN DADOS.TOTAL_KM > 0 AND DADOS.TOTAL_DIAS > 0 AND (DADOS.TOTAL_KM / DADOS.TOTAL_DIAS) > 0 THEN\n" +
+                    "    (((DADOS.KM_POR_MM) * DADOS.SULCO_RESTANTE)/(DADOS.TOTAL_KM / DADOS.TOTAL_DIAS))::INTEGER + CURRENT_DATE::DATE\n" +
+                    "     END, 'DD/MM/YYYY') AS \"Previsão de troca\"\n" +
+                    "  FROM PNEU P JOIN\n" +
+                    "        (SELECT\n" +
+                    "        AV.cod_pneu AS COD_PNEU, AV.COD_UNIDADE AS COD_UNIDADE,\n" +
+                    "        -- quantidade de afericoes que esse pneu ja teve\n" +
+                    "        COUNT(AV.altura_sulco_central) AS QT_AFERICOES,\n" +
+                    "        -- data da primeira afericao\n" +
+                    "        MIN(A.data_hora)::DATE AS PRIMEIRA_AFERICAO,\n" +
+                    "        -- data da ultima afericao\n" +
+                    "        MAX(A.data_hora)::DATE AS ULTIMA_AFERICAO,\n" +
+                    "        -- dias entre a primeira e a ultima afericao, ou total de dias rodando\n" +
+                    "        (MAX(A.data_hora)::DATE - MIN(A.data_hora)::DATE) AS TOTAL_DIAS,\n" +
+                    "        -- total de KM rodado (ja somando separadamente cada placa que o pneu passou)\n" +
+                    "        MAX(TOTAL_KM.TOTAL_KM) AS TOTAL_KM,\n" +
+                    "        -- maior altura de sulco de todas as aferições\n" +
+                    "        MAX(GREATEST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) AS MAIOR_SULCO,\n" +
+                    "        -- menor altura de sulco de todas as aferições\n" +
+                    "        MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) AS MENOR_SULCO,\n" +
+                    "        -- sulco gasto (diferença entre a maior e a menor medição\n" +
+                    "        MAX(GREATEST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) -\n" +
+                    "        MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) AS SULCO_GASTO,\n" +
+                    "        -- case para calcular a quantidade de borracha restante usando as vidas como parametro\n" +
+                    "        CASE WHEN (CASE WHEN P.vida_atual = P.vida_total THEN MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) - ERP.sulco_minimo_descarte\n" +
+                    "                    WHEN P.VIDA_ATUAL < P.VIDA_TOTAL THEN MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) - ERP.sulco_minimo_RECAPAGEM END) < 0\n" +
+                    "          THEN 0\n" +
+                    "          ELSE (CASE WHEN P.vida_atual = P.vida_total THEN MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) - ERP.sulco_minimo_descarte\n" +
+                    "                  WHEN P.VIDA_ATUAL < P.VIDA_TOTAL THEN MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) - ERP.sulco_minimo_RECAPAGEM\n" +
+                    "                  END)\n" +
+                    "        END AS SULCO_RESTANTE,\n" +
+                    "        -- km por milimetro\n" +
+                    "        CASE WHEN (MAX(A.data_hora)::DATE - MIN(A.data_hora)::DATE)::INT > 0 THEN\n" +
+                    "                MAX(TOTAL_KM.TOTAL_KM) / MAX(GREATEST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno)) -\n" +
+                    "                MIN(LEAST(AV.altura_sulco_central, AV.altura_sulco_externo, AV.altura_sulco_interno))\n" +
+                    "            ELSE 0\n" +
+                    "        END as KM_POR_MM\n" +
+                    "        FROM AFERICAO_VALORES AV JOIN AFERICAO A ON A.CODIGO = AV.cod_afericao\n" +
+                    "          JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE\n" +
+                    "          JOIN empresa_restricao_pneu ERP ON ERP.COD_UNIDADE = AV.COD_UNIDADE\n" +
+                    "          JOIN\n" +
+                    "             -- total de km rodado ponderando as placas que o pneu passou\n" +
+                    "             (SELECT TOTAL_KM_RODADO.COD_PNEU AS COD_PNEU, TOTAL_KM_RODADO.COD_UNIDADE AS COD_UNIDADE,\n" +
+                    "                      SUM(TOTAL_KM_RODADO.KM_RODADO) AS TOTAL_KM\n" +
+                    "                FROM (SELECT AV.cod_pneu AS COD_PNEU, AV.cod_unidade AS COD_UNIDADE, A.placa_veiculo,\n" +
+                    "                  MAX(A.KM_VEICULO) - MIN(A.KM_VEICULO) AS KM_RODADO\n" +
+                    "                  FROM AFERICAO_VALORES AV JOIN AFERICAO A ON A.CODIGO = AV.COD_AFERICAO\n" +
+                    "                  GROUP BY 1,2,3) AS TOTAL_KM_RODADO\n" +
+                    "            GROUP BY 1,2) AS TOTAL_KM ON TOTAL_KM.COD_PNEU = AV.COD_PNEU AND TOTAL_KM.COD_UNIDADE = AV.COD_UNIDADE\n" +
+                    "        GROUP BY 1,2, P.VIDA_ATUAL, P.VIDA_TOTAL,ERP.sulco_minimo_descarte, ERP.sulco_minimo_RECAPAGEM)\n" +
+                    "  AS DADOS ON DADOS.COD_PNEU = P.CODIGO AND DADOS.COD_UNIDADE = P.COD_UNIDADE\n" +
+                    "  JOIN dimensao_pneu DP ON DP.CODIGO = P.cod_dimensao\n" +
+                    "  JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE\n" +
+                    "  JOIN modelo_pneu MP ON MP.CODIGO = P.COD_MODELO AND MP.COD_EMPRESA = U.cod_empresa\n" +
+                    "  JOIN marca_pneu MAP ON MAP.codigo = MP.cod_marca\n" +
+                    "  WHERE P.cod_unidade = ?) AS EXTRATO\n" +
+                    "WHERE EXTRATO.\"Previsão de troca\" BETWEEN ? AND ?");
+			stmt.setLong(1, codUnidade);
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			rSet = stmt.executeQuery();
+			return rSet;
+		}finally {
+			closeConnection(conn, null, null);
+		}
+	}
+
+	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getPrevisaoCompra(codUnidade, dataInicial, dataFinal), outputStream);
+	}
+
+	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getPrevisaoCompra(codUnidade, dataInicial, dataFinal));
+	}
+
 	private List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores){
 		Collections.sort(valores);
 		int integer = 0;
@@ -498,7 +603,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return faixas;
 	}
 
-	private Aderencia createAderenciaVazia(double meta, int dia){
+	private Aderencia createAderencia(double meta, int dia){
 		Aderencia aderencia = new Aderencia();
 		aderencia.setDia(dia);
 		aderencia.setMeta(meta);
