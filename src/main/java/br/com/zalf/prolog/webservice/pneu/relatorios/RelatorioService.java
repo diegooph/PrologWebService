@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,23 @@ public class RelatorioService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+
+	public void getPrevisaoCompraCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream outputStream){
+		try{
+			dao.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getPrevisaoCompraReport(Long codUnidade, Long dataInicial, Long dataFinal){
+		try{
+			return dao.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 
