@@ -67,8 +67,30 @@ public interface RelatorioDao {
 	 */
 	List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
 
+	/**
+	 * /**
+	 * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
+	 * @param codUnidade código da unidade a ser buscada
+	 * @param dataInicial data inicial da troca
+	 * @param dataFinal data final da troca
+	 * @param outputStream um OutputStream
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
+	/**
+	 * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
+	 * @param codUnidade código da unidade
+	 * @param dataInicial data inicial
+	 * @param dataFinal data final
+	 * @return
+	 * @throws SQLException
+	 */
 	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
+	public void getPrevisaoCompraConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
 }

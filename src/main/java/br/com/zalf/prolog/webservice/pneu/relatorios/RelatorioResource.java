@@ -59,7 +59,7 @@ public class RelatorioResource {
 
 	@GET
 	@Secured
-	@Path("/previsaoCompras/{codUnidade}/csv")
+	@Path("/previsao-compras/{codUnidade}/csv")
 	@Produces("application/csv")
 	public StreamingOutput getPrevisaoCompraCsv(@PathParam("codUnidade") Long codUnidade,
                                                 @QueryParam("dataInicial") long dataInicial,
@@ -69,12 +69,33 @@ public class RelatorioResource {
 
 	@GET
 	@Secured
-	@Path("/previsaoCompras/{codUnidade}/report")
+	@Path("/previsao-compras/{codUnidade}/report")
 	public Report getPrevisaoCompraReport(@PathParam("codUnidade") Long codUnidade,
                                           @QueryParam("dataInicial") long dataInicial,
                                           @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
 	}
+
+	@GET
+	@Secured
+	@Path("/previsao-compras/consolidados/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getPrevisaoCompraConsolidadoCsv(@PathParam("codUnidade") Long codUnidade,
+												@QueryParam("dataInicial") long dataInicial,
+												@QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getPrevisaoCompraConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsao-compras/consolidados/{codUnidade}/report")
+	public Report getPrevisaoCompraConsolidadoReport(@PathParam("codUnidade") Long codUnidade,
+										  @QueryParam("dataInicial") long dataInicial,
+										  @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
+	}
+
+
 	
 }
 	

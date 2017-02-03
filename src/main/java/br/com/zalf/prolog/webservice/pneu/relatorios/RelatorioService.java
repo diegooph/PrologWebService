@@ -72,6 +72,23 @@ public class RelatorioService {
 		}
 	}
 
+	public void getPrevisaoCompraConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+		try{
+			dao.getPrevisaoCompraConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		try{
+			return dao.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa,
 									  String codUnidade, long limit, long offset){
 		try{
