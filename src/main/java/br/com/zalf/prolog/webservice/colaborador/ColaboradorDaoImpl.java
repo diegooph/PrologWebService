@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.*;
+import br.com.zalf.prolog.commons.login.AmazonCredentials;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
@@ -12,6 +13,7 @@ import br.com.zalf.prolog.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.report.ReportConverter;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
@@ -289,18 +291,43 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	}
 
 	@Override
-	public LoginHolder getLoginHolder(Long cpf) throws SQLException {
+	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.setColaborador(getByCod(cpf));
 
-		if (verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())) {
+		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
 			RelatoDao relatoDao = new RelatoDaoImpl();
 			loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 					loginHolder.getColaborador().getCodUnidade(),
 					loginHolder.getColaborador().getSetor().getCodigo()));
 		}
 
+		if(verificaSeFazGsd(loginHolder.getColaborador().getVisao().getPilares())){
+			loginHolder.setAmazonCredentials(getAmazonCredentials());
+		}
 		return loginHolder;
+	}
+
+	private AmazonCredentials getAmazonCredentials() throws SQLException, AmazonCredentialsException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM AMAZON_CREDENTIALS");
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				AmazonCredentials amazonCredentials = new AmazonCredentials();
+				amazonCredentials.setAccessKeyId(rSet.getString("ACCESS_KEY_ID"));
+				amazonCredentials.setSecretAccessKey(rSet.getString("SECRET_KEY"));
+				amazonCredentials.setUser(rSet.getString("USER_ID"));
+				return amazonCredentials;
+			}else{
+				throw new AmazonCredentialsException("Sem credencial cadastrada", "Tabela amazon_credentials não possui dados");
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
 	}
 
 	private Visao getVisaoByCpf(Long cpf)throws SQLException {
@@ -414,6 +441,21 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 		return false;
 	}
+
+	private boolean verificaSeFazGsd(List<Pilar> pilares) {
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.SEGURANCA) {
+				for (FuncaoApp funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Seguranca.GSD) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
 
 	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
 		Connection conn = null;

@@ -4,15 +4,11 @@ import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.webservice.CsvWriter;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +103,7 @@ public class ColaboradorService {
 	public LoginHolder getLoginHolder(Long cpf) {
 		try{
 			return dao.getLoginHolder(cpf);
-		}catch(SQLException e){
+		}catch(SQLException | AmazonCredentialsException e){
 			e.printStackTrace();
 			return null;
 		}

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -76,7 +77,7 @@ public interface ColaboradorDao {
 	 * @return o login do colaborador com o cpf marcado
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	LoginHolder getLoginHolder(Long cpf) throws SQLException;
+	LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException;
 
 	/**
 	 * Verifica se determinado CPF existe em determinada unidade
