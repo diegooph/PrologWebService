@@ -291,13 +291,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	@Override
 	public LoginHolder getLoginHolder(Long cpf) throws SQLException {
 		LoginHolder loginHolder = new LoginHolder();
-		loginHolder.colaborador = getByCod(cpf);
+		loginHolder.setColaborador(getByCod(cpf));
 
-		if (verificaSeFazRelato(loginHolder.colaborador.getVisao().getPilares())) {
+		if (verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())) {
 			RelatoDao relatoDao = new RelatoDaoImpl();
-			loginHolder.alternativasRelato = relatoDao.getAlternativas(
-					loginHolder.colaborador.getCodUnidade(),
-					loginHolder.colaborador.getSetor().getCodigo());
+			loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
+					loginHolder.getColaborador().getCodUnidade(),
+					loginHolder.getColaborador().getSetor().getCodigo()));
 		}
 
 		return loginHolder;
