@@ -95,6 +95,25 @@ public class RelatorioResource {
 		return service.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
 	}
 
+	@GET
+	@Secured
+	@Path("/aderencias/placas/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getAderenciaPlacasCsv(@PathParam("codUnidade") Long codUnidade,
+														   @QueryParam("dataInicial") long dataInicial,
+														   @QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/aderencia/placas/{codUnidade}/report")
+	public Report getAderenciaPlacasReport(@PathParam("codUnidade") Long codUnidade,
+													 @QueryParam("dataInicial") long dataInicial,
+													 @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
+
 
 	
 }

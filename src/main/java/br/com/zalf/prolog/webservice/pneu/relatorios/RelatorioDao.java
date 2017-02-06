@@ -93,4 +93,8 @@ public interface RelatorioDao {
 
 	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
+	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
 }

@@ -80,9 +80,26 @@ public class RelatorioService {
 		}
 	}
 
-	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal){
 		try{
 			return dao.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+		try{
+			dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal){
+		try{
+			return dao.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
