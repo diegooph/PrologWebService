@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.report;
 
 import br.com.zalf.prolog.commons.Report;
+import br.com.zalf.prolog.webservice.util.L;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.ResultSet;
@@ -29,7 +30,7 @@ public class ReportConverter {
         int columns = resultSet.getMetaData().getColumnCount();
         while (resultSet.next()) {
             List<String> row = new ArrayList<>();
-            for (int i = 1; i < columns; i++) {
+            for (int i = 1; i <= columns; i++) {
                 row.add(resultSet.getString(i));
             }
             data.add(row);
@@ -42,7 +43,8 @@ public class ReportConverter {
 
     private static @NotNull List<String> getHeader(@NotNull ResultSetMetaData metaData) throws SQLException {
         List<String> header = new ArrayList<>();
-        for (int i = 1; i < metaData.getColumnCount(); i++) {
+        L.d("teste", String.valueOf(metaData.getColumnCount()));
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
             header.add(metaData.getColumnLabel(i));
         }
         return header;
