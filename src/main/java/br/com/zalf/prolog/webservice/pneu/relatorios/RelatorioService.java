@@ -55,34 +55,34 @@ public class RelatorioService {
 		}
 	}
 
-	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
 		try{
-			dao.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
+			dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
 		}catch (SQLException | IOException e){
 			e.printStackTrace();
 		}
 	}
 
-	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal){
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal){
 		try{
-			return dao.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
+			return dao.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public void getPrevisaoCompraConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
 		try{
-			dao.getPrevisaoCompraConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+			dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
 		}catch (SQLException | IOException e){
 			e.printStackTrace();
 		}
 	}
 
-	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal){
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal){
 		try{
-			return dao.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
+			return dao.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;

@@ -381,7 +381,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return servicos;
 	}
 
-	private ResultSet getPrevisaoCompraConsolidado(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
+	private ResultSet getPrevisaoTrocaConsolidado(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -398,7 +398,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 					"    VIEW_ANALISE_PNEUS VAP\n" +
 					"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ?\n" +
 					"GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
-					"ORDER BY 1 ASC, 5 DESC;");
+					"ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
 			stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
@@ -410,16 +410,16 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	}
 
 	@Override
-	public void getPrevisaoCompraConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
-		new CsvWriter().write(getPrevisaoCompraConsolidado(codUnidade, dataInicial, dataFinal), outputStream);
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getPrevisaoTrocaConsolidado(codUnidade, dataInicial, dataFinal), outputStream);
 	}
 
 	@Override
-	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
-		return ReportConverter.createReport(getPrevisaoCompraConsolidado(codUnidade, dataInicial, dataFinal));
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getPrevisaoTrocaConsolidado(codUnidade, dataInicial, dataFinal));
 	}
 
-	private ResultSet getPrevisaoCompra(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
+	private ResultSet getPrevisaoTroca(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -445,7 +445,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 					"FROM\n" +
 					"    VIEW_ANALISE_PNEUS VAP\n" +
 					"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? \n" +
-					"  ORDER BY \"PREVISÃO DE TROCA\" ASC");
+					"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
 			stmt.setLong(1, codUnidade);
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
@@ -458,13 +458,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	}
 
 	@Override
-	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
-		new CsvWriter().write(getPrevisaoCompra(codUnidade, dataInicial, dataFinal), outputStream);
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getPrevisaoTroca(codUnidade, dataInicial, dataFinal), outputStream);
 	}
 
 	@Override
-	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
-		return ReportConverter.createReport(getPrevisaoCompra(codUnidade, dataInicial, dataFinal));
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getPrevisaoTroca(codUnidade, dataInicial, dataFinal));
 	}
 
 	private ResultSet getAderenciaPlacas(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{

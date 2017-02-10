@@ -59,40 +59,40 @@ public class RelatorioResource {
 
 	@GET
 	@Secured
-	@Path("/previsao-compras/{codUnidade}/csv")
+	@Path("/previsao-trocas/{codUnidade}/csv")
 	@Produces("application/csv")
-	public StreamingOutput getPrevisaoCompraCsv(@PathParam("codUnidade") Long codUnidade,
+	public StreamingOutput getPrevisaoTrocaCsv(@PathParam("codUnidade") Long codUnidade,
                                                 @QueryParam("dataInicial") long dataInicial,
                                                 @QueryParam("dataFinal") long dataFinal){
-		return outputStream -> service.getPrevisaoCompraCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		return outputStream -> service.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
 	@GET
 	@Secured
-	@Path("/previsao-compras/{codUnidade}/report")
-	public Report getPrevisaoCompraReport(@PathParam("codUnidade") Long codUnidade,
+	@Path("/previsao-trocas/{codUnidade}/report")
+	public Report getPrevisaoTrocaReport(@PathParam("codUnidade") Long codUnidade,
                                           @QueryParam("dataInicial") long dataInicial,
                                           @QueryParam("dataFinal") long dataFinal) throws SQLException{
-		return service.getPrevisaoCompraReport(codUnidade, dataInicial, dataFinal);
+		return service.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
 	}
 
 	@GET
 	@Secured
-	@Path("/previsao-compras/consolidados/{codUnidade}/csv")
+	@Path("/previsao-trocas/consolidados/{codUnidade}/csv")
 	@Produces("application/csv")
-	public StreamingOutput getPrevisaoCompraConsolidadoCsv(@PathParam("codUnidade") Long codUnidade,
+	public StreamingOutput getPrevisaoTrocaConsolidadoCsv(@PathParam("codUnidade") Long codUnidade,
 												@QueryParam("dataInicial") long dataInicial,
 												@QueryParam("dataFinal") long dataFinal){
-		return outputStream -> service.getPrevisaoCompraConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
 	@GET
 	@Secured
-	@Path("/previsao-compras/consolidados/{codUnidade}/report")
-	public Report getPrevisaoCompraConsolidadoReport(@PathParam("codUnidade") Long codUnidade,
+	@Path("/previsao-trocas/consolidados/{codUnidade}/report")
+	public Report getPrevisaoTrocaConsolidadoReport(@PathParam("codUnidade") Long codUnidade,
 										  @QueryParam("dataInicial") long dataInicial,
 										  @QueryParam("dataFinal") long dataFinal) throws SQLException{
-		return service.getPrevisaoCompraConsolidadoReport(codUnidade, dataInicial, dataFinal);
+		return service.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
 	}
 
 	@GET

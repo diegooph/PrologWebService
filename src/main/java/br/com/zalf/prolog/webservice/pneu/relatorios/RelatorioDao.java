@@ -77,7 +77,7 @@ public interface RelatorioDao {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public void getPrevisaoCompraCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
 	/**
 	 * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
@@ -87,11 +87,11 @@ public interface RelatorioDao {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Report getPrevisaoCompraReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
-	public void getPrevisaoCompraConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
-	public Report getPrevisaoCompraConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
 	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
