@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -71,22 +72,12 @@ public interface ColaboradorDao {
 	Funcao getFuncaoByCod(Long codigo) throws SQLException;
 
 	/**
-	 * Busca os colaboradores ativos pelo código de uma determinada unidade
-	 * @param codUnidade código da unidade a buscar os colaboradores
-	 * @param token para verificar se o solicitante esta devidamente logado
-	 * @param cpf do solicitante, para verificar se esta devidamente logado
-	 * @return lista de Colaborador
-	 * @throws SQLException caso não seja possível realizar a busca
-	 */
-	List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) throws SQLException;
-
-	/**
 	 * retorna o login do colaborador com o cpf marcado
 	 * @param cpf cpf do usuario a se logar
 	 * @return o login do colaborador com o cpf marcado
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	LoginHolder getLoginHolder(Long cpf) throws SQLException;
+	LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException;
 
 	/**
 	 * Verifica se determinado CPF existe em determinada unidade

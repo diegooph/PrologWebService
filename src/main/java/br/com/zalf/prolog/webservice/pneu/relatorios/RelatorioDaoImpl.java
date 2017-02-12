@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.Restricao;
@@ -7,6 +8,7 @@ import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
+import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -14,9 +16,12 @@ import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.report.ReportConverter;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -208,7 +213,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				while(dia < rSet.getInt("DIA")){
-					aderencias.add(createAderenciaVazia(meta, dia));
+					aderencias.add(createAderencia(meta, dia));
 					dia++;
 				}
 				aderencia = new Aderencia();
@@ -220,7 +225,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 				if (rSet.isLast()) {
 					while(dia <= ultimoDia){
-						aderencias.add(createAderenciaVazia(meta, dia));
+						aderencias.add(createAderencia(meta, dia));
 						dia++;
 					}
 				}
@@ -376,6 +381,145 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return servicos;
 	}
 
+	private ResultSet getPrevisaoTrocaConsolidado(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT\n" +
+					"  to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') AS \"DATA\",\n" +
+					"  VAP.\"MARCA\",\n" +
+					"  VAP.\"MODELO\",\n" +
+					"  VAP.\"MEDIDAS\",\n" +
+					"  COUNT(VAP.\"MODELO\") as \"QUANTIDADE\"\n" +
+					"FROM\n" +
+					"    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
+					"    VIEW_ANALISE_PNEUS VAP\n" +
+					"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ?\n" +
+					"GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
+					"ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
+			stmt.setLong(1, codUnidade);
+            stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+            stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			rSet = stmt.executeQuery();
+			return rSet;
+		}finally {
+			closeConnection(conn, null, null);
+		}
+	}
+
+	@Override
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getPrevisaoTrocaConsolidado(codUnidade, dataInicial, dataFinal), outputStream);
+	}
+
+	@Override
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getPrevisaoTrocaConsolidado(codUnidade, dataInicial, dataFinal));
+	}
+
+	private ResultSet getPrevisaoTroca(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("  SELECT\n" +
+					"    VAP.\"COD PNEU\",\n" +
+					"    VAP.\"MARCA\",\n" +
+					"    VAP.\"MODELO\",\n" +
+					"    VAP.\"MEDIDAS\",\n" +
+					"    VAP.\"QTD DE AFERIÇÕES\",\n" +
+					"    VAP.\"DTA 1a AFERIÇÃO\",\n" +
+					"    VAP.\"DTA ÚLTIMA AFERIÇÃO\",\n" +
+					"    VAP.\"DIAS ATIVO\",\n" +
+					"    VAP.\"MÉDIA KM POR DIA\",\n" +
+					"    VAP.\"MAIOR MEDIÇÃO VIDA\",\n" +
+					"    VAP.\"MENOR SULCO ATUAL\",\n" +
+					"    VAP.\"MILIMETROS GASTOS\",\n" +
+					"    VAP.\"KMS POR MILIMETRO\",\n" +
+					"    VAP.\"KMS A PERCORRER\",\n" +
+					"    VAP.\"DIAS RESTANTES\",\n" +
+					"    to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') as \"PREVISÃO DE TROCA\"\n" +
+					"FROM\n" +
+					"    VIEW_ANALISE_PNEUS VAP\n" +
+					"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? \n" +
+					"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			L.d(TAG, stmt.toString());
+			rSet = stmt.executeQuery();
+			return rSet;
+		}finally {
+			closeConnection(conn, null, null);
+		}
+	}
+
+	@Override
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getPrevisaoTroca(codUnidade, dataInicial, dataFinal), outputStream);
+	}
+
+	@Override
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getPrevisaoTroca(codUnidade, dataInicial, dataFinal));
+	}
+
+	private ResultSet getAderenciaPlacas(long codUnidade, long dataInicial, Long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CALCULO.PLACA as \"PLACA\",\n" +
+					"  COUNT(CALCULO.PLACA) AS \"QTD DE AFERIÇÕES\",\n" +
+					"\n" +
+					"  CASE WHEN\n" +
+					"  MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MAX(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MÁX DE DIAS ENTRE AFERIÇÕES\",\n" +
+					"  CASE WHEN\n" +
+					"  MIN(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MIN(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MIN DE DIAS ENTRE AFERIÇÕES\",\n" +
+					"  CASE WHEN\n" +
+					"    MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN trunc(CASE WHEN SUM(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN\n" +
+					"            SUM(CALCULO.DIAS_ENTRE_AFERICOES) /\n" +
+					"            SUM(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES IS NOT NULL THEN 1 ELSE 0 END)\n" +
+					"  END)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
+					"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
+					"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
+					"  FROM\n" +
+					"-- QUERY PARA CONTAR A QUANTIDADES DE AFERIÇÕES DENTRO DO PRAZO REALIZADAS, POR PLACA E RESPEITANDO UM PERÍODO SELECIONADO\n" +
+					"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao AS PERIODO_AFERICAO,\n" +
+					"            CASE WHEN A.placa_veiculo = lag(A.PLACA_VEICULO) over (ORDER BY placa_veiculo, data_hora) THEN\n" +
+					"            EXTRACT( DAYS FROM  A.DATA_HORA - lag(A.data_hora) over (ORDER BY placa_veiculo, data_hora))\n" +
+					"            END AS DIAS_ENTRE_AFERICOES\n" +
+					"      FROM afericao A\n" +
+					"        JOIN VEICULO V ON V.placa = A.placa_veiculo\n" +
+					"        JOIN empresa_restricao_pneu R ON R.cod_unidade = V.cod_unidade\n" +
+					"    WHERE v.cod_unidade = ? and A.data_hora BETWEEN ? AND ?\n" +
+					"    ORDER BY 1,2) AS CALCULO\n" +
+					"GROUP BY 1\n" +
+					"ORDER BY 7 DESC, 3;");
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+			rSet = stmt.executeQuery();
+			return rSet;
+		}finally {
+			closeConnection(conn, null, null);
+		}
+	}
+
+	@Override
+	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException{
+		new CsvWriter().write(getAderenciaPlacas(codUnidade, dataInicial, dataFinal), outputStream);
+	}
+
+	@Override
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		return ReportConverter.createReport(getAderenciaPlacas(codUnidade, dataInicial, dataFinal));
+	}
+
 	private List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores){
 		Collections.sort(valores);
 		int integer = 0;
@@ -498,7 +642,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		return faixas;
 	}
 
-	private Aderencia createAderenciaVazia(double meta, int dia){
+	private Aderencia createAderencia(double meta, int dia){
 		Aderencia aderencia = new Aderencia();
 		aderencia.setDia(dia);
 		aderencia.setMeta(meta);

@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -12,15 +12,29 @@ import br.com.zalf.prolog.webservice.util.L;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.Date;
 import java.util.List;
 
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
-
 	private static final String TAG = ColaboradorResource.class.getSimpleName();
 	private ColaboradorService service = new ColaboradorService();
+
+	@GET
+	@Path("/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput test(@PathParam("codUnidade") Long codUnidade) {
+		return outputStream -> service.test(codUnidade, outputStream);
+	}
+
+	@GET
+	@Path("/{codUnidade}/report")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	public Report testReport(@PathParam("codUnidade") Long codUnidade) {
+		return service.testReport(codUnidade);
+	}
 	
 	@POST
 	@Secured
@@ -65,13 +79,6 @@ public class ColaboradorResource {
 	@Secured
 	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade) {
 		return service.getAll(codUnidade);
-	}
-	
-	@POST
-	@Path("/getAtivosByUnidade")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Colaborador> getAtivosByUnidade(@FormParam("codUnidade") Long codUnidade, @FormParam("token") String token, @FormParam("cpf") Long cpf) {
-		return service.getAtivosByUnidade(codUnidade, token, cpf);
 	}
 	
 	@DELETE

@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,57 @@ public class RelatorioService {
 		}catch(SQLException e){
 			e.printStackTrace();
 			return new ArrayList<>();
+		}
+	}
+
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+		try{
+			dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal){
+		try{
+			return dao.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+		try{
+			dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal){
+		try{
+			return dao.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
+		try{
+			dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+		}catch (SQLException | IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal){
+		try{
+			return dao.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 

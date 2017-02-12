@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -63,5 +66,35 @@ public interface RelatorioDao {
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
 	List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
+
+	/**
+	 * /**
+	 * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
+	 * @param codUnidade código da unidade a ser buscada
+	 * @param dataInicial data inicial da troca
+	 * @param dataFinal data final da troca
+	 * @param outputStream um OutputStream
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	/**
+	 * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
+	 * @param codUnidade código da unidade
+	 * @param dataInicial data inicial
+	 * @param dataFinal data final
+	 * @return
+	 * @throws SQLException
+	 */
+	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
+	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
+	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
+
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
 }

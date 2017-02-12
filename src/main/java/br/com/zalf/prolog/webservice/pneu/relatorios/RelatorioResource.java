@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
@@ -7,6 +8,8 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus/relatorios")
@@ -53,6 +56,65 @@ public class RelatorioResource {
 			@QueryParam("codUnidades") List<String> codUnidades){
 		return service.getResumoServicosByUnidades(ano, mes, codUnidades);
 	}
+
+	@GET
+	@Secured
+	@Path("/previsao-trocas/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getPrevisaoTrocaCsv(@PathParam("codUnidade") Long codUnidade,
+                                                @QueryParam("dataInicial") long dataInicial,
+                                                @QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsao-trocas/{codUnidade}/report")
+	public Report getPrevisaoTrocaReport(@PathParam("codUnidade") Long codUnidade,
+                                          @QueryParam("dataInicial") long dataInicial,
+                                          @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsao-trocas/consolidados/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getPrevisaoTrocaConsolidadoCsv(@PathParam("codUnidade") Long codUnidade,
+												@QueryParam("dataInicial") long dataInicial,
+												@QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/previsao-trocas/consolidados/{codUnidade}/report")
+	public Report getPrevisaoTrocaConsolidadoReport(@PathParam("codUnidade") Long codUnidade,
+										  @QueryParam("dataInicial") long dataInicial,
+										  @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Secured
+	@Path("/aderencias/placas/{codUnidade}/csv")
+	@Produces("application/csv")
+	public StreamingOutput getAderenciaPlacasCsv(@PathParam("codUnidade") Long codUnidade,
+														   @QueryParam("dataInicial") long dataInicial,
+														   @QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/aderencia/placas/{codUnidade}/report")
+	public Report getAderenciaPlacasReport(@PathParam("codUnidade") Long codUnidade,
+													 @QueryParam("dataInicial") long dataInicial,
+													 @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
+
+
 	
 }
 	

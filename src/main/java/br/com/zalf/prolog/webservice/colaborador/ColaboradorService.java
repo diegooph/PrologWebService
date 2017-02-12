@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Request;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +18,24 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-	private ColaboradorDao dao = new ColaboradorDaoImpl();
+	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
+
+	void test(Long codUnidade, OutputStream outputStream) {
+		try {
+			dao.test(codUnidade, outputStream);
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	Report testReport(Long codUnidade) {
+		try {
+			return dao.testReport(codUnidade);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public boolean insert(Colaborador colaborador) {
 		try {
@@ -53,21 +73,12 @@ public class ColaboradorService {
 		}
 	}
 	
-	public List<Colaborador> getAtivosByUnidade(Long codUnidade, String token, Long cpf) {
-		try {
-			return dao.getAtivosByUnidade(codUnidade, token, cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Colaborador>();
-		}
-	}
-	
 	public List<Colaborador> getAll(Long codUnidade) {
 		try {
 			return dao.getAll(codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<Colaborador>();
+			return Collections.emptyList();
 		}
 	}
 	
@@ -92,7 +103,7 @@ public class ColaboradorService {
 	public LoginHolder getLoginHolder(Long cpf) {
 		try{
 			return dao.getLoginHolder(cpf);
-		}catch(SQLException e){
+		}catch(SQLException | AmazonCredentialsException e){
 			e.printStackTrace();
 			return null;
 		}
