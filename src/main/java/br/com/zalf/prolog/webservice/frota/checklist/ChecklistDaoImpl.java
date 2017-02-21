@@ -72,47 +72,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return true;
 	}
 
-	// implementar novamente, seguindo os padrões do novo check
-	@Override
-	public boolean update(Checklist checklist) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE CHECKLIST SET DATA_HORA = ?, "
-					+ "CPF_COLABORADOR = ?, PLACA_VEICULO = ?, TIPO = ? "
-					+ "WHERE CODIGO = ?");
-			//			stmt.setTimestamp(1, DateUtils.toTimestamp(checklist.getData()));
-			//			stmt.setLong(2, checklist.getCpfColaborador());
-			//			stmt.setString(3, checklist.getPlacaVeiculo());
-			//			stmt.setString(4, String.valueOf(checklist.getTipo()));
-			//			stmt.setLong(5, checklist.getCodigo());
-			//			int count = stmt.executeUpdate();
-			//			if(count == 0){
-			//				throw new SQLException("Erro ao atualizar o checklist");
-			//			}
-			//			updateRespostas(checklist);
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean delete(long codChecklist) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("DELETE FROM CHECKLIST WHERE CODIGO = ?");
-			stmt.setLong(1, codChecklist);
-			return (stmt.executeUpdate() > 0);
-		} finally {
-			closeConnection(conn, stmt, null);
-		}
-	}
-
 	@Override
 	public Checklist getByCod(long codChecklist) throws SQLException {
 		Connection conn = null;

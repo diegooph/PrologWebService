@@ -24,22 +24,6 @@ public interface ChecklistDao {
 	boolean insert(Checklist checklist) throws SQLException;
 
 	/**
-	 * Atualiza um checklist no banco de dados
-	 * @param checklist checklist a ser atualizado
-	 * @return boolean com o resultado da operação
-	 * @throws SQLException caso não seja possível atualizar o checklist
-	 */
-	boolean update(Checklist checklist) throws SQLException;
-
-	/**
-	 * Deleta um checklist do banco de dados
-	 * @param codChecklist codigo do checklist a ser deletado
-	 * @return boolean com o resultado da operção
-	 * @throws SQLException caso não seja possível deletar o checklist
-	 */
-	boolean delete(long codChecklist) throws SQLException;
-
-	/**
 	 * Busca um checklist pelo seu código único
 	 * @param codChecklist codigo do checklist a ser buscado
 	 * @return um checklist
