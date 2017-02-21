@@ -5,10 +5,9 @@ import br.com.zalf.prolog.commons.login.AmazonCredentials;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
-import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
-import br.com.zalf.prolog.permissao.pilares.Seguranca;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
@@ -380,8 +379,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private boolean verificaSeFazRelato(List<Pilar> pilares) {
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
-				for (FuncaoApp funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Seguranca.Relato.NOVO_RELATO) {
 						return true;
 					}
 				}
@@ -393,8 +392,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private boolean verificaSeFazGsd(List<Pilar> pilares) {
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
-				for (FuncaoApp funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Seguranca.GSD) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Seguranca.GSD) {
 						return true;
 					}
 				}
