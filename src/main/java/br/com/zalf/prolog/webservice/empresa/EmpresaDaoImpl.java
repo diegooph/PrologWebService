@@ -7,7 +7,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
@@ -247,21 +247,21 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
-		List<FuncaoApp> funcoes = new ArrayList<>();
+		List<FuncaoProLog> funcoes = new ArrayList<>();
 		Pilar pilar = null;
 		while (rSet.next()) {
 			if (pilar == null) {//primeira linha do rSet
 				pilar = createPilar(rSet);
-				funcoes.add(createFuncaoApp(rSet));
+				funcoes.add(createFuncaProLog(rSet));
 			} else {
 				if (rSet.getString("PILAR").equals(pilar.nome)) {
-					funcoes.add(createFuncaoApp(rSet));
+					funcoes.add(createFuncaProLog(rSet));
 				} else {
 					pilar.funcoes = funcoes;
 					pilares.add(pilar);
 					pilar = createPilar(rSet);
 					funcoes = new ArrayList<>();
-					funcoes.add(createFuncaoApp(rSet));
+					funcoes.add(createFuncaProLog(rSet));
 				}
 			}
 		}
@@ -272,8 +272,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return  pilares;
 	}
 
-	private FuncaoApp createFuncaoApp(ResultSet rSet) throws SQLException{
-		FuncaoApp funcao = new FuncaoApp();
+	private FuncaoProLog createFuncaProLog(ResultSet rSet) throws SQLException{
+		FuncaoProLog funcao = new FuncaoProLog();
 		funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
 		funcao.setDescricao(rSet.getString("FUNCAO"));
 		return funcao;
@@ -680,7 +680,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
 			for(Pilar pilar : pilares){
-				for(FuncaoApp funcao : pilar.funcoes){
+				for(FuncaoProLog funcao : pilar.funcoes){
 					stmt.setInt(3, funcao.getCodigo());
 					stmt.setInt(4, pilar.codigo);
 					int count = stmt.executeUpdate();
