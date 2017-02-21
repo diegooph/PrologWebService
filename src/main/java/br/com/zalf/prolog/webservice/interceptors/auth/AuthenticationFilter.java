@@ -11,7 +11,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -50,8 +49,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         if (classAnnot != null) {
             validateToken(token, classAnnot.permissions(), classAnnot.needsToHaveAll());
         }
-
-        requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
     }
 
     private void validateToken(String token, int[] permissions, boolean needsToHaveAll) throws NotAuthorizedException {
