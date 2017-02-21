@@ -60,7 +60,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         // Check if it was issued by the server and if it's not expired
         // Throw an Exception if the token is invalid
     	L.d(TAG, "Token: " + token);
-    	if (!service.userHasPermission(token, permissions, needsToHaveAll))
-    		throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+    	if (permissions.length == 0) {
+    	    if (!service.verifyIfTokenExists(token))
+                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+        } else {
+            if (!service.userHasPermission(token, permissions, needsToHaveAll))
+                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+        }
     }
 }
