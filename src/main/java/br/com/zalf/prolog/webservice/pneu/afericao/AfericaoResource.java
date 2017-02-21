@@ -5,8 +5,8 @@ import br.com.zalf.prolog.frota.pneu.Restricao;
 import br.com.zalf.prolog.frota.pneu.afericao.Afericao;
 import br.com.zalf.prolog.frota.pneu.afericao.NovaAfericao;
 import br.com.zalf.prolog.frota.pneu.afericao.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.LogBody;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,8 +21,7 @@ public class AfericaoResource {
 	private AfericaoService service = new AfericaoService();
 
 	@POST
-	@Secured
-	@LogBody
+	@Secured(permissions = Pilares.Frota.Pneu.AFERICAO)
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao,
 			@PathParam("codUnidade") Long codUnidade) {
@@ -36,7 +35,7 @@ public class AfericaoResource {
 
 	@GET
 	@Path("/{placaVeiculo}")
-	@Secured
+	@Secured(permissions = Pilares.Frota.Pneu.AFERICAO)
 	public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa){
 		return service.getNovaAfericao(placa);
 	}

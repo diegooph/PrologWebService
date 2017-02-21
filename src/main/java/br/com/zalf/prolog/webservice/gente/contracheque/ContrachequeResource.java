@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.contracheque.Contracheque;
 import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.L;
@@ -31,7 +32,7 @@ public class ContrachequeResource {
     private ContrachequeService service = new ContrachequeService();
 
     @GET
-    @Secured
+    @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZACAO)
     @Android
     @Path("/{codUnidade}/{cpf}/{ano}/{mes}")
     public Contracheque getPreContracheque(@PathParam("cpf") Long cpf,
@@ -43,7 +44,7 @@ public class ContrachequeResource {
 
     @POST
     @Site
-    @Secured
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     @Path("/import/{codUnidade}/{ano}/{mes}")
     public Response upload(@PathParam("codUnidade") Long codUnidade,
@@ -74,7 +75,7 @@ public class ContrachequeResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
     public List<ItemImportContracheque> getItemImportContracheque (@PathParam("codUnidade") Long codUnidade,
                                                                    @PathParam("ano") int ano,
@@ -85,7 +86,7 @@ public class ContrachequeResource {
 
 
     @PUT
-    @Secured
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateItemImportContracheque(ItemImportContracheque item,
@@ -100,7 +101,7 @@ public class ContrachequeResource {
     }
 
     @DELETE
-    @Secured
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response deleteItemImportContracheque(ItemImportContracheque item,

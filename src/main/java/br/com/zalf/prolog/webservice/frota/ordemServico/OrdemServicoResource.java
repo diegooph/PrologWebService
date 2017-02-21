@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.frota.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.frota.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.frota.checklist.os.OrdemServico;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 
@@ -24,7 +25,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured
+    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     public List<OrdemServico> getOs(@PathParam("placa") String placa,
                                     @PathParam("status") String status,
@@ -38,7 +39,7 @@ public class OrdemServicoResource {
 
     @POST
     @Android
-    @Secured
+    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.MANUTENCAO)
     @Path("/consertaItem/{codUnidade}/{placa}")
     public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item,
     @PathParam("placa") String placa){
@@ -51,7 +52,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured
+    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
     @Path("/manutencao/{placa}/{status}/{prioridade}")
     public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") String placa,
                                                              @QueryParam("limit") int limit,
@@ -63,7 +64,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured
+    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
     @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("placa") String placa,
                                                             @PathParam("tipoVeiculo") String codTipo,

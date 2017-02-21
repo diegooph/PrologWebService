@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.faleConosco;
 
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -16,7 +17,7 @@ public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Gente.FaleConosco.ENVIAR)
 	@Path("/{codUnidade}")
 	public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(faleConosco, codUnidade)) {
@@ -43,7 +44,7 @@ public class FaleConoscoResource {
 	}
 
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Gente.FaleConosco.FEEDBACK)
 	@Path("/feedback/{codUnidade}")
 	public Response insertFeedback(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade){
 		if(service.insertFeedback(faleConosco, codUnidade)){

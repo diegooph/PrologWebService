@@ -9,6 +9,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -32,12 +33,14 @@ public class EmpresaResource {
 
 	@PUT
 	@Path("/updateEquipe")
+	@Secured(permissions = Pilares.Gente.Alteracao.EQUIPE)
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
 		return service.updateEquipe(request);
 	}
 
 	@POST
 	@Path("/insertEquipe")
+	@Secured(permissions = Pilares.Gente.Cadastro.EQUIPE)
 	public Response createEquipe (Request<Equipe> request) {
 		if (service.createEquipe(request)) {
 			return Response.Ok("Equipe inserida com sucesso");
@@ -77,7 +80,7 @@ public class EmpresaResource {
 	}
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Gente.Cadastro.COLABORADOR)
 	@Path("/setores/{codUnidade}")
 	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
 		return service.insertSetor(nome,codUnidade);
@@ -101,7 +104,7 @@ public class EmpresaResource {
 	}
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
 	@Path("/funcoesProlog/{codUnidade}/{codCargo}")
 	public Response insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares,
 												   @PathParam("codUnidade") Long codUnidade,

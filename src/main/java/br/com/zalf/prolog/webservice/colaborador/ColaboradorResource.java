@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
@@ -21,8 +22,8 @@ public class ColaboradorResource {
 	private ColaboradorService service = new ColaboradorService();
 
 	@POST
-	@Secured
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Secured(permissions = Pilares.Gente.Cadastro.COLABORADOR)
 	public Response insert(Colaborador colaborador) {
 		if (service.insert(colaborador)) {
 			return Response.Ok("Colaborador inserido com sucesso");
@@ -32,9 +33,9 @@ public class ColaboradorResource {
 	}
 	
 	@PUT
-	@Secured
 	@Path("/{cpf}")
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
 	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
 		if (service.update(cpfAntigo, colaborador)) {
 			return Response.Ok("Colaborador atualizado com sucesso");
@@ -67,7 +68,7 @@ public class ColaboradorResource {
 	
 	@DELETE
 	@Path("/{cpf}")
-	@Secured
+	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response delete(@PathParam("cpf") Long cpf) {
 		if (service.delete(cpf)) {

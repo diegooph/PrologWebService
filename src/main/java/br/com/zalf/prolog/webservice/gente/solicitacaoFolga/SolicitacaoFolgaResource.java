@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -19,6 +20,7 @@ public class SolicitacaoFolgaResource {
 	private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
 	
 	@POST
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.NOVA_SOLICITACAO)
 	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		return service.insert(solicitacaoFolga);
 	}
@@ -59,7 +61,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
 	public Response update(SolicitacaoFolga solicitacaoFolga) {
 		if (service.update(solicitacaoFolga)) {
 			return Response.Ok("Solicitação atualizada com sucesso");
@@ -69,6 +71,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@DELETE
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.NOVA_SOLICITACAO)
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
 		if(service.delete(codigo)){

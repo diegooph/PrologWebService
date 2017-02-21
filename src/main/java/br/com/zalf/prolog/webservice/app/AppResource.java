@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.app;
 
 import br.com.zalf.prolog.commons.login.AppVersion;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -18,6 +19,7 @@ public class AppResource {
 	
 	@POST
 	@Path("/version")
+	@Secured
 	public Response isThisCurrentVersion(AppVersion appVersion) {
 		if (service.isThisCurrentVersion(appVersion)) {
 			return Response.Ok("Você está com a versão mais atualizada");

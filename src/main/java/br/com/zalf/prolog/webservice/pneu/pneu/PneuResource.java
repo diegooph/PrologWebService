@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.veiculo.Marca;
 import br.com.zalf.prolog.commons.veiculo.Modelo;
 import br.com.zalf.prolog.commons.veiculo.Veiculo;
 import br.com.zalf.prolog.frota.pneu.Pneu;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -19,7 +20,7 @@ public class PneuResource{
 	private PneuService service = new PneuService();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.Cadastro.PNEU)
 	@Path("/{codUnidade}")
 	public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade){
 		if (service.insert(pneu, codUnidade)) {
@@ -30,7 +31,7 @@ public class PneuResource{
 	}
 	
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Frota.Cadastro.PNEU)
 	@Path("/{codUnidade}/{codPneuOriginal}")
 	public Response update (Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal){
 		if (service.update(pneu, codUnidade, codOriginal)) {
@@ -41,7 +42,7 @@ public class PneuResource{
 	}
 	
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Cadastro.PNEU, Pilares.Frota.Alteracao.PNEU })
 	@Path("/modelo/{codEmpresa}/{codMarca}")
 	public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
 		if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
@@ -73,7 +74,7 @@ public class PneuResource{
 	}
 	
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.Pneu.VINCULAR_VEICULO)
 	@Path("/vincular")
 	public Response vinculaPneuVeiculo(Veiculo veiculo){
 		if (service.vinculaPneuVeiculo(veiculo)) {

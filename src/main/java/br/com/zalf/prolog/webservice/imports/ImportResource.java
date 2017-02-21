@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.imports;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.imports.mapa.MapaService;
 import br.com.zalf.prolog.webservice.imports.tracking.TrackingService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -30,7 +31,7 @@ public class ImportResource {
 	private static final String TAG = ImportResource.class.getSimpleName();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Entrega.UPLOAD_MAPA_TRACKING)
 	@Site
 	@Path("/mapa")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
@@ -72,7 +73,7 @@ public class ImportResource {
 	@POST
 	@Path("/tracking")
 	@Site
-	@Secured
+	@Secured(permissions = Pilares.Entrega.UPLOAD_MAPA_TRACKING)
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTracking(
 		@FormDataParam("file") InputStream fileInputStream,

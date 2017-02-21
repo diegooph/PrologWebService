@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.veiculo.*;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import br.com.zalf.prolog.webservice.util.Site;
@@ -38,10 +39,10 @@ public class VeiculoResource {
 	@Path("/{codUnidade}/tipo")
 	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getTipoVeiculosByUnidade(codUnidade);
-	}	
-	
+	}
+
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.Cadastro.VEICULO)
 	@Path("/{codUnidade}/tipo")
 	public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade){
 		if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
@@ -50,10 +51,10 @@ public class VeiculoResource {
 			return Response.Error("Erro ao inserir o tipo de veículo");
 		}
 	}
-	
-	@PUT	
+
+	@PUT
+	@Secured(permissions = Pilares.Frota.Alteracao.VEICULO)
 	@Path("/update/{placaOriginal}")
-	@Secured
 	public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
 		if (service.update(veiculo, placaOriginal)) {
 			return Response.Ok("Veículo atualizado com sucesso");
@@ -61,8 +62,9 @@ public class VeiculoResource {
 			return Response.Error("Erro ao atualizar o veículo");
 		}
 	}
-	
+
 	@POST
+	@Secured(permissions = Pilares.Frota.Cadastro.VEICULO)
 	@Path("/insert/{codUnidade}")
 	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(veiculo, codUnidade)) {
@@ -73,7 +75,7 @@ public class VeiculoResource {
 	}
 	
 	@DELETE
-	@Secured
+	@Secured(permissions = Pilares.Frota.Alteracao.VEICULO)
 	@Path("/{placa}")
 	public Response delete(@PathParam("placa") String placa){
 		if (service.delete(placa)) {
@@ -91,7 +93,7 @@ public class VeiculoResource {
 	}
 	
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Cadastro.VEICULO, Pilares.Frota.Alteracao.VEICULO })
 	@Path("/modelo/{codEmpresa}/{codMarca}")
 	public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
 		if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {

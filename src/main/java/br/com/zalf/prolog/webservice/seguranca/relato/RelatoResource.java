@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.seguranca.relato.Relato;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -18,7 +19,7 @@ public class RelatoResource {
 	private RelatoService service = new RelatoService();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Seguranca.Relato.NOVO_RELATO)
 	public Response insert(Relato relato) {
 		relato.setDataDatabase(new Date(System.currentTimeMillis()));
 		if (service.insert(relato)) {
@@ -127,7 +128,7 @@ public class RelatoResource {
 	}
 
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Seguranca.Relato.CLASSIFICAR)
 	@Path("/classificar")
 	public Response classificaRelato(Relato relato){
 		if(service.classificaRelato(relato)){
@@ -138,7 +139,7 @@ public class RelatoResource {
 	}
 
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Seguranca.Relato.FECHAR)
 	@Path("/fechar")
 	public Response fechaRelato(Relato relato){
 		if(service.fechaRelato(relato)){

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
 import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -25,14 +26,14 @@ public class ChecklistResource {
 	private ChecklistService service = new ChecklistService();
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.CHECKLISTS)
 	@Path("/urlImagens/{codUnidade}/{codFuncao}")
 	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
 		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.CHECKLISTS)
 	public Response insert(Checklist checklist) {
 		L.d("ChecklistResource", "Chamou o resource");
 		checklist.setData(new Date(System.currentTimeMillis()));
@@ -44,20 +45,10 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.FAROL_STATUS_PLACAS)
 	@Path("/liberacao/{codUnidade}")
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade){
 		return service.getStatusLiberacaoVeiculos(codUnidade);
-	}
-
-	@PUT
-	@Secured
-	public Response update(Checklist checklist) {
-		if (service.update(checklist)) {
-			return Response.Ok("Checklist atualizado com sucesso");
-		} else {
-			return Response.Error("Erro ao atualizar o checklist");
-		}
 	}
 
 	@GET
@@ -107,7 +98,7 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.CHECKLISTS)
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
 			@PathParam("codUnidade") Long codUnidade, 
@@ -116,23 +107,12 @@ public class ChecklistResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.CHECKLISTS)
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
 	public NovoChecklistHolder getNovoChecklistHolder(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codModelo") Long codModelo,
 			@PathParam("placa") String placa){
 		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
-	}
-
-	@DELETE
-	@Secured
-	@Path("{codigo}")
-	public Response delete(@PathParam("codigo") Long codigo) {
-		if (service.delete(codigo)) {
-			return Response.Ok("Checklist deletado com sucesso");
-		} else {
-			return Response.Error("Erro ao deletar checklist");
-		}
 	}
 }

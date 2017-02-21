@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -23,7 +24,7 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Gente.TREINAMENTOS)
 	@Path("/visualizados/{codTreinamento}/{cpf}")
 	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
 											   @PathParam("cpf") Long cpf) {

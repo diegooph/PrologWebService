@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.produtividade;
 
 import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
 import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 
@@ -17,7 +18,7 @@ public class ProdutividadeResource{
 	private ProdutividadeService service = new ProdutividadeService();
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Entrega.Produtividade.INDIVIDUAL)
 	@Path("/colaboradores/{ano}/{mes}/{cpf}")
 	public List<ItemProdutividade> getProdutividadeByPeriodo(@PathParam("ano") int ano,
 															 @PathParam("mes") int mes,
@@ -27,7 +28,7 @@ public class ProdutividadeResource{
 
 	@GET
 	@Android
-	@Secured
+	@Secured(permissions = Pilares.Entrega.Produtividade.CONSOLIDADO)
 	@Path("consolidados/{codUnidade}/{equipe}/{codFuncao}")
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
 																			@PathParam("equipe") String equipe,

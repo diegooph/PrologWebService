@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,6 +15,7 @@ public class AutenticacaoResource {
 
 	@DELETE
 	@Path("{token}")
+	@Secured
 	public Response delete(@PathParam("token") String token) {
 		if (service.delete(token)) {
 			return Response.Ok("Token deletado com sucesso");
