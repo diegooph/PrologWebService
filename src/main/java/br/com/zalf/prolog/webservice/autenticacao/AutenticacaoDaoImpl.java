@@ -60,6 +60,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt.setString(1, token);
 			rSet = stmt.executeQuery();
 			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			if (!rSet.next()) {
+				return false;
+			}
+			rSet.beforeFirst();
 			while (rSet.next()) {
 				if (needsToHaveAll) {
 					if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
