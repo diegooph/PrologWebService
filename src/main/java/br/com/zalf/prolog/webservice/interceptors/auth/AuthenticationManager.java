@@ -9,8 +9,12 @@ import com.google.common.cache.LoadingCache;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by luiz on 07/09/16.
+ * Cache para os tokens.
+ *
+ * Como agora juntamente com os tokens também passamos as permissões necessárias para se executar determinado request,
+ * essa cache não irá mais atender nossas necessidades. Portanto, @Deprecated.
  */
+@Deprecated
 public class AuthenticationManager {
 
     private static final TimeUnit EXPIRE_AFTER_ACCESS_TIME_UNITY = BuildConfig.DEBUG ? TimeUnit.SECONDS : TimeUnit.MINUTES;

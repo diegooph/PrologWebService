@@ -37,4 +37,13 @@ public class AutenticacaoService {
 			return false;
 		}
 	}
+
+	public boolean userHasPermission(String token, int[] permissions, boolean needsToHaveAll) {
+		try {
+			return dao.userHasPermission(token, permissions, needsToHaveAll);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

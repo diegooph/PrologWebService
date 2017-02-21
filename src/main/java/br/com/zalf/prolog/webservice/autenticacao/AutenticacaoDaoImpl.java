@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -39,6 +40,12 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
+		return false;
+	}
+
+	@Override
+	public boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
+			throws SQLException{
 		return false;
 	}
 
