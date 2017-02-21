@@ -6,10 +6,10 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Classe AutenticacaoDaoImpl, responsavel pela execução da lógica e comunicação com o banco de dados da aplicação
@@ -46,7 +46,35 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	@Override
 	public boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
 			throws SQLException{
-		return false;
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement( "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
+					"FROM token_autenticacao TA\n" +
+					"  JOIN colaborador C ON C.cpf = TA.cpf_colaborador\n" +
+					"  JOIN cargo_funcao_prolog CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
+					"WHERE TA.token = ? ");
+			stmt.setString(1, token);
+			rSet = stmt.executeQuery();
+			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			while (rSet.next()) {
+				if (needsToHaveAll) {
+					if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
+						return false;
+					}
+				} else {
+					if (permissoes.contains(rSet.getInt("cod_permissao"))) {
+						return true;
+					}
+				}
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return needsToHaveAll;
 	}
 
 	@Override
