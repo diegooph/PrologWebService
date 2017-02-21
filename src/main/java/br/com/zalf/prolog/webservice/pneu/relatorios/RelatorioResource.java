@@ -4,7 +4,7 @@ import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
-import br.com.zalf.prolog.permissao.pilares.Frota;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus/relatorios")
-@Secured(permissions = Frota.Pneu.RELATORIOS)
+@Secured(permissions = Pilares.Frota.Pneu.RELATORIOS)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
