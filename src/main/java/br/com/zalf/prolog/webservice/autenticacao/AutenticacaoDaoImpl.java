@@ -55,7 +55,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt = conn.prepareStatement( "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
 					"FROM token_autenticacao TA\n" +
 					"  JOIN colaborador C ON C.cpf = TA.cpf_colaborador\n" +
-					"  JOIN cargo_funcao_prolog CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
+					"  JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
 					"WHERE TA.token = ? ");
 			stmt.setString(1, token);
 			rSet = stmt.executeQuery();
