@@ -15,18 +15,19 @@ import java.util.List;
 @Path("/servico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Secured(permissions = Pilares.Frota.Pneu.ORDEM_SERVICO)
 public class ServicoResource {
 
 	private ServicoService service = new ServicoService();
 
 	@GET
+	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
 	@Path("/{codUnidade}")
 	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade){
 		return service.getConsolidadoListaVeiculos(codUnidade);
 	}
 
 	@GET
+	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
 	@Path("/{codUnidade}/{placaVeiculo}")
 	public ServicoHolder getServicosByPlaca(
 			@PathParam("placaVeiculo") String placa,
@@ -35,6 +36,7 @@ public class ServicoResource {
 	}
 
 	@GET
+	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
 	@Path("/abertos/{placaVeiculo}/{tipoServico}")
 	public List<Servico> getServicosAbertosByPlaca(
 			@PathParam("placaVeiculo") String placa,
@@ -43,6 +45,7 @@ public class ServicoResource {
 	}
 
 	@POST
+	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM )
 	@Path("/conserto/{codUnidade}")
 	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade, @HeaderParam("Authorization") String tokenHeader){
 		String token = tokenHeader.substring("Bearer".length()).trim();

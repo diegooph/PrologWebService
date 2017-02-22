@@ -21,7 +21,7 @@ public class AfericaoResource {
 	private AfericaoService service = new AfericaoService();
 
 	@POST
-	@Secured(permissions = Pilares.Frota.Pneu.AFERICAO)
+	@Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
 	@Path("/{codUnidade}")
 	public Response insert(Afericao afericao,
 			@PathParam("codUnidade") Long codUnidade) {
@@ -35,13 +35,13 @@ public class AfericaoResource {
 
 	@GET
 	@Path("/{placaVeiculo}")
-	@Secured(permissions = Pilares.Frota.Pneu.AFERICAO)
+	@Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
 	public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa){
 		return service.getNovaAfericao(placa);
 	}
 		
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
 	@Path("/listaAfericao/{codUnidade}")
 	public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
 			@PathParam("codUnidade") Long codUnidade){
@@ -49,7 +49,7 @@ public class AfericaoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR})
 	@Path("/getAll")
 	public List<Afericao> getAfericoesByCodUnidadeByPlaca(
 			@QueryParam("codUnidades") List<String> codUnidades, 
@@ -60,14 +60,14 @@ public class AfericaoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR})
 	@Path("/{codUnidade}/{codAfericao}")
 	public Afericao getByCod (@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade){
 		return service.getByCod(codAfericao, codUnidade);
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR})
 	@Path("/restricoes/{codUnidade}")
 	public Restricao getRestricoesByCodUnidade(@PathParam("codUnidade") Long codUnidade){
 		return service.getRestricoesByCodUnidade(codUnidade);

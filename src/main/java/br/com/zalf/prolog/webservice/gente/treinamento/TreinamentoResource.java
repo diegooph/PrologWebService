@@ -24,7 +24,7 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 
 	@POST
-	@Secured(permissions = Pilares.Gente.TREINAMENTOS)
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
 	@Path("/visualizados/{codTreinamento}/{cpf}")
 	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
 											   @PathParam("cpf") Long cpf) {
@@ -36,7 +36,8 @@ public class TreinamentoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
+								Pilares.Gente.Treinamentos.CRIAR})
 	@Path("/{codUnidade}/{codFuncao}")
 	public List<Treinamento> getAll (
 			@QueryParam("dataInicial") long dataInicial, 
@@ -50,7 +51,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
 	@Android
 	@Path("/vistosColaborador/{cpf}")
 	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
@@ -58,7 +59,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
 	@Android
 	@Path("/naoVistosColaborador/{cpf}")
 	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
@@ -67,7 +68,7 @@ public class TreinamentoResource {
 
 	@POST
 	@Path("/upload")
-	@Secured
+	@Secured(permissions = { Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTreinamento(
 			@FormDataParam("file") InputStream fileInputStream,
@@ -96,6 +97,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
+	@Secured
 	@Path("/visualizacoes/{codUnidade}/{codTreinamento}")
 	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
 			@PathParam("codUnidade") Long codTreinamento,

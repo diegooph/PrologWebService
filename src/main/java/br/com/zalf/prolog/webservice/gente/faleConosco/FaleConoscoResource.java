@@ -17,7 +17,7 @@ public class FaleConoscoResource {
 	private FaleConoscoService service = new FaleConoscoService();
 
 	@POST
-	@Secured(permissions = Pilares.Gente.FaleConosco.ENVIAR)
+	@Secured(permissions = Pilares.Gente.FaleConosco.REALIZAR)
 	@Path("/{codUnidade}")
 	public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(faleConosco, codUnidade)) {
@@ -28,7 +28,7 @@ public class FaleConoscoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK })
 	@Path("/{codUnidade}/{equipe}")
 	public List<FaleConosco> getAll(
 			@QueryParam("dataInicial") long dataInicial,
@@ -55,7 +55,7 @@ public class FaleConoscoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Gente.FaleConosco.REALIZAR, Pilares.Gente.FaleConosco.VISUALIZAR})
 	@Path("/colaborador/{status}/{cpf}")
 	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
 											  @PathParam("status") String status) {

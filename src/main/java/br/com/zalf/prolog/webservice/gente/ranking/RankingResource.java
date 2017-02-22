@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.gente.ranking;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.ranking.ItemPosicao;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +19,7 @@ public class RankingResource {
 	private RankingService service = new RankingService();
 
 	@GET
+	@Secured(permissions = Pilares.Gente.RANKING)
 	@Path("/getRanking/{codUnidade}/{equipe}")
 	public List<ItemPosicao> getRanking(
 			@QueryParam("dataInicial") long dataInicial, 

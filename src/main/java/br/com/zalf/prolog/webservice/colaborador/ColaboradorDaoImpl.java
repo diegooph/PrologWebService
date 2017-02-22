@@ -380,7 +380,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
 				for (FuncaoProLog funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Pilares.Seguranca.Relato.NOVO_RELATO) {
+					if (funcao.getCodigo() == Pilares.Seguranca.Relato.REALIZAR) {
 						return true;
 					}
 				}

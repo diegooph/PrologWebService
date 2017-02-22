@@ -32,7 +32,7 @@ public class ContrachequeResource {
     private ContrachequeService service = new ContrachequeService();
 
     @GET
-    @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZACAO)
+    @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZAR)
     @Android
     @Path("/{codUnidade}/{cpf}/{ano}/{mes}")
     public Contracheque getPreContracheque(@PathParam("cpf") Long cpf,

@@ -18,12 +18,13 @@ import java.util.List;
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
+
 	private static final String TAG = ColaboradorResource.class.getSimpleName();
 	private ColaboradorService service = new ColaboradorService();
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	@Secured(permissions = Pilares.Gente.Cadastro.COLABORADOR)
+	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
 	public Response insert(Colaborador colaborador) {
 		if (service.insert(colaborador)) {
 			return Response.Ok("Colaborador inserido com sucesso");
@@ -35,7 +36,7 @@ public class ColaboradorResource {
 	@PUT
 	@Path("/{cpf}")
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
+	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
 	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
 		if (service.update(cpfAntigo, colaborador)) {
 			return Response.Ok("Colaborador atualizado com sucesso");
@@ -45,7 +46,7 @@ public class ColaboradorResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
 	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
 		L.d(TAG, cpf.toString());
@@ -61,14 +62,14 @@ public class ColaboradorResource {
 	
 	@GET
 	@Path("/{codUnidade}/")
-	@Secured
+	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
 	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade) {
 		return service.getAll(codUnidade);
 	}
 	
 	@DELETE
 	@Path("/{cpf}")
-	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
+	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response delete(@PathParam("cpf") Long cpf) {
 		if (service.delete(cpf)) {
@@ -88,8 +89,8 @@ public class ColaboradorResource {
 	@POST
 	@Path("/verifyLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf, 
-			@FormParam("dataNascimento") long dataNascimento) {
+	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
+									@FormParam("dataNascimento") long dataNascimento) {
 		
 		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
 		if (service.verifyLogin(cpf, new Date(dataNascimento))) {

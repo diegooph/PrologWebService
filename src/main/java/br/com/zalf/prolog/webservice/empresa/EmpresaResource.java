@@ -25,7 +25,7 @@ public class EmpresaResource {
 	private EmpresaService service = new EmpresaService();
 
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
 	@Path("/getEquipesByCodUnidade/{codUnidade}")
 	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException {
 		return service.getEquipesByCodUnidade(codUnidade);
@@ -33,14 +33,14 @@ public class EmpresaResource {
 
 	@PUT
 	@Path("/updateEquipe")
-	@Secured(permissions = Pilares.Gente.Alteracao.EQUIPE)
+	@Secured(permissions = Pilares.Gente.Equipe.EDITAR)
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
 		return service.updateEquipe(request);
 	}
 
 	@POST
 	@Path("/insertEquipe")
-	@Secured(permissions = Pilares.Gente.Cadastro.EQUIPE)
+	@Secured(permissions = { Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR })
 	public Response createEquipe (Request<Equipe> request) {
 		if (service.createEquipe(request)) {
 			return Response.Ok("Equipe inserida com sucesso");
@@ -80,14 +80,14 @@ public class EmpresaResource {
 	}
 
 	@POST
-	@Secured(permissions = Pilares.Gente.Cadastro.COLABORADOR)
+	@Secured(permissions = { Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR })
 	@Path("/setores/{codUnidade}")
 	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
 		return service.insertSetor(nome,codUnidade);
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Entrega.Upload.VERIFICACAO_DADOS)
 	@Path("/resumoDados/{codUnidade}/{ano}/{mes}")
 	public List<HolderMapaTracking> getResumoAtualizacaoDados(@PathParam("ano")int ano,
 															  @PathParam("mes") int mes,
@@ -104,7 +104,7 @@ public class EmpresaResource {
 	}
 
 	@POST
-	@Secured(permissions = Pilares.Gente.Alteracao.COLABORADOR)
+	@Secured(permissions = { Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR })
 	@Path("/funcoesProlog/{codUnidade}/{codCargo}")
 	public Response insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares,
 												   @PathParam("codUnidade") Long codUnidade,

@@ -25,7 +25,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
+    @Secured(permissions = { Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM })
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     public List<OrdemServico> getOs(@PathParam("placa") String placa,
                                     @PathParam("status") String status,
@@ -39,7 +39,7 @@ public class OrdemServicoResource {
 
     @POST
     @Android
-    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.MANUTENCAO)
+    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     @Path("/consertaItem/{codUnidade}/{placa}")
     public Response consertaItem (@PathParam("codUnidade")Long codUnidade, ItemOrdemServico item,
     @PathParam("placa") String placa){
@@ -52,7 +52,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
+    @Secured(permissions = { Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM })
     @Path("/manutencao/{placa}/{status}/{prioridade}")
     public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") String placa,
                                                              @QueryParam("limit") int limit,
@@ -64,7 +64,7 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured(permissions = Pilares.Frota.Checklist.OrdemServico.VISUALIZACAO)
+    @Secured(permissions = { Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM })
     @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("placa") String placa,
                                                             @PathParam("tipoVeiculo") String codTipo,

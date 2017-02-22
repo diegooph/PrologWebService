@@ -31,7 +31,7 @@ public class ImportResource {
 	private static final String TAG = ImportResource.class.getSimpleName();
 
 	@POST
-	@Secured(permissions = Pilares.Entrega.UPLOAD_MAPA_TRACKING)
+	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
 	@Site
 	@Path("/mapa")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
@@ -73,7 +73,7 @@ public class ImportResource {
 	@POST
 	@Path("/tracking")
 	@Site
-	@Secured(permissions = Pilares.Entrega.UPLOAD_MAPA_TRACKING)
+	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTracking(
 		@FormDataParam("file") InputStream fileInputStream,

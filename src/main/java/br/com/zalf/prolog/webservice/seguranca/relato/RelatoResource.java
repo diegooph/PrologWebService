@@ -19,7 +19,7 @@ public class RelatoResource {
 	private RelatoService service = new RelatoService();
 
 	@POST
-	@Secured(permissions = Pilares.Seguranca.Relato.NOVO_RELATO)
+	@Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
 	public Response insert(Relato relato) {
 		relato.setDataDatabase(new Date(System.currentTimeMillis()));
 		if (service.insert(relato)) {
@@ -30,16 +30,18 @@ public class RelatoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+	Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	@Path("/{codigo}")
 	public Relato getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	@Path("/realizados/{cpf}/{status}")
-	public List<Relato> getRealizadosByColaborador(@PathParam("cpf") Long cpf, 
+	public List<Relato> getRealizadosByColaborador(@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@QueryParam("latitude") double latitude,
@@ -51,14 +53,15 @@ public class RelatoResource {
 
 	@GET
 	@Path("/{status}/colaborador/{cpf}")
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	public List<Relato> getByColaborador(@PathParam("status") String status,
-										@PathParam("cpf") Long cpf,
-										@QueryParam("limit") int limit,
-										@QueryParam("offset") long offset,
-										@QueryParam("latitude") double latitude,
-										@QueryParam("longitude") double longitude,
-										@QueryParam("isOrderByDate") boolean isOrderByDate){
+										 @PathParam("cpf") Long cpf,
+										 @QueryParam("limit") int limit,
+										 @QueryParam("offset") long offset,
+										 @QueryParam("latitude") double latitude,
+										 @QueryParam("longitude") double longitude,
+										 @QueryParam("isOrderByDate") boolean isOrderByDate){
 		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate,
 				status, "realizados" );
 	}
@@ -78,7 +81,8 @@ public class RelatoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.VISUALIZAR,
+			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	@Path("/fechados/{cpf}/{status}")
 	public List<Relato> getFechadosByColaborador(@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
@@ -91,7 +95,7 @@ public class RelatoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
 	@Path("{status}/exceto/colaborador/{cpf}")
 	public List<Relato> getAllExcetoColaborador(@PathParam("cpf") Long cpf, 
 			@QueryParam("limit") int limit,
@@ -104,7 +108,8 @@ public class RelatoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	@Path("/unidade")
 	public List<Relato> getAllByUnidade(@QueryParam("dataInicial") long dataInicial, 
 			@QueryParam("dataFinal") long dataFinal, 
@@ -118,7 +123,8 @@ public class RelatoResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
 	@Path("/{codUnidade}/{status}")
 	public List<Relato> getAll(@PathParam("codUnidade") Long codUnidade,
 			@PathParam("status") String status,
@@ -139,7 +145,7 @@ public class RelatoResource {
 	}
 
 	@PUT
-	@Secured(permissions = Pilares.Seguranca.Relato.FECHAR)
+	@Secured(permissions = { Pilares.Seguranca.Relato.FECHAR, Pilares.Seguranca.Relato.CLASSIFICAR })
 	@Path("/fechar")
 	public Response fechaRelato(Relato relato){
 		if(service.fechaRelato(relato)){
@@ -150,7 +156,7 @@ public class RelatoResource {
 	}
 
 	@DELETE
-	@Secured
+	@Secured(permissions = Pilares.Seguranca.Relato.FECHAR)
 	@Path("/{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
 		if (service.delete(codigo)) {

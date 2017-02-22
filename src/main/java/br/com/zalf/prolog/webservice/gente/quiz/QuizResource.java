@@ -20,7 +20,7 @@ public class QuizResource {
     private QuizService service = new QuizService();
 
     @POST
-    @Secured(permissions = Pilares.Gente.Quiz.RESPONDER)
+    @Secured(permissions = Pilares.Gente.Quiz.REALIZAR)
     public Response insert (Quiz quiz){
         if(service.insert(quiz)){
             return Response.Ok("Quiz inserido com sucesso");
@@ -30,7 +30,7 @@ public class QuizResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = { Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
     @Path("/{cpf}")
     public List<Quiz> getRealizadosByColaborador(@PathParam("cpf") Long cpf,
                                                  @QueryParam("limit") int limit,
@@ -39,7 +39,7 @@ public class QuizResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = { Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
     @Path("/{codUnidade}/{codModeloQuiz}/{codQuiz}")
     public Quiz getByCod(@PathParam("codUnidade") Long codUnidade,
                          @PathParam("codQuiz") Long codQuiz,

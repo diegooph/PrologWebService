@@ -20,13 +20,16 @@ public class VeiculoResource {
 	
 	@POST
 	@Path("/unidade/colaborador")
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf) {
 		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
 	@Path("/{codUnidade}")
 	public List<Veiculo> getVeiculosAtivosByUnidade(@PathParam("codUnidade") Long codUnidade){
 		return service.getVeiculosAtivosByUnidade(codUnidade);
@@ -42,7 +45,7 @@ public class VeiculoResource {
 	}
 
 	@POST
-	@Secured(permissions = Pilares.Frota.Cadastro.VEICULO)
+	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
 	@Path("/{codUnidade}/tipo")
 	public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade){
 		if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
@@ -53,7 +56,7 @@ public class VeiculoResource {
 	}
 
 	@PUT
-	@Secured(permissions = Pilares.Frota.Alteracao.VEICULO)
+	@Secured(permissions = { Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR })
 	@Path("/update/{placaOriginal}")
 	public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
 		if (service.update(veiculo, placaOriginal)) {
@@ -64,7 +67,7 @@ public class VeiculoResource {
 	}
 
 	@POST
-	@Secured(permissions = Pilares.Frota.Cadastro.VEICULO)
+	@Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
 	@Path("/insert/{codUnidade}")
 	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(veiculo, codUnidade)) {
@@ -75,7 +78,7 @@ public class VeiculoResource {
 	}
 	
 	@DELETE
-	@Secured(permissions = Pilares.Frota.Alteracao.VEICULO)
+	@Secured(permissions = { Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR })
 	@Path("/{placa}")
 	public Response delete(@PathParam("placa") String placa){
 		if (service.delete(placa)) {
@@ -86,14 +89,14 @@ public class VeiculoResource {
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
 	@Path("/marcaModelos/{codEmpresa}")
 	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
 		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
 	}
 	
 	@POST
-	@Secured(permissions = { Pilares.Frota.Cadastro.VEICULO, Pilares.Frota.Alteracao.VEICULO })
+	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
 	@Path("/modelo/{codEmpresa}/{codMarca}")
 	public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
 		if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {
@@ -112,7 +115,8 @@ public class VeiculoResource {
 
 	@Android
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
 	@Path("/byTipo/{codUnidade}/{codTipo}")
 	public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
 										   @PathParam("codTipo") String codTipo){

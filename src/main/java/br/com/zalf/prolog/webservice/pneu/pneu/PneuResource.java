@@ -20,7 +20,7 @@ public class PneuResource{
 	private PneuService service = new PneuService();
 
 	@POST
-	@Secured(permissions = Pilares.Frota.Cadastro.PNEU)
+	@Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
 	@Path("/{codUnidade}")
 	public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade){
 		if (service.insert(pneu, codUnidade)) {
@@ -31,7 +31,7 @@ public class PneuResource{
 	}
 	
 	@PUT
-	@Secured(permissions = Pilares.Frota.Cadastro.PNEU)
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
 	@Path("/{codUnidade}/{codPneuOriginal}")
 	public Response update (Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal){
 		if (service.update(pneu, codUnidade, codOriginal)) {
@@ -42,7 +42,7 @@ public class PneuResource{
 	}
 	
 	@POST
-	@Secured(permissions = { Pilares.Frota.Cadastro.PNEU, Pilares.Frota.Alteracao.PNEU })
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
 	@Path("/modelo/{codEmpresa}/{codMarca}")
 	public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
 		if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
@@ -53,21 +53,22 @@ public class PneuResource{
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR,
+							Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codUnidade}/{status}")
 	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status, @HeaderParam("Authorization") String tokenHeader){
 		 return service.getPneuByCodUnidadeByStatus(codUnidade, status);
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
 	@Path("/marcaModelos/{codEmpresa}")
 	public List<Marca> getMarcaModeloPneuByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
 		return service.getMarcaModeloPneuByCodEmpresa(codEmpresa);
 	}
 	
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
 	@Path("/dimensao")
 	public List<Pneu.Dimensao> getDimensoes(){
 		return service.getDimensoes();

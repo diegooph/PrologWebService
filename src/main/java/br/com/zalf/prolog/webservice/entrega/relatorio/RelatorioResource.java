@@ -19,7 +19,7 @@ import java.util.List;
 @Path("/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Secured(permissions = Pilares.Entrega.RELATORIOS)
+@Secured(permissions = Pilares.Entrega.Relatorios.VISUALIZAR)
 public class RelatorioResource {
 
     RelatorioService service = new RelatorioService();

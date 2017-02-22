@@ -19,7 +19,8 @@ public class CalendarioResource {
 	private CalendarioService service = new CalendarioService();
 
 	@GET
-	@Secured(permissions = Pilares.Gente.CALENDARIO)
+	@Secured(permissions = { Pilares.Gente.Calendario.VISUALIZAR, Pilares.Gente.Calendario.ALTERAR_EVENTO,
+			Pilares.Gente.Calendario.CRIAR_EVENTO })
 	@Path("/{cpf}")
 	public List<Evento> getEventosByCpf(
 			@PathParam("cpf") Long cpf){
@@ -27,7 +28,8 @@ public class CalendarioResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Gente.Calendario.VISUALIZAR, Pilares.Gente.Calendario.ALTERAR_EVENTO,
+			Pilares.Gente.Calendario.CRIAR_EVENTO })
 	@Path("/{codEmpresa}/{codUnidade}/{equipe}/{funcao}")
 	public List<Evento> getAll (@QueryParam("dataInicial") long dataInicial,
 								@QueryParam("dataFinal") long dataFinal,
@@ -39,7 +41,7 @@ public class CalendarioResource {
 	}
 
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Gente.Calendario.CRIAR_EVENTO)
 	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
 	public AbstractResponse insert (Evento evento,
 									@PathParam("codUnidade") String codUnidade,
@@ -49,7 +51,7 @@ public class CalendarioResource {
 	}
 
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Gente.Calendario.ALTERAR_EVENTO, Pilares.Gente.Calendario.CRIAR_EVENTO })
 	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
 	public Response update (Evento evento,
 							@PathParam("codUnidade") String codUnidade,
@@ -63,7 +65,7 @@ public class CalendarioResource {
 	}
 
 	@DELETE
-	@Secured
+	@Secured(permissions = { Pilares.Gente.Calendario.ALTERAR_EVENTO, Pilares.Gente.Calendario.CRIAR_EVENTO })
 	@Path("/{codUnidade}/{codEvento}")
 	public Response delete (@PathParam("codUnidade") Long codUnidade, @PathParam("codEvento") Long codEvento){
 		if (service.delete(codUnidade, codEvento)){

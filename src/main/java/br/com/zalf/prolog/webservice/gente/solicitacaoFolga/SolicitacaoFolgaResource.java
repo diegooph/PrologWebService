@@ -20,12 +20,14 @@ public class SolicitacaoFolgaResource {
 	private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
 	
 	@POST
-	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.NOVA_SOLICITACAO)
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
 	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		return service.insert(solicitacaoFolga);
 	}
 	
 	@POST
+	@Secured(permissions = { Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.REALIZAR,
+								Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
 	@Path("/colaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<SolicitacaoFolga> getByColaborador(@FormParam("cpf") Long cpf, 
@@ -34,7 +36,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
 	@Path("/getAll")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<SolicitacaoFolga> getAll(
@@ -47,7 +49,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
 	@Path("/getAllByColaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<SolicitacaoFolga> getAll(
@@ -71,7 +73,7 @@ public class SolicitacaoFolgaResource {
 	}
 	
 	@DELETE
-	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.NOVA_SOLICITACAO)
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
 		if(service.delete(codigo)){

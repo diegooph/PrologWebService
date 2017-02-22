@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.quizModelo;
 
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -18,7 +19,7 @@ public class QuizModeloResource {
     QuizModeloService service = new QuizModeloService();
 
     @GET
-    @Secured
+    @Secured(permissions = { Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
     @Path("/{codUnidade}/{codFuncaoColaborador}")
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(@PathParam("codUnidade") Long codUnidade,
                                                                              @PathParam("codFuncaoColaborador") Long codFuncaoColaborador){

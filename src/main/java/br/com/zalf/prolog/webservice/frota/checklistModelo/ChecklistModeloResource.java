@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklistModelo;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
 import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -17,7 +18,8 @@ public class ChecklistModeloResource {
 	private ChecklistModeloService service = new ChecklistModeloService();
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR })
 	@Path("{codUnidade}/{codFuncao}")
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
 			@PathParam("codUnidade")Long codUnidade,
@@ -26,7 +28,8 @@ public class ChecklistModeloResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR })
 	@Path("/modelo/{codUnidade}/{codModelo}")
 	public List<ModeloChecklist> getModeloChecklist(
 			@PathParam("codModelo") Long codModelo,
@@ -35,7 +38,7 @@ public class ChecklistModeloResource {
 	}
 	
 	@DELETE
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
 	@Path("modelo/{codUnidade}/{codModelo}")
 	public Response setModeloChecklistInativo (
 			@PathParam("codUnidade") Long codUnidade, 
@@ -48,14 +51,15 @@ public class ChecklistModeloResource {
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR, Pilares.Frota.Checklist.REALIZAR })
 	@Path("/perguntas/{codUnidade}/{codModelo}")
 	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codModelo){
 		return service.getPerguntas(codUnidade, codModelo);
 	}
 
 	@POST
-	@Secured
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
 	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
 		if(service.insertModeloChecklist(modeloChecklist)){
 			return Response.Ok("Modelo de checklist inserido com sucesso");
