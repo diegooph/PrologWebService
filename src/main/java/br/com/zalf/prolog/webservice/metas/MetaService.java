@@ -1,11 +1,8 @@
 package br.com.zalf.prolog.webservice.metas;
 
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.entrega.produtividade.Metas;
+import br.com.zalf.prolog.entrega.indicador.Meta;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe MetaService responsavel por comunicar-se com a interface DAO
@@ -14,17 +11,17 @@ public class MetaService {
 
 	private MetasDao dao = new MetasDaoImpl();
 	
-	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) {
+	public Meta getByCodUnidade(Long codUnidade) {
 		try {
-			return dao.getByCodUnidade(codUnidade, cpf, token);
+			return dao.getByCodUnidade(codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<Metas<?>>();
+			return null;
 		}
 	}
-	public boolean updateByCod(Request<Metas> request) {
+	public boolean update(Meta meta, Long codUnidade) {
 		try {
-			return dao.updateByCod(request);
+			return dao.update(meta, codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
