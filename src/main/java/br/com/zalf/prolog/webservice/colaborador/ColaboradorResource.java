@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.network.Response;
@@ -70,19 +69,12 @@ public class ColaboradorResource {
 	@DELETE
 	@Path("/{cpf}")
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
-	public Response delete(@PathParam("cpf") Long cpf) {
+ 	public Response delete(@PathParam("cpf") Long cpf) {
 		if (service.delete(cpf)) {
 			return Response.Ok("Colaborador deletado com sucesso");
 		} else {
 			return Response.Error("Falha ao deletar colaborador");
 		}
-	}
-	
-	@GET
-	@Path("/funcao/{codigo}")
-	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public Funcao getFuncaoByCod(@PathParam("codigo") Long codigo) {
-		return service.getFuncaoByCod(codigo);
 	}
 	
 	@POST

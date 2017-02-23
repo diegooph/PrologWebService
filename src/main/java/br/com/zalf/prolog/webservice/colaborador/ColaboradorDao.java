@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
@@ -62,14 +61,6 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
 	 */
 	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
-
-	/**
-	 * Busca os dados de uma função pelo seu código 
-	 * @param codigo da função a ser buscada
-	 * @return uma Função
-	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
-	 */
-	Funcao getFuncaoByCod(Long codigo) throws SQLException;
 
 	/**
 	 * retorna o login do colaborador com o cpf marcado

@@ -216,28 +216,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	}
 
 	@Override
-	public Funcao getFuncaoByCod(Long codigo) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM FUNCAO F JOIN "
-					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO "
-					+ "WHERE C.CPF = ?");
-			stmt.setLong(1, codigo);
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				Funcao f = createFuncao(rSet);
-				return f;
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return null;
-	}
-
-	@Override
 	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();
 		loginHolder.setColaborador(getByCod(cpf));
