@@ -70,7 +70,6 @@ public class ColaboradorResource {
 	@DELETE
 	@Path("/{cpf}")
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
-	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response delete(@PathParam("cpf") Long cpf) {
 		if (service.delete(cpf)) {
 			return Response.Ok("Colaborador deletado com sucesso");
