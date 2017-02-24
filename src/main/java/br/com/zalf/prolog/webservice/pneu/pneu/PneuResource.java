@@ -25,7 +25,7 @@ public class PneuResource{
 	public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade){
 		if (service.insert(pneu, codUnidade)) {
 			return Response.Ok("Pneu inserido com sucesso.");
-		}else{
+		} else{
 			return Response.Error("Erro ao inserir o pneu");
 		}
 	}
@@ -36,7 +36,7 @@ public class PneuResource{
 	public Response update (Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal){
 		if (service.update(pneu, codUnidade, codOriginal)) {
 			return Response.Ok("Pneu atualizado com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao atualizar o pneu.");
 		}
 	}
@@ -47,7 +47,7 @@ public class PneuResource{
 	public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca){
 		if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
 			return Response.Ok("Modelo de pneu inserido com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao inserir o modelo de pneu.");
 		}
 	}
@@ -80,7 +80,7 @@ public class PneuResource{
 	public Response vinculaPneuVeiculo(Veiculo veiculo){
 		if (service.vinculaPneuVeiculo(veiculo)) {
 			return Response.Ok("Pneus vinculados com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao víncular os pneus ao veículo");
 		}
 	}
