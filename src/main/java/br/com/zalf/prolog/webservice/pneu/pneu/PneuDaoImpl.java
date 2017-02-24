@@ -421,7 +421,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 	}
 
 	@Override
-	public boolean vinculaPneuVeiculo(Veiculo veiculo) throws SQLException {
+	public boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -429,11 +429,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			for(Pneu pneu : veiculo.getListPneus()){
+			for(Pneu pneu : pneus){
 				stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU VALUES(?,?,(SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?) RETURNING COD_UNIDADE");
-				stmt.setString(1, veiculo.getPlaca());
+				stmt.setString(1, placaVeiculo);
 				stmt.setLong(2, pneu.getCodigo());
-				stmt.setString(3, veiculo.getPlaca());
+				stmt.setString(3, placaVeiculo);
 				stmt.setInt(4, pneu.getPosicao());				
 				rSet = stmt.executeQuery();
 				if(rSet.next()){

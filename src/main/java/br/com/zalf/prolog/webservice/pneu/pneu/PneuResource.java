@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.pneu.pneu;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.veiculo.Marca;
 import br.com.zalf.prolog.commons.veiculo.Modelo;
-import br.com.zalf.prolog.commons.veiculo.Veiculo;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -76,9 +75,9 @@ public class PneuResource{
 	
 	@POST
 	@Secured(permissions = Pilares.Frota.Pneu.VINCULAR_VEICULO)
-	@Path("/vincular")
-	public Response vinculaPneuVeiculo(Veiculo veiculo){
-		if (service.vinculaPneuVeiculo(veiculo)) {
+	@Path("/vincular/{placa}")
+	public Response vinculaPneuVeiculo(@PathParam("placa") String placa, List<Pneu> pneus) {
+		if (service.vinculaPneuVeiculo(placa, pneus)) {
 			return Response.Ok("Pneus vinculados com sucesso.");
 		} else {
 			return Response.Error("Erro ao víncular os pneus ao veículo");
