@@ -56,7 +56,7 @@ public class PneuResource{
 	@Secured(permissions = { Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR,
 							Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codUnidade}/{status}")
-	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status, @HeaderParam("Authorization") String tokenHeader){
+	public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,@PathParam("status") String status){
 		 return service.getPneuByCodUnidadeByStatus(codUnidade, status);
 	}
 	
