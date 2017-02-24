@@ -62,6 +62,22 @@ public class EmpresaResource {
 		return service.updateEquipe(request);
 	}
 
+	@POST
+	@Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+	@Path("/unidades/{codUnidade}/setores")
+	@Deprecated
+	public AbstractResponse insertSetor(@PathParam("codUnidade") Long codUnidade, Setor setor) {
+		return service.insertSetor(codUnidade, setor);
+	}
+
+	@POST
+	@Secured(permissions = { Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR })
+	@Path("/setores/{codUnidade}")
+	@Deprecated
+	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
+		return service.insertSetor(nome,codUnidade);
+	}
+
     @POST
     @Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
     @Path("/getEquipesByCodUnidade/{codUnidade}")
@@ -70,13 +86,14 @@ public class EmpresaResource {
         return service.getEquipesByCodUnidade(codUnidade);
     }
 
+
 	@GET
 	@Secured
 	@Path("/funcoes/{codUnidade}")
-	public List<Funcao> getFuncoesByCodUnidade(
-			@PathParam("codUnidade") Long codUnidade) {
+	public List<Funcao> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getFuncoesByCodUnidade(codUnidade);
 	}
+
 
 	@GET
 	@Secured
@@ -98,13 +115,6 @@ public class EmpresaResource {
 	@Path("/setores/{codUnidade}")
 	public List<Setor> getSetorByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getSetorByCodUnidade(codUnidade);
-	}
-
-	@POST
-	@Secured(permissions = { Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR })
-	@Path("/setores/{codUnidade}")
-	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
-		return service.insertSetor(nome,codUnidade);
 	}
 
 	@GET

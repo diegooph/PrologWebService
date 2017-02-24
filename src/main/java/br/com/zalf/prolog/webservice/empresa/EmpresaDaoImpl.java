@@ -90,6 +90,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "join regional r on r.codigo = u.cod_regional	"
 			+ "where c.cpf=?)";
 
+	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
+	//a equipe está ligada como fk de colaborador e fk de calendário
+
 	@Override
 	public boolean insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
@@ -159,7 +162,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
+	public boolean updateEquipe(Request<Equipe> request) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -181,7 +184,49 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
-	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException {
+	public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, setor.getNome());
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+			} else {
+				return Response.Error("Erro ao inserir o setor");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, nome);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+			} else {
+				return Response.Error("Erro ao inserir o setor");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) throws SQLException {
 		List<Equipe> listEquipe = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -200,9 +245,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		}
 		return listEquipe;
 	}
-
-	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
-	//a equipe está ligada como fk de colaborador e fk de calendário
 
 	@Override
 	public List<Funcao> getFuncoesByCodUnidade(long codUnidade) throws SQLException {
@@ -351,27 +393,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return setores;
-	}
-
-	@Override
-	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
-			stmt.setLong(1, codUnidade);
-			stmt.setString(2, nome);
-			rSet = stmt.executeQuery();
-			if (rSet.next()){
-				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
-			}else{
-				return Response.Error("Erro ao inserir o setor");
-			}
-		}finally {
-			closeConnection(conn, stmt, rSet);
-		}
 	}
 
 	@Override

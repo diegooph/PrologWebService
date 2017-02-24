@@ -60,6 +60,25 @@ public class EmpresaService {
 		}
 	}
 
+	public AbstractResponse insertSetor(Long codUnidade, Setor setor) {
+		try {
+			return dao.insertSetor(codUnidade, setor);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o setor");
+		}
+	}
+
+	@Deprecated
+	public AbstractResponse insertSetor(String nome, Long codUnidade) {
+		try {
+			return dao.insertSetor(nome,codUnidade);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o setor");
+		}
+	}
+
 	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getEquipesByCodUnidade(codUnidade);
@@ -102,15 +121,6 @@ public class EmpresaService {
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	public AbstractResponse insertSetor(String nome, Long codUnidade) {
-		try{
-			return dao.insertSetor(nome,codUnidade);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return Response.Error("Erro ao inserir o setor");
 		}
 	}
 

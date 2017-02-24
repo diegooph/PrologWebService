@@ -55,6 +55,25 @@ public interface EmpresaDao {
 	boolean updateEquipe(Request<Equipe> request) throws SQLException;
 
 	/**
+	 * Cadastra um setor no banco de dados
+	 * @param setor o setor para ser inserido
+	 * @param codUnidade código da unidade na qual esse setor será inserido
+	 * @return objeto que encapsula um resposta OK ou NOK
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
+	AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException;
+
+	/**
+	 * Cadastra um setor no banco de dados
+	 * @param nome nome do setor
+	 * @param codUnidade código da unidade referente ao setor
+	 * @return objeto que encapsula um resposta OK ou NOK
+	 * @throws SQLException caso ocorrer erro no banco
+	 */
+	@Deprecated
+	AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
+
+	/**
 	 * Lista as equipes de uma unidade
 	 * @param codUnidade código de uma unidade
 	 * @return lista de equipes da unidade
@@ -71,15 +90,6 @@ public interface EmpresaDao {
 	 * @throws NoContentException se não tiver conteudo
 	 */
 	List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException;
-
-	/**
-	 * Cadastra um setor no banco de dados
-	 * @param nome nome do setor
-	 * @param codUnidade código da unidade referente ao setor
-	 * @return objeto que encapsula um resposta OK ou NOK
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
 
 	/**
 	 * Lista os setores referentes ao código da unidade
