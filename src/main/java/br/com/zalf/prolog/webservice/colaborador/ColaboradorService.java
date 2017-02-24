@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
@@ -59,15 +58,6 @@ public class ColaboradorService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
-		}
-	}
-	
-	public Funcao getFuncaoByCod(Long codigo) {
-		try {
-			return dao.getFuncaoByCod(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
 		}
 	}
 	
