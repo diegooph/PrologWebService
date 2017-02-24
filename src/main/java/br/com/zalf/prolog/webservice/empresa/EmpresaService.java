@@ -21,7 +21,45 @@ import java.util.List;
 public class EmpresaService {
 
 	private EmpresaDao dao = new EmpresaDaoImpl();
-	
+
+	public boolean insertEquipe(Long codUnidade, Equipe equipe) {
+		try {
+			return dao.insertEquipe(codUnidade, equipe);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean updateEquipe(Long codEquipe, Equipe equipe) {
+		try {
+			return dao.updateEquipe(codEquipe, equipe);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Deprecated
+	public boolean createEquipe(Request<Equipe> request) {
+		try {
+			return dao.createEquipe(request);
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Deprecated
+	public boolean updateEquipe(Request<Equipe> request) {
+		try{
+			return dao.updateEquipe(request);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getEquipesByCodUnidade(codUnidade);
@@ -30,26 +68,8 @@ public class EmpresaService {
 			return null;
 		}
 	}
-	
-	public boolean updateEquipe (Request<Equipe> request) {
-		try{
-			return dao.updateEquipe(request);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean createEquipe (Request<Equipe> request) {
-		try{
-			return dao.createEquipe(request);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) {
+
+	public List<Funcao> getFuncoesByCodUnidade(long codUnidade) {
 		try{
 			return dao.getFuncoesByCodUnidade(codUnidade);
 		}catch(SQLException e){

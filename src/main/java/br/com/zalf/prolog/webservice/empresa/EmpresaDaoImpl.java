@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -90,39 +91,37 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "where c.cpf=?)";
 
 	@Override
-	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException {
-		List<Equipe> listEquipe = new ArrayList<>();
+	public boolean insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_EQUIPES_BY_COD_UNIDADE);
-			stmt.setLong(1, codUnidade);
-			rSet = stmt.executeQuery();
-			while(rSet.next()){
-				listEquipe.add(createEquipe(rSet));
+			stmt = conn.prepareStatement("INSERT INTO EQUIPE "
+					+ "(NOME, COD_UNIDADE) VALUES "
+					+ "(?,?) ");
+			stmt.setString(1, equipe.getNome());
+			stmt.setLong(2, codUnidade);
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir a equipe");
 			}
+		} finally {
+			closeConnection(conn, stmt, null);
 		}
-		finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return listEquipe;
+		return true;
 	}
 
 	@Override
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
+	public boolean updateEquipe(@NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(UPDATE_EQUIPE);
-			stmt.setString(1, request.getObject().getNome());
-			stmt.setLong(2, request.getObject().getCodigo());
-			stmt.setLong(3, request.getCpf());
-			stmt.setString(4, request.getToken());
+			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = (?) WHERE CODIGO = ?)");
+			stmt.setString(1, equipe.getNome());
+			stmt.setLong(2, codEquipe);
 			int count = stmt.executeUpdate();
-			if(count == 0){
+			if (count == 0) {
 				throw new SQLException("Erro ao atualizar a equipe");
 			}
 		}
@@ -159,11 +158,54 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return false;
 	}
 
+	@Override
+	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(UPDATE_EQUIPE);
+			stmt.setString(1, request.getObject().getNome());
+			stmt.setLong(2, request.getObject().getCodigo());
+			stmt.setLong(3, request.getCpf());
+			stmt.setString(4, request.getToken());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar a equipe");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
+
+	@Override
+	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException {
+		List<Equipe> listEquipe = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_EQUIPES_BY_COD_UNIDADE);
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				listEquipe.add(createEquipe(rSet));
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listEquipe;
+	}
+
 	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
 	//a equipe está ligada como fk de colaborador e fk de calendário
 
 	@Override
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException {
+	public List<Funcao> getFuncoesByCodUnidade(long codUnidade) throws SQLException {
 		List<Funcao> listFuncao = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -645,7 +687,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	}
 
-	private void setEquipesByUnidade (Unidade unidade) throws SQLException {
+	private void setEquipesByUnidade(Unidade unidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
