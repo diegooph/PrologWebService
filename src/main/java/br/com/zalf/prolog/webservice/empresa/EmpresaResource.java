@@ -109,12 +109,10 @@ public class EmpresaResource {
 	public Response insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares,
 												   @PathParam("codUnidade") Long codUnidade,
 												   @PathParam("codCargo") Long codCargo) throws SQLException{
-		if(service.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo)){
+		if (service.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo)) {
 			return Response.Ok("Funções inseridas com sucesso");
-		}else{
+		} else {
 			return Response.Error("Erro ao inserir as funções");
 		}
 	}
-
-
 }
