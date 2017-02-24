@@ -22,7 +22,8 @@ public class MetaResource{
 	}
 	
 	@PUT
-	public Response update(Meta meta, Long codUnidade) {
+	@Path("/{codUnidade}")
+	public Response update(Meta meta, @PathParam("codUnidade") Long codUnidade) {
 		if (service.update(meta, codUnidade)) {
 			return Response.Ok("Meta atualizada com sucesso");
 		} else {
