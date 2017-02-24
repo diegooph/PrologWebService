@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.pneu.pneu;
 
 import br.com.zalf.prolog.commons.veiculo.Marca;
 import br.com.zalf.prolog.commons.veiculo.Modelo;
-import br.com.zalf.prolog.commons.veiculo.Veiculo;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 
 import java.sql.Connection;
@@ -126,11 +125,13 @@ public interface PneuDao {
 	boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
 
 	/**
-	 * vinvula pneus a um veiculo
-	 * @param veiculo um veículo
-	 * @return valor da operação
+	 * Vincula pneus a um veículo
+	 *
+	 * @param placaVeiculo a placa de um veículo
+	 * @param pneus os pneus que se deseja vincular
+	 * @return true se deu certo; caso contrário false
 	 * @throws SQLException caso ocorra erro no banco
 	 */
-	boolean vinculaPneuVeiculo(Veiculo veiculo) throws SQLException;
+	boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException;
 
 }

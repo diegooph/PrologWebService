@@ -24,30 +24,51 @@ public class EmpresaResource {
 
 	private EmpresaService service = new EmpresaService();
 
-	@POST
-	@Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
-	@Path("/getEquipesByCodUnidade/{codUnidade}")
-	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException {
-		return service.getEquipesByCodUnidade(codUnidade);
-	}
+    @POST
+    @Path("/unidades/{codUnidade}/equipes")
+    @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
+    public Response insertEquipe(@PathParam("codUnidade") Long codUnidade, Equipe equipe) {
+        if (service.insertEquipe(codUnidade, equipe)) {
+            return Response.Ok("Equipe inserida com sucesso");
+        } else {
+            return Response.Error("Erro ao inserir equipe");
+        }
+    }
+
+    @PUT
+    @Path("/equipes/{codEquipe}")
+    @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
+    public boolean updateEquipe(@PathParam("codEquipe") Long codEquipe, Equipe equipe) throws SQLException {
+        return service.updateEquipe(codEquipe, equipe);
+    }
+
+    @POST
+    @Path("/insertEquipe")
+    @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
+    @Deprecated
+    public Response createEquipe(Request<Equipe> request) {
+        if (service.createEquipe(request)) {
+            return Response.Ok("Equipe inserida com sucesso");
+        } else {
+            return Response.Error("Erro ao inserir equipe");
+        }
+    }
 
 	@PUT
 	@Path("/updateEquipe")
 	@Secured(permissions = Pilares.Gente.Equipe.EDITAR)
+    @Deprecated
 	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
 		return service.updateEquipe(request);
 	}
 
-	@POST
-	@Path("/insertEquipe")
-	@Secured(permissions = { Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR })
-	public Response createEquipe (Request<Equipe> request) {
-		if (service.createEquipe(request)) {
-			return Response.Ok("Equipe inserida com sucesso");
-		} else {
-			return Response.Error("Erro ao inserir equipe");
-		}
-	}
+    @POST
+    @Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
+    @Path("/getEquipesByCodUnidade/{codUnidade}")
+    @Deprecated
+    public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws SQLException {
+        return service.getEquipesByCodUnidade(codUnidade);
+    }
 
 	@GET
 	@Secured
@@ -109,12 +130,10 @@ public class EmpresaResource {
 	public Response insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares,
 												   @PathParam("codUnidade") Long codUnidade,
 												   @PathParam("codCargo") Long codCargo) throws SQLException{
-		if(service.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo)){
+		if (service.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo)) {
 			return Response.Ok("Funções inseridas com sucesso");
-		}else{
+		} else {
 			return Response.Error("Erro ao inserir as funções");
 		}
 	}
-
-
 }
