@@ -17,41 +17,15 @@ import java.util.List;
 public class VeiculoResource {
 
 	private VeiculoService service = new VeiculoService();
-	
-	@POST
-	@Path("/unidade/colaborador")
-	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
-			Pilares.Frota.Veiculo.CADASTRAR })
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf) {
-		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
-	}
-	
-	@GET
-	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
-			Pilares.Frota.Veiculo.CADASTRAR })
-	@Path("/{codUnidade}")
-	public List<Veiculo> getVeiculosAtivosByUnidade(@PathParam("codUnidade") Long codUnidade){
-		return service.getVeiculosAtivosByUnidade(codUnidade);
-	}
-	
-	@GET
-	@Android
-	@Site
-	@Secured
-	@Path("/{codUnidade}/tipo")
-	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
-		return service.getTipoVeiculosByUnidade(codUnidade);
-	}
 
 	@POST
-	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
-	@Path("/{codUnidade}/tipo")
-	public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade){
-		if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-			return Response.Ok("Tipo de veículo inserido com sucesso");
-		}else{
-			return Response.Error("Erro ao inserir o tipo de veículo");
+	@Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
+	@Path("/insert/{codUnidade}")
+	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
+		if (service.insert(veiculo, codUnidade)) {
+			return Response.Ok("Veículo inserido com sucesso");
+		} else {
+			return Response.Error("Erro ao inserir o veículo");
 		}
 	}
 
@@ -66,35 +40,64 @@ public class VeiculoResource {
 		}
 	}
 
-	@POST
-	@Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
-	@Path("/insert/{codUnidade}")
-	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
-		if (service.insert(veiculo, codUnidade)) {
-			return Response.Ok("Veículo inserido com sucesso");
-		} else {
-			return Response.Error("Erro ao inserir o veículo");
-		}
-	}
-	
 	@DELETE
 	@Secured(permissions = { Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR })
 	@Path("/{placa}")
 	public Response delete(@PathParam("placa") String placa){
 		if (service.delete(placa)) {
 			return Response.Ok("Veículo deletado com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao deletar o veículo.");
 		}
 	}
-	
-	@GET
-	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
-	@Path("/marcaModelos/{codEmpresa}")
-	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
-		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+
+	@POST
+	@Path("/unidade/colaborador")
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(@FormParam("cpf") Long cpf) {
+		return service.getVeiculosAtivosByUnidadeByColaborador(cpf);
 	}
-	
+
+	@GET
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
+	@Path("/{codUnidade}")
+	public List<Veiculo> getVeiculosAtivosByUnidade(@PathParam("codUnidade") Long codUnidade){
+		return service.getVeiculosAtivosByUnidade(codUnidade);
+	}
+
+	@POST
+	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
+	@Path("/{codUnidade}/tipo")
+	public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade){
+		if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
+			return Response.Ok("Tipo de veículo inserido com sucesso");
+		} else {
+			return Response.Error("Erro ao inserir o tipo de veículo");
+		}
+	}
+
+	@Android
+	@GET
+	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
+			Pilares.Frota.Veiculo.CADASTRAR })
+	@Path("/byTipo/{codUnidade}/{codTipo}")
+	public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
+										  @PathParam("codTipo") String codTipo){
+		return service.getVeiculosByTipo(codUnidade, codTipo);
+	}
+
+	@GET
+	@Android
+	@Site
+	@Secured
+	@Path("/{codUnidade}/tipo")
+	public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
+		return service.getTipoVeiculosByUnidade(codUnidade);
+	}
+
 	@POST
 	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
 	@Path("/modelo/{codEmpresa}/{codMarca}")
@@ -105,21 +108,18 @@ public class VeiculoResource {
 			return Response.Error("Erro ao inserir o modelo");
 		}
 	}
-	
+
+	@GET
+	@Secured(permissions = { Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR })
+	@Path("/marcaModelos/{codEmpresa}")
+	public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa){
+		return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+	}
+
 	@GET
 	@Secured
 	@Path("/eixos")
 	public List<Eixos> getEixos(){
 		return service.getEixos();
-	}
-
-	@Android
-	@GET
-	@Secured(permissions = { Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
-			Pilares.Frota.Veiculo.CADASTRAR })
-	@Path("/byTipo/{codUnidade}/{codTipo}")
-	public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
-										   @PathParam("codTipo") String codTipo){
-		return service.getVeiculosByTipo(codUnidade, codTipo);
 	}
 }
