@@ -11,6 +11,7 @@ import br.com.zalf.prolog.frota.pneu.servico.Movimentacao;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.gente.quiz.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.gente.quiz.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -18,14 +19,20 @@ import java.time.Duration;
 
 public class GsonUtils {
 
-	private static final GsonBuilder sBuilder = new GsonBuilder()
-			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-			.setPrettyPrinting()
-			.serializeSpecialFloatingPointValues()
-			.registerTypeAdapter(Duration.class, new DurationSerializer())
-			.enableComplexMapKeySerialization();
+	private static final GsonBuilder sBuilder;
 
     static {
+
+		sBuilder = new GsonBuilder()
+				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+				.serializeSpecialFloatingPointValues()
+				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.enableComplexMapKeySerialization();
+
+		if (BuildConfig.DEBUG) {
+			sBuilder.setPrettyPrinting();
+		}
+
 		RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
 				.of(Servico.class)
 				.registerSubtype(Calibragem.class)
