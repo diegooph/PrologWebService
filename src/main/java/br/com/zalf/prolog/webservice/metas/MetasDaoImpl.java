@@ -10,11 +10,7 @@ import java.sql.SQLException;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 
-	private static final String BUSCA_METAS_BY_UNIDADE = "SELECT M.CODIGO AS COD_META, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
-			+ "TA.TOKEN = ? "
-			+ "WHERE MU.COD_UNIDADE = ? ORDER BY M.CODIGO";
+	private static final String BUSCA_METAS_BY_UNIDADE = "SELECT * FROM UNIDADE_METAS WHERE COD_UNIDADE = ?";
 
 	@Override
 	public Meta getByCodUnidade(Long codUnidade) throws SQLException{
