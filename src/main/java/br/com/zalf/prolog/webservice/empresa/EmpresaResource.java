@@ -100,10 +100,10 @@ public class EmpresaResource {
 
 	@GET
 	@Secured(permissions = Pilares.Entrega.Upload.VERIFICACAO_DADOS)
-	@Path("/unidades/{codUnidade}/mapa-tracking/resumo-dados")
+	@Path("/unidades/{codUnidade}/mapa-tracking/resumo-dados/{ano}/{mes}")
 	public List<HolderMapaTracking> getResumoDadosMapaTracking(@PathParam("codUnidade") Long codUnidade,
-															   @QueryParam("ano") int ano,
-															   @QueryParam("mes") int mes) {
+															   @PathParam("ano") int ano,
+															   @PathParam("mes") int mes) {
 		return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
 	}
 
