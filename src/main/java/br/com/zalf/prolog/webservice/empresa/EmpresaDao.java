@@ -7,7 +7,7 @@ import br.com.zalf.prolog.commons.colaborador.Setor;
 import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.permissao.Visao;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
@@ -105,7 +105,7 @@ public interface EmpresaDao {
 	 * @return lista de funções da unidade
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	List<Funcao> getFuncoesByCodUnidade(long codUnidade) throws SQLException;
+	List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException;
 
 	/**
 	 * Busca os itens do Filtro (empresa, unidade, equipe)
@@ -119,26 +119,26 @@ public interface EmpresaDao {
 	 * Busca as funções do prolog de um determinado cargo
 	 * @param codCargo codigo do cargo
 	 * @param codUnidade codigo da unidade
-	 * @return
+	 * @return {@link Visao} de uma {@link Funcao}
 	 * @throws SQLException
 	 */
-	List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException;
+	Visao getVisaoCargo(Long codCargo, Long codUnidade) throws SQLException;
 
 	/**
 	 * Busca as funções do prolog a partir do codigo da unidade
 	 * @param codUnidade codigo da unidade
-	 * @return lista de Pilares e suas devidas funções
+	 * @return {@link Visao} da {@link br.com.zalf.prolog.commons.colaborador.Unidade}
 	 * @throws SQLException
 	 */
-	List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException;
+	Visao getVisaoUnidade(Long codUnidade) throws SQLException;
 
 	/**
 	 * Insere ou atualiza as funções do prolog cadastradas para determinado cargo
-	 * @param pilares lista com os pilares e funções
+	 * @param visao {@link Visao} de uma {@link Funcao}
 	 * @param codUnidade codigo da unidade
 	 * @param codCargo codigo do cargo
 	 * @return boolean com o resultado da operação
 	 * @throws SQLException caso não seja possível realizar a operação
 	 */
-	boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException;
+	boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
 }

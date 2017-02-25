@@ -7,6 +7,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.permissao.Visao;
 import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -247,7 +248,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
-	public List<Funcao> getFuncoesByCodUnidade(long codUnidade) throws SQLException {
+	public List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException {
 		List<Funcao> listFuncao = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -259,7 +260,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Funcao funcao = createFuncao(rSet);
-				funcao.setPermissoes(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
+				funcao.setPermissoes(getPilaresCargo(funcao.getCodigo(), codUnidade));
 				listFuncao.add(funcao);
 			}
 		} finally {
@@ -268,16 +269,15 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return listFuncao;
 	}
 
-	/**
-	 * Busca as funções do prolog de acordo com os parametros
-	 * @param codCargo codigo do cargo
-	 * @param codUnidade codigo da unidade
-	 * @return
-	 * @throws SQLException
-	 */
-	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException {
-		List<Pilar> pilares = new ArrayList<>();
+	@Override
+	public Visao getVisaoCargo(Long codCargo, Long codUnidade) throws SQLException {
+		Visao visao = new Visao();
+		visao.setPilares(getPilaresCargo(codCargo, codUnidade));
+		return visao;
+	}
 
+	private List<Pilar> getPilaresCargo(Long codCargo, Long codUnidade) throws SQLException {
+		List<Pilar> pilares;
 		ResultSet rSet = null;
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -304,7 +304,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return pilares;
 	}
 
-	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException {
+	@Override
+	public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
 
 		ResultSet rSet = null;
@@ -326,7 +327,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 
-		return pilares;
+		Visao visao = new Visao();
+		visao.setPilares(pilares);
+		return visao;
 	}
 
 	public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
@@ -730,7 +733,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		unidade.setListEquipe(listEquipes);
 	}
 
-	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException{
+	@Override
+	public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try{
@@ -742,7 +746,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
-			for(Pilar pilar : pilares){
+			for(Pilar pilar : visao.getPilares()){
 				for(FuncaoProLog funcao : pilar.funcoes){
 					stmt.setInt(3, funcao.getCodigo());
 					stmt.setInt(4, pilar.codigo);
