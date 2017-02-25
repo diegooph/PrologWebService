@@ -42,11 +42,14 @@ public class EmpresaResource {
         return service.updateEquipe(codEquipe, equipe);
     }
 
+	/**
+	 * @deprecated use {@link #insertEquipe(Long, Equipe)}  instead
+	 */
     @POST
     @Path("/insertEquipe")
     @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
     @Deprecated
-    public Response createEquipe(Request<Equipe> request) {
+    public Response DEPRECATED_INSERT(Request<Equipe> request) {
         if (service.createEquipe(request)) {
             return Response.Ok("Equipe inserida com sucesso");
         } else {
@@ -54,11 +57,14 @@ public class EmpresaResource {
         }
     }
 
+	/**
+	 * @deprecated use {@link #updateEquipe(Long, Equipe)} instead
+	 */
 	@PUT
 	@Path("/updateEquipe")
 	@Secured(permissions = Pilares.Gente.Equipe.EDITAR)
     @Deprecated
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
+	public boolean DEPRECATED_UPDATE(Request<Equipe> request) throws SQLException {
 		return service.updateEquipe(request);
 	}
 
@@ -74,7 +80,7 @@ public class EmpresaResource {
 	@Secured(permissions = { Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR })
 	@Path("/setores/{codUnidade}")
 	@Deprecated
-	public AbstractResponse insertSetor(String nome, @PathParam("codUnidade") Long codUnidade) {
+	public AbstractResponse DEPRECATED(String nome, @PathParam("codUnidade") Long codUnidade) {
 		return service.insertSetor(nome,codUnidade);
 	}
 
@@ -90,16 +96,18 @@ public class EmpresaResource {
 	@GET
 	@Secured
 	@Path("/unidades/{codUnidade}/funcoes")
-	@Deprecated
 	public List<Funcao> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getFuncoesByCodUnidade(codUnidade);
 	}
 
+	/**
+	 * @deprecated use {@link #getFuncoesByCodUnidade(Long)}  instead
+	 */
 	@GET
 	@Secured
 	@Path("/funcoes/{codUnidade}")
 	@Deprecated
-	public List<Funcao> getfuncoesByCodUnidadeOld(@PathParam("codUnidade") Long codUnidade) {
+	public List<Funcao> DEPRECATED(@PathParam("codUnidade") Long codUnidade) {
 		return service.getFuncoesByCodUnidade(codUnidade);
 	}
 
