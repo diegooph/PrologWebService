@@ -19,41 +19,43 @@ public class ServicoResource {
 
 	private ServicoService service = new ServicoService();
 
-	@GET
-	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
-	@Path("/{codUnidade}")
-	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade){
-		return service.getConsolidadoListaVeiculos(codUnidade);
-	}
-
-	@GET
-	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
-	@Path("/{codUnidade}/{placaVeiculo}")
-	public ServicoHolder getServicosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("codUnidade") Long codUnidade){
-		return service.getServicosByPlaca(placa, codUnidade);
-	}
-
-	@GET
-	@Secured(permissions = { Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM })
-	@Path("/abertos/{placaVeiculo}/{tipoServico}")
-	public List<Servico> getServicosAbertosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("tipoServico") String tipoServico){
-		return service.getServicosAbertosByPlaca(placa, tipoServico);
-	}
-
 	@POST
-	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM )
+	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade, @HeaderParam("Authorization") String tokenHeader){
+	public Response insertManutencao(Servico servico,
+									 @PathParam("codUnidade") Long codUnidade,
+									 @HeaderParam("Authorization") String tokenHeader) {
+
 		String token = tokenHeader.substring("Bearer".length()).trim();
-		if(service.insertManutencao(servico, codUnidade, token)){
+		if (service.insertManutencao(servico, codUnidade, token)) {
 			return Response.Ok("Serviço consertado com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao marcar o item como consertado.");
 		}
 	}
 
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codUnidade}")
+	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade) {
+		return service.getConsolidadoListaVeiculos(codUnidade);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codUnidade}/{placaVeiculo}")
+	public ServicoHolder getServicosByPlaca(
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("codUnidade") Long codUnidade) {
+		return service.getServicosByPlaca(placa, codUnidade);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/abertos/{placaVeiculo}/{tipoServico}")
+	public List<Servico> getServicosAbertosByPlaca(
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("tipoServico") String tipoServico) {
+		return service.getServicosAbertosByPlaca(placa, tipoServico);
+	}
 }
