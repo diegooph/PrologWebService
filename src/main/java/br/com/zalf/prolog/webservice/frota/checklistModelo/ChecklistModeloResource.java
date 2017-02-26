@@ -17,6 +17,16 @@ public class ChecklistModeloResource {
 
 	private ChecklistModeloService service = new ChecklistModeloService();
 
+	@POST
+	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
+	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
+		if(service.insertModeloChecklist(modeloChecklist)){
+			return Response.Ok("Modelo de checklist inserido com sucesso");
+		} else {
+			return Response.Error("Erro ao inserir modelo de checklist");
+		}
+	}
+
 	@GET
 	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
 			Pilares.Frota.Checklist.Modelo.CADASTRAR })
@@ -36,19 +46,6 @@ public class ChecklistModeloResource {
 			@PathParam("codUnidade") Long codUnidade){
 		return service.getModeloChecklist(codModelo, codUnidade);
 	}
-	
-	@DELETE
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
-	@Path("modelo/{codUnidade}/{codModelo}")
-	public Response setModeloChecklistInativo (
-			@PathParam("codUnidade") Long codUnidade, 
-			@PathParam("codModelo") Long codModelo){
-		if(service.setModeloChecklistInativo(codUnidade, codModelo)){
-			return Response.Ok("Modelo desativado com sucesso");
-		}else{
-			return Response.Error("Erro ao desativar o modelo");
-		}
-	}
 
 	@GET
 	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
@@ -58,13 +55,16 @@ public class ChecklistModeloResource {
 		return service.getPerguntas(codUnidade, codModelo);
 	}
 
-	@POST
+	@DELETE
 	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
-	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
-		if(service.insertModeloChecklist(modeloChecklist)){
-			return Response.Ok("Modelo de checklist inserido com sucesso");
-		} else {
-			return Response.Error("Erro ao inserir modelo de checklist");
+	@Path("modelo/{codUnidade}/{codModelo}")
+	public Response setModeloChecklistInativo (
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codModelo") Long codModelo){
+		if(service.setModeloChecklistInativo(codUnidade, codModelo)){
+			return Response.Ok("Modelo desativado com sucesso");
+		}else{
+			return Response.Error("Erro ao desativar o modelo");
 		}
 	}
 }
