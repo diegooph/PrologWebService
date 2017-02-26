@@ -49,8 +49,8 @@ public class DatabaseConnection {
 		Connection conexao = null;
 		try {
 			Class.forName(DRIVER);
-			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
-//			conexao = DriverManager.getConnection(TESTE_URL, USUARIO, SENHA);
+//			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
+			conexao = DriverManager.getConnection(TESTE_URL, USUARIO, SENHA);
 		} catch(Exception e) {
 		    L.e(TAG, String.format("Erro ao abrir conexão com o banco: %s", URL), e);
 		}
