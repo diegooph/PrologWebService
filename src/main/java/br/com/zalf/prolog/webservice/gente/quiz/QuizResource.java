@@ -21,30 +21,29 @@ public class QuizResource {
 
     @POST
     @Secured(permissions = Pilares.Gente.Quiz.REALIZAR)
-    public Response insert (Quiz quiz){
-        if(service.insert(quiz)){
+    public Response insert(Quiz quiz) {
+        if (service.insert(quiz)) {
             return Response.Ok("Quiz inserido com sucesso");
-        }else{
+        } else {
             return Response.Error("Erro ao inserir o Quiz");
         }
     }
 
     @GET
-    @Secured(permissions = { Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
+    @Secured(permissions = {Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})
     @Path("/{cpf}")
     public List<Quiz> getRealizadosByColaborador(@PathParam("cpf") Long cpf,
                                                  @QueryParam("limit") int limit,
-                                                 @QueryParam("offset") int offset){
+                                                 @QueryParam("offset") int offset) {
         return service.getRealizadosByColaborador(cpf, limit, offset);
     }
 
     @GET
-    @Secured(permissions = { Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
+    @Secured(permissions = {Pilares.Gente.Quiz.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})
     @Path("/{codUnidade}/{codModeloQuiz}/{codQuiz}")
     public Quiz getByCod(@PathParam("codUnidade") Long codUnidade,
-                         @PathParam("codQuiz") Long codQuiz,
-                         @PathParam("codModeloQuiz") Long codModeloQuiz){
+                         @PathParam("codModeloQuiz") Long codModeloQuiz,
+                         @PathParam("codQuiz") Long codQuiz) {
         return service.getByCod(codUnidade, codQuiz, codModeloQuiz);
     }
-
 }
