@@ -34,17 +34,17 @@ public class TreinamentoResource {
 			return Response.Error("Erro ao marcar treinamento");
 		}
 	}
-	
+
 	@GET
-	@Secured(permissions = { Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
-								Pilares.Gente.Treinamentos.CRIAR})
+	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
+			Pilares.Gente.Treinamentos.CRIAR})
 	@Path("/{codUnidade}/{codFuncao}")
-	public List<Treinamento> getAll (
-			@QueryParam("dataInicial") long dataInicial, 
-			@QueryParam("dataFinal") long dataFinal, 
+	public List<Treinamento> getAll(
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
 			@PathParam("codFuncao") String codFuncao,
 			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit") long limit, 
+			@QueryParam("limit") long limit,
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
 				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
@@ -68,7 +68,7 @@ public class TreinamentoResource {
 
 	@POST
 	@Path("/upload")
-	@Secured(permissions = { Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+	@Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTreinamento(
 			@FormDataParam("file") InputStream fileInputStream,
@@ -85,7 +85,7 @@ public class TreinamentoResource {
 		} else {
 			UploadTreinamento upload = new UploadTreinamento();
 			if (upload.doIt(treinamento, fileInputStream)) {
-				if(service.insert(treinamento)) {
+				if (service.insert(treinamento)) {
 					return Response.Ok("Treinamento inserido com sucesso");
 				} else {
 					return Response.Error("Erro ao inserir treinamento");
@@ -104,7 +104,4 @@ public class TreinamentoResource {
 			@PathParam("codTreinamento") Long codUnidade){
 		return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
 	}
-
-
-
 }
