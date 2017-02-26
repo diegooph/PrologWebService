@@ -19,11 +19,10 @@ public class QuizModeloResource {
     QuizModeloService service = new QuizModeloService();
 
     @GET
-    @Secured(permissions = { Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR })
+    @Secured(permissions = {Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})
     @Path("/{codUnidade}/{codFuncaoColaborador}")
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(@PathParam("codUnidade") Long codUnidade,
-                                                                             @PathParam("codFuncaoColaborador") Long codFuncaoColaborador){
+                                                                             @PathParam("codFuncaoColaborador") Long codFuncaoColaborador) {
         return service.getModelosQuizDisponiveisByCodUnidadeByCodFuncao(codUnidade, codFuncaoColaborador);
     }
-
 }
