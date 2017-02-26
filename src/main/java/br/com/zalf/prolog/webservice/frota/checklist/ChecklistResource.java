@@ -74,24 +74,10 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
-	@Path("/recentes/{codUnidade}/{equipe}")
-	public List<Checklist> getAllByCodUnidade(
-			@PathParam("equipe") String equipe,
-			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset) {
-		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
-		Date datainicial = java.sql.Date.valueOf(dataInicial);
-		return service.getAll(DateUtils.toLocalDate(datainicial),
-				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
-	}
-
-	@GET
 	@Secured(permissions = { Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR })
 	@Path("/colaborador/{cpf}")
 	public List<Checklist> getByColaborador(
-			@PathParam("cpf") Long cpf, 
+			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset) {
 		return service.getByColaborador(cpf, limit, offset);
@@ -101,11 +87,11 @@ public class ChecklistResource {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-			@PathParam("codUnidade") Long codUnidade, 
+			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codFuncaoColaborador") Long codFuncao){
 		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
 	}
-	
+
 	@GET
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
@@ -114,5 +100,23 @@ public class ChecklistResource {
 			@PathParam("codModelo") Long codModelo,
 			@PathParam("placa") String placa){
 		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
+	}
+
+	/**
+	 * @deprecated in v0.0.10 use {@link #getAll(long, long, Long, String, String, long, long)} instead
+	 */
+	@GET
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Path("/recentes/{codUnidade}/{equipe}")
+	@Deprecated
+	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
+			@PathParam("equipe") String equipe,
+			@PathParam("codUnidade") Long codUnidade,
+			@QueryParam("limit")long limit,
+			@QueryParam("offset") long offset) {
+		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
+		Date datainicial = java.sql.Date.valueOf(dataInicial);
+		return service.getAll(DateUtils.toLocalDate(datainicial),
+				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
 	}
 }
