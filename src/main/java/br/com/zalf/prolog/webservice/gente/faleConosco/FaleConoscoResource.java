@@ -27,8 +27,27 @@ public class FaleConoscoResource {
 		}
 	}
 
+	@PUT
+	@Secured(permissions = Pilares.Gente.FaleConosco.FEEDBACK)
+	@Path("/feedback/{codUnidade}")
+	public Response insertFeedback(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
+		if (service.insertFeedback(faleConosco, codUnidade)) {
+			return Response.Ok("Feedback inserido com sucesso.");
+		} else {
+			return Response.Error("Erro ao inserir o feedback no fale conosco.");
+		}
+	}
+
 	@GET
-	@Secured(permissions = { Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK })
+	@Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR, Pilares.Gente.FaleConosco.VISUALIZAR})
+	@Path("/colaborador/{status}/{cpf}")
+	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
+											  @PathParam("status") String status) {
+		return service.getByColaborador(cpf, status);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
 	@Path("/{codUnidade}/{equipe}")
 	public List<FaleConosco> getAll(
 			@QueryParam("dataInicial") long dataInicial,
@@ -41,24 +60,5 @@ public class FaleConoscoResource {
 			@QueryParam("categoria") String categoria){
 
 		return service.getAll(dataInicial, dataFinal, limit, offset, equipe, codUnidade, status, categoria);
-	}
-
-	@PUT
-	@Secured(permissions = Pilares.Gente.FaleConosco.FEEDBACK)
-	@Path("/feedback/{codUnidade}")
-	public Response insertFeedback(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade){
-		if(service.insertFeedback(faleConosco, codUnidade)){
-			return Response.Ok("Feedback inserido com sucesso.");
-		}else{
-			return Response.Error("Erro ao inserir o feedback no fale conosco.");
-		}
-	}
-
-	@GET
-	@Secured(permissions = { Pilares.Gente.FaleConosco.REALIZAR, Pilares.Gente.FaleConosco.VISUALIZAR})
-	@Path("/colaborador/{status}/{cpf}")
-	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
-											  @PathParam("status") String status) {
-		return service.getByColaborador(cpf, status);
 	}
 }
