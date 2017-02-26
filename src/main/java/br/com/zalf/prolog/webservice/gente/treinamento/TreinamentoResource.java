@@ -24,49 +24,6 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 
 	@POST
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
-	@Path("/visualizados/{codTreinamento}/{cpf}")
-	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
-											   @PathParam("cpf") Long cpf) {
-		if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
-			return Response.Ok("Treinamento marcado com sucesso");
-		} else {
-			return Response.Error("Erro ao marcar treinamento");
-		}
-	}
-
-	@GET
-	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
-			Pilares.Gente.Treinamentos.CRIAR})
-	@Path("/{codUnidade}/{codFuncao}")
-	public List<Treinamento> getAll(
-			@QueryParam("dataInicial") long dataInicial,
-			@QueryParam("dataFinal") long dataFinal,
-			@PathParam("codFuncao") String codFuncao,
-			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit") long limit,
-			@QueryParam("offset") long offset) {
-		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
-				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
-	}
-
-	@GET
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
-	@Android
-	@Path("/vistosColaborador/{cpf}")
-	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getVistosByColaborador(cpf);
-	}
-
-	@GET
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
-	@Android
-	@Path("/naoVistosColaborador/{cpf}")
-	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getNaoVistosByColaborador(cpf);
-	}
-
-	@POST
 	@Path("/upload")
 	@Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
@@ -94,6 +51,49 @@ public class TreinamentoResource {
 				return Response.Error("Erro ao reailizar upload do arquivo");
 			}
 		}
+	}
+
+	@POST
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Path("/visualizados/{codTreinamento}/{cpf}")
+	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
+											   @PathParam("cpf") Long cpf) {
+		if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
+			return Response.Ok("Treinamento marcado com sucesso");
+		} else {
+			return Response.Error("Erro ao marcar treinamento");
+		}
+	}
+
+	@GET
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Android
+	@Path("/vistosColaborador/{cpf}")
+	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getVistosByColaborador(cpf);
+	}
+
+	@GET
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Android
+	@Path("/naoVistosColaborador/{cpf}")
+	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getNaoVistosByColaborador(cpf);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
+			Pilares.Gente.Treinamentos.CRIAR})
+	@Path("/{codUnidade}/{codFuncao}")
+	public List<Treinamento> getAll(
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
+			@PathParam("codFuncao") String codFuncao,
+			@PathParam("codUnidade") Long codUnidade,
+			@QueryParam("limit") long limit,
+			@QueryParam("offset") long offset) {
+		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
+				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
 	}
 
 	@GET
