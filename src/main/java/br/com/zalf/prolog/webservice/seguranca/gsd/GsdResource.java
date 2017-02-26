@@ -40,10 +40,11 @@ public class GsdResource {
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("equipe") String equipe,
-			@QueryParam ("codUnidade") Long codUnidade,
+			@QueryParam("codUnidade") Long codUnidade,
 			@QueryParam("limit") long limit, 
 			@QueryParam("offset") long offset){
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, limit, offset);
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),DateUtils.toLocalDate(new Date(dataFinal)),
+				equipe, codUnidade, limit, offset);
 	}
 
 	@POST
