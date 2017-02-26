@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.login.Autenticacao;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * Autenticação do usuário no sistema.
@@ -23,6 +24,15 @@ public interface AutenticacaoDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	boolean verifyIfTokenExists(String token) throws SQLException;
+
+	/**
+	 * Verifica a existência de um CPF e data de nascimento
+	 * @param cpf do colaborador a ser verificada a existência
+	 * @param dataNascimento do colaborador a ser veerificada a existência
+	 * @return resultado da requisição
+	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
+	 */
+	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
 
 	/**
 	 * Verifica se o usuário tem as permissões necessárias para acessar determinada método.

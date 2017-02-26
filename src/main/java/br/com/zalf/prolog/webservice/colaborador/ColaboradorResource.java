@@ -5,6 +5,7 @@ import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
@@ -76,15 +77,19 @@ public class ColaboradorResource {
 			return Response.Error("Falha ao deletar colaborador");
 		}
 	}
-	
+
+	/**
+	 * @deprecated in v0.0.10. Use {@link AutenticacaoResource#verifyLogin(Long, long)} instead
+	 */
 	@POST
 	@Path("/verifyLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
+	@Deprecated
+	public Autenticacao DEPRECATED_VERIFY_LOGIN(@FormParam("cpf") Long cpf,
 									@FormParam("dataNascimento") long dataNascimento) {
 		
 		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
+		if (new AutenticacaoService().verifyLogin(cpf, new Date(dataNascimento))) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
 			L.d(TAG, autenticacao.getToken());

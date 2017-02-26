@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsEx
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,15 +57,6 @@ public class ColaboradorService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
-		}
-	}
-	
-	public boolean verifyLogin(long cpf, Date dataNascimento) {
-		try {
-			return dao.verifyLogin(cpf, dataNascimento);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
 		}
 	}
 	

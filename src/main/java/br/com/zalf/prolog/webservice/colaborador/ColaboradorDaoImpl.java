@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -191,28 +190,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			closeConnection(conn, stmt, rSet);
 		}
 		return list;
-	}
-
-	@Override
-	public boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
-					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
-					+ "AND C.STATUS_ATIVO = TRUE)");
-			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				return rSet.getBoolean("EXISTS");
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return false;
 	}
 
 	@Override

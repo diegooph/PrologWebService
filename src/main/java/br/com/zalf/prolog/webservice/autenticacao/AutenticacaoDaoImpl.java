@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +39,28 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			}
 		} finally {
 			closeConnection(conn, stmt, null);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean verifyLogin(long cpf, java.util.Date dataNascimento) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
+					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
+					+ "AND C.STATUS_ATIVO = TRUE)");
+			stmt.setLong(1, cpf);
+			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return rSet.getBoolean("EXISTS");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
 		}
 		return false;
 	}

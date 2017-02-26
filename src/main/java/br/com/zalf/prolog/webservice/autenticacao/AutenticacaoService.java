@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * Classe AutenticacaoService responsavel por comunicar-se com a interface DAO
@@ -33,6 +34,15 @@ public class AutenticacaoService {
 		try {
 			return dao.verifyIfTokenExists(token);
 		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean verifyLogin(long cpf, Date dataNascimento) {
+		try {
+			return dao.verifyLogin(cpf, dataNascimento);
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}

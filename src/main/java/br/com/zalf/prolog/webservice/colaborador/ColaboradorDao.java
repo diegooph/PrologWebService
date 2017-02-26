@@ -5,7 +5,6 @@ import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 /**
  * Contém os métodos para manipular os usuários no banco de dados 
@@ -52,15 +51,6 @@ public interface ColaboradorDao {
 	 * @throws SQLException caso não seja possível buscar os dados
 	 */
 	List<Colaborador> getAll(Long codUnidade) throws SQLException;
-
-	/**
-	 * Verifica a existência de um CPF e data de nascimento
-	 * @param cpf do colaborador a ser verificada a existência
-	 * @param dataNascimento do colaborador a ser veerificada a existência
-	 * @return resultado da requisição
-	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
-	 */
-	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
 
 	/**
 	 * retorna o login do colaborador com o cpf marcado
