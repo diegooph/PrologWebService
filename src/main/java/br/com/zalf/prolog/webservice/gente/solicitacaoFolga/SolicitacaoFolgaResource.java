@@ -25,6 +25,16 @@ public class SolicitacaoFolgaResource {
 		return service.insert(solicitacaoFolga);
 	}
 
+	@PUT
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
+	public Response update(SolicitacaoFolga solicitacaoFolga) {
+		if (service.update(solicitacaoFolga)) {
+			return Response.Ok("Solicitação atualizada com sucesso");
+		} else {
+			return Response.Error("Erro ao atualizar a solicitação");
+		}
+	}
+
 	@POST
 	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.REALIZAR,
 			Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
@@ -62,16 +72,6 @@ public class SolicitacaoFolgaResource {
 			@FormParam("cpfColaborador") Long cpfColaborador) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
 				codUnidade, codEquipe, status, cpfColaborador);
-	}
-
-	@PUT
-	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
-	public Response update(SolicitacaoFolga solicitacaoFolga) {
-		if (service.update(solicitacaoFolga)) {
-			return Response.Ok("Solicitação atualizada com sucesso");
-		} else {
-			return Response.Error("Erro ao atualizar a solicitação");
-		}
 	}
 
 	@DELETE
