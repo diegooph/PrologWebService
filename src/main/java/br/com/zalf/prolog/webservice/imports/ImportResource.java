@@ -36,77 +36,79 @@ public class ImportResource {
 	@Path("/mapa")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadMapa(
-		@FormDataParam("file") InputStream fileInputStream,
-	    @FormDataParam("file") FormDataContentDisposition fileDetail,
-	    @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
-	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-			L.d(TAG, jsonPart.toString());
-	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
-		  	try {
-				// Salva o arquivo
-			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
-			  	// ser que substitua enquanto está ainda usando o arquivo
-				String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
-			  	L.d(TAG, "fileName: " + fileName);
-			  	L.d(TAG, "Colaborador");
-			  	L.d(TAG, "CPF: " + colaborador.getCpf());
-			  	L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
-				// Pasta temporária da JVM
-				File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
-				if (!tmpDir.exists()) {
-					// Cria a pasta mapas se não existe
-					tmpDir.mkdir();
-				}
-				// Cria o arquivo
-				File file = new File(tmpDir, fileName);
-				FileOutputStream out = new FileOutputStream(file);
-				IOUtils.copy(fileInputStream, out);
-				IOUtils.closeQuietly(out);
-				MapaService mapaService = new MapaService();
-				return mapaService.insertOrUpdateMapa(file.getPath(), colaborador);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Response.Error("Erro ao enviar o arquivo.");
+			@FormDataParam("file") InputStream fileInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+		L.d(TAG, jsonPart.toString());
+		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
+		try {
+			// Salva o arquivo
+			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
+			// ser que substitua enquanto está ainda usando o arquivo
+			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+					String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
+			L.d(TAG, "fileName: " + fileName);
+			L.d(TAG, "Colaborador");
+			L.d(TAG, "CPF: " + colaborador.getCpf());
+			L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
+			// Pasta temporária da JVM
+			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
+			if (!tmpDir.exists()) {
+				// Cria a pasta mapas se não existe
+				tmpDir.mkdir();
 			}
-	    }
-	  	
+			// Cria o arquivo
+			File file = new File(tmpDir, fileName);
+			FileOutputStream out = new FileOutputStream(file);
+			IOUtils.copy(fileInputStream, out);
+			IOUtils.closeQuietly(out);
+			MapaService mapaService = new MapaService();
+			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao enviar o arquivo.");
+		}
+	}
+
 	@POST
 	@Path("/tracking")
 	@Site
 	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTracking(
-		@FormDataParam("file") InputStream fileInputStream,
-	    @FormDataParam("file") FormDataContentDisposition fileDetail,
-	    @FormDataParam("colaborador") FormDataBodyPart jsonPart) {
+			@FormDataParam("file") InputStream fileInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("colaborador") FormDataBodyPart jsonPart) {
 
-	  		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-	  		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
-		  	try {
-				// Salva o arquivo
-			  	// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode 
-			  	// ser que substitua enquanto está ainda usando o arquivo
-				String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
-				L.d(TAG, "fileName: " + fileName);
-				L.d(TAG, "Colaborador");
-				L.d(TAG, "CPF: " + colaborador.getCpf());
-				L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
-				// Pasta temporária da JVM
-				File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
-				if (!tmpDir.exists()) {
-					// Cria a pasta carros se não existe
-					tmpDir.mkdir();
-				}
-				// Cria o arquivo
-				File file = new File(tmpDir, fileName);
-				FileOutputStream out = new FileOutputStream(file);
-				IOUtils.copy(fileInputStream, out);
-				IOUtils.closeQuietly(out);
-				TrackingService trackingService = new TrackingService();
-				return trackingService.insertOrUpdateTracking(file.getPath(), colaborador);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Response.Error("Erro ao enviar o arquivo.");
+		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
+		try {
+			// Salva o arquivo
+			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
+			// ser que substitua enquanto está ainda usando o arquivo
+			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+					String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
+			L.d(TAG, "fileName: " + fileName);
+			L.d(TAG, "Colaborador");
+			L.d(TAG, "CPF: " + colaborador.getCpf());
+			L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
+			// Pasta temporária da JVM
+			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
+			if (!tmpDir.exists()) {
+				// Cria a pasta carros se não existe
+				tmpDir.mkdir();
 			}
-	    }
+			// Cria o arquivo
+			File file = new File(tmpDir, fileName);
+			FileOutputStream out = new FileOutputStream(file);
+			IOUtils.copy(fileInputStream, out);
+			IOUtils.closeQuietly(out);
+			TrackingService trackingService = new TrackingService();
+			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao enviar o arquivo.");
+		}
+	}
 }
