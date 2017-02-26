@@ -19,10 +19,10 @@ public class ProdutividadeResource{
 
 	@GET
 	@Secured(permissions = Pilares.Entrega.Produtividade.INDIVIDUAL)
-	@Path("/colaboradores/{ano}/{mes}/{cpf}")
-	public List<ItemProdutividade> getProdutividadeByPeriodo(@PathParam("ano") int ano,
-															 @PathParam("mes") int mes,
-															 @PathParam("cpf") Long cpf) {
+	@Path("/colaboradores/{cpf}/{ano}/{mes}")
+	public List<ItemProdutividade> getProdutividadeColaborador(@PathParam("cpf") Long cpf,
+															   @PathParam("ano") int ano,
+															   @PathParam("mes") int mes) {
 		return service.getProdutividadeByPeriodo(ano, mes, cpf);
 	}
 
@@ -34,8 +34,21 @@ public class ProdutividadeResource{
 																			@PathParam("equipe") String equipe,
 																			@PathParam("codFuncao") String codFuncao,
 																			@QueryParam("dataInicial") long dataInicial,
-																			@QueryParam("dataFinal") long dataFinal){
+																			@QueryParam("dataFinal") long dataFinal) {
 		return service.getConsolidadoProdutividade(codUnidade, equipe, codFuncao, dataInicial, dataFinal);
+	}
+
+	/**
+	 * @deprecated in v0.0.10 use {@link #getProdutividadeColaborador(Long, int, int)} instead
+	 */
+	@GET
+	@Secured(permissions = Pilares.Entrega.Produtividade.INDIVIDUAL)
+	@Path("/colaboradores/{ano}/{mes}/{cpf}")
+	@Deprecated
+	public List<ItemProdutividade> DEPRECATED_GET_PRODUTIVIDADE(@PathParam("ano") int ano,
+																@PathParam("mes") int mes,
+																@PathParam("cpf") Long cpf) {
+		return service.getProdutividadeByPeriodo(ano, mes, cpf);
 	}
 }
 
