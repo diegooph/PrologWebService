@@ -25,13 +25,6 @@ public class ChecklistResource {
 
 	private ChecklistService service = new ChecklistService();
 
-	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-	@Path("/urlImagens/{codUnidade}/{codFuncao}")
-	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
-		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
-	}
-
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist) {
@@ -42,6 +35,13 @@ public class ChecklistResource {
 		} else {
 			return Response.Error("Erro ao inserir checklist");
 		}
+	}
+
+	@GET
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	@Path("/urlImagens/{codUnidade}/{codFuncao}")
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
+		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
 	@GET
@@ -59,10 +59,20 @@ public class ChecklistResource {
 	}
 
 	@GET
+	@Secured(permissions = { Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR })
+	@Path("/colaborador/{cpf}")
+	public List<Checklist> getByColaborador(
+			@PathParam("cpf") Long cpf,
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") long offset) {
+		return service.getByColaborador(cpf, limit, offset);
+	}
+
+	@GET
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	@Path("{codUnidade}/{equipe}/{placa}")
 	public List<Checklist> getAll(
-			@QueryParam("dataInicial") long dataInicial, 
+			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
@@ -71,16 +81,6 @@ public class ChecklistResource {
 			@QueryParam("offset") long offset){
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
-	}
-
-	@GET
-	@Secured(permissions = { Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR })
-	@Path("/colaborador/{cpf}")
-	public List<Checklist> getByColaborador(
-			@PathParam("cpf") Long cpf,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset) {
-		return service.getByColaborador(cpf, limit, offset);
 	}
 
 	@GET
