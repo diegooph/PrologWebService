@@ -86,10 +86,10 @@ public class TreinamentoResource {
 			Pilares.Gente.Treinamentos.CRIAR})
 	@Path("/{codUnidade}/{codFuncao}")
 	public List<Treinamento> getAll(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codFuncao") String codFuncao,
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
-			@PathParam("codFuncao") String codFuncao,
-			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit") long limit,
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
