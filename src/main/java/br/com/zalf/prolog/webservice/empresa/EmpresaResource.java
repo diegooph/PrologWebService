@@ -49,7 +49,7 @@ public class EmpresaResource {
 		return service.insertSetor(codUnidade, setor);
 	}
 
-	@POST
+	@GET
 	@Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
 	@Path("/unidades/{codUnidade}/equipes")
 	public List<Equipe> getEquipesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {

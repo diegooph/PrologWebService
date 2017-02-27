@@ -37,19 +37,6 @@ public class ProdutividadeResource{
 																			@QueryParam("dataFinal") long dataFinal) {
 		return service.getConsolidadoProdutividade(codUnidade, equipe, codFuncao, dataInicial, dataFinal);
 	}
-
-	/**
-	 * @deprecated in v0.0.10 use {@link #getProdutividadeColaborador(Long, int, int)} instead
-	 */
-	@GET
-	@Secured(permissions = Pilares.Entrega.Produtividade.INDIVIDUAL)
-	@Path("/colaboradores/{ano}/{mes}/{cpf}")
-	@Deprecated
-	public List<ItemProdutividade> DEPRECATED_GET_PRODUTIVIDADE(@PathParam("ano") int ano,
-																@PathParam("mes") int mes,
-																@PathParam("cpf") Long cpf) {
-		return service.getProdutividadeByPeriodo(ano, mes, cpf);
-	}
 }
 
 
