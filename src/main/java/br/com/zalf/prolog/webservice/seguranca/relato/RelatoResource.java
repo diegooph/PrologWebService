@@ -38,22 +38,6 @@ public class RelatoResource {
 	}
 
 	@GET
-	@Path("/realizados/{cpf}/{status}")
-	@Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
-			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
-	public List<Relato> getRealizadosByColaborador(
-			@PathParam("cpf") Long cpf,
-			@PathParam("status") String status,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset,
-			@QueryParam("latitude") double latitude,
-			@QueryParam("longitude") double longitude,
-			@QueryParam("isOrderByDate") boolean isOrderByDate) {
-		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status,
-				"realizados");
-	}
-
-	@GET
 	@Path("/{status}/colaborador/{cpf}")
 	@Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
 			Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
@@ -67,7 +51,6 @@ public class RelatoResource {
 		return service.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate,
 				status, "realizados" );
 	}
-
 
 	@GET
 	@Path("/classificados/{cpf}/{status}")
