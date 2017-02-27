@@ -38,29 +38,30 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Path("/urlImagens/{codUnidade}/{codFuncao}")
-	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
+											   @PathParam("codFuncao") Long codFuncao){
 		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
 	@Path("/liberacao/{codUnidade}")
-	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade){
+	@Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
 		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	@Path("{codigo}")
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
 
 	@GET
-	@Secured(permissions = { Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR })
 	@Path("/colaborador/{cpf}")
+	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR})
 	public List<Checklist> getByColaborador(
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
@@ -69,16 +70,16 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	@Path("{codUnidade}/{equipe}/{placa}")
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	public List<Checklist> getAll(
-			@QueryParam("dataInicial") long dataInicial,
-			@QueryParam("dataFinal") long dataFinal,
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
 			@PathParam("placa") String placa,
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset){
+			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
 	}
@@ -88,13 +89,13 @@ public class ChecklistResource {
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
 			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codFuncaoColaborador") Long codFuncao){
+			@PathParam("codFuncaoColaborador") Long codFuncao) {
 		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public NovoChecklistHolder getNovoChecklistHolder(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codModelo") Long codModelo,
@@ -103,11 +104,11 @@ public class ChecklistResource {
 	}
 
 	/**
-	 * @deprecated in v0.0.10 use {@link #getAll(long, long, Long, String, String, long, long)} instead
+	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long)} instead
 	 */
 	@GET
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	@Path("/recentes/{codUnidade}/{equipe}")
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	@Deprecated
 	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
 			@PathParam("equipe") String equipe,
