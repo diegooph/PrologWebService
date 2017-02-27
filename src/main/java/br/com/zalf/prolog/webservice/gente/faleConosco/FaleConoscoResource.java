@@ -50,8 +50,8 @@ public class FaleConoscoResource {
 	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
 	@Path("/{codUnidade}/{equipe}")
 	public List<FaleConosco> getAll(
-			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("equipe") String equipe,
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit") int limit,
