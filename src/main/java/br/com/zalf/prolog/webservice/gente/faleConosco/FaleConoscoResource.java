@@ -50,14 +50,14 @@ public class FaleConoscoResource {
 	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
 	@Path("/{codUnidade}/{equipe}")
 	public List<FaleConosco> getAll(
+			@PathParam("equipe") String equipe,
+			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") int offset,
-			@PathParam("equipe") String equipe,
-			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("status") String status,
-			@QueryParam("categoria") String categoria){
+			@QueryParam("categoria") String categoria) {
 
 		return service.getAll(dataInicial, dataFinal, limit, offset, equipe, codUnidade, status, categoria);
 	}
