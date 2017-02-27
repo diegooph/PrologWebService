@@ -18,9 +18,9 @@ public class ChecklistModeloResource {
 	private ChecklistModeloService service = new ChecklistModeloService();
 
 	@POST
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
-	public Response insertModeloChecklist(ModeloChecklist modeloChecklist){
-		if(service.insertModeloChecklist(modeloChecklist)){
+	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
+	public Response insertModeloChecklist(ModeloChecklist modeloChecklist) {
+		if (service.insertModeloChecklist(modeloChecklist)) {
 			return Response.Ok("Modelo de checklist inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir modelo de checklist");
@@ -28,8 +28,8 @@ public class ChecklistModeloResource {
 	}
 
 	@GET
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
-			Pilares.Frota.Checklist.Modelo.CADASTRAR })
+	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR})
 	@Path("{codUnidade}/{codFuncao}")
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
 			@PathParam("codUnidade")Long codUnidade,
@@ -38,32 +38,33 @@ public class ChecklistModeloResource {
 	}
 
 	@GET
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
-			Pilares.Frota.Checklist.Modelo.CADASTRAR })
+	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR})
 	@Path("/modelo/{codUnidade}/{codModelo}")
 	public List<ModeloChecklist> getModeloChecklist(
 			@PathParam("codModelo") Long codModelo,
-			@PathParam("codUnidade") Long codUnidade){
+			@PathParam("codUnidade") Long codUnidade) {
 		return service.getModeloChecklist(codModelo, codUnidade);
 	}
 
 	@GET
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
-			Pilares.Frota.Checklist.Modelo.CADASTRAR, Pilares.Frota.Checklist.REALIZAR })
+	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+			Pilares.Frota.Checklist.Modelo.CADASTRAR, Pilares.Frota.Checklist.REALIZAR})
 	@Path("/perguntas/{codUnidade}/{codModelo}")
-	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codModelo){
+	public List<PerguntaRespostaChecklist> getPerguntas(@PathParam("codUnidade") Long codUnidade,
+														@PathParam("codModelo") Long codModelo) {
 		return service.getPerguntas(codUnidade, codModelo);
 	}
 
 	@DELETE
-	@Secured(permissions = { Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR })
+	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
 	@Path("modelo/{codUnidade}/{codModelo}")
-	public Response setModeloChecklistInativo (
+	public Response setModeloChecklistInativo(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codModelo") Long codModelo){
-		if(service.setModeloChecklistInativo(codUnidade, codModelo)){
+		if (service.setModeloChecklistInativo(codUnidade, codModelo)) {
 			return Response.Ok("Modelo desativado com sucesso");
-		}else{
+		} else {
 			return Response.Error("Erro ao desativar o modelo");
 		}
 	}
