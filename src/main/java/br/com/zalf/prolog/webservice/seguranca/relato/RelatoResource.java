@@ -116,7 +116,7 @@ public class RelatoResource {
 
     @GET
     @Path("/{codUnidade}/{status}")
-    @Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getAll(@PathParam("codUnidade") Long codUnidade,
                                @PathParam("status") String status,
