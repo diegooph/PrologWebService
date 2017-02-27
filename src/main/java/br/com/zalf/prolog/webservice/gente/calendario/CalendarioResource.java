@@ -18,7 +18,7 @@ public class CalendarioResource {
 	
 	private CalendarioService service = new CalendarioService();
 
-	@PUT
+	@POST
 	@Secured(permissions = Pilares.Gente.Calendario.CRIAR_EVENTO)
 	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
 	public AbstractResponse insert(Evento evento,
@@ -28,7 +28,7 @@ public class CalendarioResource {
 		return service.insert(evento, codUnidade, codFuncao, codEquipe);
 	}
 
-	@POST
+	@PUT
 	@Secured(permissions = {Pilares.Gente.Calendario.ALTERAR_EVENTO, Pilares.Gente.Calendario.CRIAR_EVENTO})
 	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
 	public Response update(Evento evento,
