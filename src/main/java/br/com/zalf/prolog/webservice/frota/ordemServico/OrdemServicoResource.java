@@ -23,20 +23,6 @@ public class OrdemServicoResource {
 
     private OrdemServicoService service = new OrdemServicoService();
 
-    @GET
-    @Android
-    @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
-                                    @PathParam("tipoVeiculo") String tipoVeiculo,
-                                    @PathParam("placa") String placa,
-                                    @PathParam("status") String status,
-                                    @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) {
-        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
-    }
-
     @POST
     @Android
     @Path("/consertaItem/{codUnidade}/{placa}")
@@ -49,6 +35,20 @@ public class OrdemServicoResource {
         } else {
             return Response.Error("Erro ao consertar o item");
         }
+    }
+
+    @GET
+    @Android
+    @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
+                                    @PathParam("tipoVeiculo") String tipoVeiculo,
+                                    @PathParam("placa") String placa,
+                                    @PathParam("status") String status,
+                                    @QueryParam("limit") Integer limit,
+                                    @QueryParam("offset") Long offset) {
+        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
     }
 
     @GET
