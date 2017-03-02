@@ -23,25 +23,13 @@ public class OrdemServicoResource {
 
     private OrdemServicoService service = new OrdemServicoService();
 
-    @GET
-    @Android
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
-    @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    public List<OrdemServico> getOs(@PathParam("placa") String placa,
-                                    @PathParam("status") String status,
-                                    @PathParam("codUnidade") Long codUnidade,
-                                    @PathParam("tipoVeiculo") String tipoVeiculo,
-                                    @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) {
-        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
-    }
-
     @POST
     @Android
-    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     @Path("/consertaItem/{codUnidade}/{placa}")
-    public Response consertaItem(@PathParam("codUnidade") Long codUnidade, ItemOrdemServico item,
-                                  @PathParam("placa") String placa) {
+    @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
+    public Response consertaItem(ItemOrdemServico item,
+                                 @PathParam("codUnidade") Long codUnidade,
+                                 @PathParam("placa") String placa) {
         if (service.consertaItem(codUnidade, item, placa)) {
             return Response.Ok("Serviço consertado com sucesso");
         } else {
@@ -51,26 +39,42 @@ public class OrdemServicoResource {
 
     @GET
     @Android
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
+    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
+                                    @PathParam("tipoVeiculo") String tipoVeiculo,
+                                    @PathParam("placa") String placa,
+                                    @PathParam("status") String status,
+                                    @QueryParam("limit") Integer limit,
+                                    @QueryParam("offset") Long offset) {
+        return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
+    }
+
+    @GET
+    @Android
     @Path("/manutencao/{placa}/{status}/{prioridade}")
+    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     public List<ItemOrdemServico> getItensOsManutencaoHolder(@PathParam("placa") String placa,
-                                                             @QueryParam("limit") int limit,
-                                                             @QueryParam("offset") long offset,
                                                              @PathParam("status") String status,
-                                                             @PathParam("prioridade") String prioridade) {
+                                                             @PathParam("prioridade") String prioridade,
+                                                             @QueryParam("limit") int limit,
+                                                             @QueryParam("offset") long offset) {
         return service.getItensOsManutencaoHolder(placa, status, limit, offset, prioridade);
     }
 
     @GET
     @Android
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR, Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
     @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
-    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("placa") String placa,
+    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") Long codUnidade,
                                                             @PathParam("tipoVeiculo") String codTipo,
-                                                            @PathParam("codUnidade") Long codUnidade,
+                                                            @PathParam("placa") String placa,
+                                                            @PathParam("status") String status,
                                                             @QueryParam("limit") int limit,
-                                                            @QueryParam("offset") long offset,
-                                                            @PathParam("status") String status) {
+                                                            @QueryParam("offset") long offset) {
         return service.getResumoManutencaoHolder(placa, codTipo, codUnidade, limit, offset, status);
     }
 }

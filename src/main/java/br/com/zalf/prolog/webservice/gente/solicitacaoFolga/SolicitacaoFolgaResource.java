@@ -47,20 +47,6 @@ public class SolicitacaoFolgaResource {
 
 	@POST
 	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
-	@Path("/getAll")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<SolicitacaoFolga> getAll(
-			@FormParam("dataIncial") long dataInicial,
-			@FormParam("dataFinal") long dataFinal,
-			@FormParam("codUnidade") Long codUnidade,
-			@FormParam("codEquipe") String codEquipe,
-			@FormParam("status") String status) {
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
-				codUnidade, codEquipe, status, null);
-	}
-
-	@POST
-	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
 	@Path("/getAllByColaborador")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public List<SolicitacaoFolga> getAll(
@@ -72,6 +58,20 @@ public class SolicitacaoFolgaResource {
 			@FormParam("cpfColaborador") Long cpfColaborador) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
 				codUnidade, codEquipe, status, cpfColaborador);
+	}
+
+	@POST
+	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+	@Path("/getAll")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getAll(
+			@FormParam("dataIncial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("codEquipe") String codEquipe,
+			@FormParam("status") String status) {
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
+				codUnidade, codEquipe, status, null);
 	}
 
 	@DELETE
