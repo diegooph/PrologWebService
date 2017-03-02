@@ -41,9 +41,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             // busca apenas os itens que não compões o prêmio
             stmt = conn.prepareStatement("SELECT * FROM PRE_CONTRACHEQUE\n" +
                     "WHERE CPF_COLABORADOR = ? AND ANO_REFERENCIA = ? AND MES_REFERENCIA = ?\n" +
-                    "AND CODIGO_ITEM NOT IN (SELECT COD_IMPORT_HE FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
+                    "AND CODIGO_ITEM NOT IN (SELECT COD_IMPORT_HE::TEXT FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
                     "WHERE COD_UNIDADE = ?)\n" +
-                    "AND CODIGO_ITEM NOT IN (SELECT COD_IMPORT_DSR FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
+                    "AND CODIGO_ITEM NOT IN (SELECT COD_IMPORT_DSR::TEXT FROM PRE_CONTRACHEQUE_PREMISSAS\n" +
                     "WHERE COD_UNIDADE = ?)");
             stmt.setLong(1, cpf);
             stmt.setInt(2, ano);
@@ -56,8 +56,6 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
                 itens.add(createItemContracheque(rSet));
             }
             L.d(TAG, "itens que nao interferem no calculo do premio: " + GsonUtils.getGson().toJson(itens));
-
-
 
             //Calculo do prêmio
             List<ItemContracheque> itensPremio = getPremio(cpf, codUnidade, ano, mes, conn, stmt, rSet);
@@ -150,9 +148,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             // busca os itens para calcular o premio (HE e DSR)
             stmt = conn.prepareStatement("SELECT * FROM PRE_CONTRACHEQUE\n" +
                     "WHERE CPF_COLABORADOR = ? AND ANO_REFERENCIA = ? AND MES_REFERENCIA = ? " +
-                    "AND (CODIGO_ITEM IN (SELECT COD_IMPORT_HE FROM PRE_CONTRACHEQUE_PREMISSAS " +
+                    "AND (CODIGO_ITEM IN (SELECT COD_IMPORT_HE::TEXT FROM PRE_CONTRACHEQUE_PREMISSAS " +
                     "WHERE COD_UNIDADE = ?) " +
-                    "or CODIGO_ITEM IN (SELECT COD_IMPORT_DSR FROM PRE_CONTRACHEQUE_PREMISSAS " +
+                    "or CODIGO_ITEM IN (SELECT COD_IMPORT_DSR::TEXT FROM PRE_CONTRACHEQUE_PREMISSAS " +
                     "WHERE COD_UNIDADE = ?))");
             stmt.setLong(1, cpf);
             stmt.setInt(2, ano);
