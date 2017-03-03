@@ -18,9 +18,7 @@ public class MetaResource{
 	@GET
 	@Secured (permissions = Pilares.Entrega.Meta.VISUALIZAR)
 	@Path("/{codUnidade}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Meta getByCodUnidade(
-			@PathParam("codUnidade") Long codUnidade) {
+	public Meta getByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getByCodUnidade(codUnidade);
 	}
 	
