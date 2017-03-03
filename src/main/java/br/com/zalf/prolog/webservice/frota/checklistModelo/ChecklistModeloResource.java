@@ -41,7 +41,7 @@ public class ChecklistModeloResource {
 	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
 			Pilares.Frota.Checklist.Modelo.CADASTRAR})
 	@Path("/modelo/{codUnidade}/{codModelo}")
-	public List<ModeloChecklist> getModeloChecklist(
+	public ModeloChecklist getModeloChecklist(
 			@PathParam("codModelo") Long codModelo,
 			@PathParam("codUnidade") Long codUnidade) {
 		return service.getModeloChecklist(codModelo, codUnidade);
