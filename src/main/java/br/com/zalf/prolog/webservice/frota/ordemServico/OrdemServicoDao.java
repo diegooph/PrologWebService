@@ -47,12 +47,11 @@ public interface OrdemServicoDao {
 
 	/**
 	 * marca um item como consertado
-	 * @param codUnidade código da unidade
 	 * @param item item consertado
 	 * @param placa placa do veículo
 	 * @return valor da operação
 	 * @throws SQLException se ocorrer erro no banco
 	 */
-	boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa) throws SQLException;
+	boolean consertaItem (ItemOrdemServico item, String placa) throws SQLException;
 
 }
