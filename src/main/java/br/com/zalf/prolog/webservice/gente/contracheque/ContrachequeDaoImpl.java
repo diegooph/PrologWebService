@@ -57,8 +57,6 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             }
             L.d(TAG, "itens que nao interferem no calculo do premio: " + GsonUtils.getGson().toJson(itens));
 
-
-
             //Calculo do prêmio
             List<ItemContracheque> itensPremio = getPremio(cpf, codUnidade, ano, mes, conn, stmt, rSet);
             if(itensPremio != null){

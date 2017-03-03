@@ -46,7 +46,7 @@ public class ColaboradorResource {
 	}
 	
 	@GET
-	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
+	@Secured
 	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
 		L.d(TAG, cpf.toString());
