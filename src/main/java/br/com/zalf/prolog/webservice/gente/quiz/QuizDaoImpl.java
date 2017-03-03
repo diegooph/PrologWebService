@@ -17,10 +17,11 @@ import java.util.List;
 /**
  * Created by Zalf on 05/01/17.
  */
-public class QuizDaoImpl extends DatabaseConnection {
+public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
 
     private static final String TAG = QuizDaoImpl.class.getSimpleName();
 
+    @Override
     public boolean insert (Quiz quiz) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -85,6 +86,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -125,6 +127,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         return quiz;
     }
 
+    @Override
     public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
