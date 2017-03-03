@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 import br.com.zalf.prolog.commons.login.Autenticacao;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.util.SessionIdentifierGenerator;
 
 import javax.validation.constraints.NotNull;
@@ -112,7 +113,12 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt = conn.prepareStatement("DELETE FROM TOKEN_AUTENTICACAO TA "
 					+ "WHERE TA.TOKEN = ?");
 			stmt.setString(1, token);
-			return (stmt.executeUpdate() > 0);
+
+			if (stmt.executeUpdate() == 0) {
+				throw new ResourceAlreadyDeletedException();
+			}
+
+			return true;
 		} finally {
 			closeConnection(conn, stmt, null);
 		}
