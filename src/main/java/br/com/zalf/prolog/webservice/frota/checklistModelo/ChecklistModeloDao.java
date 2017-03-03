@@ -34,10 +34,10 @@ public interface ChecklistModeloDao {
 	 * busca um modelo de checklist atraves do modelo e da unidade
 	 * @param codModelo código do modelo
 	 * @param codUnidade código da unidade
-	 * @return lista de modelo do checklist
+	 * @return um {@link ModeloChecklist}
 	 * @throws SQLException se ocorrer erro no bando
 	 */
-	List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException;
+	ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException;
 
 	/**
 	 * insere um checklist

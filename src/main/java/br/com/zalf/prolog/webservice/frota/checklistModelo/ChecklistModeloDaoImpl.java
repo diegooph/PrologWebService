@@ -98,13 +98,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 	}
 
 	@Override
-	public List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException{
-
+	public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<ModeloChecklist> listModelos = new ArrayList<>();
-
+		ModeloChecklist  modeloChecklist = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
@@ -114,19 +112,20 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codModelo);
 			rSet = stmt.executeQuery();
-			while (rSet.next()) {
-				ModeloChecklist modeloChecklist = new ModeloChecklist();
+			if (rSet.next()) {
+				modeloChecklist = new ModeloChecklist();
 				modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
 				modeloChecklist.setNome(rSet.getString("MODELO"));
 				modeloChecklist.setListPerguntas(getPerguntas(codUnidade, codModelo));
 				modeloChecklist.setListTipoVeiculo(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
 				modeloChecklist.setListFuncao(getFuncaoByCodModelo(codUnidade, codModelo));
-				listModelos.add(modeloChecklist);
+
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return listModelos;
+
+		return modeloChecklist;
 	}
 
 	@Override
