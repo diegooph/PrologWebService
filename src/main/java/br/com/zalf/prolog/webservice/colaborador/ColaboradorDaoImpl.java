@@ -296,6 +296,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		loginHolder.setColaborador(getByCod(cpf));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
+			loginHolder.setAmazonCredentials(getAmazonCredentials());
 			RelatoDao relatoDao = new RelatoDaoImpl();
 			loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 					loginHolder.getColaborador().getCodUnidade(),
