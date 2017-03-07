@@ -1,12 +1,9 @@
 package br.com.zalf.prolog.webservice.pneu.movimentacao;
 
+import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.frota.pneu.movimentacao.Movimentacao;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -18,8 +15,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class MovimentacaoResource {
 
-    @Secured
+    MovimentacaoService service = new MovimentacaoService();
+
+//    @Secured
     @POST
-    public void insert(List<Movimentacao> movimentacao){
+    @Path("/{codUnidade}")
+    public Response insert(List<Movimentacao> movimentacao, @PathParam("codUnidade") Long codUnidade){
+        return service.insert(movimentacao, codUnidade);
     }
 }
