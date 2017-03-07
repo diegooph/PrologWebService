@@ -215,8 +215,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		stmt.setString(1, status);
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
-		stmt.executeUpdate();
-		return true;
+		int count = stmt.executeUpdate();
+		closeConnection(null, stmt, null);
+		return count == 0;
 	}
 
 	@Override

@@ -25,12 +25,11 @@ public class OrdemServicoResource {
 
     @POST
     @Android
-    @Path("/consertaItem/{codUnidade}/{placa}")
+    @Path("/consertaItem/{placa}")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     public Response consertaItem(ItemOrdemServico item,
-                                 @PathParam("codUnidade") Long codUnidade,
                                  @PathParam("placa") String placa) {
-        if (service.consertaItem(codUnidade, item, placa)) {
+        if (service.consertaItem(item, placa)) {
             return Response.Ok("Serviço consertado com sucesso");
         } else {
             return Response.Error("Erro ao consertar o item");

@@ -20,7 +20,7 @@ public class VeiculoResource {
 
 	@POST
 	@Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
-	@Path("/insert/{codUnidade}")
+	@Path("/{codUnidade}")
 	public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(veiculo, codUnidade)) {
 			return Response.Ok("Veículo inserido com sucesso");
@@ -31,7 +31,7 @@ public class VeiculoResource {
 
 	@PUT
 	@Secured(permissions = { Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR })
-	@Path("/update/{placaOriginal}")
+	@Path("/{placaOriginal}")
 	public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
 		if (service.update(veiculo, placaOriginal)) {
 			return Response.Ok("Veículo atualizado com sucesso");

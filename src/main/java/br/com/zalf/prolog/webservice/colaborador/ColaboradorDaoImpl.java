@@ -198,6 +198,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		loginHolder.setColaborador(getByCod(cpf));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
+			loginHolder.setAmazonCredentials(getAmazonCredentials());
 			RelatoDao relatoDao = new RelatoDaoImpl();
 			loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 					loginHolder.getColaborador().getCodUnidade(),
@@ -242,9 +243,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_v11 CF\n" +
 					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
 					"JOIN colaborador C ON C.cod_unidade = CF.cod_unidade AND CF.cod_funcao_colaborador = C.cod_funcao\n" +
 					"WHERE C.CPF = ?\n" +
 					"ORDER BY PP.pilar, FP.funcao");

@@ -25,9 +25,9 @@ public class OrdemServicoService {
         }
     }
 
-    public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa){
+    public boolean consertaItem (ItemOrdemServico item, String placa){
         try{
-            return dao.consertaItem(codUnidade, item, placa);
+            return dao.consertaItem(item, placa);
         }catch (SQLException e){
             e.printStackTrace();
             return false;

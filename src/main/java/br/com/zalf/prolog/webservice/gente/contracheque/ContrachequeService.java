@@ -23,7 +23,7 @@ import static br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeResou
  */
 public class ContrachequeService {
 
-    ContrachequeDaoImpl dao = new ContrachequeDaoImpl();
+    ContrachequeDao dao = new ContrachequeDaoImpl();
 
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) {
         try {

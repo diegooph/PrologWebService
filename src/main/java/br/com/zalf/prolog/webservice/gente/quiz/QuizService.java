@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class QuizService {
 
-    private QuizDaoImpl dao = new QuizDaoImpl();
+    private QuizDao dao = new QuizDaoImpl();
 
     public boolean insert (Quiz quiz){
         try{

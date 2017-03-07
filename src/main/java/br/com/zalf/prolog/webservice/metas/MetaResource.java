@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.metas;
 
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.entrega.indicador.Meta;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,14 +16,14 @@ public class MetaResource{
 	private MetaService service = new MetaService();
 
 	@GET
+	@Secured (permissions = Pilares.Entrega.Meta.VISUALIZAR)
 	@Path("/{codUnidade}")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Meta getByCodUnidade(
-			@PathParam("codUnidade") Long codUnidade) {
+	public Meta getByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
 		return service.getByCodUnidade(codUnidade);
 	}
 	
 	@PUT
+	@Secured (permissions = Pilares.Entrega.Meta.EDITAR)
 	@Path("/{codUnidade}")
 	public Response update(Meta meta, @PathParam("codUnidade") Long codUnidade) {
 		if (service.update(meta, codUnidade)) {

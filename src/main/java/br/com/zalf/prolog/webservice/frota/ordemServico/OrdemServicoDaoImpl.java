@@ -305,7 +305,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
     }
 
     @Override
-    public boolean consertaItem (Long codUnidade,ItemOrdemServico item, String placa) throws SQLException {
+    public boolean consertaItem (ItemOrdemServico item, String placa) throws SQLException {
         VeiculoDao veiculoDao = new VeiculoDaoImpl();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -315,21 +315,21 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
                     "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
                     "FEEDBACK_CONSERTO = ? " +
-                    "WHERE COD_UNIDADE = ? AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
-                    "COD_ALTERNATIVA = ?");
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
+                    "COD_ALTERNATIVA = ? ");
             stmt.setLong(1, item.getMecanico().getCpf());
             stmt.setLong(2, item.getTempoRealizacaoConsertoInMillis());
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
             stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setString(6, item.getFeedbackResolucao().trim());
-            stmt.setLong(7, codUnidade);
+            stmt.setString(7, placa);
             stmt.setLong(8, item.getCodOs());
             stmt.setLong(9, item.getPergunta().getCodigo());
             stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
-                updateStatusOs(codUnidade, item.getCodOs(), conn);
+                updateStatusOs(item.getPlaca(), item.getCodOs(), conn);
                 veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
             }else{
                 throw new SQLException("Erro ao consertar o item");
@@ -626,17 +626,17 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return tempo;
     }
 
-    private void updateStatusOs (Long codUnidade, Long codOs, Connection conn) throws SQLException{
+    private void updateStatusOs (String placa, Long codOs, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         try{
             stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ?, DATA_HORA_FECHAMENTO = ? WHERE\n" +
-                    "    COD_UNIDADE = ? AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens\n" +
-                    "    WHERE COD_UNIDADE = ? AND COD_OS = ? AND status_resolucao = ?) = 0");
+                    "    COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens\n" +
+                    "    WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND status_resolucao = ?) = 0");
             stmt.setString(1, OrdemServico.Status.FECHADA.asString());
             stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(3, codUnidade);
+            stmt.setString(3, placa);
             stmt.setLong(4, codOs);
-            stmt.setLong(5, codUnidade);
+            stmt.setString(5, placa);
             stmt.setLong(6, codOs);
             stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
             stmt.execute();
