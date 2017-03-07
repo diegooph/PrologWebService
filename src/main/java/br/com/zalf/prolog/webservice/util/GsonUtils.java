@@ -74,7 +74,7 @@ public class GsonUtils {
 		sBuilder.registerTypeAdapterFactory(adapterAlternativa);
         sBuilder.registerTypeAdapterFactory(adapterResponse);
         sBuilder.registerTypeAdapterFactory(adapterOrigem);
-//		sBuilder.registerTypeAdapterFactory(adapterDestino);
+		sBuilder.registerTypeAdapterFactory(adapterDestino);
 	}
 
 
