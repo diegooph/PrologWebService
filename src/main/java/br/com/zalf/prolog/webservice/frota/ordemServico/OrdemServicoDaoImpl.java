@@ -316,7 +316,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "CPF_MECANICO = ?, TEMPO_REALIZACAO = ?, KM = ?, STATUS_RESOLUCAO = ?, data_hora_conserto = ?, " +
                     "FEEDBACK_CONSERTO = ? " +
                     "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
-                    "COD_ALTERNATIVA = ? RETURNING (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?)");
+                    "COD_ALTERNATIVA = ? ");
             stmt.setLong(1, item.getMecanico().getCpf());
             stmt.setLong(2, item.getTempoRealizacaoConsertoInMillis());
             stmt.setLong(3, item.getKmVeiculoFechamento());
