@@ -134,4 +134,14 @@ public interface PneuDao {
 	 */
 	boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException;
 
+	/**
+	 * Incrementa a vida atual de um determinado pneu
+	 * @param conn uma connection aberta previamente
+	 * @param codPneu código do pneu
+	 * @param codUnidade código da unidade
+	 * @return booleal com resultado da operação
+	 * @throws SQLException em caso de erro
+	 */
+	boolean incrementaVida (Connection conn, int codPneu, Long codUnidade) throws SQLException;
+
 }
