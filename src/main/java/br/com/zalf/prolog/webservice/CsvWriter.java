@@ -23,8 +23,9 @@ public class CsvWriter {
      * @throws SQLException se um erro de acesso ao banco de dados ocorrer
      */
     public void write(@NotNull ResultSet resultSet, @NotNull OutputStream outputStream) throws IOException, SQLException {
-        if (resultSet.isClosed())
+        if (resultSet.isClosed()) {
             throw new IllegalArgumentException("ResultSet can't be closed!!!");
+        }
 
         final Appendable out = new OutputStreamWriter(outputStream);
         final CSVPrinter printer = CSVFormat.DEFAULT.withDelimiter(';').withHeader(resultSet).print(out);
