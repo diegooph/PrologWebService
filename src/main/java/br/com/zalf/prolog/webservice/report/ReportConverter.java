@@ -14,13 +14,14 @@ import java.util.List;
  * Classe responsável por converter um {@link java.sql.ResultSet} em um {@link Report}.
  */
 public class ReportConverter {
+    private static final String TAG = ReportConverter.class.getSimpleName();
 
     private ReportConverter() {
         // you shall not pass
     }
 
     public static @NotNull Report createReport(@NotNull ResultSet resultSet) throws SQLException {
-        if (resultSet.isClosed()){
+        if (resultSet.isClosed()) {
             throw new IllegalArgumentException("ResultSet can't be closed!!!");
         }
 
@@ -43,7 +44,7 @@ public class ReportConverter {
 
     private static @NotNull List<String> getHeader(@NotNull ResultSetMetaData metaData) throws SQLException {
         List<String> header = new ArrayList<>();
-        L.d("teste", String.valueOf(metaData.getColumnCount()));
+        L.d(TAG, String.valueOf(metaData.getColumnCount()));
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             header.add(metaData.getColumnLabel(i));
         }
