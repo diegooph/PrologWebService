@@ -31,6 +31,5 @@ public class CsvWriter {
         final CSVPrinter printer = CSVFormat.DEFAULT.withDelimiter(';').withHeader(resultSet).print(out);
         printer.printRecords(resultSet);
         printer.flush();
-        resultSet.close();
     }
 }
