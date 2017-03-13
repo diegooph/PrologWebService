@@ -193,6 +193,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		return true;
 	}
 
+	public boolean incrementaVida (Connection conn, int codPneu, Long codUnidade) throws SQLException {
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = " +
+					"(SELECT VIDA_ATUAL FROM PNEU WHERE CODIGO = ? AND COD_UNIDADE = ?) + 1");
+			stmt.setInt(1, codPneu);
+			stmt.setLong(2, codUnidade);
+			return stmt.executeUpdate() == 0;
+		}finally {
+			closeConnection(null, stmt, null);
+		}
+	}
+
 	@Override
 	public void updateCalibragem (Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
 
