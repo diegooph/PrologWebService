@@ -111,7 +111,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 	}
 
 	@Override
-	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
+	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset, String cpf,
 									String equipe, Long codUnidade, String status, String categoria) throws Exception {
 		List<FaleConosco> list  = new ArrayList<>();
 		Connection conn = null;
@@ -124,7 +124,8 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 					"FROM FALE_CONOSCO F JOIN colaborador C ON C.cpf = F.CPF_COLABORADOR\n" +
 					"JOIN EQUIPE E ON E.codigo = C.cod_equipe\n" +
 					"LEFT JOIN COLABORADOR C2 ON C2.CPF = F.CPF_FEEDBACK\n" +
-					"WHERE E.nome LIKE ? AND F.cod_unidade = ? AND F.status LIKE ? AND F.categoria LIKE ? " +
+					"WHERE E.nome LIKE ? AND F.cod_unidade = ? AND F.status LIKE ? AND F.categoria LIKE ? AND " +
+					"C.CPF::TEXT LIKE ? " +
 					"AND F.DATA_HORA BETWEEN ? AND ? " +
 					"ORDER BY F.DATA_HORA " +
 					"LIMIT ? OFFSET ?");
@@ -132,10 +133,11 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 			stmt.setLong(2, codUnidade);
 			stmt.setString(3, status);
 			stmt.setString(4, categoria);
-			stmt.setTimestamp(5, new Timestamp(dataInicial));
-			stmt.setTimestamp(6, new Timestamp(dataFinal));
-			stmt.setInt(7, limit);
-			stmt.setInt(8, offset);
+			stmt.setString(5, cpf);
+			stmt.setTimestamp(6, new Timestamp(dataInicial));
+			stmt.setTimestamp(7, new Timestamp(dataFinal));
+			stmt.setInt(8, limit);
+			stmt.setInt(9, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				FaleConosco faleConosco = createFaleConosco(rSet);

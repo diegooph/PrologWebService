@@ -14,22 +14,23 @@ import java.util.List;
  * Classe responsável por converter um {@link java.sql.ResultSet} em um {@link Report}.
  */
 public class ReportConverter {
+    private static final String TAG = ReportConverter.class.getSimpleName();
 
     private ReportConverter() {
         // you shall not pass
     }
 
-    public static @NotNull Report createReport(@NotNull ResultSet resultSet) throws SQLException {
-        if (resultSet.isClosed()){
+    public static @NotNull Report createReport(@NotNull final ResultSet resultSet) throws SQLException {
+        if (resultSet.isClosed()) {
             throw new IllegalArgumentException("ResultSet can't be closed!!!");
         }
 
-        Report report = new Report();
-        List<List<String>> data = new ArrayList<>();
+        final Report report = new Report();
+        final List<List<String>> data = new ArrayList<>();
 
-        int columns = resultSet.getMetaData().getColumnCount();
+        final int columns = resultSet.getMetaData().getColumnCount();
         while (resultSet.next()) {
-            List<String> row = new ArrayList<>();
+            final List<String> row = new ArrayList<>();
             for (int i = 1; i <= columns; i++) {
                 row.add(resultSet.getString(i));
             }
@@ -41,9 +42,9 @@ public class ReportConverter {
         return report;
     }
 
-    private static @NotNull List<String> getHeader(@NotNull ResultSetMetaData metaData) throws SQLException {
-        List<String> header = new ArrayList<>();
-        L.d("teste", String.valueOf(metaData.getColumnCount()));
+    private static @NotNull List<String> getHeader(@NotNull final ResultSetMetaData metaData) throws SQLException {
+        final List<String> header = new ArrayList<>();
+        L.d(TAG, String.valueOf(metaData.getColumnCount()));
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             header.add(metaData.getColumnLabel(i));
         }

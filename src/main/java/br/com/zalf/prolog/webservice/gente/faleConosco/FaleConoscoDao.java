@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
 
@@ -52,6 +53,7 @@ public interface FaleConoscoDao {
 	 * @param dataFinal data final
 	 * @param limit limite de busca no banco
 	 * @param offset offset de busca no banco
+	 * @param cpf CPF do {@link Colaborador} que enviou o {@link FaleConosco} ou '%' para buscar de todos os Colaboradores
 	 * @param equipe equipe
 	 * @param codUnidade código da unidade
 	 * @param status status
@@ -59,7 +61,7 @@ public interface FaleConoscoDao {
 	 * @return uma lista de FaleConosco
 	 * @throws Exception caso não seja possivel buscar
 	 */
-	List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
+	List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset, String cpf,
 							 String equipe, Long codUnidade, String status, String categoria) throws Exception;
 
 	/**
