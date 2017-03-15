@@ -74,7 +74,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
 					"FROM\n" +
 					"mapa m\n" +
-					"join unidade_metas um on um.cod_unidade = m.cod_unidade\n" +
+					"join unidade_metas um on um.cod_unidade = m.cod_unidade and M.DATA BETWEEN ? AND ? \n" +
 					"join unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
 					"LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
 					"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
@@ -87,11 +87,11 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					"\tLEFT JOIN COLABORADOR AJ1 ON AJ1.matricula_ambev = M.matricajud1 AND AJ1.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
 					"\tLEFT JOIN COLABORADOR AJ2 ON AJ2.matricula_ambev = M.matricajud2 AND AJ2.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
 					"  LEFT JOIN COLABORADOR SOLICITANTE ON SOLICITANTE.CPF = ? \n" +
-					"where M.DATA BETWEEN ? AND ? AND MOTORISTA.cpf  = ? OR AJ1.cpf  = ? OR AJ2.cpf  = ?\n" +
+					"where MOTORISTA.cpf  = ? OR AJ1.cpf  = ? OR AJ2.cpf  = ?\n" +
 					"order by m.data;\n");
-			stmt.setLong(1, cpf);
-			stmt.setDate(2, getDataInicial(ano, mes));
-			stmt.setDate(3, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			stmt.setDate(1, getDataInicial(ano, mes));
+			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			stmt.setLong(3, cpf);
 			stmt.setLong(4, cpf);
 			stmt.setLong(5, cpf);
 			stmt.setLong(6, cpf);
