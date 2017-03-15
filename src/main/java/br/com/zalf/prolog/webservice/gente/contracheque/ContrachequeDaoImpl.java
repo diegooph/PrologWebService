@@ -212,7 +212,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             itemPremio.setValor((valorProdutividade+itemBonusNS.getValor()) - totalHe);
             L.d(TAG, "item premio: " + GsonUtils.getGson().toJson(itemPremio));
             itensPremioFinal.add(itemPremio);
-            itensPremioFinal.add(itemBonusNS);
+//            itensPremioFinal.add(itemBonusNS);
         }
         itensPremioFinal.addAll(itensPremio);
         return itensPremioFinal;
