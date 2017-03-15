@@ -48,8 +48,29 @@ public class FaleConoscoResource {
 
 	@GET
 	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
-	@Path("/{codUnidade}/{equipe}")
+	@Path("/{codUnidade}/{equipe}/{cpf}")
 	public List<FaleConosco> getAll(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("equipe") String equipe,
+			@PathParam("cpf") String cpf,
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") int offset,
+			@QueryParam("status") String status,
+			@QueryParam("categoria") String categoria) {
+
+		return service.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
+	}
+
+	/**
+	 * @deprecated in v0.0.10. Use {@link #getAll(Long, String, String, long, long, int, int, String, String)} )} instead
+	 */
+	@GET
+	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
+	@Path("/{codUnidade}/{equipe}")
+	@Deprecated
+	public List<FaleConosco> DEPRECATED(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
 			@QueryParam("dataInicial") long dataInicial,
@@ -59,6 +80,6 @@ public class FaleConoscoResource {
 			@QueryParam("status") String status,
 			@QueryParam("categoria") String categoria) {
 
-		return service.getAll(dataInicial, dataFinal, limit, offset, equipe, codUnidade, status, categoria);
+		return service.getAll(dataInicial, dataFinal, limit, offset, "%", equipe, codUnidade, status, categoria);
 	}
 }
