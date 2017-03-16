@@ -46,51 +46,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             "order by e.placa_veiculo, e.prazo ASC;";
 
     /**
-     * Mesma função da query acima, porém essa aplica limit e offset sobre as placas,
-     * usada para pegar a lista de Manutencao Holder (tela das bolinhas)
-     */
-    private static final String BUSCA_ITENS_MANUTENCAO_HOLDER = "select * from estratificacao_os e\n" +
-            "            where e.status_item like ? and e.prioridade like ? and e.placa_veiculo = ?\n" +
-            "            ORDER BY E.placa_veiculo, e.prioridade \n" +
-            "               limit ? offset ?";
-
-    /**
-     * Visão utilizada como base para as pesquisas.
-     */
-    private static final String VIEW_ESTRATIFICACAO_OS = "CREATE OR REPLACE VIEW public.estratificacao_os AS  SELECT os.codigo AS cod_os,\n" +
-            "    os.cod_unidade,\n" +
-            "    os.status AS status_os,\n" +
-            "    os.cod_checklist,\n" +
-            "    cp.codigo AS cod_pergunta,\n" +
-            "    cp.ordem AS ordem_pergunta,\n" +
-            "    cp.pergunta,\n" +
-            "    cp.single_choice,\n" +
-            "    NULL::unknown AS url_imagem,\n" +
-            "    cp.prioridade,\n" +
-            "    c.placa_veiculo,\n" +
-            "    cap.codigo AS cod_alternativa,\n" +
-            "    cap.alternativa,\n" +
-            "    cr.resposta,\n" +
-            "    cosi.status_resolucao AS status_item,\n" +
-            "    co.nome AS nome_mecanico,\n" +
-            "    cosi.cpf_mecanico,\n" +
-            "    c.data_hora,\n" +
-            "    ppc.prazo,\n" +
-            "    cosi.data_hora_inicio,\n" +
-            "    cosi.data_hora_fim,\n" +
-            "    cosi.km AS km_fechamento,\n" +
-            "    cosi.qt_apontamentos\n" +
-            "   FROM (((((((checklist c\n" +
-            "     JOIN checklist_ordem_servico os ON (((c.codigo = os.cod_checklist) AND (c.cod_unidade = os.cod_unidade))))\n" +
-            "     JOIN checklist_ordem_servico_itens cosi ON (((os.codigo = cosi.cod_os) AND (os.cod_unidade = cosi.cod_unidade))))\n" +
-            "     JOIN checklist_perguntas cp ON ((((cp.cod_unidade = os.cod_unidade) AND (cp.codigo = cosi.cod_pergunta)) AND (cp.cod_checklist_modelo = c.cod_checklist_modelo))))\n" +
-            "     JOIN prioridade_pergunta_checklist ppc ON (((ppc.prioridade)::text = (cp.prioridade)::text)))\n" +
-            "     JOIN checklist_alternativa_pergunta cap ON (((((cap.cod_unidade = cp.cod_unidade) AND (cap.cod_checklist_modelo = cp.cod_checklist_modelo)) AND (cap.cod_pergunta = cp.codigo)) AND (cap.codigo = cosi.cod_alternativa))))\n" +
-            "     JOIN checklist_respostas cr ON ((((((c.cod_unidade = cr.cod_unidade) AND (cr.cod_checklist_modelo = c.cod_checklist_modelo)) AND (cr.cod_checklist = c.codigo)) AND (cr.cod_pergunta = cp.codigo)) AND (cr.cod_alternativa = cap.codigo))))\n" +
-            "     LEFT JOIN colaborador co ON ((co.cpf = cosi.cpf_mecanico)));";
-
-
-    /**
      * Busca todas as OS e seus devidos itens, respeitando os filtros enviados nos parâmetros
      * @param placa uma placa especifica ou '%' para buscar OS de todas as placas
      * @param status status da OS, podendo ser Aberta ou Fechada
@@ -198,11 +153,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         // todas as os de uma unica placa
         List<OrdemServico> ordens = getOs(checklist.getPlacaVeiculo(), OrdemServico.Status.ABERTA.asString(), codUnidade, "%", null, null);
         for (PerguntaRespostaChecklist pergunta: checklist.getListRespostas()) { //verifica cada pergunta do checklist
-            L.d("Pergunta", pergunta.getCodigo().toString());
             for (AlternativaChecklist alternativa: pergunta.getAlternativasResposta()) { // varre cada alternativa de uma pergunta
-                L.d("Verificando Alternativa:", String.valueOf(alternativa.codigo));
                 if (alternativa.selected) {
-                    L.d("Alternativa esta elecionada", String.valueOf(alternativa.codigo));
                     if (ordens != null) {//verifica se ja tem algum item em aberto
                         tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
                         if (tempCodOs != null) {
@@ -211,7 +163,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     }
                     if (tempCodOs != null) {
                         incrementaQtApontamento(checklist.getPlacaVeiculo(), tempCodOs, pergunta.getCodigo(), alternativa.codigo, conn);
-                        L.d("incrementa", "chamou metodo para incrementar a qt de apontamentos");
                     } else {
                         if (gerouOs != null) { //checklist ja gerou uma os -> deve inserir o item nessa os gerada
                             insertServicoOs(pergunta.getCodigo(), alternativa.codigo, gerouOs, checklist.getPlacaVeiculo(), conn);
@@ -594,7 +545,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {
                     if (item.getPergunta().getCodigo().equals(codPergunta) && alternativa.codigo == codAlternativa && alternativa.tipo != Alternativa.TIPO_OUTROS
                             && item.getStatus().asString().equals(ItemOrdemServico.Status.PENDENTE.asString())){
-                        L.d("item existe", "item existe na lista");
                         return os.getCodigo();
                     }
                 }
