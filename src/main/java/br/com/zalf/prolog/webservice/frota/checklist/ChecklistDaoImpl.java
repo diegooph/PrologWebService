@@ -58,7 +58,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				checklist.setCodigo(rSet.getLong("CODIGO"));
 				codUnidade = rSet.getLong("cod_unidade");
 				insertRespostas(checklist, conn);
-				insertItemManutencao(checklist, conn);
 				osDao.insertItemOs(checklist, conn, codUnidade);
 				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
 			}else{
@@ -342,84 +341,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return listVeiculos;
 	}
 
-	/**
-	 * Método para inserir itens com apontados como problema no checklist em uma tabela destinada ao controle de manutenção
-	 * @param checklist um Checklist
-	 * @throws SQLException caso não seja possível realizar as buscas e inserts
-	 */
-	private void insertItemManutencao(Checklist checklist, Connection conn) throws SQLException{
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try{
-			// verifica se já existe item em aberto na tabela manutenção
-			stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_MANUTENCAO CM WHERE PLACA = ? AND ITEM = ? AND COD_CHECKLIST_MODELO = ? "
-					+ "AND DATA_RESOLUCAO IS NULL");
-			for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-				// verifica apenas os itens cuja resposta foi negativa (tem problema)
-				if(respostaTemProblema(resposta)){
-					stmt.setString(1, checklist.getPlacaVeiculo());
-					stmt.setLong(2, resposta.getCodigo());
-					stmt.setLong(3, checklist.getCodModelo());
-					rSet = stmt.executeQuery();
-					if(rSet.next()){ //caso o item já exista e ainda não tenha sido resolvido, devemos incrementar a coluna qt_apontamentos
-						int tempApontamentos = rSet.getInt("QT_APONTAMENTOS");
-						tempApontamentos += 1;
-						updateQtApontamentos(checklist.getPlacaVeiculo(), checklist.getCodModelo(), resposta.getCodigo(), tempApontamentos, conn);
-					}else{ //item não existe, incluir na lista de manutenção
-						insertApontamento(checklist.getPlacaVeiculo(),checklist.getCodModelo(), resposta.getCodigo(), DateUtils.toTimestamp(checklist.getData()), conn);
-					}
-				}
-			}
-		}finally{
-			closeConnection(null, stmt, rSet);
-		}
-	}
-
-	private void insertApontamento(String placa, long codModelo, long codPergunta, Timestamp dataApontamento, Connection conn) throws SQLException{
-		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MANUTENCAO(COD_UNIDADE, COD_CHECKLIST_MODELO, DATA_APONTAMENTO, PLACA, ITEM) "
-				+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA=?),?,?,?,?)");
-		stmt.setString(1, placa);
-		stmt.setLong(2, codModelo);
-		stmt.setTimestamp(3, dataApontamento);
-		stmt.setString(4, placa);
-		stmt.setLong(5, codPergunta);
-		int count = stmt.executeUpdate();
-		if(count == 0){
-			throw new SQLException("Erro ao inserir item na tabela de manutenção");
-		}
-		closeConnection(null, stmt, null);
-	}
-
-	private void updateQtApontamentos(String placa, Long codModelo, long codPergunta, int apontamentos, Connection conn) throws SQLException{
-		Connection connection = conn;
-		PreparedStatement stmt = null;
-		stmt = conn.prepareStatement("UPDATE CHECKLIST_MANUTENCAO SET QT_APONTAMENTOS = ? WHERE PLACA LIKE ? AND ITEM = ? AND "
-				+ "COD_UNIDADE = (SELECT COD_UNIDADE FROM VEICULO WHERE PLACA LIKE ?) "
-				+ "AND COD_CHECKLIST_MODELO = ?  AND DATA_RESOLUCAO IS NULL");
-		stmt.setInt(1, apontamentos);
-		stmt.setString(2, placa);
-		stmt.setLong(3, codPergunta);
-		stmt.setString(4, placa);
-		stmt.setLong(5, codModelo);
-		int count = stmt.executeUpdate();
-		if(count == 0){
-			throw new SQLException("Erro ao atualizar a quantidade de apontamentos");
-		}
-		closeConnection(null, stmt, null);
-	}
-
-	// Verifica se alguma alternativa da pergunta foi marcada
-	private boolean respostaTemProblema(PerguntaRespostaChecklist perguntaRespostaChecklist){
-		//Percorre a lista de alternativas de uma pergunta, se alguma estiver selecionada retorna true.
-		for(AlternativaChecklist alternativa : perguntaRespostaChecklist.getAlternativasResposta()){
-			if(alternativa.selected){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException{
 		PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
 		pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
@@ -596,7 +517,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	/**
 	 * Verifica se o veiculo tem problema e se tem check, setando o status e adicionando na lista
-	 * @param hasCheck boolean indicando se o veiculo possui checklist realizado no tia corrente
+	 * @param hasCheck boolean indicando se o veiculo possui checklist realizado no dia corrente
 	 * @param listProblemas lista de problemas que o veículo possui
 	 * @param listVeiculos lista final com os veiculos {@link VeiculoLiberacao}
      * @param veiculo um veiculo {@link VeiculoLiberacao}
@@ -622,16 +543,5 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 				listVeiculos.add(veiculo);
 			}
 		}
-	}
-
-	private boolean possuiItemAberto(long codPergunta, long codAlternativa, List<PerguntaRespostaChecklist> itensAbertos){
-		for (PerguntaRespostaChecklist perguntaAberto: itensAbertos){
-			for (AlternativaChecklist alternativa: perguntaAberto.getAlternativasResposta()) {
-				if (perguntaAberto.getCodigo() == codPergunta && alternativa.codigo == codAlternativa){
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 }
