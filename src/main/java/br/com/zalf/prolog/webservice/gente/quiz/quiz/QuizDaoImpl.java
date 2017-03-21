@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.quiz;
+package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
@@ -7,7 +7,7 @@ import br.com.zalf.prolog.gente.quiz.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.gente.quiz.Quiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.quizModelo.QuizModeloConverter;
+import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloConverter;
 
 import java.sql.*;
 import java.util.ArrayList;

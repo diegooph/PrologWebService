@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.quizRelatorios;
+package br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios;
 
 import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.permissao.pilares.Pilares;

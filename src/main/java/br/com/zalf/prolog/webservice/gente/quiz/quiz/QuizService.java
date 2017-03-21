@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.quiz;
+package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
 import br.com.zalf.prolog.gente.quiz.Quiz;
 
