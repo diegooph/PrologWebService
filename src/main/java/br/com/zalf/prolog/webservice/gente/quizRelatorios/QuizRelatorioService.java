@@ -13,37 +13,54 @@ public class QuizRelatorioService {
 
     private QuizRelatorioDaoImpl dao = new QuizRelatorioDaoImpl();
 
-    public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String cpf, String codModeloQuiz, Long codUnidade,
+    public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String codModeloQuiz, Long codUnidade,
                                                    long dataInicial, long dataFinal) {
         try {
-            dao.getEstratificacaoRealizacaoQuizCsv(out, cpf, codModeloQuiz, codUnidade, dataInicial, dataFinal);
+            dao.getEstratificacaoRealizacaoQuizCsv(out, codModeloQuiz, codUnidade, dataInicial, dataFinal);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Report getEstratificacaoRealizacaoQuizReport(String cpf, String codModeloQuiz, Long codUnidade,
+    public Report getEstratificacaoRealizacaoQuizReport(String codModeloQuiz, Long codUnidade,
                                                         long dataInicial, long dataFinal) {
         try {
-            return dao.getEstratificacaoRealizacaoQuizReport(cpf, codModeloQuiz, codUnidade, dataInicial, dataFinal);
+            return dao.getEstratificacaoRealizacaoQuizReport(codModeloQuiz, codUnidade, dataInicial, dataFinal);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codCargo, String codModeloQuiz){
+    public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codModeloQuiz) {
         try {
-            dao.getRealizacaoQuizByCargoCsv(out, codUnidade, codCargo, codModeloQuiz);
-        }catch (SQLException | IOException e){
+            dao.getRealizacaoQuizByCargoCsv(out, codUnidade, codModeloQuiz);
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codCargo, String codModeloQuiz){
-        try{
-            return dao.getRealizacaoQuizByCargoReport(codUnidade, codCargo, codModeloQuiz);
-        }catch (SQLException e){
+    public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codModeloQuiz) {
+        try {
+            return dao.getRealizacaoQuizByCargoReport(codUnidade, codModeloQuiz);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getEstratificacaoQuizRespostasCsv(OutputStream out, Long codUnidade, String codModeloQuiz) {
+        try {
+            dao.getEstratificacaoQuizRespostasCsv(out, codUnidade, codModeloQuiz);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getEstratificacaoQuizRespostasReport(Long codUnidade, String codModeloQuiz) {
+        try {
+            return dao.getEstratificacaoQuizRespostasReport(codUnidade, codModeloQuiz);
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

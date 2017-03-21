@@ -21,11 +21,9 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
 
     private static final String TAG = QuizRelatorioDaoImpl.class.getSimpleName();
 
-    private PreparedStatement getEstratificacaoRealizacaoQuiz(Connection conn, String cpf, String codModeloQuiz,
+    private PreparedStatement getEstratificacaoRealizacaoQuiz(Connection conn, String codModeloQuiz,
                                                               Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("-- estratificação de realização do quiz, podendo ser " +
-                "filtrada por modelo de quiz e nome do colaborador\n" +
-                "SELECT c.matricula_ambev as \"MATRICULA PROMAX\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT c.matricula_ambev as \"MATRICULA PROMAX\",\n" +
                 "  c.matricula_trans as \"MATRICULA RH\",\n" +
                 "  C.NOME AS \"NOME\",\n" +
                 "  f.nome AS \"FUNÇÃO\",\n" +
@@ -51,24 +49,23 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                 "  JOIN QUIZ_MODELO QM ON QM.CODIGO = Q.COD_MODELO AND QM.COD_UNIDADE = Q.COD_UNIDADE\n" +
                 "  WHERE Q.cod_modelo::TEXT LIKE ? and q.data_hora BETWEEN ? and ?\n" +
                 "GROUP BY 1) AS REALIZADOS ON CPF_REALIZADOS = C.CPF\n" +
-                "WHERE C.cpf::text like ? and c.status_ativo = true AND C.cod_unidade = ? AND C.status_ativo = TRUE\n" +
+                "WHERE c.status_ativo = true AND C.cod_unidade = ? AND C.status_ativo = TRUE\n" +
                 "ORDER BY \"REALIZADOS\" DESC;");
         stmt.setString(1, codModeloQuiz);
         stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
         stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setString(4, cpf);
-        stmt.setLong(5, codUnidade);
+        stmt.setLong(4, codUnidade);
         return stmt;
     }
 
-    public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String cpf, String codModeloQuiz, Long codUnidade,
+    public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String codModeloQuiz, Long codUnidade,
                                                    long dataInicial, long dataFinal) throws IOException, SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoRealizacaoQuiz(conn, cpf, codModeloQuiz, codUnidade, dataInicial, dataFinal);
+            stmt = getEstratificacaoRealizacaoQuiz(conn, codModeloQuiz, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -76,14 +73,14 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
-    public Report getEstratificacaoRealizacaoQuizReport(String cpf, String codModeloQuiz, Long codUnidade,
+    public Report getEstratificacaoRealizacaoQuizReport(String codModeloQuiz, Long codUnidade,
                                                         long dataInicial, long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoRealizacaoQuiz(conn, cpf, codModeloQuiz, codUnidade, dataInicial, dataFinal);
+            stmt = getEstratificacaoRealizacaoQuiz(conn, codModeloQuiz, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportConverter.createReport(rSet);
         } finally {
@@ -91,34 +88,48 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
-    private PreparedStatement getRealizacaoQuizByCargo(Connection conn, Long codUnidade, String codCargo, String codModeloQuiz)
+    private PreparedStatement getRealizacaoQuizByCargo(Connection conn, Long codUnidade, String codModeloQuiz)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("select realizados.nome AS \"CARGO\", count(realizados.nome) as \"TOTAL\"," +
-                " sum(realizados.total) as \"REALIZARAM\",\n" +
-                "  round((sum(realizados.total) / count(realizados.nome)::FLOAT)::NUMERIC*100) || '%' as \"PROPORÇÃO\"\n" +
-                "  from\n" +
-                "(SELECT DISTINCT c.cpf, f.nome,\n" +
-                "  case when q.cpf_colaborador > 0 then 1 else 0 end as total\n" +
-                "FROM colaborador c\n" +
-                "  JOIN funcao f on f.codigo = c.cod_funcao and f.cod_empresa = c.cod_empresa\n" +
-                "  left join quiz q on q.cpf_colaborador = c.cpf\n" +
-                "  left join quiz_modelo qm on qm.codigo = q.cod_modelo and qm.cod_unidade = q.cod_unidade\n" +
-                "WHERE c.cod_unidade = ? and f.codigo::text like ? and (qm.codigo is null or qm.codigo::text like ? ) and c.status_ativo = true) as realizados\n" +
-                "GROUP BY 1;");
+        PreparedStatement stmt = conn.prepareStatement("SELECT qm.nome as \"MODELO QUIZ\", F.nome AS \"FUNÇÃO\",\n" +
+                "  realizar.total_deveriam_ter_realizado AS \"CADASTRADOS\",\n" +
+                "  coalesce(realizados.total_realizaram, 0) AS \"REALIZARAM\",\n" +
+                "  trunc((coalesce(realizados.total_realizaram, 0) / realizar.total_deveriam_ter_realizado::float)*100) || '%' as \"PROPORÇÃO\"\n" +
+                "FROM quiz_modelo_funcao qmf\n" +
+                "  JOIN quiz_modelo qm on qm.codigo = qmf.cod_modelo and qm.cod_unidade = qmf.cod_unidade\n" +
+                "  JOIN unidade U ON U.codigo = QMF.cod_unidade\n" +
+                "  JOIN FUNCAO F ON F.codigo = QMF.cod_funcao_colaborador AND U.cod_empresa = F.cod_empresa\n" +
+                "  JOIN (SELECT qmf.cod_modelo ,qmf.cod_funcao_colaborador as cod_funcao_deveriam, count(c.cpf) as total_deveriam_ter_realizado\n" +
+                "        FROM quiz_modelo_funcao qmf\n" +
+                "        JOIN colaborador c on c.cod_funcao = qmf.cod_funcao_colaborador and c.cod_unidade = qmf.cod_unidade\n" +
+                "        WHERE qmf.cod_unidade = ? and qmf.cod_modelo::text like ?\n" +
+                "        GROUP BY 1, 2) as realizar on qmf.cod_funcao_colaborador = realizar.cod_funcao_deveriam and qmf.cod_modelo = realizar.cod_modelo\n" +
+                "  LEFT JOIN (SELECT calculo.cod_modelo, calculo.cod_funcao as cod_funcao_realizaram, count(calculo.cpf) as total_realizaram\n" +
+                "              FROM\n" +
+                "                        (SELECT q.cod_modelo ,c.cpf, c.cod_funcao, count(c.cod_funcao)\n" +
+                "                        FROM quiz q\n" +
+                "                        JOIN colaborador c ON c.cpf = q.cpf_colaborador\n" +
+                "                         WHERE q.cod_unidade = ? and q.cod_modelo::text like ?\n" +
+                "                        GROUP BY 1, 2, 3) AS calculo\n" +
+                "  GROUP BY 1, 2) as realizados on qmf.cod_funcao_colaborador = realizados.cod_funcao_realizaram and realizados.cod_modelo = qmf.cod_modelo\n" +
+                "WHERE qmf.cod_unidade = ? and qmf.cod_modelo::text like ?\n" +
+                "ORDER BY qm.nome, f.nome");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, codCargo);
-        stmt.setString(3, codModeloQuiz);
+        stmt.setString(2, codModeloQuiz);
+        stmt.setLong(3, codUnidade);
+        stmt.setString(4, codModeloQuiz);
+        stmt.setLong(5, codUnidade);
+        stmt.setString(6, codModeloQuiz);
         return stmt;
     }
 
-    public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codCargo, String codModeloQuiz)
+    public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codModeloQuiz)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getRealizacaoQuizByCargo(conn, codUnidade, codCargo, codModeloQuiz);
+            stmt = getRealizacaoQuizByCargo(conn, codUnidade, codModeloQuiz);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -126,13 +137,13 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
-    public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codCargo, String codModeloQuiz) throws SQLException {
+    public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codModeloQuiz) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getRealizacaoQuizByCargo(conn, codUnidade, codCargo, codModeloQuiz);
+            stmt = getRealizacaoQuizByCargo(conn, codUnidade, codModeloQuiz);
             rSet = stmt.executeQuery();
             return ReportConverter.createReport(rSet);
         } finally {
@@ -140,5 +151,54 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    private PreparedStatement getEstratificacaoRespostas(Connection conn, Long codUnidade, String codModeloQuiz) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT q.cod_modelo, qm.nome, qp.pergunta, qap.alternativa,\n" +
+                "  count(qap.alternativa) as total,\n" +
+                "  sum(CASE WHEN qap.correta= true and qr.selecionada = true then 1 else 0 end) as total_acertos,\n" +
+                "  round((sum(CASE WHEN qap.correta= true and qr.selecionada = true then 1 else 0 end)::float /\n" +
+                "  count(qap.alternativa)*100)::numeric) || '%' as porcentagem_acertos\n" +
+                "FROM quiz Q\n" +
+                "JOIN quiz_modelo qm on qm.codigo = q.cod_modelo and qm.cod_unidade = q.cod_unidade\n" +
+                "JOIN quiz_perguntas qp on qp.cod_unidade = q.cod_unidade and qp.cod_modelo = q.cod_modelo\n" +
+                "JOIN quiz_alternativa_pergunta qap on qap.cod_pergunta = qp.codigo and qap.cod_unidade = qp.cod_unidade " +
+                "and qap.cod_modelo = qp.cod_modelo\n" +
+                "JOIN quiz_respostas qr on qr.cod_quiz = q.codigo and qr.cod_unidade = q.cod_unidade " +
+                "and qr.cod_modelo = q.cod_modelo and qp.codigo = qr.cod_pergunta\n " +
+                "and qr.cod_alternativa = qap.codigo\n " +
+                "where qap.correta = true and q.cod_unidade = ? and qm.codigo::text like ?\n" +
+                "GROUP BY 1,2,3,4\n" +
+                "ORDER BY 1, 7 DESC;");
+        stmt.setLong(1, codUnidade);
+        stmt.setString(2, codModeloQuiz);
+        return stmt;
+    }
 
+    public void getEstratificacaoQuizRespostasCsv(OutputStream out, Long codUnidade, String codModeloQuiz) throws SQLException,
+            IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoRespostas(conn, codUnidade, codModeloQuiz);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    public Report getEstratificacaoQuizRespostasReport(Long codUnidade, String codModeloQuiz) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoRespostas(conn, codUnidade, codModeloQuiz);
+            rSet = stmt.executeQuery();
+            return ReportConverter.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 }
