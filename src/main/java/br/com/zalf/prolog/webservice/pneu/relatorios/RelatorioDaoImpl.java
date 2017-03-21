@@ -442,37 +442,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 	}
 
-	@Override
-	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-			throws IOException, SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
-			rSet = stmt.executeQuery();
-			new CsvWriter().write(rSet, outputStream);
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-	}
-
-	@Override
-	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
-			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-	}
-
 	private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
 			throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement("  SELECT\n" +
@@ -521,6 +490,37 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
 		return  stmt;
+	}
+
+	@Override
+	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
+			throws IOException, SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
+			rSet = stmt.executeQuery();
+			new CsvWriter().write(rSet, outputStream);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
+			rSet = stmt.executeQuery();
+			return ReportConverter.createReport(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
 	}
 
 	private PreparedStatement getAderenciaPlacasStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)

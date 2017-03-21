@@ -68,7 +68,7 @@ public class RelatorioResource {
 	@Path("/previsao-trocas/{codUnidade}/report")
 	public Report getPrevisaoTrocaReport(@PathParam("codUnidade") Long codUnidade,
 										 @QueryParam("dataInicial") long dataInicial,
-										 @QueryParam("dataFinal") long dataFinal) throws SQLException{
+										 @QueryParam("dataFinal") long dataFinal){
 		return service.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
 	}
 
