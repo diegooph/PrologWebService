@@ -12,10 +12,19 @@ public class QuizModeloService {
 
     private QuizModeloDao dao = new QuizModeloDaoImpl();
 
-    public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador){
-        try{
+    public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador) {
+        try {
             return dao.getModelosQuizDisponiveis(codUnidade, codFuncaoColaborador);
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) {
+        try {
+            return dao.getModelosQuizByCodUnidade(codUnidade);
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

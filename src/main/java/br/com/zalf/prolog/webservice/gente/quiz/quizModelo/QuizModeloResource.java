@@ -25,4 +25,11 @@ public class QuizModeloResource {
                                                                              @PathParam("codFuncaoColaborador") Long codFuncaoColaborador) {
         return service.getModelosQuizDisponiveisByCodUnidadeByCodFuncao(codUnidade, codFuncaoColaborador);
     }
+
+    @GET
+    @Secured
+    @Path("/{codUnidade}")
+    public List<ModeloQuiz> getModelosQuizByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
+        return service.getModelosQuizByCodUnidade(codUnidade);
+    }
 }
