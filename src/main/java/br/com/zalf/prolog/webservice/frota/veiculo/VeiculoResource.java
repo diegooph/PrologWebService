@@ -131,7 +131,7 @@ public class VeiculoResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
     public Veiculo getVeiculoByPlacaSemPneus(@PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(placa, false);
