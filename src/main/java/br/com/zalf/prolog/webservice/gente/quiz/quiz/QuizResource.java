@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Zalf on 05/01/17.
  */
-@Path("/quiz")
+@Path("/quizzes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class QuizResource {
