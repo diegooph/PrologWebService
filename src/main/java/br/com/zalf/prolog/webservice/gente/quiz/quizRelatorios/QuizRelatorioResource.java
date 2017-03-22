@@ -21,6 +21,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/realizados/{codUnidade}/{codModeloQuiz}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
     @Produces("application/csv")
     public StreamingOutput getEstratificacaoRealizacaoQuizCsv(@PathParam("codUnidade") Long codUnidade,
                                                               @PathParam("codModeloQuiz") String codModeloQuiz,
@@ -32,6 +33,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/realizados/{codUnidade}/{codModeloQuiz}/report")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
     public Report getEstratificacaoRealizacaoQuizReport(@PathParam("codUnidade") Long codUnidade,
                                                         @PathParam("codModeloQuiz") String codModeloQuiz,
                                                         @QueryParam("dataInicial") long dataInicial,
@@ -41,6 +43,8 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/cargos/{codUnidade}/{codModeloQuiz}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
+    @Produces("application/csv")
     public StreamingOutput getRealizacaoQuizByCargoCsv(@PathParam("codUnidade") Long codUnidade,
                                                        @PathParam("codModeloQuiz") String codModeloQuiz) {
         return outputStream -> service.getRealizacaoQuizByCargoCsv(outputStream, codUnidade, codModeloQuiz);
@@ -48,6 +52,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/cargos/{codUnidade}/{codModeloQuiz}/report")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
     public Report getRealizacaoQuizByCargoReport(@PathParam("codUnidade") Long codUnidade,
                                                  @PathParam("codModeloQuiz") String codModeloQuiz,
                                                  @QueryParam("dataInicial") long dataInicial,
@@ -57,6 +62,8 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/respostas/{codUnidade}/{codModeloQuiz}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
+    @Produces("application/csv")
     public StreamingOutput getEstratificacaoQuizRespostasCsv(@PathParam("codUnidade") Long codUnidade,
                                                              @PathParam("codModeloQuiz") String codModeloQuiz) {
         return outputStream -> service.getEstratificacaoQuizRespostasCsv(outputStream, codUnidade, codModeloQuiz);
@@ -64,6 +71,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/respostas/{codUnidade}/{codModeloQuiz}/report")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
     public Report getEstratificacaoQuizRespostasReport(@PathParam("codUnidade") Long codUnidade,
                                                        @PathParam("codModeloQuiz") String codModeloQuiz) {
         return service.getEstratificacaoQuizRespostasReport(codUnidade, codModeloQuiz);
@@ -71,6 +79,8 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/consolidados/{codUnidade}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
+    @Produces("application/csv")
     public StreamingOutput getExtratoGeralCsv(@PathParam("codUnidade") Long codUnidade,
                                               @QueryParam("dataInicial") long dataInicial,
                                               @QueryParam("dataFinal") long dataFinal) {
@@ -79,6 +89,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/consolidados/{codUnidade}/report")
+    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
     public Report getExtratoGeralReport(@PathParam("codUnidade") Long codUnidade,
                                         @QueryParam("dataInicial") long dataInicial,
                                         @QueryParam("dataFinal") long dataFinal) {
