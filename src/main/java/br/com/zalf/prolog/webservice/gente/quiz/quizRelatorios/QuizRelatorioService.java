@@ -66,5 +66,20 @@ public class QuizRelatorioService {
         }
     }
 
+    public void getExtratoGeralCsv(OutputStream out, Long codUnidade, long dataInicial, long dataFinal){
+        try{
+            dao.getExtratoGeralCsv(out, codUnidade, dataInicial, dataFinal);
+        }catch (SQLException | IOException e){
+            e.printStackTrace();
+        }
+    }
 
+    public Report getExtratoGeralReport(Long codUnidade, long dataInicial, long dataFinal){
+        try{
+            return dao.getExtratoGeralReport(codUnidade, dataInicial, dataFinal);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

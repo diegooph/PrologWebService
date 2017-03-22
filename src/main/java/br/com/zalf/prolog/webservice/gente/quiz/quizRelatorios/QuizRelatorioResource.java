@@ -7,12 +7,11 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.OutputStream;
 
 /**
  * Created by Zart on 20/03/17.
  */
-@Path("/quiz/relatorios")
+@Path("/quizzes/relatorios")
 @Secured(permissions = Pilares.Frota.Relatorios.Pneu.VISUALIZAR)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -58,7 +57,7 @@ public class QuizRelatorioResource {
 
     @GET
     @Path("/respostas/{codUnidade}/{codModeloQuiz}/csv")
-    public StreamingOutput getEstratificacaoQuizRespostasCsv(OutputStream out, @PathParam("codUnidade") Long codUnidade,
+    public StreamingOutput getEstratificacaoQuizRespostasCsv(@PathParam("codUnidade") Long codUnidade,
                                                              @PathParam("codModeloQuiz") String codModeloQuiz) {
         return outputStream -> service.getEstratificacaoQuizRespostasCsv(outputStream, codUnidade, codModeloQuiz);
     }
@@ -68,5 +67,21 @@ public class QuizRelatorioResource {
     public Report getEstratificacaoQuizRespostasReport(@PathParam("codUnidade") Long codUnidade,
                                                        @PathParam("codModeloQuiz") String codModeloQuiz) {
         return service.getEstratificacaoQuizRespostasReport(codUnidade, codModeloQuiz);
+    }
+
+    @GET
+    @Path("/consolidados/{codUnidade}/csv")
+    public StreamingOutput getExtratoGeralCsv(@PathParam("codUnidade") Long codUnidade,
+                                              @QueryParam("dataInicial") long dataInicial,
+                                              @QueryParam("dataFinal") long dataFinal) {
+        return outputStream -> service.getExtratoGeralCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/consolidados/{codUnidade}/report")
+    public Report getExtratoGeralReport(@PathParam("codUnidade") Long codUnidade,
+                                        @QueryParam("dataInicial") long dataInicial,
+                                        @QueryParam("dataFinal") long dataFinal) {
+        return service.getExtratoGeralReport(codUnidade, dataInicial, dataFinal);
     }
 }

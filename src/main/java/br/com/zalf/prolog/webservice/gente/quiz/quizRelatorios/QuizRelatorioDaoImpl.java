@@ -201,4 +201,56 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
             closeConnection(conn, stmt, rSet);
         }
     }
+
+    private PreparedStatement getExtratoGeral(Connection conn, Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH:MM') as \"DATA DE REALIZAÇÃO\",\n" +
+                "  qm.nome as \"QUIZ\",\n" +
+                "  c.nome as \"COLABORADOR\",\n" +
+                "  f.nome as \"FUNÇÃO\",\n" +
+                "q.qt_corretas as \"QT CORRETAS\",\n" +
+                "  q.qt_erradas as \"QT_ERRADAS\",\n" +
+                "q.qt_corretas+q.qt_erradas as \"TOTAL DE PERGUNTAS\",\n" +
+                "  TRUNC(((q.qt_corretas / (q.qt_corretas+q.qt_erradas)::FLOAT)*10)::NUMERIC,2) AS \"NOTA 0 A 10\",\n" +
+                "  CASE WHEN (q.qt_corretas / (q.qt_corretas+q.qt_erradas)::FLOAT) > qm.porcentagem_aprovacao then\n" +
+                "    'APROVADO' ELSE 'REPROVADO' END AS \"AVALIAÇÃO\"\n" +
+                "FROM quiz q join quiz_modelo qm on q.cod_modelo = qm.codigo and q.cod_unidade = qm.cod_unidade\n" +
+                "join colaborador c on c.cpf = q.cpf_colaborador and c.cod_unidade = q.cod_unidade\n" +
+                "  join unidade u on u.codigo = c.cod_unidade and u.codigo = q.cod_unidade\n" +
+                "join funcao f on f.codigo = c.cod_funcao and f.cod_empresa = u.cod_empresa\n" +
+                "  WHERE Q.cod_unidade = ? AND Q.data_hora BETWEEN ? AND ?\n" +
+                "order by q.data_hora desc");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        return stmt;
+    }
+
+    public void getExtratoGeralCsv(OutputStream out, Long codUnidade, long dataInicial, long dataFinal) throws SQLException,
+            IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try{
+            conn = getConnection();
+            stmt = getExtratoGeral(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    public Report getExtratoGeralReport (Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try{
+            conn = getConnection();
+            stmt = getExtratoGeral(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportConverter.createReport(rSet);
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 }
