@@ -39,7 +39,7 @@ public class FaleConoscoResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR, Pilares.Gente.FaleConosco.VISUALIZAR})
+	@Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR})
 	@Path("/colaborador/{status}/{cpf}")
 	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
 											  @PathParam("status") String status) {
@@ -47,7 +47,7 @@ public class FaleConoscoResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
+	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR_TODOS, Pilares.Gente.FaleConosco.FEEDBACK})
 	@Path("/{codUnidade}/{equipe}/{cpf}")
 	public List<FaleConosco> getAll(
 			@PathParam("codUnidade") Long codUnidade,
@@ -67,7 +67,7 @@ public class FaleConoscoResource {
 	 * @deprecated in v0.0.10. Use {@link #getAll(Long, String, String, long, long, int, int, String, String)} )} instead
 	 */
 	@GET
-	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR, Pilares.Gente.FaleConosco.FEEDBACK})
+	@Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR_TODOS, Pilares.Gente.FaleConosco.FEEDBACK})
 	@Path("/{codUnidade}/{equipe}")
 	@Deprecated
 	public List<FaleConosco> DEPRECATED(
