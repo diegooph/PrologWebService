@@ -23,8 +23,8 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
 
     private PreparedStatement getEstratificacaoRealizacaoQuiz(Connection conn, String codModeloQuiz,
                                                               Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT c.matricula_ambev as \"MATRICULA PROMAX\",\n" +
-                "  c.matricula_trans as \"MATRICULA RH\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT c.matricula_ambev as \"MAT PROMAX\",\n" +
+                "  c.matricula_trans as \"MAT RH\",\n" +
                 "  C.NOME AS \"NOME\",\n" +
                 "  f.nome AS \"FUNÇÃO\",\n" +
                 "  COALESCE(REALIZADOS.REALIZADOS,REALIZADOS.REALIZADOS,0) AS \"REALIZADOS\",\n" +
@@ -152,11 +152,11 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
     }
 
     private PreparedStatement getEstratificacaoRespostas(Connection conn, Long codUnidade, String codModeloQuiz) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT q.cod_modelo, qm.nome, qp.pergunta, qap.alternativa,\n" +
-                "  count(qap.alternativa) as total,\n" +
-                "  sum(CASE WHEN qap.correta= true and qr.selecionada = true then 1 else 0 end) as total_acertos,\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT qm.nome AS \"QUIZ\", qp.pergunta AS \"PERGUNTA\", qap.alternativa AS \"RESPOSTA\",\n" +
+                "  count(qap.alternativa) as \"TOTAL\",\n" +
+                "  sum(CASE WHEN qap.correta= true and qr.selecionada = true then 1 else 0 end) as \"ACERTOS\",\n" +
                 "  round((sum(CASE WHEN qap.correta= true and qr.selecionada = true then 1 else 0 end)::float /\n" +
-                "  count(qap.alternativa)*100)::numeric) || '%' as porcentagem_acertos\n" +
+                "  count(qap.alternativa)*100)::numeric) || '%' as \"PORCENTAGEM\"\n" +
                 "FROM quiz Q\n" +
                 "JOIN quiz_modelo qm on qm.codigo = q.cod_modelo and qm.cod_unidade = q.cod_unidade\n" +
                 "JOIN quiz_perguntas qp on qp.cod_unidade = q.cod_unidade and qp.cod_modelo = q.cod_modelo\n" +
@@ -166,8 +166,8 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                 "and qr.cod_modelo = q.cod_modelo and qp.codigo = qr.cod_pergunta\n " +
                 "and qr.cod_alternativa = qap.codigo\n " +
                 "where qap.correta = true and q.cod_unidade = ? and qm.codigo::text like ?\n" +
-                "GROUP BY 1,2,3,4\n" +
-                "ORDER BY 1, 7 DESC;");
+                "GROUP BY 1,2,3\n" +
+                "ORDER BY 1, 5 DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, codModeloQuiz);
         return stmt;
@@ -208,7 +208,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                 "  c.nome as \"COLABORADOR\",\n" +
                 "  f.nome as \"FUNÇÃO\",\n" +
                 "q.qt_corretas as \"QT CORRETAS\",\n" +
-                "  q.qt_erradas as \"QT_ERRADAS\",\n" +
+                "  q.qt_erradas as \"QT ERRADAS\",\n" +
                 "q.qt_corretas+q.qt_erradas as \"TOTAL DE PERGUNTAS\",\n" +
                 "  TRUNC(((q.qt_corretas / (q.qt_corretas+q.qt_erradas)::FLOAT)*10)::NUMERIC,2) AS \"NOTA 0 A 10\",\n" +
                 "  CASE WHEN (q.qt_corretas / (q.qt_corretas+q.qt_erradas)::FLOAT) > qm.porcentagem_aprovacao then\n" +
