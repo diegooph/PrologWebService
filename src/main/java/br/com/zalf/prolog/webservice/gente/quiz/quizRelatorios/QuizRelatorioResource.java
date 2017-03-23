@@ -12,7 +12,6 @@ import javax.ws.rs.core.StreamingOutput;
  * Created by Zart on 20/03/17.
  */
 @Path("/quizzes/relatorios")
-@Secured(permissions = Pilares.Frota.Relatorios.Pneu.VISUALIZAR)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class QuizRelatorioResource {
