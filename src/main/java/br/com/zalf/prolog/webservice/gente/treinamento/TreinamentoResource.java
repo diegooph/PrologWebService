@@ -54,7 +54,7 @@ public class TreinamentoResource {
 	}
 
 	@POST
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
 	@Path("/visualizados/{codTreinamento}/{cpf}")
 	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
 											   @PathParam("cpf") Long cpf) {
@@ -66,7 +66,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
 	@Android
 	@Path("/vistosColaborador/{cpf}")
 	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
@@ -74,7 +74,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
-	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
 	@Android
 	@Path("/naoVistosColaborador/{cpf}")
 	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
@@ -82,7 +82,7 @@ public class TreinamentoResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
+	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS, Pilares.Gente.Treinamentos.ALTERAR,
 			Pilares.Gente.Treinamentos.CRIAR})
 	@Path("/{codUnidade}/{codFuncao}")
 	public List<Treinamento> getAll(
