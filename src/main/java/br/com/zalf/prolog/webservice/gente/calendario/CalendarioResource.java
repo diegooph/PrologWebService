@@ -43,7 +43,7 @@ public class CalendarioResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.Calendario.VISUALIZAR, Pilares.Gente.Calendario.ALTERAR_EVENTO,
+	@Secured(permissions = {Pilares.Gente.Calendario.VISUALIZAR_PROPRIOS, Pilares.Gente.Calendario.ALTERAR_EVENTO,
 			Pilares.Gente.Calendario.CRIAR_EVENTO})
 	@Path("/{cpf}")
 	public List<Evento> getEventosByCpf(
@@ -52,7 +52,7 @@ public class CalendarioResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.Calendario.VISUALIZAR, Pilares.Gente.Calendario.ALTERAR_EVENTO,
+	@Secured(permissions = {Pilares.Gente.Calendario.VISUALIZAR_PROPRIOS, Pilares.Gente.Calendario.ALTERAR_EVENTO,
 			Pilares.Gente.Calendario.CRIAR_EVENTO })
 	@Path("/{codEmpresa}/{codUnidade}/{equipe}/{funcao}")
 	public List<Evento> getAll(@QueryParam("dataInicial") long dataInicial,
