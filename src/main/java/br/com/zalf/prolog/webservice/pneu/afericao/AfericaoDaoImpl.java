@@ -95,12 +95,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			if(rSet.next()){
 				return createRestricao(rSet);
 			}else{
-				new SQLException("Erro ao buscar os dados de restrição");
+				throw new SQLException("Erro ao buscar os dados de restrição");
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return new Restricao();
 	}
 
 	@Override
@@ -114,19 +113,18 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 					+ "ER.PERIODO_AFERICAO "
 					+ "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
 					+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO "
+					+ "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
 					+ "WHERE V.PLACA = ?");
 			stmt.setString(1, placa);
 			rSet = stmt.executeQuery();
-			if(rSet.next()){
+			if(rSet.next() && rSet.isLast()){
 				return createRestricao(rSet);
 			}else{
-				new SQLException("Erro ao buscar os dados de restrição");
+				throw new SQLException("Erro ao buscar os dados de restrição");
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return new Restricao();
 	}
 
 	@Override

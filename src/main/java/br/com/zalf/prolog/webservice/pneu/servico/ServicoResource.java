@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.frota.pneu.servico.PlacaServicoHolder;
 import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.frota.pneu.servico.ServicoHolder;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -18,41 +19,43 @@ public class ServicoResource {
 
 	private ServicoService service = new ServicoService();
 
-	@GET
-	@Path("/{codUnidade}")
-	@Secured
-	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade){
-		return service.getConsolidadoListaVeiculos(codUnidade);
-	}
-
-	@GET
-	@Path("/{codUnidade}/{placaVeiculo}")
-	@Secured
-	public ServicoHolder getServicosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("codUnidade") Long codUnidade){
-		return service.getServicosByPlaca(placa, codUnidade);
-	}
-
-	@GET
-	@Path("/abertos/{placaVeiculo}/{tipoServico}")
-	@Secured
-	public List<Servico> getServicosAbertosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("tipoServico") String tipoServico){
-		return service.getServicosAbertosByPlaca(placa, tipoServico);
-	}
-
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade, @HeaderParam("Authorization") String tokenHeader){
+	public Response insertManutencao(Servico servico,
+									 @PathParam("codUnidade") Long codUnidade,
+									 @HeaderParam("Authorization") String tokenHeader) {
+
 		String token = tokenHeader.substring("Bearer".length()).trim();
-		if(service.insertManutencao(servico, codUnidade, token)){
+		if (service.insertManutencao(servico, codUnidade, token)) {
 			return Response.Ok("Serviço consertado com sucesso.");
-		}else{
+		} else {
 			return Response.Error("Erro ao marcar o item como consertado.");
 		}
 	}
 
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codUnidade}")
+	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade) {
+		return service.getConsolidadoListaVeiculos(codUnidade);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codUnidade}/{placaVeiculo}")
+	public ServicoHolder getServicosByPlaca(
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("codUnidade") Long codUnidade) {
+		return service.getServicosByPlaca(placa, codUnidade);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/abertos/{placaVeiculo}/{tipoServico}")
+	public List<Servico> getServicosAbertosByPlaca(
+			@PathParam("placaVeiculo") String placa,
+			@PathParam("tipoServico") String tipoServico) {
+		return service.getServicosAbertosByPlaca(placa, tipoServico);
+	}
 }

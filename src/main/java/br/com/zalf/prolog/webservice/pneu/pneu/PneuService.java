@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.pneu.pneu;
 
 import br.com.zalf.prolog.commons.veiculo.Marca;
 import br.com.zalf.prolog.commons.veiculo.Modelo;
-import br.com.zalf.prolog.commons.veiculo.Veiculo;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.Pneu.Dimensao;
 
@@ -72,9 +71,9 @@ public class PneuService {
 		}
 	}
 	
-	public boolean vinculaPneuVeiculo(Veiculo veiculo){
+	public boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus){
 		try{
-			return dao.vinculaPneuVeiculo(veiculo);
+			return dao.vinculaPneuVeiculo(placaVeiculo, pneus);
 		}catch(SQLException e){
 			e.printStackTrace();
 			return false;

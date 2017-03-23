@@ -193,6 +193,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		return true;
 	}
 
+	public boolean incrementaVida (Connection conn, int codPneu, Long codUnidade) throws SQLException {
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = " +
+					"(SELECT VIDA_ATUAL FROM PNEU WHERE CODIGO = ? AND COD_UNIDADE = ?) + 1");
+			stmt.setInt(1, codPneu);
+			stmt.setLong(2, codUnidade);
+			return stmt.executeUpdate() == 0;
+		}finally {
+			closeConnection(null, stmt, null);
+		}
+	}
+
 	@Override
 	public void updateCalibragem (Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
 
@@ -215,8 +228,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		stmt.setString(1, status);
 		stmt.setLong(2, pneu.getCodigo());
 		stmt.setLong(3, codUnidade);
-		stmt.executeUpdate();
-		return true;
+		int count = stmt.executeUpdate();
+		closeConnection(null, stmt, null);
+		return count == 0;
 	}
 
 	@Override
@@ -421,7 +435,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 	}
 
 	@Override
-	public boolean vinculaPneuVeiculo(Veiculo veiculo) throws SQLException {
+	public boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -429,11 +443,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			for(Pneu pneu : veiculo.getListPneus()){
+			for(Pneu pneu : pneus){
 				stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU VALUES(?,?,(SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?) RETURNING COD_UNIDADE");
-				stmt.setString(1, veiculo.getPlaca());
+				stmt.setString(1, placaVeiculo);
 				stmt.setLong(2, pneu.getCodigo());
-				stmt.setString(3, veiculo.getPlaca());
+				stmt.setString(3, placaVeiculo);
 				stmt.setInt(4, pneu.getPosicao());				
 				rSet = stmt.executeQuery();
 				if(rSet.next()){

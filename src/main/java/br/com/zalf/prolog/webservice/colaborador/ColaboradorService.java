@@ -1,16 +1,11 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,23 +14,6 @@ import java.util.List;
 public class ColaboradorService {
 
 	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
-
-	void test(Long codUnidade, OutputStream outputStream) {
-		try {
-			dao.test(codUnidade, outputStream);
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	Report testReport(Long codUnidade) {
-		try {
-			return dao.testReport(codUnidade);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 	
 	public boolean insert(Colaborador colaborador) {
 		try {
@@ -79,24 +57,6 @@ public class ColaboradorService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
-		}
-	}
-	
-	public Funcao getFuncaoByCod(Long codigo) {
-		try {
-			return dao.getFuncaoByCod(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public boolean verifyLogin(long cpf, Date dataNascimento) {
-		try {
-			return dao.verifyLogin(cpf, dataNascimento);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
 		}
 	}
 	

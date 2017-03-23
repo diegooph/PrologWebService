@@ -26,10 +26,11 @@ import java.util.List;
 /**
  * Created by Zalf on 21/11/16.
  */
-public class ContrachequeDaoImpl extends DatabaseConnection {
+public class ContrachequeDaoImpl extends DatabaseConnection implements ContrachequeDao{
 
     private static final String TAG = ContrachequeDaoImpl.class.getSimpleName();
 
+    @Override
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -56,8 +57,6 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
                 itens.add(createItemContracheque(rSet));
             }
             L.d(TAG, "itens que nao interferem no calculo do premio: " + GsonUtils.getGson().toJson(itens));
-
-
 
             //Calculo do prêmio
             List<ItemContracheque> itensPremio = getPremio(cpf, codUnidade, ano, mes, conn, stmt, rSet);
@@ -213,7 +212,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
             itemPremio.setValor((valorProdutividade+itemBonusNS.getValor()) - totalHe);
             L.d(TAG, "item premio: " + GsonUtils.getGson().toJson(itemPremio));
             itensPremioFinal.add(itemPremio);
-            itensPremioFinal.add(itemBonusNS);
+//            itensPremioFinal.add(itemBonusNS);
         }
         itensPremioFinal.addAll(itensPremio);
         return itensPremioFinal;
@@ -238,6 +237,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return itemContracheque;
     }
 
+    @Override
     public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade)throws SQLException{
         Connection conn = null;
         try{
@@ -255,6 +255,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return true;
     }
 
+    @Override
     public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException{
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -280,7 +281,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
         return true;
     }
 
-        public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException{
+    @Override
+    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         try{
@@ -326,13 +328,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
 
     private class CustomComparator implements Comparator<ItemContracheque> {
 
-		/**
-		 * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
-		 */
 		@Override
 		public int compare(ItemContracheque o1, ItemContracheque o2) {
-			Integer valor1 = Double.compare(o2.getValor(), o1.getValor());
-				return valor1;
+            return Double.compare(o2.getValor(), o1.getValor());
 		}
 	}
 
@@ -345,6 +343,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection {
      * @return
      * @throws SQLException
      */
+    @Override
 	public List<ItemImportContracheque> getItemImportContracheque (Long codUnidade, int ano, int mes, String cpf) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;

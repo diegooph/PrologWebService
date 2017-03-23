@@ -23,12 +23,12 @@ public class ChecklistModeloService {
 		}
 	}
 	
-	public List<ModeloChecklist> getModeloChecklist(Long codModelo, Long codUnidade){
+	public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade){
 		try{
 			return dao.getModeloChecklist(codModelo, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return new ArrayList<>();
+			return null;
 		}
 	}
 	

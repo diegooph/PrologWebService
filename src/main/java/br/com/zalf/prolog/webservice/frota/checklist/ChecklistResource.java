@@ -6,6 +6,7 @@ import br.com.zalf.prolog.frota.checklist.Checklist;
 import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
 import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
 import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
 
@@ -24,15 +25,8 @@ public class ChecklistResource {
 
 	private ChecklistService service = new ChecklistService();
 
-	@GET
-	@Secured
-	@Path("/urlImagens/{codUnidade}/{codFuncao}")
-	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade, @PathParam("codFuncao") Long codFuncao){
-		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
-	}
-
 	@POST
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist) {
 		L.d("ChecklistResource", "Chamou o resource");
 		checklist.setData(new Date(System.currentTimeMillis()));
@@ -44,48 +38,79 @@ public class ChecklistResource {
 	}
 
 	@GET
-	@Secured
-	@Path("/liberacao/{codUnidade}")
-	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade){
-		return service.getStatusLiberacaoVeiculos(codUnidade);
-	}
-
-	@PUT
-	@Secured
-	public Response update(Checklist checklist) {
-		if (service.update(checklist)) {
-			return Response.Ok("Checklist atualizado com sucesso");
-		} else {
-			return Response.Error("Erro ao atualizar o checklist");
-		}
+	@Path("/urlImagens/{codUnidade}/{codFuncao}")
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
+											   @PathParam("codFuncao") Long codFuncao){
+		return service.getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
 	@GET
-	@Secured
+	@Path("/liberacao/{codUnidade}")
+	@Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
+		return service.getStatusLiberacaoVeiculos(codUnidade);
+	}
+
+	@GET
 	@Path("{codigo}")
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
 
 	@GET
-	@Secured
+	@Path("/colaborador/{cpf}")
+	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR})
+	public List<Checklist> getByColaborador(
+			@PathParam("cpf") Long cpf,
+			@QueryParam("limit") int limit,
+			@QueryParam("offset") long offset) {
+		return service.getByColaborador(cpf, limit, offset);
+	}
+
+	@GET
 	@Path("{codUnidade}/{equipe}/{placa}")
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
 	public List<Checklist> getAll(
-			@QueryParam("dataInicial") long dataInicial, 
-			@QueryParam("dataFinal") long dataFinal,
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
 			@PathParam("placa") String placa,
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset){
+			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
 				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
 	}
 
 	@GET
-	@Secured
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
+	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codFuncaoColaborador") Long codFuncao) {
+		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+	}
+
+	@GET
+	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
+	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+	public NovoChecklistHolder getNovoChecklistHolder(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codModelo") Long codModelo,
+			@PathParam("placa") String placa){
+		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
+	}
+
+	/**
+	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long)} instead
+	 */
+	@GET
 	@Path("/recentes/{codUnidade}/{equipe}")
-	public List<Checklist> getAllByCodUnidade(
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Deprecated
+	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
 			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit")long limit,
@@ -94,45 +119,5 @@ public class ChecklistResource {
 		Date datainicial = java.sql.Date.valueOf(dataInicial);
 		return service.getAll(DateUtils.toLocalDate(datainicial),
 				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
-	}
-
-	@GET
-	@Secured
-	@Path("/colaborador/{cpf}")
-	public List<Checklist> getByColaborador(
-			@PathParam("cpf") Long cpf, 
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset) {
-		return service.getByColaborador(cpf, limit, offset);
-	}
-
-	@GET
-	@Secured
-	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
-	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-			@PathParam("codUnidade") Long codUnidade, 
-			@PathParam("codFuncaoColaborador") Long codFuncao){
-		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
-	}
-	
-	@GET
-	@Secured
-	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
-	public NovoChecklistHolder getNovoChecklistHolder(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codModelo") Long codModelo,
-			@PathParam("placa") String placa){
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
-	}
-
-	@DELETE
-	@Secured
-	@Path("{codigo}")
-	public Response delete(@PathParam("codigo") Long codigo) {
-		if (service.delete(codigo)) {
-			return Response.Ok("Checklist deletado com sucesso");
-		} else {
-			return Response.Error("Erro ao deletar checklist");
-		}
 	}
 }

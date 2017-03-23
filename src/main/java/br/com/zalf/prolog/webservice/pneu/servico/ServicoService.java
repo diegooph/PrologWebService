@@ -5,7 +5,6 @@ import br.com.zalf.prolog.frota.pneu.servico.Servico;
 import br.com.zalf.prolog.frota.pneu.servico.ServicoHolder;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class ServicoService {
 		}
 		catch(SQLException e){
 			e.printStackTrace();
-			return new PlacaServicoHolder();
+			return null;
 		}
 	}
 	
@@ -30,7 +29,7 @@ public class ServicoService {
 			return dao.getServicosByPlaca(placa, codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return new ServicoHolder();
+			return null;
 		}
 	}
 	
@@ -39,7 +38,7 @@ public class ServicoService {
 			return dao.getServicosAbertosByPlaca(placa, tipoServico);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return new ArrayList<>();
+			return null;
 		}
 	}
 	

@@ -1,31 +1,24 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.colaborador.*;
 import br.com.zalf.prolog.commons.login.AmazonCredentials;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.permissao.Visao;
-import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
-import br.com.zalf.prolog.permissao.pilares.Seguranca;
-import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
-import br.com.zalf.prolog.webservice.report.ReportConverter;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -163,53 +156,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return null;
 	}
 
-	public void test(Long codUnidade, OutputStream outputStream) throws SQLException, IOException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV "
-                    + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
-                    + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
-                    + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
-                    + " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA"
-                    + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
-                    + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-                    + "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-            stmt.setLong(1, codUnidade);
-            new CsvWriter().write(stmt.executeQuery(), outputStream);
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
-	public Report testReport(Long codUnidade) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
-					+ "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
-					+ "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-					+ "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
-					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
-					+ " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
-					+ " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
-					+ " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA"
-					+ " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
-					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
-			stmt.setLong(1, codUnidade);
-			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-	}
-
 	/**
 	 * Busca todos os colaboradores de uma unidade
 	 */
@@ -244,50 +190,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			closeConnection(conn, stmt, rSet);
 		}
 		return list;
-	}
-
-	@Override
-	public boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
-					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
-					+ "AND C.STATUS_ATIVO = TRUE)");
-			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				return rSet.getBoolean("EXISTS");
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return false;
-	}
-
-	@Override
-	public Funcao getFuncaoByCod(Long codigo) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM FUNCAO F JOIN "
-					+ "COLABORADOR C ON F.CODIGO = C.COD_FUNCAO "
-					+ "WHERE C.CPF = ?");
-			stmt.setLong(1, codigo);
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				Funcao f = createFuncao(rSet);
-				return f;
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return null;
 	}
 
 	@Override
@@ -341,9 +243,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_v11 CF\n" +
 					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
 					"JOIN colaborador C ON C.cod_unidade = CF.cod_unidade AND CF.cod_funcao_colaborador = C.cod_funcao\n" +
 					"WHERE C.CPF = ?\n" +
 					"ORDER BY PP.pilar, FP.funcao");
@@ -433,8 +335,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private boolean verificaSeFazRelato(List<Pilar> pilares) {
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
-				for (FuncaoApp funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Seguranca.Relato.NOVO_RELATO) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Seguranca.Relato.REALIZAR) {
 						return true;
 					}
 				}
@@ -446,8 +348,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	private boolean verificaSeFazGsd(List<Pilar> pilares) {
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
-				for (FuncaoApp funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Seguranca.GSD) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Seguranca.GSD) {
 						return true;
 					}
 				}

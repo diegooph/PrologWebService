@@ -54,24 +54,6 @@ public class ChecklistService {
 		}
 	}
 	
-	public boolean update(Checklist checklist) {
-		try {
-			return dao.update(checklist);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean delete(Long codigo) {
-		try {
-			return dao.delete(codigo);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
 	public Checklist getByCod(Long codigo) {
 		try {
 			return dao.getByCod(codigo);

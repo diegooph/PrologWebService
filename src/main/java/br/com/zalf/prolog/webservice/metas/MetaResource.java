@@ -1,33 +1,32 @@
 package br.com.zalf.prolog.webservice.metas;
 
-import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.entrega.produtividade.Metas;
+import br.com.zalf.prolog.entrega.indicador.Meta;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
-@Path("/meta")
+@Path("/metas")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class MetaResource{
 
 	private MetaService service = new MetaService();
 
-	@POST
-	@Path("/byCodUnidade")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<Metas<?>> getByCodUnidade(
-			@FormParam("codUnidade") Long codUnidade,
-			@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getByCodUnidade(codUnidade, cpf, token);
+	@GET
+	@Secured (permissions = Pilares.Entrega.Meta.VISUALIZAR)
+	@Path("/{codUnidade}")
+	public Meta getByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
+		return service.getByCodUnidade(codUnidade);
 	}
 	
 	@PUT
-	public Response updateByCod(Request<Metas> request) {
-		if (service.updateByCod(request)) {
+	@Secured (permissions = Pilares.Entrega.Meta.EDITAR)
+	@Path("/{codUnidade}")
+	public Response update(Meta meta, @PathParam("codUnidade") Long codUnidade) {
+		if (service.update(meta, codUnidade)) {
 			return Response.Ok("Meta atualizada com sucesso");
 		} else {
 			return Response.Error("Erro ao atualizar a meta");

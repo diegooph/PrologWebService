@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.commons.login.Autenticacao;
 
+import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * Autenticação do usuário no sistema.
@@ -22,6 +24,27 @@ public interface AutenticacaoDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	boolean verifyIfTokenExists(String token) throws SQLException;
+
+	/**
+	 * Verifica a existência de um CPF e data de nascimento
+	 * @param cpf do colaborador a ser verificada a existência
+	 * @param dataNascimento do colaborador a ser veerificada a existência
+	 * @return resultado da requisição
+	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
+	 */
+	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
+
+	/**
+	 * Verifica se o usuário tem as permissões necessárias para acessar determinada método.
+	 *
+	 * @param token um token
+	 * @param permissions as permissões que esse token precisa ter
+	 * @param needsToHaveAll um boolean informando se o usuário precisa ter todas as permissões passadas no array
+	 *                       ou apenas uma
+	 * @return true se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário false.
+	 */
+	boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
+			throws SQLException;
 	
 	/**
 	 * Deleta um token da tabela, usado quando o usuário solicita logout do sistema

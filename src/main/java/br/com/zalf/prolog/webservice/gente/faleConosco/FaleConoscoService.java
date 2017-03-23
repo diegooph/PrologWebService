@@ -31,10 +31,10 @@ public class FaleConoscoService {
 	}
 
 	public List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset,
-									String equipe, Long codUnidade, String status, String categoria){
+									String cpf, String equipe, Long codUnidade, String status, String categoria){
 
 		try{
-			return dao.getAll(dataInicial, dataFinal, limit, offset,equipe, codUnidade, status, categoria);
+			return dao.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
 		}catch (Exception e){
 			e.printStackTrace();
 			return null;

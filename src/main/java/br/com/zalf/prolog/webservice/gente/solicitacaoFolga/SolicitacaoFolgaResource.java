@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -17,49 +18,15 @@ import java.util.List;
 public class SolicitacaoFolgaResource {
 
 	private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
-	
+
 	@POST
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
 	public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
 		return service.insert(solicitacaoFolga);
 	}
-	
-	@POST
-	@Path("/colaborador")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<SolicitacaoFolga> getByColaborador(@FormParam("cpf") Long cpf, 
-			@FormParam("token") String token) {
-		return service.getByColaborador(cpf, token);
-	}
-	
-	@POST
-	@Secured
-	@Path("/getAll")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<SolicitacaoFolga> getAll(
-			@FormParam("dataIncial") long dataInicial,
-			@FormParam("dataFinal") long dataFinal,
-			@FormParam("codUnidade") Long codUnidade,
-			@FormParam("codEquipe") String codEquipe, 
-			@FormParam("status") String status){
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, codEquipe, status, null);
-	}
-	
-	@POST
-	@Secured
-	@Path("/getAllByColaborador")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public List<SolicitacaoFolga> getAll(
-			@FormParam("dataIncial") long dataInicial,
-			@FormParam("dataFinal") long dataFinal,
-			@FormParam("codUnidade") Long codUnidade,
-			@FormParam("codEquipe") String codEquipe, 
-			@FormParam("status") String status,
-			@FormParam("cpfColaborador") Long cpfColaborador){
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)), codUnidade, codEquipe, status, cpfColaborador);
-	}
-	
+
 	@PUT
-	@Secured
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
 	public Response update(SolicitacaoFolga solicitacaoFolga) {
 		if (service.update(solicitacaoFolga)) {
 			return Response.Ok("Solicitação atualizada com sucesso");
@@ -67,15 +34,54 @@ public class SolicitacaoFolgaResource {
 			return Response.Error("Erro ao atualizar a solicitação");
 		}
 	}
-	
+
+	@POST
+	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.REALIZAR,
+			Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+	@Path("/colaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getByColaborador(@FormParam("cpf") Long cpf,
+												   @FormParam("token") String token) {
+		return service.getByColaborador(cpf, token);
+	}
+
+	@POST
+	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+	@Path("/getAllByColaborador")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getAll(
+			@FormParam("dataIncial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("codEquipe") String codEquipe,
+			@FormParam("status") String status,
+			@FormParam("cpfColaborador") Long cpfColaborador) {
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
+				codUnidade, codEquipe, status, cpfColaborador);
+	}
+
+	@POST
+	@Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+	@Path("/getAll")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public List<SolicitacaoFolga> getAll(
+			@FormParam("dataIncial") long dataInicial,
+			@FormParam("dataFinal") long dataFinal,
+			@FormParam("codUnidade") Long codUnidade,
+			@FormParam("codEquipe") String codEquipe,
+			@FormParam("status") String status) {
+		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
+				codUnidade, codEquipe, status, null);
+	}
+
 	@DELETE
+	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
-		if(service.delete(codigo)){
+		if (service.delete(codigo)) {
 			return Response.Ok("Solicitação deletada com sucesso");
-		}else{
+		} else {
 			return Response.Error("Erro ao deletar a solicitação");
 		}
 	}
-		
 }

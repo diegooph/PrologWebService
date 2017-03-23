@@ -4,6 +4,7 @@ import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -23,50 +24,8 @@ public class TreinamentoResource {
 	private TreinamentoService service = new TreinamentoService();
 
 	@POST
-	@Secured
-	@Path("/visualizados/{codTreinamento}/{cpf}")
-	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
-											   @PathParam("cpf") Long cpf) {
-		if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
-			return Response.Ok("Treinamento marcado com sucesso");
-		} else {
-			return Response.Error("Erro ao marcar treinamento");
-		}
-	}
-	
-	@GET
-	@Secured
-	@Path("/{codUnidade}/{codFuncao}")
-	public List<Treinamento> getAll (
-			@QueryParam("dataInicial") long dataInicial, 
-			@QueryParam("dataFinal") long dataFinal, 
-			@PathParam("codFuncao") String codFuncao,
-			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit") long limit, 
-			@QueryParam("offset") long offset) {
-		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
-				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
-	}
-
-	@GET
-	@Secured
-	@Android
-	@Path("/vistosColaborador/{cpf}")
-	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getVistosByColaborador(cpf);
-	}
-
-	@GET
-	@Secured
-	@Android
-	@Path("/naoVistosColaborador/{cpf}")
-	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
-		return service.getNaoVistosByColaborador(cpf);
-	}
-
-	@POST
 	@Path("/upload")
-	@Secured
+	@Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	public Response uploadTreinamento(
 			@FormDataParam("file") InputStream fileInputStream,
@@ -83,7 +42,7 @@ public class TreinamentoResource {
 		} else {
 			UploadTreinamento upload = new UploadTreinamento();
 			if (upload.doIt(treinamento, fileInputStream)) {
-				if(service.insert(treinamento)) {
+				if (service.insert(treinamento)) {
 					return Response.Ok("Treinamento inserido com sucesso");
 				} else {
 					return Response.Error("Erro ao inserir treinamento");
@@ -94,14 +53,55 @@ public class TreinamentoResource {
 		}
 	}
 
+	@POST
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Path("/visualizados/{codTreinamento}/{cpf}")
+	public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
+											   @PathParam("cpf") Long cpf) {
+		if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
+			return Response.Ok("Treinamento marcado com sucesso");
+		} else {
+			return Response.Error("Erro ao marcar treinamento");
+		}
+	}
+
 	@GET
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Android
+	@Path("/vistosColaborador/{cpf}")
+	public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getVistosByColaborador(cpf);
+	}
+
+	@GET
+	@Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR)
+	@Android
+	@Path("/naoVistosColaborador/{cpf}")
+	public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
+		return service.getNaoVistosByColaborador(cpf);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR, Pilares.Gente.Treinamentos.ALTERAR,
+			Pilares.Gente.Treinamentos.CRIAR})
+	@Path("/{codUnidade}/{codFuncao}")
+	public List<Treinamento> getAll(
+			@PathParam("codUnidade") Long codUnidade,
+			@PathParam("codFuncao") String codFuncao,
+			@QueryParam("dataInicial") long dataInicial,
+			@QueryParam("dataFinal") long dataFinal,
+			@QueryParam("limit") long limit,
+			@QueryParam("offset") long offset) {
+		return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
+				DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
+	}
+
+	@GET
+	@Secured
 	@Path("/visualizacoes/{codUnidade}/{codTreinamento}")
 	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
 			@PathParam("codUnidade") Long codTreinamento,
 			@PathParam("codTreinamento") Long codUnidade){
 		return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
 	}
-
-
-
 }

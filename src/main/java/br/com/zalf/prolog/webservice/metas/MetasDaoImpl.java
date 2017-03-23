@@ -1,157 +1,79 @@
 package br.com.zalf.prolog.webservice.metas;
 
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.commons.util.TimeUtils;
-import br.com.zalf.prolog.entrega.indicador.older.Meta;
-import br.com.zalf.prolog.entrega.produtividade.Metas;
+import br.com.zalf.prolog.entrega.indicador.Meta;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
-import java.sql.*;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 
-	private static final String BUSCA_METAS = "SELECT M.CODIGO, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO"
-			+ " JOIN COLABORADOR C ON C.COD_UNIDADE = MU.COD_UNIDADE "
-			+ "WHERE C.CPF = ? ORDER BY M.CODIGO";
+	private static final String BUSCA_METAS_BY_UNIDADE = "SELECT * FROM UNIDADE_METAS WHERE COD_UNIDADE = ?";
 
-	private static final String BUSCA_METAS_UNIDADE = "SELECT M.CODIGO, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO "
-			+ "WHERE MU.COD_UNIDADE = ? ORDER BY M.CODIGO";
-
-	private static final String BUSCA_METAS_BY_UNIDADE = "SELECT M.CODIGO AS COD_META, M.NOME, MU.VALOR "
-			+ "FROM META M JOIN META_UNIDADE MU ON MU.COD_META = M.CODIGO "
-			+ "JOIN TOKEN_AUTENTICACAO TA ON TA.CPF_COLABORADOR = ? AND "
-			+ "TA.TOKEN = ? "
-			+ "WHERE MU.COD_UNIDADE = ? ORDER BY M.CODIGO";
-
-	private static final String DEV_CX = "DevCX";
-	private static final String DEV_NF = "DevNF";
-	private static final String DEV_HL = "DevHL";
-	private static final String TRACKING = "Tracking";
-	private static final String LARGADA_MAPAS = "Tempo_largada_mapas";
-	private static final String LARGADA_TEMPO = "Tempo_largada_hora";
-	private static final String ROTA_MAPAS = "Tempo_rota_mapas";
-	private static final String ROTA_TEMPO = "Tempo_rota_hora";
-	private static final String INTERNO_MAPAS = "Tempo_interno_mapas";
-	private static final String INTERNO_TEMPO = "Tempo_interno_hora";
-	private static final String JORNADA_MAPAS = "Jornada_liquida_mapas";
-	private static final String JORNADA_TEMPO = "Jornada_liquida_hora";
-
-	/**
-	 * Busca as metas pelo código do CPF
-	 * @param cpf um cpf a serem buscadas as metas
-	 * @param token para verificar se o solicitante esta devidamente logado
-	 * @return lista de objetos Metas, o objeto Metas contém apenas uma meta,
-	 * podendo ser do tipo double ou time
-	 */
 	@Override
-	public List<Metas<?>> getByCodUnidade(Long codUnidade, Long cpf, String token) throws SQLException{
-		List<Metas<?>> listMetas = new ArrayList<>();
+	public Meta getByCodUnidade(Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_METAS_BY_UNIDADE);
-			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, codUnidade);
-			rSet = stmt.executeQuery();
-			while(rSet.next()){
-				listMetas.add(createMetas(rSet));
-			}
-		}finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return listMetas;
-
-	}
-
-	/**
-	 * Busca as metas de um cpf
-	 * @param cpf um CPF, a ser feita a busca das metas
-	 * @return objeto Meta, contendo todas as metas como atributos desse objeto
-	 * @throws SQLException caso não seja possível realizar a busca
-	 */
-	@Override
-	public Meta getMetasByCpf(long cpf) throws SQLException {
-		Meta meta = new Meta();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_METAS);
-			stmt.setLong(1, cpf);
-			rSet = stmt.executeQuery();
-			meta = createMeta(rSet);
-		}finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return meta;
-	}
-
-	/**
-	 * Busca as metas de uma unidade
-	 * @param codUnidade código a ser buscadas as metas
-	 * @return objeto Meta contendo como atributo todas as metas
-	 * @throws SQLException caso não seja possível realizar a busca
-	 */
-	@Override
-	public Meta getMetasByUnidade(Long codUnidade) throws SQLException {
-		Meta meta = new Meta();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_METAS_UNIDADE);
 			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
-			meta = createMeta(rSet);
+			if(rSet.next()){
+				return createMeta(rSet);
+			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return meta;
+		return null;
 	}
 
 	@Override
-	public boolean updateByCod(Request<Metas> request) throws SQLException {
-
-		Metas<?> metas = request.getObject();
-
+	public boolean update(Meta meta, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE META_UNIDADE SET VALOR = (?) "
-					+ "FROM TOKEN_AUTENTICACAO TA WHERE COD_UNIDADE = ? AND COD_META = ? "
-					+ "AND TA.CPF_COLABORADOR=? AND TA.TOKEN=?");
-
-			if(metas.getValor() instanceof Double){
-				System.out.println("Tipo double");
-				System.out.println("Entrou no double");
-				stmt.setDouble(1, (Double) metas.getValor());
-			}else{
-				System.out.println(String.valueOf(metas.getValor()));
-				System.out.println(Time.valueOf(formatTime(String.valueOf(metas.getValor()))));
-				stmt.setString(1,String.valueOf(metas.getValor()));
-				System.out.println("Tipo time");
-			}
-			stmt.setLong(2, request.getCodUnidade());
-			System.out.println("Cod unidade: " + request.getCodUnidade());
-			stmt.setInt(3, metas.getCodigo());
-			System.out.println("Cod meta: " + metas.getCodigo());
-			stmt.setLong(4, request.getCpf());
-			System.out.println("cpf" + request.getCpf());
-			stmt.setString(5, request.getToken());
+			stmt = conn.prepareStatement("UPDATE UNIDADE_METAS SET " +
+					"  META_DEV_HL = ?," +
+					"  META_DEV_PDV = ?," +
+					"  META_DEV_NF = ?," +
+					"  META_TRACKING = ?," +
+					"  META_RAIO_TRACKING = ?," +
+					"  META_TEMPO_LARGADA_MAPAS = ?," +
+					"  META_TEMPO_ROTA_MAPAS = ?," +
+					"  META_TEMPO_INTERNO_MAPAS = ?," +
+					"  META_JORNADA_LIQUIDA_MAPAS = ?," +
+					"  META_TEMPO_LARGADA_HORAS = ?," +
+					"  META_TEMPO_ROTA_HORAS = ?," +
+					"  META_TEMPO_INTERNO_HORAS = ?," +
+					"  META_JORNADA_LIQUIDA_HORAS = ?," +
+					"  META_CAIXA_VIAGEM = ?," +
+					"  META_DISPERSAO_KM = ?," +
+					"  META_DISPERSAO_TEMPO = ? WHERE COD_UNIDADE = ?");
+			stmt.setDouble(1, meta.metaDevHl);
+			stmt.setDouble(2, meta.metaDevPdv);
+			stmt.setDouble(3, meta.metaDevNf);
+			stmt.setDouble(4, meta.metaTracking);
+			stmt.setInt(5, meta.metaRaioTracking);
+			stmt.setDouble(6, meta.metaTempoLargadaMapas);
+			stmt.setDouble(7, meta.metaTempoRotaMapas);
+			stmt.setDouble(8, meta.metaTempoInternoMapas);
+			stmt.setDouble(9, meta.metaJornadaLiquidaMapas);
+			stmt.setTime(10, meta.metaTempoLargadaHoras);
+			stmt.setTime(11, meta.metaTempoRotaHoras);
+			stmt.setTime(12, meta.metaTempoInternoHoras);
+			stmt.setTime(13, meta.metaJornadaLiquidaHoras);
+			stmt.setInt(14, meta.metaCaixaViagem);
+			stmt.setDouble(15, meta.metaDispersaoKm);
+			stmt.setDouble(16, meta.metaDispersaoTempo);
+			stmt.setLong(17, codUnidade);
 			int count = stmt.executeUpdate();
 			if(count == 0){
-				throw new SQLException("Erro ao atualizar a meta");
+				throw new SQLException("Erro ao atualizar as metas");
 			}
 		}finally {
 			closeConnection(conn, stmt, null);
@@ -159,119 +81,24 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao{
 		return true;
 	}
 
-	private Metas createMetas(ResultSet rSet) throws SQLException{
-
-		Metas meta = new Metas(); 
-
-		if(rSet.getString("NOME").equals(DEV_CX)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(DEV_CX);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(DEV_NF)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-					meta.setNome(DEV_NF);
-					meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(JORNADA_MAPAS)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(JORNADA_MAPAS);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(JORNADA_TEMPO)){
-			meta = new Metas<Time>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(JORNADA_TEMPO);
-			meta.setValor(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-
-		}else if(rSet.getString("NOME").equals(INTERNO_MAPAS)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(INTERNO_MAPAS);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(INTERNO_TEMPO)){
-			meta = new Metas<Time>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(INTERNO_TEMPO);
-			meta.setValor(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-
-		}else if(rSet.getString("NOME").equals(ROTA_MAPAS)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(ROTA_MAPAS);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(ROTA_TEMPO)){
-			meta = new Metas<Time>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(ROTA_TEMPO);
-			meta.setValor(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-
-		}else if(rSet.getString("NOME").equals(LARGADA_MAPAS)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(LARGADA_MAPAS);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(LARGADA_TEMPO)){
-			meta = new Metas<Time>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(LARGADA_TEMPO);
-			meta.setValor(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-
-		}else if(rSet.getString("NOME").equals(TRACKING)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(TRACKING);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-
-		}else if(rSet.getString("NOME").equals(DEV_HL)){
-			meta = new Metas<Double>();
-			meta.setCodigo(rSet.getInt("COD_META"));
-			meta.setNome(DEV_HL);
-			meta.setValor((Double.parseDouble(rSet.getString("VALOR"))));
-		}
-		return meta;
-	}
-
-	private Meta createMeta(ResultSet rSet) throws NumberFormatException, SQLException{
+	private Meta createMeta (ResultSet rSet) throws SQLException {
 		Meta meta = new Meta();
-		while(rSet.next()){
-
-			if(rSet.getString("NOME").equals(DEV_CX)){
-				meta.setMetaDevCx(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(DEV_NF)){
-				meta.setMetaDevNf(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(JORNADA_MAPAS)){
-				meta.setMetaJornadaLiquidaMapas(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(JORNADA_TEMPO)){
-				meta.setMetaJornadaLiquidaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(INTERNO_MAPAS)){
-				meta.setMetaTempoInternoMapas(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(INTERNO_TEMPO)){
-				meta.setMetaTempoInternoHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(ROTA_MAPAS)){
-				meta.setMetaTempoRotaMapas(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(ROTA_TEMPO)){
-				meta.setMetaTempoRotaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(LARGADA_MAPAS)){
-				meta.setMetaTempoLargadaMapas(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(LARGADA_TEMPO)){
-				meta.setMetaTempoLargadaHoras(TimeUtils.toSqlTime(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(TRACKING)){
-				meta.setMetaTracking(Double.parseDouble(rSet.getString("VALOR")));
-			}else if(rSet.getString("NOME").equals(DEV_HL)){
-				meta.setMetaDevHl(Double.parseDouble(rSet.getString("VALOR")));
-			}
-		}
+		meta.metaDevHl = rSet.getDouble("META_DEV_HL");
+		meta.metaDevPdv = rSet.getDouble("META_DEV_PDV");
+		meta.metaTracking = rSet.getDouble("META_TRACKING");
+		meta.metaRaioTracking = rSet.getInt("META_RAIO_TRACKING");
+		meta.metaTempoLargadaMapas = rSet.getDouble("META_TEMPO_LARGADA_MAPAS");
+		meta.metaTempoRotaMapas = rSet.getDouble("META_TEMPO_ROTA_MAPAS");
+		meta.metaTempoInternoMapas = rSet.getDouble("META_TEMPO_INTERNO_MAPAS");
+		meta.metaJornadaLiquidaMapas = rSet.getDouble("META_JORNADA_LIQUIDA_MAPAS");
+		meta.metaTempoLargadaHoras = rSet.getTime("META_TEMPO_LARGADA_HORAS");
+		meta.metaTempoRotaHoras = rSet.getTime("META_TEMPO_ROTA_HORAS");
+		meta.metaTempoInternoHoras = rSet.getTime("META_TEMPO_INTERNO_HORAS");
+		meta.metaJornadaLiquidaHoras = rSet.getTime("META_JORNADA_LIQUIDA_HORAS");
+		meta.metaCaixaViagem = rSet.getInt("META_CAIXA_VIAGEM");
+		meta.metaDispersaoKm = rSet.getDouble("META_DISPERSAO_KM");
+		meta.metaDispersaoTempo = rSet.getDouble("META_DISPERSAO_TEMPO");
+		meta.metaDevNf = rSet.getDouble("META_DEV_NF");
 		return meta;
-	}
-	
-	private LocalTime formatTime (String stringToFormat){
-		return LocalTime.parse(stringToFormat);
 	}
 }

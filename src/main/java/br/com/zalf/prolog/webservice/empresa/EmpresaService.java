@@ -8,7 +8,7 @@ import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.permissao.pilares.Pilar;
+import br.com.zalf.prolog.permissao.Visao;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -21,7 +21,34 @@ import java.util.List;
 public class EmpresaService {
 
 	private EmpresaDao dao = new EmpresaDaoImpl();
-	
+
+	public boolean insertEquipe(Long codUnidade, Equipe equipe) {
+		try {
+			return dao.insertEquipe(codUnidade, equipe);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean updateEquipe(Long codEquipe, Equipe equipe) {
+		try {
+			return dao.updateEquipe(codEquipe, equipe);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public AbstractResponse insertSetor(Long codUnidade, Setor setor) {
+		try {
+			return dao.insertSetor(codUnidade, setor);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o setor");
+		}
+	}
+
 	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) {
 		try{
 			return dao.getEquipesByCodUnidade(codUnidade);
@@ -30,26 +57,8 @@ public class EmpresaService {
 			return null;
 		}
 	}
-	
-	public boolean updateEquipe (Request<Equipe> request) {
-		try{
-			return dao.updateEquipe(request);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean createEquipe (Request<Equipe> request) {
-		try{
-			return dao.createEquipe(request);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) {
+
+	public List<Funcao> getFuncoesByCodUnidade(long codUnidade) {
 		try{
 			return dao.getFuncoesByCodUnidade(codUnidade);
 		}catch(SQLException e){
@@ -58,18 +67,18 @@ public class EmpresaService {
 		}
 	}
 
-	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade){
+	public Visao getVisaoCargo(Long codCargo, Long codUnidade){
 		try{
-			return dao.getPermissoesByCargo(codCargo, codUnidade);
+			return dao.getVisaoCargo(codCargo, codUnidade);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<Pilar> getPermissoesByUnidade(Long codUnidade){
+	public Visao getVisaoUnidade(Long codUnidade){
 		try{
-			return dao.getPermissoesByUnidade(codUnidade);
+			return dao.getVisaoUnidade(codUnidade);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
@@ -82,15 +91,6 @@ public class EmpresaService {
 		}catch (SQLException e){
 			e.printStackTrace();
 			return null;
-		}
-	}
-
-	public AbstractResponse insertSetor(String nome, Long codUnidade) {
-		try{
-			return dao.insertSetor(nome,codUnidade);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return Response.Error("Erro ao inserir o setor");
 		}
 	}
 
@@ -115,13 +115,42 @@ public class EmpresaService {
 		}
 	}
 
-	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo){
+	public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo){
 		try{
-			return dao.insertOrUpdateCargoFuncaoProlog(pilares, codUnidade, codCargo);
+			return dao.alterarVisaoCargo(visao, codUnidade, codCargo);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
+	@Deprecated
+	public AbstractResponse insertSetor(String nome, Long codUnidade) {
+		try {
+			return dao.insertSetor(nome,codUnidade);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao inserir o setor");
+		}
+	}
+
+	@Deprecated
+	public boolean createEquipe(Request<Equipe> request) {
+		try {
+			return dao.createEquipe(request);
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Deprecated
+	public boolean updateEquipe(Request<Equipe> request) {
+		try{
+			return dao.updateEquipe(request);
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

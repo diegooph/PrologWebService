@@ -16,104 +16,104 @@ import java.util.List;
  * Classe RelatorioService responsavel por comunicar-se com a interface DAO
  */
 public class RelatorioService {
-	
-	private RelatorioDao dao = new RelatorioDaoImpl();
-	
-	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status){
-		try{
-			return dao.getQtPneusByFaixaSulco(codUnidades, status);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-	
-	public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status){
-		try{
-			return dao.getQtPneusByFaixaPressao(codUnidades, status);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-	
-	public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade){
-		try{
-			return dao.getAderenciaByUnidade(ano, mes, codUnidade);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-	
-	public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades){
-		try{
-			return dao.getResumoServicosByUnidades(ano, mes, codUnidades);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
 
-	public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
-		try{
-			dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
-		}catch (SQLException | IOException e){
-			e.printStackTrace();
-		}
-	}
+    private RelatorioDao dao = new RelatorioDaoImpl();
 
-	public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal){
-		try{
-			return dao.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status) {
+        try {
+            return dao.getQtPneusByFaixaSulco(codUnidades, status);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
-	public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
-		try{
-			dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
-		}catch (SQLException | IOException e){
-			e.printStackTrace();
-		}
-	}
+    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) {
+        try {
+            return dao.getQtPneusByFaixaPressao(codUnidades, status);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
-	public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal){
-		try{
-			return dao.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) {
+        try {
+            return dao.getAderenciaByUnidade(ano, mes, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
-	public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream){
-		try{
-			dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
-		}catch (SQLException | IOException e){
-			e.printStackTrace();
-		}
-	}
+    public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) {
+        try {
+            return dao.getResumoServicosByUnidades(ano, mes, codUnidades);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
-	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal){
-		try{
-			return dao.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) {
+        try {
+            dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa,
-									  String codUnidade, long limit, long offset){
-		try{
-			return dao.getPneusByFaixa(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
+    public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) {
+        try {
+            return dao.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) {
+        try {
+            dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) {
+        try {
+            return dao.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) {
+        try {
+            dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) {
+        try {
+            return dao.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa,
+                                      String codUnidade, long limit, long offset) {
+        try {
+            return dao.getPneusByFaixa(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
 }

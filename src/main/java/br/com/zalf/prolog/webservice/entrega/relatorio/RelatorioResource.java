@@ -5,6 +5,7 @@ import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumu
 import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
 import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
 import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
+import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @Path("/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Secured(permissions = Pilares.Entrega.Relatorios.VISUALIZAR)
 public class RelatorioResource {
 
     RelatorioService service = new RelatorioService();

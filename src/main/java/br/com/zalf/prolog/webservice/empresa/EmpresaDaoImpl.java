@@ -7,13 +7,15 @@ import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Request;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.permissao.pilares.FuncaoApp;
+import br.com.zalf.prolog.permissao.Visao;
+import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -89,40 +91,41 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ "join regional r on r.codigo = u.cod_regional	"
 			+ "where c.cpf=?)";
 
+	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
+	//a equipe está ligada como fk de colaborador e fk de calendário
+
 	@Override
-	public List<Equipe> getEquipesByCodUnidade (Long codUnidade) throws SQLException {
-		List<Equipe> listEquipe = new ArrayList<>();
+	public boolean insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_EQUIPES_BY_COD_UNIDADE);
-			stmt.setLong(1, codUnidade);
-			rSet = stmt.executeQuery();
-			while(rSet.next()){
-				listEquipe.add(createEquipe(rSet));
+			stmt = conn.prepareStatement("INSERT INTO EQUIPE "
+					+ "(NOME, COD_UNIDADE) VALUES "
+					+ "(?,?) ");
+			stmt.setString(1, equipe.getNome());
+			stmt.setLong(2, codUnidade);
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir a equipe");
 			}
+		} finally {
+			closeConnection(conn, stmt, null);
 		}
-		finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return listEquipe;
+		return true;
 	}
 
 	@Override
-	public boolean updateEquipe (Request<Equipe> request) throws SQLException {
+	public boolean updateEquipe(@NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(UPDATE_EQUIPE);
-			stmt.setString(1, request.getObject().getNome());
-			stmt.setLong(2, request.getObject().getCodigo());
-			stmt.setLong(3, request.getCpf());
-			stmt.setString(4, request.getToken());
+			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = (?) WHERE CODIGO = ?)");
+			stmt.setString(1, equipe.getNome());
+			stmt.setLong(2, codEquipe);
 			int count = stmt.executeUpdate();
-			if(count == 0){
+			if (count == 0) {
 				throw new SQLException("Erro ao atualizar a equipe");
 			}
 		}
@@ -159,11 +162,93 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return false;
 	}
 
-	//TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
-	//a equipe está ligada como fk de colaborador e fk de calendário
+	@Override
+	public boolean updateEquipe(Request<Equipe> request) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(UPDATE_EQUIPE);
+			stmt.setString(1, request.getObject().getNome());
+			stmt.setLong(2, request.getObject().getCodigo());
+			stmt.setLong(3, request.getCpf());
+			stmt.setString(4, request.getToken());
+			int count = stmt.executeUpdate();
+			if(count == 0){
+				throw new SQLException("Erro ao atualizar a equipe");
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, null);
+		}
+		return true;
+	}
 
 	@Override
-	public List<Funcao> getFuncoesByCodUnidade (long codUnidade) throws SQLException {
+	public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, setor.getNome());
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+			} else {
+				return Response.Error("Erro ao inserir o setor");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, nome);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+			} else {
+				return Response.Error("Erro ao inserir o setor");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public List<Equipe> getEquipesByCodUnidade(Long codUnidade) throws SQLException {
+		List<Equipe> listEquipe = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_EQUIPES_BY_COD_UNIDADE);
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				listEquipe.add(createEquipe(rSet));
+			}
+		}
+		finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return listEquipe;
+	}
+
+	@Override
+	public List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException {
 		List<Funcao> listFuncao = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -175,7 +260,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Funcao funcao = createFuncao(rSet);
-				funcao.setPermissoes(getPermissoesByCargo(funcao.getCodigo(), codUnidade));
+				funcao.setPermissoes(getPilaresCargo(funcao.getCodigo(), codUnidade));
 				listFuncao.add(funcao);
 			}
 		} finally {
@@ -184,16 +269,15 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return listFuncao;
 	}
 
-	/**
-	 * Busca as funções do prolog de acordo com os parametros
-	 * @param codCargo codigo do cargo
-	 * @param codUnidade codigo da unidade
-	 * @return
-	 * @throws SQLException
-	 */
-	public List<Pilar> getPermissoesByCargo(Long codCargo, Long codUnidade) throws SQLException {
-		List<Pilar> pilares = new ArrayList<>();
+	@Override
+	public Visao getVisaoCargo(Long codCargo, Long codUnidade) throws SQLException {
+		Visao visao = new Visao();
+		visao.setPilares(getPilaresCargo(codCargo, codUnidade));
+		return visao;
+	}
 
+	private List<Pilar> getPilaresCargo(Long codCargo, Long codUnidade) throws SQLException {
+		List<Pilar> pilares;
 		ResultSet rSet = null;
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -220,7 +304,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return pilares;
 	}
 
-	public List<Pilar> getPermissoesByUnidade(Long codUnidade) throws SQLException {
+	@Override
+	public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
 
 		ResultSet rSet = null;
@@ -242,26 +327,28 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 
-		return pilares;
+		Visao visao = new Visao();
+		visao.setPilares(pilares);
+		return visao;
 	}
 
 	public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
 		List<Pilar> pilares = new ArrayList<>();
-		List<FuncaoApp> funcoes = new ArrayList<>();
+		List<FuncaoProLog> funcoes = new ArrayList<>();
 		Pilar pilar = null;
 		while (rSet.next()) {
 			if (pilar == null) {//primeira linha do rSet
 				pilar = createPilar(rSet);
-				funcoes.add(createFuncaoApp(rSet));
+				funcoes.add(createFuncaProLog(rSet));
 			} else {
 				if (rSet.getString("PILAR").equals(pilar.nome)) {
-					funcoes.add(createFuncaoApp(rSet));
+					funcoes.add(createFuncaProLog(rSet));
 				} else {
 					pilar.funcoes = funcoes;
 					pilares.add(pilar);
 					pilar = createPilar(rSet);
 					funcoes = new ArrayList<>();
-					funcoes.add(createFuncaoApp(rSet));
+					funcoes.add(createFuncaProLog(rSet));
 				}
 			}
 		}
@@ -272,8 +359,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		return  pilares;
 	}
 
-	private FuncaoApp createFuncaoApp(ResultSet rSet) throws SQLException{
-		FuncaoApp funcao = new FuncaoApp();
+	private FuncaoProLog createFuncaProLog(ResultSet rSet) throws SQLException{
+		FuncaoProLog funcao = new FuncaoProLog();
 		funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
 		funcao.setDescricao(rSet.getString("FUNCAO"));
 		return funcao;
@@ -309,27 +396,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return setores;
-	}
-
-	@Override
-	public AbstractResponse insertSetor(String nome, Long codUnidade)throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
-			stmt.setLong(1, codUnidade);
-			stmt.setString(2, nome);
-			rSet = stmt.executeQuery();
-			if (rSet.next()){
-				return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
-			}else{
-				return Response.Error("Erro ao inserir o setor");
-			}
-		}finally {
-			closeConnection(conn, stmt, rSet);
-		}
 	}
 
 	@Override
@@ -645,7 +711,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	}
 
-	private void setEquipesByUnidade (Unidade unidade) throws SQLException {
+	private void setEquipesByUnidade(Unidade unidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -667,7 +733,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		unidade.setListEquipe(listEquipes);
 	}
 
-	public boolean insertOrUpdateCargoFuncaoProlog(List<Pilar> pilares, Long codUnidade, Long codCargo) throws SQLException{
+	@Override
+	public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try{
@@ -679,8 +746,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
-			for(Pilar pilar : pilares){
-				for(FuncaoApp funcao : pilar.funcoes){
+			for(Pilar pilar : visao.getPilares()){
+				for(FuncaoProLog funcao : pilar.funcoes){
 					stmt.setInt(3, funcao.getCodigo());
 					stmt.setInt(4, pilar.codigo);
 					int count = stmt.executeUpdate();

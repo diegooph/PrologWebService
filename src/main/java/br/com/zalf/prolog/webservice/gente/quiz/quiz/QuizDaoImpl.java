@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.quiz;
+package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
@@ -7,7 +7,7 @@ import br.com.zalf.prolog.gente.quiz.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.gente.quiz.Quiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.quizModelo.QuizModeloConverter;
+import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloConverter;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,10 +17,11 @@ import java.util.List;
 /**
  * Created by Zalf on 05/01/17.
  */
-public class QuizDaoImpl extends DatabaseConnection {
+public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
 
     private static final String TAG = QuizDaoImpl.class.getSimpleName();
 
+    @Override
     public boolean insert (Quiz quiz) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -85,6 +86,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public List<Quiz> getRealizadosByColaborador(Long cpf, int limit, int offset) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -125,6 +127,7 @@ public class QuizDaoImpl extends DatabaseConnection {
         return quiz;
     }
 
+    @Override
     public Quiz getByCod(Long codUnidade, Long codQuiz, Long codModeloQuiz) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
