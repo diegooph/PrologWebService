@@ -140,39 +140,39 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 		try {
 			//caolesce - trabalha semenlhante ao IF, verifica se o valor é null
 			conn = getConnection();
-			stmt = conn.prepareStatement("	SELECT V.PLACA,M.NOME,coalesce(INTERVALO.INTERVALO, -1)::INTEGER as INTERVALO	"
-					+ "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO	"
-					+ "LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO "
-					+ "FROM AFERICAO "
-					+ "GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA	"
-					+ "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? "
-					+ "ORDER BY M.NOME, INTERVALO DESC");
+			stmt = conn.prepareStatement("	SELECT V.PLACA,\n" +
+					"  M.NOME,\n" +
+					"  coalesce(INTERVALO.INTERVALO, -1)::INTEGER as INTERVALO,\n" +
+					"  coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
+					"FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
+					"LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO\n" +
+					"          FROM AFERICAO \n" +
+					"          GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA\n" +
+					"LEFT JOIN\n" +
+					"        (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
+					"        FROM veiculo_pneu vp\n" +
+					"        WHERE cod_unidade = ?\n" +
+					"        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
+					"WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
+					"ORDER BY M.NOME, INTERVALO DESC;");
 			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setLong(2, codUnidade);
+			stmt.setLong(3, codUnidade);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				if(listPlacasMesmoModelo.size() == 0 ){//primeiro resultado do resultset
 					holder.setModelo(rSet.getString("NOME"));
-					PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
-					placa.placa = rSet.getString("PLACA");
-					placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
-					listPlacasMesmoModelo.add(placa);
+					listPlacasMesmoModelo.add(createPlacaStatus(rSet));
 				}else{
 					if(holder.getModelo().equals(rSet.getString("NOME"))){// caso o resultado seja do mesmo modelo do anterior
-						PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
-						placa.placa = rSet.getString("PLACA");
-						placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
-						listPlacasMesmoModelo.add(placa);
+						listPlacasMesmoModelo.add(createPlacaStatus(rSet));
 					}else{ // modelo diferente
 						holder.setPlacaStatus(listPlacasMesmoModelo);
 						listModelo.add(holder);
 						listPlacasMesmoModelo = new ArrayList<>();
 						holder = new PlacaModeloHolder();
 						holder.setModelo(rSet.getString("NOME"));
-						PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
-						placa.placa = rSet.getString("PLACA");
-						placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
-						listPlacasMesmoModelo.add(placa);
+						listPlacasMesmoModelo.add(createPlacaStatus(rSet));
 					}
 				}
 			}
@@ -184,6 +184,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao{
 			closeConnection(conn, stmt, rSet);
 		}
 		return selecaoPlacaAfericao;
+	}
+
+	private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {
+		PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
+		placa.placa = rSet.getString("PLACA");
+		placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
+		placa.quantidadePneus = rSet.getInt("PNEUS_APLICADOS");
+		return placa;
 	}
 
 	/**
