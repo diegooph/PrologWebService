@@ -121,7 +121,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = (?) WHERE CODIGO = ?)");
+			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = ? WHERE CODIGO = ?");
 			stmt.setString(1, equipe.getNome());
 			stmt.setLong(2, codEquipe);
 			int count = stmt.executeUpdate();
