@@ -39,7 +39,7 @@ public class FaleConoscoResource {
 	}
 
 	@GET
-	@Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR, Pilares.Gente.FaleConosco.VISUALIZAR_TODOS})
+	@Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR})
 	@Path("/colaborador/{status}/{cpf}")
 	public List<FaleConosco> getByColaborador(@PathParam("cpf") Long cpf,
 											  @PathParam("status") String status) {
