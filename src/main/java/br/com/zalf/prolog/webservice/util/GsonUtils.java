@@ -33,6 +33,7 @@ public class GsonUtils {
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 				.serializeSpecialFloatingPointValues()
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.enableComplexMapKeySerialization();
 
 		if (BuildConfig.DEBUG) {
