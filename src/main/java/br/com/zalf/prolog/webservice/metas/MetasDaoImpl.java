@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
 
@@ -104,10 +105,8 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
     }
 
     private Time ofDuration(Duration duration) {
-        int horas = (int) duration.get(ChronoUnit.HOURS);
-        int minutos = (int) duration.get(ChronoUnit.MINUTES);
-        int segundos = (int) duration.get(ChronoUnit.SECONDS);
-        return TimeUtils.toSqlTime(LocalTime.of(horas, minutos, segundos));
+        long segundos = Math.abs(duration.getSeconds());
+        return TimeUtils.toSqlTime(LocalTime.ofSecondOfDay(segundos));
     }
 
 
