@@ -463,12 +463,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"    to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') as \"PREVISÃO DE TROCA\"\n" +
 				"FROM\n" +
 				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? \n" +
+				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ? \n" +
 				"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-		L.d(TAG, stmt.toString());
+		stmt.setString(4, Pneu.EM_USO);
 		return stmt;
 	}
 
@@ -483,12 +483,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"FROM\n" +
 				"    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
 				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ?\n" +
+				"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
 				"GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
 				"ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(4, Pneu.EM_USO);
 		return  stmt;
 	}
 
