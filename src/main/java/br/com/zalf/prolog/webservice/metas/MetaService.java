@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.metas;
 
-import br.com.zalf.prolog.entrega.indicador.Meta;
+import br.com.zalf.prolog.entrega.indicador.Metas;
 
 import java.sql.SQLException;
 
@@ -11,7 +11,7 @@ public class MetaService {
 
 	private MetasDao dao = new MetasDaoImpl();
 	
-	public Meta getByCodUnidade(Long codUnidade) {
+	public Metas getByCodUnidade(Long codUnidade) {
 		try {
 			return dao.getByCodUnidade(codUnidade);
 		} catch (SQLException e) {
@@ -19,9 +19,9 @@ public class MetaService {
 			return null;
 		}
 	}
-	public boolean update(Meta meta, Long codUnidade) {
+	public boolean update(Metas metas, Long codUnidade) {
 		try {
-			return dao.update(meta, codUnidade);
+			return dao.update(metas, codUnidade);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

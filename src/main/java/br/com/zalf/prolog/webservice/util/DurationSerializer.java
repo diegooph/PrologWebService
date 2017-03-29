@@ -19,7 +19,7 @@ public class DurationSerializer implements JsonSerializer<Duration> {
     }
 
 
-    public static String formatDuration(Duration duration) {
+    private static String formatDuration(Duration duration) {
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);
         String positive = String.format(
