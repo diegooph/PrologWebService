@@ -33,6 +33,16 @@ public class AfericaoResource {
 		}
 	}
 
+	@PUT
+	@Secured
+	public Response update(Afericao afericao) {
+		if(service.updateKmAfericao(afericao)){
+			return Response.Ok("Km atualizado com sucesso");
+		}else{
+			return Response.Error("Erro ao atualizar o KM");
+		}
+	}
+
 	@GET
 	@Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
 	@Path("/listaAfericao/{codUnidade}")
