@@ -71,7 +71,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-			+ "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ?";
+			+ "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ? ORDER BY P.CODIGO ASC";
 
 
 	@Override
