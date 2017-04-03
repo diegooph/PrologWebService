@@ -8,8 +8,8 @@ import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.pneu.movimentacao.OrigemDestinoConstants;
 import br.com.zalf.prolog.frota.pneu.movimentacao.destino.*;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.Origem;
+import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemAnalise;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemEstoque;
-import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemRecapagem;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemVeiculo;
 import br.com.zalf.prolog.frota.pneu.servico.Calibragem;
 import br.com.zalf.prolog.frota.pneu.servico.Inspecao;
@@ -49,13 +49,13 @@ public class GsonUtils {
 		RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
 				.of(Origem.class, "tipo")
 				.registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
-				.registerSubtype(OrigemRecapagem.class, OrigemDestinoConstants.RECAPAGEM)
+				.registerSubtype(OrigemAnalise.class, OrigemDestinoConstants.ANALISE)
 				.registerSubtype(OrigemVeiculo.class, OrigemDestinoConstants.VEICULO);
 
 		RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
 				.of(Destino.class, "tipo")
 				.registerSubtype(DestinoDescarte.class, OrigemDestinoConstants.DESCARTE)
-				.registerSubtype(DestinoRecapagem.class, OrigemDestinoConstants.RECAPAGEM)
+				.registerSubtype(DestinoAnalise.class, OrigemDestinoConstants.ANALISE)
 				.registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
 				.registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
 
