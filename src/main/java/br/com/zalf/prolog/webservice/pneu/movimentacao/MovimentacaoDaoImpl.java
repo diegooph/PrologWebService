@@ -28,19 +28,25 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_pneu (cod_unidade, data_hora, cpf_responsavel," +
-                    " cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao) " +
-                    "VALUES (?,?,?,?,?,?,?,?,?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("INSERT INTO movimentacao_pneu (cod_unidade, data_hora, cpf_responsavel,\n " +
+                    "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
+                    "VALUES (?,?,?,?,\n " +
+                    "(select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),\n " +
+                    "(select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),\n " +
+                    "(select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),?,?) RETURNING CODIGO; ");
             stmt.setLong(1, codUnidade);
             stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             for (Movimentacao movimentacao : movimentacoes) {
                 stmt.setLong(3, movimentacao.getColaborador().getCpf());
                 stmt.setLong(4, movimentacao.getPneu().getCodigo());
-                stmt.setDouble(5, movimentacao.getPneu().getSulcoAtual().getInterno());
-                stmt.setDouble(6, movimentacao.getPneu().getSulcoAtual().getCentral());
-                stmt.setDouble(7, movimentacao.getPneu().getSulcoAtual().getExterno());
-                stmt.setDouble(8, movimentacao.getPneu().getVidaAtual());
-                stmt.setString(9, movimentacao.getObservacao());
+                stmt.setLong(5, movimentacao.getPneu().getCodigo());
+                stmt.setLong(6, codUnidade);
+                stmt.setLong(7, movimentacao.getPneu().getCodigo());
+                stmt.setLong(8, codUnidade);
+                stmt.setLong(9, movimentacao.getPneu().getCodigo());
+                stmt.setLong(10, codUnidade);
+                stmt.setDouble(11, movimentacao.getPneu().getVidaAtual());
+                stmt.setString(12, movimentacao.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     movimentacao.setCodigo(rSet.getLong("CODIGO"));
