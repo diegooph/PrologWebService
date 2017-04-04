@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.movimentacao;
 
 import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.frota.pneu.movimentacao.Movimentacao;
-import br.com.zalf.prolog.frota.pneu.movimentacao.OrigemDestinoConstants;
-import br.com.zalf.prolog.frota.pneu.movimentacao.OrigemDestinoInvalidaException;
-import br.com.zalf.prolog.frota.pneu.movimentacao.OrigemDestinoValidator;
+import br.com.zalf.prolog.frota.pneu.movimentacao.*;
 import br.com.zalf.prolog.frota.pneu.movimentacao.destino.DestinoVeiculo;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -20,48 +17,67 @@ import java.util.List;
  */
 public class MovimentacaoDaoImpl extends DatabaseConnection {
 
-    public boolean insert(List<Movimentacao> movimentacoes, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
-        validaMovimentacoes(movimentacoes);
+    public boolean insert(ProcessoMovimentacao movimentacao, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
+        validaMovimentacoes(movimentacao.getMovimentacoes());
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_pneu (cod_unidade, data_hora, cpf_responsavel,\n " +
-                    "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
-                    "VALUES (?,?,?,?,\n " +
-                    "(select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),\n " +
-                    "(select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),\n " +
-                    "(select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),?,?) RETURNING CODIGO; ");
+            stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_unidade, data_hora, cpf_responsavel, observacao) " +
+                    "VALUES (?,?,?,?) RETURNING codigo;");
             stmt.setLong(1, codUnidade);
-            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            for (Movimentacao movimentacao : movimentacoes) {
-                stmt.setLong(3, movimentacao.getColaborador().getCpf());
-                stmt.setLong(4, movimentacao.getPneu().getCodigo());
-                stmt.setLong(5, movimentacao.getPneu().getCodigo());
-                stmt.setLong(6, codUnidade);
-                stmt.setLong(7, movimentacao.getPneu().getCodigo());
-                stmt.setLong(8, codUnidade);
-                stmt.setLong(9, movimentacao.getPneu().getCodigo());
-                stmt.setLong(10, codUnidade);
-                stmt.setDouble(11, movimentacao.getPneu().getVidaAtual());
-                stmt.setString(12, movimentacao.getObservacao());
-                rSet = stmt.executeQuery();
-                if (rSet.next()) {
-                    movimentacao.setCodigo(rSet.getLong("CODIGO"));
-                    insertOrigem(conn, movimentacao, codUnidade);
-                    insertDestino(conn, movimentacao, codUnidade);
-                    fecharServicosPneu(conn, movimentacao, codUnidade);
-                    movimentaPneu(conn, movimentacao, codUnidade);
-                    atualizaStatusPneu(conn, movimentacao, codUnidade);
-                    conn.commit();
-                    return true;
-                }
+            stmt.setTimestamp(2, DateUtils.toTimestamp(movimentacao.getData()));
+            stmt.setLong(3, movimentacao.getColaborador().getCpf());
+            stmt.setString(4, movimentacao.getObservacao());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                movimentacao.setCodigo(rSet.getLong("CODIGO"));
+                insertValores(movimentacao, codUnidade, conn);
+                conn.commit();
+                return true;
             }
         } catch (SQLException e) {
             conn.rollback();
             throw e;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return false;
+    }
+
+    private boolean insertValores(ProcessoMovimentacao movimentacao, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO movimentacao_valores (cod_movimentacao, cod_unidade, \n " +
+                    "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
+                    "VALUES (?,?,?,\n " +
+                    "(select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),\n " +
+                    "(select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),\n " +
+                    "(select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),?,?); ");
+            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setLong(2, codUnidade);
+            for (Movimentacao mov : movimentacao.getMovimentacoes()) {
+                stmt.setLong(3, mov.getPneu().getCodigo());
+                stmt.setLong(4, mov.getPneu().getCodigo());
+                stmt.setLong(5, codUnidade);
+                stmt.setLong(6, mov.getPneu().getCodigo());
+                stmt.setLong(7, codUnidade);
+                stmt.setLong(8, mov.getPneu().getCodigo());
+                stmt.setLong(9, codUnidade);
+                stmt.setDouble(10, mov.getPneu().getVidaAtual());
+                stmt.setString(11, mov.getObservacao());
+                int count = stmt.executeUpdate();
+                if (count > 0) {
+                    insertOrigem(conn, mov, codUnidade);
+                    insertDestino(conn, mov, codUnidade);
+                    fecharServicosPneu(conn, mov, codUnidade, movimentacao.getColaborador().getCpf());
+                    movimentaPneu(conn, mov, codUnidade);
+                    atualizaStatusPneu(conn, mov, codUnidade);
+                    return true;
+                }
+            }
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -93,7 +109,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 stmt.setNull(5, Types.BIGINT);
                 stmt.setNull(6, Types.INTEGER);
             }
-            if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.RECAPAGEM)) {
+            if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE)) {
                 PneuDao pneuDao = new PneuDaoImpl();
                 pneuDao.incrementaVida(conn, movimentacao.getPneu().getCodigo(), codUnidade);
             }
@@ -127,7 +143,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private void fecharServicosPneu(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void fecharServicosPneu(Connection conn, Movimentacao movimentacao, Long codUnidade, Long cpfColaborador) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE afericao_manutencao SET\n" +
@@ -136,7 +152,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     "  km_momento_conserto = ? \n" +
                     "WHERE cod_pneu = ? and cod_unidade = ?");
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(2, movimentacao.getColaborador().getCpf());
+            stmt.setLong(2, cpfColaborador);
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
                 stmt.setLong(3, origemVeiculo.getVeiculo().getKmAtual());
@@ -161,7 +177,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             return adicionaPneuVeiculo(conn, movimentacao, codUnidade);
         } else if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
             // Origem = veiculo, ou seja, pneu foi removido
-            return removePneuVeiculo(conn, movimentacao, codUnidade);
+            OrigemVeiculo origem = (OrigemVeiculo) movimentacao.getOrigem();
+            return removePneuVeiculo(conn, movimentacao.getPneu().getCodigo(), origem.getPosicaoOrigemPneu(), codUnidade,
+                    origem.getVeiculo().getPlaca());
         }
         return true;
     }
@@ -172,6 +190,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
                     "VALUES (?,?,?,?)");
             DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+            // antes de inserir devo remover o pneu do veículo usando a posição de inserção do novo
+            removePneuVeiculo(conn, 0, destinoVeiculo.getPosicaoDestinoPneu(), codUnidade, destinoVeiculo.getVeiculo().getPlaca());
             stmt.setString(1, destinoVeiculo.getVeiculo().getPlaca());
             stmt.setLong(2, movimentacao.getPneu().getCodigo());
             stmt.setLong(3, codUnidade);
@@ -182,14 +202,14 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private boolean removePneuVeiculo(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private boolean removePneuVeiculo(Connection conn, long codPneu, int posicao, Long codUnidade, String placa) throws SQLException {
         PreparedStatement stmt = null;
         stmt = conn.prepareStatement("DELETE FROM veiculo_pneu \n" +
-                "WHERE placa = ? and cod_pneu = ? and cod_unidade = ?");
-        OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-        stmt.setString(1, origemVeiculo.getVeiculo().getPlaca());
-        stmt.setLong(2, movimentacao.getPneu().getCodigo());
-        stmt.setLong(3, codUnidade);
+                "WHERE placa = ? and cod_unidade = ? and (cod_pneu = ? or posicao = ?) ");
+        stmt.setString(1, placa);
+        stmt.setLong(2, codUnidade);
+        stmt.setLong(3, codPneu);
+        stmt.setInt(4, posicao);
         int count = stmt.executeUpdate();
         closeConnection(null, stmt, null);
         return count == 0;
