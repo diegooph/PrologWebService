@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
 import br.com.zalf.prolog.commons.Report;
+import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
@@ -104,5 +105,16 @@ public class RelatorioResource {
 										   @QueryParam("dataInicial") long dataInicial,
 										   @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/faixas/sulcos/{codEmpresa}/{codUnidade}")
+	public List<Pneu> getPneusByFaixaSulco(@QueryParam("inicioFaixa") double inicioFaixa,
+										   @QueryParam("fimFaixa") double fimFaixa,
+										   @PathParam("codEmpresa") Long codEmpresa,
+										   @PathParam("codUnidade") String codUnidade,
+										   @QueryParam("limit") long limit,
+										   @QueryParam("offset") long offset) {
+		return service.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
 	}
 }
