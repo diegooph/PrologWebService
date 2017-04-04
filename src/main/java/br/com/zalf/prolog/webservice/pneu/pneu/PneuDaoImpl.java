@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.pneu.pneu;
 import br.com.zalf.prolog.commons.veiculo.Marca;
 import br.com.zalf.prolog.commons.veiculo.Modelo;
 import br.com.zalf.prolog.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.frota.pneu.Banda;
 import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.Pneu.Dimensao;
 import br.com.zalf.prolog.frota.pneu.Sulco;
@@ -19,12 +20,16 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
 	private static final String BUSCA_PNEUS_BY_PLACA="( SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, " 
-+ "			P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status " 
++ "			P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU " 
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
-			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
-			+ "WHERE PLACA =  ? AND VP.posicao < 900"
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
+			+ "WHERE PLACA =  ? AND VP.posicao < 900 "
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 3 for 1) ASC "
@@ -34,11 +39,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			+ "UNION ALL ( "
 			+ "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, " 
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status " 
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU " 
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " 
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " 
-			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " 
+			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE PLACA =  ? AND VP.posicao < 900 "
 			+ "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, " 
 			+ "substring(VP.posicao::text FROM 1 for 1) ASC, " 
@@ -48,29 +57,42 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			+ "UNION ALL ( "
 			+ "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE PLACA =  ? AND VP.posicao > 900 )";
 
 	private static final String BUSCA_PNEUS_BY_COD="SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
 			+ "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, "
 			+ "PD.ALTURA, PD.LARGURA, PD.ARO, PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, "
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
 			+ "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE P.CODIGO = ? ";
 
 	private static final String BUSCA_PNEUS_BY_COD_UNIDADE="SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
 			+ "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO,PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos,P.altura_sulco_CENTRAL, "
-			+ "P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status	FROM PNEU P "
+			+ "P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status,	"
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
+			+ "FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
+			+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ? ORDER BY P.CODIGO ASC";
 
 
@@ -270,7 +292,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Pneu> pneus = new ArrayList<>();
-		L.d("aa", "Buscando pneus disponiveis com o codUnidade = "+codUnidade + " e o status = " + status);
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_PNEUS_BY_COD_UNIDADE);
@@ -290,44 +311,52 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 	@Override
 	public Pneu createPneu (ResultSet rSet) throws SQLException {
 		Pneu pneu = new Pneu();
-		pneu.setCodigo(rSet.getInt("CODIGO"));
-		Marca marca = new Marca();
-		marca.setCodigo(rSet.getLong("COD_MARCA"));
-		marca.setNome(rSet.getString("MARCA"));
-		pneu.setMarca(marca);
-		Modelo modelo = new Modelo();
-		modelo.setCodigo(rSet.getLong("COD_MODELO"));
-		modelo.setNome(rSet.getString("MODELO"));
-		pneu.setModelo(modelo);
+		Marca marcaPneu = new Marca();
+		Modelo modeloPneu = new Modelo();
+		Banda banda = new Banda();
+		Marca marcaBanda = new Marca();
+		Modelo modeloBanda = new Modelo();
+		Dimensao dimensao = new Dimensao();
+		Sulco sulcoAtual = new Sulco();
+		Sulco sulcoNovo = new Sulco();
 
-		Pneu.Dimensao dimensao = new Pneu.Dimensao();
+		if(rSet.getString("COD_MARCA_BANDA") != null) {
+			marcaBanda.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
+			marcaBanda.setNome(rSet.getString("NOME_MARCA_BANDA"));
+			modeloBanda.setCodigo(rSet.getLong("COD_MODELO_BANDA"));
+			modeloBanda.setNome(rSet.getString("NOME_MODELO_BANDA"));
+			banda.setMarca(marcaBanda);
+			banda.setModelo(modeloBanda);
+			pneu.setBanda(banda);
+		}
+
+		pneu.setCodigo(rSet.getInt("CODIGO"));
+		marcaPneu.setCodigo(rSet.getLong("COD_MARCA"));
+		marcaPneu.setNome(rSet.getString("MARCA"));
+		pneu.setMarca(marcaPneu);
+		modeloPneu.setCodigo(rSet.getLong("COD_MODELO"));
+		modeloPneu.setNome(rSet.getString("MODELO"));
+		pneu.setModelo(modeloPneu);
 		dimensao.codigo = rSet.getLong("COD_DIMENSAO");
 		dimensao.altura = rSet.getInt("ALTURA");
 		dimensao.aro = rSet.getInt("ARO");
 		dimensao.largura = rSet.getInt("LARGURA");
-
 		pneu.setDimensao(dimensao);
 		pneu.setPressaoCorreta(rSet.getInt("PRESSAO_RECOMENDADA"));
-
-		Sulco sulcoAtual = new Sulco();
 		sulcoAtual.setCentral(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
 		sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
 		sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
 		pneu.setSulcoAtual(sulcoAtual);
-
-		Sulco sulcoNovo = new Sulco();
 		sulcoNovo.setCentral(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
 		sulcoNovo.setExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
 		sulcoNovo.setInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-		pneu.setSulcoPneuNovo(sulcoNovo);
 
+		pneu.setSulcoPneuNovo(sulcoNovo);
 		pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
 		pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
 		pneu.setStatus(rSet.getString("STATUS"));
-
 		pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
 		pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
-
 		return pneu;
 	}
 
