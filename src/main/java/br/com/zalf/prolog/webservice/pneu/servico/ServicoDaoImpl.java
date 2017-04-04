@@ -122,7 +122,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
 					+ "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP.NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
-					+ "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, DP.*, P.* "
+					+ "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, DP.*, P.*, "
+					+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
 					+ "FROM AFERICAO_MANUTENCAO ITS "
 					+ "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
 					+ "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
@@ -131,6 +132,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 					+ "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
 					+ "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND A.PLACA_VEICULO = VP.PLACA "
 					+ "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+					+ "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+					+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+					+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 					+ "WHERE A.PLACA_VEICULO = ? AND ITS.DATA_HORA_RESOLUCAO IS NULL AND ITS.TIPO_SERVICO LIKE ? "
 					+ "ORDER BY ITS.TIPO_SERVICO");
 			stmt.setString(1, placa);
@@ -175,7 +179,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 					insertInspecao((Inspecao) servico, conn);
 					break;
 				case Servico.TIPO_MOVIMENTACAO:
-					insertMovimentacao((Movimentacao) servico, conn, token);
+//					 chamar movimentacão da DAO específica
+//					insertMovimentacao((Movimentacao) servico, conn, token);
 					break;
 			}
 			conn.commit();
@@ -321,49 +326,50 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 		return true;
 	}
 
-	private boolean insertMovimentacao(Movimentacao servico, Connection conn, String token) throws SQLException{
-		PreparedStatement stmt = null;
-		try{
-			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-					+ "DATA_HORA_RESOLUCAO = ?, "
-					+ "CPF_MECANICO = ?, "
-					+ "PSI_APOS_CONSERTO = ?, "
-					+ "KM_MOMENTO_CONSERTO = ?, "
-					+ "COD_PNEU_INSERIDO = ? "
-					+ "WHERE COD_AFERICAO = ? AND "
-					+ "COD_PNEU = ? AND "
-					+ "DATA_HORA_RESOLUCAO IS NULL AND "
-					+ "TIPO_SERVICO = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-			stmt.setLong(2, servico.getCpfMecanico());
-			stmt.setDouble(3, servico.getPneuNovo().getPressaoAtual());
-			stmt.setLong(4, servico.getKmVeiculo());
-			stmt.setLong(5, servico.getPneuNovo().getCodigo());
-			stmt.setLong(6, servico.getCodAfericao());
-			stmt.setLong(7, servico.getPneu().getCodigo());
-			stmt.setString(8, servico.getTipo());
-			int count = stmt.executeUpdate();
-			if (count == 0) {
-				throw new SQLException("Erro ao inserir o item consertado");
-			}
-			pneuDao.updateCalibragem(servico.getPneuNovo(), codUnidade, conn);
-
-			if (servico.getPneu().getVidaAtual() == servico.getPneu().getVidasTotal()) {
-				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.DESCARTE, conn);
-				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.DESCARTE, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
-			}else{
-				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.ANALISE, conn);
-				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.ANALISE, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
-			}
-			
-			pneuDao.updateStatus(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, conn);
-			pneuDao.registraMovimentacaoHistorico(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
-			pneuDao.updateVeiculoPneu(servico.getPlaca(), servico.getPneu(), servico.getPneuNovo(), conn);
-			
-		}finally {
-			closeConnection(null, stmt, null);
-		}
-		return true;
-	}
+//	Método será substituido por uma movimentação padrão, com origem e destino.
+//	private boolean insertMovimentacao(Movimentacao servico, Connection conn, String token) throws SQLException{
+//		PreparedStatement stmt = null;
+//		try{
+//			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+//					+ "DATA_HORA_RESOLUCAO = ?, "
+//					+ "CPF_MECANICO = ?, "
+//					+ "PSI_APOS_CONSERTO = ?, "
+//					+ "KM_MOMENTO_CONSERTO = ?, "
+//					+ "COD_PNEU_INSERIDO = ? "
+//					+ "WHERE COD_AFERICAO = ? AND "
+//					+ "COD_PNEU = ? AND "
+//					+ "DATA_HORA_RESOLUCAO IS NULL AND "
+//					+ "TIPO_SERVICO = ?");
+//			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+//			stmt.setLong(2, servico.getCpfMecanico());
+//			stmt.setDouble(3, servico.getPneuNovo().getPressaoAtual());
+//			stmt.setLong(4, servico.getKmVeiculo());
+//			stmt.setLong(5, servico.getPneuNovo().getCodigo());
+//			stmt.setLong(6, servico.getCodAfericao());
+//			stmt.setLong(7, servico.getPneu().getCodigo());
+//			stmt.setString(8, servico.getTipo());
+//			int count = stmt.executeUpdate();
+//			if (count == 0) {
+//				throw new SQLException("Erro ao inserir o item consertado");
+//			}
+//			pneuDao.updateCalibragem(servico.getPneuNovo(), codUnidade, conn);
+//
+//			if (servico.getPneu().getVidaAtual() == servico.getPneu().getVidasTotal()) {
+//				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.DESCARTE, conn);
+//				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.DESCARTE, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
+//			}else{
+//				pneuDao.updateStatus(servico.getPneu(), codUnidade, Pneu.ANALISE, conn);
+//				pneuDao.registraMovimentacaoHistorico(servico.getPneu(), codUnidade, Pneu.ANALISE, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
+//			}
+//
+//			pneuDao.updateStatus(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, conn);
+//			pneuDao.registraMovimentacaoHistorico(servico.getPneuNovo(), codUnidade, Pneu.EM_USO, servico.getKmVeiculo(), servico.getPlaca(), conn, token);
+//			pneuDao.updateVeiculoPneu(servico.getPlaca(), servico.getPneu(), servico.getPneuNovo(), conn);
+//
+//		}finally {
+//			closeConnection(null, stmt, null);
+//		}
+//		return true;
+//	}
 
 }
