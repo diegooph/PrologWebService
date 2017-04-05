@@ -13,9 +13,9 @@ public class MovimentacaoService {
 
     MovimentacaoDaoImpl dao = new MovimentacaoDaoImpl();
 
-    public Response insert(ProcessoMovimentacao movimentacao, Long codUnidade) {
+    public Response insert(ProcessoMovimentacao movimentacao) {
         try{
-            if(dao.insert(movimentacao , codUnidade)){
+            if(dao.insert(movimentacao)){
                 return Response.Ok("Movimentações realizadas com sucesso");
             }else{
                 return Response.Error("Erro ao inserir movimentações");

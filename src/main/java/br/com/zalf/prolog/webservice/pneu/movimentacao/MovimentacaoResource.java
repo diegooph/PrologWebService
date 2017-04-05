@@ -18,8 +18,7 @@ public class MovimentacaoResource {
 
 //    @Secured
     @POST
-    @Path("/{codUnidade}")
-    public Response insert(ProcessoMovimentacao movimentacao, @PathParam("codUnidade") Long codUnidade){
-        return service.insert(movimentacao, codUnidade);
+    public Response insert(ProcessoMovimentacao movimentacao){
+        return service.insert(movimentacao);
     }
 }
