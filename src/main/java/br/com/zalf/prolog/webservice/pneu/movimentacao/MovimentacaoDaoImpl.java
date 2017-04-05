@@ -214,19 +214,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private boolean removePneuVeiculo(Connection conn, long codPneu, int posicao, Long codUnidade, String placa) throws SQLException {
-        PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("DELETE FROM veiculo_pneu \n" +
-                "WHERE placa = ? and cod_unidade = ? and (cod_pneu = ? or posicao = ?) ");
-        stmt.setString(1, placa);
-        stmt.setLong(2, codUnidade);
-        stmt.setLong(3, codPneu);
-        stmt.setInt(4, posicao);
-        int count = stmt.executeUpdate();
-        closeConnection(null, stmt, null);
-        return count == 0;
-    }
-
     private boolean atualizaStatusPneu(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PneuDaoImpl pneuDao = new PneuDaoImpl();
         return pneuDao.updateStatus(movimentacao.getPneu(), codUnidade, movimentacao.getDestino().getTipo(), conn);
