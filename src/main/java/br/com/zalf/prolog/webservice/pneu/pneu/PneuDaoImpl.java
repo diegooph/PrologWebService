@@ -131,11 +131,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO PNEU VALUES(?, ?, ?, ?,?,?, ?, ?,?, ?, ?, ?, ?)");
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement("INSERT INTO PNEU VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			stmt.setLong(1, pneu.getCodigo());
 			stmt.setLong(2, pneu.getModelo().getCodigo());
 			stmt.setLong(3, pneu.getDimensao().codigo);
 			stmt.setDouble(4, pneu.getPressaoCorreta());
+			// pressão atual
 			stmt.setDouble(5, 0L);
 			stmt.setDouble(6, pneu.getSulcoPneuNovo().getCentral());
 			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
@@ -145,16 +147,57 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			stmt.setString(11, pneu.getStatus());
 			stmt.setInt(12, pneu.getVidaAtual());
 			stmt.setInt(13, pneu.getVidasTotal());
-			System.out.println(stmt.toString());
+			stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
 			int count = stmt.executeUpdate();
+			insertTrocaVidaPneu(pneu, codUnidade, conn);
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o pneu");
-			}	
+			}
+			conn.commit();
+		}catch (SQLException e){
+			conn.rollback();
+			throw e;
 		}
 		finally {
 			closeConnection(conn, stmt, null);
 		}		
 		return true;
+	}
+
+	public void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("INSERT INTO pneu_valor_vida(cod_unidade, cod_pneu, cod_modelo_banda, vida, valor)" +
+					"VALUES (?,?,?,?,?) ");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, pneu.getCodigo());
+			stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
+			stmt.setInt(4, pneu.getVidaAtual());
+			stmt.setDouble(5, pneu.getBanda().getValor());
+			if(stmt.executeUpdate() == 0){
+				throw new SQLException("Erro ao cadastrar a mudança de vida");
+			}
+		}finally {
+			closeConnection(null, stmt, null);
+		}
+	}
+
+	private void updateTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement("UPDATE pneu_valor_vida set cod_modelo_banda = ?, valor = ? WHERE cod_unidade = ? AND cod_pneu = ? " +
+					"AND vida = ?");
+			stmt.setLong(1, pneu.getBanda().getModelo().getCodigo());
+			stmt.setDouble(2, pneu.getBanda().getValor());
+			stmt.setLong(3, codUnidade);
+			stmt.setLong(4, pneu.getCodigo());
+			stmt.setLong(5, pneu.getVidaAtual());
+			if(stmt.executeUpdate() == 0){
+				throw new SQLException("Erro ao atualizar a relação vida x banda");
+			}
+		}finally {
+			closeConnection(null, stmt, null);
+		}
 	}
 
 	@Override
@@ -186,10 +229,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 		Connection conn = null;
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement("UPDATE PNEU SET CODIGO = ?, COD_MODELO = ?, COD_DIMENSAO = ?, PRESSAO_RECOMENDADA = ?, "
 					+ "PRESSAO_ATUAL = ?,ALTURA_SULCOS_NOVOS = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_CENTRAL = ?,"
-					+ " ALTURA_SULCO_EXTERNO = ?, STATUS = ?, VIDA_ATUAL = ?, VIDA_TOTAL = ?"
-					+ "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+					+ " ALTURA_SULCO_EXTERNO = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ? "
+					+ "WHERE CODIGO = ? AND COD_UNIDADE = ? AND VIDA_ATUAL = ? AND STATUS = ?");
 			stmt.setLong(1, pneu.getCodigo());
 			stmt.setLong(2, pneu.getModelo().getCodigo());
 			stmt.setLong(3, pneu.getDimensao().codigo);
@@ -199,18 +243,24 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
 			stmt.setDouble(8, pneu.getSulcoAtual().getCentral());
 			stmt.setDouble(9, pneu.getSulcoAtual().getExterno());
-			stmt.setString(10, pneu.getStatus());
-			stmt.setInt(11, pneu.getVidaAtual());
-			stmt.setInt(12, pneu.getVidasTotal());
-			stmt.setLong(13, codOriginal);
-			stmt.setLong(14, codUnidade);
+			stmt.setInt(10, pneu.getVidasTotal());
+			stmt.setLong(11, pneu.getBanda().getModelo().getCodigo());
+			stmt.setLong(12, codOriginal);
+			stmt.setLong(13, codUnidade);
+			stmt.setInt(14, pneu.getVidaAtual());
+			stmt.setString(15, pneu.getStatus());
+			updateTrocaVidaPneu(pneu, codUnidade, conn);
 			int count = stmt.executeUpdate();
 			if (count == 0) {
 				throw new SQLException("Erro ao atualizar as informações do pneu");				
-			}			
+			}
+			conn.commit();
+		}catch (SQLException e){
+			conn.rollback();
+			throw e;
 		}
 		finally {
-			closeConnection(null, stmt, null);
+			closeConnection(conn, stmt, null);
 		}		
 		return true;
 	}
@@ -628,5 +678,90 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return pneu;
+	}
+
+	public List<Marca> getMarcaModeloBanda(Long codEmpresa) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<Marca> marcas = new ArrayList<>();
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM marca_banda WHERE cod_empresa = ? ORDER BY nome ASC");
+			stmt.setLong(1, codEmpresa);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				Marca marca = new Marca();
+				marca.setCodigo(rSet.getLong("CODIGO"));
+				marca.setNome(rSet.getString("NOME"));
+				marca.setModelos(getModelosBanda(codEmpresa, marca.getCodigo(), conn));
+				marcas.add(marca);
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return marcas;
+	}
+
+	private List<Modelo> getModelosBanda(Long codEmpresa, Long codMarcaBanda, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		List<Modelo> modelos = new ArrayList<>();
+		ResultSet rSet = null;
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM modelo_banda WHERE cod_marca = ? and cod_empresa = ? ORDER BY nome ASC");
+			stmt.setLong(1, codMarcaBanda);
+			stmt.setLong(2, codEmpresa);
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				Modelo modelo = new Modelo();
+				modelo.setCodigo(rSet.getLong("CODIGO"));
+				modelo.setNome(rSet.getString("NOME"));
+				modelos.add(modelo);
+			}
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
+		return modelos;
+	}
+
+	public Long insertMarcaBanda (Marca marca, Long codEmpresa) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO marca_banda (nome, cod_empresa) VALUES (?,?) RETURNING codigo");
+			stmt.setString(1, marca.getNome());
+			stmt.setLong(2, codEmpresa);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getLong("CODIGO");
+			}else{
+				throw new SQLException("Erro ao inserir a marca da banda");
+			}
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
+	}
+
+	public Long insertModeloBanda (Modelo modelo, Long codMarcaBanda, Long codEmpresa) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("INSERT INTO modelo_banda (nome, cod_empresa, cod_marca) VALUES (?,?,?) RETURNING codigo");
+			stmt.setString(1, modelo.getNome());
+			stmt.setLong(2, codEmpresa);
+			stmt.setLong(3, codMarcaBanda);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getLong("CODIGO");
+			}else{
+				throw new SQLException("Erro ao inserir o modelo da banda");
+			}
+		}finally {
+			closeConnection(null, stmt, rSet);
+		}
 	}
 }
