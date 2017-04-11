@@ -184,4 +184,21 @@ public interface PneuDao {
      * @throws SQLException
      */
     Long insertModeloBanda (Modelo modelo, Long codMarcaBanda, Long codEmpresa) throws SQLException;
+
+    /**
+     * Atualiza o nome de uma marca
+     * @param marca marca com o nome atualizado
+     * @param codEmpresa código da empresa na qual a marca pertence
+     * @return
+     * @throws SQLException
+     */
+    boolean updateMarcaBanda(Marca marca, Long codEmpresa) throws SQLException;
+
+    /**
+     * Atualiza o nome de um modelo de banda
+     * @param modelo modelo da banda a ser atualizada
+     * @return
+     * @throws SQLException
+     */
+    boolean updateModeloBanda(Modelo modelo) throws SQLException;
 }

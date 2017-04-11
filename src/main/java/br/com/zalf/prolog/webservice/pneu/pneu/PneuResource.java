@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus")
@@ -105,6 +106,28 @@ public class PneuResource {
     public AbstractResponse insertModeloBanda(Modelo modelo, @PathParam("codMarcaBanda") Long codMarcaBanda,
                                               @PathParam("codEmpresa") Long codEmpresa) {
         return service.insertModeloBanda(modelo, codMarcaBanda, codEmpresa);
+    }
+
+    @PUT
+    @Secured
+    @Path("bandas/marcas/{codEmpresa}")
+    public Response updateMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
+        if(service.updateMarcaBanda(marca, codEmpresa)){
+            return Response.Ok("Marca atualizada com sucesso");
+        }else {
+            return Response.Error("Erro ao atualizar a marca");
+        }
+    }
+
+    @PUT
+    @Secured
+    @Path("bandas/modelos")
+    public Response updateModeloBanda(Modelo modelo) throws SQLException {
+        if (service.updateModeloBanda(modelo)) {
+            return Response.Ok("Modelo de banda atualizado com sucesso");
+        }else {
+            return Response.Error("Erro ao atualizar o modelo de banda");
+        }
     }
 }
 

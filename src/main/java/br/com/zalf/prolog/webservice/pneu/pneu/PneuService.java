@@ -111,4 +111,22 @@ public class PneuService {
             return Response.Error("Erro ao inserir o modelo da banda");
         }
     }
+
+    public boolean updateMarcaBanda(Marca marca, Long codEmpresa) {
+        try {
+            return dao.updateMarcaBanda(marca, codEmpresa);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateModeloBanda(Modelo modelo) {
+        try {
+            return dao.updateModeloBanda(modelo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
