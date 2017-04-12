@@ -18,55 +18,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     private static final String TAG = PneuDaoImpl.class.getSimpleName();
 
-    private static final String BUSCA_PNEUS_BY_PLACA = "( SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
-            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-            + "			P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
-            + "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
-            + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
-            + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
-            + "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-            + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
-            + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
-            + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
-            + "WHERE PLACA =  ? AND VP.posicao < 900 "
-            + "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, "
-            + "substring(VP.posicao::text FROM 1 for 1) ASC, "
-            + "substring(VP.posicao::text FROM 3 for 1) ASC "
-            + "LIMIT (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ? and veiculo_pneu.posicao < 900)/2 "
-            + "OFFSET 0 "
-            + ") "
-            + "UNION ALL ( "
-            + "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
-            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-            + "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
-            + "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
-            + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
-            + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
-            + "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-            + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
-            + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
-            + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
-            + "WHERE PLACA =  ? AND VP.posicao < 900 "
-            + "ORDER BY Substring(VP.posicao::text FROM 2 for 1) ASC, "
-            + "substring(VP.posicao::text FROM 1 for 1) ASC, "
-            + "substring(VP.posicao::text FROM 3 for 1) DESC "
-            + "LIMIT (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ? and veiculo_pneu.posicao < 900)/2 "
-            + "OFFSET (SELECT COUNT(PLACA) FROM VEICULO_PNEU WHERE PLACA = ? and veiculo_pneu.posicao < 900)/2 ) "
-            + "UNION ALL ( "
-            + "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, ntile(2) over(order by POSICAO), "
-            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-            + "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
-            + "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
-            + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
-            + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
-            + "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-            + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
-            + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
-            + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
-            + "WHERE PLACA =  ? AND VP.posicao > 900 )";
+    private static final String BUSCA_PNEUS_BY_PLACA = "SELECT po.posicao_prolog AS posicao,\n" +
+            "  MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO,\n" +
+            "  MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA,\n" +
+            "            P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, \n" +
+            "            MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
+            "FROM veiculo_pneu vp join pneu_ordem po on vp.posicao = po.posicao_prolog\n" +
+            "  JOIN PNEU P ON P.CODIGO = VP.COD_PNEU\n" +
+            "  JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO\n" +
+            "  JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA\n" +
+            "  JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO\n" +
+            "  JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n" +
+            "  LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n" +
+            "  LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n" +
+            "WHERE vp.placa = ?\n" +
+            "ORDER BY po.ordem_exibicao asc";
 
     private static final String BUSCA_PNEUS_BY_COD = "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
             + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, "
@@ -106,11 +72,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_PNEUS_BY_PLACA);
             stmt.setString(1, placa);
-            stmt.setString(2, placa);
-            stmt.setString(3, placa);
-            stmt.setString(4, placa);
-            stmt.setString(5, placa);
-            stmt.setString(6, placa);
             L.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -118,7 +79,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 pneu.setPosicao(rSet.getInt("POSICAO"));
                 listPneu.add(pneu);
             }
-            listPneu = ordenaLista(listPneu);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -539,45 +499,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(conn, stmt, null);
         }
         return true;
-    }
-
-    public List<Pneu> ordenaLista(List<Pneu> listPneu) {
-        List<Pneu> estepes = new ArrayList<>();
-        // cria uma lista apenas com os estepes e remove eles da lista original
-        for (int i = 0; i < listPneu.size(); i++) {
-            if (listPneu.get(i).getPosicao() > 900) {
-                estepes.add(listPneu.get(i));
-                listPneu.remove(i);
-                i--;
-            }
-        }
-        int sizeListaOriginal = listPneu.size();
-        List<Pneu> copiaOriginal = new ArrayList<Pneu>(listPneu);
-        // cria uma cópia da lista original de pneus
-//		for(Pneu pneu : listPneu){
-//			copiaOriginal.add(pneu);
-//		}
-        // metade da lista
-        int halfSizeListaOriginal = listPneu.size() / 2;
-
-        // esse for segue para inverter a segunda metade da lista, formando o fluxo correto de aferição
-        for (int i = sizeListaOriginal; i > sizeListaOriginal / 2; i--) {
-            // seta na lista cópia, posição 5 - listaOriginal(ultima pos)
-            copiaOriginal.set(halfSizeListaOriginal, listPneu.get(i - 1));
-            halfSizeListaOriginal++;
-        }
-
-        if (estepes.size() == 1) {
-            if (estepes.get(0).getPosicao() == 911) {
-                copiaOriginal.add(0, estepes.get(0));
-            } else if (estepes.get(0).getPosicao() == 921) {
-                copiaOriginal.add(estepes.get(0));
-            }
-        } else if (estepes.size() > 1) {
-            copiaOriginal.add(0, estepes.get(0));
-            copiaOriginal.add(estepes.get(1));
-        }
-        return copiaOriginal;
     }
 
     private void updatePosicao(String placa, Pneu pneu, int posicao, Connection conn) throws SQLException {
