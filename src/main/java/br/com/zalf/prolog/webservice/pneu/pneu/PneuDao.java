@@ -150,12 +150,12 @@ public interface PneuDao {
      * Incrementa a vida atual de um determinado pneu
      *
      * @param conn       uma connection aberta previamente
-     * @param codPneu    código do pneu
+     * @param pneu    objeto pneu a ser atualizado
      * @param codUnidade código da unidade
      * @return booleal com resultado da operação
      * @throws SQLException em caso de erro
      */
-    boolean incrementaVida(Connection conn, int codPneu, Long codUnidade) throws SQLException;
+    boolean updateVida(Connection conn, Pneu pneu, Long codUnidade) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa

@@ -222,13 +222,17 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return true;
     }
 
-    public boolean incrementaVida(Connection conn, int codPneu, Long codUnidade) throws SQLException {
+    public boolean updateVida(Connection conn, Pneu pneu, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = " +
-                    "(SELECT VIDA_ATUAL FROM PNEU WHERE CODIGO = ? AND COD_UNIDADE = ?) + 1");
-            stmt.setInt(1, codPneu);
-            stmt.setLong(2, codUnidade);
+            stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = ?, VIDA_TOTAL = ? " +
+                    "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setInt(1, pneu.getVidaAtual());
+            if(pneu.getVidaAtual() > pneu.getVidasTotal()){
+                stmt.setLong(2, pneu.getVidaAtual());
+            }else{
+                stmt.setLong(3, pneu.getVidasTotal());
+            }
             return stmt.executeUpdate() == 0;
         } finally {
             closeConnection(null, stmt, null);
@@ -645,7 +649,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO marca_banda (nome, cod_empresa) VALUES (?,?) RETURNING codigo");
-            stmt.setString(1, marca.getNome());
+            stmt.setString(1, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -665,7 +669,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO modelo_banda (nome, cod_empresa, cod_marca) VALUES (?,?,?) RETURNING codigo");
-            stmt.setString(1, modelo.getNome());
+            stmt.setString(1, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(2, codEmpresa);
             stmt.setLong(3, codMarcaBanda);
             rSet = stmt.executeQuery();
