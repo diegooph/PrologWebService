@@ -56,9 +56,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, \n " +
                     "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
                     "VALUES (?,?,?,\n " +
-                    "(select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),\n " +
-                    "(select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),\n " +
-                    "(select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),?,?) RETURNING codigo; ");
+                    "COALESCE ((select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),0),?,?) RETURNING codigo; ");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setLong(2, movimentacao.getUnidade().getCodigo());
             for (Movimentacao mov : movimentacao.getMovimentacoes()) {
@@ -99,8 +99,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
 
     private void removeOrigensVeiculo(ProcessoMovimentacao movimentacao, Connection conn) throws SQLException {
         for (Movimentacao mov : movimentacao.getMovimentacoes()) {
-            OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
             if (mov.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
+                OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
                 removePneuVeiculo(conn, movimentacao.getUnidade().getCodigo(), origem.getVeiculo().getPlaca(), mov.getPneu().getCodigo());
             }
         }
