@@ -648,14 +648,22 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO marca_banda (nome, cod_empresa) VALUES (?,?) RETURNING codigo");
+            stmt = conn.prepareStatement("INSERT INTO marca_banda\n" +
+                    "    (nome, cod_empresa)\n" +
+                    "SELECT ?, ?\n" +
+                    "WHERE\n" +
+                    "    NOT EXISTS (\n" +
+                    "        SELECT nome FROM marca_banda WHERE lower(nome) = lower(?) and cod_empresa = ?\n" +
+                    "    ) RETURNING codigo;");
             stmt.setString(1, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(2, codEmpresa);
+            stmt.setString(3, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setLong(4, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             } else {
-                throw new SQLException("Erro ao inserir a marca da banda");
+                throw new SQLException("Erro ao inserir a marca da banda ou banda já existente");
             }
         } finally {
             closeConnection(null, stmt, rSet);
@@ -668,10 +676,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO modelo_banda (nome, cod_empresa, cod_marca) VALUES (?,?,?) RETURNING codigo");
+            stmt = conn.prepareStatement("INSERT INTO modelo_banda\n" +
+                    "    (nome, cod_marca, cod_empresa)\n" +
+                    "SELECT ?, ?, ?\n" +
+                    "WHERE\n" +
+                    "    NOT EXISTS (\n" +
+                    "        SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and cod_empresa = ?\n" +
+                    "    ) RETURNING codigo;");
             stmt.setString(1, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
-            stmt.setLong(2, codEmpresa);
-            stmt.setLong(3, codMarcaBanda);
+            stmt.setLong(2, codMarcaBanda);
+            stmt.setLong(3, codEmpresa);
+            stmt.setString(4, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setLong(5, codMarcaBanda);
+            stmt.setLong(6, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
