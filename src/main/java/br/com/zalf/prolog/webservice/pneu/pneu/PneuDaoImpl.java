@@ -231,8 +231,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if(pneu.getVidaAtual() > pneu.getVidasTotal()){
                 stmt.setLong(2, pneu.getVidaAtual());
             }else{
-                stmt.setLong(3, pneu.getVidasTotal());
+                stmt.setLong(2, pneu.getVidasTotal());
             }
+            stmt.setLong(3, pneu.getCodigo());
+            stmt.setLong(4, codUnidade);
             return stmt.executeUpdate() == 0;
         } finally {
             closeConnection(null, stmt, null);
