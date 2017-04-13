@@ -80,6 +80,14 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     if (mov.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                         adicionaPneuVeiculo(conn, mov, movimentacao.getUnidade().getCodigo());
                     }
+                    // pneu voltou recapado, devemos incrementar a vida
+                    if(mov.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE) &&
+                            mov.getDestino().getTipo().equals(OrigemDestinoConstants.ESTOQUE)){
+                        PneuDaoImpl pneuDao = new PneuDaoImpl();
+                        mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual()+1);
+                        pneuDao.updateVida(conn, mov.getPneu(), movimentacao.getUnidade().getCodigo());
+                        pneuDao.insertTrocaVidaPneu(mov.getPneu(), movimentacao.getUnidade().getCodigo(), conn);
+                    }
                     atualizaStatusPneu(conn, mov, movimentacao.getUnidade().getCodigo());
                 }
             }
@@ -140,7 +148,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             }
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE)) {
                 PneuDao pneuDao = new PneuDaoImpl();
-                pneuDao.incrementaVida(conn, movimentacao.getPneu().getCodigo(), codUnidade);
             }
             return stmt.executeUpdate() == 0;
         } finally {
