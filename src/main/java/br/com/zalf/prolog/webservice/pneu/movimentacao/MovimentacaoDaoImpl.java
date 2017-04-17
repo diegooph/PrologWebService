@@ -5,7 +5,6 @@ import br.com.zalf.prolog.frota.pneu.movimentacao.*;
 import br.com.zalf.prolog.frota.pneu.movimentacao.destino.DestinoVeiculo;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
 
 import java.sql.*;
@@ -132,22 +131,25 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
     private boolean insertOrigem(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_origem (cod_movimentacao, " +
-                    "tipo_origem, placa, km_veiculo, posicao_pneu_origem) values (?,?,?,?,?)");
-            stmt.setLong(1, movimentacao.getCodigo());
-            stmt.setString(2, movimentacao.getOrigem().getTipo());
+            stmt = conn.prepareStatement("INSERT INTO movimentacao_origem (tipo_origem, cod_movimentacao, " +
+                    "placa, km_veiculo, posicao_pneu_origem) values ((SELECT p.status\n" +
+                    "FROM pneu p " +
+                    "WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? in (select p.status from pneu p WHERE p.codigo = ? and p.cod_unidade = ?)),?,?,?,?)");
+            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, movimentacao.getOrigem().getTipo());
+            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                stmt.setString(3, origemVeiculo.getVeiculo().getPlaca());
-                stmt.setLong(4, origemVeiculo.getVeiculo().getKmAtual());
-                stmt.setInt(5, origemVeiculo.getPosicaoOrigemPneu());
+                stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
+                stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
+                stmt.setInt(9, origemVeiculo.getPosicaoOrigemPneu());
             } else {
-                stmt.setNull(3, Types.VARCHAR);
-                stmt.setNull(4, Types.BIGINT);
-                stmt.setNull(5, Types.INTEGER);
-            }
-            if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE)) {
-                PneuDao pneuDao = new PneuDaoImpl();
+                stmt.setNull(7, Types.VARCHAR);
+                stmt.setNull(8, Types.BIGINT);
+                stmt.setNull(9, Types.INTEGER);
             }
             return stmt.executeUpdate() == 0;
         } finally {

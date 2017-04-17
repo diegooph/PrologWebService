@@ -18,11 +18,11 @@ public class MovimentacaoService {
             if(dao.insert(movimentacao)){
                 return Response.Ok("Movimentações realizadas com sucesso");
             }else{
-                return Response.Error("Erro ao inserir movimentações");
+                return Response.Error("Erro ao realizar as movimentações");
             }
         }catch (SQLException | OrigemDestinoInvalidaException e){
             e.printStackTrace();
-            return null;
+            return Response.Error("Erro ao realizar as movimentações");
         }
     }
 
