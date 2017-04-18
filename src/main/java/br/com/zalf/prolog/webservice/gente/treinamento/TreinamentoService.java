@@ -79,4 +79,13 @@ public class TreinamentoService {
         }
     }
 
+    public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) {
+        try {
+            return dao.updateUrlImagensTreinamento(urls, codTreinamento);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

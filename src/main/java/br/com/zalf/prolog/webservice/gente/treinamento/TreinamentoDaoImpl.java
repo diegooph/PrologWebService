@@ -240,6 +240,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         return null;
     }
 
+    @Override
     public boolean updateTreinamento(Treinamento treinamento) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -289,6 +290,21 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             }
         } finally {
             closeConnection(null, stmt, null);
+        }
+    }
+
+    @Override
+    public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM treinamento_url_paginas WHERE COD_TREINAMENTO = ?;");
+            stmt.setLong(1, codTreinamento);
+            insertUrlImagensTreinamento(urls, codTreinamento, conn);
+            return true;
+        }finally {
+            closeConnection(conn, stmt, null);
         }
     }
 

@@ -93,4 +93,14 @@ public interface TreinamentoDao {
      * @throws SQLException
      */
     public boolean updateTreinamento(Treinamento treinamento) throws SQLException;
+
+    /**
+     * Atualiza as URLs de um treinamento
+     *
+     * @param urls
+     * @param codTreinamento
+     * @return
+     * @throws SQLException
+     */
+    public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) throws SQLException;
 }

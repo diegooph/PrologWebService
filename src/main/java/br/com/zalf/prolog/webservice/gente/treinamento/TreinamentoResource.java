@@ -109,12 +109,20 @@ public class TreinamentoResource {
     }
 
     @PUT
-    @Secured
+    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     public Response updateTreinamento(Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
             return Response.Ok("Treinamento atualizado com sucesso");
         } else {
             return Response.Error("Erro ao atualizar o treinamento");
+        }
+    }
+
+    private Response updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) {
+        if(service.updateUrlImagensTreinamento(urls, codTreinamento)){
+            return Response.Ok("Atualização bem sucedida");
+        }else {
+            return Response.Error("Erro ao atualizar");
         }
     }
 }
