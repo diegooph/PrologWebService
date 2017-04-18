@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
@@ -27,7 +29,7 @@ public class TreinamentoResource {
 	@Path("/upload")
 	@Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	public Response uploadTreinamento(
+	public AbstractResponse uploadTreinamento(
 			@FormDataParam("file") InputStream fileInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("treinamento") FormDataBodyPart jsonPart) {
@@ -42,8 +44,9 @@ public class TreinamentoResource {
 		} else {
 			UploadTreinamento upload = new UploadTreinamento();
 			if (upload.doIt(treinamento, fileInputStream)) {
-				if (service.insert(treinamento)) {
-					return Response.Ok("Treinamento inserido com sucesso");
+				Long codTreinamento = service.insert(treinamento);
+				if (codTreinamento != null) {
+					return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
 				} else {
 					return Response.Error("Erro ao inserir treinamento");
 				}

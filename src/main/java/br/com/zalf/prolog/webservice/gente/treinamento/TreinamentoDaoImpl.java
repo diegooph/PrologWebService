@@ -153,33 +153,6 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 	}
 
 	@Override
-	public boolean insert(Treinamento treinamento) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO (TITULO, DESCRICAO, URL_ARQUIVO, "
-					+ "DATA_LIBERACAO, COD_UNIDADE, data_hora_cadastro) "
-					+ "VALUES (?,?,?,?,?,?)");
-
-			stmt.setString(1, treinamento.getTitulo());
-			stmt.setString(2, treinamento.getDescricao());
-			stmt.setString(3, treinamento.getUrlArquivo());
-			stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
-			stmt.setLong(5, treinamento.getCodUnidade());
-			stmt.setTimestamp(6, DateUtils.toTimestamp(treinamento.getDataHoraCadastro()));
-			int count = stmt.executeUpdate();
-			if(count == 0 && !insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo())){
-				throw new SQLException("Erro ao inserir treinamento");
-			}
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}
-		return true;
-	}
-
-	@Override
 	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade) throws SQLException{
 		Connection conn = null;
         PreparedStatement stmt = null;
@@ -232,25 +205,77 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
 		return treinamento;
 	}
 
-	private boolean insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento) throws SQLException{
+	@Override
+	public Long insert(Treinamento treinamento) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rSet = null;
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement("INSERT INTO TREINAMENTO (TITULO, DESCRICAO, URL_ARQUIVO, "
+					+ "DATA_LIBERACAO, COD_UNIDADE, data_hora_cadastro) "
+					+ "VALUES (?,?,?,?,?,?) RETURNING codigo");
+			stmt.setString(1, treinamento.getTitulo());
+			stmt.setString(2, treinamento.getDescricao());
+			stmt.setString(3, treinamento.getUrlArquivo());
+			stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
+			stmt.setLong(5, treinamento.getCodUnidade());
+			stmt.setTimestamp(6, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				Long codTreinamento = rSet.getLong("CODIGO");
+				treinamento.setCodigo(codTreinamento);
+				insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), codTreinamento, conn);
+				insertUrlImagensTreinamento(treinamento.getUrlsImagensArquivo(), codTreinamento, conn);
+				conn.commit();
+				return codTreinamento;
+			}
+		}catch (SQLException e){
+			conn.rollback();
+			throw e;
+		}
+		finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+
+	private void insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento, Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try {
 			stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
+			stmt.setLong(1, codTreinamento);
 			for(Funcao funcao : listFuncao){
-				stmt.setLong(1, codTreinamento);
 				stmt.setLong(2, funcao.getCodigo());
 				int count = stmt.executeUpdate();
 				if(count == 0){
-					return false;
+					throw new SQLException("Erro ao inserir a restrição do treinamento");
 				}
 			}
 		}
 		finally {
-			closeConnection(conn, stmt, null);
+			closeConnection(null, stmt, null);
 		}
-		return true;
+	}
+
+	private void insertUrlImagensTreinamento(List<String> urls, Long codTreinamento, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement("INSERT INTO treinamento_url_paginas(cod_treinamento,url, ordem) VALUES (?,?,?)");
+			stmt.setLong(1, codTreinamento);
+			int count = 0;
+			for(String url : urls){
+				stmt.setString(2, url);
+				stmt.setInt(3, count);
+				if(stmt.executeUpdate()==0){
+					throw new SQLException("Erro ao inserir a URL");
+				}
+				count ++;
+			}
+		}finally {
+			closeConnection(null, stmt, null);
+		}
 	}
 
 	public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException{

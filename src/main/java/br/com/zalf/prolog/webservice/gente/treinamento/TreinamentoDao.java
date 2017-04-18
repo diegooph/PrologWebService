@@ -55,10 +55,10 @@ public interface TreinamentoDao {
 	/**
 	 * inserir um treinamento
 	 * @param treinamento treinamento a ser inserido
-	 * @return valor da operação
+	 * @return código do gerado pelo BD para o treinamento inserido
 	 * @throws SQLException caso operação falhar
 	 */
-	boolean insert(Treinamento treinamento) throws SQLException;
+	Long insert(Treinamento treinamento) throws SQLException;
 
 	/**
 	 * busca os colaboradores que visualizaram o treinamento

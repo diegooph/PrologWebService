@@ -52,12 +52,12 @@ public class TreinamentoService {
 		}
 	}
 	
-	public boolean insert(Treinamento treinamento) {
+	public Long insert(Treinamento treinamento) {
 		try {
 			return dao.insert(treinamento);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 
