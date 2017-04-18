@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 
 import java.sql.SQLException;
@@ -27,6 +30,20 @@ public class QuizModeloService {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
+        try {
+            Long codigo = dao.insertModeloQuiz(modeloQuiz, codUnidade);
+            if (codigo != null) {
+                return ResponseWithCod.Ok("Modelo de Quiz inserido com sucesso", codigo);
+            } else {
+                return Response.Error("Erro ao inserir o modelo de Quiz");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.Error("Erro ao inserir o modelo de Quiz");
         }
     }
 

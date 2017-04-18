@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -32,4 +33,12 @@ public class QuizModeloResource {
     public List<ModeloQuiz> getModelosQuizByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getModelosQuizByCodUnidade(codUnidade);
     }
+
+    @POST
+    @Secured
+    @Path("/{codUnidade}")
+    public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
+        return service.insertModeloQuiz(modeloQuiz, codUnidade);
+    }
+
 }

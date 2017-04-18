@@ -30,4 +30,14 @@ public interface QuizModeloDao {
      */
     public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException;
 
+    /**
+     * Insere um modelo de Quiz
+     *
+     * @param modeloQuiz
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     */
+    public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
+
 }
