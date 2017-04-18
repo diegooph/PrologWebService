@@ -70,4 +70,13 @@ public class TreinamentoService {
         }
     }
 
+    public boolean updateTreinamento(Treinamento treinamento) {
+        try {
+            return dao.updateTreinamento(treinamento);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

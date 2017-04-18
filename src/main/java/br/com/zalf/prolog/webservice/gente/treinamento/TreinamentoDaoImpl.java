@@ -240,6 +240,22 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         return null;
     }
 
+    public boolean updateTreinamento(Treinamento treinamento) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ? WHERE codigo = ?");
+            stmt.setString(1, treinamento.getTitulo());
+            stmt.setString(2, treinamento.getDescricao());
+            stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
+            stmt.setLong(4, treinamento.getCodigo());
+            return stmt.executeUpdate() == 0;
+        }finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
     private void insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {

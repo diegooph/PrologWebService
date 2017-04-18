@@ -107,4 +107,14 @@ public class TreinamentoResource {
             @PathParam("codTreinamento") Long codUnidade) {
         return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
     }
+
+    @PUT
+    @Secured
+    public Response updateTreinamento(Treinamento treinamento) {
+        if (service.updateTreinamento(treinamento)) {
+            return Response.Ok("Treinamento atualizado com sucesso");
+        } else {
+            return Response.Error("Erro ao atualizar o treinamento");
+        }
+    }
 }
