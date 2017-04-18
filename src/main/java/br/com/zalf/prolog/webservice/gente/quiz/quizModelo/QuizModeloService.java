@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
 import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.commons.network.ResponseWithCod;
@@ -44,6 +45,24 @@ public class QuizModeloService {
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.Error("Erro ao inserir o modelo de Quiz");
+        }
+    }
+
+    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
+        try {
+            return dao.updateModeloQuiz(modeloQuiz, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateCargosModeloQuiz(List<Funcao> funcoes, Long codModeloQuiz, Long codUnidade) {
+        try {
+            return dao.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

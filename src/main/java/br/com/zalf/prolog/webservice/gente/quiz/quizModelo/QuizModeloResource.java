@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.network.AbstractResponse;
+import br.com.zalf.prolog.commons.network.Response;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 import br.com.zalf.prolog.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -39,6 +41,29 @@ public class QuizModeloResource {
     @Path("/{codUnidade}")
     public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
         return service.insertModeloQuiz(modeloQuiz, codUnidade);
+    }
+
+    @PUT
+    @Secured
+    @Path("/{codUnidade}")
+    public Response updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
+        if (service.updateModeloQuiz(modeloQuiz, codUnidade)){
+            return Response.Ok("Modelo de quiz atualizado com sucesso");
+        } else {
+            return Response.Error("Erro ao atualizar o quiz");
+        }
+    }
+
+    @PUT
+    @Secured
+    @Path("/funcoes/{codUnidade}/{codModeloQuiz}")
+    public Response updateCargosModeloQuiz(List<Funcao> funcoes,@PathParam("codModeloQuiz") Long codModeloQuiz,
+                                           @PathParam("codUnidade") Long codUnidade) {
+        if(service.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade)){
+            return Response.Ok("Funções alteradas com sucesso");
+        }else {
+            return Response.Error("Erro ao alterar as funções vinculadas ao quiz");
+        }
     }
 
 }

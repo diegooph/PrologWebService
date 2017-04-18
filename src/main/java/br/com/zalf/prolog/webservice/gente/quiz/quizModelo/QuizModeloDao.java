@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
 
 import java.sql.SQLException;
@@ -40,4 +41,24 @@ public interface QuizModeloDao {
      */
     public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
 
+    /**
+     * Atualiza dados gerais de um modelo de Quiz
+     *
+     * @param modeloQuiz
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     */
+    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
+
+    /**
+     * Atualiza os cargos associados a um modelo de quiz
+     *
+     * @param funcoes
+     * @param codModeloQuiz
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     */
+    public boolean updateCargosModeloQuiz(List<Funcao> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException;
 }

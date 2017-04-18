@@ -153,6 +153,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return quizzes;
     }
 
+
     public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -173,14 +174,20 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 Long codModeloQuiz = rSet.getLong("CODIGO");
                 modeloQuiz.setCodigo(codModeloQuiz);
                 // insere as perguntas e alternativas do modelo
-                insertPerguntasModeloQuiz(modeloQuiz.getPerguntas(), codModeloQuiz, codUnidade, conn);
+                if (modeloQuiz.getPerguntas() != null) {
+                    insertPerguntasModeloQuiz(modeloQuiz.getPerguntas(), codModeloQuiz, codUnidade, conn);
+                }
                 // insere os cargos que podem acessar esse modelo de quiz
-                insertCargosModeloQuiz(modeloQuiz.getFuncoesLiberadas(), codModeloQuiz, codUnidade, conn);
-                TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
+                if (modeloQuiz.getFuncoesLiberadas() != null) {
+                    insertCargosModeloQuiz(modeloQuiz.getFuncoesLiberadas(), codModeloQuiz, codUnidade, conn);
+                }
                 // insere o treinamento
-                Long codTreinamento = treinamentoDao.insert(modeloQuiz.getMaterialApoio());
-                // associa o treinamento ao modleo de quiz
-                insertQuizModeloTreinamento(codTreinamento, codModeloQuiz, codUnidade, conn);
+                TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
+                if (modeloQuiz.getMaterialApoio() != null) {
+                    Long codTreinamento = treinamentoDao.insert(modeloQuiz.getMaterialApoio());
+                    // associa o treinamento ao modleo de quiz
+                    insertQuizModeloTreinamento(codTreinamento, codModeloQuiz, codUnidade, conn);
+                }
                 conn.commit();
                 return codModeloQuiz;
             }
@@ -287,6 +294,42 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             }
         } finally {
             closeConnection(null, stmt, null);
+        }
+    }
+
+    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE quiz_modelo SET nome = ?, descricao = ?, data_hora_abertura = " +
+                    "?, data_hora_fechamento = ?, porcentagem_aprovacao = ? WHERE codigo = ? AND cod_unidade = ?");
+            stmt.setString(1, modeloQuiz.getNome());
+            stmt.setString(2, modeloQuiz.getDescricao());
+            stmt.setTimestamp(3, DateUtils.toTimestamp(modeloQuiz.getDataHoraAbertura()));
+            stmt.setTimestamp(4, DateUtils.toTimestamp(modeloQuiz.getDataHoraFechamento()));
+            stmt.setDouble(5, modeloQuiz.getPorcentagemAprovacao());
+            stmt.setLong(6, modeloQuiz.getCodigo());
+            stmt.setLong(7, codUnidade);
+            return stmt.executeUpdate() == 0;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    public boolean updateCargosModeloQuiz(List<Funcao> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM quiz_modelo_funcao WHERE cod_unidade = ? AND cod_modelo = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModeloQuiz);
+            stmt.executeUpdate();
+            insertCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade, conn);
+            return true;
+        } finally {
+            closeConnection(conn, stmt, null);
         }
     }
 }
