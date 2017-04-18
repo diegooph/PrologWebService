@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
-
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
