@@ -280,7 +280,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
-                updateStatusOs(item.getPlaca(), item.getCodOs(), conn);
+                updateStatusOs(placa, item.getCodOs(), conn);
                 veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
             }else{
                 throw new SQLException("Erro ao consertar o item");
