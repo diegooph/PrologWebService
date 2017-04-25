@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklistModelo;
+package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.commons.colaborador.Funcao;
 import br.com.zalf.prolog.commons.veiculo.TipoVeiculo;
