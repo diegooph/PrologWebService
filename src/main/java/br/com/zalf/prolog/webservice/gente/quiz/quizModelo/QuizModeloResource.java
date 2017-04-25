@@ -46,7 +46,7 @@ public class QuizModeloResource {
     @PUT
     @Secured
     @Path("/{codUnidade}")
-    public Response updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
+    public Response updateModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
         if (service.updateModeloQuiz(modeloQuiz, codUnidade)){
             return Response.Ok("Modelo de quiz atualizado com sucesso");
         } else {
