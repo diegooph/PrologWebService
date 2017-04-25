@@ -181,7 +181,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         PreparedStatement stmt = conn.prepareStatement("SELECT cp.pergunta, cap.alternativa, prioridade,\n" +
                 "sum( case when cr.resposta <> 'OK' then 1 else 0 end ) as contagem,\n" +
                 "count(cp.pergunta) as total,\n" +
-                "trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) 100) || '%' as proporcao\n" +
+                "trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) || '%' as proporcao\n" +
                 "FROM checklist c\n" +
                 "JOIN checklist_respostas cr ON c.cod_unidade = cr.cod_unidade AND cr.cod_checklist_modelo = c.cod_checklist_modelo\n" +
                 "JOIN checklist_perguntas cp ON cp.cod_unidade = C.cod_unidade AND cp.codigo = CR.cod_pergunta AND cp.cod_checklist_modelo = cr.cod_checklist_modelo\n" +
@@ -191,7 +191,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                 "AND cr.cod_checklist = c.codigo AND cr.cod_pergunta = cp.codigo AND cr.cod_alternativa = cap.codigo\n" +
                 "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ?\n" +
                 "GROUP BY 1, 2, 3\n" +
-                "ORDER BY trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) 100) desc");
+                "ORDER BY trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) desc");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
