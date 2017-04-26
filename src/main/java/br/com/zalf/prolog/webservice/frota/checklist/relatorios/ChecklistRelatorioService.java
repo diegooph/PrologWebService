@@ -29,8 +29,8 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                           @NotNull long dataInicial,
-                                           @NotNull long dataFinal) {
+                                            @NotNull long dataInicial,
+                                            @NotNull long dataFinal) {
         try {
             return dao.getChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
@@ -52,8 +52,8 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getExtratoChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
-                                                  @NotNull long dataInicial,
-                                                  @NotNull long dataFinal) {
+                                                   @NotNull long dataInicial,
+                                                   @NotNull long dataFinal) {
         try {
             return dao.getExtratoChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
@@ -79,6 +79,29 @@ class ChecklistRelatorioService {
                                             @NotNull long dataFinal) {
         try {
             return dao.getItensMaiorQuantidadeNokReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
+                                                 @NotNull Long codUnidade,
+                                                 @NotNull long dataInicial,
+                                                 @NotNull long dataFinal) {
+        try {
+            dao.getTempoRealizacaoChecklistMotoristaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NotNull
+    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
+                                                      @NotNull long dataInicial,
+                                                      @NotNull long dataFinal) {
+        try {
+            return dao.getTempoRealizacaoChecklistMotoristaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

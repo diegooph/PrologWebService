@@ -39,4 +39,13 @@ public interface ChecklistRelatorioDao {
     Report getItensMaiorQuantidadeNokReport(@NotNull Long codUnidade,
                                             @NotNull Date dataInicial,
                                             @NotNull Date dataFinal) throws SQLException;
+
+    void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
+                                       @NotNull Long codUnidade,
+                                       @NotNull Date dataInicial,
+                                       @NotNull Date dataFinal) throws SQLException, IOException;
+    @NotNull
+    Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
+                                            @NotNull Date dataInicial,
+                                            @NotNull Date dataFinal) throws SQLException;
 }

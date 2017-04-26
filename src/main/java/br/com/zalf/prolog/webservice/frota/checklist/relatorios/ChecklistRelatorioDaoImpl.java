@@ -101,7 +101,6 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-
     }
 
     @Override
@@ -114,6 +113,41 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         try {
             conn = getConnection();
             stmt = getItensMaiorQuantidadeNok(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportConverter.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
+                                                        @NotNull Long codUnidade,
+                                                        @NotNull Date dataInicial,
+                                                        @NotNull Date dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getTempoRealizacaoChecklistMotorista(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
+                                                             @NotNull Date dataInicial,
+                                                             @NotNull Date dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getTempoRealizacaoChecklistMotorista(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportConverter.createReport(rSet);
         } finally {
@@ -192,6 +226,28 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                 "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ?\n" +
                 "GROUP BY 1, 2, 3\n" +
                 "ORDER BY trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) desc");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, dataInicial);
+        stmt.setDate(3, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getTempoRealizacaoChecklistMotorista(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT co.nome as nome,\n" +
+                "f.nome as funcao,\n" +
+                " sum ( case when c.tipo = 'S' then 1 else 0 end ) as qt_checks_saida,\n" +
+                " sum ( case when c.tipo = 'R' then 1 else 0 end ) as qt_checks_retorno,\n" +
+                " count(c.tipo) as qt_total_checks_realizados,\n" +
+                "round(avg(c.tempo_realizacao)/60000) as md_minutos_realizacao\n" +
+                "FROM checklist c\n" +
+                " JOIN colaborador co on co.cpf = c.cpf_colaborador\n" +
+                " JOIN funcao f on f.codigo = co.cod_funcao and f.cod_empresa = \n" +
+                "co.cod_empresa\n" +
+                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ?\n" +
+                " GROUP BY co.nome, f.nome\n" +
+                "ORDER BY co.nome");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
