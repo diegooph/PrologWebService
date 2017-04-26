@@ -16,7 +16,7 @@ public class ChecklistRelatorioResource {
     private ChecklistRelatorioService service = new ChecklistRelatorioService();
 
     @GET
-    @Path("/realizados/{codUnidade}/csv")
+    @Path("/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput getCheckilistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                           @QueryParam("dataInicial") long dataInicial,
@@ -25,7 +25,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/realizados/{codUnidade}/report")
+    @Path("/{codUnidade}/report")
     public Report getCheckilistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
                                                     @QueryParam("dataInicial") long dataInicial,
                                                     @QueryParam("dataFinal") long dataFinal) {
@@ -33,7 +33,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/realizados/extrato/{codUnidade}/csv")
+    @Path("/extrato/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput getExtratoChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                                 @QueryParam("dataInicial") long dataInicial,
@@ -42,7 +42,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/realizados/extrato/{codUnidade}/report")
+    @Path("/extrato/{codUnidade}/report")
     public Report getExtratoChecklistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
                                                           @QueryParam("dataInicial") long dataInicial,
                                                           @QueryParam("dataFinal") long dataFinal) {
@@ -50,7 +50,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/realizados/tempos-motoristas/{codUnidade}/csv")
+    @Path("/tempos-motoristas/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput getTempoRealizacaoChecklistMotoristaCsv(@PathParam("codUnidade") Long codUnidade,
                                                                    @QueryParam("dataInicial") long dataInicial,
@@ -59,7 +59,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/realizados/tempos-motoristas/{codUnidade}/report")
+    @Path("/tempos-motoristas/{codUnidade}/report")
     public Report getTempoRealizacaoChecklistMotoristaReport(@PathParam("codUnidade") Long codUnidade,
                                                              @QueryParam("dataInicial") long dataInicial,
                                                              @QueryParam("dataFinal") long dataFinal) {
