@@ -21,4 +21,22 @@ public interface RelatoriosOrdemServicoDao {
     Report getItensMaiorQuantidadeNokReport(@NotNull Long codUnidade,
                                             @NotNull Date dataInicial,
                                             @NotNull Date dataFinal) throws SQLException;
+
+    void getMediaTempoConsertoItemCsv(@NotNull OutputStream outputStream,
+                                      @NotNull Long codUnidade,
+                                      @NotNull Date dataInicial,
+                                      @NotNull Date dataFinal) throws SQLException, IOException;
+    @NotNull
+    Report getMediaTempoConsertoItemReport(@NotNull Long codUnidade,
+                                           @NotNull Date dataInicial,
+                                           @NotNull Date dataFinal) throws SQLException;
+
+    void getProdutividadeMecanicosCsv(@NotNull OutputStream outputStream,
+                                      @NotNull Long codUnidade,
+                                      @NotNull Date dataInicial,
+                                      @NotNull Date dataFinal) throws SQLException, IOException;
+    @NotNull
+    Report getProdutividadeMecanicosReport(@NotNull Long codUnidade,
+                                           @NotNull Date dataInicial,
+                                           @NotNull Date dataFinal) throws SQLException;
 }

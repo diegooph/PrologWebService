@@ -16,7 +16,7 @@ public class RelatoriosOrdemServicoResource {
     private RelatoriosOrdemServicoService service = new RelatoriosOrdemServicoService();
 
     @GET
-    @Path("/itens-nok/{codUnidade}/csv")
+    @Path("/itens/maior-quantidade-nok/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput getItensMaiorQuantidadeNokCsv(@PathParam("codUnidade") Long codUnidade,
                                                          @QueryParam("dataInicial") long dataInicial,
@@ -25,10 +25,44 @@ public class RelatoriosOrdemServicoResource {
     }
 
     @GET
-    @Path("/itens-nok/{codUnidade}/report")
+    @Path("/itens/maior-quantidade-nok/{codUnidade}/report")
     public Report getItensMaiorQuantidadeNokReport(@PathParam("codUnidade") Long codUnidade,
                                                    @QueryParam("dataInicial") long dataInicial,
                                                    @QueryParam("dataFinal") long dataFinal) {
         return service.getItensMaiorQuantidadeNokReport(codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/itens/media-tempo-conserto/{codUnidade}/csv")
+    @Produces("application/csv")
+    public StreamingOutput getMediaTempoConsertoItemCsv(@PathParam("codUnidade") Long codUnidade,
+                                                        @QueryParam("dataInicial") long dataInicial,
+                                                        @QueryParam("dataFinal") long dataFinal) {
+        return outputStream -> service.getMediaTempoConsertoItemCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/itens/media-tempo-conserto/{codUnidade}/report")
+    public Report getMediaTempoConsertoItemReport(@PathParam("codUnidade") Long codUnidade,
+                                                  @QueryParam("dataInicial") long dataInicial,
+                                                  @QueryParam("dataFinal") long dataFinal) {
+        return service.getMediaTempoConsertoItemReport(codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/produtividade-mecanicos/{codUnidade}/csv")
+    @Produces("application/csv")
+    public StreamingOutput getProdutividadeMecanicosCsv(@PathParam("codUnidade") Long codUnidade,
+                                                        @QueryParam("dataInicial") long dataInicial,
+                                                        @QueryParam("dataFinal") long dataFinal) {
+        return outputStream -> service.getProdutividadeMecanicosCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/produtividade-mecanicos/{codUnidade}/report")
+    public Report getProdutividadeMecanicosReport(@PathParam("codUnidade") Long codUnidade,
+                                                  @QueryParam("dataInicial") long dataInicial,
+                                                  @QueryParam("dataFinal") long dataFinal) {
+        return service.getProdutividadeMecanicosReport(codUnidade, dataInicial, dataFinal);
     }
 }
