@@ -1,5 +1,4 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
-
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.questoes.Alternativa;
 import br.com.zalf.prolog.commons.util.DateUtils;
@@ -10,7 +9,6 @@ import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.frota.checklist.os.ItemOrdemServico;
 import br.com.zalf.prolog.frota.checklist.os.ManutencaoHolder;
 import br.com.zalf.prolog.frota.checklist.os.OrdemServico;
-import br.com.zalf.prolog.frota.checklist.os.Tempo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
@@ -20,8 +18,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jean on 10/08/16.
@@ -79,7 +77,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "VT.codigo::TEXT LIKE ? \n "  +
                     "ORDER BY cos.codigo desc\n" +
                     "%s";
-           if (limit != null && offset != null){
+            if (limit != null && offset != null){
                 query = String.format(query, " LIMIT " + limit +  "OFFSET " + offset);
             }else{
                 query = String.format(query, "");
@@ -269,7 +267,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND COD_PERGUNTA = ? AND " +
                     "COD_ALTERNATIVA = ? ");
             stmt.setLong(1, item.getMecanico().getCpf());
-            stmt.setLong(2, item.getTempoRealizacaoConsertoInMillis());
+            stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
             stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
@@ -303,7 +301,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         calendar.add(Calendar.HOUR, prazoHoras);// data apontamento + prazo
         Date dataMaxima = calendar.getTime(); // data máxima de resolução
         long tempoRestante = dataMaxima.getTime() - System.currentTimeMillis();
-        itemManutencao.setTempoRestante(createTempo(TimeUnit.MILLISECONDS.toMinutes(tempoRestante)));
+        itemManutencao.setTempoRestante(Duration.ofMillis(tempoRestante));
     }
 
     /**
@@ -466,7 +464,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 item.setPergunta(pergunta);
                 item.setPlaca(rSet.getString("placa_veiculo"));
                 item.setDataApontamento(rSet.getTimestamp("data_hora"));
-                item.setTempoLimiteResolucao(createTempo(TimeUnit.HOURS.toMinutes(rSet.getLong("PRAZO"))));
+                item.setTempoLimiteResolucao(Duration.ofHours(rSet.getLong("PRAZO")));
                 setTempoRestante(item, rSet.getInt("prazo"));
                 item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
                 item.setStatus(ItemOrdemServico.Status.fromString(rSet.getString("status_item")));
@@ -475,7 +473,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     mecanico.setCpf(rSet.getLong("cpf_mecanico"));
                     mecanico.setNome(rSet.getString("nome_mecanico"));
                     item.setMecanico(mecanico);
-                    item.setTempoRealizacaoConsertoInMillis(rSet.getLong("tempo_realizacao"));
+                    item.setTempoRealizacaoConserto(Duration.ofMillis(rSet.getLong("tempo_realizacao")));
                     item.setKmVeiculoFechamento(rSet.getLong("km_fechamento"));
                     item.setDataHoraConserto(rSet.getTimestamp("data_hora_conserto"));
                     item.setFeedbackResolucao(rSet.getString("feedback_conserto"));
@@ -551,29 +549,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             }
         }
         return null;
-    }
-
-    /**
-     * Cria o objeto Tempo, transforma uma quantidade de horas (prazo) em dias, horas e minutos
-     * @param temp um Temp
-     * @return um Temp
-     */
-    private Tempo createTempo(long temp){
-        Tempo tempo = new Tempo();
-        if (temp < MINUTOS_NUMA_HORA) {
-            tempo.setMinuto((int)temp);
-        } else if (temp < MINUTOS_NUM_DIA) {
-            long hours = TimeUnit.MINUTES.toHours(temp);
-            temp = hours % 60;
-            tempo.setHora((int)hours);
-            tempo.setMinuto((int)temp);
-        } else if (temp >= MINUTOS_NUM_DIA) {
-            long days = TimeUnit.MINUTES.toDays(temp);
-            long hours = TimeUnit.MINUTES.toHours(temp) % 24;
-            tempo.setDia((int)days);
-            tempo.setHora((int)hours);;
-        }
-        return tempo;
     }
 
     private void updateStatusOs (String placa, Long codOs, Connection conn) throws SQLException{
