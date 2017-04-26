@@ -30,7 +30,7 @@ public class QuizModeloResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Gente.Relatorios.VISUALIZAR)
+    @Secured(permissions = Pilares.Gente.Relatorios.QUIZ)
     @Path("/{codUnidade}")
     public List<ModeloQuiz> getModelosQuizByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getModelosQuizByCodUnidade(codUnidade);
