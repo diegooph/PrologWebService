@@ -62,29 +62,6 @@ class ChecklistRelatorioService {
         }
     }
 
-    void getItensMaiorQuantidadeNokCsv(@NotNull OutputStream outputStream,
-                                       @NotNull Long codUnidade,
-                                       @NotNull long dataInicial,
-                                       @NotNull long dataFinal) {
-        try {
-            dao.getItensMaiorQuantidadeNokCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @NotNull
-    Report getItensMaiorQuantidadeNokReport(@NotNull Long codUnidade,
-                                            @NotNull long dataInicial,
-                                            @NotNull long dataFinal) {
-        try {
-            return dao.getItensMaiorQuantidadeNokReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
                                                  @NotNull Long codUnidade,
                                                  @NotNull long dataInicial,
