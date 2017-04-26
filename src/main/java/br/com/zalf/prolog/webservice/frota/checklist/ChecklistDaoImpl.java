@@ -6,8 +6,8 @@ import br.com.zalf.prolog.frota.checklist.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
