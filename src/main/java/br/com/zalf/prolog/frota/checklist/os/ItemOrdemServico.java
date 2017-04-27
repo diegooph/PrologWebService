@@ -2,7 +2,9 @@ package br.com.zalf.prolog.frota.checklist.os;
 
 import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.frota.checklist.PerguntaRespostaChecklist;
+import com.google.gson.annotations.SerializedName;
 
+import java.time.Duration;
 import java.util.Date;
 
 /**
@@ -54,22 +56,25 @@ public class ItemOrdemServico {
      */
     private Date dataHoraConserto;
     /**
-     * Tempo que o item levou para ser consertado
-     */
-    private Tempo tempoRealizacaoConserto;
-    /**
      * Km do veículo no momento em que o item foi fechado
      */
     private long kmVeiculoFechamento;
     private Status status;
     /**
+     * Tempo que o item levou para ser consertado
+     */
+    @SerializedName("tempoRealizacaoConsertoEmSegundos")
+    private Duration tempoRealizacaoConserto;
+    /**
      * Prazo em horas para conserto do item
      */
-    private Tempo tempoLimiteResolucao;
+    @SerializedName("tempoLimiteResolucaoEmSegundos")
+    private Duration tempoLimiteResolucao;
     /**
      * Tempo restante para consertar o item, baseado na sua prioridade
      */
-    private Tempo tempoRestante;
+    @SerializedName("tempoRestanteEmSegundos")
+    private Duration tempoRestante;
     /**
      * Observação do serviço realizado
      */
@@ -130,11 +135,11 @@ public class ItemOrdemServico {
         this.status = status;
     }
 
-    public Tempo getTempoRestante() {
+    public Duration getTempoRestante() {
         return tempoRestante;
     }
 
-    public void setTempoRestante(Tempo tempoRestante) {
+    public void setTempoRestante(Duration tempoRestante) {
         this.tempoRestante = tempoRestante;
     }
 
@@ -162,11 +167,11 @@ public class ItemOrdemServico {
         this.dataApontamento = dataApontamento;
     }
 
-    public Tempo getTempoLimiteResolucao() {
+    public Duration getTempoLimiteResolucao() {
         return tempoLimiteResolucao;
     }
 
-    public void setTempoLimiteResolucao(Tempo tempoLimiteResolucao) {
+    public void setTempoLimiteResolucao(Duration tempoLimiteResolucao) {
         this.tempoLimiteResolucao = tempoLimiteResolucao;
     }
 
@@ -178,11 +183,11 @@ public class ItemOrdemServico {
         this.dataHoraConserto = dataHoraConserto;
     }
 
-    public Tempo getTempoRealizacaoConserto() {
+    public Duration getTempoRealizacaoConserto() {
         return tempoRealizacaoConserto;
     }
 
-    public void setTempoRealizacaoConserto(Tempo tempoRealizacaoConserto) {
+    public void setTempoRealizacaoConserto(Duration tempoRealizacaoConserto) {
         this.tempoRealizacaoConserto = tempoRealizacaoConserto;
     }
 
