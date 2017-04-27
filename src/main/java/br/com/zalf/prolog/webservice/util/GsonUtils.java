@@ -23,21 +23,24 @@ import com.google.gson.GsonBuilder;
 
 import java.time.Duration;
 
-public class GsonUtils {
+public final class GsonUtils {
 
-	private static final GsonBuilder sBuilder;
+	private static final Gson sGson;
+
+	private GsonUtils() {
+
+	}
 
     static {
-
-		sBuilder = new GsonBuilder()
+		GsonBuilder builder = new GsonBuilder()
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 				.serializeSpecialFloatingPointValues()
-				.registerTypeAdapter(Duration.class, new DurationSerializer())
 				.registerTypeAdapter(Duration.class, new DurationDeserializer())
+				.registerTypeAdapter(Duration.class, new DurationSerializer())
 				.enableComplexMapKeySerialization();
 
 		if (BuildConfig.DEBUG) {
-			sBuilder.setPrettyPrinting();
+			builder.setPrettyPrinting();
 		}
 
 		RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
@@ -71,15 +74,16 @@ public class GsonUtils {
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class);
 
-        sBuilder.registerTypeAdapterFactory(adapterServico);
-		sBuilder.registerTypeAdapterFactory(adapterAlternativa);
-        sBuilder.registerTypeAdapterFactory(adapterResponse);
-        sBuilder.registerTypeAdapterFactory(adapterOrigem);
-		sBuilder.registerTypeAdapterFactory(adapterDestino);
+		builder.registerTypeAdapterFactory(adapterServico);
+		builder.registerTypeAdapterFactory(adapterAlternativa);
+		builder.registerTypeAdapterFactory(adapterResponse);
+		builder.registerTypeAdapterFactory(adapterOrigem);
+		builder.registerTypeAdapterFactory(adapterDestino);
+
+		sGson = builder.create();
 	}
 
-
 	public static Gson getGson()  {
-		return sBuilder.create();
+		return sGson;
 	}
 }
