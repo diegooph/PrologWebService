@@ -495,8 +495,13 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.veicBM = Double.parseDouble(linha.get(20).replace(",","."));
 		mapa.rShow = Integer.parseInt(linha.get(21));
 		mapa.entrVol = linha.get(22).replace(" ","");
-		mapa.hrSai = toTimestamp(linha.get(23));
-		mapa.hrEntr = toTimestamp(linha.get(24));
+		if(linha.get(23).equals(String.valueOf(0))){
+				mapa.hrSai = toTimestamp("00/00/0000 00:00");
+				mapa.hrEntr  = toTimestamp("00/00/0000 00:00");
+		}else{
+			mapa.hrSai = toTimestamp(linha.get(23));
+			mapa.hrEntr = toTimestamp(linha.get(24));
+		}
 		mapa.kmSai = Integer.parseInt(linha.get(25));
 		mapa.kmEntr = Integer.parseInt(linha.get(26));
 		mapa.custoVariavel = Double.parseDouble(linha.get(27).replace(",","."));
@@ -553,7 +558,11 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.vlRecargaMot = Double.parseDouble(linha.get(71).replace(",","."));
 		mapa.vlBateuJornAju = Double.parseDouble(linha.get(72).replace(",","."));
 		mapa.vlNaoBateuJornAju = Double.parseDouble(linha.get(73).replace(",","."));
-		mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",","."));
+		if(linha.get(74).trim().isEmpty()){
+			mapa.vlRecargaAju = 0;
+		}else{
+			mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",","."));
+		}
 		mapa.vlTotalMapa = Double.parseDouble(linha.get(75).replace(",","."));
 		mapa.qtHlCarregados = Double.parseDouble(linha.get(76).replace(",","."));
 		mapa.qtHlEntregues = Double.parseDouble(linha.get(77).replace(",","."));
