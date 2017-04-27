@@ -284,9 +284,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog CF\n" +
+			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_V11 CF\n" +
 					"JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+					"JOIN FUNCAO_PROLOG_V11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
 					"WHERE CF.cod_unidade = ? AND cod_funcao_colaborador::text like ?\n" +
 					"ORDER BY PP.pilar, FP.funcao");
 			stmt.setLong(1, codUnidade);
@@ -316,7 +316,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao\n" +
 					"FROM PILAR_PROLOG PP\n" +
-					"JOIN FUNCAO_PROLOG FP ON FP.cod_pilar = PP.codigo\n" +
+					"JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo\n" +
 					"JOIN unidade_pilar_prolog upp on upp.cod_pilar = pp.codigo\n" +
 					"WHERE upp.cod_unidade = ?\n" +
 					"ORDER BY PP.pilar, FP.funcao");
@@ -742,7 +742,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			conn.setAutoCommit(false);
 			// Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
 			deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
-			stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
+			stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
 					"COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
@@ -767,7 +767,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
 	private boolean deleteCargoFuncaoProlog(long codCargo, Long codUnidade, Connection conn, PreparedStatement stmt) throws SQLException{
 		try{
-			stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG WHERE COD_UNIDADE = ? AND " +
+			stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE COD_UNIDADE = ? AND " +
 					"COD_FUNCAO_COLABORADOR = ? ");
 			stmt.setLong(1, codUnidade);
 			stmt.setLong(2, codCargo);
