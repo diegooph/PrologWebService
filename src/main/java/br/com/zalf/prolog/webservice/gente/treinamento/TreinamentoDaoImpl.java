@@ -201,7 +201,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
         treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
         treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-        treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo(), treinamento.getCodUnidade()));
+        treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo()));
         return treinamento;
     }
 
@@ -327,7 +327,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 treinamento.setTitulo(rSet.getString("TITULO"));
                 treinamento.setDataLiberacao(rSet.getTimestamp("DATA_LIBERACAO"));
                 treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
-                treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(codTreinamento, codUnidade));
+                treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(codTreinamento));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -335,7 +335,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         return treinamento;
     }
 
-    private List<String> getUrlImagensTreinamento(Long codTreinamento, Long codUnidade) throws SQLException {
+    private List<String> getUrlImagensTreinamento(Long codTreinamento) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -343,10 +343,9 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT URL FROM TREINAMENTO_URL_PAGINAS " +
-                    "WHERE COD_TREINAMENTO = ? AND COD_UNIDADE = ? " +
+                    "WHERE COD_TREINAMENTO = ? " +
                     "ORDER BY ORDEM");
             stmt.setLong(1, codTreinamento);
-            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 urls.add(rSet.getString("URL"));
