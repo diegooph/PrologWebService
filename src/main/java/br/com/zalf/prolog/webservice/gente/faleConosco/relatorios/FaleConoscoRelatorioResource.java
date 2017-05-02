@@ -20,18 +20,18 @@ public class FaleConoscoRelatorioResource {
 
     @GET
     @Secured
-    @Path("/resumo/{codUnidade}/csv")
-    public StreamingOutput getResumoCsv(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") Date dataInicial,
-                                        @QueryParam("dataFinal") Date dataFinal) {
-        return outputStream -> service.getResumoCsv(codUnidade, outputStream, dataInicial, dataFinal);
+    @Path("/resumos/{codUnidade}/csv")
+    public StreamingOutput getResumoCsv(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") long dataInicial,
+                                        @QueryParam("dataFinal") long dataFinal) {
+        return outputStream -> service.getResumoCsv(codUnidade, outputStream, new Date(dataInicial), new Date(dataFinal));
     }
 
     @GET
     @Secured
-    @Path("/resumo/{codUnidade}/report")
-    public Report getResumoReport(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") Date dataInicial,
-                                  @QueryParam("dataFinal") Date dataFinal) {
-        return service.getResumoReport(codUnidade, dataInicial, dataFinal);
+    @Path("/resumos/{codUnidade}/report")
+    public Report getResumoReport(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") long dataInicial,
+                                  @QueryParam("dataFinal") long dataFinal) {
+        return service.getResumoReport(codUnidade, new Date(dataInicial),  new Date(dataFinal));
     }
 
 
