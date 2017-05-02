@@ -8,6 +8,7 @@ Change Log
 * Novo método para buscar todos os Fale Conosco, agora é possível informar o cpf de quem queremos buscar ou buscar 
 de todos os CPFs
 * Novo relatório dos pneus, retorna os resumo da última aferição de cada pneu, além de a placa e posição do mesmo
+* Novo relatório para estratificar os fale conosco
 
 #### Refactor
 * Removida a coluna cod_unidade das buscas por um treinamento
