@@ -8,5 +8,8 @@ Change Log
 * Novo método para buscar todos os Fale Conosco, agora é possível informar o cpf de quem queremos buscar ou buscar 
 de todos os CPFs
 
+#### Refactor
+* Removida a coluna cod_unidade das buscas por um treinamento
+
 #### Deprecated
 * Método antigo de buscar todos os Fale Conosco que não recebe o CPF como parâmetro
