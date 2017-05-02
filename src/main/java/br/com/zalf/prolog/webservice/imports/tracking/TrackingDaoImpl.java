@@ -341,7 +341,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 //					tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
 //				}
 		if(containsNumber(linha.get(27))){
-			tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(",", "."));
+			tracking.dispApontCadastrado = Double.parseDouble(linha.get(27).replace(".", "").replace(",", "."));
 		}
 		if(!String.valueOf(linha.get(28)).trim().isEmpty()){
 			tracking.latEntrega = linha.get(28).replace(",", ".");
