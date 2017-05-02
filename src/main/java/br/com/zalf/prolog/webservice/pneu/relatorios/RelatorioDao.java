@@ -97,4 +97,8 @@ public interface RelatorioDao {
 
 	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
+	public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws SQLException, IOException;
+
+	public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
+
 }

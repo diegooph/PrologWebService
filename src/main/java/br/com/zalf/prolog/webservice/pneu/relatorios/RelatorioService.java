@@ -116,4 +116,21 @@ public class RelatorioService {
         }
     }
 
+    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) {
+        try {
+            dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+        }catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getDadosUltimaAfericaoReport(Long codUnidade) {
+        try {
+            return dao.getDadosUltimaAfericaoReport(codUnidade);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

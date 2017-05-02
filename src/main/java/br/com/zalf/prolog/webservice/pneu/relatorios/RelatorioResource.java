@@ -117,4 +117,18 @@ public class RelatorioResource {
 										   @QueryParam("offset") long offset) {
 		return service.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
 	}
+
+	@GET
+	@Secured
+	@Path("/afericoes/resumo/pneus/{codUnidade}/csv")
+	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) {
+		return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/afericoes/resumo/pneus/{codUnidade}/report")
+	public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
+		return service.getDadosUltimaAfericaoReport(codUnidade);
+	}
 }

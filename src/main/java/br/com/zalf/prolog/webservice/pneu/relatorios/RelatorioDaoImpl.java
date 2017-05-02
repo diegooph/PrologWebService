@@ -713,4 +713,62 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			return Double.compare(o1.getInicio(), o2.getInicio());
 		}
 	}
+
+	@Override
+	public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream)
+			throws IOException, SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+			rSet = stmt.executeQuery();
+			new CsvWriter().write(rSet, outputStream);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+			rSet = stmt.executeQuery();
+			return ReportConverter.createReport(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
+			throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("SELECT P.codigo,\n" +
+				"  POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU,\n" +
+				"  POSICAO_PNEU_VEICULO.POSICAO_PNEU,\n" +
+				"  P.altura_sulco_interno,\n" +
+				"  P.altura_sulco_central,\n" +
+				"  P.altura_sulco_externo,\n" +
+				"  to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM')\n" +
+				"  FROM PNEU P\n" +
+				"    JOIN\n" +
+				"(SELECT VP.posicao AS POSICAO_PNEU, VP.cod_pneu AS CODIGO_PNEU, VP.placa AS PLACA_VEICULO_PNEU, VP.cod_unidade AS COD_UNIDADE_PNEU\n" +
+				"FROM veiculo V\n" +
+				"  JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
+				"WHERE V.cod_unidade = 1\n" +
+				"ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
+				"    JOIN\n" +
+				"    (SELECT AV.cod_pneu, AV.cod_unidade AS COD_UNIDADE_DATA, MAX(A.data_hora) AS ULTIMA_AFERICAO\n" +
+				"  FROM AFERICAO A JOIN  afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
+				"GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
+				"WHERE P.cod_unidade = ?;");
+		stmt.setLong(1, codUnidade);
+		return stmt;
+	}
+
+
 }
