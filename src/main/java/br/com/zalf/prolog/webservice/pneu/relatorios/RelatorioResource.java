@@ -100,7 +100,7 @@ public class RelatorioResource {
 	}
 
 	@GET
-	@Path("/aderencia/placas/{codUnidade}/report")
+	@Path("/aderencias/placas/{codUnidade}/report")
 	public Report getAderenciaPlacasReport(@PathParam("codUnidade") Long codUnidade,
 										   @QueryParam("dataInicial") long dataInicial,
 										   @QueryParam("dataFinal") long dataFinal) throws SQLException{
