@@ -249,7 +249,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					}
 				}
 			}
-			modeloPlaca.put(modelo, placas);
+			if(modelo != null) {
+				modeloPlaca.put(modelo, placas);
+			}
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
