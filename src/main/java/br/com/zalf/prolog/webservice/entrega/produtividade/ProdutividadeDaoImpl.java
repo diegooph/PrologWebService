@@ -30,65 +30,126 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT M.DATA, CASE when MOTORISTA.cpf = SOLICITANTE.CPF and m.entrega <> 'AS' then   (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
-					"when AJ1.cpf = SOLICITANTE.cpf and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
-					"when AJ2.cpf = SOLICITANTE.cpf and m.entrega <> 'AS' then   (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju)/m.fator\n" +
-					"else 0\n" +
-					"end +\n" +
-					"-- case para calcular o valor quando é AS\n" +
-					"CASE when MOTORISTA.cpf = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
-					"--case para calcular o valor com base no número de entregas\n" +
-					"(case when m.entregas = 1 then uv.rm_motorista_valor_as_1_entrega\n" +
-					"when m.entregas = 2 then uv.rm_motorista_valor_as_2_entregas\n" +
-					"when m.entregas > 2 then uv.rm_motorista_valor_as_maior_2_entregas\n" +
-					"else 0\n" +
-					"end)\n" +
-					"when AJ1.CPF = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
-					"--case para calcular o valor com base no número de entregas\n" +
-					"(case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
-					"when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
-					"when m.entregas > 2 then uv.rm_ajudante_valor_as_maior_2_entregas\n" +
-					"else 0\n" +
-					"end)\n" +
-					"when AJ2.CPF = SOLICITANTE.cpf and m.entrega = 'AS' then\n" +
-					"--case para calcular o valor com base no número de entregas\n" +
-					"(case when m.entregas = 1 then uv.rm_ajudante_valor_as_1_entrega\n" +
-					"when m.entregas = 2 then uv.rm_ajudante_valor_as_2_entregas\n" +
-					"when m.entregas > 2 then uv.rm_ajudante_valor_as_maior_2_entregas\n" +
-					"else 0\n" +
-					"end)\n" +
-					"else 0\n" +
-					"end as valor , m.fator, m.cargaatual, m.entrega,\n" +
-					"M.DATA,  M.mapa, M.PLACA, M.cxcarreg, m.cxentreg,M.QTHLCARREGADOS,\n" +
-					"M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr,\n" +
-					"to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
-					"M.HRSAI,  M.HRENTR,\n" +
-					"to_seconds(((M.hrentr - M.hrsai)::time)::text) AS TEMPO_ROTA,\n" +
-					"to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,\n" +
-					"tracking.apontamentos_ok as apontamentos_ok,\n" +
-					"tracking.total_apontamentos as total_tracking,\n" +
-					"to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
-					"end)::text) as tempo_largada,\n" +
-					"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
-					"um.meta_dev_hl, um.meta_dev_nf, um.meta_dev_pdv, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
-					"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
+			stmt = conn.prepareStatement("SELECT\n" +
+					"  M.DATA,\n" +
+					"  CASE WHEN MOTORISTA.cpf = SOLICITANTE.CPF AND m.entrega <> 'AS'\n" +
+					"    THEN (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)\n" +
+					"  WHEN AJ1.cpf = SOLICITANTE.cpf AND m.entrega <> 'AS'\n" +
+					"    THEN (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju) / m.fator\n" +
+					"  WHEN AJ2.cpf = SOLICITANTE.cpf AND m.entrega <> 'AS'\n" +
+					"    THEN (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju) / m.fator\n" +
+					"  ELSE 0\n" +
+					"  END +\n" +
+					"  -- case para calcular o valor quando é AS\n" +
+					"  CASE WHEN MOTORISTA.cpf = SOLICITANTE.cpf AND m.entrega = 'AS'\n" +
+					"    THEN\n" +
+					"      --case para calcular o valor com base no número de entregas\n" +
+					"      (CASE WHEN m.entregas = 1\n" +
+					"        THEN uv.rm_motorista_valor_as_1_entrega\n" +
+					"       WHEN m.entregas = 2\n" +
+					"         THEN uv.rm_motorista_valor_as_2_entregas\n" +
+					"       WHEN m.entregas = 3\n" +
+					"         THEN uv.rm_motorista_valor_as_3_entregas\n" +
+					"        WHEN m.entregas > 3\n" +
+					"         THEN uv.rm_motorista_valor_as_maior_3_entregas\n" +
+					"       ELSE 0\n" +
+					"       END)\n" +
+					"  WHEN AJ1.CPF = SOLICITANTE.cpf AND m.entrega = 'AS'\n" +
+					"    THEN\n" +
+					"      --case para calcular o valor com base no número de entregas\n" +
+					"      (CASE WHEN m.entregas = 1\n" +
+					"        THEN uv.rm_ajudante_valor_as_1_entrega\n" +
+					"       WHEN m.entregas = 2\n" +
+					"         THEN uv.rm_ajudante_valor_as_2_entregas\n" +
+					"        WHEN m.entregas = 3\n" +
+					"         THEN uv.rm_ajudante_valor_as_3_entregas\n" +
+					"       WHEN m.entregas > 3\n" +
+					"         THEN uv.rm_ajudante_valor_as_maior_3_entregas\n" +
+					"       ELSE 0\n" +
+					"       END)\n" +
+					"  WHEN AJ2.CPF = SOLICITANTE.cpf AND m.entrega = 'AS'\n" +
+					"    THEN\n" +
+					"      --case para calcular o valor com base no número de entregas\n" +
+					"      (CASE WHEN m.entregas = 1\n" +
+					"        THEN uv.rm_ajudante_valor_as_1_entrega\n" +
+					"       WHEN m.entregas = 2\n" +
+					"         THEN uv.rm_ajudante_valor_as_2_entregas\n" +
+					"        WHEN m.entregas = 3\n" +
+					"         THEN uv.rm_ajudante_valor_as_3_entregas\n" +
+					"       WHEN m.entregas > 2\n" +
+					"         THEN uv.rm_ajudante_valor_as_maior_3_entregas\n" +
+					"       ELSE 0\n" +
+					"       END)\n" +
+					"  ELSE 0\n" +
+					"  END AS valor,\n" +
+					"  m.fator,\n" +
+					"  m.cargaatual,\n" +
+					"  m.entrega,\n" +
+					"  M.DATA,\n" +
+					"  M.mapa,\n" +
+					"  M.PLACA,\n" +
+					"  M.cxcarreg,\n" +
+					"  m.cxentreg,\n" +
+					"  M.QTHLCARREGADOS,\n" +
+					"  M.QTHLENTREGUES,\n" +
+					"  M.QTNFCARREGADAS,\n" +
+					"  M.QTNFENTREGUES,\n" +
+					"  M.entregascompletas,\n" +
+					"  M.entregasnaorealizadas,\n" +
+					"  m.entregasparciais,\n" +
+					"  M.kmprevistoroad,\n" +
+					"  M.kmsai,\n" +
+					"  M.kmentr,\n" +
+					"  to_seconds(M.tempoprevistoroad :: TEXT) AS tempoprevistoroad,\n" +
+					"  M.HRSAI,\n" +
+					"  M.HRENTR,\n" +
+					"  to_seconds(((M.hrentr - M.hrsai) :: TIME) :: TEXT) AS TEMPO_ROTA,\n" +
+					"  to_seconds(M.TEMPOINTERNO :: TEXT) AS tempointerno,\n" +
+					"  M.HRMATINAL,\n" +
+					"  tracking.apontamentos_ok AS apontamentos_ok,\n" +
+					"  tracking.total_apontamentos AS total_tracking,\n" +
+					"  to_seconds((CASE WHEN m.hrsai :: TIME < m.hrmatinal\n" +
+					"    THEN um.meta_tempo_largada_horas\n" +
+					"              ELSE (m.hrsai - m.hrmatinal) :: TIME\n" +
+					"              END) :: TEXT) AS tempo_largada,\n" +
+					"  um.meta_tracking,\n" +
+					"  um.meta_tempo_rota_mapas,\n" +
+					"  um.meta_caixa_viagem,\n" +
+					"  um.meta_dev_hl,\n" +
+					"  um.meta_dev_nf,\n" +
+					"  um.meta_dev_pdv,\n" +
+					"  um.meta_dispersao_km,\n" +
+					"  um.meta_dispersao_tempo,\n" +
+					"  um.meta_jornada_liquida_mapas,\n" +
+					"  um.meta_raio_tracking,\n" +
+					"  um.meta_tempo_interno_mapas,\n" +
+					"  um.meta_tempo_largada_mapas,\n" +
+					"  to_seconds(um.meta_tempo_rota_horas :: TEXT)       AS meta_tempo_rota_horas,\n" +
+					"  to_seconds(um.meta_tempo_interno_horas :: TEXT)    AS meta_tempo_interno_horas,\n" +
+					"  to_seconds(um.meta_tempo_largada_horas :: TEXT)    AS meta_tempo_largada_horas,\n" +
+					"  to_seconds(um.meta_jornada_liquida_horas :: TEXT)  AS meta_jornada_liquida_horas\n" +
 					"FROM\n" +
-					"mapa m\n" +
-					"join unidade_metas um on um.cod_unidade = m.cod_unidade and M.DATA BETWEEN ? AND ? \n" +
-					"join unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade\n" +
-					"LEFT JOIN (SELECT t.mapa as tracking_mapa,\n" +
-					"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
-					"else 0 end) as apontamentos_ok,\n" +
-					"count(t.disp_apont_cadastrado) as total_apontamentos\n" +
-					"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
-					"group by 1) as tracking on tracking_mapa = m.mapa\n" +
-					"\tJOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON M.cod_unidade = UFP.COD_UNIDADE\n" +
-					"\tJOIN COLABORADOR MOTORISTA ON MOTORISTA.matricula_ambev = M.matricmotorista AND MOTORISTA.cod_funcao = UFP.COD_FUNCAO_MOTORISTA\n" +
-					"\tLEFT JOIN COLABORADOR AJ1 ON AJ1.matricula_ambev = M.matricajud1 AND AJ1.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
-					"\tLEFT JOIN COLABORADOR AJ2 ON AJ2.matricula_ambev = M.matricajud2 AND AJ2.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
-					"  LEFT JOIN COLABORADOR SOLICITANTE ON SOLICITANTE.CPF = ? \n" +
-					"where MOTORISTA.cpf  = ? OR AJ1.cpf  = ? OR AJ2.cpf  = ?\n" +
-					"order by m.data;\n");
+					"  mapa m\n" +
+					"  JOIN unidade_metas um\n" +
+					"    ON um.cod_unidade = m.cod_unidade AND M.DATA BETWEEN ? AND ?\n" +
+					"  JOIN unidade_valores_rm uv ON uv.cod_unidade = m.cod_unidade\n" +
+					"  LEFT JOIN (SELECT\n" +
+					"               t.mapa                         AS tracking_mapa,\n" +
+					"               sum(CASE WHEN t.disp_apont_cadastrado <= um.meta_raio_tracking\n" +
+					"                 THEN 1\n" +
+					"                   ELSE 0 END)                AS apontamentos_ok,\n" +
+					"               count(t.disp_apont_cadastrado) AS total_apontamentos\n" +
+					"             FROM tracking t\n" +
+					"               JOIN unidade_metas um ON um.cod_unidade = t.código_transportadora\n" +
+					"             GROUP BY 1) AS tracking ON tracking_mapa = m.mapa\n" +
+					"  JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON M.cod_unidade = UFP.COD_UNIDADE\n" +
+					"  JOIN COLABORADOR MOTORISTA\n" +
+					"    ON MOTORISTA.matricula_ambev = M.matricmotorista AND MOTORISTA.cod_funcao = UFP.COD_FUNCAO_MOTORISTA\n" +
+					"  LEFT JOIN COLABORADOR AJ1 ON AJ1.matricula_ambev = M.matricajud1 AND AJ1.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
+					"  LEFT JOIN COLABORADOR AJ2 ON AJ2.matricula_ambev = M.matricajud2 AND AJ2.cod_funcao = UFP.COD_FUNCAO_AJUDANTE\n" +
+					"  LEFT JOIN COLABORADOR SOLICITANTE ON SOLICITANTE.CPF = ?\n" +
+					"WHERE MOTORISTA.cpf = ? OR AJ1.cpf = ? OR AJ2.cpf = ?\n" +
+					"ORDER BY m.data");
 			stmt.setDate(1, getDataInicial(ano, mes));
 			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
 			stmt.setLong(3, cpf);

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,7 +73,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			// Só vai ter data de demissão quando estiver fazendo um update
 			// em um colaborador que já está deletado (inativo). 
 			if (colaborador.getDataDemissao() != null)
-				stmt.setDate(6, DateUtils.toSqlDate(colaborador.getDataDemissao()));
+				stmt.setDate(6, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
 			else
 				stmt.setDate(6, null);
 			stmt.setBoolean(7, colaborador.isAtivo());
