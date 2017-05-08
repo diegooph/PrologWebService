@@ -13,6 +13,10 @@ de todos os CPFs
 
 #### Refactor
 * Removida a coluna cod_unidade das buscas por um treinamento
+* Alterada a forma de remuneração do AS
+    * Add colunas para mapas com 3 entregas
+    * Add colunas para mapas com >3 entregas
+    * Remove colunas para mapas com >2 entregas 
 
 #### Deprecated
 * Método antigo de buscar todos os Fale Conosco que não recebe o CPF como parâmetro
