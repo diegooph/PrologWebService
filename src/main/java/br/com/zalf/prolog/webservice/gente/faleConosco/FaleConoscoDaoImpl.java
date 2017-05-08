@@ -126,7 +126,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 					"LEFT JOIN COLABORADOR C2 ON C2.CPF = F.CPF_FEEDBACK\n" +
 					"WHERE E.nome LIKE ? AND F.cod_unidade = ? AND F.status LIKE ? AND F.categoria LIKE ? AND " +
 					"C.CPF::TEXT LIKE ? " +
-					"AND F.DATA_HORA BETWEEN ? AND ? " +
+					"AND F.DATA_HORA::date >= ?::date AND F.DATA_HORA::date <= ?::date " +
 					"ORDER BY F.DATA_HORA " +
 					"LIMIT ? OFFSET ?");
 			stmt.setString(1, equipe);
