@@ -131,4 +131,29 @@ public class RelatorioResource {
 	public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
 		return service.getDadosUltimaAfericaoReport(codUnidade);
 	}
+
+	/**
+	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasCsv(Long, long, long)} (Long, long)} instead
+	 */
+	@GET
+	@Path("/aderencia/placas/{codUnidade}/csv")
+	@Produces("application/csv")
+	@Deprecated
+	public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
+													@QueryParam("dataInicial") long dataInicial,
+													@QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	/**
+	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasReport(Long, long, long)} (Long, long)} instead
+	 */
+	@GET
+	@Path("/aderencia/placas/{codUnidade}/report")
+	@Deprecated
+	public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") Long codUnidade,
+											  @QueryParam("dataInicial") long dataInicial,
+											  @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
 }
