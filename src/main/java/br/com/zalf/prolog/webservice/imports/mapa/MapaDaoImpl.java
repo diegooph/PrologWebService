@@ -442,9 +442,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 			stmt.setInt(95, mapa.equipDevolvidos);
 			stmt.setInt(96, mapa.equipRecolhidos);
 			stmt.setDouble(97, mapa.cxEntregTracking);
-			stmt.setDate(98, DateUtils.toSqlDate(mapa.hrCarreg));
-			stmt.setDate(99, DateUtils.toSqlDate(mapa.hrPCFisica));
-			stmt.setDate(100, DateUtils.toSqlDate(mapa.hrPCFinanceira));
+			stmt.setTimestamp(98, DateUtils.toTimestamp(mapa.hrCarreg));
+			stmt.setTimestamp(99, DateUtils.toTimestamp(mapa.hrPCFisica));
+			stmt.setTimestamp(100, DateUtils.toTimestamp(mapa.hrPCFinanceira));
 			stmt.setString(101, mapa.stMapa);
 			stmt.setLong(102, colaborador.getCodUnidade());
 			stmt.setTimestamp(103, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
@@ -495,12 +495,20 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.veicBM = Double.parseDouble(linha.get(20).replace(",","."));
 		mapa.rShow = Integer.parseInt(linha.get(21));
 		mapa.entrVol = linha.get(22).replace(" ","");
-		if(linha.get(23).equals(String.valueOf(0))){
-				mapa.hrSai = toTimestamp("00/00/0000 00:00");
-				mapa.hrEntr  = toTimestamp("00/00/0000 00:00");
-		}else{
-			mapa.hrSai = toTimestamp(linha.get(23));
-			mapa.hrEntr = toTimestamp(linha.get(24));
+		Date hrSaida = toTimestamp(linha.get(23));
+		Date hrEntrada = toTimestamp(linha.get(24));
+		if(hrSaida == null || hrEntrada == null) {
+			mapa.hrSai = new Date(0);
+			mapa.hrEntr = new Date(0);
+		}else if (hrSaida == null) {
+			mapa.hrSai = hrEntrada;
+			mapa.hrEntr = hrEntrada;
+		}else if (hrEntrada == null) {
+			mapa.hrSai = hrSaida;
+			mapa.hrEntr = hrSaida;
+		}else {
+			mapa.hrSai = hrSaida;
+			mapa.hrEntr = hrEntrada;
 		}
 		mapa.kmSai = Integer.parseInt(linha.get(25));
 		mapa.kmEntr = Integer.parseInt(linha.get(26));

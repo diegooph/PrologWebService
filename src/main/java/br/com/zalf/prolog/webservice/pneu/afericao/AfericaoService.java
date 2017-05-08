@@ -57,7 +57,7 @@ public class AfericaoService {
 			return afericaoDao.getSelecaoPlacaAfericao(codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return new SelecaoPlacaAfericao();
+			return null;
 		}
 	}
 	

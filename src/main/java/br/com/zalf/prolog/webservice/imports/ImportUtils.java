@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.imports;
 
+import br.com.zalf.prolog.webservice.util.L;
+
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,12 +21,21 @@ public class ImportUtils {
 	public static Date toTimestamp(String data){
 		DateFormat dateFormat;
 		Date date = null;
+		L.d("data", data);
 		try {
 			if(data.trim().replace(" ", "").length() == 13){
 				dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm");
+                date = dateFormat.parse(data);
 			}else if(data.trim().length() == 10){
 				dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			}else{ dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");}
+                date = dateFormat.parse(data);
+			}else if(data.trim().replace(" ", "").length() == 15){
+				dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                date = dateFormat.parse(data);
+			}
+			else {
+                return null;
+			}
 			date = dateFormat.parse(data);
 		} catch (ParseException e) {
 			e.printStackTrace();
