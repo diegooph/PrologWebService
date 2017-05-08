@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.12"></a>
-## Version [v0.0.12](https://github.com/luizfp/PrologWebService/compare/v0.0.11...v0.0.12) (release date) - [unreleased]
+## Version [v0.0.12](https://github.com/luizfp/PrologWebService/compare/v0.0.11...v0.0.12) (2017-05-08)
 
 #### Features
 * Novo método para buscar todos os Fale Conosco, agora é possível informar o cpf de quem queremos buscar ou buscar 
