@@ -13,61 +13,79 @@ import java.util.List;
  */
 public class TreinamentoService {
 
-	private TreinamentoDao dao = new TreinamentoDaoImpl();
-	
-	public List<Treinamento> getVistosByColaborador(Long cpf) {
-		try {
-			return dao.getVistosColaborador(cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Treinamento>();
-		}
-	}
-	
-	public List<Treinamento> getAll (LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-			Long codUnidade, long limit, long offset) {
-		try {
-			return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, limit, offset);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
-	
-	public List<Treinamento> getNaoVistosByColaborador(Long cpf) {
-		try {
-			return dao.getNaoVistosColaborador(cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<Treinamento>();
-		}
-	}
-	
-	public boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) {
-		try {
-			return dao.marcarTreinamentoComoVisto(codTreinamento, cpf);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean insert(Treinamento treinamento) {
-		try {
-			return dao.insert(treinamento);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+    private TreinamentoDao dao = new TreinamentoDaoImpl();
 
-	public List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade){
-		try{
-			return dao.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public List<Treinamento> getVistosByColaborador(Long cpf) {
+        try {
+            return dao.getVistosColaborador(cpf);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<Treinamento>();
+        }
+    }
+
+    public List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
+                                    Long codUnidade, long limit, long offset) {
+        try {
+            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, limit, offset);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Treinamento> getNaoVistosByColaborador(Long cpf) {
+        try {
+            return dao.getNaoVistosColaborador(cpf);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<Treinamento>();
+        }
+    }
+
+    public boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) {
+        try {
+            return dao.marcarTreinamentoComoVisto(codTreinamento, cpf);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Long insert(Treinamento treinamento) {
+        try {
+            return dao.insert(treinamento);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<TreinamentoColaborador> getVisualizacoesByTreinamento(Long codTreinamento, Long codUnidade) {
+        try {
+            return dao.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateTreinamento(Treinamento treinamento) {
+        try {
+            return dao.updateTreinamento(treinamento);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) {
+        try {
+            return dao.updateUrlImagensTreinamento(urls, codTreinamento);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

@@ -24,6 +24,15 @@ public class AfericaoService {
 			return false;
 		}
 	}
+
+	public boolean updateKmAfericao(Afericao afericao) {
+		try{
+			return afericaoDao.update(afericao);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	public NovaAfericao getNovaAfericao(String placa){
 		try{
@@ -48,7 +57,7 @@ public class AfericaoService {
 			return afericaoDao.getSelecaoPlacaAfericao(codUnidade);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return new SelecaoPlacaAfericao();
+			return null;
 		}
 	}
 	

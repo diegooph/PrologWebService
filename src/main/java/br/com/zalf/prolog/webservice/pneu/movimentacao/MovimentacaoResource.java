@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.pneu.movimentacao;
 
 import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.frota.pneu.movimentacao.Movimentacao;
+import br.com.zalf.prolog.frota.pneu.movimentacao.ProcessoMovimentacao;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * Created by Zart on 03/03/17.
@@ -19,8 +18,7 @@ public class MovimentacaoResource {
 
 //    @Secured
     @POST
-    @Path("/{codUnidade}")
-    public Response insert(List<Movimentacao> movimentacao, @PathParam("codUnidade") Long codUnidade){
-        return service.insert(movimentacao, codUnidade);
+    public Response insert(ProcessoMovimentacao movimentacao){
+        return service.insert(movimentacao);
     }
 }

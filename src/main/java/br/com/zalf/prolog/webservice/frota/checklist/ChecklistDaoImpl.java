@@ -4,10 +4,10 @@ import br.com.zalf.prolog.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.frota.checklist.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklistModelo.ChecklistModeloDaoImpl;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.ordemServico.OrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
@@ -249,7 +249,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					}
 				}
 			}
-			modeloPlaca.put(modelo, placas);
+			if(modelo != null) {
+				modeloPlaca.put(modelo, placas);
+			}
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}

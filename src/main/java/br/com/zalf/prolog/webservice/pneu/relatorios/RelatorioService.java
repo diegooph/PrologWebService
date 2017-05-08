@@ -106,13 +106,30 @@ public class RelatorioService {
         }
     }
 
-    public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa,
+    public List<Pneu> getPneusByFaixaSulco(double inicioFaixa, double fimFaixa, Long codEmpresa,
                                       String codUnidade, long limit, long offset) {
         try {
-            return dao.getPneusByFaixa(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
+            return dao.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) {
+        try {
+            dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+        }catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getDadosUltimaAfericaoReport(Long codUnidade) {
+        try {
+            return dao.getDadosUltimaAfericaoReport(codUnidade);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

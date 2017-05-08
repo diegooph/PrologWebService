@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.pneu.relatorios;
 
 import br.com.zalf.prolog.commons.Report;
+import br.com.zalf.prolog.frota.pneu.Pneu;
 import br.com.zalf.prolog.frota.pneu.relatorio.Aderencia;
 import br.com.zalf.prolog.frota.pneu.relatorio.Faixa;
 import br.com.zalf.prolog.frota.pneu.relatorio.ResumoServicos;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus/relatorios")
-@Secured(permissions = Pilares.Frota.Relatorios.Pneu.VISUALIZAR)
+@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatorioResource {
@@ -99,10 +100,60 @@ public class RelatorioResource {
 	}
 
 	@GET
-	@Path("/aderencia/placas/{codUnidade}/report")
+	@Path("/aderencias/placas/{codUnidade}/report")
 	public Report getAderenciaPlacasReport(@PathParam("codUnidade") Long codUnidade,
 										   @QueryParam("dataInicial") long dataInicial,
 										   @QueryParam("dataFinal") long dataFinal) throws SQLException{
+		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/faixas/sulcos/{codEmpresa}/{codUnidade}")
+	public List<Pneu> getPneusByFaixaSulco(@QueryParam("inicioFaixa") double inicioFaixa,
+										   @QueryParam("fimFaixa") double fimFaixa,
+										   @PathParam("codEmpresa") Long codEmpresa,
+										   @PathParam("codUnidade") String codUnidade,
+										   @QueryParam("limit") long limit,
+										   @QueryParam("offset") long offset) {
+		return service.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
+	}
+
+	@GET
+	@Secured
+	@Path("/afericoes/resumo/pneus/{codUnidade}/csv")
+	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) {
+		return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+	}
+
+	@GET
+	@Secured
+	@Path("/afericoes/resumo/pneus/{codUnidade}/report")
+	public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
+		return service.getDadosUltimaAfericaoReport(codUnidade);
+	}
+
+	/**
+	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasCsv(Long, long, long)} (Long, long)} instead
+	 */
+	@GET
+	@Path("/aderencia/placas/{codUnidade}/csv")
+	@Produces("application/csv")
+	@Deprecated
+	public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
+													@QueryParam("dataInicial") long dataInicial,
+													@QueryParam("dataFinal") long dataFinal){
+		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+	}
+
+	/**
+	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasReport(Long, long, long)} (Long, long)} instead
+	 */
+	@GET
+	@Path("/aderencia/placas/{codUnidade}/report")
+	@Deprecated
+	public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") Long codUnidade,
+											  @QueryParam("dataInicial") long dataInicial,
+											  @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
 	}
 }

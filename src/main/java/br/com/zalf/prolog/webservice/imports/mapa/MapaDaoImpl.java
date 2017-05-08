@@ -442,9 +442,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 			stmt.setInt(95, mapa.equipDevolvidos);
 			stmt.setInt(96, mapa.equipRecolhidos);
 			stmt.setDouble(97, mapa.cxEntregTracking);
-			stmt.setDate(98, DateUtils.toSqlDate(mapa.hrCarreg));
-			stmt.setDate(99, DateUtils.toSqlDate(mapa.hrPCFisica));
-			stmt.setDate(100, DateUtils.toSqlDate(mapa.hrPCFinanceira));
+			stmt.setTimestamp(98, DateUtils.toTimestamp(mapa.hrCarreg));
+			stmt.setTimestamp(99, DateUtils.toTimestamp(mapa.hrPCFisica));
+			stmt.setTimestamp(100, DateUtils.toTimestamp(mapa.hrPCFinanceira));
 			stmt.setString(101, mapa.stMapa);
 			stmt.setLong(102, colaborador.getCodUnidade());
 			stmt.setTimestamp(103, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
@@ -495,8 +495,21 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.veicBM = Double.parseDouble(linha.get(20).replace(",","."));
 		mapa.rShow = Integer.parseInt(linha.get(21));
 		mapa.entrVol = linha.get(22).replace(" ","");
-		mapa.hrSai = toTimestamp(linha.get(23));
-		mapa.hrEntr = toTimestamp(linha.get(24));
+		Date hrSaida = toTimestamp(linha.get(23));
+		Date hrEntrada = toTimestamp(linha.get(24));
+		if(hrSaida == null || hrEntrada == null) {
+			mapa.hrSai = new Date(0);
+			mapa.hrEntr = new Date(0);
+		}else if (hrSaida == null) {
+			mapa.hrSai = hrEntrada;
+			mapa.hrEntr = hrEntrada;
+		}else if (hrEntrada == null) {
+			mapa.hrSai = hrSaida;
+			mapa.hrEntr = hrSaida;
+		}else {
+			mapa.hrSai = hrSaida;
+			mapa.hrEntr = hrEntrada;
+		}
 		mapa.kmSai = Integer.parseInt(linha.get(25));
 		mapa.kmEntr = Integer.parseInt(linha.get(26));
 		mapa.custoVariavel = Double.parseDouble(linha.get(27).replace(",","."));
@@ -553,7 +566,11 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		mapa.vlRecargaMot = Double.parseDouble(linha.get(71).replace(",","."));
 		mapa.vlBateuJornAju = Double.parseDouble(linha.get(72).replace(",","."));
 		mapa.vlNaoBateuJornAju = Double.parseDouble(linha.get(73).replace(",","."));
-		mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",","."));
+		if(linha.get(74).trim().isEmpty()){
+			mapa.vlRecargaAju = 0;
+		}else{
+			mapa.vlRecargaAju = Double.parseDouble(linha.get(74).replace(",","."));
+		}
 		mapa.vlTotalMapa = Double.parseDouble(linha.get(75).replace(",","."));
 		mapa.qtHlCarregados = Double.parseDouble(linha.get(76).replace(",","."));
 		mapa.qtHlEntregues = Double.parseDouble(linha.get(77).replace(",","."));

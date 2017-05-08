@@ -36,7 +36,7 @@ public interface RelatorioDao {
 	 * @return lista de pneus
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
-	List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException;
+	List<Pneu> getPneusByFaixaSulco(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException;
 
 	/**
 	 * busca uma lista de aderencias com base em um filtro
@@ -96,5 +96,9 @@ public interface RelatorioDao {
 	public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
 	public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
+
+	public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws SQLException, IOException;
+
+	public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
 
 }

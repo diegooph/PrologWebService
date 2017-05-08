@@ -9,24 +9,12 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 
 /**
- * Created by Zalf on 17/09/16.
+ * Created by luiz on 27/04/17.
  */
-public class DurationSerializer implements JsonSerializer<Duration> {
+public final class DurationSerializer implements JsonSerializer<Duration> {
 
     @Override
     public JsonElement serialize(Duration duration, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(formatDuration(duration));
-    }
-
-
-    public static String formatDuration(Duration duration) {
-        long seconds = duration.getSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
-                "%d:%02d:%02d",
-                absSeconds / 3600,
-                (absSeconds % 3600) / 60,
-                absSeconds % 60);
-        return seconds < 0 ? "-" + positive : positive;
+        return new JsonPrimitive(duration.getSeconds());
     }
 }

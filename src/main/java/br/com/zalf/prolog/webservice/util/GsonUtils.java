@@ -8,8 +8,8 @@ import br.com.zalf.prolog.frota.checklist.AlternativaChecklist;
 import br.com.zalf.prolog.frota.pneu.movimentacao.OrigemDestinoConstants;
 import br.com.zalf.prolog.frota.pneu.movimentacao.destino.*;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.Origem;
+import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemAnalise;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemEstoque;
-import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemRecapagem;
 import br.com.zalf.prolog.frota.pneu.movimentacao.origem.OrigemVeiculo;
 import br.com.zalf.prolog.frota.pneu.servico.Calibragem;
 import br.com.zalf.prolog.frota.pneu.servico.Inspecao;
@@ -23,20 +23,24 @@ import com.google.gson.GsonBuilder;
 
 import java.time.Duration;
 
-public class GsonUtils {
+public final class GsonUtils {
 
-	private static final GsonBuilder sBuilder;
+	private static final Gson sGson;
+
+	private GsonUtils() {
+
+	}
 
     static {
-
-		sBuilder = new GsonBuilder()
+		GsonBuilder builder = new GsonBuilder()
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 				.serializeSpecialFloatingPointValues()
+				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
 				.enableComplexMapKeySerialization();
 
 		if (BuildConfig.DEBUG) {
-			sBuilder.setPrettyPrinting();
+			builder.setPrettyPrinting();
 		}
 
 		RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
@@ -48,13 +52,13 @@ public class GsonUtils {
 		RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
 				.of(Origem.class, "tipo")
 				.registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
-				.registerSubtype(OrigemRecapagem.class, OrigemDestinoConstants.RECAPAGEM)
+				.registerSubtype(OrigemAnalise.class, OrigemDestinoConstants.ANALISE)
 				.registerSubtype(OrigemVeiculo.class, OrigemDestinoConstants.VEICULO);
 
 		RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
 				.of(Destino.class, "tipo")
 				.registerSubtype(DestinoDescarte.class, OrigemDestinoConstants.DESCARTE)
-				.registerSubtype(DestinoRecapagem.class, OrigemDestinoConstants.RECAPAGEM)
+				.registerSubtype(DestinoAnalise.class, OrigemDestinoConstants.ANALISE)
 				.registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
 				.registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
 
@@ -70,15 +74,16 @@ public class GsonUtils {
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class);
 
-        sBuilder.registerTypeAdapterFactory(adapterServico);
-		sBuilder.registerTypeAdapterFactory(adapterAlternativa);
-        sBuilder.registerTypeAdapterFactory(adapterResponse);
-        sBuilder.registerTypeAdapterFactory(adapterOrigem);
-		sBuilder.registerTypeAdapterFactory(adapterDestino);
+		builder.registerTypeAdapterFactory(adapterServico);
+		builder.registerTypeAdapterFactory(adapterAlternativa);
+		builder.registerTypeAdapterFactory(adapterResponse);
+		builder.registerTypeAdapterFactory(adapterOrigem);
+		builder.registerTypeAdapterFactory(adapterDestino);
+
+		sGson = builder.create();
 	}
 
-
 	public static Gson getGson()  {
-		return sBuilder.create();
+		return sGson;
 	}
 }

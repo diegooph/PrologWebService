@@ -43,13 +43,16 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private static final String SULCOS_PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status "
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
 			+ "FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
 			+ "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
 			+ "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE "
 			+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
+			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
 			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC "
 			+ "LIMIT ? OFFSET ?";
@@ -142,7 +145,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	 * @throws SQLException
 	 */
 	@Override
-	public List<Pneu> getPneusByFaixa(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException {
+	public List<Pneu> getPneusByFaixaSulco(double inicioFaixa, double fimFaixa, Long codEmpresa, String codUnidade, long limit, long offset) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -463,12 +466,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"    to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') as \"PREVISÃO DE TROCA\"\n" +
 				"FROM\n" +
 				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? \n" +
+				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ? \n" +
 				"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-		L.d(TAG, stmt.toString());
+		stmt.setString(4, Pneu.EM_USO);
 		return stmt;
 	}
 
@@ -483,12 +486,13 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"FROM\n" +
 				"    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
 				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ?\n" +
+				"WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
 				"GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
 				"ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(4, Pneu.EM_USO);
 		return  stmt;
 	}
 
@@ -529,14 +533,14 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"  COUNT(CALCULO.PLACA) AS \"QTD DE AFERIÇÕES\",\n" +
 				"\n" +
 				"  CASE WHEN\n" +
-				"  MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MAX(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MÁX DE DIAS ENTRE AFERIÇÕES\",\n" +
+				"  MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MAX(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÁX DE DIAS ENTRE AFERIÇÕES\",\n" +
 				"  CASE WHEN\n" +
-				"  MIN(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MIN(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MIN DE DIAS ENTRE AFERIÇÕES\",\n" +
+				"  MIN(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MIN(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NÃO AFERIDO' END AS \"MIN DE DIAS ENTRE AFERIÇÕES\",\n" +
 				"  CASE WHEN\n" +
 				"    MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN trunc(CASE WHEN SUM(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN\n" +
 				"            SUM(CALCULO.DIAS_ENTRE_AFERICOES) /\n" +
 				"            SUM(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES IS NOT NULL THEN 1 ELSE 0 END)\n" +
-				"  END)::TEXT ELSE 'NUNCA AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
+				"  END)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
 				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
 				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
 				"  FROM\n" +
@@ -709,4 +713,62 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			return Double.compare(o1.getInicio(), o2.getInicio());
 		}
 	}
+
+	@Override
+	public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream)
+			throws IOException, SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+			rSet = stmt.executeQuery();
+			new CsvWriter().write(rSet, outputStream);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+			rSet = stmt.executeQuery();
+			return ReportConverter.createReport(rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
+			throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("SELECT P.codigo,\n" +
+				"  POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU,\n" +
+				"  POSICAO_PNEU_VEICULO.POSICAO_PNEU,\n" +
+				"  P.altura_sulco_interno,\n" +
+				"  P.altura_sulco_central,\n" +
+				"  P.altura_sulco_externo,\n" +
+				"  to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM')\n" +
+				"  FROM PNEU P\n" +
+				"    JOIN\n" +
+				"(SELECT VP.posicao AS POSICAO_PNEU, VP.cod_pneu AS CODIGO_PNEU, VP.placa AS PLACA_VEICULO_PNEU, VP.cod_unidade AS COD_UNIDADE_PNEU\n" +
+				"FROM veiculo V\n" +
+				"  JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
+				"WHERE V.cod_unidade = 1\n" +
+				"ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
+				"    JOIN\n" +
+				"    (SELECT AV.cod_pneu, AV.cod_unidade AS COD_UNIDADE_DATA, MAX(A.data_hora) AS ULTIMA_AFERICAO\n" +
+				"  FROM AFERICAO A JOIN  afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
+				"GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
+				"WHERE P.cod_unidade = ?;");
+		stmt.setLong(1, codUnidade);
+		return stmt;
+	}
+
+
 }
