@@ -13,10 +13,10 @@ import java.util.List;
 /**
  * Classe responsável por converter um {@link java.sql.ResultSet} em um {@link Report}.
  */
-public class ReportConverter {
-    private static final String TAG = ReportConverter.class.getSimpleName();
+public class ReportTransformer {
+    private static final String TAG = ReportTransformer.class.getSimpleName();
 
-    private ReportConverter() {
+    private ReportTransformer() {
         // you shall not pass
     }
 

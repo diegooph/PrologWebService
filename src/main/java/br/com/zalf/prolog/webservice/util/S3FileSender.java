@@ -13,8 +13,6 @@ import java.io.File;
  * Classe responsável por gerenciar a comunicação com a API da Amazon.
  */
 public class S3FileSender {
-    private static final String AWS_ACCESS_KEY_ID = "AKIAI6KFIYRHPVSFDFUA";
-    private static final String AWS_SECRET_KEY = "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";
     private final String accessKeyId;
     private final String secretKey;
     private AmazonS3Client amazonS3Client;
