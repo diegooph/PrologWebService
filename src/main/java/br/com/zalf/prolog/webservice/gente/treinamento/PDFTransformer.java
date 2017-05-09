@@ -25,7 +25,7 @@ public class PDFTransformer {
             // TODO - alterar DPI
             BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 85, ImageType.RGB);
             String fileName = pdfFilename + "-" + (page+1) + ".png";
-            ImageIOUtil.writeImage(bim, fileName, 300);
+            ImageIOUtil.writeImage(bim, fileName, 85);
             imagens.add(new File(fileName));
         }
         document.close();
