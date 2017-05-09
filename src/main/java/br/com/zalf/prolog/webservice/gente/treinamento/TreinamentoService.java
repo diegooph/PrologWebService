@@ -2,10 +2,13 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 
 import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.webservice.util.S3FileSender;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ public class TreinamentoService {
             return dao.getVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<Treinamento>();
+            return Collections.emptyList();
         }
     }
 
@@ -30,7 +33,7 @@ public class TreinamentoService {
             return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
@@ -39,7 +42,7 @@ public class TreinamentoService {
             return dao.getNaoVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<Treinamento>();
+            return Collections.emptyList();
         }
     }
 
@@ -52,10 +55,12 @@ public class TreinamentoService {
         }
     }
 
-    public Long insert(Treinamento treinamento) {
+    public Long insert(InputStream file, Treinamento treinamento) {
         try {
-            return dao.insert(treinamento);
-        } catch (SQLException e) {
+            PDFTransformer transformer = new PDFTransformer();
+            UploadTreinamentoHelper helper = new UploadTreinamentoHelper(transformer);
+            return dao.insert(helper.upload(treinamento, file));
+        } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
             e.printStackTrace();
             return null;
         }
@@ -87,5 +92,4 @@ public class TreinamentoService {
             return false;
         }
     }
-
 }

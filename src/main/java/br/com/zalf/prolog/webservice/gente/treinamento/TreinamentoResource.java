@@ -42,16 +42,11 @@ public class TreinamentoResource {
         if (treinamento == null) {
             return Response.Error("ERRO! Treinamento veio nulo");
         } else {
-            UploadTreinamento upload = new UploadTreinamento();
-            if (upload.doIt(treinamento, fileInputStream)) {
-                Long codTreinamento = service.insert(treinamento);
-                if (codTreinamento != null) {
-                    return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
-                } else {
-                    return Response.Error("Erro ao inserir treinamento");
-                }
+            Long codTreinamento = service.insert(fileInputStream, treinamento);
+            if (codTreinamento != null) {
+                return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
             } else {
-                return Response.Error("Erro ao reailizar upload do arquivo");
+                return Response.Error("Erro ao inserir treinamento");
             }
         }
     }
