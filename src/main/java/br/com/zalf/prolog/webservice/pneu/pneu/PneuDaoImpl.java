@@ -378,55 +378,58 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-
         List<Marca> marcas = new ArrayList<>();
-        List<Modelo> modelos = new ArrayList<>();
-        Marca marca = new Marca();
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MA.NOME AS MARCA, MA.CODIGO AS COD_MARCA "
+            stmt = conn.prepareStatement("SELECT DISTINCT MA.NOME AS NOME, MA.CODIGO AS COD_MARCA "
                     + "FROM MODELO_PNEU MP JOIN MARCA_PNEU MA ON MA.CODIGO = MP.COD_MARCA "
                     + "WHERE MP.COD_EMPRESA = ? "
-                    + "ORDER BY COD_MARCA, COD_MODELO");
+                    + "ORDER BY MA.NOME ASC");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                if (marcas.size() == 0 && modelos.size() == 0) { //primeiro resultado do rset
-                    L.d("metodo", "marcas.size == 0");
-                    marca.setCodigo(rSet.getLong("COD_MARCA"));
-                    marca.setNome(rSet.getString("MARCA"));
-                    Modelo modelo = new Modelo();
-                    modelo.setCodigo(rSet.getLong("COD_MODELO"));
-                    modelo.setNome(rSet.getString("MODELO"));
-                    modelos.add(modelo);
-                } else {
-                    L.d("metodo", "marcas.size > 0");
-                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
-                        Modelo modelo = new Modelo();
-                        modelo.setCodigo(rSet.getLong("COD_MODELO"));
-                        modelo.setNome(rSet.getString("MODELO"));
-                        modelos.add(modelo);
-                    } else { // modelo diferente, deve encerrar a marca e criar uma nova
-                        marca.setModelos(modelos);
-                        marcas.add(marca);
-                        marca = new Marca();
-                        modelos = new ArrayList<>();
-                        marca.setCodigo(rSet.getLong("COD_MARCA"));
-                        marca.setNome(rSet.getString("MARCA"));
-                        Modelo modelo = new Modelo();
-                        modelo.setCodigo(rSet.getLong("COD_MODELO"));
-                        modelo.setNome(rSet.getString("MODELO"));
-                        modelos.add(modelo);
-                    }
-                }
+            while(rSet.next()) {
+                Marca marca = createMarcaPneu(rSet);
+                marca.setModelos(getModelosPneu(codEmpresa, marca.getCodigo(), conn));
+                marcas.add(marca);
             }
-            marca.setModelos(modelos);
-            marcas.add(marca);
         } finally {
             closeConnection(conn, stmt, null);
         }
         return marcas;
+    }
+
+    private Marca createMarcaPneu(ResultSet rSet) throws SQLException {
+        Marca marca = new Marca();
+        marca.setCodigo(rSet.getLong("COD_MARCA"));
+        marca.setNome(rSet.getString("NOME"));
+        return marca;
+    }
+
+    private List<Modelo> getModelosPneu(Long codEmpresa, Long codMarcaPneu, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Modelo> modelos = new ArrayList<>();
+        try{
+            stmt = conn.prepareStatement("SELECT CODIGO AS COD_MODELO, NOME FROM MODELO_PNEU WHERE COD_EMPRESA = ? " +
+                    "AND COD_MARCA = ? ORDER BY NOME ASC");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codMarcaPneu);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                modelos.add(createModelo(rSet));
+            }
+        }finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return modelos;
+    }
+
+    private Modelo createModelo(ResultSet rSet) throws SQLException {
+            Modelo modelo = new Modelo();
+            modelo.setCodigo(rSet.getLong("COD_MODELO"));
+            modelo.setNome(rSet.getString("NOME"));
+            return modelo;
     }
 
     @Override
