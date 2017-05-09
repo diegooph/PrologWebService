@@ -119,6 +119,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                             itemContracheque.setSubDescricao("Resultado: " + String.format("%1$,.2f", devNf.getResultado() * 100) + "%");
                             if (devNf.isBateuMeta()) {
                                 itemContracheque.setValor(valorPremio);
+                            }else{
+                                itemContracheque.setValor(0.0);
                             }
                         }
                     }
@@ -160,6 +162,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(5, codUnidade);
             rSet = stmt.executeQuery();
             if(rSet.next()){
+//                cria os itens que compões o calculo do premio (HE e DSR)
                 itensPremio = new ArrayList<>();
                 itensPremio.add(createItemContracheque(rSet));
                 produtividadeDao = new ProdutividadeDaoImpl();
@@ -191,7 +194,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
         // 2 - calcular o valor da remuneração SEM as recargas
         double valorProdutividade = produtividadeDao.getTotalItens(itensProdutividade);
-        L.d(TAG, "valor da produtividade (subtraindo as recargas): " + valorProdutividade);
+        L.d(TAG, "valor da produtividade (ja subtraidas as recargas): " + valorProdutividade);
 
         // 3 - calcular o bonus de nivel de serviço
         ItemContracheque itemBonusNS = getBonus(cpf, codUnidade, ano, mes, conn, stmt, rSet);
