@@ -83,7 +83,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 
 	@Override
 	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-								String equipe, String funcao) throws SQLException {
+								String codEquipe, String codFuncao) throws SQLException {
 		Connection conn = null;
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
@@ -113,8 +113,8 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setString(4, codUnidade);
-			stmt.setString(5, equipe);
-			stmt.setString(6, funcao);
+			stmt.setString(5, codEquipe);
+			stmt.setString(6, codFuncao);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				e = new Evento();
