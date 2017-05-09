@@ -417,7 +417,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codMarcaPneu);
             rSet = stmt.executeQuery();
             while (rSet.next()){
-                modelos.add(createModelo(rSet));
+                modelos.add(createModeloPneu(rSet));
             }
         }finally {
             closeConnection(null, stmt, rSet);
@@ -425,7 +425,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return modelos;
     }
 
-    private Modelo createModelo(ResultSet rSet) throws SQLException {
+    private Modelo createModeloPneu(ResultSet rSet) throws SQLException {
             Modelo modelo = new Modelo();
             modelo.setCodigo(rSet.getLong("COD_MODELO"));
             modelo.setNome(rSet.getString("NOME"));
