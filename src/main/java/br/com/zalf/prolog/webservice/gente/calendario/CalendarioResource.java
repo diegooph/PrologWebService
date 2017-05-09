@@ -20,22 +20,22 @@ public class CalendarioResource {
 
 	@POST
 	@Secured(permissions = Pilares.Gente.Calendario.CRIAR_EVENTO)
-	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
+	@Path("/{codUnidade}/{nomeEquipe}/{codFuncao}")
 	public AbstractResponse insert(Evento evento,
 									@PathParam("codUnidade") String codUnidade,
-									@PathParam("codEquipe") String codEquipe,
+									@PathParam("nomeEquipe") String nomeEquipe,
 									@PathParam("codFuncao") String codFuncao) {
-		return service.insert(evento, codUnidade, codFuncao, codEquipe);
+		return service.insert(evento, codUnidade, codFuncao, nomeEquipe);
 	}
 
 	@PUT
 	@Secured(permissions = {Pilares.Gente.Calendario.ALTERAR_EVENTO, Pilares.Gente.Calendario.CRIAR_EVENTO})
-	@Path("/{codUnidade}/{codEquipe}/{codFuncao}")
+	@Path("/{codUnidade}/{nomeEquipe}/{codFuncao}")
 	public Response update(Evento evento,
 							@PathParam("codUnidade") String codUnidade,
-							@PathParam("codEquipe") String codEquipe,
+							@PathParam("nomeEquipe") String nomeEquipe,
 							@PathParam("codFuncao") String codFuncao) {
-		if (service.update(evento, codUnidade, codFuncao, codEquipe)) {
+		if (service.update(evento, codUnidade, codFuncao, nomeEquipe)) {
 			return Response.Ok("Evento alterado com sucesso");
 		} else {
 			return Response.Error("Erro ao editar o evento");
@@ -54,14 +54,14 @@ public class CalendarioResource {
 	@GET
 	@Secured(permissions = {Pilares.Gente.Calendario.VISUALIZAR_PROPRIOS, Pilares.Gente.Calendario.ALTERAR_EVENTO,
 			Pilares.Gente.Calendario.CRIAR_EVENTO })
-	@Path("/{codEmpresa}/{codUnidade}/{codEquipe}/{codFuncao}")
+	@Path("/{codEmpresa}/{codUnidade}/{nomeEquipe}/{codFuncao}")
 	public List<Evento> getAll(@QueryParam("dataInicial") long dataInicial,
 								@QueryParam("dataFinal") long dataFinal,
 								@PathParam("codEmpresa") Long codEmpresa,
 								@PathParam("codUnidade") String codUnidade,
-								@PathParam("codEquipe") String codEquipe,
+								@PathParam("nomeEquipe") String nomeEquipe,
 								@PathParam("codFuncao") String codFuncao) throws SQLException {
-		return service.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, codEquipe, codFuncao);
+		return service.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, nomeEquipe, codFuncao);
 	}
 
 	@DELETE

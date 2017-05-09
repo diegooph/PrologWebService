@@ -9,6 +9,7 @@ import br.com.zalf.prolog.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.gente.calendario.Evento;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 
 	@Override
 	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-								String codEquipe, String codFuncao) throws SQLException {
+								String nomeEquipe, String codFuncao) throws SQLException {
 		Connection conn = null;
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
@@ -92,7 +93,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		Unidade unidade;
 		Funcao funcaoTreinamento;
 		Equipe equipeTreinamento;
-
+		EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
 
 		try{
 			conn = getConnection();
@@ -113,7 +114,11 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setString(4, codUnidade);
-			stmt.setString(5, codEquipe);
+			if(nomeEquipe.equals("%")){
+				stmt.setString(5, "%");
+			}else{
+				stmt.setString(5, String.valueOf(empresaDao.getCodEquipeByCodUnidadeByNome(Long.parseLong(codUnidade), nomeEquipe)));
+			}
 			stmt.setString(6, codFuncao);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
@@ -171,11 +176,12 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 	}
 
 	@Override
-	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException {
+	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String nomeEquipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		Long nullLong = null;
+		EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO calendario(data, descricao, cod_unidade, cod_funcao, cod_equipe, local) " +
@@ -190,10 +196,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				stmt.setLong(4, Long.parseLong(codFuncao));
 			}
 
-			if (codEquipe.equals("%")){
+			if (nomeEquipe.equals("%")){
 				stmt.setNull(5, Types.BIGINT);
 			}else {
-				stmt.setLong(5, Long.parseLong(codEquipe));
+				stmt.setLong(5, empresaDao.getCodEquipeByCodUnidadeByNome(Long.parseLong(codUnidade), nomeEquipe));
 			}
 			stmt.setString(6, evento.getLocal());
 			rSet = stmt.executeQuery();
@@ -207,9 +213,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		}
 	}
 
-	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException {
+	public boolean update (Evento evento, String codUnidade, String codFuncao, String nomeEquipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE CALENDARIO SET DATA = ?, DESCRICAO = ?, " +
@@ -224,10 +231,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				stmt.setLong(4, Long.parseLong(codFuncao));
 			}
 
-			if (codEquipe.equals("%")){
+			if (nomeEquipe.equals("%")){
 				stmt.setNull(5, Types.BIGINT);
 			}else {
-				stmt.setLong(5, Long.parseLong(codEquipe));
+				stmt.setLong(5, empresaDao.getCodEquipeByCodUnidadeByNome(Long.parseLong(codUnidade), nomeEquipe));
 			}
 			stmt.setString(6, evento.getLocal());
 			stmt.setLong(7, evento.getCodigo());
