@@ -733,6 +733,28 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		unidade.setListEquipe(listEquipes);
 	}
 
+	public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT DISTINCT E.NOME, E.CODIGO "
+					+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
+					+ "WHERE U.CODIGO = ? AND E.NOME LIKE ? "
+					+ "ORDER BY 1");
+			stmt.setLong(1, codUnidade);
+			stmt.setString(2, nomeEquipe);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getLong("codigo");
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+
 	@Override
 	public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException{
 		Connection conn = null;
