@@ -29,19 +29,21 @@ public class UploadTreinamentoHelper {
     }
 
     public Treinamento upload(Treinamento treinamento, InputStream inputStream) throws IOException,
-                                                                                S3FileSender.S3FileSenderException {
+            S3FileSender.S3FileSenderException {
 
         final S3FileSender fileSender = new S3FileSender(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);
         final String pdfName = TreinamentoHelper.createFileName(treinamento);
+        // Pasta temporária da JVM
+        final File tmpDir = Files.createTempDir();
 
         // Envia arquivo
-        File pdfFile = createFile(inputStream, pdfName);
+        File pdfFile = createFile(tmpDir, inputStream, pdfName);
         fileSender.sendFile(BUCKET_NAME_PDF, pdfName, pdfFile);
         treinamento.setUrlArquivo(fileSender.generateFileUrl(BUCKET_NAME_PDF, pdfName));
 
         // Envia Imagens
         final List<String> urls = new ArrayList<>();
-        final List<File> imagens = transformer.createImagesPNG(pdfFile, pdfName);
+        final List<File> imagens = transformer.createImagesPNG(tmpDir, pdfFile, pdfName);
         for (File imagem : imagens) {
             fileSender.sendFile(BUCKET_NAME_IMAGES, imagem.getName(), imagem);
             final String imageName = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
@@ -53,10 +55,8 @@ public class UploadTreinamentoHelper {
         return treinamento;
     }
 
-    private File createFile(InputStream inputStream, String pdfName) throws IOException {
-        // Pasta temporária da JVM
-        File tmpDir = Files.createTempDir();
-        File file = new File(tmpDir, pdfName);
+    private File createFile(File directorySavePDF, InputStream inputStream, String pdfName) throws IOException {
+        File file = new File(directorySavePDF, pdfName);
         FileOutputStream outputStream = new FileOutputStream(file);
         IOUtils.copy(inputStream, outputStream);
         IOUtils.closeQuietly(outputStream);
