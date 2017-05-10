@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.report.ReportConverter;
+import br.com.zalf.prolog.webservice.report.ReportTransformer;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             conn = getConnection();
             stmt = getCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -79,7 +79,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             conn = getConnection();
             stmt = getExtratoCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -114,7 +114,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             conn = getConnection();
             stmt = getTempoRealizacaoChecklistMotorista(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }

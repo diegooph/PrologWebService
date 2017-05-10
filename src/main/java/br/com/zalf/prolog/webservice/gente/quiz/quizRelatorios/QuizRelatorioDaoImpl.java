@@ -4,7 +4,7 @@ import br.com.zalf.prolog.commons.Report;
 import br.com.zalf.prolog.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.report.ReportConverter;
+import br.com.zalf.prolog.webservice.report.ReportTransformer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -82,7 +82,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = getEstratificacaoRealizacaoQuiz(conn, codModeloQuiz, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -145,7 +145,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = getRealizacaoQuizByCargo(conn, codUnidade, codModeloQuiz);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -196,7 +196,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = getEstratificacaoRespostas(conn, codUnidade, codModeloQuiz);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -248,7 +248,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
             conn = getConnection();
             stmt = getExtratoGeral(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            return ReportConverter.createReport(rSet);
+            return ReportTransformer.createReport(rSet);
         }finally {
             closeConnection(conn, stmt, rSet);
         }

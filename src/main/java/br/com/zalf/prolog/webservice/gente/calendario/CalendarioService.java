@@ -24,9 +24,9 @@ public class CalendarioService {
 		}
 	}
 
-	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade, String equipe, String funcao) throws SQLException{
+	public List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade, String nomeEquipe, String codFuncao) throws SQLException{
 		try{
-			return dao.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, equipe, funcao);
+			return dao.getAll(dataInicial, dataFinal, codEmpresa, codUnidade, nomeEquipe, codFuncao);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return new ArrayList<Evento>();
@@ -41,18 +41,18 @@ public class CalendarioService {
 			return false;
 		}
 	}
-	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe){
+	public AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String nomeEquipe){
 		try {
-			return dao.insert(evento, codUnidade, codFuncao, codEquipe);
+			return dao.insert(evento, codUnidade, codFuncao, nomeEquipe);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return Response.Error("Erro ao inserir o evento");
 		}
 	}
 
-	public boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe){
+	public boolean update (Evento evento, String codUnidade, String codFuncao, String nomeEquipe){
 		try{
-			return dao.update(evento, codUnidade, codFuncao, codEquipe);
+			return dao.update(evento, codUnidade, codFuncao, nomeEquipe);
 		}catch (SQLException e){
 			e.printStackTrace();
 			return false;

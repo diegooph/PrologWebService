@@ -16,7 +16,7 @@ import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.report.ReportConverter;
+import br.com.zalf.prolog.webservice.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.PostgresUtil;
 
@@ -408,7 +408,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			conn = getConnection();
 			stmt = getPrevisaoTrocaStatement(conn, codUnidade, dataInicial, dataFinal);
 			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
+			return ReportTransformer.createReport(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
@@ -439,7 +439,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			conn = getConnection();
 			stmt = getPrevisaoTrocaConsolidadoStatement(conn, codUnidade, dataInicial, dataFinal);
 			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
+			return ReportTransformer.createReport(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
@@ -521,7 +521,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			conn = getConnection();
 			stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
 			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
+			return ReportTransformer.createReport(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
@@ -739,7 +739,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			conn = getConnection();
 			stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
 			rSet = stmt.executeQuery();
-			return ReportConverter.createReport(rSet);
+			return ReportTransformer.createReport(rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}

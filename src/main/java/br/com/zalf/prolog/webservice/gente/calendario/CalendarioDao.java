@@ -25,13 +25,13 @@ public interface CalendarioDao {
 	 * @param dataFinal data final
 	 * @param codEmpresa código da empresa
 	 * @param codUnidade código da unidade
-	 * @param equipe equipe
-	 * @param funcao função
+	 * @param codEquipe equipe
+	 * @param codFuncao função
 	 * @return uma lista de eventos
 	 * @throws SQLException se ocorrer erro no banco
 	 */
 	List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-						 String equipe, String funcao) throws SQLException;
+						 String codEquipe, String codFuncao) throws SQLException;
 
 	/**
 	 * deleta um evento
