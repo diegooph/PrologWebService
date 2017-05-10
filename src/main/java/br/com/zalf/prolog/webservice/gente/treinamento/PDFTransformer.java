@@ -28,6 +28,8 @@ public class PDFTransformer {
         final List<File> imagens = new ArrayList<>();
         final PDDocument document = PDDocument.load(pdf);
         final PDFRenderer pdfRenderer = new PDFRenderer(document);
+        // Remove a extensão caso exista para não ser incluída no meio do nome da imagem
+        pdfFilename = pdfFilename.replace(".pdf", "");
         for (int page = 0; page < document.getNumberOfPages(); page++) {
             BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 85, ImageType.RGB);
             String fileName = pdfFilename + "_" + (page+1) + "." + formato;
