@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.commons.login.Autenticacao;
+import br.com.zalf.prolog.webservice.commons.login.Autenticacao;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;

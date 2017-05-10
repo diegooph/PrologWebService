@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.commons.colaborador.*;
-import br.com.zalf.prolog.commons.login.AmazonCredentials;
-import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.permissao.Visao;
-import br.com.zalf.prolog.permissao.pilares.FuncaoProLog;
-import br.com.zalf.prolog.permissao.pilares.Pilar;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.colaborador.*;
+import br.com.zalf.prolog.webservice.commons.login.AmazonCredentials;
+import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;

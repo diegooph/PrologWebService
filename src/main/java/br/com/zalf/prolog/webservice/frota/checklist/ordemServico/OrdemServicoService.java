@@ -1,9 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.frota.checklist.os.ItemOrdemServico;
-import br.com.zalf.prolog.frota.checklist.os.ManutencaoHolder;
-import br.com.zalf.prolog.frota.checklist.os.OrdemServico;
-
 import java.sql.SQLException;
 import java.util.List;
 

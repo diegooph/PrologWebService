@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.login.Autenticacao;
-import br.com.zalf.prolog.commons.login.LoginHolder;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.login.Autenticacao;
+import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;

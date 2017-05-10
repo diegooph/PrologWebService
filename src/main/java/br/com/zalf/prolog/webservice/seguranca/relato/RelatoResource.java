@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
-import br.com.zalf.prolog.seguranca.relato.Relato;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

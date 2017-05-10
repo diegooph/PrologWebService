@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.commons.colaborador.Equipe;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.colaborador.Unidade;
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.calendario.Evento;
+import br.com.zalf.prolog.webservice.commons.colaborador.Equipe;
+import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.commons.colaborador.Unidade;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 

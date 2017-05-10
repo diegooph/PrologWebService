@@ -1,11 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
-import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
-import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.entrega.relatorio.ConsolidadoDia;
-import br.com.zalf.prolog.entrega.relatorio.DadosGrafico;
-import br.com.zalf.prolog.entrega.relatorio.MapaEstratificado;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 

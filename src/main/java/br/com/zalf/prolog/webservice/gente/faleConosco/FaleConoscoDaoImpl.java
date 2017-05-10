@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.*;

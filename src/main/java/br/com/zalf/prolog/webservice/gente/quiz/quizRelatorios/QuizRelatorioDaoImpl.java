@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios;
 
-import br.com.zalf.prolog.commons.Report;
-import br.com.zalf.prolog.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.Report;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.report.ReportTransformer;

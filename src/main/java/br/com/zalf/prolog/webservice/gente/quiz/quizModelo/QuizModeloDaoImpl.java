@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.questoes.Alternativa;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.quiz.AlternativaEscolhaQuiz;
-import br.com.zalf.prolog.gente.quiz.AlternativaOrdenamentoQuiz;
-import br.com.zalf.prolog.gente.quiz.ModeloQuiz;
-import br.com.zalf.prolog.gente.quiz.PerguntaQuiz;
+import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaEscolhaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;

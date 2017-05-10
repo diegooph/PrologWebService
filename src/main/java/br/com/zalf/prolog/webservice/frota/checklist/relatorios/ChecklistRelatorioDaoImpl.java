@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
-import br.com.zalf.prolog.commons.Report;
+import br.com.zalf.prolog.webservice.commons.Report;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.report.ReportTransformer;

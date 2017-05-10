@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.ranking;
 
-import br.com.zalf.prolog.gente.ranking.ItemPosicao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.SQLException;

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd.pdv;
 
-import br.com.zalf.prolog.seguranca.gsd.Pdv;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.Connection;

@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
-import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 

@@ -1,8 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.gente.fale_conosco.FaleConosco;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
