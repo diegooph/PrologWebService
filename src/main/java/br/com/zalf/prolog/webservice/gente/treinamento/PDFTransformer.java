@@ -8,7 +8,6 @@ import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public class PDFTransformer {
 
-    public List<File> createImagesPNG(InputStream file, String pdfFilename) throws IOException {
+    public List<File> createImagesPNG(File file, String pdfFilename) throws IOException {
         final List<File> imagens = new ArrayList<>();
         final PDDocument document = PDDocument.load(file);
         final PDFRenderer pdfRenderer = new PDFRenderer(document);

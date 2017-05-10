@@ -31,11 +31,17 @@ public class UploadTreinamentoHelper {
     public Treinamento upload(Treinamento treinamento, InputStream inputStream) throws IOException,
                                                                                 S3FileSender.S3FileSenderException {
 
-        final List<String> urls = new ArrayList<>();
-        final String pdfName = TreinamentoHelper.createFileName(treinamento);
-        final List<File> imagens = transformer.createImagesPNG(inputStream, pdfName);
-
         final S3FileSender fileSender = new S3FileSender(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);
+        final String pdfName = TreinamentoHelper.createFileName(treinamento);
+
+        // Envia arquivo
+        File pdfFile = createFile(inputStream, pdfName);
+        fileSender.sendFile(BUCKET_NAME_PDF, pdfName, pdfFile);
+        treinamento.setUrlArquivo(fileSender.generateFileUrl(BUCKET_NAME_PDF, pdfName));
+
+        // Envia Imagens
+        final List<String> urls = new ArrayList<>();
+        final List<File> imagens = transformer.createImagesPNG(pdfFile, pdfName);
         for (File imagem : imagens) {
             fileSender.sendFile(BUCKET_NAME_IMAGES, imagem.getName(), imagem);
             final String imageName = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
@@ -44,8 +50,6 @@ public class UploadTreinamentoHelper {
         }
         treinamento.setUrlsImagensArquivo(urls);
 
-        fileSender.sendFile(BUCKET_NAME_PDF, pdfName, createFile(inputStream, pdfName));
-        treinamento.setUrlArquivo(fileSender.generateFileUrl(BUCKET_NAME_PDF, pdfName));
         return treinamento;
     }
 
@@ -55,7 +59,6 @@ public class UploadTreinamentoHelper {
         File file = new File(tmpDir, pdfName);
         FileOutputStream outputStream = new FileOutputStream(file);
         IOUtils.copy(inputStream, outputStream);
-        IOUtils.closeQuietly(inputStream);
         IOUtils.closeQuietly(outputStream);
         return file;
     }
