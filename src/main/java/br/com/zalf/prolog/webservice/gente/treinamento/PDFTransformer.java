@@ -17,14 +17,22 @@ import java.util.List;
 public class PDFTransformer {
 
     public List<File> createImagesPNG(File directorySaveImages, File pdf, String pdfFilename) throws IOException {
+        return createImages(directorySaveImages, pdf, pdfFilename, "png");
+    }
+
+    public List<File> createImagesJPEG(File directorySaveImages, File pdf, String pdfFilename) throws IOException {
+        return createImages(directorySaveImages, pdf, pdfFilename, "jpeg");
+    }
+
+    private List<File> createImages(File directorySaveImages, File pdf, String pdfFilename, String formato) throws IOException {
         final List<File> imagens = new ArrayList<>();
         final PDDocument document = PDDocument.load(pdf);
         final PDFRenderer pdfRenderer = new PDFRenderer(document);
         for (int page = 0; page < document.getNumberOfPages(); page++) {
             BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 85, ImageType.RGB);
-            String fileName = pdfFilename + "-" + (page+1) + ".png";
+            String fileName = pdfFilename + "_" + (page+1) + "." + formato;
             File file = new File(directorySaveImages, fileName);
-            ImageIO.write(bim, "png", file);
+            ImageIO.write(bim, formato, file);
             imagens.add(file);
         }
         document.close();
