@@ -16,6 +16,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 @Path("/treinamentos")
@@ -42,16 +43,11 @@ public class TreinamentoResource {
         if (treinamento == null) {
             return Response.Error("ERRO! Treinamento veio nulo");
         } else {
-            UploadTreinamento upload = new UploadTreinamento();
-            if (upload.doIt(treinamento, fileInputStream)) {
-                Long codTreinamento = service.insert(treinamento);
-                if (codTreinamento != null) {
-                    return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
-                } else {
-                    return Response.Error("Erro ao inserir treinamento");
-                }
+            Long codTreinamento = service.insert(fileInputStream, treinamento);
+            if (codTreinamento != null) {
+                return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
             } else {
-                return Response.Error("Erro ao reailizar upload do arquivo");
+                return Response.Error("Erro ao inserir treinamento");
             }
         }
     }
@@ -62,6 +58,19 @@ public class TreinamentoResource {
     public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
                                                @PathParam("cpf") Long cpf) {
         if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
+            return Response.Ok("Treinamento marcado com sucesso");
+        } else {
+            return Response.Error("Erro ao marcar treinamento");
+        }
+    }
+
+    @Deprecated
+    @POST
+    @Secured
+    public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(TreinamentoColaborador treinamentoColaborador) {
+        treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
+        if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
+                treinamentoColaborador.getColaborador().getCpf())) {
             return Response.Ok("Treinamento marcado com sucesso");
         } else {
             return Response.Error("Erro ao marcar treinamento");
