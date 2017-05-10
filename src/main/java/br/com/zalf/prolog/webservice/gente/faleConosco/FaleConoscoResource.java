@@ -46,7 +46,10 @@ public class FaleConoscoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.FaleConosco.VISUALIZAR_TODOS, Pilares.Gente.FaleConosco.FEEDBACK})
+    @Secured(permissions = {
+            Pilares.Gente.FaleConosco.REALIZAR,
+            Pilares.Gente.FaleConosco.VISUALIZAR_TODOS,
+            Pilares.Gente.FaleConosco.FEEDBACK})
     @Path("/{codUnidade}/{equipe}/{cpf}")
     public List<FaleConosco> getAll(
             @PathParam("codUnidade") Long codUnidade,
