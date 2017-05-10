@@ -2,8 +2,11 @@ package br.com.zalf.prolog.webservice.util;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.common.base.Preconditions;
 
@@ -15,7 +18,7 @@ import java.io.File;
 public class S3FileSender {
     private final String accessKeyId;
     private final String secretKey;
-    private AmazonS3Client amazonS3Client;
+    private AmazonS3 amazonS3Client;
 
     public static class S3FileSenderException extends Exception {
         S3FileSenderException() {
@@ -49,17 +52,23 @@ public class S3FileSender {
         Preconditions.checkNotNull(bucketName);
         Preconditions.checkNotNull(fileName);
 
-        return getS3Client().getResourceUrl(bucketName, fileName);
+        return getS3Client().getUrl(bucketName, fileName).toString();
     }
 
     private void putObject(PutObjectRequest putObjectRequest) throws Exception {
         getS3Client().putObject(putObjectRequest);
     }
 
-    private AmazonS3Client getS3Client() {
+    private AmazonS3 getS3Client() {
         if (amazonS3Client == null) {
             ClientConfiguration clientConfiguration = getClientConfiguration();
-            return amazonS3Client = new AmazonS3Client(getAwsCredentials(), clientConfiguration);
+            AWSCredentials awsCreds = getAwsCredentials();
+            return amazonS3Client = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion(Regions.SA_EAST_1)
+                    .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                    .withClientConfiguration(clientConfiguration)
+                    .build();
         }
         return amazonS3Client;
     }
