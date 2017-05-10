@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.treinamento.Treinamento;
-import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.Android;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;

@@ -1,6 +1,6 @@
 package test;
 
-import br.com.zalf.prolog.webservice.pneu.servico.ServicoService;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoService;
 import junit.framework.TestCase;
 import org.junit.Test;
 

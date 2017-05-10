@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.commons.colaborador.Empresa;
-import br.com.zalf.prolog.commons.colaborador.Equipe;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.colaborador.Setor;
-import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.permissao.Visao;
+import br.com.zalf.prolog.webservice.commons.colaborador.Empresa;
+import br.com.zalf.prolog.webservice.commons.colaborador.Equipe;
+import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.commons.colaborador.Setor;
+import br.com.zalf.prolog.webservice.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
@@ -127,7 +127,7 @@ public interface EmpresaDao {
 	/**
 	 * Busca as funções do prolog a partir do codigo da unidade
 	 * @param codUnidade codigo da unidade
-	 * @return {@link Visao} da {@link br.com.zalf.prolog.commons.colaborador.Unidade}
+	 * @return {@link Visao} da {@link br.com.zalf.prolog.webservice.commons.colaborador.Unidade}
 	 * @throws SQLException
 	 */
 	Visao getVisaoUnidade(Long codUnidade) throws SQLException;

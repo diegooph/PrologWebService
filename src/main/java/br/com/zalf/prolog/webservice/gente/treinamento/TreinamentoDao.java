@@ -1,8 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.gente.treinamento.Treinamento;
-import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;

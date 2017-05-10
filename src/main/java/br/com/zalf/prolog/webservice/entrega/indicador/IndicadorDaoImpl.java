@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.indicador.indicadores.Indicador;
-import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.*;
-import br.com.zalf.prolog.entrega.indicador.indicadores.item.*;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.*;
+import br.com.zalf.prolog.webservice.entrega.indicador.item.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.util.L;
 

@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.seguranca.dashboard;
 
-import br.com.zalf.prolog.seguranca.dashboard.DashSeguranca;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 

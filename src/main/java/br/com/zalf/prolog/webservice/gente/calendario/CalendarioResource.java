@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.gente.calendario.Evento;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

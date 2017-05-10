@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.gente.treinamento.Treinamento;
-import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
 import br.com.zalf.prolog.webservice.util.S3FileSender;
 
 import java.io.IOException;

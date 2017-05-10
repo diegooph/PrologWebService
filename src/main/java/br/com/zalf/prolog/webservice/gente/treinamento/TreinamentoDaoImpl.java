@@ -1,10 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.treinamento.Treinamento;
-import br.com.zalf.prolog.gente.treinamento.TreinamentoColaborador;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.Connection;

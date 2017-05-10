@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.produtividade.ColaboradorProdutividade;
-import br.com.zalf.prolog.entrega.produtividade.HolderColaboradorProdutividade;
-import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.util.L;

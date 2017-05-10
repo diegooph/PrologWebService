@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd;
 
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.commons.questoes.Pergunta;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.seguranca.gsd.Gsd;
-import br.com.zalf.prolog.seguranca.gsd.Gsd.PerguntaRespostasGsd;
-import br.com.zalf.prolog.seguranca.gsd.Pdv;
+import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.seguranca.gsd.Gsd.PerguntaRespostasGsd;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.Pdv;
 import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.PdvDao;
 import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.PdvDaoImpl;
 

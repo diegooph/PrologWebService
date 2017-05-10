@@ -1,12 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.frota.checklist.Checklist;
-import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
-import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.util.L;
 
