@@ -1,12 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.DevNfAcumulado;
-import br.com.zalf.prolog.entrega.indicador.indicadores.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.entrega.produtividade.ItemProdutividade;
-import br.com.zalf.prolog.gente.contracheque.Contracheque;
-import br.com.zalf.prolog.gente.contracheque.ItemContracheque;
-import br.com.zalf.prolog.gente.contracheque.ItemImportContracheque;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.DevNfAcumulado;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;

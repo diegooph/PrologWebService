@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.S3FileSender;
 import com.google.common.io.Files;
@@ -32,7 +31,7 @@ public class UploadTreinamentoHelper {
             S3FileSender.S3FileSenderException {
 
         final S3FileSender fileSender = new S3FileSender(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);
-        final String pdfName = TreinamentoHelper.createFileName(treinamento);
+        final String pdfName = TreinamentoHelper.createPDFFileName(treinamento);
         // Pasta temporária da JVM
         final File tmpDir = Files.createTempDir();
 
@@ -43,12 +42,12 @@ public class UploadTreinamentoHelper {
 
         // Envia Imagens
         final List<String> urls = new ArrayList<>();
-        final List<File> imagens = transformer.createImagesPNG(tmpDir, pdfFile, pdfName);
+        final List<File> imagens = transformer.createImagesJPEG(tmpDir, pdfFile, pdfName);
         for (File imagem : imagens) {
             fileSender.sendFile(BUCKET_NAME_IMAGES, imagem.getName(), imagem);
-            final String imageName = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
-            urls.add(imageName);
-            L.d(TAG, "Imagem enviada: " + imageName);
+            final String imageUrl = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
+            urls.add(imageUrl);
+            L.d(TAG, "Imagem enviada: " + imageUrl);
         }
         treinamento.setUrlsImagensArquivo(urls);
 

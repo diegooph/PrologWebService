@@ -1,16 +1,16 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.commons.colaborador.Empresa;
-import br.com.zalf.prolog.commons.colaborador.Equipe;
-import br.com.zalf.prolog.commons.colaborador.Funcao;
-import br.com.zalf.prolog.commons.colaborador.Setor;
-import br.com.zalf.prolog.commons.imports.HolderMapaTracking;
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Request;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.permissao.Visao;
-import br.com.zalf.prolog.permissao.pilares.Pilar;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.colaborador.Empresa;
+import br.com.zalf.prolog.webservice.commons.colaborador.Equipe;
+import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.commons.colaborador.Setor;
+import br.com.zalf.prolog.webservice.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

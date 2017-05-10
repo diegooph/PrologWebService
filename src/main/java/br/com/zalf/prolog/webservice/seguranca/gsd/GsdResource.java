@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.seguranca.gsd;
 
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.questoes.Pergunta;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.seguranca.gsd.Gsd;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

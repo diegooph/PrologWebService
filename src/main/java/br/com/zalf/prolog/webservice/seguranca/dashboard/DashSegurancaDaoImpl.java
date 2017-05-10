@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.seguranca.dashboard;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.seguranca.dashboard.DashSeguranca;
-import br.com.zalf.prolog.seguranca.ocorrencia.Local;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.seguranca.relato.Local;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.*;

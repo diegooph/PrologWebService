@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
-import br.com.zalf.prolog.commons.network.AbstractResponse;
-import br.com.zalf.prolog.commons.network.Response;
-import br.com.zalf.prolog.commons.util.DateUtils;
-import br.com.zalf.prolog.gente.solicitacao_folga.SolicitacaoFolga;
-import br.com.zalf.prolog.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

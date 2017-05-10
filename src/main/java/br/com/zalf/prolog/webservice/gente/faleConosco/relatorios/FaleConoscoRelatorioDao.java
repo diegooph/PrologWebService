@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
 
-import br.com.zalf.prolog.commons.Report;
+import br.com.zalf.prolog.webservice.commons.Report;
 
 import java.io.IOException;
 import java.io.OutputStream;

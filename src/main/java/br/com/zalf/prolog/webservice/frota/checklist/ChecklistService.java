@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import br.com.zalf.prolog.frota.checklist.Checklist;
-import br.com.zalf.prolog.frota.checklist.ModeloChecklist;
-import br.com.zalf.prolog.frota.checklist.NovoChecklistHolder;
-import br.com.zalf.prolog.frota.checklist.VeiculoLiberacao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

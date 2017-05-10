@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.imports.tracking;
 
-import br.com.zalf.prolog.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 
 import java.io.IOException;
 import java.sql.SQLException;
