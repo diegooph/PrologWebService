@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 import br.com.zalf.prolog.gente.treinamento.Treinamento;
 import br.com.zalf.prolog.webservice.util.L;
 import br.com.zalf.prolog.webservice.util.S3FileSender;
+import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class UploadTreinamentoHelper {
             L.d(TAG, "Imagem enviada: " + imageName);
         }
         treinamento.setUrlsImagensArquivo(urls);
+
         fileSender.sendFile(BUCKET_NAME_PDF, pdfName, createFile(inputStream, pdfName));
         treinamento.setUrlArquivo(fileSender.generateFileUrl(BUCKET_NAME_PDF, pdfName));
         return treinamento;
@@ -49,16 +51,12 @@ public class UploadTreinamentoHelper {
 
     private File createFile(InputStream inputStream, String pdfName) throws IOException {
         // Pasta temporária da JVM
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"), "treinamentos");
-        if (!tmpDir.exists()) {
-            // Cria a pasta treinamentos se não existe
-            tmpDir.mkdir();
-        }
+        File tmpDir = Files.createTempDir();
         File file = new File(tmpDir, pdfName);
-        FileOutputStream out;
-        out = new FileOutputStream(file);
-        IOUtils.copy(inputStream, out);
-        IOUtils.closeQuietly(out);
+        FileOutputStream outputStream = new FileOutputStream(file);
+        IOUtils.copy(inputStream, outputStream);
+        IOUtils.closeQuietly(inputStream);
+        IOUtils.closeQuietly(outputStream);
         return file;
     }
 }
