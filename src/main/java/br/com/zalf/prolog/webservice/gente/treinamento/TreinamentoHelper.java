@@ -4,9 +4,9 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class TreinamentoHelper { 
+public class TreinamentoHelper {
 
-	public static String createFileName(Treinamento treinamento) {
+	public static String createPDFFileName(Treinamento treinamento) {
 		SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault());
 		String extensao = "pdf";
 		return String.format(
