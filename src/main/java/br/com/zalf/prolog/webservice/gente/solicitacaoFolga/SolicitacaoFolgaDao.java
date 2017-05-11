@@ -62,9 +62,8 @@ public interface SolicitacaoFolgaDao {
 	/**
 	 * Busca as solicitações de folga de determinado colaborador
 	 * @param cpf um cpf, ao qual serão buscados suas solicitações de folga
-	 * @param token para verificar se o solicitante esta devidamente logado
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível fazer a busca
 	 */
-	List<SolicitacaoFolga> getByColaborador(Long cpf, String token) throws SQLException;
+	List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException;
 }

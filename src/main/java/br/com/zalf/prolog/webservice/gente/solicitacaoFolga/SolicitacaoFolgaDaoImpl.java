@@ -175,7 +175,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	}
 
 	@Override
-	public List<SolicitacaoFolga> getByColaborador(Long cpf, String token) throws SQLException {
+	public List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException {
 		List<SolicitacaoFolga> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -189,12 +189,9 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 					"C_FEEDBACK.NOME AS NOME_FEEDBACK " +
 					"FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
 					"SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
-					"SF.CPF_FEEDBACK = C_FEEDBACK.CPF JOIN TOKEN_AUTENTICACAO TA ON " +
-					"? = TA.CPF_COLABORADOR AND ? = TA.TOKEN WHERE " +
+					"SF.CPF_FEEDBACK = C_FEEDBACK.CPF WHERE " +
 					"SF.CPF_COLABORADOR = ?;");
 			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				SolicitacaoFolga solicitacaoFolga = createSolicitacaoFolga(rSet);

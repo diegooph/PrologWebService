@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,12 +24,12 @@ public class SolicitacaoFolgaService {
 		}
 	}
 
-	public List<SolicitacaoFolga> getByColaborador(Long cpf, String token) {
+	public List<SolicitacaoFolga> getByColaborador(Long cpf) {
 		try {
-			return dao.getByColaborador(cpf, token);
+			return dao.getByColaborador(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<SolicitacaoFolga>();
+			return Collections.emptyList();
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class SolicitacaoFolgaService {
 			return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
 		}catch(SQLException e){
 			e.printStackTrace();
-			return null;
+			return Collections.emptyList();
 		}
 	}
 	
