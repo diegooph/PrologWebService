@@ -1,19 +1,17 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.commons.colaborador.*;
-import br.com.zalf.prolog.webservice.commons.imports.HolderMapaTracking;
-import br.com.zalf.prolog.webservice.commons.imports.MapaTracking;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-import br.com.zalf.prolog.webservice.util.L;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;

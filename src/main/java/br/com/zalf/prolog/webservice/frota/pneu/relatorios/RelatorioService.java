@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Pneu;
+import br.com.zalf.prolog.webservice.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
 import java.io.OutputStream;

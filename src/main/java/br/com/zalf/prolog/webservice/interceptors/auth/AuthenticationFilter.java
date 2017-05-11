@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.commons.util.L;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;

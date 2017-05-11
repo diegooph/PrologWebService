@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.Quiz;
+
 import java.sql.SQLException;
 import java.util.List;
 

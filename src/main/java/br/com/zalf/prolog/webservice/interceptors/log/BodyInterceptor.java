@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.log;
 
-import br.com.zalf.prolog.webservice.util.L;
-import br.com.zalf.prolog.webservice.util.LogDatabase;
+import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
 import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.container.ContainerRequestContext;

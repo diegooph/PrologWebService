@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

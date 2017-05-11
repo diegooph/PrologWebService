@@ -5,7 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.veiculo.Marca;
 import br.com.zalf.prolog.webservice.commons.veiculo.Modelo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -3,6 +3,10 @@ package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.Quiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloConverter;
 
 import java.sql.*;

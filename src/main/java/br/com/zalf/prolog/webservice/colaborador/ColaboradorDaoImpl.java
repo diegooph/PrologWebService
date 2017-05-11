@@ -1,16 +1,16 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.colaborador.*;
 import br.com.zalf.prolog.webservice.commons.login.AmazonCredentials;
 import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
-import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
@@ -71,7 +71,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
 
 			// Só vai ter data de demissão quando estiver fazendo um update
-			// em um colaborador que já está deletado (inativo). 
+			// em um colaborador que já está deletado (inativo).
 			if (colaborador.getDataDemissao() != null)
 				stmt.setDate(6, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
 			else

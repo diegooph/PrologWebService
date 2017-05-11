@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.veiculo;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 
 import java.util.List;
 

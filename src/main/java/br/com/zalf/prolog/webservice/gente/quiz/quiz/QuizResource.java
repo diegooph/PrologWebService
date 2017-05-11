@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quiz;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.Quiz;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 

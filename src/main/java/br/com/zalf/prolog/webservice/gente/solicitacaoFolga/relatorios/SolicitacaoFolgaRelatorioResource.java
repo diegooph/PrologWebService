@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
+import br.com.zalf.prolog.webservice.report.Report;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;

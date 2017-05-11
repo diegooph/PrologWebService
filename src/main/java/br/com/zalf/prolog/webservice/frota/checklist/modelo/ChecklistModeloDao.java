@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 
-import br.com.zalf.prolog.webservice.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 
 import java.sql.SQLException;
 import java.util.List;

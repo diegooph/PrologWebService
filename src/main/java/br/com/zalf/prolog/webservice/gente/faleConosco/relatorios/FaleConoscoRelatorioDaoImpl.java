@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
+import br.com.zalf.prolog.webservice.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;

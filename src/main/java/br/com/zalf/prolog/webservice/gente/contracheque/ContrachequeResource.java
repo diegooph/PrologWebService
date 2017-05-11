@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.Android;
-import br.com.zalf.prolog.webservice.util.L;
-import br.com.zalf.prolog.webservice.util.Site;
+import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Site;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -82,9 +84,9 @@ public class ContrachequeResource {
     @Android
     @Path("/{codUnidade}/{cpf}/{ano}/{mes}")
     public Contracheque getContracheque(@PathParam("cpf") Long cpf,
-                                           @PathParam("codUnidade") Long codUnidade,
-                                           @PathParam("ano") int ano,
-                                           @PathParam("mes") int mes) {
+                                        @PathParam("codUnidade") Long codUnidade,
+                                        @PathParam("ano") int ano,
+                                        @PathParam("mes") int mes) {
         return service.getPreContracheque(cpf, codUnidade, ano, mes);
     }
 

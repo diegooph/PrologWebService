@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.destino.DestinoVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 

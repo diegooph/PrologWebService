@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
 import java.io.IOException;
 import java.io.InputStream;
