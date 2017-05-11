@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;

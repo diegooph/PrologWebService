@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.colaborador.*;
-import br.com.zalf.prolog.webservice.commons.login.AmazonCredentials;
-import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;

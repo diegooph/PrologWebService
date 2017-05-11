@@ -1,14 +1,14 @@
-package br.com.zalf.prolog.webservice.commons.colaborador;
+package br.com.zalf.prolog.webservice.frota.veiculo;
 
 /**
- * Created by jean on 23/02/16.
- *
+ * Created by jean on 20/06/16.
  */
-public class Equipe {
+public class Modelo {
+
     private long codigo;
     private String nome;
 
-    public Equipe() {
+    public Modelo() {
     }
 
     public long getCodigo() {
@@ -29,7 +29,7 @@ public class Equipe {
 
     @Override
     public String toString() {
-        return "Equipe{" +
+        return "Modelo{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
                 '}';

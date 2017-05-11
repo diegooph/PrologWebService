@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
-import br.com.zalf.prolog.webservice.report.Report;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;

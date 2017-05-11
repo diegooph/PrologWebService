@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
-import br.com.zalf.prolog.webservice.report.Report;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 
 import java.io.IOException;
 import java.io.OutputStream;

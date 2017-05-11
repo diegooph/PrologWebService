@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.report;
+package br.com.zalf.prolog.webservice.commons.report;
 
 import com.sun.istack.internal.NotNull;
 

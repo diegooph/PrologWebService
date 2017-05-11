@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 

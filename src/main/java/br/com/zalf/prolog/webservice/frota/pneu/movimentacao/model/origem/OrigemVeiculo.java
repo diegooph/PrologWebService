@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem;
 
-import br.com.zalf.prolog.webservice.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
 import com.sun.istack.internal.NotNull;
 

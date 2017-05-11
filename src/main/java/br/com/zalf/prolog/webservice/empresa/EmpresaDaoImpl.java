@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.empresa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-import br.com.zalf.prolog.webservice.commons.colaborador.*;
+import br.com.zalf.prolog.webservice.colaborador.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;

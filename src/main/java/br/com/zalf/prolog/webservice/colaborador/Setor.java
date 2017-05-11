@@ -1,20 +1,11 @@
-package br.com.zalf.prolog.webservice.commons.veiculo;
+package br.com.zalf.prolog.webservice.colaborador;
 
 /**
- * Created by jean on 25/05/16.
+ * Created by luiz on 5/5/16.
  */
-public class TipoVeiculo {
-
+public class Setor {
     private Long codigo;
     private String nome;
-
-    public TipoVeiculo(long codigo, String nome) {
-        this.codigo = codigo;
-        this.nome = nome;
-    }
-
-    public TipoVeiculo() {
-    }
 
     public Long getCodigo() {
         return codigo;
@@ -34,8 +25,8 @@ public class TipoVeiculo {
 
     @Override
     public String toString() {
-        return "TipoVeiculo{" +
-                "codigo=" + codigo +
+        return "Setor{" +
+                "codigo='" + codigo + '\'' +
                 ", nome='" + nome + '\'' +
                 '}';
     }

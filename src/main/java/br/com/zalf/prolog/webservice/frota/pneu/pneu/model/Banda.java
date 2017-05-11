@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-import br.com.zalf.prolog.webservice.commons.veiculo.Marca;
-import br.com.zalf.prolog.webservice.commons.veiculo.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.Modelo;
 
 /**
  * Created by Zart on 04/04/17.

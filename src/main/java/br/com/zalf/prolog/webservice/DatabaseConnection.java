@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.L;
 
 import java.sql.Connection;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo;
 
 /**
  * Created by jean on 19/06/16.

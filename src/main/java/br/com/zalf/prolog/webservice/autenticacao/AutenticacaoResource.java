@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.login.Autenticacao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.commons.util.L;

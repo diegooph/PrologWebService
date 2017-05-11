@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato.model;
 
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.Pdv;
 import com.sun.istack.internal.Nullable;
 

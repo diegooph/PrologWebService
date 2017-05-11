@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
 
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
 import java.util.Date;
 

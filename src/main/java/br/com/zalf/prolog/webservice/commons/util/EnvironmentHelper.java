@@ -1,14 +1,14 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.commons.util;
 
 /**
  * Created by luiz on 13/02/17.
  */
 public class EnvironmentHelper {
-    static final String PROLOG_RDS_HOSTNAME;
-    static final String PROLOG_RDS_DB_NAME;
-    static final String PROLOG_RDS_USERNAME;
-    static final String PROLOG_RDS_PASSWORD;
-    static final String PROLOG_RDS_PORT;
+    public static final String PROLOG_RDS_HOSTNAME;
+    public static final String PROLOG_RDS_DB_NAME;
+    public static final String PROLOG_RDS_USERNAME;
+    public static final String PROLOG_RDS_PASSWORD;
+    public static final String PROLOG_RDS_PORT;
 
 
     static {

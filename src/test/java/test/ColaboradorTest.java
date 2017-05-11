@@ -1,6 +1,6 @@
 package test;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import junit.framework.TestCase;
 import org.junit.Test;

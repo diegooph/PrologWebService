@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.commons.login.Autenticacao;
-import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;

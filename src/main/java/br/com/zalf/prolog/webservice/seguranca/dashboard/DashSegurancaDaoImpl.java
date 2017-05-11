@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.seguranca.dashboard;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Local;
 import br.com.zalf.prolog.webservice.DatabaseConnection;

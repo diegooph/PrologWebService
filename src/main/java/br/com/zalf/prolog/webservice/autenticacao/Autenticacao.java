@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.login;
+package br.com.zalf.prolog.webservice.autenticacao;
 
 /**
  * Created by luiz on 1/16/16.

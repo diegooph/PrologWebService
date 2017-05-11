@@ -1,6 +1,5 @@
-package br.com.zalf.prolog.webservice.commons.login;
+package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;

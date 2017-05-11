@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
-import br.com.zalf.prolog.webservice.commons.veiculo.Veiculo;
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
 import java.util.Date;
 

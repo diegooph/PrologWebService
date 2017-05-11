@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.colaborador;
+package br.com.zalf.prolog.webservice.colaborador;
 
 import java.util.List;
 

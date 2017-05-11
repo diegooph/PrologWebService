@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Funcao;
 
 import java.util.Date;
 import java.util.List;

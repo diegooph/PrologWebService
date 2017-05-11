@@ -1,17 +1,21 @@
-package br.com.zalf.prolog.webservice.commons.colaborador;
+package br.com.zalf.prolog.webservice.colaborador;
 
 /**
- * Created by luiz on 5/5/16.
+ * Created by jean on 23/02/16.
+ *
  */
-public class Setor {
-    private Long codigo;
+public class Equipe {
+    private long codigo;
     private String nome;
 
-    public Long getCodigo() {
+    public Equipe() {
+    }
+
+    public long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 
@@ -25,8 +29,8 @@ public class Setor {
 
     @Override
     public String toString() {
-        return "Setor{" +
-                "codigo='" + codigo + '\'' +
+        return "Equipe{" +
+                "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
                 '}';
     }

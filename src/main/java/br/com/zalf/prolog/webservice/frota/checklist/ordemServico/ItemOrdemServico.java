@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import com.google.gson.annotations.SerializedName;
 
