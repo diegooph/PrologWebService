@@ -27,7 +27,9 @@ public class SolicitacaoFolgaResource {
 
     @PUT
     @Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
-    public Response update(SolicitacaoFolga solicitacaoFolga) {
+    @Path("/{codigo}")
+    public Response update(SolicitacaoFolga solicitacaoFolga, Long codigo) {
+        solicitacaoFolga.setCodigo(codigo);
         if (service.update(solicitacaoFolga)) {
             return Response.Ok("Solicitação atualizada com sucesso");
         } else {
