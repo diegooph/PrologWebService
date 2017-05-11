@@ -58,7 +58,7 @@ public class DeprecatedSolicitacaoFolgaResource {
 			@FormParam("status") String status,
 			@FormParam("cpfColaborador") Long cpfColaborador) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
-				codUnidade, codEquipe, status, cpfColaborador);
+				codUnidade, codEquipe, status, String.valueOf(cpfColaborador));
 	}
 
 	@POST
@@ -72,7 +72,7 @@ public class DeprecatedSolicitacaoFolgaResource {
 			@FormParam("codEquipe") String codEquipe,
 			@FormParam("status") String status) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
-				codUnidade, codEquipe, status, null);
+				codUnidade, codEquipe, status, "%");
 	}
 
 	@DELETE

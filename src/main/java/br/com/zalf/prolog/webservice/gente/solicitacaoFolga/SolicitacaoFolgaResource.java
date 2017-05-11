@@ -2,11 +2,13 @@ package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 
 @Path("/solicitacoes-folga")
@@ -37,24 +39,23 @@ public class SolicitacaoFolgaResource {
     @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.REALIZAR,
             Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{cpf}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public List<SolicitacaoFolga> getByColaborador(@PathParam("cpf") Long cpf) {
         return service.getByColaborador(cpf);
     }
 
-//    @GET
-//    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
-//    @Path("/{codUnidade}/{codEquipe}/{cpf}")
-//    public List<SolicitacaoFolga> getAll(
-//            @QueryParam("dataIncial") long dataInicial,
-//            @QueryParam("dataFinal") long dataFinal,
-//            @QueryParam("status") String status,
-//            @PathParam("codUnidade") Long codUnidade,
-//            @PathParam("codEquipe") String codEquipe,
-//            @PathParam("cpf") String cpfColaborador) {
-//        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
-//                codUnidade, codEquipe, status, cpfColaborador);
-//    }
+    @GET
+    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+    @Path("/{codUnidade}/{codEquipe}/{cpf}")
+    public List<SolicitacaoFolga> getAll(
+            @QueryParam("dataIncial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("status") String status,
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codEquipe") String codEquipe,
+            @PathParam("cpf") String cpfColaborador) {
+        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
+                codUnidade, codEquipe, status, cpfColaborador);
+    }
 
     @DELETE
     @Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)

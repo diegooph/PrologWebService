@@ -34,7 +34,7 @@ public class SolicitacaoFolgaService {
 	}
 	
 	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade,
-										 String codEquipe, String status, Long cpfColaborador){
+										 String codEquipe, String status, String cpfColaborador){
 		try{
 			return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
 		}catch(SQLException e){

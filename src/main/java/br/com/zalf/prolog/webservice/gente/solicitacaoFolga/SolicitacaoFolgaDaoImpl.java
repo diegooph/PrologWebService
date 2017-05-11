@@ -132,7 +132,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 
 	@Override
 	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, 
-			Long codUnidade, String codEquipe, String status, Long cpfColaborador) throws SQLException {
+			Long codUnidade, String codEquipe, String status, String cpfColaborador) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -158,11 +158,6 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt.setLong(3, codUnidade);
 			stmt.setString(4, codEquipe);
 			stmt.setString(5, status);
-			if(cpfColaborador != null){
-				stmt.setString(6, String.valueOf(cpfColaborador));
-			}else{
-				stmt.setString(6, "%");
-			}
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				list.add(createSolicitacaoFolga(rSet));
