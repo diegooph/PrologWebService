@@ -147,7 +147,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 					+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ "WHERE SF.DATA_FOLGA BETWEEN ? AND ? "
 					+ "AND C.COD_UNIDADE = ? "
-					+ "AND E.NOME LIKE ? "
+					+ "AND E.CODIGO::TEXT LIKE ? "
 					+ "AND SF.STATUS LIKE ? "
 					+ "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
 					+ "ORDER BY SF.DATA_SOLICITACAO";
@@ -158,6 +158,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt.setLong(3, codUnidade);
 			stmt.setString(4, codEquipe);
 			stmt.setString(5, status);
+			stmt.setString(6, cpfColaborador);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				list.add(createSolicitacaoFolga(rSet));

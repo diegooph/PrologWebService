@@ -14,7 +14,6 @@ import java.util.List;
 @Path("/solicitacoes-folga")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Deprecated
 public class SolicitacaoFolgaResource {
 
     private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
