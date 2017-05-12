@@ -13,7 +13,6 @@ import javax.ws.rs.core.StreamingOutput;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Path("/solicitacoes-folga/relatorios")
-@Deprecated
 public class SolicitacaoFolgaRelatorioResource {
 
     SolicitacaoFolgaRelatorioService service = new SolicitacaoFolgaRelatorioService();
