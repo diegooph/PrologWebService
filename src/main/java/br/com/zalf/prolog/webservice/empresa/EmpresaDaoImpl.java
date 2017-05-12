@@ -734,6 +734,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		unidade.setListNomesEquipes(listEquipes);
+		unidade.setEquipes(equipes);
 	}
 
 	public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException {
