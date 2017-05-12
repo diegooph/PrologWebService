@@ -54,14 +54,14 @@ public class ChecklistResource {
 
 	@GET
 	@Path("{codigo}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
 
 	@GET
 	@Path("/colaborador/{cpf}")
-	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR})
+	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
 	public List<Checklist> getByColaborador(
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
@@ -71,7 +71,7 @@ public class ChecklistResource {
 
 	@GET
 	@Path("{codUnidade}/{equipe}/{placa}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public List<Checklist> getAll(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
@@ -108,7 +108,7 @@ public class ChecklistResource {
 	 */
 	@GET
 	@Path("/recentes/{codUnidade}/{equipe}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	@Deprecated
 	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
 			@PathParam("equipe") String equipe,

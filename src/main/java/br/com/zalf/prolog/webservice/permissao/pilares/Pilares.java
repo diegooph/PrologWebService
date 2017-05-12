@@ -19,7 +19,7 @@ public final class Pilares {
             private Checklist() {}
 
             public static final int REALIZAR = 11;
-            public static final int VISUALIZAR = 118;
+            public static final int VISUALIZAR_TODOS = 118;
 
             public final class Modelo {
                 private Modelo() {}
