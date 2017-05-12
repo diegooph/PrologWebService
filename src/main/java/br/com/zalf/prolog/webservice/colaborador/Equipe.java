@@ -9,6 +9,12 @@ public class Equipe {
     private String nome;
 
     public Equipe() {
+
+    }
+
+    public Equipe(Long codigo, String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
     }
 
     public long getCodigo() {

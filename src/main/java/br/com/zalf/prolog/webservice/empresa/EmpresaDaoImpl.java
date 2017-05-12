@@ -55,7 +55,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			+ " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
 			+ " WHERE REG.CODIGO = ? AND E.CODIGO = ? ORDER BY 2 ";
 
-	private static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME "
+	private static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME, E.CODIGO "
 			+ "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
 			+ "WHERE U.CODIGO = ?"
 			+ "ORDER BY 1";
@@ -545,7 +545,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_REGIONAL);
-			stmt.setLong(1, cpf.longValue());
+			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){ // rset com os codigos e nomes da regionais
@@ -643,11 +643,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		List<Empresa> listEmpresa = new ArrayList<>();
 		List<Regional> listRegional = new ArrayList<>();
 		List<Unidade> listUnidade = new ArrayList<>();
+		List<Equipe> equipes = new ArrayList<>();
 		List<String> listEquipe = new ArrayList<>();
 		Empresa empresa = new Empresa();
 		Regional regional = new Regional();
 		Unidade unidade = new Unidade();
-		String equipe = "";
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -666,19 +666,22 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 				regional.setNome(rSet.getString("NOME_REGIONAL"));
 				unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
 				unidade.setNome(rSet.getString("NOME_UNIDADE"));
-				equipe = rSet.getString("NOME_EQUIPE");
+				String nomeEquipe = rSet.getString("NOME_EQUIPE");
+				Long codEquipe = rSet.getLong("COD_EQUIPE");
 				empresa.setNome(rSet.getString("NOME_EMPRESA"));
 				listEmpresa.add(empresa);
 				listUnidade.add(unidade);
 				listRegional.add(regional);
-				listEquipe.add(equipe);
+				listEquipe.add(nomeEquipe);
+				equipes.add(new Equipe(codEquipe, nomeEquipe));
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
 		empresa.setListRegional(listRegional);
 		regional.setListUnidade(listUnidade);
-		unidade.setListEquipe(listEquipe);
+		unidade.setListNomesEquipes(listEquipe);
+		unidade.setEquipes(equipes);
 		return listEmpresa;
 	}
 
@@ -714,6 +717,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<String> listEquipes = new ArrayList<>();
+		List<Equipe> equipes = new ArrayList<>();
 		try{
 
 			conn = getConnection();
@@ -722,13 +726,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 			rSet = stmt.executeQuery();
 
 			while(rSet.next()){
-				String equipe = rSet.getString("NOME");
-				listEquipes.add(equipe);
+				Equipe equipe = createEquipe(rSet);
+				listEquipes.add(equipe.getNome());
+				equipes.add(equipe);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		unidade.setListEquipe(listEquipes);
+		unidade.setListNomesEquipes(listEquipes);
 	}
 
 	public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException {
