@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,14 @@ public class Unidade {
 
     private Long codigo;
     private String nome;
-    private List<String> listEquipe;
+    private List<Equipe> equipes;
+
+    /**
+     * Ainda não será removido pois implementações antidas utilizam essa lista com o nome das equipes.
+     */
+    @Deprecated
+    @SerializedName("listEquipe")
+    private List<String> listNomesEquipes;
 
     public Unidade() {
     }
@@ -18,7 +27,7 @@ public class Unidade {
     public Unidade(Long codigo, String nome, List<String> listEquipe) {
         this.codigo = codigo;
         this.nome = nome;
-        this.listEquipe = listEquipe;
+        this.listNomesEquipes = listEquipe;
     }
 
     public Long getCodigo() {
@@ -37,12 +46,20 @@ public class Unidade {
         this.nome = nome;
     }
 
-    public List<String> getListEquipe() {
-        return listEquipe;
+    public List<String> getListNomesEquipes() {
+        return listNomesEquipes;
     }
 
-    public void setListEquipe(List<String> listEquipe) {
-        this.listEquipe = listEquipe;
+    public void setListNomesEquipes(List<String> listNomesEquipes) {
+        this.listNomesEquipes = listNomesEquipes;
+    }
+
+    public List<Equipe> getEquipes() {
+        return equipes;
+    }
+
+    public void setEquipes(List<Equipe> equipes) {
+        this.equipes = equipes;
     }
 
     @Override
@@ -50,7 +67,7 @@ public class Unidade {
         return "Unidade{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
-                ", listEquipe=" + listEquipe +
+                ", listNomesEquipes=" + listNomesEquipes +
                 '}';
     }
 }
