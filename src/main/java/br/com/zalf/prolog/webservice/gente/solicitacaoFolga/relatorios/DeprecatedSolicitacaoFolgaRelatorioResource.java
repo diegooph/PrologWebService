@@ -8,13 +8,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
 /**
- * Created by luiz on 12/05/17.
+ * Created by Zart on 02/05/17.
  */
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Path("/solicitacoes-folga/relatorios")
+@Path("/solicitacao-folgas/relatorios")
 @Deprecated
-public class SolicitacaoFolgaRelatorioResource {
+public class DeprecatedSolicitacaoFolgaRelatorioResource {
 
     SolicitacaoFolgaRelatorioService service = new SolicitacaoFolgaRelatorioService();
 
