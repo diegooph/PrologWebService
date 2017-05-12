@@ -200,7 +200,7 @@ public class ItemOrdemServico {
                 ", mecanico=" + mecanico +
                 ", dataApontamento=" + dataApontamento +
                 ", dataHoraConserto=" + dataHoraConserto +
-                ", tempoRealizacaoConsertoInMillis=" + tempoRealizacaoConserto +
+                ", tempoRealizacaoConserto=" + tempoRealizacaoConserto +
                 ", kmVeiculoFechamento=" + kmVeiculoFechamento +
                 ", status=" + status +
                 ", tempoLimiteResolucao=" + tempoLimiteResolucao +
