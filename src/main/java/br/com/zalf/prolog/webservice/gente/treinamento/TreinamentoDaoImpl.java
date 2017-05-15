@@ -252,7 +252,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setString(2, treinamento.getDescricao());
             stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
             stmt.setLong(4, treinamento.getCodigo());
-            return stmt.executeUpdate() == 0;
+            return stmt.executeUpdate() > 0;
         }finally {
             closeConnection(conn, stmt, null);
         }
