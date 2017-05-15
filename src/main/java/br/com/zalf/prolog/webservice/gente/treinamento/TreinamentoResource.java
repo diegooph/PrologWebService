@@ -6,9 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -30,7 +29,7 @@ public class TreinamentoResource {
     @Path("/upload")
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public AbstractResponse uploadTreinamento(
+    public AbstractResponse insertTreinamento(
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @FormDataParam("treinamento") FormDataBodyPart jsonPart) {
@@ -52,6 +51,16 @@ public class TreinamentoResource {
         }
     }
 
+    @PUT
+    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+    public Response updateTreinamento(Treinamento treinamento) {
+        if (service.updateTreinamento(treinamento)) {
+            return Response.Ok("Treinamento atualizado com sucesso");
+        } else {
+            return Response.Error("Erro ao atualizar o treinamento");
+        }
+    }
+
     @POST
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/{codTreinamento}/{cpf}")
@@ -64,33 +73,27 @@ public class TreinamentoResource {
         }
     }
 
-    @Deprecated
-    @POST
-    @Secured
-    public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(TreinamentoColaborador treinamentoColaborador) {
-        treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
-        if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
-                treinamentoColaborador.getColaborador().getCpf())) {
-            return Response.Ok("Treinamento marcado com sucesso");
-        } else {
-            return Response.Error("Erro ao marcar treinamento");
-        }
-    }
-
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Android
-    @Path("/vistosColaborador/{cpf}")
+    @Path("/visualizados/{cpf}")
     public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
         return service.getVistosByColaborador(cpf);
     }
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Android
-    @Path("/naoVistosColaborador/{cpf}")
+    @Path("/nao-visualizados/{cpf}")
     public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
         return service.getNaoVistosByColaborador(cpf);
+    }
+
+    @GET
+    @Secured
+    @Path("/visualizacoes/{codUnidade}/{codTreinamento}")
+    public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
+            @PathParam("codUnidade") Long codTreinamento,
+            @PathParam("codTreinamento") Long codUnidade) {
+        return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
     }
 
     @GET
@@ -109,29 +112,31 @@ public class TreinamentoResource {
     }
 
     @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/vistosColaborador/{cpf}")
+    @Deprecated
+    public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COLABORADOR(@PathParam("cpf") Long cpf) {
+        return service.getVistosByColaborador(cpf);
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/naoVistosColaborador/{cpf}")
+    @Deprecated
+    public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COLABORADOR(@PathParam("cpf") Long cpf) {
+        return service.getNaoVistosByColaborador(cpf);
+    }
+
+    @POST
     @Secured
-    @Path("/visualizacoes/{codUnidade}/{codTreinamento}")
-    public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
-            @PathParam("codUnidade") Long codTreinamento,
-            @PathParam("codTreinamento") Long codUnidade) {
-        return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
-    }
-
-    @PUT
-    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
-    public Response updateTreinamento(Treinamento treinamento) {
-        if (service.updateTreinamento(treinamento)) {
-            return Response.Ok("Treinamento atualizado com sucesso");
+    @Deprecated
+    public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(TreinamentoColaborador treinamentoColaborador) {
+        treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
+        if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
+                treinamentoColaborador.getColaborador().getCpf())) {
+            return Response.Ok("Treinamento marcado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o treinamento");
-        }
-    }
-
-    private Response updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) {
-        if(service.updateUrlImagensTreinamento(urls, codTreinamento)){
-            return Response.Ok("Atualização bem sucedida");
-        }else {
-            return Response.Error("Erro ao atualizar");
+            return Response.Error("Erro ao marcar treinamento");
         }
     }
 }
