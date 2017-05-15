@@ -28,7 +28,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM VIEW_PRODUTIVIDADE_EXTRATO \n" +
-					"WHERE data between ? and ? and cpf = ? ORDER BY data desc");
+					"WHERE data between ? and ? and cpf = ? ORDER BY data asc");
 			stmt.setDate(1, getDataInicial(ano, mes));
 			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
 			stmt.setLong(3, cpf);
