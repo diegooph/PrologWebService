@@ -53,6 +53,7 @@ public class TreinamentoResource {
 
     @PUT
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+    @Path("/{codigo}")
     public Response updateTreinamento(Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
             return Response.Ok("Treinamento atualizado com sucesso");
@@ -109,6 +110,17 @@ public class TreinamentoResource {
             @QueryParam("offset") long offset) {
         return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
                 DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
+    }
+
+    @PUT
+    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+    @Deprecated
+    public Response DEPRECATED_UPDATE(Treinamento treinamento) {
+        if (service.updateTreinamento(treinamento)) {
+            return Response.Ok("Treinamento atualizado com sucesso");
+        } else {
+            return Response.Error("Erro ao atualizar o treinamento");
+        }
     }
 
     @GET
