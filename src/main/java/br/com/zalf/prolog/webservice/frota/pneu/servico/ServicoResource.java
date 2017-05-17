@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 

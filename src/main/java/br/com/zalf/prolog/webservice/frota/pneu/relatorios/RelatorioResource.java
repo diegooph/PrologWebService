@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Pneu;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 

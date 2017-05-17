@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -8,11 +8,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
 /**
- * Created by Zart on 02/05/17.
+ * Created by luiz on 12/05/17.
  */
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Path("/solicitacao-folgas/relatorios")
+@Path("/solicitacoes-folga/relatorios")
 public class SolicitacaoFolgaRelatorioResource {
 
     SolicitacaoFolgaRelatorioService service = new SolicitacaoFolgaRelatorioService();

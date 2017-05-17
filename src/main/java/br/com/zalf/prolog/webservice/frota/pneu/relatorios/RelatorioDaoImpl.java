@@ -1,21 +1,24 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.Report;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.Servico;
-import br.com.zalf.prolog.webservice.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.util.L;
-import br.com.zalf.prolog.webservice.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;

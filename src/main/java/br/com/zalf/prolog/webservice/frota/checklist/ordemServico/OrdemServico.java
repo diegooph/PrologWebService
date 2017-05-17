@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.commons.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
 
 import java.util.Date;
 import java.util.List;

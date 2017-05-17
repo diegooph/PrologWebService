@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
+import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
+
 import java.sql.SQLException;
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

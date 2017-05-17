@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;

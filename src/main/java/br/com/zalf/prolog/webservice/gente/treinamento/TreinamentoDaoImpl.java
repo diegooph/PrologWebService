@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -225,7 +227,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             if (rSet.next()) {
                 Long codTreinamento = rSet.getLong("CODIGO");
                 treinamento.setCodigo(codTreinamento);
-                insertRestricaoTreinamento(treinamento.getFuncoesLiberadas(), codTreinamento, conn);
+                insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), codTreinamento, conn);
                 insertUrlImagensTreinamento(treinamento.getUrlsImagensArquivo(), codTreinamento, conn);
                 conn.commit();
                 return codTreinamento;
@@ -245,18 +247,34 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
+
+            // As funções liberadas para ver um treinamento podem ou não ter mudado. Assumimos que tenham mudado e
+            // deletamos e reinserimos as funções novamente
+            deleteFuncoesLiberadasTreinamento(treinamento.getCodigo(), conn);
+            insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo(), conn);
+
             stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
             stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
             stmt.setLong(4, treinamento.getCodigo());
-            return stmt.executeUpdate() == 0;
-        }finally {
+            if (stmt.executeUpdate() > 0) {
+                conn.commit();
+                return true;
+            } else {
+                throw new SQLException("Erro ao atualizar treinamento = " + treinamento.getCodigo());
+            }
+        } catch (SQLException ex) {
+            // Rollback feito, podemos subir a exceção
+            conn.rollback();
+            throw ex;
+        } finally {
             closeConnection(conn, stmt, null);
         }
     }
 
-    private void insertRestricaoTreinamento(List<Funcao> listFuncao, long codTreinamento, Connection conn) throws SQLException {
+    private void insertFuncoesLiberadasTreinamento(List<Funcao> listFuncao, Long codTreinamento, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
@@ -265,8 +283,21 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 stmt.setLong(2, funcao.getCodigo());
                 int count = stmt.executeUpdate();
                 if (count == 0) {
-                    throw new SQLException("Erro ao inserir a restrição do treinamento");
+                    throw new SQLException("Erro ao inserir funções que estão liberadas para ver o treinamento = " + codTreinamento);
                 }
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
+    private void deleteFuncoesLiberadasTreinamento(Long codTreinamento, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM RESTRICAO_TREINAMENTO WHERE COD_TREINAMENTO = ?");
+            stmt.setLong(1, codTreinamento);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao deletar as funções liberadas para ver o treinamento = " + codTreinamento);
             }
         } finally {
             closeConnection(null, stmt, null);

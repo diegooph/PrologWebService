@@ -7,8 +7,11 @@ import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
-import br.com.zalf.prolog.webservice.util.GsonUtils;
-import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.commons.util.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
+import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

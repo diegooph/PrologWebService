@@ -52,19 +52,18 @@ public interface SolicitacaoFolgaDao {
 	 * @param codUnidade código da unidade a serem buscadas as solicitações
 	 * @param codEquipe código da equipe a serem buscadas as solicitações
 	 * @param status status a ser buscado
-	 * @param cpfColaborador usado para fazer uma busca de um colaborador especifico, se for null busca todos
+	 * @param cpfColaborador usado para fazer uma busca de um colaborador especifico, se for % busca todos
 	 * @return ums lista de SolicitacaoFolga
 	 * @throws SQLException caso não seja possivel realizara a busca
 	 */
 	List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe,
-								  String status, Long cpfColaborador) throws SQLException;
+								  String status, String cpfColaborador) throws SQLException;
 
 	/**
 	 * Busca as solicitações de folga de determinado colaborador
 	 * @param cpf um cpf, ao qual serão buscados suas solicitações de folga
-	 * @param token para verificar se o solicitante esta devidamente logado
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível fazer a busca
 	 */
-	List<SolicitacaoFolga> getByColaborador(Long cpf, String token) throws SQLException;
+	List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException;
 }

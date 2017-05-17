@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.produtividade;
 
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.Android;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -132,7 +132,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 
 	@Override
 	public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, 
-			Long codUnidade, String codEquipe, String status, Long cpfColaborador) throws SQLException {
+			Long codUnidade, String codEquipe, String status, String cpfColaborador) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -147,7 +147,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 					+ "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
 					+ "WHERE SF.DATA_FOLGA BETWEEN ? AND ? "
 					+ "AND C.COD_UNIDADE = ? "
-					+ "AND E.NOME LIKE ? "
+					+ "AND E.CODIGO::TEXT LIKE ? "
 					+ "AND SF.STATUS LIKE ? "
 					+ "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
 					+ "ORDER BY SF.DATA_SOLICITACAO";
@@ -158,11 +158,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt.setLong(3, codUnidade);
 			stmt.setString(4, codEquipe);
 			stmt.setString(5, status);
-			if(cpfColaborador != null){
-				stmt.setString(6, String.valueOf(cpfColaborador));
-			}else{
-				stmt.setString(6, "%");
-			}
+			stmt.setString(6, cpfColaborador);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				list.add(createSolicitacaoFolga(rSet));
@@ -175,7 +171,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 	}
 
 	@Override
-	public List<SolicitacaoFolga> getByColaborador(Long cpf, String token) throws SQLException {
+	public List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException {
 		List<SolicitacaoFolga> list  = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -189,12 +185,9 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 					"C_FEEDBACK.NOME AS NOME_FEEDBACK " +
 					"FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
 					"SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
-					"SF.CPF_FEEDBACK = C_FEEDBACK.CPF JOIN TOKEN_AUTENTICACAO TA ON " +
-					"? = TA.CPF_COLABORADOR AND ? = TA.TOKEN WHERE " +
+					"SF.CPF_FEEDBACK = C_FEEDBACK.CPF WHERE " +
 					"SF.CPF_COLABORADOR = ?;");
 			stmt.setLong(1, cpf);
-			stmt.setString(2, token);
-			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				SolicitacaoFolga solicitacaoFolga = createSolicitacaoFolga(rSet);

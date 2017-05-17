@@ -2,10 +2,13 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.commons.util.L;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -51,14 +54,14 @@ public class ChecklistResource {
 
 	@GET
 	@Path("{codigo}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public Checklist getByCod(@PathParam("codigo") Long codigo) {
 		return service.getByCod(codigo);
 	}
 
 	@GET
 	@Path("/colaborador/{cpf}")
-	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR, Pilares.Frota.Checklist.REALIZAR})
+	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
 	public List<Checklist> getByColaborador(
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
@@ -68,7 +71,7 @@ public class ChecklistResource {
 
 	@GET
 	@Path("{codUnidade}/{equipe}/{placa}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public List<Checklist> getAll(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("equipe") String equipe,
@@ -105,7 +108,7 @@ public class ChecklistResource {
 	 */
 	@GET
 	@Path("/recentes/{codUnidade}/{equipe}")
-	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR)
+	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	@Deprecated
 	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
 			@PathParam("equipe") String equipe,

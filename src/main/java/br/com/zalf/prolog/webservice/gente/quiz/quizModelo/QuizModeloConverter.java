@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaEscolhaQuiz;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaOrdenamentoQuiz;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.PerguntaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

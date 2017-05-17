@@ -1,14 +1,12 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.commons.login.Autenticacao;
-import br.com.zalf.prolog.webservice.commons.login.LoginHolder;
+import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.commons.util.L;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

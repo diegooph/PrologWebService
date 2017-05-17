@@ -1,10 +1,6 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Empresa;
-import br.com.zalf.prolog.webservice.commons.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
-import br.com.zalf.prolog.webservice.commons.colaborador.Setor;
-import br.com.zalf.prolog.webservice.commons.imports.HolderMapaTracking;
+import br.com.zalf.prolog.webservice.colaborador.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.permissao.Visao;
@@ -127,7 +123,7 @@ public interface EmpresaDao {
 	/**
 	 * Busca as funções do prolog a partir do codigo da unidade
 	 * @param codUnidade codigo da unidade
-	 * @return {@link Visao} da {@link br.com.zalf.prolog.webservice.commons.colaborador.Unidade}
+	 * @return {@link Visao} da {@link Unidade}
 	 * @throws SQLException
 	 */
 	Visao getVisaoUnidade(Long codUnidade) throws SQLException;
@@ -141,4 +137,6 @@ public interface EmpresaDao {
 	 * @throws SQLException caso não seja possível realizar a operação
 	 */
 	boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
+
+	Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 }

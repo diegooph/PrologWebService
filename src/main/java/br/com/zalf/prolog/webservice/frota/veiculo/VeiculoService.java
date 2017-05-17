@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.commons.veiculo.*;
-import br.com.zalf.prolog.webservice.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.Android;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

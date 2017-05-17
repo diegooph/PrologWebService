@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

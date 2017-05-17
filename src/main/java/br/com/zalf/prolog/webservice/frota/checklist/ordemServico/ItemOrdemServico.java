@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.frota.checklist.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
@@ -200,7 +200,7 @@ public class ItemOrdemServico {
                 ", mecanico=" + mecanico +
                 ", dataApontamento=" + dataApontamento +
                 ", dataHoraConserto=" + dataHoraConserto +
-                ", tempoRealizacaoConsertoInMillis=" + tempoRealizacaoConserto +
+                ", tempoRealizacaoConserto=" + tempoRealizacaoConserto +
                 ", kmVeiculoFechamento=" + kmVeiculoFechamento +
                 ", status=" + status +
                 ", tempoLimiteResolucao=" + tempoLimiteResolucao +

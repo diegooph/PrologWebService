@@ -1,5 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
+
 import java.sql.SQLException;
 import java.util.List;
 

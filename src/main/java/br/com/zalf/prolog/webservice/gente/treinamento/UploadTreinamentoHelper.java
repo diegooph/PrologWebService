@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.util.L;
-import br.com.zalf.prolog.webservice.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 

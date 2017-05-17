@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.util.L;
+import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
+import br.com.zalf.prolog.webservice.commons.util.L;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -50,8 +51,8 @@ public class DatabaseConnection {
 		Connection conexao = null;
 		try {
 			Class.forName(DRIVER);
-			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
-//			conexao = DriverManager.getConnection(TESTE_URL, TESTE_USUARIO, TESTE_SENHA);
+//			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
+			conexao = DriverManager.getConnection(TESTE_URL, TESTE_USUARIO, TESTE_SENHA);
 		} catch(Exception e) {
 		    L.e(TAG, String.format("Erro ao abrir conexão com o banco: %s", URL), e);
 		}

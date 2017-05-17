@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.seguranca.dashboard;
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.seguranca.relato.Local;
-import br.com.zalf.prolog.webservice.seguranca.relato.Relato;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.Local;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 
 import java.sql.Time;
 import java.util.Date;

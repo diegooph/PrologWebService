@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaEscolhaQuiz;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.AlternativaOrdenamentoQuiz;
-import br.com.zalf.prolog.webservice.gente.quiz.quiz.PerguntaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
@@ -310,7 +310,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setDouble(5, modeloQuiz.getPorcentagemAprovacao());
             stmt.setLong(6, modeloQuiz.getCodigo());
             stmt.setLong(7, codUnidade);
-            return stmt.executeUpdate() == 0;
+            return stmt.executeUpdate() > 0;
         } finally {
             closeConnection(conn, stmt, null);
         }

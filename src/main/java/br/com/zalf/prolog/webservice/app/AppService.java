@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.app;
 
-import br.com.zalf.prolog.webservice.commons.login.AppVersion;
-
 import java.sql.SQLException;
 
 /**

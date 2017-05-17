@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
 /**
  * Created by jean on 22/08/16.

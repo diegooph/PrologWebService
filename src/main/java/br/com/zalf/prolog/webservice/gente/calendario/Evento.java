@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.webservice.commons.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.commons.colaborador.Funcao;
-import br.com.zalf.prolog.webservice.commons.colaborador.Unidade;
+import br.com.zalf.prolog.webservice.colaborador.Equipe;
+import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Unidade;
 
 import java.util.Date;
 

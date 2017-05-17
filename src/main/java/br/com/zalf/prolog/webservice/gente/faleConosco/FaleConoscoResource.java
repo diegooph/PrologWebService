@@ -50,10 +50,10 @@ public class FaleConoscoResource {
             Pilares.Gente.FaleConosco.REALIZAR,
             Pilares.Gente.FaleConosco.VISUALIZAR_TODOS,
             Pilares.Gente.FaleConosco.FEEDBACK})
-    @Path("/{codUnidade}/{equipe}/{cpf}")
+    @Path("/{codUnidade}/{nomeEquipe}/{cpf}")
     public List<FaleConosco> getAll(
             @PathParam("codUnidade") Long codUnidade,
-            @PathParam("equipe") String equipe,
+            @PathParam("nomeEquipe") String equipe,
             @PathParam("cpf") String cpf,
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,

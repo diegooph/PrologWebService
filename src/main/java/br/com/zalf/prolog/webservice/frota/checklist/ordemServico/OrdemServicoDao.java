@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.frota.checklist.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 
 import java.sql.Connection;
 import java.sql.SQLException;
