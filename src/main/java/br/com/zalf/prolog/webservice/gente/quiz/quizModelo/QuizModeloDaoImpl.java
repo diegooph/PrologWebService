@@ -310,7 +310,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setDouble(5, modeloQuiz.getPorcentagemAprovacao());
             stmt.setLong(6, modeloQuiz.getCodigo());
             stmt.setLong(7, codUnidade);
-            return stmt.executeUpdate() == 0;
+            return stmt.executeUpdate() > 0;
         } finally {
             closeConnection(conn, stmt, null);
         }
