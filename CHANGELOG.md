@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.14"></a>
-## Version [v0.0.14](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.13-h2) (release date) - [Unreleased]
+## Version [v0.0.14](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.13-h2) (2017-05-17)
 
 #### Features
 * Novo método update de um `Treinamento` contendo `codigo` no path
@@ -14,7 +14,7 @@ Change Log
 * Funções liberadas para ver um `Treinamento` são atualizadas no update do `Treinamento`
 * Cálculo da `Produtividade` alterado. Agora está sendo pago jornada para todo mapa que tem o tempo previsto maior que 
 9h20
-* Altera path da busca de todos os pneus fale conosco de `/fale-conosco/{codUnidade}/{equipe}/{cpf}` para 
+* Altera path da busca de todos os fale conosco de `/fale-conosco/{codUnidade}/{equipe}/{cpf}` para 
 `/fale-conosco/{codUnidade}/{nomeEquipe}/{cpf}`
 
 #### Deprecated
@@ -22,9 +22,11 @@ Change Log
 * Métodos de buscar os treinamentos de um colaborador que possuiam os paths: `treinamentos/naoVistosColaborador/{cpf}`
 e `treinamentos/vistosColaborador/{cpf}`
 * Todos os métodos da solicitação de folga que possuiam o path `solicitacaoFolga`
+* Todos os métodos do fale conosco que possuiam o path `faleConosco`
 
 #### Bug Fixes
 * Update do `Treinamento` retornava `true` caso o `Treinamento` não tivesse sido atualizado
+* Update do `ModeloQuiz` retornava `true` caso o `ModeloQuiz` não tivesse sido atualizado
 
 <a name="v0.0.12"></a>
 ## Version [v0.0.12](https://github.com/luizfp/PrologWebService/compare/v0.0.11...v0.0.12) (2017-05-08)
