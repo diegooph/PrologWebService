@@ -137,4 +137,6 @@ public interface EmpresaDao {
 	 * @throws SQLException caso não seja possível realizar a operação
 	 */
 	boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
+
+	Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 }

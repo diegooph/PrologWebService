@@ -737,6 +737,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 		unidade.setEquipes(equipes);
 	}
 
+	@Override
 	public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;

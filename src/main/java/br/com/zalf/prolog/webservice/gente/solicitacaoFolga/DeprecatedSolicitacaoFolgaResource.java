@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.empresa.EmpresaService;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -71,6 +72,10 @@ public class DeprecatedSolicitacaoFolgaResource {
 			@FormParam("codUnidade") Long codUnidade,
 			@FormParam("codEquipe") String codEquipe,
 			@FormParam("status") String status) {
+		// Os requests realizados nesse resource antigo, estão enviando o nome da equipe no local do código da equipe
+		// por isso precisamos disso antes:
+		codEquipe = String.valueOf(new EmpresaService().getCodEquipeByCodUnidadeByNome(codUnidade, codEquipe));
+
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
 				codUnidade, codEquipe, status, "%");
 	}
