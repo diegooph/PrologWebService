@@ -89,6 +89,16 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
         return total;
     }
 
+	public double getTotalRecargas(List<ItemProdutividade> itens){
+		double total = 0;
+		for(ItemProdutividade item : itens){
+			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+				total += item.getValor();
+			}
+		}
+		return total;
+	}
+
 
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			long dataInicial, long dataFinal) throws SQLException{
