@@ -168,14 +168,14 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getProdutividadeMecanicos(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(SELECT nome_mecanico AS "MECANICO", count(nome_mecanico) as "CONSERTOS",
-                sum(tempo_realizacao/3600000) as "HORAS",
-                round(avg(tempo_realizacao/3600000)) as "HORAS POR CONSERTO"
-                FROM estratificacao_os
-                WHERE tempo_realizacao is not null and tempo_realizacao > 0 and
-                cod_unidade = ? and data_hora BETWEEN ? AND ?
-        GROUP BY 1
-        ORDER BY nome_mecanico);
+        PreparedStatement stmt = conn.prepareStatement("SELECT nome_mecanico AS \"MECANICO\", count(nome_mecanico) as \"CONSERTOS\",\n" +
+                "  sum(tempo_realizacao/3600000) as \"HORAS\",\n" +
+                "  round(avg(tempo_realizacao/3600000)) as \"HORAS POR CONSERTO\"\n" +
+                "  FROM estratificacao_os\n" +
+                "  WHERE tempo_realizacao is not null and tempo_realizacao > 0 and\n" +
+                "  cod_unidade = ? and data_hora BETWEEN ? AND ?\n" +
+                "  GROUP BY 1\n" +
+                "  ORDER BY nome_mecanico");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
