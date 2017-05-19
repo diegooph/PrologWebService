@@ -38,21 +38,23 @@ public class ProdutividadeRelatorioService {
     }
 
     public void getExtratoIndividualProdutividadeCsv(@NotNull OutputStream outputStream,
-                                                     @NotNull Long cpf,
+                                                     @NotNull String cpf,
+                                                     @NotNull Long codUnidade,
                                                      @NotNull long dataInicial,
                                                      @NotNull long dataFinal) {
         try {
-            dao.getExtratoIndividualProdutividadeCsv(outputStream, cpf, new Date(dataInicial), new Date(dataFinal));
+            dao.getExtratoIndividualProdutividadeCsv(outputStream, cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Report getExtratoIndividualProdutividadeReport (@NotNull Long cpf,
+    public Report getExtratoIndividualProdutividadeReport (@NotNull String cpf,
+                                                           @NotNull Long codUnidade,
                                                            @NotNull long dataInicial,
                                                            @NotNull long dataFinal) {
         try {
-            return dao.getExtratoIndividualProdutividadeReport(cpf, new Date(dataInicial), new Date(dataFinal));
+            return dao.getExtratoIndividualProdutividadeReport(cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

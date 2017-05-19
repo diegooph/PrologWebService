@@ -23,12 +23,14 @@ public interface ProdutividadeRelatorioDao {
                                              @NotNull Date dataFinal) throws SQLException;
 
     void getExtratoIndividualProdutividadeCsv(@NotNull OutputStream outputStream,
-                                              @NotNull Long cpf,
+                                              @NotNull String cpf,
+                                              @NotNull Long codUnidade,
                                               @NotNull Date dataInicial,
                                               @NotNull Date dataFinal) throws SQLException, IOException;
 
-    Report getExtratoIndividualProdutividadeReport(@NotNull Long cpf,
-                                         @NotNull Date dataInicial,
-                                         @NotNull Date dataFinal) throws SQLException;
+    Report getExtratoIndividualProdutividadeReport(@NotNull String cpf,
+                                                   @NotNull Long codUnidade,
+                                                   @NotNull Date dataInicial,
+                                                   @NotNull Date dataFinal) throws SQLException;
 
 }
