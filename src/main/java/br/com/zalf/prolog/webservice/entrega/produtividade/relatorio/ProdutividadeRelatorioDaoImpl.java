@@ -110,14 +110,14 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     private PreparedStatement getExtratoIndividualProdutividade(Connection conn, String cpf, Long codUnidade,
                                                                 Date dataInicial, Date dataFinal) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "   data AS \"DATA\",\n" +
+                "   to_char(data, 'DD/MM/YYYY') AS \"DATA\",\n" +
                 "  nome_colaborador AS \"COLABORADOR\",\n" +
                 "   placa AS \"PLACA\",\n" +
                 "   mapa AS \"MAPA\",\n" +
                 "   cargaatual AS \"CARGA\",\n" +
-                "   entrega AS \"ENRTEGA\",\n" +
+                "   entrega AS \"ENTREGA\",\n" +
                 "   fator AS \"FATOR\",\n" +
-                "   cxentreg AS \"CXS ENTREGUES\",\n" +
+                "   trunc(cxentreg) AS \"CXS ENTREGUES\",\n" +
                 "   entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\",\n" +
                 "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2)\n" +
                 "     else 0 end AS \"VALOR/CX\",\n" +
