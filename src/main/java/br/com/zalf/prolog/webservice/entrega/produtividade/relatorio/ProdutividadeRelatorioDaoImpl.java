@@ -110,19 +110,21 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     private PreparedStatement getExtratoIndividualProdutividade(Connection conn, String cpf, Long codUnidade,
                                                                 Date dataInicial, Date dataFinal) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  data AS \"DATA\",\n" +
-                "  placa AS \"PLACA\",\n" +
-                "  mapa AS \"MAPA\",\n" +
-                "  cargaatual AS \"CARGA\",\n" +
-                "  entrega AS \"ENRTEGA\",\n" +
-                "  fator AS \"FATOR\",\n" +
-                "  cxentreg AS \"CXS ENTREGUES\",\n" +
-                "  entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\",\n" +
-                "  round((valor / cxentreg) :: NUMERIC, 2) AS \"VALOR/CX\",\n" +
-                "  round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
-                "FROM view_produtividade_extrato\n" +
-                "WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ? \n" +
-                "ORDER BY data ASC;");
+                "   data AS \"DATA\",\n" +
+                "  nome_colaborador AS \"COLABORADOR\",\n" +
+                "   placa AS \"PLACA\",\n" +
+                "   mapa AS \"MAPA\",\n" +
+                "   cargaatual AS \"CARGA\",\n" +
+                "   entrega AS \"ENRTEGA\",\n" +
+                "   fator AS \"FATOR\",\n" +
+                "   cxentreg AS \"CXS ENTREGUES\",\n" +
+                "   entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\",\n" +
+                "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2)\n" +
+                "     else 0 end AS \"VALOR/CX\",\n" +
+                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
+                "   FROM view_produtividade_extrato\n" +
+                "   WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ?\n" +
+                "   ORDER BY data ASC;");
         stmt.setString(1, cpf);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
