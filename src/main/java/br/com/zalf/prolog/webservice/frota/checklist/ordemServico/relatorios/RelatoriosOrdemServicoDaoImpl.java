@@ -136,11 +136,11 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getMediaTempoConsertoItem(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT pergunta, alternativa, prioridade, prazo_conserto_em_horas,     \n" +
-                "qt_apontados, qt_resolvidos_dentro_prazo,\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT pergunta, alternativa, prioridade, prazo_conserto_em_horas AS \"PRAZO CONSERTO EM HORAS\",     \n" +
+                "qt_apontados AS \"QT APONTADOS\", qt_resolvidos_dentro_prazo AS \"QT RESOLVIDOS DENTRO PRAZO\",\n" +
                 "trunc(md_tempo_conserto_segundos/3600) || ' / ' ||  \n" +
                 "trunc(md_tempo_conserto_segundos/60) as \n" +
-                "md_tempo_conserto_em_horas_em_minutos,\n" +
+                "md_tempo_conserto_em_horas_em_minutos AS \"MD TEMPO CONSERTO HORAS/MINUTOS\",\n" +
                 "round((qt_resolvidos_dentro_prazo/qt_apontados::float)*100) || '%' as \n" +
                 "porcentagem\n" +
                 "FROM\n" +
@@ -168,15 +168,14 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getProdutividadeMecanicos(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT nome_mecanico, count(nome_mecanico) as itens_consertados \n" +
-                ",sum(tempo_realizacao/3600000) as horas_consertando, -- millis to \n" +
-                "minutes\n" +
-                "round(avg(tempo_realizacao/3600000)) as md_horas_conserto_item\n" +
-                "FROM estratificacao_os\n" +
-                "WHERE tempo_realizacao is not null and tempo_realizacao > 0 and \n" +
-                "cod_unidade = ? and data_hora BETWEEN ? AND ?\n" +
-                "GROUP BY 1\n" +
-                "ORDER BY nome_mecanico");
+        PreparedStatement stmt = conn.prepareStatement(SELECT nome_mecanico AS "MECANICO", count(nome_mecanico) as "CONSERTOS",
+                sum(tempo_realizacao/3600000) as "HORAS",
+                round(avg(tempo_realizacao/3600000)) as "HORAS POR CONSERTO"
+                FROM estratificacao_os
+                WHERE tempo_realizacao is not null and tempo_realizacao > 0 and
+                cod_unidade = ? and data_hora BETWEEN ? AND ?
+        GROUP BY 1
+        ORDER BY nome_mecanico);
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
