@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Banda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;

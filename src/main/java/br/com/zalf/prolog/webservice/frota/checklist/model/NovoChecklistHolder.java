@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.util.List;
 

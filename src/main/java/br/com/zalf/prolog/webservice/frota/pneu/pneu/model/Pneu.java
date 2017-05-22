@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import com.sun.istack.internal.Nullable;
 
 import java.util.List;

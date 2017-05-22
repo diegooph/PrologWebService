@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 /**
- * Created by jean on 19/06/16.
+ * @deprecated at 22/05/2017.
  */
-
-public class Eixos{
+@Deprecated
+public class Eixos {
     public int dianteiro;
     public int traseiro;
     public long codigo;

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
