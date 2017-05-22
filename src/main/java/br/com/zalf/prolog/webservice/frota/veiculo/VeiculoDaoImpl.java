@@ -422,6 +422,28 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		return diagramas;
 	}
 
+	private DiagramaVeiculo getDiagramaByPlaca(String placa) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        DiagramaVeiculo diagrama;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT vd.*\n" +
+                    "FROM veiculo v JOIN veiculo_tipo vt on v.cod_tipo = vt.codigo and v.cod_unidade = vt.cod_unidade\n" +
+                    "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
+                    "WHERE v.placa = ?");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                return createDiagramaVeiculo(rSet, conn);
+            }
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
 	private DiagramaVeiculo createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
 		DiagramaVeiculo diagrama = new DiagramaVeiculo(
 				(short) rSet.getInt("CODIGO"),
@@ -478,6 +500,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 		modelo.setCodigo(rSet.getLong("COD_MODELO"));
 		modelo.setNome(rSet.getString("MODELO"));
 		veiculo.setModelo(modelo);
+		veiculo.setDiagrama(getDiagramaByPlaca(veiculo.getPlaca()));
 		return veiculo;
 	}
 
