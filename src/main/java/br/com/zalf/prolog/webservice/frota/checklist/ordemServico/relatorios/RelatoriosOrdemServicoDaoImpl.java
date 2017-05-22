@@ -139,10 +139,9 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
         PreparedStatement stmt = conn.prepareStatement("SELECT pergunta, alternativa, prioridade, prazo_conserto_em_horas AS \"PRAZO CONSERTO EM HORAS\",     \n" +
                 "qt_apontados AS \"QT APONTADOS\", qt_resolvidos_dentro_prazo AS \"QT RESOLVIDOS DENTRO PRAZO\",\n" +
                 "trunc(md_tempo_conserto_segundos/3600) || ' / ' ||  \n" +
-                "trunc(md_tempo_conserto_segundos/60) as \n" +
-                "md_tempo_conserto_em_horas_em_minutos AS \"MD TEMPO CONSERTO HORAS/MINUTOS\",\n" +
+                "trunc(md_tempo_conserto_segundos/60) as \"MD TEMPO CONSERTO HORAS/MINUTOS\",\n" +
                 "round((qt_resolvidos_dentro_prazo/qt_apontados::float)*100) || '%' as \n" +
-                "porcentagem\n" +
+                " \"PORCENTAGEM\"\n" +
                 "FROM\n" +
                 "(SELECT pergunta,\n" +
                 "alternativa,\n" +
@@ -168,7 +167,7 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getProdutividadeMecanicos(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT nome_mecanico AS \"MECANICO\", count(nome_mecanico) as \"CONSERTOS\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT nome_mecanico AS \"MECÂNICO\", count(nome_mecanico) as \"CONSERTOS\",\n" +
                 "  sum(tempo_realizacao/3600000) as \"HORAS\",\n" +
                 "  round(avg(tempo_realizacao/3600000)) as \"HORAS POR CONSERTO\"\n" +
                 "  FROM estratificacao_os\n" +
