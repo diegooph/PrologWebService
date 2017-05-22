@@ -7,6 +7,15 @@ Change Log
 #### Features
 
 #### Refactor
+* Refatorado o calculo do pré contracheque, agora o calculo do bônus é dinâmico de acordo com o indicador informado, 
+a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adaptações no BD:
+    * Renomeada a tabela pre_contracheque_premissas -> pre_contracheque_informacoes
+    * Removidas as colunas cod_import_he / cod_import_dsr / cod_import_vales
+    * Adicionada coluna recarga_parte_premio
+    * Adicionada contraint com Unidade
+    * Renomeadas as contraints
+    * Criada a tabela pre_contracheque_calculo_premio para armazenar os códigos dos itens que compõe o calculo do prêmio
+    
 
 #### Deprecated
 
