@@ -1,21 +1,26 @@
-package br.com.zalf.prolog.webservice.frota.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 /**
- * Created by jean on 20/06/16.
+ * Created by jean on 25/05/16.
  */
-public class Modelo {
+public class TipoVeiculo {
 
-    private long codigo;
+    private Long codigo;
     private String nome;
 
-    public Modelo() {
+    public TipoVeiculo(long codigo, String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
     }
 
-    public long getCodigo() {
+    public TipoVeiculo() {
+    }
+
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
@@ -29,7 +34,7 @@ public class Modelo {
 
     @Override
     public String toString() {
-        return "Modelo{" +
+        return "TipoVeiculo{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
                 '}';

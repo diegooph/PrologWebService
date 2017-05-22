@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -395,6 +398,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 			closeConnection(conn, stmt, rSet);
 		}
 		return placas;
+	}
+
+	@Override
+	public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
+		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {

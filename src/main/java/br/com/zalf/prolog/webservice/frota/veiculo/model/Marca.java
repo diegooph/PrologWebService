@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import java.util.List;
 

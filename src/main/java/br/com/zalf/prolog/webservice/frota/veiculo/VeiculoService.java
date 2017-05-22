@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Classe VeiculoService responsavel por comunicar-se com a interface DAO
@@ -112,6 +116,15 @@ public class VeiculoService {
         } catch (NullPointerException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public Set<DiagramaVeiculo> getDiagramasVeiculo() {
+        try {
+            return dao.getDiagramasVeiculos();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptySet();
         }
     }
 
