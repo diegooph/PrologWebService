@@ -80,7 +80,7 @@ public class ContrachequeResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZAR)
+//    @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZAR)
     @Android
     @Path("/{codUnidade}/{cpf}/{ano}/{mes}")
     public Contracheque getContracheque(@PathParam("cpf") Long cpf,
