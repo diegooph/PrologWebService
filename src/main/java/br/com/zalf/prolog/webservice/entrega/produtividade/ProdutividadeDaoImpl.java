@@ -89,7 +89,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
         return total;
     }
 
-	public double getTotalRecargas(List<ItemProdutividade> itens){
+	public double getValorTotalRecargas(List<ItemProdutividade> itens){
 		double total = 0;
 		for(ItemProdutividade item : itens){
 			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
@@ -97,6 +97,16 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			}
 		}
 		return total;
+	}
+
+	public int getQtRecargas(List<ItemProdutividade> itens){
+		int quantidade = 0;
+		for(ItemProdutividade item : itens){
+			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+				quantidade ++;
+			}
+		}
+		return quantidade;
 	}
 
 
