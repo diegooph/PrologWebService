@@ -7,12 +7,15 @@ import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -402,7 +405,55 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
 	@Override
 	public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Set<DiagramaVeiculo> diagramas = new HashSet<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
+			rSet = stmt.executeQuery();
+			while (rSet.next()){
+				diagramas.add(createDiagramaVeiculo(rSet, conn));
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return diagramas;
+	}
+
+	private DiagramaVeiculo createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
+		DiagramaVeiculo diagrama = new DiagramaVeiculo(
+				(short) rSet.getInt("CODIGO"),
+				rSet.getString("NOME"),
+				getEixosDiagrama(rSet.getInt("CODIGO"), conn),
+				rSet.getString("URL_IMAGEM")
+		);
+		return diagrama;
+	}
+
+	private Set<EixoVeiculo> getEixosDiagrama(int codDiagrama, Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Set<EixoVeiculo> eixos = new HashSet<>();
+		try {
+			stmt = conn.prepareStatement("SELECT *\n" +
+					"FROM veiculo_diagrama_eixos\n" +
+					"WHERE cod_diagrama = ?\n" +
+					"ORDER BY posicao");
+			stmt.setInt(1, codDiagrama);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				EixoVeiculo eixoVeiculo = new EixoVeiculo(
+						TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
+						rSet.getInt("QT_PNEUS"),
+						rSet.getInt("POSICAO"));
+				eixos.add(eixoVeiculo);
+			}
+		} finally {
+			closeConnection(null, stmt, rSet);
+		}
+		return eixos;
 	}
 
 	private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
