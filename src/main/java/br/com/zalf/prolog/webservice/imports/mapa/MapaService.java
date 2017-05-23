@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 /**
  * Classe MapaService responsavel por comunicar-se com a interface DAO
@@ -26,6 +27,9 @@ public class MapaService {
         } catch (IOException e) {
             e.printStackTrace();
             return Response.Error("Erro relacionado ao processamento do arquivo");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return Response.Error("Erro nos dados da planilha");
         }
     }
 

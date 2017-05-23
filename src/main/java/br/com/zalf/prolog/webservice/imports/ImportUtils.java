@@ -48,7 +48,7 @@ public class ImportUtils {
 	 * @param hora uma String contendo uma hora
 	 * @return um Time
 	 */
-	public static Time toTime(String hora){
+	public static Time toTime(String hora) throws ParseException {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
 		hora = hora.replace(" ","");
 		// verifica quando tem 2 espaços extras na hora (tabela mapa)
@@ -63,8 +63,7 @@ public class ImportUtils {
 		try {
 			Date date = dateFormat.parse(hora);
 			time = new Time(date.getTime());
-		} catch (ParseException e) {
-			e.printStackTrace();
+		}finally {
 		}
 		return time;
 	}

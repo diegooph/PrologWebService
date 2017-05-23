@@ -1,17 +1,17 @@
 package br.com.zalf.prolog.webservice.imports.mapa;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.*;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +29,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 	// mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
 	// a equipe antiga continuará na tabela, recebendo por um mapa que não realizo
 
-	public boolean insertOrUpdateMapa (String path, Colaborador colaborador)throws SQLException, FileNotFoundException, IOException{
+	public boolean insertOrUpdateMapa (String path, Colaborador colaborador)throws SQLException, IOException, ParseException{
 
 		Connection conn = null;
 		try {
@@ -460,7 +460,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 		return true;
 	}
 
-	private MapaImport createMapa(CSVRecord linha){
+	private MapaImport createMapa(CSVRecord linha) throws ParseException{
 		MapaImport mapa = new MapaImport();
 		mapa.data = toDate(linha.get(0));
 		mapa.transp = Integer.parseInt(linha.get(1));

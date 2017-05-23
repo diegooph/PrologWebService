@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 
 	private static final String TAG = TrackingDaoImpl.class.getSimpleName();
 
-	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException {
+	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException, ParseException {
 		Connection conn = null;
 		try{
 			conn = getConnection();
@@ -223,7 +224,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 		return true;
 	}
 
-	private TrackingImport createTracking (CSVRecord linha){
+	private TrackingImport createTracking (CSVRecord linha) throws ParseException{
 		TrackingImport tracking = new TrackingImport();
 		if(!String.valueOf(linha.get(0)).trim().isEmpty()){
 			//tracking.classe = Integer.parseInt(linha.get(0));
