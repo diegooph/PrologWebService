@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -119,14 +119,12 @@ public class RelatorioResource {
 	}
 
 	@GET
-	@Secured
 	@Path("/afericoes/resumo/pneus/{codUnidade}/csv")
 	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) {
 		return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
 	}
 
 	@GET
-	@Secured
 	@Path("/afericoes/resumo/pneus/{codUnidade}/report")
 	public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
 		return service.getDadosUltimaAfericaoReport(codUnidade);
