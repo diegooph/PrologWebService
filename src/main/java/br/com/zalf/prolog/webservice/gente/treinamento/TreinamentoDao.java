@@ -103,4 +103,13 @@ public interface TreinamentoDao {
      * @throws SQLException
      */
     public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) throws SQLException;
+
+    /**
+     * Deleta todos os dados de um treinamento (visualizaçoes, urls, funcoes..)
+     *
+     * @param codTreinamento cód do treinamento a ser deletado
+     * @return
+     * @throws SQLException
+     */
+    public boolean deleteTreinamento(Long codTreinamento) throws SQLException;
 }

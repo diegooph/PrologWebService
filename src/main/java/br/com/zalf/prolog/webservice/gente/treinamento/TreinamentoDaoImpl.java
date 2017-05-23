@@ -21,23 +21,19 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     @Override
     public List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
                                     Long codUnidade, long limit, long offset) throws SQLException {
-
-        List<Treinamento> listTreinamento = new ArrayList<>();
+        List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Funcao funcao;
-        String treinamentosNaoVistosQuery =
-                "SELECT T.*, F.CODIGO AS COD_FUNCAO, F.NOME AS NOME_FUNCAO "
-                        + "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO "
-                        + "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO "
-                        + "WHERE T.COD_UNIDADE = ? AND T.DATA_HORA_CADASTRO >= ? AND T.DATA_HORA_CADASTRO <= ? "
-                        + "AND F.CODIGO::TEXT LIKE ? "
-                        + "ORDER BY RT.COD_TREINAMENTO, RT.COD_FUNCAO "
-                        + "LIMIT ? OFFSET ?";
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
+            stmt = conn.prepareStatement("SELECT DISTINCT T.*\n" +
+                    "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO\n" +
+                    "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO\n" +
+                    "WHERE T.COD_UNIDADE = ? AND T.DATA_HORA_CADASTRO >= ? AND T.DATA_HORA_CADASTRO <= ?\n" +
+                    "AND F.CODIGO::TEXT LIKE ?\n" +
+                    "ORDER BY t.data_liberacao\n" +
+                    "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
             stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -46,34 +42,14 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(6, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-
-                if (listTreinamento.size() == 0) { // caso a lista esteja vazia, cria o primeiro treinamento e a primeira funcao
-                    Treinamento treinamento = createTreinamento(rSet);
-                    treinamento.setFuncoesLiberadas(new ArrayList<>());
-                    funcao = new Funcao();
-                    funcao = createFuncao(rSet);
-                    treinamento.getFuncoesLiberadas().add(funcao);
-                    listTreinamento.add(treinamento);
-                } else {// caso a lista ja tenha algum item (treinamento)
-                    if (listTreinamento.get(listTreinamento.size() - 1).getCodigo() == rSet.getLong("CODIGO")) {//item anterior == ao do rset atual
-                        funcao = new Funcao();
-                        funcao = createFuncao(rSet);
-                        listTreinamento.get(listTreinamento.size() - 1).getFuncoesLiberadas().add(funcao);
-                    } else {// item anterior != do item atual
-                        Treinamento treinamento = createTreinamento(rSet);
-                        treinamento.setFuncoesLiberadas(new ArrayList<>());
-                        funcao = new Funcao();
-                        funcao = createFuncao(rSet);
-                        treinamento.getFuncoesLiberadas().add(funcao);
-                        listTreinamento.add(treinamento);
-                    }
-                }
+                Treinamento t = createTreinamento(rSet);
+                t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                treinamentos.add(t);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        System.out.println(listTreinamento);
-        return listTreinamento;
+        return treinamentos;
     }
 
     @Override
@@ -296,9 +272,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         try {
             stmt = conn.prepareStatement("DELETE FROM RESTRICAO_TREINAMENTO WHERE COD_TREINAMENTO = ?");
             stmt.setLong(1, codTreinamento);
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao deletar as funções liberadas para ver o treinamento = " + codTreinamento);
-            }
+            stmt.executeUpdate();
         } finally {
             closeConnection(null, stmt, null);
         }
@@ -329,11 +303,10 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM treinamento_url_paginas WHERE COD_TREINAMENTO = ?;");
-            stmt.setLong(1, codTreinamento);
+            deleteUrlPaginasTreinamento(conn, codTreinamento);
             insertUrlImagensTreinamento(urls, codTreinamento, conn);
             return true;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, null);
         }
     }
@@ -386,4 +359,76 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         return urls;
     }
 
+    private List<Funcao> getFuncoesLiberadasByTreinamento(Connection conn, Long codTreinamento) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Funcao> funcoes = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT f.*\n" +
+                    "FROM restricao_treinamento rt\n" +
+                    "  JOIN treinamento t on t.codigo = rt.cod_treinamento\n" +
+                    "  JOIN unidade u on u.codigo = t.cod_unidade\n" +
+                    "  JOIN funcao f on f.codigo = rt.cod_funcao and u.cod_empresa = f.cod_empresa\n" +
+                    "WHERE cod_treinamento = ?\n" +
+                    "ORDER BY f.nome");
+            stmt.setLong(1, codTreinamento);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                Funcao funcao = new Funcao();
+                funcao.setCodigo(rSet.getLong("CODIGO"));
+                funcao.setNome(rSet.getString("NOME"));
+                funcoes.add(funcao);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return funcoes;
+    }
+
+    public boolean deleteTreinamento(Long codTreinamento) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            deleteFuncoesLiberadasTreinamento(codTreinamento, conn);
+            deleteVisualizacoesTreinamento(conn, codTreinamento);
+            deleteUrlPaginasTreinamento(conn, codTreinamento);
+            stmt = conn.prepareStatement("DELETE FROM TREINAMENTO WHERE CODIGO = ?");
+            stmt.setLong(1, codTreinamento);
+            if (stmt.executeUpdate() > 0) {
+                conn.commit();
+                return true;
+            }
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+        return false;
+    }
+
+    private void deleteVisualizacoesTreinamento(Connection conn, Long codTreinamento) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM treinamento_colaborador WHERE cod_treinamento = ?");
+            stmt.setLong(1, codTreinamento);
+            stmt.executeUpdate();
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
+    private void deleteUrlPaginasTreinamento(Connection conn, Long codTreinamento) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM treinamento_url_paginas WHERE cod_treinamento = ?");
+            stmt.setLong(1, codTreinamento);
+            stmt.executeUpdate();
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+    }
 }

@@ -151,4 +151,15 @@ public class TreinamentoResource {
             return Response.Error("Erro ao marcar treinamento");
         }
     }
+
+    @DELETE
+    @Path("/{codTreinamento}")
+//    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+    public Response deleteTreinamento(@PathParam("codTreinamento") Long codTreinamento) {
+        if(service.deleteTreinamento(codTreinamento)){
+            return Response.Ok("Treinamento deletado com sucesso");
+        }else {
+            return Response.Error("Erro ao deletar o treinamento");
+        }
+    }
 }
