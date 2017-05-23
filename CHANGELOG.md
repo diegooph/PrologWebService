@@ -5,6 +5,13 @@ Change Log
 ## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (release date) - [Unreleased]
 
 #### Features
+* Cria um novo sistema de associar `diagramas` aos veículos
+    * Criada tabela veiculo_diagrama para armazenar os tipos de diagramas que o Prolog suporta
+    * Criada tabela veiculo_diagrama_eixos para detalhar cada tipo de diagrama
+    * Adicionada a coluna cod_diagrama na tabela veiculo_tipo, bem como a devida constraint
+    
+* Implementa `delete ` de um `treinamento` (resta deletar do S3 os arquivos)
+* Implementa tabela (pneu_ordem_nomenclatura_unidade) para armazenar e linkar as posições de pneus do Prolog com as devidas nomenclaturas utilizadas pelos clientes.
 
 #### Refactor
 * Refatorado o calculo do pré contracheque, agora o calculo do bônus é dinâmico de acordo com o indicador informado, 
