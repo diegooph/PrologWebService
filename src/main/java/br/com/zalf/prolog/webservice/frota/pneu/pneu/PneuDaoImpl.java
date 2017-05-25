@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.L;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulco;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -99,10 +99,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // pressão atual
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getSulcoPneuNovo().getCentral());
-            stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
-            stmt.setDouble(8, pneu.getSulcoAtual().getCentral());
-            stmt.setDouble(9, pneu.getSulcoAtual().getExterno());
+            stmt.setDouble(6, pneu.getSulcosPneuNovo().getCentralInterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
+            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
+            stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
             stmt.setLong(10, codUnidade);
             stmt.setString(11, pneu.getStatus());
             stmt.setInt(12, pneu.getVidaAtual());
@@ -168,9 +168,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     + "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, ALTURA_SULCO_CENTRAL = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setDouble(1, pneu.getPressaoAtual());
-            stmt.setDouble(2, pneu.getSulcoAtual().getInterno());
-            stmt.setDouble(3, pneu.getSulcoAtual().getExterno());
-            stmt.setDouble(4, pneu.getSulcoAtual().getCentral());
+            stmt.setDouble(2, pneu.getSulcosAtuais().getInterno());
+            stmt.setDouble(3, pneu.getSulcosAtuais().getExterno());
+            stmt.setDouble(4, pneu.getSulcosAtuais().getCentralInterno());
             stmt.setLong(5, pneu.getCodigo());
             stmt.setLong(6, codUnidade);
             stmt.executeUpdate();
@@ -197,10 +197,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(3, pneu.getDimensao().codigo);
             stmt.setDouble(4, pneu.getPressaoCorreta());
             stmt.setDouble(5, pneu.getPressaoAtual());
-            stmt.setDouble(6, pneu.getSulcoPneuNovo().getCentral());
-            stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
-            stmt.setDouble(8, pneu.getSulcoAtual().getCentral());
-            stmt.setDouble(9, pneu.getSulcoAtual().getExterno());
+            stmt.setDouble(6, pneu.getSulcosPneuNovo().getCentralInterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
+            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
+            stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
             stmt.setInt(10, pneu.getVidasTotal());
             stmt.setLong(11, pneu.getBanda().getModelo().getCodigo());
             stmt.setLong(12, codOriginal);
@@ -330,8 +330,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         Marca marcaBanda = new Marca();
         Modelo modeloBanda = new Modelo();
         Dimensao dimensao = new Dimensao();
-        Sulco sulcoAtual = new Sulco();
-        Sulco sulcoNovo = new Sulco();
+        Sulcos sulcoAtual = new Sulcos();
+        Sulcos sulcoNovo = new Sulcos();
 
         if (rSet.getString("COD_MARCA_BANDA") != null) {
             marcaBanda.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
@@ -356,15 +356,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         dimensao.largura = rSet.getInt("LARGURA");
         pneu.setDimensao(dimensao);
         pneu.setPressaoCorreta(rSet.getInt("PRESSAO_RECOMENDADA"));
-        sulcoAtual.setCentral(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
+        sulcoAtual.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
         sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        pneu.setSulcoAtual(sulcoAtual);
-        sulcoNovo.setCentral(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
+        pneu.setSulcosAtuais(sulcoAtual);
+        sulcoNovo.setCentralInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
         sulcoNovo.setExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
         sulcoNovo.setInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
 
-        pneu.setSulcoPneuNovo(sulcoNovo);
+        pneu.setSulcosPneuNovo(sulcoNovo);
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
         pneu.setStatus(rSet.getString("STATUS"));
@@ -565,9 +565,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     + "PRESSAO_ATUAL = ?, ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, ALTURA_SULCO_CENTRAL = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setDouble(1, pneu.getPressaoAtual());
-            stmt.setDouble(2, pneu.getSulcoAtual().getInterno());
-            stmt.setDouble(3, pneu.getSulcoAtual().getExterno());
-            stmt.setDouble(4, pneu.getSulcoAtual().getCentral());
+            stmt.setDouble(2, pneu.getSulcosAtuais().getInterno());
+            stmt.setDouble(3, pneu.getSulcosAtuais().getExterno());
+            stmt.setDouble(4, pneu.getSulcosAtuais().getCentralInterno());
             stmt.setLong(5, pneu.getCodigo());
             stmt.setLong(6, codUnidade);
             int count = stmt.executeUpdate();

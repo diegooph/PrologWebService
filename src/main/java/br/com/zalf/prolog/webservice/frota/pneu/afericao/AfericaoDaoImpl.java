@@ -317,9 +317,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setDouble(4, pneu.getPressaoAtual());
-            stmt.setDouble(5, pneu.getSulcoAtual().getCentral());
-            stmt.setDouble(6, pneu.getSulcoAtual().getExterno());
-            stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
+            stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+            stmt.setDouble(6, pneu.getSulcosAtuais().getExterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
             stmt.setInt(8, pneu.getPosicao());
             stmt.setInt(9, pneu.getVidaAtual());
             //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
@@ -361,11 +361,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
         // Nessa parte verifica os sulcos, verificando primeiro se esta na ultima vida.
         if (pneu.getVidaAtual() == pneu.getVidasTotal()) {//verifica se o pneu esta na ultima vida, o que reduz o limite de mm
-            if (pneu.getSulcoAtual().getCentral() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
+            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
                 servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
             }
         } else {
-            if (pneu.getSulcoAtual().getCentral() <= restricao.getSulcoMinimoRecape()) {// sulco atual é inferior ao minimo para recapar
+            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoRecape()) {// sulco atual é inferior ao minimo para recapar
                 servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
             }
         }

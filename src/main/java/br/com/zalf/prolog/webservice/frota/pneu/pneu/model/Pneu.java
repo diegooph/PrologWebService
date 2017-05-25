@@ -34,8 +34,8 @@ public class Pneu {
     private Dimensao dimensao;
     private double pressaoCorreta;
     private double pressaoAtual;
-    private Sulco sulcoPneuNovo;
-    private Sulco sulcoAtual;
+    private Sulcos sulcosPneuNovo;
+    private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
     private String status;
@@ -132,20 +132,20 @@ public class Pneu {
         this.pressaoCorreta = pressaoCorreta;
     }
 
-    public Sulco getSulcoPneuNovo() {
-        return sulcoPneuNovo;
+    public Sulcos getSulcosPneuNovo() {
+        return sulcosPneuNovo;
     }
 
-    public void setSulcoPneuNovo(Sulco sulcoPneuNovo) {
-        this.sulcoPneuNovo = sulcoPneuNovo;
+    public void setSulcosPneuNovo(Sulcos sulcosPneuNovo) {
+        this.sulcosPneuNovo = sulcosPneuNovo;
     }
 
-    public Sulco getSulcoAtual() {
-        return sulcoAtual;
+    public Sulcos getSulcosAtuais() {
+        return sulcosAtuais;
     }
 
-    public void setSulcoAtual(Sulco sulcoAtual) {
-        this.sulcoAtual = sulcoAtual;
+    public void setSulcosAtuais(Sulcos sulcosAtuais) {
+        this.sulcosAtuais = sulcosAtuais;
     }
 
     public String getStatus() {
@@ -196,8 +196,8 @@ public class Pneu {
                 ", dimensao=" + dimensao +
                 ", pressaoCorreta=" + pressaoCorreta +
                 ", pressaoAtual=" + pressaoAtual +
-                ", sulcoPneuNovo=" + sulcoPneuNovo +
-                ", sulcoAtual=" + sulcoAtual +
+                ", sulcosPneuNovo=" + sulcosPneuNovo +
+                ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
                 ", status='" + status + '\'' +
