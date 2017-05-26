@@ -335,7 +335,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT CODIGO, ALTERNATIVA "
 					+ "FROM RELATO_ALTERNATIVA "
-					+ "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE");
+					+ "WHERE COD_SETOR = ? OR COD_SETOR IS NULL AND COD_UNIDADE = ? AND STATUS_ATIVO = TRUE ORDER BY ALTERNATIVA ASC");
 			stmt.setLong(1, codSetor);
 			stmt.setLong(2, codUnidade);
 			rSet = stmt.executeQuery();
