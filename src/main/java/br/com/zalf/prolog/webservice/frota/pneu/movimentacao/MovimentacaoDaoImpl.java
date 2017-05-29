@@ -53,10 +53,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             // antes de fazer qualquer movimentação, remover todos os pneus que sairam do veículo
             removeOrigensVeiculo(movimentacao, conn);
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, \n " +
-                    "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
+                    "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo,  vida, observacao)\n " +
                     "VALUES (?,?,?,\n " +
                     "COALESCE ((select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
-                    "COALESCE ((select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_central_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_central_externo from pneu where codigo = ? and cod_unidade = ?),0),\n " +
                     "COALESCE ((select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),0),?,?) RETURNING codigo; ");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setLong(2, movimentacao.getUnidade().getCodigo());
@@ -68,8 +69,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 stmt.setLong(7, movimentacao.getUnidade().getCodigo());
                 stmt.setLong(8, mov.getPneu().getCodigo());
                 stmt.setLong(9, movimentacao.getUnidade().getCodigo());
-                stmt.setDouble(10, mov.getPneu().getVidaAtual());
-                stmt.setString(11, mov.getObservacao());
+                stmt.setLong(10, mov.getPneu().getCodigo());
+                stmt.setLong(11, movimentacao.getUnidade().getCodigo());
+                stmt.setDouble(12, mov.getPneu().getVidaAtual());
+                stmt.setString(13, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));

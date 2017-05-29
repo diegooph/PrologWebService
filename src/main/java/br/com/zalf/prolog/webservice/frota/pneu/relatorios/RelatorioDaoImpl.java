@@ -38,12 +38,12 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
-	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL, ALTURA_SULCO_CENTRAL, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
+	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_INTERNO, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
 			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
 
 	private static final String SULCOS_PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
-			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
+			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL_INTERNO, P.altura_sulco_CENTRAL_EXTERNO, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
 			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
 			+ "FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
@@ -54,7 +54,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
 			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
-			+ "ORDER BY P.ALTURA_SULCO_CENTRAL DESC "
+			+ "ORDER BY P.ALTURA_SULCO_CENTRAL_INTERNO DESC "
 			+ "LIMIT ? OFFSET ?";
 
 	private static final String RESUMO_SERVICOS = "SELECT AD.DATA, CAL.CAL_ABERTAS, INSP.INSP_ABERTAS, MOV.MOV_ABERTAS, CAL_FECHADAS.CAL_FECHADAS, INSP_FECHADAS.INSP_FECHADAS, MOV_FECHADAS.MOV_FECHADAS FROM AUX_DATA AD LEFT JOIN "
@@ -258,13 +258,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		try{
 			conn = getConnection();
-			//			stmt = conn.prepareStatement("SELECT "
-			//					+ "(((COALESCE(PRESSAO_ATUAL, PRESSAO_ATUAL, 0) - COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))/"
-			//					+ "COALESCE(PRESSAO_RECOMENDADA, PRESSAO_RECOMENDADA, 0))*100)::INT AS PORC "
-			//					+ "FROM PNEU "
-			//					+ "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  "
-			//					+ "ORDER BY 1 asc");
-
 			stmt = conn.prepareStatement("SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
 					+ "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS PORC  "
 					+ "FROM PNEU  "
@@ -285,7 +278,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 
 		int totalValores = valores.size() + naoAferidos;
-		L.d(TAG, "Total valores: " + totalValores);
 		populaFaixas(faixas, valores);
 		setPorcentagemFaixas(faixas, totalValores);
 		Faixa faixa = new Faixa();
@@ -293,7 +285,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		faixa.setTotalPneus(naoAferidos);
 		faixa.setPorcentagem((double) naoAferidos/ (double) totalValores);
 		faixas.add(faixa);
-		L.d(TAG, "Finalizado: " + faixas.toString());
 		return faixas;
 	}
 
@@ -692,7 +683,6 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	}
 
 	private void setPorcentagemFaixas(List<Faixa> faixas, int total){
-		L.d(TAG, String.valueOf(total));
 		for (Faixa faixa : faixas) {
 			if (faixa.getTotalPneus() == 0) {
 				faixa.setPorcentagem(0);
@@ -756,7 +746,8 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
 				"  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
 				"  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
-				"  coalesce(trunc(P.altura_sulco_central :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL\",\n" +
+				"  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL INTERNO\",\n" +
+				"  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL EXTERNO\",\n" +
 				"  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
 				"  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
 				"  P.vida_atual                                                                               AS \"VIDA\",\n" +

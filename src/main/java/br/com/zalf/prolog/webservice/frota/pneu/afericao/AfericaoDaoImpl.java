@@ -264,7 +264,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PneuDaoImpl pneuDao = new PneuDaoImpl();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, \n" +
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, " +
+                    "AV.ALTURA_SULCO_CENTRAL_INTERNO, AV.ALTURA_SULCO_CENTRAL_EXTERNO, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, \n" +
                     "AV.PSI::INT AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO,\n" +
                     "DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL,\n" +
                     "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
@@ -309,7 +310,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PneuDao pneuDao = new PneuDaoImpl();
 
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
-                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL,ALTURA_SULCO_EXTERNO, " +
+                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
@@ -318,10 +319,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(3, codUnidade);
             stmt.setDouble(4, pneu.getPressaoAtual());
             stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(6, pneu.getSulcosAtuais().getExterno());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
-            stmt.setInt(8, pneu.getPosicao());
-            stmt.setInt(9, pneu.getVidaAtual());
+            stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+            stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+            stmt.setInt(9, pneu.getPosicao());
+            stmt.setInt(10, pneu.getVidaAtual());
             //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
@@ -393,7 +395,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND DATA_HORA_RESOLUCAO IS NULL "
                     + "GROUP BY TIPO_SERVICO "
                     + "ORDER BY TIPO_SERVICO");
-
             stmt.setLong(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
