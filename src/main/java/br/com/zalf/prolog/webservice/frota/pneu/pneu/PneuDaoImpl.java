@@ -1,14 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Banda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.L;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,9 +18,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     private static final String BUSCA_PNEUS_BY_PLACA = "SELECT po.posicao_prolog AS posicao,\n" +
             "  MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO,\n" +
-            "  MOP.CODIGO AS COD_MODELO,PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA,\n" +
+            "  MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA,\n" +
             "            P.altura_sulcos_novos,P.altura_sulco_CENTRAL_INTERNO, P.altura_sulco_CENTRAL_EXTERNO, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, \n" +
-            "            MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
+            "            MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
             "FROM veiculo_pneu vp join pneu_ordem po on vp.posicao = po.posicao_prolog\n" +
             "  JOIN PNEU P ON P.CODIGO = VP.COD_PNEU\n" +
             "  JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO\n" +
@@ -35,10 +33,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "ORDER BY po.ordem_exibicao asc";
 
     private static final String BUSCA_PNEUS_BY_COD = "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, "
+            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, "
+            + "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, "
             + "PD.ALTURA, PD.LARGURA, PD.ARO, PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, "
             + "P.altura_sulcos_novos,P.altura_sulco_CENTRAL_INTERNO, P.altura_sulco_CENTRAL_EXTERNO, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
+            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
             + "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
             + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
             + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
@@ -49,9 +48,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             + "WHERE P.CODIGO = ? ";
 
     private static final String BUSCA_PNEUS_BY_COD_UNIDADE = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
-            + "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO,PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos, " +
+            + "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO,PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos, " +
             "P.altura_sulco_CENTRAL_interno, P.altura_sulco_central_externo, P.altura_sulco_EXTERNO, P.altura_sulco_interno, p.status,	"
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
+            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
             + "FROM PNEU P "
             + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
             + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
@@ -135,7 +134,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
             stmt.setInt(4, pneu.getVidaAtual());
-            stmt.setDouble(5, pneu.getBanda().getValor());
+            stmt.setDouble(5, pneu.getBanda().getModelo().getValor());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao cadastrar a mudança de vida");
             }
@@ -150,7 +149,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE pneu_valor_vida set cod_modelo_banda = ?, valor = ? WHERE cod_unidade = ? AND cod_pneu = ? " +
                     "AND vida = ?");
             stmt.setLong(1, pneu.getBanda().getModelo().getCodigo());
-            stmt.setDouble(2, pneu.getBanda().getValor());
+            stmt.setDouble(2, pneu.getBanda().getModelo().getValor());
             stmt.setLong(3, codUnidade);
             stmt.setLong(4, pneu.getCodigo());
             stmt.setLong(5, pneu.getVidaAtual());
@@ -330,23 +329,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     public Pneu createPneu(ResultSet rSet) throws SQLException {
         Pneu pneu = new Pneu();
         Marca marcaPneu = new Marca();
-        Modelo modeloPneu = new Modelo();
+        ModeloPneu modeloPneu = new ModeloPneu();
         Banda banda = new Banda();
         Marca marcaBanda = new Marca();
-        Modelo modeloBanda = new Modelo();
+        ModeloBanda modeloBanda = new ModeloBanda();
         Dimensao dimensao = new Dimensao();
         Sulcos sulcoAtual = new Sulcos();
         Sulcos sulcoNovo = new Sulcos();
-
-        if (rSet.getString("COD_MARCA_BANDA") != null) {
-            marcaBanda.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
-            marcaBanda.setNome(rSet.getString("NOME_MARCA_BANDA"));
-            modeloBanda.setCodigo(rSet.getLong("COD_MODELO_BANDA"));
-            modeloBanda.setNome(rSet.getString("NOME_MODELO_BANDA"));
-            banda.setMarca(marcaBanda);
-            banda.setModelo(modeloBanda);
-            pneu.setBanda(banda);
-        }
 
         pneu.setCodigo(rSet.getInt("CODIGO"));
         marcaPneu.setCodigo(rSet.getLong("COD_MARCA"));
@@ -354,7 +343,26 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         pneu.setMarca(marcaPneu);
         modeloPneu.setCodigo(rSet.getLong("COD_MODELO"));
         modeloPneu.setNome(rSet.getString("MODELO"));
+        modeloPneu.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_MODELO"));
         pneu.setModelo(modeloPneu);
+        if (rSet.getString("COD_MARCA_BANDA") != null) {
+            marcaBanda.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
+            marcaBanda.setNome(rSet.getString("NOME_MARCA_BANDA"));
+            modeloBanda.setCodigo(rSet.getLong("COD_MODELO_BANDA"));
+            modeloBanda.setNome(rSet.getString("NOME_MODELO_BANDA"));
+            modeloBanda.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_BANDA"));
+            banda.setMarca(marcaBanda);
+            banda.setModelo(modeloBanda);
+            pneu.setBanda(banda);
+        }else{
+            banda.setMarca(marcaPneu);
+            modeloBanda.setQuantidadeSulcos(modeloPneu.getQuantidadeSulcos());
+            modeloBanda.setCodigo(modeloPneu.getCodigo());
+            modeloBanda.setValor(modeloPneu.getValor());
+            modeloBanda.setNome(modeloPneu.getNome());
+            banda.setModelo(modeloBanda);
+            pneu.setBanda(banda);
+        }
         dimensao.codigo = rSet.getLong("COD_DIMENSAO");
         dimensao.altura = rSet.getInt("ALTURA");
         dimensao.aro = rSet.getInt("ARO");
@@ -366,10 +374,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
         pneu.setSulcosAtuais(sulcoAtual);
+        sulcoNovo.setCentralExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
         sulcoNovo.setCentralInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
         sulcoNovo.setExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
         sulcoNovo.setInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-
         pneu.setSulcosPneuNovo(sulcoNovo);
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));

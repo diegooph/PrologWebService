@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import com.sun.istack.internal.Nullable;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class Pneu {
     private int codPneuProblema;
     private int codigo;
     private Marca marca;
-    private Modelo modelo;
+    private ModeloPneu modelo;
     // pneu só tem banda após ser recapado pela primeira vez, ou seja, vida > 1
     private Banda banda;
     private Dimensao dimensao;
@@ -100,11 +99,11 @@ public class Pneu {
         this.codigo = codigo;
     }
 
-    public Modelo getModelo() {
+    public ModeloPneu getModelo() {
         return modelo;
     }
 
-    public void setModelo(Modelo modelo) {
+    public void setModelo(ModeloPneu modelo) {
         this.modelo = modelo;
     }
 
