@@ -34,6 +34,20 @@ public class EmpresaResource {
 		}
 	}
 
+	@GET
+	@Secured(permissions = {Pilares.Gente.Equipe.VISUALIZAR, Pilares.Gente.Equipe.EDITAR, Pilares.Gente.Equipe.CADASTRAR})
+	@Path("/equipes/{codUnidade}/{codEquipe}")
+	public Equipe getEquipe (@PathParam("codUnidade") Long codUnidade,@PathParam("codEquipe") Long codEquipe) {
+		return service.getEquipe(codUnidade, codEquipe);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+	@Path("/setores/{codUnidade}/{codSetor}")
+	public Setor getSetor (@PathParam("codUnidade") Long codUnidade,@PathParam("codSetor") Long codSetor) {
+		return service.getSetor(codUnidade, codSetor);
+	}
+
 	@PUT
 	@Path("/equipes/{codEquipe}")
 	@Secured(permissions = Pilares.Gente.Equipe.EDITAR)

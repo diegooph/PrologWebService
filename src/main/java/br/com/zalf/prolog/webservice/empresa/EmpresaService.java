@@ -30,6 +30,15 @@ public class EmpresaService {
         }
     }
 
+    public Equipe getEquipe (Long codUnidade, Long codEquipe) {
+        try {
+            return dao.getEquipe(codUnidade, codEquipe);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public boolean updateEquipe(Long codEquipe, Equipe equipe) {
         try {
             return dao.updateEquipe(codEquipe, equipe);
@@ -45,6 +54,15 @@ public class EmpresaService {
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.Error("Erro ao inserir o setor");
+        }
+    }
+
+    public Setor getSetor (Long codUnidade, Long codSetor) {
+        try {
+            return dao.getSetor(codUnidade, codSetor);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

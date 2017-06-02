@@ -12,6 +12,16 @@ import java.util.List;
 
 public interface EmpresaDao {
 
+
+	/**
+	 * Busca uma equipe no banco de dados
+	 * @param codUnidade código da unidade onde a equipe será buscada
+	 * @param codEquipe código da equipe
+	 * @return
+	 * @throws SQLException
+	 */
+	Equipe getEquipe (Long codUnidade, Long codEquipe) throws SQLException;
+
 	/**
 	 * Insere uma equipe
 	 *
@@ -58,6 +68,16 @@ public interface EmpresaDao {
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException;
+
+
+	/**
+	 * Busca um setor de uma unidade
+	 * @param codUnidade código da unidade onde o setor será buscado
+	 * @param codSetor código do setor a ser buscado
+	 * @return
+	 * @throws SQLException
+	 */
+	Setor getSetor (Long codUnidade, Long codSetor) throws SQLException;
 
 	/**
 	 * Cadastra um setor no banco de dados

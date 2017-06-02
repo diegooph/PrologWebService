@@ -183,6 +183,52 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
+	public Equipe getEquipe (Long codUnidade, Long codEquipe) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM EQUIPE WHERE COD_UNIDADE = ?  AND CODIGO = ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codEquipe);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				Equipe equipe = new Equipe();
+				equipe.setCodigo(rSet.getLong("CODIGO"));
+				equipe.setNome(rSet.getString("NOME"));
+				return equipe;
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+
+	@Override
+	public Setor getSetor (Long codUnidade, Long codSetor) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT * FROM SETOR WHERE COD_UNIDADE = ?  AND CODIGO = ?");
+			stmt.setLong(1, codUnidade);
+			stmt.setLong(2, codSetor);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				Setor setor = new Setor();
+				setor.setCodigo(rSet.getLong("CODIGO"));
+				setor.setNome(rSet.getString("NOME"));
+				return setor;
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+
+	@Override
 	public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
