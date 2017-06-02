@@ -12,6 +12,12 @@ Change Log
     
 * Implementa `delete ` de um `treinamento` (resta deletar do S3 os arquivos)
 * Implementa tabela (pneu_ordem_nomenclatura_unidade) para armazenar e linkar as posições de pneus do Prolog com as devidas nomenclaturas utilizadas pelos clientes.
+* Agora pneus podem ter o quarto sulco
+    * Adição de coluna qt_sulcos na tabela modelo_pneu
+    * Adição de coluna qt_sulcos na tabela modelo_banda
+    * Renomeadas as colunas dos sulcos das tabelas pneu, aferição valores e movimentação
+    * Adicionada coluna para o quarto sulco na tabela pneu, aferição valores e movimentação
+* Altera classe Pneu e classe Banda, tornando distinto o modelo de cada um deles, além de adicionar a quantidade de sulcos
 
 #### Refactor
 * Refatorado o calculo do pré contracheque, agora o calculo do bônus é dinâmico de acordo com o indicador informado, 
@@ -19,7 +25,7 @@ a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adapt
     * Renomeada a tabela pre_contracheque_premissas -> pre_contracheque_informacoes
     * Removidas as colunas cod_import_he / cod_import_dsr / cod_import_vales
     * Adicionada coluna recarga_parte_premio
-    * Adicionada contraint com Unidade
+    * Adicionada constraint com Unidade
     * Renomeadas as contraints
     * Criada a tabela pre_contracheque_calculo_premio para armazenar os códigos dos itens que compõe o calculo do prêmio
     
