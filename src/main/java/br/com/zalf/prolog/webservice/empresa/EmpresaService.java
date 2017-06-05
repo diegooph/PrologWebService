@@ -84,9 +84,9 @@ public class EmpresaService {
         }
     }
 
-    public Visao getVisaoCargo(Long codCargo, Long codUnidade) {
+    public Visao getVisaoCargo(Long codUnidade, Long codCargo) {
         try {
-            return dao.getVisaoCargo(codCargo, codUnidade);
+            return dao.getVisaoCargo(codUnidade, codCargo);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

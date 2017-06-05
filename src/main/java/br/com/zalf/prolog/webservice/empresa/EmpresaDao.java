@@ -133,12 +133,12 @@ public interface EmpresaDao {
 
 	/**
 	 * Busca as funções do prolog de um determinado cargo
-	 * @param codCargo codigo do cargo
 	 * @param codUnidade codigo da unidade
+	 * @param codCargo codigo do cargo
 	 * @return {@link Visao} de uma {@link Funcao}
 	 * @throws SQLException
 	 */
-	Visao getVisaoCargo(Long codCargo, Long codUnidade) throws SQLException;
+	Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException;
 
 	/**
 	 * Busca as funções do prolog a partir do codigo da unidade
