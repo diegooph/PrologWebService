@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Desti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.sql.*;
 import java.util.Date;
@@ -146,6 +148,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
+                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                veiculoDao.updateKmByPlaca(origemVeiculo.getVeiculo().getPlaca(), origemVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
                 stmt.setInt(9, origemVeiculo.getPosicaoOrigemPneu());
@@ -169,6 +173,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                veiculoDao.updateKmByPlaca(destinoVeiculo.getVeiculo().getPlaca(), destinoVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
                 stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
