@@ -314,13 +314,13 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
-	public Visao getVisaoCargo(Long codCargo, Long codUnidade) throws SQLException {
+	public Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException {
 		Visao visao = new Visao();
-		visao.setPilares(getPilaresCargo(codCargo, codUnidade));
+		visao.setPilares(getPilaresCargo(codUnidade, codCargo));
 		return visao;
 	}
 
-	private List<Pilar> getPilaresCargo(Long codCargo, Long codUnidade) throws SQLException {
+	private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
 		List<Pilar> pilares;
 		ResultSet rSet = null;
 		Connection conn = null;
