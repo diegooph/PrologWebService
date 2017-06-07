@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.sun.istack.internal.Nullable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,6 +29,7 @@ public class Pneu {
     private int codigo;
     private Marca marca;
     private ModeloPneu modelo;
+    private BigDecimal valor;
     // pneu só tem banda após ser recapado pela primeira vez, ou seja, vida > 1
     private Banda banda;
     private Dimensao dimensao;
@@ -181,6 +183,14 @@ public class Pneu {
 
     public boolean isEstepe() {
         return posicao >= 900;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
     }
 
     @Override

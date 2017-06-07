@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
 /**
@@ -9,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 public class ModeloPneu extends Modelo {
 
     private int quantidadeSulcos;
-    private double valor;
 
     public ModeloPneu() {
     }
@@ -22,11 +20,4 @@ public class ModeloPneu extends Modelo {
         this.quantidadeSulcos = quantidadeSulcos;
     }
 
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
 }
