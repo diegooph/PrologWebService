@@ -5,22 +5,22 @@ import br.com.zalf.prolog.webservice.colaborador.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-/**
- * Created by luiz on 07/06/17.
- */
-@Path("/empresas")
+@Path("/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class EmpresaResource {
+@Deprecated
+public class DeprecatedEmpresaResource {
 
     private EmpresaService service = new EmpresaService();
 
@@ -44,7 +44,7 @@ public class EmpresaResource {
 
     @GET
     @Secured(permissions = {Pilares.Gente.Equipe.VISUALIZAR, Pilares.Gente.Equipe.EDITAR, Pilares.Gente.Equipe.CADASTRAR})
-    @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
+    @Path("/equipes/{codUnidade}/{codEquipe}")
     public Equipe getEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe) {
         return service.getEquipe(codUnidade, codEquipe);
     }
@@ -56,22 +56,9 @@ public class EmpresaResource {
         return service.insertSetor(codUnidade, setor);
     }
 
-    @PUT
-    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
-    @Path("/unidades/{codUnidade}/setores/{codSetor}")
-    public AbstractResponse updateSetor(@PathParam("codUnidade") Long codUnidade,
-                                        @PathParam("codSetor") Long codSetor,
-                                        Setor setor) {
-        if (service.updateSetor(codUnidade, codSetor, setor)) {
-            return Response.Ok("Setor editado com sucesso");
-        } else {
-            return Response.Error("Erro ao editar a setor");
-        }
-    }
-
     @GET
     @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
-    @Path("/unidades/{codUnidade}/setores/{codSetor}")
+    @Path("/setores/{codUnidade}/{codSetor}")
     public Setor getSetor(@PathParam("codUnidade") Long codUnidade, @PathParam("codSetor") Long codSetor) {
         return service.getSetor(codUnidade, codSetor);
     }
@@ -140,5 +127,131 @@ public class EmpresaResource {
     public List<Empresa> getFiltros(
             @PathParam("cpf") Long cpf) {
         return service.getFiltros(cpf);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #insertSetor(Long, Setor)} instead
+     */
+    @POST
+    @Secured(permissions = Pilares.Gente.Equipe.VISUALIZAR)
+    @Path("/getEquipesByCodUnidade/{codUnidade}")
+    @Deprecated
+    public List<Equipe> DEPRECATED_GET_EQUIPES_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
+        return service.getEquipesByCodUnidade(codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #insertSetor(Long, Setor)} instead
+     */
+    @POST
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+    @Path("/setores/{codUnidade}")
+    @Deprecated
+    public AbstractResponse DEPRECATED_INSERT_SETOR(String nome, @PathParam("codUnidade") Long codUnidade) {
+        return service.insertSetor(nome, codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #insertEquipe(Long, Equipe)} instead
+     */
+    @POST
+    @Path("/insertEquipe")
+    @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
+    @Deprecated
+    public Response DEPRECATED_INSERT_EQUIPE(Request<Equipe> request) {
+        if (service.createEquipe(request)) {
+            return Response.Ok("Equipe inserida com sucesso");
+        } else {
+            return Response.Error("Erro ao inserir equipe");
+        }
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #updateEquipe(Long, Long, Equipe)} instead
+     */
+    @PUT
+    @Path("/updateEquipe")
+    @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
+    @Deprecated
+    public boolean DEPRECATED_UPDATE_EQUIPE(Request<Equipe> request) {
+        return service.updateEquipe(request);
+    }
+
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #getFuncoesByCodUnidade(Long)} instead
+     */
+    @GET
+    @Secured
+    @Path("/funcoes/{codUnidade}")
+    @Deprecated
+    public List<Funcao> DEPRECATE_GET_FUNCOES_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
+        return service.getFuncoesByCodUnidade(codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #getVisaoByUnidade(Long)} instead
+     */
+    @GET
+    @Secured
+    @Path("/permissoes/{codUnidade}")
+    @Deprecated
+    public List<Pilar> DEPRECATED_VISAO_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
+        return service.getVisaoUnidade(codUnidade).getPilares();
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #getVisaoByCargo(Long, Long)} instead
+     */
+    @GET
+    @Secured
+    @Path("/permissoes/{codUnidade}/{codCargo}")
+    @Deprecated
+    public List<Pilar> DEPRECATED_VISAO_CARGO(@PathParam("codUnidade") Long codUnidade,
+                                              @PathParam("codCargo") Long codCargo) {
+        return service.getVisaoCargo(codUnidade, codCargo).getPilares();
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #getSetorByCodUnidade(Long)} instead
+     */
+    @GET
+    @Secured
+    @Path("/setores/{codUnidade}")
+    @Deprecated
+    public List<Setor> DEPRECATED_SETORES_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
+        return service.getSetorByCodUnidade(codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #getResumoDadosMapaTracking(Long, int, int)} instead
+     */
+    @GET
+    @Secured(permissions = Pilares.Entrega.Upload.VERIFICACAO_DADOS)
+    @Path("/resumoDados/{codUnidade}/{ano}/{mes}")
+    @Deprecated
+    public List<HolderMapaTracking> DEPRECATED_RESUMO_DADOS_MAPA_TRACKING(@PathParam("ano") int ano,
+                                                                          @PathParam("mes") int mes,
+                                                                          @PathParam("codUnidade") Long codUnidade) {
+        return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.10. Use {@link #alterarVisaoCargo(Visao, Long, Long)} instead
+     */
+    @POST
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+    @Path("/funcoesProlog/{codUnidade}/{codCargo}")
+    @Deprecated
+    public Response DEPRECATED_ALTERAR_VISAO_CARGO(List<Pilar> pilares,
+                                                   @PathParam("codUnidade") Long codUnidade,
+                                                   @PathParam("codCargo") Long codCargo) {
+        Visao visao = new Visao();
+        visao.setPilares(pilares);
+        if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
+            return Response.Ok("Funções inseridas com sucesso");
+        } else {
+            return Response.Error("Erro ao inserir as funções");
+        }
     }
 }

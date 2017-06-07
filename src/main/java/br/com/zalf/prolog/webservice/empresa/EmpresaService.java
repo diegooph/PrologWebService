@@ -21,16 +21,16 @@ public class EmpresaService {
 
     private EmpresaDao dao = new EmpresaDaoImpl();
 
-    public boolean insertEquipe(Long codUnidade, Equipe equipe) {
+    public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
         try {
             return dao.insertEquipe(codUnidade, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Response.Error("Erro ao inserir a equipe");
         }
     }
 
-    public Equipe getEquipe (Long codUnidade, Long codEquipe) {
+    public Equipe getEquipe(Long codUnidade, Long codEquipe) {
         try {
             return dao.getEquipe(codUnidade, codEquipe);
         } catch (SQLException e) {
@@ -39,9 +39,9 @@ public class EmpresaService {
         }
     }
 
-    public boolean updateEquipe(Long codEquipe, Equipe equipe) {
+    public boolean updateEquipe(Long codUnidade, Long codEquipe, Equipe equipe) {
         try {
-            return dao.updateEquipe(codEquipe, equipe);
+            return dao.updateEquipe(codUnidade, codEquipe, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -57,10 +57,19 @@ public class EmpresaService {
         }
     }
 
-    public Setor getSetor (Long codUnidade, Long codSetor) {
+    public boolean updateSetor(Long codUnidade, Long codSetor, Setor setor) {
+        try {
+            return dao.updateSetor(codUnidade, codSetor, setor);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Setor getSetor(Long codUnidade, Long codSetor) {
         try {
             return dao.getSetor(codUnidade, codSetor);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
