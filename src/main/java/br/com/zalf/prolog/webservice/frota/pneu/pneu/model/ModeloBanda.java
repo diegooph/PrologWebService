@@ -9,9 +9,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 public class ModeloBanda extends Modelo {
 
     private int quantidadeSulcos;
-    private double valor;
 
-    public ModeloBanda() {}
+    public ModeloBanda() {
+    }
 
     public int getQuantidadeSulcos() {
         return quantidadeSulcos;
@@ -19,14 +19,6 @@ public class ModeloBanda extends Modelo {
 
     public void setQuantidadeSulcos(int quantidadeSulcos) {
         this.quantidadeSulcos = quantidadeSulcos;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
     }
 
 }
