@@ -39,9 +39,9 @@ public class EmpresaService {
         }
     }
 
-    public boolean updateEquipe(Long codEquipe, Equipe equipe) {
+    public boolean updateEquipe(Long codUnidade, Long codEquipe, Equipe equipe) {
         try {
-            return dao.updateEquipe(codEquipe, equipe);
+            return dao.updateEquipe(codUnidade, codEquipe, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

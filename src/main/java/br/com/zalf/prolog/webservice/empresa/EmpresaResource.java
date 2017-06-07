@@ -36,10 +36,10 @@ public class EmpresaResource {
     }
 
     @PUT
-    @Path("/unidades/equipes/{codEquipe}")
+    @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
-    public Response updateEquipe(@PathParam("codEquipe") Long codEquipe, Equipe equipe) {
-        if (service.updateEquipe(codEquipe, equipe)) {
+    public Response updateEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe, Equipe equipe) {
+        if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
             return Response.Ok("Equipe editada com sucesso");
         } else {
             return Response.Error("Errro ao editar a equipe");

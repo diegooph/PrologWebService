@@ -114,14 +114,15 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 	}
 
 	@Override
-	public boolean updateEquipe(@NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException {
+	public boolean updateEquipe(@NotNull Long codUnidade, @NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = ? WHERE CODIGO = ?");
+			stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = ? WHERE CODIGO = ? AND COD_UNIDADE = ?");
 			stmt.setString(1, equipe.getNome());
 			stmt.setLong(2, codEquipe);
+			stmt.setLong(2, codUnidade);
 			int count = stmt.executeUpdate();
 			if (count == 0) {
 				throw new SQLException("Erro ao atualizar a equipe");

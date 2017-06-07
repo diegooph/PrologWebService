@@ -35,12 +35,13 @@ public interface EmpresaDao {
 	/**
 	 * Atualiza uma equipe
 	 *
+	 * @param codUnidade código da unidade que a equipe pertence
 	 * @param codEquipe código da equipe que desejamos atualizar
 	 * @param equipe equipe para ser atualizada
 	 * @return true se a atualização deu certo; caso contrário false
 	 * @throws SQLException caso ocorrer algum erro no banco
 	 */
-	boolean updateEquipe(@NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException;
+	boolean updateEquipe(@NotNull Long codUnidade, @NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException;
 
 	/**
 	 * Cria uma equipe
