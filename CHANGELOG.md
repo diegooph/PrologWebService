@@ -33,6 +33,8 @@ a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adapt
 #### Deprecated
 
 #### Bug Fixes
+* Corrige erro ao importar tabela mapa com linhas vazias no final do arquivo
+* Corrige falta de atualização do KM ao salvar uma movimentação 
 
 <a name="v0.0.14"></a>
 ## Version [v0.0.14](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.13-h2) (2017-05-17)
