@@ -134,7 +134,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
             stmt.setInt(4, pneu.getVidaAtual());
-            stmt.setDouble(5, pneu.getBanda().getModelo().getValor());
+            stmt.setBigDecimal(5, pneu.getBanda().getValor());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao cadastrar a mudança de vida");
             }
@@ -149,7 +149,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE pneu_valor_vida set cod_modelo_banda = ?, valor = ? WHERE cod_unidade = ? AND cod_pneu = ? " +
                     "AND vida = ?");
             stmt.setLong(1, pneu.getBanda().getModelo().getCodigo());
-            stmt.setDouble(2, pneu.getBanda().getModelo().getValor());
+            stmt.setBigDecimal(2, pneu.getBanda().getValor());
             stmt.setLong(3, codUnidade);
             stmt.setLong(4, pneu.getCodigo());
             stmt.setLong(5, pneu.getVidaAtual());
@@ -358,7 +358,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             banda.setMarca(marcaPneu);
             modeloBanda.setQuantidadeSulcos(modeloPneu.getQuantidadeSulcos());
             modeloBanda.setCodigo(modeloPneu.getCodigo());
-            modeloBanda.setValor(modeloPneu.getValor());
+            banda.setValor(pneu.getValor());
             modeloBanda.setNome(modeloPneu.getNome());
             banda.setModelo(modeloBanda);
             pneu.setBanda(banda);
@@ -651,9 +651,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Modelo modelo = new Modelo();
+                ModeloBanda modelo = new ModeloBanda();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
+                modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
                 modelos.add(modelo);
             }
         } finally {
