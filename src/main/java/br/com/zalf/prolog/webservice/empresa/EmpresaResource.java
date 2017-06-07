@@ -42,7 +42,7 @@ public class EmpresaResource {
         if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
             return Response.Ok("Equipe editada com sucesso");
         } else {
-            return Response.Error("Errro ao editar a equipe");
+            return Response.Error("Erro ao editar a equipe");
         }
     }
 
@@ -66,7 +66,11 @@ public class EmpresaResource {
     public AbstractResponse updateSetor(@PathParam("codUnidade") Long codUnidade,
                                         @PathParam("codSetor") Long codSetor,
                                         Setor setor) {
-        return service.insertSetor(codUnidade, setor);
+        if (service.updateSetor(codUnidade, codSetor, setor)) {
+            return Response.Ok("Setor editado com sucesso");
+        } else {
+            return Response.Error("Erro ao editar a setor");
+        }
     }
 
     @GET

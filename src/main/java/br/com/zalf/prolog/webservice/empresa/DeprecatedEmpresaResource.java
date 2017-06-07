@@ -36,13 +36,13 @@ public class DeprecatedEmpresaResource {
     }
 
     @PUT
-    @Path("/equipes/{codEquipe}")
+    @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
-    public Response updateEquipe(@PathParam("codEquipe") Long codEquipe, Equipe equipe) {
-        if (service.updateEquipe(codEquipe, equipe)) {
+    public Response updateEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe, Equipe equipe) {
+        if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
             return Response.Ok("Equipe editada com sucesso");
         } else {
-            return Response.Error("Errro ao editar a equipe");
+            return Response.Error("Erro ao editar a equipe");
         }
     }
 
@@ -171,7 +171,7 @@ public class DeprecatedEmpresaResource {
     }
 
     /**
-     * @deprecated in v0.0.10. Use {@link #updateEquipe(Long, Equipe)} instead
+     * @deprecated in v0.0.10. Use {@link #updateEquipe(Long, Long, Equipe)} instead
      */
     @PUT
     @Path("/updateEquipe")
