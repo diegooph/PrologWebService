@@ -27,12 +27,8 @@ public class EmpresaResource {
     @POST
     @Path("/unidades/{codUnidade}/equipes")
     @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
-    public Response insertEquipe(@PathParam("codUnidade") Long codUnidade, Equipe equipe) {
-        if (service.insertEquipe(codUnidade, equipe)) {
-            return Response.Ok("Equipe inserida com sucesso");
-        } else {
-            return Response.Error("Erro ao inserir equipe");
-        }
+    public AbstractResponse insertEquipe(@PathParam("codUnidade") Long codUnidade, Equipe equipe) {
+        return service.insertEquipe(codUnidade, equipe);
     }
 
     @PUT

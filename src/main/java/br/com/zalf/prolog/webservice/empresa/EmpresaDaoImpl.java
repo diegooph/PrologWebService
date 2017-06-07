@@ -93,24 +93,26 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     //a equipe está ligada como fk de colaborador e fk de calendário
 
     @Override
-    public boolean insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
+    public AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO EQUIPE "
                     + "(NOME, COD_UNIDADE) VALUES "
-                    + "(?,?) ");
+                    + "(?,?) RETURNING CODIGO;");
             stmt.setString(1, equipe.getNome());
             stmt.setLong(2, codUnidade);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inserir a equipe");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return ResponseWithCod.Ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
+            } else {
+                return Response.Error("Erro ao inserir a equipe");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
-        return true;
     }
 
     @Override
@@ -122,7 +124,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt = conn.prepareStatement("UPDATE EQUIPE SET NOME = ? WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setString(1, equipe.getNome());
             stmt.setLong(2, codEquipe);
-            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codUnidade);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar a equipe");
@@ -204,6 +206,27 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
+    public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, setor.getNome());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+            } else {
+                return Response.Error("Erro ao inserir o setor");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public Setor getSetor(Long codUnidade, Long codSetor) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -224,27 +247,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
         return null;
-    }
-
-    @Override
-    public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, setor.getNome());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
-            } else {
-                return Response.Error("Erro ao inserir o setor");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -277,7 +279,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt = conn.prepareStatement("UPDATE SETOR SET NOME = ? WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setString(1, setor.getNome());
             stmt.setLong(2, codSetor);
-            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codUnidade);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o setor");

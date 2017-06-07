@@ -21,12 +21,12 @@ public class EmpresaService {
 
     private EmpresaDao dao = new EmpresaDaoImpl();
 
-    public boolean insertEquipe(Long codUnidade, Equipe equipe) {
+    public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
         try {
             return dao.insertEquipe(codUnidade, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Response.Error("Erro ao inserir a equipe");
         }
     }
 

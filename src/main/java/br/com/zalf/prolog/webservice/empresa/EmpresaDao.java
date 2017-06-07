@@ -28,10 +28,10 @@ public interface EmpresaDao {
      *
      * @param codUnidade código da unidade onde a equipe será inserida
      * @param equipe     equipe que deve ser inserida
-     * @return true se o insert deu certo; caso contrário false
+     * @return objeto que encapsula um resposta OK ou NOK
      * @throws SQLException caso ocorrer algum erro no banco
      */
-    boolean insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException;
+    AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException;
 
     /**
      * Atualiza uma equipe
@@ -93,6 +93,7 @@ public interface EmpresaDao {
      * @return objeto que encapsula um resposta OK ou NOK
      * @throws SQLException caso ocorrer erro no banco
      */
+    @Deprecated
     AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
 
     /**
