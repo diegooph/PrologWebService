@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.core.NoContentException;
@@ -159,15 +160,7 @@ public class EmpresaService {
         }
     }
 
-    @Deprecated
-    public AbstractResponse insertSetor(String nome, Long codUnidade) {
-        try {
-            return dao.insertSetor(nome, codUnidade);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.Error("Erro ao inserir o setor");
-        }
-    }
+
 
     @Deprecated
     public boolean createEquipe(Request<Equipe> request) {
@@ -186,6 +179,19 @@ public class EmpresaService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public AbstractResponse insertFuncao(Funcao funcao, Long codUnidade) {
+        try {
+            Long codFuncaoInserida = dao.insertFuncao(funcao, codUnidade);
+            if(codFuncaoInserida != null){
+                return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
+            }else{
+                return Response.Error("Erro ao inserir o cargo");
+            }
+        }catch (SQLException e) {
+            return Response.Error("Erro ao inserir o cargo");
         }
     }
 }

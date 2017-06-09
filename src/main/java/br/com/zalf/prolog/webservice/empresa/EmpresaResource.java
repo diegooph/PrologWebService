@@ -141,4 +141,11 @@ public class EmpresaResource {
             @PathParam("cpf") Long cpf) {
         return service.getFiltros(cpf);
     }
+
+    @POST
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+    @Path("/funcoes/{codUnidade}")
+    public AbstractResponse insertFuncao(Funcao funcao, @PathParam("codUnidade") Long codUnidade) {
+        return service.insertFuncao(funcao, codUnidade);
+    }
 }

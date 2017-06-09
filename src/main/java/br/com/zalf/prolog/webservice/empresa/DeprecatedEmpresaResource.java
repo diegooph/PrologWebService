@@ -148,7 +148,9 @@ public class DeprecatedEmpresaResource {
     @Path("/setores/{codUnidade}")
     @Deprecated
     public AbstractResponse DEPRECATED_INSERT_SETOR(String nome, @PathParam("codUnidade") Long codUnidade) {
-        return service.insertSetor(nome, codUnidade);
+        Setor setor = new Setor();
+        setor.setNome("nome");
+        return service.insertSetor(codUnidade, setor);
     }
 
     /**

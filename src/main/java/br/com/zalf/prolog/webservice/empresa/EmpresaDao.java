@@ -86,17 +86,6 @@ public interface EmpresaDao {
     Setor getSetor(Long codUnidade, Long codSetor) throws SQLException;
 
     /**
-     * Cadastra um setor no banco de dados
-     *
-     * @param nome       nome do setor
-     * @param codUnidade código da unidade referente ao setor
-     * @return objeto que encapsula um resposta OK ou NOK
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    @Deprecated
-    AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException;
-
-    /**
      * Atualiza um {@link Setor}
      *
      * @param codUnidade código da {@link Unidade} que o {@link Setor} pertence
@@ -184,4 +173,13 @@ public interface EmpresaDao {
     boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
 
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
+
+    /**
+     * Insere um cargo (funcao)
+     * @param funcao funcao que será inserida
+     * @param codUnidade unidade que está solicitando o cadastro
+     * @return código da função
+     * @throws SQLException
+     */
+    Long insertFuncao(Funcao funcao, Long codUnidade) throws SQLException;
 }

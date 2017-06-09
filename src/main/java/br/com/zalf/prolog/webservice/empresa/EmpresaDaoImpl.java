@@ -35,11 +35,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             + "AND TA.CPF_COLABORADOR=? "
             + "AND TA.TOKEN=?";
 
-    private final String BUSCA_FUNCOES_BY_COD_UNIDADE = "SELECT F.CODIGO, F.NOME "
-            + "FROM UNIDADE_FUNCAO UF LEFT JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO "
-            + "WHERE UF.COD_UNIDADE = ? "
-            + "ORDER BY F.NOME";
-
     private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF = ""
             + "select emp.codigo as cod_empresa, emp.nome nome_empresa, "
             + "reg.codigo as cod_regional, reg.regiao nome_regional, "
@@ -250,27 +245,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public AbstractResponse insertSetor(String nome, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO SETOR(cod_unidade, nome) VALUES (?,?) RETURNING CODIGO;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, nome);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
-            } else {
-                return Response.Error("Erro ao inserir o setor");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
     public boolean updateSetor(@NotNull Long codUnidade, @NotNull Long codSetor, @NotNull Setor setor) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -318,7 +292,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_FUNCOES_BY_COD_UNIDADE);
+            stmt = conn.prepareStatement("SELECT CODIGO, NOME\n" +
+                    " FROM FUNCAO\n" +
+                    " WHERE cod_empresa = (SELECT COD_EMPRESA FROM UNIDADE WHERE CODIGO = ?)\n" +
+                    " ORDER BY NOME");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -402,16 +379,16 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         while (rSet.next()) {
             if (pilar == null) {//primeira linha do rSet
                 pilar = createPilar(rSet);
-                funcoes.add(createFuncaProLog(rSet));
+                funcoes.add(createFuncaoProLog(rSet));
             } else {
                 if (rSet.getString("PILAR").equals(pilar.nome)) {
-                    funcoes.add(createFuncaProLog(rSet));
+                    funcoes.add(createFuncaoProLog(rSet));
                 } else {
                     pilar.funcoes = funcoes;
                     pilares.add(pilar);
                     pilar = createPilar(rSet);
                     funcoes = new ArrayList<>();
-                    funcoes.add(createFuncaProLog(rSet));
+                    funcoes.add(createFuncaoProLog(rSet));
                 }
             }
         }
@@ -422,7 +399,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return pilares;
     }
 
-    private FuncaoProLog createFuncaProLog(ResultSet rSet) throws SQLException {
+    private FuncaoProLog createFuncaoProLog(ResultSet rSet) throws SQLException {
         FuncaoProLog funcao = new FuncaoProLog();
         funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
         funcao.setDescricao(rSet.getString("FUNCAO"));
@@ -869,5 +846,30 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         } finally {
         }
         return false;
+    }
+
+    @Override
+    public Long insertFuncao(Funcao funcao, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("INSERT INTO funcao(nome, cod_empresa) VALUES " +
+                    "(?,(SELECT cod_empresa FROM unidade WHERE codigo = ?)) RETURNING CODIGO");
+            stmt.setString(1, funcao.getNome());
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if(rSet.next()){
+                return rSet.getLong("CODIGO");
+            }
+        }catch (SQLException e){
+            conn.rollback();
+            throw e;
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
     }
 }
