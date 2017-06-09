@@ -425,7 +425,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         List<Modelo> modelos = new ArrayList<>();
         try{
-            stmt = conn.prepareStatement("SELECT CODIGO AS COD_MODELO, NOME FROM MODELO_PNEU WHERE COD_EMPRESA = ? " +
+            stmt = conn.prepareStatement("SELECT * FROM MODELO_PNEU WHERE COD_EMPRESA = ? " +
                     "AND COD_MARCA = ? ORDER BY NOME ASC");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codMarcaPneu);
@@ -440,9 +440,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     private Modelo createModeloPneu(ResultSet rSet) throws SQLException {
-            Modelo modelo = new Modelo();
-            modelo.setCodigo(rSet.getLong("COD_MODELO"));
+            ModeloPneu modelo = new ModeloPneu();
+            modelo.setCodigo(rSet.getLong("CODIGO"));
             modelo.setNome(rSet.getString("NOME"));
+            modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
             return modelo;
     }
 
