@@ -1,14 +1,28 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * Created by jean on 20/06/16.
  */
 public class Modelo {
 
+    @Nullable
+    private String tipo;
     private long codigo;
     private String nome;
 
     public Modelo() {
+
+    }
+
+    @Nullable
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public long getCodigo() {
