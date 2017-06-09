@@ -18,6 +18,7 @@ Change Log
     * Renomeadas as colunas dos sulcos das tabelas pneu, aferição valores e movimentação
     * Adicionada coluna para o quarto sulco na tabela pneu, aferição valores e movimentação
 * Altera classe Pneu e classe Banda, tornando distinto o modelo de cada um deles, além de adicionar a quantidade de sulcos
+* Cria método para inserir um novo cargo (função)
 
 #### Refactor
 * Refatorado o calculo do pré contracheque, agora o calculo do bônus é dinâmico de acordo com o indicador informado, 
@@ -26,7 +27,7 @@ a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adapt
     * Removidas as colunas cod_import_he / cod_import_dsr / cod_import_vales
     * Adicionada coluna recarga_parte_premio
     * Adicionada constraint com Unidade
-    * Renomeadas as contraints
+    * Renomeadas as constraints
     * Criada a tabela pre_contracheque_calculo_premio para armazenar os códigos dos itens que compõe o calculo do prêmio
     
 
