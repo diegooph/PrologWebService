@@ -11,10 +11,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Calibragem;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Inspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.BuildConfig;
@@ -74,11 +77,17 @@ public final class GsonUtils {
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class);
 
+		RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
+				.of(Modelo.class, "tipo")
+				.registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
+				.registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA);
+
 		builder.registerTypeAdapterFactory(adapterServico);
 		builder.registerTypeAdapterFactory(adapterAlternativa);
 		builder.registerTypeAdapterFactory(adapterResponse);
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
+		builder.registerTypeAdapterFactory(adapterModelo);
 
 		sGson = builder.create();
 	}
