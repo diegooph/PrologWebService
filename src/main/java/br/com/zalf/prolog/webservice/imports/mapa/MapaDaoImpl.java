@@ -500,7 +500,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.entrVol = linha.get(22).replace(" ", "");
         Date hrSaida = toTimestamp(linha.get(23));
         Date hrEntrada = toTimestamp(linha.get(24));
-        if (hrSaida == null || hrEntrada == null) {
+        if (hrSaida == null && hrEntrada == null) {
             mapa.hrSai = new Date(0);
             mapa.hrEntr = new Date(0);
         } else if (hrSaida == null) {
