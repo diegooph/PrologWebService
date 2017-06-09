@@ -161,4 +161,32 @@ public interface VeiculoDao {
 	 * @throws SQLException
 	 */
 	boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
+
+	/**
+	 * atualiza um tipo de veículo
+	 * @param tipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException;
+
+	/**
+	 * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+	 * @param codTipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
+
+	/**
+	 * busca um tipo de veículo
+	 * @param codTipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	TipoVeiculo getTipoVeiculo (Long codTipo, Long codUnidade) throws SQLException;
+
 }

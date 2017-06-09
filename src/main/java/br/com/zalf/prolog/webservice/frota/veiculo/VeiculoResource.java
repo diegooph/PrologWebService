@@ -174,4 +174,33 @@ public class VeiculoResource {
     public Veiculo getVeiculoByPlacaSemPneus(@PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(placa, false);
     }
+
+    @PUT
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
+        if(service.updateTipoVeiculo(tipo, codUnidade)){
+            return Response.Ok("Tipo alterado com sucesso");
+        }else{
+            return Response.Error("Erro ao alterar o tipo");
+        }
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
+        if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
+            return Response.Ok("Tipo deletado com sucesso");
+        } else {
+            return Response.Error("Erro ao deletar o tipo");
+        }
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
+        return service.getTipoVeiculo(codTipo, codUnidade);
+    }
 }

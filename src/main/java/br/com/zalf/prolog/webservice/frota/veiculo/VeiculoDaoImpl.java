@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
 
+import javax.ws.rs.DELETE;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -224,6 +225,60 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             closeConnection(conn, stmt, null);
         }
         return true;
+    }
+
+    @Override
+    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
+            stmt.setLong(1, codTipo);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                TipoVeiculo tipo = new TipoVeiculo();
+                tipo.setCodigo(rSet.getLong("CODIGO"));
+                tipo.setNome(rSet.getString("NOME"));
+                return tipo;
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE veiculo_tipo SET nome = ? WHERE codigo = ? AND cod_unidade = ?;");
+            stmt.setString(1, tipo.getNome());
+            stmt.setLong(2, tipo.getCodigo());
+            stmt.setLong(3, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @DELETE
+    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM veiculo_tipo WHERE codigo = ? AND cod_unidade = ?");
+            stmt.setLong(1, codTipo);
+            stmt.setLong(2, codUnidade);
+            return stmt.executeUpdate() > 0;
+        }finally {
+            closeConnection(conn, stmt, null);
+        }
     }
 
     @Override
