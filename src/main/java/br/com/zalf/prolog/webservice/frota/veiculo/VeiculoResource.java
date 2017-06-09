@@ -100,6 +100,13 @@ public class VeiculoResource {
         return service.getTipoVeiculosByUnidade(codUnidade);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcaModelos/{codEmpresa}")
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    }
+
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
@@ -112,10 +119,32 @@ public class VeiculoResource {
     }
 
     @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.VISUALIZAR})
+    @Path("/modelos/{codUnidade}/{codModelo}")
+    public Modelo getModeloVeiculo(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codModelo) {
+        return service.getModeloVeiculo(codUnidade, codModelo);
+    }
+
+    @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/marcaModelos/{codEmpresa}")
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    @Path("/modelos/{codUnidade}/{codMarca}/{codModelo}")
+    public Response updateModelo(Modelo modelo, @PathParam("codUnidade") Long codUnidade, @PathParam("codMarca") Long codMarca) {
+        if(service.updateModelo(modelo, codUnidade, codMarca)){
+            return Response.Ok("Modelo alterado com sucesso");
+        }else{
+            return Response.Error("Erro ao atualizar o modelo");
+        }
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/modelos/{codUnidade}/{codModelo}")
+    public Response deleteModelo(@PathParam("codModelo") Long codModelo, @PathParam("codUnidade") Long codUnidade) {
+        if(service.deleteModelo(codModelo, codUnidade)){
+            return Response.Ok("Modelo deletado com sucesso");
+        }else{
+            return Response.Error("Erro ao deletar o modelo");
+        }
     }
 
     @GET

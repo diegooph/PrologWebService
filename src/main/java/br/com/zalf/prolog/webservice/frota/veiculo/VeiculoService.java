@@ -137,4 +137,31 @@ public class VeiculoService {
             return null;
         }
     }
+
+    public Modelo getModeloVeiculo(Long codUnidade, Long codModelo) {
+        try {
+            return dao.getModeloVeiculo(codUnidade, codModelo);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) {
+        try {
+            return dao.updateModelo(modelo, codUnidade, codMarca);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteModelo(Long codModelo, Long codUnidade) {
+        try {
+            return dao.deleteModelo(codModelo, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

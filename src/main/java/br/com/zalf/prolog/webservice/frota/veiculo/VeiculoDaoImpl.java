@@ -353,6 +353,64 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
+    public Modelo getModeloVeiculo(Long codUnidade, Long codModelo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM modelo_veiculo WHERE codigo = ? AND cod_empresa  = " +
+                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if(rSet.next()){
+                Modelo modelo = new Modelo();
+                modelo.setCodigo(rSet.getLong("CODIGO"));
+                modelo.setNome(rSet.getString("NOME"));
+                return modelo;
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE modelo_veiculo SET nome = ?, cod_marca = ? WHERE codigo = ? and cod_empresa = " +
+                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setString(1, modelo.getNome());
+            stmt.setLong(2, codMarca);
+            stmt.setLong(3, modelo.getCodigo());
+            stmt.setLong(4, codUnidade);
+            return stmt.executeUpdate() > 0;
+        }finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM modelo_veiculo WHERE codigo = ? and cod_empresa = " +
+                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            return stmt.executeUpdate() > 0;
+        }finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
     public int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;

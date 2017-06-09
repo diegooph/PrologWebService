@@ -134,4 +134,31 @@ public interface VeiculoDao {
 	List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
 
     Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
+
+	/**
+	 * busca um modelo de veículo a partir de sua chave
+	 * @param codUnidade
+	 * @param codModelo
+	 * @return
+	 * @throws SQLException
+	 */
+	Modelo getModeloVeiculo(Long codUnidade, Long codModelo) throws SQLException;
+
+	/**
+	 * Atualiza nome de um modelo de veículo
+	 * @param modelo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) throws SQLException;
+
+	/**
+	 * deleta um modelo de veiculo do banco, só funciona quando o modelo não está vínculado a nenhum veículo
+	 * @param codModelo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
 }
