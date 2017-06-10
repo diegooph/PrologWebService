@@ -9,7 +9,7 @@ import com.sun.istack.internal.Nullable;
 public class Modelo {
 
     @Nullable
-    @Expose(serialize = false)
+    @Expose(serialize = false, deserialize = false)
     private String tipo;
     private long codigo;
     private String nome;
