@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
+import com.google.gson.annotations.Expose;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -8,6 +9,7 @@ import com.sun.istack.internal.Nullable;
 public class Modelo {
 
     @Nullable
+    @Expose(serialize = false)
     private String tipo;
     private long codigo;
     private String nome;
