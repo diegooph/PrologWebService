@@ -376,8 +376,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return marcas;
     }
 
-    private Modelo createModelo(ResultSet rSet) throws SQLException {
-        Modelo modelo = new Modelo();
+    private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
+        ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("MODELO"));
         return modelo;
@@ -598,7 +598,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         marca.setCodigo(rSet.getLong("COD_MARCA"));
         marca.setNome(rSet.getString("MARCA"));
         veiculo.setMarca(marca);
-        Modelo modelo = new Modelo();
+        ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("MODELO"));
         veiculo.setModelo(modelo);
