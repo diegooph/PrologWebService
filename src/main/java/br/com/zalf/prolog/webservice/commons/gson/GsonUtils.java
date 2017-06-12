@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.gson;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -41,6 +41,7 @@ public final class GsonUtils {
 				.serializeSpecialFloatingPointValues()
 				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.setExclusionStrategies(new AnnotationExclusionStrategy())
 				.enableComplexMapKeySerialization();
 
 		if (BuildConfig.DEBUG) {

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.gson;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
