@@ -14,7 +14,7 @@ public class Veiculo {
 
     private String placa;
     private Marca marca;
-    private ModeloVeiculo modelo;
+    private Modelo modelo;
     private TipoVeiculo tipo;
 
     @Deprecated
@@ -36,11 +36,11 @@ public class Veiculo {
         this.marca = marca;
     }
 
-    public ModeloVeiculo getModelo() {
+    public Modelo getModelo() {
         return modelo;
     }
 
-    public void setModelo(ModeloVeiculo modelo) {
+    public void setModelo(Modelo modelo) {
         this.modelo = modelo;
     }
 

@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
-import com.sun.istack.internal.Nullable;
+import com.sun.istack.internal.NotNull;
 
 /**
  * Created by jean on 20/06/16.
  */
 public class Modelo {
-    @Nullable
+    @NotNull
     @Exclude
     private String tipo;
     private long codigo;
@@ -44,8 +44,7 @@ public class Modelo {
     @Override
     public String toString() {
         return "Modelo{" +
-                "tipo='" + tipo + '\'' +
-                ", codigo=" + codigo +
+                "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
                 '}';
     }
