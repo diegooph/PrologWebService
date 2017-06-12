@@ -15,7 +15,6 @@ public class Modelo {
     private String nome;
 
     public Modelo() {
-
     }
 
     @Nullable

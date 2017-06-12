@@ -18,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Inspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.BuildConfig;
@@ -80,7 +81,8 @@ public final class GsonUtils {
 		RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
 				.of(Modelo.class, "tipo")
 				.registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
-				.registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA);
+				.registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA)
+				.registerSubtype(ModeloVeiculo.class, ModeloVeiculo.TIPO_MODELO_VEICULO);
 
 		builder.registerTypeAdapterFactory(adapterServico);
 		builder.registerTypeAdapterFactory(adapterAlternativa);
