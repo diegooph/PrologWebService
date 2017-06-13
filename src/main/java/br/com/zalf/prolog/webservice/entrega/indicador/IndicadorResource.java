@@ -32,6 +32,13 @@ public class IndicadorResource {
         return service.getAcumuladoIndicadoresIndividual(dataInicial, dataFinal, cpf);
     }
 
+    /**
+     * Retorna os indicadores respeitando o período da produtividade
+     * @param ano ano da competência a ser consultada
+     * @param mes mês final da competência
+     * @param cpf cpf do colaborador
+     * @return
+     */
     @GET
     @Site
     @Path("/acumulados/produtividades/{cpf}/{ano}/{mes}")
