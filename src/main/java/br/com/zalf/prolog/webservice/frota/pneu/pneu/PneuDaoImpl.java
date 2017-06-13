@@ -132,9 +132,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "VALUES (?,?,?,?,?) ");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, pneu.getCodigo());
-            stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
+            if(pneu.getVidaAtual() == 1){
+                stmt.setNull(3, Types.BIGINT);
+                stmt.setBigDecimal(5, pneu.getValor());
+            }else{
+                stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
+                stmt.setBigDecimal(5, pneu.getBanda().getValor());
+            }
             stmt.setInt(4, pneu.getVidaAtual());
-            stmt.setBigDecimal(5, pneu.getBanda().getValor());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao cadastrar a mudança de vida");
             }
