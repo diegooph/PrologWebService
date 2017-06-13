@@ -1,29 +1,20 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
-import com.google.gson.annotations.Expose;
-import com.sun.istack.internal.Nullable;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import com.sun.istack.internal.NotNull;
 
 /**
  * Created by jean on 20/06/16.
  */
 public class Modelo {
-
-    @Nullable
-    @Expose(serialize = false, deserialize = false)
+    @NotNull
+    @Exclude
     private String tipo;
     private long codigo;
     private String nome;
 
     public Modelo() {
-    }
 
-    @Nullable
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public long getCodigo() {
@@ -40,6 +31,14 @@ public class Modelo {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override

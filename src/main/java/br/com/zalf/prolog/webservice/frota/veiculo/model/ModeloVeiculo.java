@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 /**
- * Created by Zart on 12/06/2017.
+ * Created by luiz on 12/06/17.
  */
-public class ModeloVeiculo extends Modelo {
-
+public final class ModeloVeiculo extends Modelo {
     public static final String TIPO_MODELO_VEICULO = "MODELO_VEICULO";
 
     public ModeloVeiculo() {

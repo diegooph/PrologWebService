@@ -36,7 +36,7 @@ public class Veiculo {
         this.marca = marca;
     }
 
-    public ModeloVeiculo getModelo() {
+    public Modelo getModelo() {
         return modelo;
     }
 
