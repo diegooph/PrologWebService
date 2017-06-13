@@ -166,7 +166,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
         ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
         List<IndicadorAcumulado> indicadores =
-        indicadorDao.getAcumuladoIndicadoresIndividual(produtividadeDao.getDataInicial(ano, mes).getTime(),
+        indicadorDao.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
                 DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
 
         for(IndicadorAcumulado indicadorAcumulado : indicadores) {
