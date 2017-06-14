@@ -11,10 +11,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +33,24 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
 					+ "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
 					+ "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
-			setStatementItems(stmt, colaborador);
+			stmt.setLong(1, colaborador.getCpf());
+			if(colaborador.getMatriculaAmbev() == 0){
+				stmt.setNull(2, Types.INTEGER);
+			}else{
+				stmt.setInt(2, colaborador.getMatriculaAmbev());
+			}
+			stmt.setInt(3, colaborador.getMatriculaTrans());
+			stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
+			stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
+			stmt.setNull(6, Types.DATE);
+			stmt.setBoolean(7, colaborador.isAtivo());
+			stmt.setString(8, colaborador.getNome());
+			stmt.setLong(9, colaborador.getSetor().getCodigo());
+			stmt.setLong(10, colaborador.getFuncao().getCodigo());
+			stmt.setLong(11, colaborador.getCodUnidade());
+			stmt.setLong(12, colaborador.getCodPermissao());
+			stmt.setLong(13, colaborador.getCodEmpresa());
+			stmt.setLong(14, colaborador.getEquipe().getCodigo());
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir o colaborador");
@@ -165,19 +179,38 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-					+ "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
-					+ "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
-					+ "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-					+ "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
-					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
-					+ " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
-					+ " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
-					+ " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA"
-					+ " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
-					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-					+ "WHERE C.COD_UNIDADE = ? ORDER BY C.NOME; ");
+			stmt = conn.prepareStatement("SELECT\n" +
+					"  C.CPF,\n" +
+					"  C.MATRICULA_AMBEV,\n" +
+					"  C.MATRICULA_TRANS,\n" +
+					"  C.DATA_NASCIMENTO,\n" +
+					"  C.DATA_ADMISSAO,\n" +
+					"  C.DATA_DEMISSAO,\n" +
+					"  C.STATUS_ATIVO,\n" +
+					"  initcap(C.NOME)          AS NOME_COLABORADOR,\n" +
+					"  EM.NOME         AS NOME_EMPRESA,\n" +
+					"  EM.CODIGO       AS COD_EMPRESA,\n" +
+					"  EM.LOGO_THUMBNAIL_URL,\n" +
+					"  R.REGIAO        AS NOME_REGIONAL,\n" +
+					"  R.CODIGO        AS COD_REGIONAL,\n" +
+					"  U.NOME          AS NOME_UNIDADE,\n" +
+					"  U.CODIGO        AS COD_UNIDADE,\n" +
+					"  EQ.NOME         AS NOME_EQUIPE,\n" +
+					"  EQ.CODIGO       AS COD_EQUIPE,\n" +
+					"  S.NOME          AS NOME_SETOR,\n" +
+					"  S.CODIGO        AS COD_SETOR,\n" +
+					"  C.COD_FUNCAO,\n" +
+					"  F.NOME          AS NOME_FUNCAO,\n" +
+					"  C.COD_PERMISSAO AS PERMISSAO\n" +
+					"FROM COLABORADOR C\n" +
+					"  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO\n" +
+					"  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE\n" +
+					"  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE\n" +
+					"  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA\n" +
+					"  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL\n" +
+					"  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
+					"WHERE C.COD_UNIDADE = ?\n" +
+					"ORDER BY 8");
 				stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
@@ -311,23 +344,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		c.setCodPermissao(rSet.getLong("PERMISSAO"));
 		c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
 		return c;
-	}
-
-	private void setStatementItems(PreparedStatement stmt, Colaborador c) throws SQLException {
-		stmt.setLong(1, c.getCpf());
-		stmt.setInt(2, c.getMatriculaAmbev());
-		stmt.setInt(3, c.getMatriculaTrans());
-		stmt.setDate(4, DateUtils.toSqlDate(c.getDataNascimento()));
-		stmt.setDate(5, DateUtils.toSqlDate(c.getDataAdmissao()));
-		stmt.setDate(6, DateUtils.toSqlDate(c.getDataDemissao()));
-		stmt.setBoolean(7, c.isAtivo());
-		stmt.setString(8, c.getNome());
-		stmt.setLong(9, c.getSetor().getCodigo());
-		stmt.setLong(10, c.getFuncao().getCodigo());
-		stmt.setLong(11, c.getCodUnidade());
-		stmt.setLong(12, c.getCodPermissao());
-		stmt.setLong(13, c.getCodEmpresa());
-		stmt.setLong(14, c.getEquipe().getCodigo());
 	}
 
 	private boolean verificaSeFazRelato(List<Pilar> pilares) {
