@@ -401,10 +401,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT MA.NOME AS NOME, MA.CODIGO AS COD_MARCA "
-                    + "FROM MODELO_PNEU MP JOIN MARCA_PNEU MA ON MA.CODIGO = MP.COD_MARCA "
-                    + "WHERE MP.COD_EMPRESA = ? "
-                    + "ORDER BY MA.NOME ASC");
+            stmt = conn.prepareStatement("SELECT DISTINCT\n" +
+                    "  MA.NOME   AS NOME,\n" +
+                    "  MA.CODIGO AS COD_MARCA\n" +
+                    "FROM MARCA_PNEU MA LEFT OUTER JOIN MODELO_PNEU MP ON MA.CODIGO = MP.COD_MARCA AND MP.COD_EMPRESA = ?\n" +
+                    "ORDER BY MA.NOME ASC");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while(rSet.next()) {
