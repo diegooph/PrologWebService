@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -100,7 +101,7 @@ public class PneuService {
         }
     }
 
-    public AbstractResponse insertModeloBanda(Modelo modelo, Long codMarcaBanda, Long codEmpresa) {
+    public AbstractResponse insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) {
         try {
             return ResponseWithCod.Ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda, codEmpresa));
         } catch (SQLException e) {
