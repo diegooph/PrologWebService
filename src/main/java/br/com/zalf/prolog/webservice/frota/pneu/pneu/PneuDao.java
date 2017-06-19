@@ -202,4 +202,13 @@ public interface PneuDao {
      * @throws SQLException
      */
     boolean updateModeloBanda(Modelo modelo) throws SQLException;
+
+    /**
+     * Busca um pneu através de seu código
+     * @param codPneu
+     * @param codUnidade
+     * @return
+     * @throws SQLException
+     */
+    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
 }

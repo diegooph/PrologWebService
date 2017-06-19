@@ -126,4 +126,13 @@ public class PneuService {
             return false;
         }
     }
+
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
+        try {
+            return dao.getPneuByCod(codPneu, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

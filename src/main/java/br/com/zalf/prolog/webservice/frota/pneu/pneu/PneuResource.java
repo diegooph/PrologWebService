@@ -130,6 +130,13 @@ public class PneuResource {
             return Response.Error("Erro ao atualizar o modelo de banda");
         }
     }
+
+    @GET
+    @Secured
+    @Path("/unidades/{codUnidade}/{codPneu}")
+    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
+        return service.getPneuByCod(codPneu, codUnidade);
+    }
 }
 
 

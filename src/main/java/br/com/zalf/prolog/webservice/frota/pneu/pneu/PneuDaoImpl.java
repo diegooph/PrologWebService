@@ -32,21 +32,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "WHERE vp.placa = ?\n" +
             "ORDER BY po.ordem_exibicao asc";
 
-    private static final String BUSCA_PNEUS_BY_COD = "SELECT substring(VP.posicao::text FROM 1 for 3) as POSICAO, "
-            + "MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.VIDA_TOTAL, "
-            + "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, "
-            + "PD.ALTURA, PD.LARGURA, PD.ARO, PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, "
-            + "P.altura_sulcos_novos,P.altura_sulco_CENTRAL_INTERNO, P.altura_sulco_CENTRAL_EXTERNO, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-            + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n"
-            + "FROM VEICULO_PNEU VP JOIN PNEU P ON P.CODIGO = VP.COD_PNEU "
-            + "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
-            + "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
-            + "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO "
-            + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
-            + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
-            + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
-            + "WHERE P.CODIGO = ? ";
-
     private static final String BUSCA_PNEUS_BY_COD_UNIDADE = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, "
             + "MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, PD.ALTURA, PD.LARGURA, P.VIDA_ATUAL, P.VIDA_TOTAL, PD.ARO,PD.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA,P.altura_sulcos_novos, " +
             "P.altura_sulco_CENTRAL_interno, P.altura_sulco_central_externo, P.altura_sulco_EXTERNO, P.altura_sulco_interno, p.status,	"
@@ -606,27 +591,56 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return true;
     }
 
-    //TODO refatorar! apenas o codPneu não é suficiente, precisamos inserir o codUnidade na busca
-    public Pneu getPneuByCod(long codPneu) throws SQLException {
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Pneu pneu = new Pneu();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_PNEUS_BY_COD);
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "  MP.NOME                                    AS MARCA,\n" +
+                    "  MP.CODIGO                                  AS COD_MARCA,\n" +
+                    "  P.CODIGO,\n" +
+                    "  P.PRESSAO_ATUAL,\n" +
+                    "  P.VIDA_ATUAL,\n" +
+                    "  P.VIDA_TOTAL,\n" +
+                    "  MOP.NOME                                   AS MODELO,\n" +
+                    "  MOP.CODIGO                                 AS COD_MODELO,\n" +
+                    "  MOP.QT_SULCOS                              AS QT_SULCOS_MODELO,\n" +
+                    "  PD.ALTURA,\n" +
+                    "  PD.LARGURA,\n" +
+                    "  PD.ARO,\n" +
+                    "  PD.CODIGO                                  AS COD_DIMENSAO,\n" +
+                    "  P.PRESSAO_RECOMENDADA,\n" +
+                    "  P.altura_sulcos_novos,\n" +
+                    "  P.altura_sulco_CENTRAL_INTERNO,\n" +
+                    "  P.altura_sulco_CENTRAL_EXTERNO,\n" +
+                    "  P.altura_sulco_INTERNO,\n" +
+                    "  P.altura_sulco_EXTERNO,\n" +
+                    "  p.status,\n" +
+                    "  MB.codigo                                  AS COD_MODELO_BANDA,\n" +
+                    "  MB.nome                                    AS NOME_MODELO_BANDA,\n" +
+                    "  MB.QT_SULCOS                               AS QT_SULCOS_BANDA,\n" +
+                    "  MAB.codigo                                 AS COD_MARCA_BANDA,\n" +
+                    "  MAB.nome                                   AS NOME_MARCA_BANDA\n" +
+                    "FROM PNEU P\n" +
+                    "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO\n" +
+                    "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA\n" +
+                    "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO\n" +
+                    "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n" +
+                    "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n" +
+                    "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n" +
+                    "WHERE P.CODIGO = ? AND P.cod_unidade = ?");
             stmt.setLong(1, codPneu);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                pneu = createPneu(rSet);
-                pneu.setPosicao(rSet.getInt("POSICAO"));
-            } else {
-                throw new SQLException("Não foi possível buscar o pneu solicitado");
+                return createPneu(rSet);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return pneu;
+        return null;
     }
 
     public List<Marca> getMarcaModeloBanda(Long codEmpresa) throws SQLException {
