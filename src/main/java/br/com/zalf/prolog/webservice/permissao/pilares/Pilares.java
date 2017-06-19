@@ -193,13 +193,15 @@ public final class Pilares {
         public final class Indicadores {
             private Indicadores() {}
 
-            public static final int VISUALIZAR = 40;
+            public static final int INDICADORES = 40;
+
         }
 
         public final class Relatorios {
             private Relatorios() {}
 
-            public static final int VISUALIZAR = 41;
+            public static final int INDICADORES = 41;
+            public static final int PRODUTIVIDADE = 48;
         }
 
         public final class Upload {

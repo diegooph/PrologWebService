@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Classe VeiculoService responsavel por comunicar-se com a interface DAO
@@ -115,10 +119,73 @@ public class VeiculoService {
         }
     }
 
+    public Set<DiagramaVeiculo> getDiagramasVeiculo() {
+        try {
+            return dao.getDiagramasVeiculos();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptySet();
+        }
+    }
+
     @Android
     public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) {
         try {
             return dao.getVeiculosByTipo(codUnidade, codTipo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Modelo getModeloVeiculo(Long codUnidade, Long codModelo) {
+        try {
+            return dao.getModeloVeiculo(codUnidade, codModelo);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) {
+        try {
+            return dao.updateModelo(modelo, codUnidade, codMarca);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteModelo(Long codModelo, Long codUnidade) {
+        try {
+            return dao.deleteModelo(codModelo, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) {
+        try {
+            return dao.updateTipoVeiculo(tipo, codUnidade);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) {
+        try {
+            return dao.deleteTipoVeiculo(codTipo, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) {
+        try {
+            return dao.getTipoVeiculo(codTipo, codUnidade);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

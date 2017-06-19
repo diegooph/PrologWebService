@@ -92,4 +92,13 @@ public class TreinamentoService {
             return false;
         }
     }
+
+    public boolean deleteTreinamento(Long codTreinamento) {
+        try {
+            return dao.deleteTreinamento(codTreinamento);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -99,4 +99,13 @@ public class DateUtils {
 
 		return new java.sql.Date(last.getTimeInMillis());
 	}
+
+	public static java.sql.Date getDataInicialPeriodoProdutividade(int ano, int mes){
+		if(mes == 1){
+			return DateUtils.toSqlDate(LocalDate.of(ano-1, 12, 21));
+		}else{
+			return DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21));
+		}
+
+	}
 }

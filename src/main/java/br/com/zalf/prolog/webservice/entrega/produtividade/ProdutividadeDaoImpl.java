@@ -29,7 +29,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT * FROM VIEW_PRODUTIVIDADE_EXTRATO \n" +
 					"WHERE data between ? and ? and cpf = ? ORDER BY data asc");
-			stmt.setDate(1, getDataInicial(ano, mes));
+			stmt.setDate(1, DateUtils.getDataInicialPeriodoProdutividade(ano, mes));
 			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
 			stmt.setLong(3, cpf);
 			L.d(TAG, stmt.toString());
@@ -56,15 +56,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		return itens;
 	}
 
-	public java.sql.Date getDataInicial(int ano, int mes){
-		if(mes == 1){
-			return DateUtils.toSqlDate(LocalDate.of(ano-1, 12, 21));
-		}else{
-			return DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21));
-		}
-
-	}
-
 	private void insertMesAnoConsultaProdutividade(int ano, int mes, Connection conn, PreparedStatement stmt, Long cpf) throws SQLException{
 		try{
 			stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
@@ -88,6 +79,26 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
         }
         return total;
     }
+
+	public double getValorTotalRecargas(List<ItemProdutividade> itens){
+		double total = 0;
+		for(ItemProdutividade item : itens){
+			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+				total += item.getValor();
+			}
+		}
+		return total;
+	}
+
+	public int getQtRecargas(List<ItemProdutividade> itens){
+		int quantidade = 0;
+		for(ItemProdutividade item : itens){
+			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+				quantidade ++;
+			}
+		}
+		return quantidade;
+	}
 
 
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,

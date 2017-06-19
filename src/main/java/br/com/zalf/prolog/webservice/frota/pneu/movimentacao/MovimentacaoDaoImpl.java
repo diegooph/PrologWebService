@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Desti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.sql.*;
 import java.util.Date;
@@ -53,10 +55,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             // antes de fazer qualquer movimentação, remover todos os pneus que sairam do veículo
             removeOrigensVeiculo(movimentacao, conn);
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, \n " +
-                    "cod_pneu, sulco_interno, sulco_central, sulco_externo,  vida, observacao)\n " +
+                    "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo,  vida, observacao)\n " +
                     "VALUES (?,?,?,\n " +
                     "COALESCE ((select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
-                    "COALESCE ((select altura_sulco_central from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_central_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
+                    "COALESCE ((select altura_sulco_central_externo from pneu where codigo = ? and cod_unidade = ?),0),\n " +
                     "COALESCE ((select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),0),?,?) RETURNING codigo; ");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setLong(2, movimentacao.getUnidade().getCodigo());
@@ -68,8 +71,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 stmt.setLong(7, movimentacao.getUnidade().getCodigo());
                 stmt.setLong(8, mov.getPneu().getCodigo());
                 stmt.setLong(9, movimentacao.getUnidade().getCodigo());
-                stmt.setDouble(10, mov.getPneu().getVidaAtual());
-                stmt.setString(11, mov.getObservacao());
+                stmt.setLong(10, mov.getPneu().getCodigo());
+                stmt.setLong(11, movimentacao.getUnidade().getCodigo());
+                stmt.setDouble(12, mov.getPneu().getVidaAtual());
+                stmt.setString(13, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));
@@ -143,6 +148,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
+                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                veiculoDao.updateKmByPlaca(origemVeiculo.getVeiculo().getPlaca(), origemVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
                 stmt.setInt(9, origemVeiculo.getPosicaoOrigemPneu());
@@ -166,6 +173,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                veiculoDao.updateKmByPlaca(destinoVeiculo.getVeiculo().getPlaca(), destinoVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
                 stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());

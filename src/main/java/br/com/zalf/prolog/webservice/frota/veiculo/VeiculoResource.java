@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.Site;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Set;
 
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -97,6 +100,13 @@ public class VeiculoResource {
         return service.getTipoVeiculosByUnidade(codUnidade);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/marcaModelos/{codEmpresa}")
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    }
+
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
@@ -109,10 +119,32 @@ public class VeiculoResource {
     }
 
     @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.VISUALIZAR})
+    @Path("/modelos/{codUnidade}/{codModelo}")
+    public Modelo getModeloVeiculo(@PathParam("codUnidade") Long codUnidade, @PathParam("codModelo") Long codModelo) {
+        return service.getModeloVeiculo(codUnidade, codModelo);
+    }
+
+    @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/marcaModelos/{codEmpresa}")
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
-        return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    @Path("/modelos/{codUnidade}/{codMarca}/{codModelo}")
+    public Response updateModelo(Modelo modelo, @PathParam("codUnidade") Long codUnidade, @PathParam("codMarca") Long codMarca) {
+        if(service.updateModelo(modelo, codUnidade, codMarca)){
+            return Response.Ok("Modelo alterado com sucesso");
+        }else{
+            return Response.Error("Erro ao atualizar o modelo");
+        }
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/modelos/{codUnidade}/{codModelo}")
+    public Response deleteModelo(@PathParam("codModelo") Long codModelo, @PathParam("codUnidade") Long codUnidade) {
+        if(service.deleteModelo(codModelo, codUnidade)){
+            return Response.Ok("Modelo deletado com sucesso");
+        }else{
+            return Response.Error("Erro ao deletar o modelo");
+        }
     }
 
     @GET
@@ -120,6 +152,13 @@ public class VeiculoResource {
     @Path("/eixos")
     public List<Eixos> getEixos() {
         return service.getEixos();
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/diagramas")
+    public Set<DiagramaVeiculo> getDiagramasVeiculos() {
+        return service.getDiagramasVeiculo();
     }
 
     @GET
@@ -134,5 +173,34 @@ public class VeiculoResource {
     @Path("/sem-pneus/{placa}")
     public Veiculo getVeiculoByPlacaSemPneus(@PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(placa, false);
+    }
+
+    @PUT
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
+        if(service.updateTipoVeiculo(tipo, codUnidade)){
+            return Response.Ok("Tipo alterado com sucesso");
+        }else{
+            return Response.Error("Erro ao alterar o tipo");
+        }
+    }
+
+    @DELETE
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
+        if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
+            return Response.Ok("Tipo deletado com sucesso");
+        } else {
+            return Response.Error("Erro ao deletar o tipo");
+        }
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/tipos/{codUnidade}/{codTipo}")
+    public TipoVeiculo getTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
+        return service.getTipoVeiculo(codTipo, codUnidade);
     }
 }

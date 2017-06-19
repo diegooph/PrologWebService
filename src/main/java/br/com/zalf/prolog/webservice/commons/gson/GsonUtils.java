@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.gson;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
@@ -11,13 +12,16 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Calibragem;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Inspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
-import br.com.zalf.prolog.webservice.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -37,6 +41,7 @@ public final class GsonUtils {
 				.serializeSpecialFloatingPointValues()
 				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.setExclusionStrategies(new AnnotationExclusionStrategy())
 				.enableComplexMapKeySerialization();
 
 		if (BuildConfig.DEBUG) {
@@ -62,11 +67,20 @@ public final class GsonUtils {
 				.registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
 				.registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
 
+
+		RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
+				.of(Modelo.class, "tipo")
+				.registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
+				.registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA)
+				.registerSubtype(ModeloVeiculo.class, ModeloVeiculo.TIPO_MODELO_VEICULO);
+
 		RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
 				.of(Alternativa.class)
 				.registerSubtype(AlternativaEscolhaQuiz.class)
 				.registerSubtype(AlternativaOrdenamentoQuiz.class)
 				.registerSubtype(AlternativaChecklist.class)
+				/* Como Modelo não é abstrato e nós iremos instancia-lo, o mesmo foi adicionado como subtipo de si
+				* próprio. */
 				.registerSubtype(Alternativa.class);
 
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
@@ -79,6 +93,7 @@ public final class GsonUtils {
 		builder.registerTypeAdapterFactory(adapterResponse);
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
+		builder.registerTypeAdapterFactory(adapterModelo);
 
 		sGson = builder.create();
 	}

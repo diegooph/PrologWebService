@@ -1,8 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Contém os métodos para manipular os veículos
@@ -128,5 +132,61 @@ public interface VeiculoDao {
 	 * @throws SQLException se acontecer erro no banco
 	 */
 	List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
+
+    Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
+
+	/**
+	 * busca um modelo de veículo a partir de sua chave
+	 * @param codUnidade
+	 * @param codModelo
+	 * @return
+	 * @throws SQLException
+	 */
+	Modelo getModeloVeiculo(Long codUnidade, Long codModelo) throws SQLException;
+
+	/**
+	 * Atualiza nome de um modelo de veículo
+	 * @param modelo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) throws SQLException;
+
+	/**
+	 * deleta um modelo de veiculo do banco, só funciona quando o modelo não está vínculado a nenhum veículo
+	 * @param codModelo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
+
+	/**
+	 * atualiza um tipo de veículo
+	 * @param tipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean updateTipoVeiculo(TipoVeiculo tipo, Long codUnidade) throws SQLException;
+
+	/**
+	 * deleta um tipo de veículo, apenas se não tiver nenhuma placa vinculada
+	 * @param codTipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
+
+	/**
+	 * busca um tipo de veículo
+	 * @param codTipo
+	 * @param codUnidade
+	 * @return
+	 * @throws SQLException
+	 */
+	TipoVeiculo getTipoVeiculo (Long codTipo, Long codUnidade) throws SQLException;
 
 }

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
@@ -264,10 +264,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PneuDaoImpl pneuDao = new PneuDaoImpl();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, AV.ALTURA_SULCO_CENTRAL, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, \n" +
-                    "AV.PSI::INT AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO,\n" +
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, " +
+                    "AV.ALTURA_SULCO_CENTRAL_INTERNO, AV.ALTURA_SULCO_CENTRAL_EXTERNO, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, \n" +
+                    "AV.PSI::INT AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MO.QT_SULCOS AS QT_SULCOS_MODELO, \n" +
                     "DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL,\n" +
-                    "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
+                    "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.qt_sulcos as QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
                     "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO\n" +
                     "JOIN pneu_ordem po on av.posicao = po.posicao_prolog\n" +
                     "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE\n" +
@@ -309,19 +310,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PneuDao pneuDao = new PneuDaoImpl();
 
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
-                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL,ALTURA_SULCO_EXTERNO, " +
+                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setDouble(4, pneu.getPressaoAtual());
-            stmt.setDouble(5, pneu.getSulcoAtual().getCentral());
-            stmt.setDouble(6, pneu.getSulcoAtual().getExterno());
-            stmt.setDouble(7, pneu.getSulcoAtual().getInterno());
-            stmt.setInt(8, pneu.getPosicao());
-            stmt.setInt(9, pneu.getVidaAtual());
+            stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+            stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+            stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+            stmt.setInt(9, pneu.getPosicao());
+            stmt.setInt(10, pneu.getVidaAtual());
             //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
@@ -361,11 +363,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
         // Nessa parte verifica os sulcos, verificando primeiro se esta na ultima vida.
         if (pneu.getVidaAtual() == pneu.getVidasTotal()) {//verifica se o pneu esta na ultima vida, o que reduz o limite de mm
-            if (pneu.getSulcoAtual().getCentral() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
+            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
                 servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
             }
         } else {
-            if (pneu.getSulcoAtual().getCentral() <= restricao.getSulcoMinimoRecape()) {// sulco atual é inferior ao minimo para recapar
+            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoRecape()) {// sulco atual é inferior ao minimo para recapar
                 servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
             }
         }
@@ -393,7 +395,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND DATA_HORA_RESOLUCAO IS NULL "
                     + "GROUP BY TIPO_SERVICO "
                     + "ORDER BY TIPO_SERVICO");
-
             stmt.setLong(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();

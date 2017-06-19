@@ -2,8 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.frota.veiculo.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.Modelo;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -103,7 +104,7 @@ public class PneuResource {
     @POST
     @Secured
     @Path("/bandas/modelos/{codEmpresa}/{codMarcaBanda}")
-    public AbstractResponse insertModeloBanda(Modelo modelo, @PathParam("codMarcaBanda") Long codMarcaBanda,
+    public AbstractResponse insertModeloBanda(ModeloBanda modelo, @PathParam("codMarcaBanda") Long codMarcaBanda,
                                               @PathParam("codEmpresa") Long codEmpresa) {
         return service.insertModeloBanda(modelo, codMarcaBanda, codEmpresa);
     }

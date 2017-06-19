@@ -1,17 +1,20 @@
-package br.com.zalf.prolog.webservice.frota.veiculo;
+package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
-import java.util.List;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import com.sun.istack.internal.NotNull;
 
 /**
  * Created by jean on 20/06/16.
  */
-public class Marca {
-
+public class Modelo {
+    @NotNull
+    @Exclude
+    private String tipo;
     private long codigo;
     private String nome;
-    private List<Modelo> modelos;
 
-    public Marca() {
+    public Modelo() {
+
     }
 
     public long getCodigo() {
@@ -30,20 +33,19 @@ public class Marca {
         this.nome = nome;
     }
 
-    public List<Modelo> getModelos() {
-        return modelos;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setModelos(List<Modelo> modelos) {
-        this.modelos = modelos;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override
     public String toString() {
-        return "Marca{" +
+        return "Modelo{" +
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
-                ", modelos=" + modelos +
                 '}';
     }
 }

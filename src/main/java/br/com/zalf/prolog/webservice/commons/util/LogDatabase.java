@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

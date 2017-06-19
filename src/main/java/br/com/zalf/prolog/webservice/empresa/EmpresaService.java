@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.core.NoContentException;
@@ -21,18 +22,27 @@ public class EmpresaService {
 
     private EmpresaDao dao = new EmpresaDaoImpl();
 
-    public boolean insertEquipe(Long codUnidade, Equipe equipe) {
+    public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
         try {
             return dao.insertEquipe(codUnidade, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Response.Error("Erro ao inserir a equipe");
         }
     }
 
-    public boolean updateEquipe(Long codEquipe, Equipe equipe) {
+    public Equipe getEquipe(Long codUnidade, Long codEquipe) {
         try {
-            return dao.updateEquipe(codEquipe, equipe);
+            return dao.getEquipe(codUnidade, codEquipe);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateEquipe(Long codUnidade, Long codEquipe, Equipe equipe) {
+        try {
+            return dao.updateEquipe(codUnidade, codEquipe, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -45,6 +55,24 @@ public class EmpresaService {
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.Error("Erro ao inserir o setor");
+        }
+    }
+
+    public boolean updateSetor(Long codUnidade, Long codSetor, Setor setor) {
+        try {
+            return dao.updateSetor(codUnidade, codSetor, setor);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Setor getSetor(Long codUnidade, Long codSetor) {
+        try {
+            return dao.getSetor(codUnidade, codSetor);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -66,9 +94,9 @@ public class EmpresaService {
         }
     }
 
-    public Visao getVisaoCargo(Long codCargo, Long codUnidade) {
+    public Visao getVisaoCargo(Long codUnidade, Long codCargo) {
         try {
-            return dao.getVisaoCargo(codCargo, codUnidade);
+            return dao.getVisaoCargo(codUnidade, codCargo);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -132,15 +160,7 @@ public class EmpresaService {
         }
     }
 
-    @Deprecated
-    public AbstractResponse insertSetor(String nome, Long codUnidade) {
-        try {
-            return dao.insertSetor(nome, codUnidade);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.Error("Erro ao inserir o setor");
-        }
-    }
+
 
     @Deprecated
     public boolean createEquipe(Request<Equipe> request) {
@@ -159,6 +179,19 @@ public class EmpresaService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public AbstractResponse insertFuncao(Funcao funcao, Long codUnidade) {
+        try {
+            Long codFuncaoInserida = dao.insertFuncao(funcao, codUnidade);
+            if(codFuncaoInserida != null){
+                return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
+            }else{
+                return Response.Error("Erro ao inserir o cargo");
+            }
+        }catch (SQLException e) {
+            return Response.Error("Erro ao inserir o cargo");
         }
     }
 }

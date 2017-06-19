@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Site;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -15,7 +18,7 @@ import java.util.List;
 @Path("/indicadores")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Secured(permissions = Pilares.Entrega.Indicadores.VISUALIZAR)
+@Secured(permissions = Pilares.Entrega.Indicadores.INDICADORES)
 public class IndicadorResource {
 
     private IndicadorService service = new IndicadorService();
@@ -27,6 +30,23 @@ public class IndicadorResource {
                                                                       @QueryParam("dataFinal") Long dataFinal,
                                                                       @PathParam("cpf") Long cpf){
         return service.getAcumuladoIndicadoresIndividual(dataInicial, dataFinal, cpf);
+    }
+
+    /**
+     * Retorna os indicadores respeitando o período da produtividade
+     * @param ano ano da competência a ser consultada
+     * @param mes mês final da competência
+     * @param cpf cpf do colaborador
+     * @return
+     */
+    @GET
+    @Site
+    @Path("/acumulados/produtividades/{cpf}/{ano}/{mes}")
+    public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@PathParam("ano") int ano,
+                                                                      @PathParam("mes") int mes,
+                                                                      @PathParam("cpf") Long cpf){
+        return service.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
+                DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
     }
 
     @GET

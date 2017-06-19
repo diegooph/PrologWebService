@@ -1,6 +1,42 @@
 Change Log
 ==========
 
+<a name="v0.0.15"></a>
+## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (release date) - [Unreleased]
+
+#### Features
+* Cria um novo sistema de associar `diagramas` aos veículos
+    * Criada tabela veiculo_diagrama para armazenar os tipos de diagramas que o Prolog suporta
+    * Criada tabela veiculo_diagrama_eixos para detalhar cada tipo de diagrama
+    * Adicionada a coluna cod_diagrama na tabela veiculo_tipo, bem como a devida constraint
+    
+* Implementa `delete ` de um `treinamento` (resta deletar do S3 os arquivos)
+* Implementa tabela (pneu_ordem_nomenclatura_unidade) para armazenar e linkar as posições de pneus do Prolog com as devidas nomenclaturas utilizadas pelos clientes.
+* Agora pneus podem ter o quarto sulco
+    * Adição de coluna qt_sulcos na tabela modelo_pneu
+    * Adição de coluna qt_sulcos na tabela modelo_banda
+    * Renomeadas as colunas dos sulcos das tabelas pneu, aferição valores e movimentação
+    * Adicionada coluna para o quarto sulco na tabela pneu, aferição valores e movimentação
+* Altera classe Pneu e classe Banda, tornando distinto o modelo de cada um deles, além de adicionar a quantidade de sulcos
+* Cria método para inserir um novo cargo (função)
+
+#### Refactor
+* Refatorado o calculo do pré contracheque, agora o calculo do bônus é dinâmico de acordo com o indicador informado, 
+a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adaptações no BD:
+    * Renomeada a tabela pre_contracheque_premissas -> pre_contracheque_informacoes
+    * Removidas as colunas cod_import_he / cod_import_dsr / cod_import_vales
+    * Adicionada coluna recarga_parte_premio
+    * Adicionada constraint com Unidade
+    * Renomeadas as constraints
+    * Criada a tabela pre_contracheque_calculo_premio para armazenar os códigos dos itens que compõe o calculo do prêmio
+    
+
+#### Deprecated
+
+#### Bug Fixes
+* Corrige erro ao importar tabela mapa com linhas vazias no final do arquivo
+* Corrige falta de atualização do KM ao salvar uma movimentação 
+
 <a name="v0.0.14"></a>
 ## Version [v0.0.14](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.13-h2) (2017-05-17)
 
