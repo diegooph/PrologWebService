@@ -233,7 +233,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
+            stmt = conn.prepareStatement("UPDATE PRE_CONTRACHEQUE_ITENS SET DESCRICAO = ?, SUB_DESCRICAO = ?, VALOR = ?" +
                     " WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
             stmt.setString(1, item.getDescricao());
             stmt.setString(2, item.getSubDescricao());
@@ -259,7 +259,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND " +
+            stmt = conn.prepareStatement("DELETE FROM PRE_CONTRACHEQUE_ITENS WHERE ANO_REFERENCIA = ? AND MES_REFERENCIA = ? AND " +
                     " CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
             stmt.setInt(1, ano);
             stmt.setInt(2, mes);
@@ -279,7 +279,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     private boolean insertItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PRE_CONTRACHEQUE VALUES (?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO PRE_CONTRACHEQUE_ITENS VALUES (?,?,?,?,?,?,?,?)");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, item.getCpf());
             stmt.setInt(3, mes);
@@ -324,7 +324,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         List<ItemImportContracheque> itens = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque pc left join colaborador c ON\n" +
+            stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque_itens pc left join colaborador c ON\n" +
                     "\t pc.cpf_colaborador = c.cpf and pc.cod_unidade = c.cod_unidade\n" +
                     "WHERE pc.cod_unidade = ? \n" +
                     "AND pc.ano_referencia = ?\n" +
