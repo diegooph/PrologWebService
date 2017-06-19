@@ -3,15 +3,14 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus")
@@ -123,7 +122,7 @@ public class PneuResource {
     @PUT
     @Secured
     @Path("bandas/modelos")
-    public Response updateModeloBanda(Modelo modelo) throws SQLException {
+    public Response updateModeloBanda(Modelo modelo) {
         if (service.updateModeloBanda(modelo)) {
             return Response.Ok("Modelo de banda atualizado com sucesso");
         }else {
