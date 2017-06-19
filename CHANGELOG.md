@@ -8,6 +8,9 @@ Change Log
 
 #### Refactor
 
+* Troca a obrigatoriedade de 3 imagens no envio de um relato para apenas uma.
+    * Drop not null nas colunas url_foto_2 / 3
+
 #### Deprecated
 
 #### Bug Fixes
