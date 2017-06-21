@@ -434,6 +434,25 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return modelos;
     }
 
+    @Override
+    public Modelo getModeloPneu(Long codModelo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM MODELO_PNEU WHERE CODIGO = ? ");
+            stmt.setLong(1, codModelo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()){
+                return createModeloPneu(rSet);
+            }
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
     private Modelo createModeloPneu(ResultSet rSet) throws SQLException {
             ModeloPneu modelo = new ModeloPneu();
             modelo.setCodigo(rSet.getLong("CODIGO"));

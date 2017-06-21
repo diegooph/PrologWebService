@@ -70,6 +70,13 @@ public class PneuResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Path("/modelos/{codModelo}")
+    public Modelo getModeloPneu(@PathParam("codModelo") Long codModelo) {
+        return service.getModeloPneu(codModelo);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/dimensao")
     public List<Pneu.Dimensao> getDimensoes() {
         return service.getDimensoes();

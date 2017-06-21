@@ -135,4 +135,13 @@ public class PneuService {
             return null;
         }
     }
+
+    public Modelo getModeloPneu(Long codModelo) {
+        try {
+            return dao.getModeloPneu(codModelo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
