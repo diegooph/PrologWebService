@@ -62,7 +62,7 @@ public class ImportResource {
 			IOUtils.copy(fileInputStream, out);
 			IOUtils.closeQuietly(out);
 			MapaService mapaService = new MapaService();
-			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador.getUnidade().getCodigo());
+			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador.getCodUnidade());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Response.Error("Erro ao enviar o arquivo.");
@@ -140,7 +140,7 @@ public class ImportResource {
 			IOUtils.copy(fileInputStream, out);
 			IOUtils.closeQuietly(out);
 			TrackingService trackingService = new TrackingService();
-			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador.getUnidade().getCodigo());
+			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador.getCodUnidade());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Response.Error("Erro ao enviar o arquivo.");

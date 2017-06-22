@@ -16,7 +16,7 @@ public class MapaService {
     public Response insertOrUpdateMapa(String path, Long codUnidade) {
         try {
             if (dao.insertOrUpdateMapa(path, codUnidade)) {
-                return Response.Ok("Arquivo inserido com sucesso");
+                return Response.Ok("Arquivo do mapa inserido com sucesso");
             } else {
                 return Response.Error("Problema ao inserir o arquivo");
             }
