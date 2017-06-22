@@ -13,10 +13,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,7 +32,8 @@ public class ImportResource {
 	@Site
 	@Path("/mapa")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	public Response uploadMapa(
+	@Deprecated
+	public Response DEPRECATED_UPLOAD_MAPA(
 			@FormDataParam("file") InputStream fileInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("colaborador") FormDataBodyPart jsonPart) {
@@ -64,7 +62,43 @@ public class ImportResource {
 			IOUtils.copy(fileInputStream, out);
 			IOUtils.closeQuietly(out);
 			MapaService mapaService = new MapaService();
-			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador);
+			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador.getUnidade().getCodigo());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao enviar o arquivo.");
+		}
+	}
+
+	@POST
+	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
+	@Site
+	@Path("/mapas/{codUnidade}")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	public Response uploadMapa(
+			@FormDataParam("file") InputStream fileInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@PathParam("codUnidade") Long codUnidade) {
+		try {
+			// Salva o arquivo
+			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
+			// ser que substitua enquanto está ainda usando o arquivo
+			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
+			L.d(TAG, "fileName: " + fileName);
+			L.d(TAG, "CodUnidade: " + codUnidade);
+			// Pasta temporária da JVM
+			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
+			if (!tmpDir.exists()) {
+				// Cria a pasta mapas se não existe
+				tmpDir.mkdir();
+			}
+			// Cria o arquivo
+			File file = new File(tmpDir, fileName);
+			FileOutputStream out = new FileOutputStream(file);
+			IOUtils.copy(fileInputStream, out);
+			IOUtils.closeQuietly(out);
+			MapaService mapaService = new MapaService();
+			return mapaService.insertOrUpdateMapa(file.getPath(), codUnidade);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Response.Error("Erro ao enviar o arquivo.");
@@ -76,7 +110,8 @@ public class ImportResource {
 	@Site
 	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	public Response uploadTracking(
+	@Deprecated
+	public Response DEPRECATED_UPLOAD_TRACKING(
 			@FormDataParam("file") InputStream fileInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("colaborador") FormDataBodyPart jsonPart) {
@@ -105,10 +140,48 @@ public class ImportResource {
 			IOUtils.copy(fileInputStream, out);
 			IOUtils.closeQuietly(out);
 			TrackingService trackingService = new TrackingService();
-			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador);
+			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador.getUnidade().getCodigo());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Response.Error("Erro ao enviar o arquivo.");
 		}
 	}
+
+	@POST
+	@Path("/trackings/{codUnidade}")
+	@Site
+	@Secured(permissions = Pilares.Entrega.Upload.MAPA_TRACKING)
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	public Response uploadTracking(
+			@FormDataParam("file") InputStream fileInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@PathParam("codUnidade") Long codUnidade) {
+		try {
+			// Salva o arquivo
+			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
+			// ser que substitua enquanto está ainda usando o arquivo
+			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
+			L.d(TAG, "fileName: " + fileName);
+			L.d(TAG, "Colaborador");
+			L.d(TAG, "CodUnidade: " + codUnidade);
+			// Pasta temporária da JVM
+			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
+			if (!tmpDir.exists()) {
+				// Cria a pasta carros se não existe
+				tmpDir.mkdir();
+			}
+			// Cria o arquivo
+			File file = new File(tmpDir, fileName);
+			FileOutputStream out = new FileOutputStream(file);
+			IOUtils.copy(fileInputStream, out);
+			IOUtils.closeQuietly(out);
+			TrackingService trackingService = new TrackingService();
+			return trackingService.insertOrUpdateTracking(file.getPath(), codUnidade);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Response.Error("Erro ao enviar o arquivo.");
+		}
+	}
+
 }

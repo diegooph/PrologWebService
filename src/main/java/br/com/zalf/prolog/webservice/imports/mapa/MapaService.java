@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.imports.mapa;
 
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 
 import java.io.IOException;
@@ -14,9 +13,9 @@ public class MapaService {
 
     private MapaDao dao = new MapaDaoImpl();
 
-    public Response insertOrUpdateMapa(String path, Colaborador colaborador) {
+    public Response insertOrUpdateMapa(String path, Long codUnidade) {
         try {
-            if (dao.insertOrUpdateMapa(path, colaborador)) {
+            if (dao.insertOrUpdateMapa(path, codUnidade)) {
                 return Response.Ok("Arquivo inserido com sucesso");
             } else {
                 return Response.Error("Problema ao inserir o arquivo");

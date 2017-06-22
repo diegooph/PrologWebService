@@ -1,8 +1,7 @@
 package br.com.zalf.prolog.webservice.imports.tracking;
 
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -17,13 +16,14 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.imports.ImportUtils.*;
+import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
+import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
 
 public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 
 	private static final String TAG = TrackingDaoImpl.class.getSimpleName();
 
-	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException, ParseException {
+	public boolean insertOrUpdateTracking (String path, Long codUnidade)throws SQLException, IOException, ParseException {
 		Connection conn = null;
 		try{
 			conn = getConnection();
@@ -33,13 +33,13 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 			for (int i = 1; i < tabela.size(); i++) {
 				TrackingImport tracking = createTracking(tabela.get(i));
 				L.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
-					if (updateTracking(tracking, colaborador, conn)) {
+					if (updateTracking(tracking, codUnidade, conn)) {
 						// Linha já existe e será atualizada
 						L.d(TAG, "Update Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 					} else {
 						L.d(TAG, "Insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 						// Linha não existe e será inserida
-						insertTracking(tracking, colaborador, conn);
+						insertTracking(tracking, codUnidade, conn);
 				}
 			}
 		}finally {
@@ -48,7 +48,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 		return true;
 	}
 
-	private boolean insertTracking (TrackingImport tracking, Colaborador colaborador, Connection conn) throws SQLException{
+	private boolean insertTracking (TrackingImport tracking, Long codUnidade, Connection conn) throws SQLException{
 
 		PreparedStatement stmt = null;
 		try {
@@ -101,7 +101,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 			stmt.setString(41, tracking.aderenciaSequenciaEntrega);
 			stmt.setString(42, tracking.aderenciaJanelaEntrega);
 			stmt.setString(43, tracking.pdvLacrado);
-			stmt.setLong(44, colaborador.getCodUnidade());
+			stmt.setLong(44, codUnidade);
 			int count = stmt.executeUpdate();
 			if(count == 0){
 				throw new SQLException("Erro ao inserir a tabela");
@@ -113,7 +113,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 		return true;
 	}
 
-	private boolean updateTracking(TrackingImport tracking, Colaborador colaborador, Connection conn) throws SQLException{
+	private boolean updateTracking(TrackingImport tracking, Long codUnidade, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try {
 			stmt = conn.prepareStatement("UPDATE TRACKING "
@@ -208,7 +208,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 			stmt.setString(41, tracking.aderenciaSequenciaEntrega);
 			stmt.setString(42, tracking.aderenciaJanelaEntrega);
 			stmt.setString(43, tracking.pdvLacrado);
-			stmt.setLong(44, colaborador.getCodUnidade());
+			stmt.setLong(44, codUnidade);
 			stmt.setTimestamp(45, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
 			stmt.setInt(46, tracking.mapa);
 			stmt.setDate(47, DateUtils.toSqlDate(tracking.data));
