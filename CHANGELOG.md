@@ -15,6 +15,8 @@ Change Log
 
 #### Bug Fixes
 
+* Corrige calculo do indicador devolução PDV acumulado
+
 
 <a name="v0.0.15"></a>
 ## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (release date) - [Unreleased]
