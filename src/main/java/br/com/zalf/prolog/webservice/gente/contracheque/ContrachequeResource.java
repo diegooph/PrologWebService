@@ -105,11 +105,30 @@ public class ContrachequeResource {
     @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
     @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Deprecated
+    public Response DEPRECATED_DELETE_ITEM_CONTRACHEQUE(ItemImportContracheque item,
+                                                        @PathParam("ano") int ano,
+                                                        @PathParam("mes") int mes,
+                                                        @PathParam("codUnidade") Long codUnidade,
+                                                        @PathParam("cpf") Long cpf) {
+        if (service.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, item.getCodigo())) {
+            return Response.Ok("Item excluido com sucesso.");
+        } else {
+            return Response.Error("Erro ao excluir o item");
+        }
+    }
+
+    @DELETE
+    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
+    @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}/{codItem}")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response deleteItemImportContracheque(ItemImportContracheque item,
                                                  @PathParam("ano") int ano,
                                                  @PathParam("mes") int mes,
-                                                 @PathParam("codUnidade") Long codUnidade) {
-        if (service.deleteItemImportContracheque(item, ano, mes, codUnidade)) {
+                                                 @PathParam("codUnidade") Long codUnidade,
+                                                 @PathParam("cpf") Long cpf,
+                                                 @PathParam("codItem") String codItem) {
+        if (service.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, codItem)) {
             return Response.Ok("Item excluido com sucesso.");
         } else {
             return Response.Error("Erro ao excluir o item");
