@@ -180,4 +180,86 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
         stmt.setDate(3, dataFinal);
         return stmt;
     }
+
+    @NotNull
+    private PreparedStatement getEstratificacaoOs(Connection conn, Long codUnidade, String placa, Date dataInicial,
+                                                  Date dataFinal, String statusOs, String statusItem) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
+                "  cod_os                                                                    AS OS,\n" +
+                "  to_char(data_hora, 'DD/MM/YYYY HH24:MI')                                  AS \"ABERTURA OS\",\n" +
+                "  to_char(data_hora + (prazo || ' hour') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS \"DATA LIMITE CONSERTO\",\n" +
+                "  CASE WHEN status_os = 'A'\n" +
+                "    THEN 'ABERTA'\n" +
+                "  ELSE 'FECHADA' END                                                        AS \"STATUS OS\",\n" +
+                "  placa_veiculo                                                             AS \"PLACA\",\n" +
+                "  pergunta                                                                  AS \"PERGUNTA\",\n" +
+                "  alternativa                                                               AS \"ALTERNATIVA\",\n" +
+                "  prioridade                                                                AS \"PRIORIDADE\",\n" +
+                "  prazo                                                                     AS \"PRAZO EM HORAS\",\n" +
+                "  resposta                                                                  AS \"DESCRIÇÃO\",\n" +
+                "  CASE WHEN status_ITEM = 'P'\n" +
+                "    THEN 'PENDENTE'\n" +
+                "  ELSE 'RESOLVIDO' END                                                      AS \"STATUS ITEM\",\n" +
+                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH:MI')                           AS \"DATA CONSERTO\",\n" +
+                "  nome_mecanico                                                             AS \"MECÂNICO\",\n" +
+                "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\",\n" +
+                "  --   PASSAR PRA MINUTOS\n" +
+                "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\",\n" +
+                "  CASE WHEN data_hora_conserto IS NULL\n" +
+                "    THEN '-'\n" +
+                "  ELSE\n" +
+                "    CASE WHEN data_hora_conserto <= data_hora + (prazo || ' hour') :: INTERVAL\n" +
+                "      THEN 'SIM'\n" +
+                "    ELSE 'NÃO' END\n" +
+                "  END                                                                       AS \"CUMPRIU PRAZO\",\n" +
+                "  km                                                                        AS \"KM ABERTURA\",\n" +
+                "  km_fechamento                                                             AS \"KM FECHAMENTO\",\n" +
+                "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\"\n" +
+                "FROM estratificacao_os\n" +
+                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora :: DATE BETWEEN ? AND ?) AND\n" +
+                "      status_os LIKE ? AND\n" +
+                "      status_item LIKE ?\n" +
+                "ORDER BY OS, \"PRAZO EM HORAS\";");
+        stmt.setLong(1, codUnidade);
+        stmt.setString(2, placa);
+        stmt.setDate(3, dataInicial);
+        stmt.setDate(4, dataFinal);
+        stmt.setString(5, statusOs);
+        stmt.setString(6, statusItem);
+        return stmt;
+    }
+
+    @Override
+    public void getEstratificacaoOsCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                       @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+                                       @NotNull String statusItem) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoOs(conn, codUnidade, placa, dataInicial, dataFinal, statusOs, statusItem);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getEstratificacaoOsReport(@NotNull Long codUnidade, @NotNull String placa,
+                                            @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+                                            @NotNull String statusItem) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoOs(conn, codUnidade, placa, dataInicial, dataFinal, statusOs, statusItem);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 }
