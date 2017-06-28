@@ -1718,7 +1718,7 @@ CREATE VIEW estratificacao_os AS
     NULL :: unknown       AS url_imagem,
     cp.prioridade,
     c.placa_veiculo,
-    v.km,
+    c.km_veiculo as km,
     v.cod_tipo,
     cap.codigo            AS cod_alternativa,
     cap.alternativa,
