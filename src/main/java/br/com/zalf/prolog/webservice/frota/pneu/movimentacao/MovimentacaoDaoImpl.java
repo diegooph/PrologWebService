@@ -91,6 +91,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                         mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual()+1);
                         pneuDao.updateVida(conn, mov.getPneu(), movimentacao.getUnidade().getCodigo());
                         pneuDao.insertTrocaVidaPneu(mov.getPneu(), movimentacao.getUnidade().getCodigo(), conn);
+                        pneuDao.updateSulcos(mov.getPneu(), movimentacao.getUnidade().getCodigo());
                     }
                     atualizaStatusPneu(conn, mov, movimentacao.getUnidade().getCodigo());
                 }
