@@ -17,6 +17,6 @@ public interface TrackingDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o import
 	 */
-	public boolean insertOrUpdateTracking (String path, Colaborador colaborador)throws SQLException, IOException, ParseException;
+	public boolean insertOrUpdateTracking (String path, Long codUnidade)throws SQLException, IOException, ParseException;
 
 }

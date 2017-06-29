@@ -6,7 +6,7 @@ import com.sun.istack.internal.NotNull;
 /**
  * Created by jean on 20/06/16.
  */
-public class Modelo {
+public abstract class Modelo {
     @NotNull
     @Exclude
     private String tipo;

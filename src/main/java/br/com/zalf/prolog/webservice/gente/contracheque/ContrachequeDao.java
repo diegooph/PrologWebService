@@ -16,10 +16,10 @@ public interface ContrachequeDao {
                                                  int mes,
                                                  Long codUnidade) throws SQLException;
 
-    List<ItemImportContracheque> getItemImportContracheque (Long codUnidade,
-                                                            int ano,
-                                                            int mes,
-                                                            String cpf) throws SQLException;
+    List<ItemImportContracheque> getItemImportContracheque(Long codUnidade,
+                                                           int ano,
+                                                           int mes,
+                                                           String cpf) throws SQLException;
 
     boolean updateItemImportContracheque(ItemImportContracheque item,
                                          int ano,
@@ -31,5 +31,5 @@ public interface ContrachequeDao {
     boolean deleteItemImportContracheque(ItemImportContracheque item,
                                          int ano,
                                          int mes,
-                                         Long codUnidade) throws SQLException;
+                                         Long codUnidade, Long cpf, String codItem) throws SQLException;
 }

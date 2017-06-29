@@ -95,7 +95,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                             itens.add(itemRecargas);
                         }
                     }
-                //caso ele não receba premio, repassamos diretamente os itens
+                    //caso ele não receba premio, repassamos diretamente os itens
                 } else {
                     contracheque.setItens(itens);
                     return contracheque;
@@ -166,8 +166,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
         ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
         List<IndicadorAcumulado> indicadores =
-        indicadorDao.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
-                DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
+                indicadorDao.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
+                        DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
 
         for(IndicadorAcumulado indicadorAcumulado : indicadores) {
             if(indicadorAcumulado.getTipo().equals(indicador)){
@@ -254,7 +254,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     @Override
-    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException {
+    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade, Long cpf, String codItem) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -263,9 +263,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                     " CPF_COLABORADOR = ? AND COD_UNIDADE = ? AND CODIGO_ITEM = ?");
             stmt.setInt(1, ano);
             stmt.setInt(2, mes);
-            stmt.setLong(3, item.getCpf());
+            stmt.setLong(3, cpf);
             stmt.setLong(4, codUnidade);
-            stmt.setString(5, item.getCodigo());
+            stmt.setString(5, codItem);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;

@@ -26,7 +26,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"-- Dev Nf\n" +
 			"sum(m.qtnfcarregadas) nf_carregadas_total, sum(qtnfcarregadas - qtnfentregues) as nf_devolvidas_total,\n" +
 			"-- Dev Pdv\n" +
-			"sum(m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais) as pdv_carregados_total, sum(m.entregasnaorealizadas) as pdv_devolvidos_total,\n" +
+			"sum(m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais) as pdv_carregados_total, sum(m.entregasnaorealizadas + m.entregasparciais) as pdv_devolvidos_total,\n" +
 			"-- Dispersão Km\n" +
 			"sum(case when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad\n" +
 			"else 0 end) as km_planejado_total,\n" +

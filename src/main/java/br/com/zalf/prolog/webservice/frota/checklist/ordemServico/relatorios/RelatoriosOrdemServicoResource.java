@@ -65,4 +65,29 @@ public class RelatoriosOrdemServicoResource {
                                                   @QueryParam("dataFinal") long dataFinal) {
         return service.getProdutividadeMecanicosReport(codUnidade, dataInicial, dataFinal);
     }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/report")
+    public Report getEstratificacaoOsReport(@PathParam("codUnidade") Long codUnidade,
+                                            @PathParam("placa") String placa,
+                                            @QueryParam("dataInicial") Long dataInicial,
+                                            @QueryParam("dataFinal") Long dataFinal,
+                                            @PathParam("statusOs") String statusOs,
+                                            @PathParam("statusItem") String statusItem) {
+        return service.getEstratificacaoOsReport(codUnidade, placa, dataInicial, dataFinal, statusOs, statusItem);
+    }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/csv")
+    public StreamingOutput getEstratificacaoOsCsv(@PathParam("codUnidade") Long codUnidade,
+                                            @PathParam("placa") String placa,
+                                            @QueryParam("dataInicial") Long dataInicial,
+                                            @QueryParam("dataFinal") Long dataFinal,
+                                            @PathParam("statusOs") String statusOs,
+                                            @PathParam("statusItem") String statusItem) {
+        return outputStream -> service.getEstratificacaoOsCsv(outputStream, codUnidade, placa, dataInicial, dataFinal,
+                statusOs, statusItem);
+    }
+
+
 }

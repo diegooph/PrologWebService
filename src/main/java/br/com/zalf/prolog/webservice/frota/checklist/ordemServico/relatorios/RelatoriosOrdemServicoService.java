@@ -82,4 +82,27 @@ public class RelatoriosOrdemServicoService {
             return null;
         }
     }
+
+    @NotNull
+    public Report getEstratificacaoOsReport(@NotNull Long codUnidade, @NotNull String placa,
+                                            @NotNull Long dataInicial, @NotNull Long dataFinal, @NotNull String statusOs,
+                                            @NotNull String statusItem) {
+        try {
+            return dao.getEstratificacaoOsReport(codUnidade, placa, new Date(dataInicial), new Date(dataFinal), statusOs, statusItem);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getEstratificacaoOsCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                       @NotNull Long dataInicial, @NotNull Long dataFinal, @NotNull String statusOs,
+                                       @NotNull String statusItem) {
+        try {
+            dao.getEstratificacaoOsCsv(outputStream, codUnidade, placa, new Date(dataInicial), new Date(dataFinal), statusOs, statusItem);
+        }catch (SQLException | IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

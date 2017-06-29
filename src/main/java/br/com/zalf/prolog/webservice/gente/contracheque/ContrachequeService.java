@@ -88,9 +88,9 @@ public class ContrachequeService {
         }
     }
 
-    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade){
+    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade, Long cpf, String codItem){
         try{
-            return dao.deleteItemImportContracheque(item, ano, mes, codUnidade);
+            return dao.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, codItem);
         }catch (SQLException e){
             e.printStackTrace();
             return false;

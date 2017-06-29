@@ -1,6 +1,23 @@
 Change Log
 ==========
 
+<a name="v0.0.16"></a>
+## Version [v0.0.16](https://github.com/luizfp/PrologWebService/compare/v0.0.15...v0.0.16) (release date) - [Unreleased]
+
+#### Features
+
+#### Refactor
+
+* Troca a obrigatoriedade de 3 imagens no envio de um relato para apenas uma.
+    * Drop not null nas colunas url_foto_2 / 3
+
+#### Deprecated
+
+#### Bug Fixes
+
+* Corrige calculo do indicador devolução PDV acumulado
+
+
 <a name="v0.0.15"></a>
 ## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (release date) - [Unreleased]
 

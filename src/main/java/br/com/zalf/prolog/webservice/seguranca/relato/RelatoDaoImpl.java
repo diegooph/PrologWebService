@@ -88,8 +88,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 			stmt.setLong(1, codRelato);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
-				Relato relato = createRelato(rSet);
-				return relato;
+				return createRelato(rSet);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
@@ -344,7 +343,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 				alternativa.codigo = rSet.getLong("CODIGO");
 				alternativa.alternativa = rSet.getString("ALTERNATIVA");
 				if(alternativa.alternativa.equals("Outros")){
-					alternativa.tipo = alternativa.TIPO_OUTROS;
+					alternativa.tipo = Alternativa.TIPO_OUTROS;
 				}
 				listAlternativas.add(alternativa);
 			}
@@ -415,7 +414,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 		alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
 		alternativa.alternativa = rSet.getString("ALTERNATIVA");
 		if(alternativa.alternativa.equals("Outros")){
-			alternativa.tipo = alternativa.TIPO_OUTROS;
+			alternativa.tipo = Alternativa.TIPO_OUTROS;
 
 		}
 		return alternativa;

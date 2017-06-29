@@ -3,15 +3,14 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.SQLException;
 import java.util.List;
 
 @Path("/pneus")
@@ -71,6 +70,13 @@ public class PneuResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Path("/modelos/{codModelo}")
+    public Modelo getModeloPneu(@PathParam("codModelo") Long codModelo) {
+        return service.getModeloPneu(codModelo);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/dimensao")
     public List<Pneu.Dimensao> getDimensoes() {
         return service.getDimensoes();
@@ -123,12 +129,19 @@ public class PneuResource {
     @PUT
     @Secured
     @Path("bandas/modelos")
-    public Response updateModeloBanda(Modelo modelo) throws SQLException {
+    public Response updateModeloBanda(Modelo modelo) {
         if (service.updateModeloBanda(modelo)) {
             return Response.Ok("Modelo de banda atualizado com sucesso");
         }else {
             return Response.Error("Erro ao atualizar o modelo de banda");
         }
+    }
+
+    @GET
+    @Secured
+    @Path("/unidades/{codUnidade}/{codPneu}")
+    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
+        return service.getPneuByCod(codPneu, codUnidade);
     }
 }
 

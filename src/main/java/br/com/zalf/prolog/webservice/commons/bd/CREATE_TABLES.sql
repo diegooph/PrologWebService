@@ -180,8 +180,8 @@ CREATE TABLE IF NOT EXISTS RELATO (
   LONGITUDE               VARCHAR(255) NOT NULL,
   COD_PDV                 INT,
   URL_FOTO_1              TEXT         NOT NULL,
-  URL_FOTO_2              TEXT         NOT NULL,
-  URL_FOTO_3              TEXT         NOT NULL,
+  URL_FOTO_2              TEXT,
+  URL_FOTO_3              TEXT,
   CPF_COLABORADOR         BIGINT       NOT NULL,
   CPF_CLASSIFICACAO       BIGINT,
   DATA_HORA_CLASSIFICACAO TIMESTAMP,
@@ -207,6 +207,9 @@ CREATE TABLE IF NOT EXISTS RELATO (
   CONSTRAINT FK_RELATO_SETOR FOREIGN KEY (COD_SETOR, COD_UNIDADE)
   REFERENCES SETOR (CODIGO, COD_UNIDADE)
 );
+
+ALTER TABLE relato ALTER COLUMN url_foto_2 DROP NOT NULL;
+ALTER TABLE relato ALTER COLUMN url_foto_3 DROP NOT NULL;
 
 -- FALE CONOSCO
 COMMENT ON TABLE FALE_CONOSCO IS 'Fale conosco enviados pelos colaboradores';
@@ -436,6 +439,7 @@ CREATE TABLE IF NOT EXISTS PNEU (
   VIDA_TOTAL           INT          NOT NULL,
   COD_UNIDADE          BIGINT       NOT NULL,
   STATUS               VARCHAR(255) NOT NULL,
+  VALOR                REAL         NOT NULL,
   CONSTRAINT PK_PNEU PRIMARY KEY (CODIGO, COD_UNIDADE),
   CONSTRAINT FK_PNEU_MODELO FOREIGN KEY (COD_MODELO)
   REFERENCES MODELO_PNEU (CODIGO),
@@ -450,6 +454,7 @@ CREATE TABLE IF NOT EXISTS PNEU (
 ALTER TABLE pneu RENAME COLUMN altura_sulco_central TO altura_sulco_central_interno;
 ALTER TABLE pneu ADD COLUMN altura_sulco_central_externo REAL;
 UPDATE pneu SET altura_sulco_central_externo = altura_sulco_central_interno;
+ALTER TABLE pneu ADD COLUMN valor REAL NOT NULL;
 
 --PNEU--RELAÇÃO ENTRE VEICULO E PNEU, INDICA QUAIS PNEUS ESTÃO INSTALADOS EM CADA VEICULO
 COMMENT ON TABLE VEICULO_PNEU IS 'Víncula pneus ao veiculo';
@@ -1713,7 +1718,7 @@ CREATE VIEW estratificacao_os AS
     NULL :: unknown       AS url_imagem,
     cp.prioridade,
     c.placa_veiculo,
-    v.km,
+    c.km_veiculo as km,
     v.cod_tipo,
     cap.codigo            AS cod_alternativa,
     cap.alternativa,

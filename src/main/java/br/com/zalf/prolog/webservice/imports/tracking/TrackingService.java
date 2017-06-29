@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.imports.tracking;
 
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 
 import java.io.IOException;
@@ -14,9 +13,9 @@ public class TrackingService {
 	
 	private TrackingDao dao = new TrackingDaoImpl();
 
-	public Response insertOrUpdateTracking (String path, Colaborador colaborador){
+	public Response insertOrUpdateTracking (String path, Long codUnidade){
 		try{
-			if(dao.insertOrUpdateTracking(path, colaborador)){
+			if(dao.insertOrUpdateTracking(path, codUnidade)){
 				return Response.Ok("Arquivo do tracking inserido com sucesso");
 			}else{
 				return Response.Error("Problema ao inserir o arquivo");

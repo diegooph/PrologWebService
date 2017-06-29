@@ -420,7 +420,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if(rSet.next()){
-                Modelo modelo = new Modelo();
+                ModeloVeiculo modelo = new ModeloVeiculo();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 return modelo;

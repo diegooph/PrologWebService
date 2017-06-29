@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.mapa;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import org.apache.commons.csv.CSVFormat;
@@ -29,7 +28,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
     // a equipe antiga continuará na tabela, recebendo por um mapa que não realizo
 
-    public boolean insertOrUpdateMapa(String path, Colaborador colaborador) throws SQLException, IOException, ParseException {
+    public boolean insertOrUpdateMapa(String path, Long codUnidade) throws SQLException, IOException, ParseException {
 
         Connection conn = null;
         try {
@@ -40,17 +39,17 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             for (int i = 1; i < tabela.size(); i++) {
                 MapaImport mapa = createMapa(tabela.get(i));
                 if (mapa != null) {
-                    if (updateMapa(mapa, colaborador, conn)) {
+                    if (updateMapa(mapa, codUnidade, conn)) {
                         // Mapa ja existia e foi atualizado
                         L.d(TAG, "update mapa: " + mapa.mapa);
                     } else {
                         L.d(TAG, "insert mapa: " + mapa.mapa);
                         // Mapa não existia e foi inserido na base
-                        insertMapa(mapa, colaborador, conn);
+                        insertMapa(mapa, codUnidade, conn);
                     }
-                    insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricMotorista, conn);
-                    insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud1, conn);
-                    insertOrUpdateMapaColaborador(mapa.mapa, colaborador.getCodUnidade(), mapa.matricAjud2, conn);
+                    insertOrUpdateMapaColaborador(mapa.mapa, codUnidade, mapa.matricMotorista, conn);
+                    insertOrUpdateMapaColaborador(mapa.mapa, codUnidade, mapa.matricAjud1, conn);
+                    insertOrUpdateMapaColaborador(mapa.mapa, codUnidade, mapa.matricAjud2, conn);
                 }
             }
             return true;
@@ -71,7 +70,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean insertMapa(MapaImport mapa, Colaborador colaborador, Connection conn) throws SQLException {
+    private boolean insertMapa(MapaImport mapa, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MAPA VALUES(?, ?,	?,	?,"
@@ -167,7 +166,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setInt(82, mapa.qtNfEntregGeral);
             stmt.setDouble(83, mapa.capacidadeVeiculoKg);
             stmt.setDouble(84, mapa.pesoCargaKg);
-            stmt.setLong(85, colaborador.getCodUnidade());
+            stmt.setLong(85, codUnidade);
             stmt.setTimestamp(86, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setInt(87, mapa.capacVeiculoCx);
             stmt.setInt(88, mapa.entregasCompletas);
@@ -233,7 +232,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean updateMapa(MapaImport mapa, Colaborador colaborador, Connection conn) throws SQLException {
+    private boolean updateMapa(MapaImport mapa, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE MAPA "
@@ -444,11 +443,11 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setTimestamp(99, DateUtils.toTimestamp(mapa.hrPCFisica));
             stmt.setTimestamp(100, DateUtils.toTimestamp(mapa.hrPCFinanceira));
             stmt.setString(101, mapa.stMapa);
-            stmt.setLong(102, colaborador.getCodUnidade());
+            stmt.setLong(102, codUnidade);
             stmt.setTimestamp(103, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             // condição do where:
             stmt.setInt(104, mapa.mapa);
-            stmt.setLong(105, colaborador.getCodUnidade());
+            stmt.setLong(105, codUnidade);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;

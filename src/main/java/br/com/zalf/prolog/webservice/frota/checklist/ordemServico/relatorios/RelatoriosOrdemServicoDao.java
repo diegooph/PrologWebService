@@ -39,4 +39,13 @@ public interface RelatoriosOrdemServicoDao {
     Report getProdutividadeMecanicosReport(@NotNull Long codUnidade,
                                            @NotNull Date dataInicial,
                                            @NotNull Date dataFinal) throws SQLException;
+
+    void getEstratificacaoOsCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                       @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+                                       @NotNull String statusItem) throws SQLException, IOException;
+
+    @NotNull
+    Report getEstratificacaoOsReport(@NotNull Long codUnidade, @NotNull String placa,
+                                            @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+                                            @NotNull String statusItem) throws SQLException;
 }
