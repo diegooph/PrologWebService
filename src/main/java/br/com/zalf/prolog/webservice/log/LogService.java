@@ -9,9 +9,9 @@ public class LogService {
 
 	private LogDao dao = new LogDaoImpl();
 
-	public boolean insert(String log, String indicador) {
+	public boolean insert(String log, String identificador) {
 		try {
-			return dao.insert(log, indicador);
+			return dao.insert(log, identificador);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

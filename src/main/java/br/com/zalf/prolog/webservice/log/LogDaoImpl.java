@@ -9,14 +9,14 @@ import java.sql.SQLException;
 public class LogDaoImpl extends DatabaseConnection implements LogDao {
 
 	@Override
-	public boolean insert(String log, String indicador) throws SQLException {
+	public boolean insert(String log, String identificador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON, IDENTIFICADOR) VALUES (?,?)");
 			stmt.setString(1, log);
-			stmt.setString(2, indicador);
+			stmt.setString(2, identificador);
 			int count = stmt.executeUpdate();
 			if (count > 0) {
 				return true;
