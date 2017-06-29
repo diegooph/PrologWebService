@@ -1755,130 +1755,147 @@ CREATE VIEW resumo_dados AS
   ORDER BY m.data DESC, t.data
 
 
-CREATE VIEW VIEW_PRODUTIVIDADE_EXTRATO AS
-SELECT
-  vmc.cod_unidade, c.matricula_ambev,
-M.DATA, vmc.cpf, c.nome as nome_colaborador, c.data_nascimento, f.nome as funcao, f.codigo as cod_funcao, e.nome as nome_equipe,
--- calculo do valor do mapa em caso de rota normal e previsto <= 09:20h
-CASE WHEN C.matricula_ambev = m.matricmotorista AND m.entrega <> 'AS' and (m.tempoprevistoroad <= um.meta_tempo_rota_horas or m.cargaatual = 'Recarga')
-  THEN (M.vlbateujornmot + M.vlnaobateujornmot + M.vlrecargamot)
-WHEN c.matricula_ambev = m.matricajud1 AND m.entrega <> 'AS' and (m.tempoprevistoroad <= um.meta_tempo_rota_horas or m.cargaatual = 'Recarga')
-  THEN (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju) / m.fator
-WHEN c.matricula_ambev = m.matricajud2 AND m.entrega <> 'AS' and (m.tempoprevistoroad <= um.meta_tempo_rota_horas or m.cargaatual = 'Recarga')
-  THEN (M.vlbateujornaju + M.vlnaobateujornaju + M.vlrecargaaju) / m.fator
-ELSE 0
-END +
-  -- calculo do valor do mapa em caso de rota normal e previsto >= 09:20h (rotas longas)
-CASE WHEN c.matricula_ambev = m.matricmotorista AND m.entrega <> 'AS' and m.tempoprevistoroad > um.meta_tempo_rota_horas and m.cargaatual <> 'Recarga'
-  THEN m.cxentreg * VIEW_VALOR_CX_UNIDADE.valor_cx_motorista_rota
-WHEN c.matricula_ambev = m.matricajud1 AND m.entrega <> 'AS' and m.tempoprevistoroad > um.meta_tempo_rota_horas and m.cargaatual <> 'Recarga'
-  THEN m.cxentreg * VIEW_VALOR_CX_UNIDADE.valor_cx_ajudante_rota
-WHEN c.matricula_ambev = m.matricajud2 AND m.entrega <> 'AS' and m.tempoprevistoroad > um.meta_tempo_rota_horas and m.cargaatual <> 'Recarga'
-  THEN m.cxentreg * VIEW_VALOR_CX_UNIDADE.valor_cx_ajudante_rota
-ELSE 0
-END +
--- case para calcular o valor quando é AS
-CASE WHEN c.matricula_ambev = m.matricmotorista AND m.entrega = 'AS'
-  THEN
-    --case para calcular o valor com base no número de entregas (AS)
-    (CASE WHEN m.entregas = 1
-      THEN uv.rm_motorista_valor_as_1_entrega
-     WHEN m.entregas = 2
-       THEN uv.rm_motorista_valor_as_2_entregas
-     WHEN m.entregas = 3
-       THEN uv.rm_motorista_valor_as_3_entregas
-      WHEN m.entregas > 3
-       THEN uv.rm_motorista_valor_as_maior_3_entregas
-     ELSE 0
-     END)
-WHEN c.matricula_ambev = m.matricajud1 AND m.entrega = 'AS'
-  THEN
-    --case para calcular o valor com base no número de entregas (AS)
-    (CASE WHEN m.entregas = 1
-      THEN uv.rm_ajudante_valor_as_1_entrega
-     WHEN m.entregas = 2
-       THEN uv.rm_ajudante_valor_as_2_entregas
-      WHEN m.entregas = 3
-       THEN uv.rm_ajudante_valor_as_3_entregas
-     WHEN m.entregas > 3
-       THEN uv.rm_ajudante_valor_as_maior_3_entregas
-     ELSE 0
-     END)
-WHEN c.matricula_ambev = m.matricajud2 AND m.entrega = 'AS'
-  THEN
-    --case para calcular o valor com base no número de entregas (AS)
-    (CASE WHEN m.entregas = 1
-      THEN uv.rm_ajudante_valor_as_1_entrega
-     WHEN m.entregas = 2
-       THEN uv.rm_ajudante_valor_as_2_entregas
-      WHEN m.entregas = 3
-       THEN uv.rm_ajudante_valor_as_3_entregas
-     WHEN m.entregas > 2
-       THEN uv.rm_ajudante_valor_as_maior_3_entregas
-     ELSE 0
-     END)
-ELSE 0
-END AS valor,
-m.fator,
-m.cargaatual,
-m.entrega,
-M.mapa,
-M.PLACA,
-M.cxcarreg,
-m.cxentreg,
-M.QTHLCARREGADOS,
-M.QTHLENTREGUES,
-M.QTNFCARREGADAS,
-M.QTNFENTREGUES,
-M.entregascompletas,
-M.entregasnaorealizadas,
-m.entregasparciais,
-M.kmprevistoroad,
-M.kmsai,
-M.kmentr,
-to_seconds(M.tempoprevistoroad :: TEXT) AS tempoprevistoroad,
-M.HRSAI,
-M.HRENTR,
-to_seconds(((M.hrentr - M.hrsai) :: TIME) :: TEXT) AS TEMPO_ROTA,
-to_seconds(M.TEMPOINTERNO :: TEXT) AS tempointerno,
-M.HRMATINAL,
-tracking.apontamentos_ok AS apontamentos_ok,
-tracking.total_apontamentos AS total_tracking,
-to_seconds((CASE WHEN m.hrsai :: TIME < m.hrmatinal
-  THEN um.meta_tempo_largada_horas
-            ELSE (m.hrsai - m.hrmatinal) :: TIME
-            END) :: TEXT) AS tempo_largada,
-um.meta_tracking,
-um.meta_tempo_rota_mapas,
-um.meta_caixa_viagem,
-um.meta_dev_hl,
-um.meta_dev_nf,
-um.meta_dev_pdv,
-um.meta_dispersao_km,
-um.meta_dispersao_tempo,
-um.meta_jornada_liquida_mapas,
-um.meta_raio_tracking,
-um.meta_tempo_interno_mapas,
-um.meta_tempo_largada_mapas,
-to_seconds(um.meta_tempo_rota_horas :: TEXT)       AS meta_tempo_rota_horas,
-to_seconds(um.meta_tempo_interno_horas :: TEXT)    AS meta_tempo_interno_horas,
-to_seconds(um.meta_tempo_largada_horas :: TEXT)    AS meta_tempo_largada_horas,
-to_seconds(um.meta_jornada_liquida_horas :: TEXT)  AS meta_jornada_liquida_horas
-FROM VIEW_MAPA_COLABORADOR VMC
-JOIN colaborador C ON VMC.CPF = C.cpf
-JOIN funcao f on f.codigo = c.cod_funcao and f.cod_empresa = c.cod_empresa
-JOIN MAPA M ON M.MAPA = VMC.mapa AND M.cod_unidade = VMC.cod_unidade
-JOIN UNIDADE_METAS UM ON UM.cod_unidade = M.cod_unidade
-JOIN VIEW_VALOR_CX_UNIDADE on VIEW_VALOR_CX_UNIDADE.cod_unidade = m.cod_unidade
-JOIN equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo
-left JOIN unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade
-LEFT JOIN (SELECT
-           t.mapa                         AS tracking_mapa,
-           sum(CASE WHEN t.disp_apont_cadastrado <= um.meta_raio_tracking
-             THEN 1
-               ELSE 0 END)                AS apontamentos_ok,
-           count(t.disp_apont_cadastrado) AS total_apontamentos
-         FROM tracking t
-           JOIN unidade_metas um ON um.cod_unidade = t.código_transportadora
-         GROUP BY 1) AS tracking ON tracking_mapa = m.mapa
-WHERE m.fator > 0;
+CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
+    c.matricula_ambev,
+    m.data,
+    vmc.cpf,
+    c.nome AS nome_colaborador,
+    c.data_nascimento,
+    f.nome AS funcao,
+    f.codigo AS cod_funcao,
+    e.nome AS nome_equipe,
+    ((
+        CASE
+            WHEN (((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
+            WHEN (((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            WHEN (((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            ELSE (0)::real
+        END +
+        CASE
+            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision)
+            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota) / m.fator::double precision)
+            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota) / m.fator::double precision)
+            ELSE (0)::double precision
+        END) +
+        CASE
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_motorista_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_motorista_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_motorista_valor_as_3_entregas
+                WHEN (m.entregas > 3) THEN uv.rm_motorista_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_ajudante_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_ajudante_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_ajudante_valor_as_3_entregas
+                WHEN (m.entregas > 3) THEN uv.rm_ajudante_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_ajudante_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_ajudante_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_ajudante_valor_as_3_entregas
+                WHEN (m.entregas > 2) THEN uv.rm_ajudante_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            ELSE (0)::real
+        END) AS valor,
+    m.fator,
+    m.cargaatual,
+    m.entrega,
+    m.mapa,
+    m.placa,
+    m.cxcarreg,
+    m.cxentreg,
+    m.qthlcarregados,
+    m.qthlentregues,
+    m.qtnfcarregadas,
+    m.qtnfentregues,
+    m.entregascompletas,
+    m.entregasnaorealizadas,
+    m.entregasparciais,
+    m.kmprevistoroad,
+    m.kmsai,
+    m.kmentr,
+    to_seconds((m.tempoprevistoroad)::text) AS tempoprevistoroad,
+    m.hrsai,
+    m.hrentr,
+    to_seconds((((m.hrentr - m.hrsai))::time without time zone)::text) AS tempo_rota,
+    to_seconds((m.tempointerno)::text) AS tempointerno,
+    m.hrmatinal,
+    tracking.apontamentos_ok,
+    tracking.total_apontamentos AS total_tracking,
+    to_seconds((
+        CASE
+            WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
+            ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
+        END)::text) AS tempo_largada,
+    um.meta_tracking,
+    um.meta_tempo_rota_mapas,
+    um.meta_caixa_viagem,
+    um.meta_dev_hl,
+    um.meta_dev_nf,
+    um.meta_dev_pdv,
+    um.meta_dispersao_km,
+    um.meta_dispersao_tempo,
+    um.meta_jornada_liquida_mapas,
+    um.meta_raio_tracking,
+    um.meta_tempo_interno_mapas,
+    um.meta_tempo_largada_mapas,
+    to_seconds((um.meta_tempo_rota_horas)::text) AS meta_tempo_rota_horas,
+    to_seconds((um.meta_tempo_interno_horas)::text) AS meta_tempo_interno_horas,
+    to_seconds((um.meta_tempo_largada_horas)::text) AS meta_tempo_largada_horas,
+    to_seconds((um.meta_jornada_liquida_horas)::text) AS meta_jornada_liquida_horas
+   FROM ((((((((view_mapa_colaborador vmc
+     JOIN colaborador c ON ((vmc.cpf = c.cpf)))
+     JOIN funcao f ON (((f.codigo = c.cod_funcao) AND (f.cod_empresa = c.cod_empresa))))
+     JOIN mapa m ON (((m.mapa = vmc.mapa) AND (m.cod_unidade = vmc.cod_unidade))))
+     JOIN unidade_metas um ON ((um.cod_unidade = m.cod_unidade)))
+     JOIN view_valor_cx_unidade ON ((view_valor_cx_unidade.cod_unidade = m.cod_unidade)))
+     JOIN equipe e ON (((e.cod_unidade = c.cod_unidade) AND (c.cod_equipe = e.codigo))))
+     LEFT JOIN unidade_valores_rm uv ON ((uv.cod_unidade = m.cod_unidade)))
+     LEFT JOIN ( SELECT t.mapa AS tracking_mapa,
+            sum(
+                CASE
+                    WHEN (t.disp_apont_cadastrado <= um_1.meta_raio_tracking) THEN 1
+                    ELSE 0
+                END) AS apontamentos_ok,
+            count(t.disp_apont_cadastrado) AS total_apontamentos
+           FROM (tracking t
+             JOIN unidade_metas um_1 ON ((um_1.cod_unidade = t."código_transportadora")))
+          GROUP BY t.mapa) tracking ON ((tracking.tracking_mapa = m.mapa)))
+  WHERE (m.fator > (0)::double precision);
+COMMENT ON VIEW view_produtividade_extrato IS 'View que calcula a produtividade individual';
+
+CREATE VIEW view_valor_cx_unidade AS SELECT DISTINCT m.cod_unidade,
+    max(round(((m.vlbateujornmot / m.cxentreg))::numeric, 2)) AS valor_cx_motorista_rota,
+    max(round(((m.vlbateujornaju / m.cxentreg))::numeric, 2)) AS valor_cx_ajudante_rota
+   FROM mapa m
+  WHERE ((m.vltotalmapa > (0)::double precision) AND (m.vlbateujornmot > (0)::double precision))
+  GROUP BY m.cod_unidade;
+
+CREATE VIEW view_mapa_colaborador AS SELECT m.mapa,
+    c.cpf,
+    c.cod_unidade
+   FROM ((mapa m
+     JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+     JOIN colaborador c ON ((((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista)) AND (c.cod_unidade = m.cod_unidade))))
+UNION
+ SELECT m.mapa,
+    c.cpf,
+    c.cod_unidade
+   FROM ((mapa m
+     JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+     JOIN colaborador c ON ((((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante)) AND (c.cod_unidade = m.cod_unidade))))
+UNION
+ SELECT m.mapa,
+    c.cpf,
+    c.cod_unidade
+   FROM ((mapa m
+     JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+     JOIN colaborador c ON ((((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante)) AND (c.cod_unidade = m.cod_unidade))));
+COMMENT ON VIEW view_mapa_colaborador IS 'View utilizada para linkar os mapas relizados por cada colaborador';
