@@ -1,12 +1,12 @@
-package br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia;
+package br.com.zalf.prolog.webservice.gente.prontuario.model;
 
 /**
  * Created by Zart on 03/07/2017.
  */
 public class Situacao {
 
-    private static final String BLOQUEADO = "Bloqueado";
-    private static final String LIBERADO = "Liberado";
+    private static final String BLOQUEADO = "BLOQUEADO";
+    private static final String LIBERADO = "LIBERADO";
 
     private String status;
     private String motivo;
