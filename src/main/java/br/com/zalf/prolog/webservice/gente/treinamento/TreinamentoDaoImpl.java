@@ -58,16 +58,14 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        String treinamentosNaoVistosQuery =
-                "SELECT * FROM TREINAMENTO T JOIN "
-                        + "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
-                        + "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.CPF "
-                        + "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
-                        + "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-                        + "C.CPF = ?) AND t.data_liberacao <= ? ;";
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(treinamentosNaoVistosQuery);
+            stmt = conn.prepareStatement("SELECT * FROM TREINAMENTO T JOIN "
+                    + "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
+                    + "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.COD_UNIDADE = T.cod_unidade AND C.CPF "
+                    + "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+                    + "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
+                    + "C.CPF = ?) AND t.data_liberacao <= ? ;");
             stmt.setLong(1, cpf);
             stmt.setLong(2, cpf);
             stmt.setDate(3, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
