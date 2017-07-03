@@ -26,7 +26,7 @@ public class ProntuarioCondutor {
         private String corHex;
 
         /**
-         * @param de início da faixa, exclusico
+         * @param de início da faixa, exclusivo
          * @param ate término da faixa, inclusivo
          * @param corHex a cor dessa faixa
          */
