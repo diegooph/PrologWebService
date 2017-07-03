@@ -21,13 +21,31 @@ public class ProntuarioCondutor {
         VERMELHO(30, 40, "#00FF00"),
         PRETO(40, Double.MAX_VALUE, "#00FF00");
 
+        private double inicioFaixa;
+        private double fimFaixa;
+        private String corHex;
+
         /**
          * @param de início da faixa, exclusico
          * @param ate término da faixa, inclusivo
-         * @param colorHex a cor dessa faixa
+         * @param corHex a cor dessa faixa
          */
-        Faixa(double de, double ate, String colorHex) {
+        Faixa(double de, double ate, String corHex) {
+            this.inicioFaixa = de;
+            this.fimFaixa = ate;
+            this.corHex = corHex;
+        }
 
+        public double getInicioFaixa() {
+            return inicioFaixa;
+        }
+
+        public double getFimFaixa() {
+            return fimFaixa;
+        }
+
+        public String getCorHex() {
+            return corHex;
         }
 
         public static Faixa fromPontuacao(final double pontuacao) {
@@ -155,10 +173,6 @@ public class ProntuarioCondutor {
 
     public void setTelemetria(Telemetria telemetria) {
         this.telemetria = telemetria;
-    }
-
-    public double getPontuacaoTotal() {
-        return pontuacaoTotalPonderada;
     }
 
     public double getPontuacaoTotalPonderada() {
