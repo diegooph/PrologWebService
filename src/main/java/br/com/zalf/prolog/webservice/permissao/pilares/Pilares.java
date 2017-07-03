@@ -101,6 +101,14 @@ public final class Pilares {
 
         public static final int RANKING = 33;
 
+        public final class ProntuarioCondutor {
+            private ProntuarioCondutor() {}
+
+            public static final int UPLOAD = 333;
+            public static final int VISUALIZAR_PROPRIO = 334;
+            public static final int VISUALIZAR_TODOS = 335;
+        }
+
         public final class Relatorios {
             private Relatorios() {}
 
