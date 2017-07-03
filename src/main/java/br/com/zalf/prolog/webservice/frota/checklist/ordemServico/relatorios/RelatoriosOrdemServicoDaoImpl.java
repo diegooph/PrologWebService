@@ -205,13 +205,13 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\",\n" +
                 "  --   PASSAR PRA MINUTOS\n" +
                 "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\",\n" +
-                "  CASE WHEN data_hora_conserto IS NULL\n" +
-                "    THEN '-'\n" +
-                "  ELSE\n" +
-                "    CASE WHEN data_hora_conserto <= data_hora + (prazo || ' hour') :: INTERVAL\n" +
-                "      THEN 'SIM'\n" +
-                "    ELSE 'NÃO' END\n" +
-                "  END                                                                       AS \"CUMPRIU PRAZO\",\n" +
+//                "  CASE WHEN data_hora_conserto IS NULL\n" +
+//                "    THEN '-'\n" +
+//                "  ELSE\n" +
+//                "    CASE WHEN data_hora_conserto <= data_hora + (prazo || ' hour') :: INTERVAL\n" +
+//                "      THEN 'SIM'\n" +
+//                "    ELSE 'NÃO' END\n" +
+//                "  END                                                                       AS \"CUMPRIU PRAZO\",\n" +
                 "  km                                                                        AS \"KM ABERTURA\",\n" +
                 "  km_fechamento                                                             AS \"KM FECHAMENTO\",\n" +
                 "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\"\n" +
