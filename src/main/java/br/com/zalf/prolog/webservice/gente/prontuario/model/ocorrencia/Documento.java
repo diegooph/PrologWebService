@@ -3,36 +3,36 @@ package br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia;
 /**
  * Created by Zart on 03/07/2017.
  */
-public class Documento {
+public class Documento extends Ocorrencia{
 
-    private int rs;
-    private int ec;
-    private int it;
+    private String rs;
+    private String ec;
+    private String it;
 
     public Documento() {
     }
 
-    public int getRs() {
+    public String getRs() {
         return rs;
     }
 
-    public void setRs(int rs) {
+    public void setRs(String rs) {
         this.rs = rs;
     }
 
-    public int getEc() {
+    public String getEc() {
         return ec;
     }
 
-    public void setEc(int ec) {
+    public void setEc(String ec) {
         this.ec = ec;
     }
 
-    public int getIt() {
+    public String getIt() {
         return it;
     }
 
-    public void setIt(int it) {
+    public void setIt(String it) {
         this.it = it;
     }
 }
