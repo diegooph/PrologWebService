@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class IndicadorDaoImpl extends DatabaseConnection{
+public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
 
 	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 
@@ -166,20 +166,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas, "  +
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf;";
 
-
-	/**
-	 * Busca o extrato por mapa de qualquer indicador, usa distinct para não repetir os mapas
-	 * @param dataInicial uma data
-	 * @param dataFinal uma data
-	 * @param codRegional código da Regional ou '%'
-	 * @param codEmpresa código da Empresa ou '%'
-	 * @param codUnidade código da Unidade ou '%'
-	 * @param equipe nome da equipe ou '%'
-	 * @param cpf cpf ou '%'
-	 * @param indicador constante provinda dos ITENS  ex: {@link Jornada#JORNADA}
-     * @return uma lista de Indicador {@link Indicador}
-     * @throws SQLException caso não seja possível realizar a busca no BD
-     */
+	@Override
 	public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
 											   String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 		Connection conn = null;
@@ -205,14 +192,7 @@ public class IndicadorDaoImpl extends DatabaseConnection{
 		return itens;
 	}
 
-	/**
-	 * Cria o extrato acumulado INDIVIDUAL dos indicadores, serve apenas para a tela indicadores
-	 * @param dataInicial uma data
-	 * @param dataFinal uma data
-	 * @param cpf colaborador ao qual será realizada a busca
-	 * @return uma lista de {@link IndicadorAcumulado}
-	 * @throws SQLException caso não seja possível realizar a busca
-     */
+	@Override
 	public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial, Long dataFinal, Long cpf)throws SQLException{
 		Connection conn = null;
 		ResultSet rSet = null;
