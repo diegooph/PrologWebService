@@ -12,29 +12,28 @@ import java.util.List;
 
 public interface EmpresaDao {
 
-
     /**
-     * Busca uma equipe no banco de dados
+     * Busca uma equipe no banco de dados.
      *
      * @param codUnidade código da unidade onde a equipe será buscada
      * @param codEquipe  código da equipe
-     * @return
-     * @throws SQLException
+     * @return um objeto {@link Equipe} referente ao código
+     * @throws SQLException caso não for possível processar a requisição
      */
     Equipe getEquipe(Long codUnidade, Long codEquipe) throws SQLException;
 
     /**
-     * Insere uma equipe
+     * Insere uma equipe.
      *
      * @param codUnidade código da unidade onde a equipe será inserida
      * @param equipe     equipe que deve ser inserida
-     * @return objeto que encapsula um resposta OK ou NOK
+     * @return objeto da classe {@link AbstractResponse} que encapsula um resposta OK ou ERROR
      * @throws SQLException caso ocorrer algum erro no banco
      */
     AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException;
 
     /**
-     * Atualiza uma equipe
+     * Atualiza uma equipe.
      *
      * @param codUnidade código da unidade que a equipe pertence
      * @param codEquipe  código da equipe que desejamos atualizar
@@ -45,7 +44,7 @@ public interface EmpresaDao {
     boolean updateEquipe(@NotNull Long codUnidade, @NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException;
 
     /**
-     * Cria uma equipe
+     * Cria uma equipe.
      *
      * @param request objeto que encapsula uma equipe
      * @return valor da operação
@@ -55,7 +54,7 @@ public interface EmpresaDao {
     boolean createEquipe(Request<Equipe> request) throws SQLException;
 
     /**
-     * Atualiza uma equipe
+     * Atualiza uma equipe.
      *
      * @param request objeto que encapsula uma equipe
      * @return valor da operação
@@ -65,28 +64,28 @@ public interface EmpresaDao {
     boolean updateEquipe(Request<Equipe> request) throws SQLException;
 
     /**
-     * Cadastra um setor no banco de dados
+     * Cadastra um setor no banco de dados.
      *
      * @param setor      o setor para ser inserido
      * @param codUnidade código da unidade na qual esse setor será inserido
-     * @return objeto que encapsula um resposta OK ou NOK
+     * @return objeto que encapsula um resposta OK ou ERROR
      * @throws SQLException caso ocorrer erro no banco
      */
     AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException;
 
 
     /**
-     * Busca um setor de uma unidade
+     * Busca um setor de uma unidade.
      *
      * @param codUnidade código da unidade onde o setor será buscado
      * @param codSetor   código do setor a ser buscado
-     * @return
-     * @throws SQLException
+     * @return um objeto {@link Setor} referente ao código do setor
+     * @throws SQLException caso não for possível processar a requisição
      */
     Setor getSetor(Long codUnidade, Long codSetor) throws SQLException;
 
     /**
-     * Atualiza um {@link Setor}
+     * Atualiza um {@link Setor}.
      *
      * @param codUnidade código da {@link Unidade} que o {@link Setor} pertence
      * @param codSetor   código do {@link Setor} que desejamos atualizar
@@ -97,7 +96,7 @@ public interface EmpresaDao {
     boolean updateSetor(@NotNull Long codUnidade, @NotNull Long codSetor, @NotNull Setor setor) throws SQLException;
 
     /**
-     * Lista as equipes de uma unidade
+     * Lista as equipes de uma unidade.
      *
      * @param codUnidade código de uma unidade
      * @return lista de equipes da unidade
@@ -107,16 +106,16 @@ public interface EmpresaDao {
 
     /**
      * @param ano        ano da busca
-     * @param mes        mes da busca
+     * @param mes        mês da busca
      * @param codUnidade unidade que deseja-se buscar
-     * @return
+     * @return           uma lista de {@link HolderMapaTracking}
      * @throws SQLException       caso ocorrer erro no banco
-     * @throws NoContentException se não tiver conteudo
+     * @throws NoContentException se não tiver conteúdo
      */
     List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException;
 
     /**
-     * Lista os setores referentes ao código da unidade
+     * Lista os setores referentes ao código da unidade.
      *
      * @param codUnidade código de uma unidade
      * @return lista de setores da unidade
@@ -125,7 +124,7 @@ public interface EmpresaDao {
     List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
-     * lista as funções de uma unidade
+     * Lista as funções de uma unidade.
      *
      * @param codUnidade código de uma unidade
      * @return lista de funções da unidade
@@ -134,7 +133,7 @@ public interface EmpresaDao {
     List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
-     * Busca os itens do Filtro (empresa, unidade, equipe)
+     * Busca os itens do Filtro (empresa, unidade, equipe).
      *
      * @param cpf do solicitante, busca a partir das permissões
      * @return list de Empresa, contendo os itens do filtro
@@ -143,30 +142,30 @@ public interface EmpresaDao {
     List<Empresa> getFiltros(Long cpf) throws SQLException;
 
     /**
-     * Busca as funções do prolog de um determinado cargo
+     * Busca as funções do prolog de um determinado cargo.
      *
-     * @param codUnidade codigo da unidade
-     * @param codCargo   codigo do cargo
+     * @param codUnidade código da unidade
+     * @param codCargo   código do cargo
      * @return {@link Visao} de uma {@link Funcao}
-     * @throws SQLException
+     * @throws SQLException caso não seja possível realizar a busca
      */
     Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException;
 
     /**
-     * Busca as funções do prolog a partir do codigo da unidade
+     * Busca as funções do prolog a partir do código da unidade.
      *
-     * @param codUnidade codigo da unidade
+     * @param codUnidade código da unidade
      * @return {@link Visao} da {@link Unidade}
-     * @throws SQLException
+     * @throws SQLException caso não seja possível realizar a busca
      */
     Visao getVisaoUnidade(Long codUnidade) throws SQLException;
 
     /**
-     * Insere ou atualiza as funções do prolog cadastradas para determinado cargo
+     * Insere ou atualiza as funções do prolog cadastradas para determinado cargo.
      *
      * @param visao      {@link Visao} de uma {@link Funcao}
-     * @param codUnidade codigo da unidade
-     * @param codCargo   codigo do cargo
+     * @param codUnidade código da unidade
+     * @param codCargo   código do cargo
      * @return boolean com o resultado da operação
      * @throws SQLException caso não seja possível realizar a operação
      */
@@ -175,11 +174,12 @@ public interface EmpresaDao {
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 
     /**
-     * Insere um cargo (funcao)
-     * @param funcao funcao que será inserida
+     * Insere um cargo (função).
+     *
+     * @param funcao função que será inserida
      * @param codUnidade unidade que está solicitando o cadastro
      * @return código da função
-     * @throws SQLException
+     * @throws SQLException caso não seja possível realizar a operação
      */
     Long insertFuncao(Funcao funcao, Long codUnidade) throws SQLException;
 }
