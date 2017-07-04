@@ -15,10 +15,10 @@ public class LogResource {
 
 	@POST
 	@Secured
-	@Path("/{indicador}")
+	@Path("/{identificador}")
 	@Consumes(MediaType.TEXT_PLAIN + ";charset=utf-8")
-	public Response insert(String log, @PathParam("indicador") String indicador) {
-		if (service.insert(log, indicador.toUpperCase())) {
+	public Response insert(String log, @PathParam("identificador") String identificador) {
+		if (service.insert(log, identificador.toUpperCase())) {
 			return Response.Ok("Log inserido com sucesso.");
 		}else{
 			return Response.Error("Erro ao inserir o log.");
