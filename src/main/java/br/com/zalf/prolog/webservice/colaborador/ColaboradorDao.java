@@ -5,37 +5,41 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsEx
 import java.sql.SQLException;
 import java.util.List;
 /**
- * Contém os métodos para manipular os usuários no banco de dados 
+ * Contém os métodos para manipular os usuários no banco de dados.
  */
 public interface ColaboradorDao {
 
 	/**
-	 * Insere um colaborador no bando de dados
+	 * Insere um colaborador no bando de dados.
+	 *
 	 * @param colaborador dados do colaborador a ser inserido e dados do solicitante
-	 * @return resultado da requisição
+	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
 	 * @throws SQLException caso não seja possível inserir no banco de dados
 	 */
 	boolean insert(Colaborador colaborador) throws SQLException;
 
 	/**
-	 * Atualiza os dados de um colaborador
+	 * Atualiza os dados de um colaborador.
+	 *
 	 * @param cpfAntigo cpf do colaborador a ser atualizado
 	 * @param colaborador dados do colaborador a ser atualizados
-	 * @return resultado da requisição
+	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
 	boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException;
 
 	/**
-	 * Deleta um colaborador
+	 * Deleta um colaborador.
+	 *
 	 * @param cpf contém o cpf do colaborador a ser deletado e dados do solicitante
-	 * @return resultado da requisição
+	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
 	 * @throws SQLException caso não seja possível atualizar os dados
 	 */
 	boolean delete(Long cpf) throws SQLException;
 
 	/**
-	 * Busca um colaborador pelo seu CPF
+	 * Busca um colaborador pelo seu CPF.
+	 *
 	 * @param cpf chave a ser buscada no banco de dados
 	 * @return um colaborador
 	 * @throws SQLException caso não seja possível buscar os dados
@@ -43,7 +47,8 @@ public interface ColaboradorDao {
 	Colaborador getByCod(Long cpf) throws SQLException;
 
 	/**
-	 * Busca todos os colaboradores de uma unidade
+	 * Busca todos os colaboradores de uma unidade.
+	 *
 	 * @param codUnidade código da unidade
 	 * @return uma lista de colaboradores
 	 * @throws SQLException caso não seja possível buscar os dados
@@ -51,7 +56,9 @@ public interface ColaboradorDao {
 	List<Colaborador> getAll(Long codUnidade) throws SQLException;
 
 	/**
-	 * retorna o login do colaborador com o cpf marcado
+	 * retorna um objeto {@link LoginHolder} contendo o colaborador com o cpf marcado e informações
+	 * úteis para a execução da aplicação.
+	 *
 	 * @param cpf cpf do usuario a se logar
 	 * @return o login do colaborador com o cpf marcado
 	 * @throws SQLException caso ocorrer erro no banco
@@ -59,11 +66,12 @@ public interface ColaboradorDao {
 	LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException;
 
 	/**
-	 * Verifica se determinado CPF existe em determinada unidade
+	 * Verifica se determinado CPF existe em determinada unidade.
+	 *
 	 * @param cpf cpf a ser verificado
 	 * @param codUnidade codigo da unidade ao qual o cpf deve pertencer
-	 * @return
-	 * @throws SQLException
+	 * @return verdadeiro caso CPF exista, falso caso contrário
+	 * @throws SQLException caso não seja possível realizar a operação
      */
 	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException;
 }
