@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class RelatorioService {
 
-    RelatorioDaoImpl dao = new RelatorioDaoImpl();
+    private RelatorioDaoImpl dao = new RelatorioDaoImpl();
 
     public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
                                                             String codRegional, String codUnidade, String equipe){

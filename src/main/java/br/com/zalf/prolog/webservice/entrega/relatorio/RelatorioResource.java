@@ -19,7 +19,7 @@ import java.util.List;
 @Secured(permissions = Pilares.Entrega.Relatorios.INDICADORES)
 public class RelatorioResource {
 
-    RelatorioService service = new RelatorioService();
+    private RelatorioService service = new RelatorioService();
 
     @GET
     @Secured
