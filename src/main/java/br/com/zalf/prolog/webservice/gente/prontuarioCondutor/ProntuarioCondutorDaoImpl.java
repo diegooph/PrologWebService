@@ -1,12 +1,12 @@
-package br.com.zalf.prolog.webservice.gente.prontuario;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
-import br.com.zalf.prolog.webservice.gente.prontuario.model.ProntuarioCondutor;
-import br.com.zalf.prolog.webservice.gente.prontuario.model.Situacao;
-import br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia.*;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Situacao;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
 import br.com.zalf.prolog.webservice.imports.ImportUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -41,9 +41,9 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 if (prontuario != null) {
                     if (updateProntuario(prontuario, conn)) {
                         // Prontuário ja existia e foi atualizado
-                        L.d(TAG, "update prontuario: " + prontuario.getColaborador().getNome());
+                        L.d(TAG, "update prontuarioCondutor: " + prontuario.getColaborador().getNome());
                     } else {
-                        L.d(TAG, "insert prontuario: " + prontuario.getColaborador().getNome());
+                        L.d(TAG, "insert prontuarioCondutor: " + prontuario.getColaborador().getNome());
                         // Mapa não existia e foi inserido na base
                         insertProntuario(prontuario, conn);
                     }

@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.gente.prontuario.model;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia.*;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
 import com.google.common.base.Preconditions;
 
 /**

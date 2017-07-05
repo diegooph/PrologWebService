@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.gente.prontuario;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
-import br.com.zalf.prolog.webservice.gente.prontuario.model.ProntuarioCondutor;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 
 import java.sql.SQLException;
 
