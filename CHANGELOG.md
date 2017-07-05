@@ -1,10 +1,29 @@
 Change Log
 ==========
 
-<a name="v0.0.16"></a>
-## Version [v0.0.16](https://github.com/luizfp/PrologWebService/compare/v0.0.15...v0.0.16) (release date) - [Unreleased]
+<a name="v0.0.18"></a>
+## Version [v0.0.18](https://github.com/luizfp/PrologWebService/compare/v0.0.17...v0.0.18) (release date) - [Unreleased]
 
 #### Features
+
+* Cria tabelas para o prontuário do condutor
+* Implementa dao para o prontuário
+
+#### Refactor
+
+* Remove coluna "cumpriu prazo" do relatório estratificação de OS
+
+#### Deprecated
+
+#### Bug Fixes
+
+<a name="v0.0.17"></a>
+## Version [v0.0.17](https://github.com/luizfp/PrologWebService/compare/v0.0.16...v0.0.17) (release date) - [Unreleased]
+
+#### Features
+
+* Implementa método para a busca única de um pneu
+* Implementa relatório estratificação das OS
 
 #### Refactor
 
@@ -16,6 +35,19 @@ Change Log
 #### Bug Fixes
 
 * Corrige calculo do indicador devolução PDV acumulado
+* Atualiza sulcos de um pneu após retorno da recapagem
+* Corrige km de abertura de uma OS (edição na view) 
+
+<a name="v0.0.16"></a>
+## Version [v0.0.16](https://github.com/luizfp/PrologWebService/compare/v0.0.15...v0.0.16) (release date) - [Unreleased]
+
+#### Features
+
+#### Refactor
+
+#### Deprecated
+
+#### Bug Fixes
 
 
 <a name="v0.0.15"></a>
