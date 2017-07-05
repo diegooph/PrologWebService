@@ -11,6 +11,8 @@ Change Log
 
 #### Refactor
 
+* Remove coluna "cumpriu prazo" do relatório estratificação de OS
+
 #### Deprecated
 
 #### Bug Fixes
