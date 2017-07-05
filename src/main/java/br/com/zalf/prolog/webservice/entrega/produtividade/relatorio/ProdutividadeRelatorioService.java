@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class ProdutividadeRelatorioService {
 
-    ProdutividadeRelatorioDao dao = new ProdutividadeRelatorioDaoImpl();
+    private ProdutividadeRelatorioDao dao = new ProdutividadeRelatorioDaoImpl();
 
     public void getConsolidadoProdutividadeCsv(@NotNull OutputStream outputStream,
                                                @NotNull Long codUnidade,

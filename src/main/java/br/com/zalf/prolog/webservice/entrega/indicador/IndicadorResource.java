@@ -34,10 +34,11 @@ public class IndicadorResource {
 
     /**
      * Retorna os indicadores respeitando o período da produtividade
+     *
      * @param ano ano da competência a ser consultada
      * @param mes mês final da competência
      * @param cpf cpf do colaborador
-     * @return
+     * @return uma lista de {@link IndicadorAcumulado}
      */
     @GET
     @Site

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-	private ColaboradorDaoImpl dao = new ColaboradorDaoImpl();
+	private ColaboradorDao dao = new ColaboradorDaoImpl();
 	
 	public boolean insert(Colaborador colaborador) {
 		try {

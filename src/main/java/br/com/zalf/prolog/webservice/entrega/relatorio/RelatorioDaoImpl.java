@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by jean on 13/09/16.
  */
-public class RelatorioDaoImpl extends DatabaseConnection{
+public class RelatorioDaoImpl extends DatabaseConnection {
 
     private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
 
