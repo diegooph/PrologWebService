@@ -43,4 +43,11 @@ public class AutenticacaoResource {
 			return Response.Error("Erro ao deletar token");
 		}
 	}
+
+	@GET
+	@Secured
+	public boolean verifyTokenValidity(){
+//		Verifica se um token é valido, retornando true, caso contrario retorna 401
+		return true;
+	}
 }
