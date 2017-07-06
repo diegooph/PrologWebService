@@ -49,7 +49,7 @@ public class ProntuarioCondutor {
         }
 
         public static Faixa fromPontuacao(final double pontuacao) {
-            Preconditions.checkArgument(pontuacao > 0, "pontuacao não pode ser menor do que 0!");
+            Preconditions.checkArgument(pontuacao >= 0, "pontuacao não pode ser menor do que 0!");
 
             if (pontuacao <= 10) {
                 return VERDE;
