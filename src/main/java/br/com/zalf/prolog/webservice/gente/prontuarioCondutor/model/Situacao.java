@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.prontuario.model;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
 /**
  * Created by Zart on 03/07/2017.

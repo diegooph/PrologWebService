@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
 
 import java.util.Date;
 

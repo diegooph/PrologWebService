@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.gente.prontuario.model;
+package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.gente.prontuario.model.ocorrencia.*;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
 import com.google.common.base.Preconditions;
 
 /**
@@ -26,7 +26,7 @@ public class ProntuarioCondutor {
         private String corHex;
 
         /**
-         * @param de início da faixa, exclusico
+         * @param de início da faixa, exclusivo
          * @param ate término da faixa, inclusivo
          * @param corHex a cor dessa faixa
          */
@@ -49,7 +49,7 @@ public class ProntuarioCondutor {
         }
 
         public static Faixa fromPontuacao(final double pontuacao) {
-            Preconditions.checkArgument(pontuacao > 0, "pontuacao não pode ser menor do que 0!");
+            Preconditions.checkArgument(pontuacao >= 0, "pontuacao não pode ser menor do que 0!");
 
             if (pontuacao <= 10) {
                 return VERDE;
