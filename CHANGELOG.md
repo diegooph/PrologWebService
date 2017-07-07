@@ -6,7 +6,12 @@ Change Log
 
 #### Features
 
+* Cria tabelas para o prontuário do condutor
+* Implementa dao para o prontuário
+
 #### Refactor
+
+* Remove coluna "cumpriu prazo" do relatório estratificação de OS
 
 #### Deprecated
 
@@ -17,12 +22,8 @@ Change Log
 
 #### Features
 
-* Cria tabelas para o prontuário do condutor
-* Implementa dao para o prontuário
 
 #### Refactor
-
-* Remove coluna "cumpriu prazo" do relatório estratificação de OS
 
 #### Deprecated
 
