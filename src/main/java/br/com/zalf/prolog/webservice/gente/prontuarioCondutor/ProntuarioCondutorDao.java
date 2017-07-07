@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCo
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Created by Zart on 03/07/2017.
@@ -16,5 +17,7 @@ public interface ProntuarioCondutorDao {
     boolean insertOrUpdate(String path) throws SQLException, IOException, ParseException;
 
     Double getPontuacaoProntuario(Long cpf) throws SQLException;
+
+    List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String equipe) throws SQLException;
 
 }

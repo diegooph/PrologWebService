@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,36 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 return rSet.getDouble("PONTUACAO_PONDERADA");
             }
             return null;
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<ProntuarioCondutor> prontuarios = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT c.cpf, initcap(c.nome) as nome, pc.PONTUACAO_PONDERADA\n" +
+                    "FROM prontuario_condutor_consolidado pc JOIN colaborador c on c.cpf = pc.CPF_COLABORADOR\n" +
+                    "JOIN equipe e ON e.codigo = c.cod_equipe AND e.cod_unidade = c.cod_unidade\n" +
+                    "WHERE c.cod_unidade = ? and e.codigo::text like ?\n" +
+                    "ORDER BY pc.PONTUACAO_PONDERADA desc, initcap(c.nome) asc");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codEquipe);
+            rSet = stmt.executeQuery();
+            while(rSet.next()) {
+                ProntuarioCondutor prontuario = new ProntuarioCondutor();
+                Colaborador colaborador = new Colaborador();
+                colaborador.setCpf(rSet.getLong("CPF"));
+                colaborador.setNome(rSet.getString("NOME"));
+                prontuario.setColaborador(colaborador);
+                prontuario.setPontuacaoTotalPonderada(rSet.getDouble("PONTUACAO_PONDERADA"));
+                prontuarios.add(prontuario);
+            }
+            return prontuarios;
         }finally {
             closeConnection(conn, stmt, rSet);
         }

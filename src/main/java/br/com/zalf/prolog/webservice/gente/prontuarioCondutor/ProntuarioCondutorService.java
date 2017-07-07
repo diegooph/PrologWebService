@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCo
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Created by Zart on 03/07/2017.
@@ -26,6 +27,15 @@ public class ProntuarioCondutorService {
     public Double getPontuacaoProntuario(Long cpf) {
         try {
             return dao.getPontuacaoProntuario(cpf);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) {
+        try {
+            return dao.getResumoProntuarios(codUnidade, codEquipe);
         }catch (SQLException e) {
             e.printStackTrace();
             return null;

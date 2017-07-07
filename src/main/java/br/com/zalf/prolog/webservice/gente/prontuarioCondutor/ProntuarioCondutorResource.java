@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by Zart on 03/07/2017.
@@ -31,6 +32,14 @@ public class ProntuarioCondutorResource {
     @Secured(permissions = {Pilares.Gente.ProntuarioCondutor.VISUALIZAR_PROPRIO, Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
     public ProntuarioCondutor getProntuario(@PathParam("cpf") Long cpf) {
         return service.getProntuario(cpf);
+    }
+
+    @GET
+    @Path("/{codUnidade}/{codEquipe}")
+    @Secured(permissions = {Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS, Pilares.Gente.ProntuarioCondutor.UPLOAD})
+    public List<ProntuarioCondutor> getResumoProntuarios(@PathParam("codUnidade") Long codUnidade,
+                                                         @PathParam("codEquipe") String codEquipe) {
+        return service.getResumoProntuarios(codUnidade, codEquipe);
     }
 
     @GET
