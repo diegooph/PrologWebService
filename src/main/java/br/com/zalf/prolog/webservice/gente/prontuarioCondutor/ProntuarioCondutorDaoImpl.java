@@ -93,7 +93,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         }
     }
 
-    private List<Integer> createIndices(List<CSVRecord> tabela) {
+    private void createIndices(List<CSVRecord> tabela) {
         indices = new ArrayList<>();
         CSVRecord linhaValidacao1 = tabela.get(LINHA_VALIDACAO_1);
         CSVRecord linhaValidacao2 = tabela.get(LINHA_VALIDACAO_2);
@@ -102,7 +102,6 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 indices.add(i);
             }
         }
-        return indices;
     }
 
     @Override
