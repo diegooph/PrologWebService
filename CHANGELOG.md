@@ -1,12 +1,30 @@
 Change Log
 ==========
 
+<a name="v0.0.20"></a>
+## Version [v0.0.20](https://github.com/luizfp/PrologWebService/compare/v0.0.19...v0.0.20) (release date) - [Unreleased]
+
+#### Features
+
+#### Refactor
+
+* Corrige upload do prontuário
+
+#### Deprecated
+
+#### Bug Fixes
+
 <a name="v0.0.19"></a>
 ## Version [v0.0.19](https://github.com/luizfp/PrologWebService/compare/v0.0.18...v0.0.19) (release date) - [Unreleased]
 
 #### Features
 
+* Cria tabelas para o prontuário do condutor
+* Implementa dao para o prontuário
+
 #### Refactor
+
+* Remove coluna "cumpriu prazo" do relatório estratificação de OS
 
 #### Deprecated
 
@@ -17,12 +35,8 @@ Change Log
 
 #### Features
 
-* Cria tabelas para o prontuário do condutor
-* Implementa dao para o prontuário
 
 #### Refactor
-
-* Remove coluna "cumpriu prazo" do relatório estratificação de OS
 
 #### Deprecated
 
