@@ -124,7 +124,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                 "   entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\",\n" +
                 "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2)\n" +
                 "     else 0 end AS \"VALOR/CX\",\n" +
-                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
+                "   round(valor_rota :: NUMERIC, 2) AS \"VALOR ROTA\",\n" +
+                "   round(valor_diferenca_eld :: NUMERIC, 2) AS \"DIFERENÇA ELD\",\n" +
+                "   round(valor_as :: NUMERIC, 2) AS \"VALOR AS\",\n" +
+                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\"\n" +
                 "   FROM view_produtividade_extrato\n" +
                 "   WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ?\n" +
                 "   ORDER BY data ASC;");
