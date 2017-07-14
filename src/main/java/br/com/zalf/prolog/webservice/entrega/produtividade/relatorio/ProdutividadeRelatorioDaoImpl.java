@@ -62,7 +62,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                 "  round((meta_dev_pdv * 100)::numeric, 2) AS \"META DEV PDV\",\n" +
                 "  CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN\n" +
                 "    'SIM' ELSE 'NÃO' END as \"RECEBE PRÊMIO\",\n" +
-                "  trunc(sum(valor) :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
+                "  trunc(sum(valor_rota) :: NUMERIC, 2) AS \"VALOR ROTA\",\n" +
+                "  trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS \"DIFERENÇA ELD\" ,\n" +
+                "  trunc(sum(valor_AS) :: NUMERIC, 2) AS \"VALOR AS\",\n" +
+                "  trunc(sum(valor) :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\"\n" +
                 "FROM view_produtividade_extrato\n" +
                 "WHERE cod_unidade = ? AND data BETWEEN ? AND ?\n" +
                 "GROUP BY nome_colaborador, funcao, meta_dev_pdv\n" +
