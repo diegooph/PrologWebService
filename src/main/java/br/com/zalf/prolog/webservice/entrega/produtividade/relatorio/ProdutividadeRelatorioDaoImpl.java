@@ -62,7 +62,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                 "  round((meta_dev_pdv * 100)::numeric, 2) AS \"META DEV PDV\",\n" +
                 "  CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN\n" +
                 "    'SIM' ELSE 'NÃO' END as \"RECEBE PRÊMIO\",\n" +
-                "  trunc(sum(valor) :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
+                "  trunc(sum(valor_rota) :: NUMERIC, 2) AS \"VALOR ROTA\",\n" +
+                "  trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS \"DIFERENÇA ELD\" ,\n" +
+                "  trunc(sum(valor_AS) :: NUMERIC, 2) AS \"VALOR AS\",\n" +
+                "  trunc(sum(valor) :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\"\n" +
                 "FROM view_produtividade_extrato\n" +
                 "WHERE cod_unidade = ? AND data BETWEEN ? AND ?\n" +
                 "GROUP BY nome_colaborador, funcao, meta_dev_pdv\n" +
@@ -121,7 +124,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                 "   entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\",\n" +
                 "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2)\n" +
                 "     else 0 end AS \"VALOR/CX\",\n" +
-                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE\"\n" +
+                "   round(valor_rota :: NUMERIC, 2) AS \"VALOR ROTA\",\n" +
+                "   round(valor_diferenca_eld :: NUMERIC, 2) AS \"DIFERENÇA ELD\",\n" +
+                "   round(valor_as :: NUMERIC, 2) AS \"VALOR AS\",\n" +
+                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\"\n" +
                 "   FROM view_produtividade_extrato\n" +
                 "   WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ?\n" +
                 "   ORDER BY data ASC;");
