@@ -412,8 +412,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
 
                 Telemetria telemetria = new Telemetria();
                 telemetria.setExcessoVelocidade1(rSet.getInt("EXCESSO_VELOCIDADE_1"));
-                telemetria.setExcessoVelocidade2(rSet.getInt("EXCESSO_VELOCIDADE_1"));
-                telemetria.setExcessoVelocidade3(rSet.getInt("EXCESSO_VELOCIDADE_1"));
+                telemetria.setExcessoVelocidade2(rSet.getInt("EXCESSO_VELOCIDADE_2"));
+                telemetria.setExcessoVelocidade3(rSet.getInt("EXCESSO_VELOCIDADE_3"));
                 telemetria.setForcaG(rSet.getInt("FORCA_G"));
                 telemetria.setFrenagemBrusca(rSet.getInt("FRENAGEM_BRUSCA"));
 

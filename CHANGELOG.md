@@ -6,11 +6,15 @@ Change Log
 
 #### Features
 
+* Adicionadas colunas para estratificar a remuneração variável nos dois relatórios disponíveis.
+
 #### Refactor
 
 #### Deprecated
 
 #### Bug Fixes
+
+* Corrigido erro que setava todos os excessos de velocidade como "excesso de veolocidade 1"
 
 <a name="v0.0.20"></a>
 ## Version [v0.0.20](https://github.com/luizfp/PrologWebService/compare/v0.0.19...v0.0.20) (release date) - [Unreleased]
