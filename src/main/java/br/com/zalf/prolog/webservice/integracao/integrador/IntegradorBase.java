@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class IntegradorBase implements Integrador {
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull String userToken, @NotNull Long codUnidade) {
-        throw new UnsupportedOperationException();
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return null;
     }
 }

@@ -19,7 +19,7 @@ public class IntegradorDatabase extends IntegradorBase {
     private final ChecklistDao checklistDao;
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull String userToken, @NotNull Long codUnidade) {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) {
         try {
             return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
         } catch (SQLException e) {
