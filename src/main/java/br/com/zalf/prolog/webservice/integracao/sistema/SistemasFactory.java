@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
 

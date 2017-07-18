@@ -1,30 +1,31 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.integracao.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
-import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorHttp;
+import com.sun.istack.internal.NotNull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by luiz on 7/17/17.
  */
 public abstract class Sistema implements OperacoesIntegradas {
-    private Integrador integradorDatabase;
-    private Integrador integradorHttp;
+    private final Integrador integradorHttp;
 
-    Integrador getIntegradorDatabase() {
-        if (integradorDatabase == null) {
-            integradorDatabase = new IntegradorDatabase.Builder()
-                    .withChecklistDao(Injection.provideChecklistDao())
-                    .withVeiculoDao(Injection.provideVeiculoDao())
-                    .build();
-        }
-
-        return integradorDatabase;
+    protected Sistema(@NotNull final Integrador integradorHttp) {
+        this.integradorHttp = checkNotNull(integradorHttp, "integradorHttp não pode ser nulo!");
     }
 
-    Integrador getIntegradorHttp() {
-        return new IntegradorHttp();
+    /**
+     * Cada Sistema terá que implementar esse método, desse modo, cada um instancia o {@link IntegradorDatabase}
+     * apenas com os DAOs que irá utilizar.
+     *
+     * @return um {@link Integrador} com o banco de dados do ProLog.
+     */
+    protected abstract Integrador getIntegradorDatabase();
+
+    protected Integrador getIntegradorHttp() {
+        return integradorHttp;
     }
 }
