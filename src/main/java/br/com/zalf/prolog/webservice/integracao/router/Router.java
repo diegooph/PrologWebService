@@ -1,30 +1,46 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
+import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by luiz on 7/17/17.
+ * Created by luiz on 18/07/17.
  */
-public class Router {
-    private IntegracaoDao integracaoDao;
+abstract class Router {
+    @NotNull
+    private final IntegracaoDao integracaoDao;
+    @NotNull
+    private final Integrador integradorDatabase;
+    @NotNull
+    private final String userToken;
+    @Nullable
+    private SistemaKey sistemaKey;
+    private boolean hasTried;
 
-    private Router(IntegracaoDao integracaoDao) {
-        this.integracaoDao = integracaoDao;
+    Router(IntegracaoDao integracaoDao, Integrador integradorDatabase, String userToken) {
+        this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
+        this.integradorDatabase = checkNotNull(integradorDatabase, "integradorDatabase não pode ser null!");
+        this.userToken = checkNotNull(userToken, "userToken não pode ser null!");
     }
 
-    public static Router newInstance(@NotNull final IntegracaoDao integracaoDao) {
-        return new Router(integracaoDao);
-    }
-
-    public void accept(@NotNull String userToken, @NotNull final RouterFlow routerFlow) throws Exception {
-        final SistemaKey sistemaKey = integracaoDao.getSistemaKey(userToken);
-        if (sistemaKey != null) {
-            routerFlow.proced(SistemasFactory.createSistema(sistemaKey));
-        } else {
-            routerFlow.cancel();
+    Sistema getSistema() throws Exception {
+        if (sistemaKey == null && !hasTried) {
+            sistemaKey = integracaoDao.getSistemaKey(userToken);
+            hasTried = true;
+            return null;
         }
+
+        return SistemasFactory.createSistema(sistemaKey, integradorDatabase);
+    }
+
+    Integrador getIntegradorDatabase() {
+        return integradorDatabase;
     }
 }

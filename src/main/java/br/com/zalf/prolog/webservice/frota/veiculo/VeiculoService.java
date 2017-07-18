@@ -3,10 +3,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
-import br.com.zalf.prolog.webservice.integracao.OperacoesIntegradas;
-import br.com.zalf.prolog.webservice.integracao.router.Router;
-import br.com.zalf.prolog.webservice.integracao.router.RouterFlow;
-import com.sun.istack.internal.NotNull;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
+import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,23 +20,14 @@ public class VeiculoService {
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade) {
         try {
-            try {
-                Router.newInstance(Injection.provideIntegracaoDao())
-                        .accept(userToken, new RouterFlow() {
-                            @Override
-                            public void proced(@NotNull OperacoesIntegradas operacoesIntegradas) {
-
-                            }
-
-                            @Override
-                            public void cancel() throws SQLException {
-                                return dao.getVeiculosAtivosByUnidade(codUnidade);
-                            }
-                        });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (SQLException e) {
+            return new RouterVeiculo(
+                    Injection.provideIntegracaoDao(),
+                    new IntegradorDatabase.Builder()
+                            .withVeiculoDao(Injection.provideVeiculoDao())
+                            .build(),
+                    userToken)
+                    .getVeiculosAtivosByUnidade(codUnidade);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
