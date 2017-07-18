@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
@@ -16,7 +17,7 @@ import java.util.Map;
  */
 public class ChecklistService {
 
-	private ChecklistDao dao = new ChecklistDaoImpl();
+	private ChecklistDao dao = Injection.provideChecklistDao();
 
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao){
 		try{

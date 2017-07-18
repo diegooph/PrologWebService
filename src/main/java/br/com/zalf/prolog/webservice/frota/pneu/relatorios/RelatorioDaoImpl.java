@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
@@ -18,7 +19,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -181,7 +181,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		List<Aderencia> aderencias = new ArrayList<>();
 		Aderencia aderencia = null;
 		AfericaoDao afericaoDao = new AfericaoDaoImpl();
-		VeiculoDao veiculoDao = new VeiculoDaoImpl();
+		VeiculoDao veiculoDao = Injection.provideVeiculoDao();
 		Restricao restricao = afericaoDao.getRestricoesByCodUnidade(codUnidade);
 
 		Date dataAtual = new Date(System.currentTimeMillis());

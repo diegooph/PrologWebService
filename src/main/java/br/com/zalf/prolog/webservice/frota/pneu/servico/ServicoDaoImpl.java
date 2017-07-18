@@ -1,18 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -94,7 +94,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 	@Override
 	public ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException {
 		ServicoHolder holder = new ServicoHolder();
-		veiculoDao = new VeiculoDaoImpl();
+		veiculoDao = Injection.provideVeiculoDao();
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
 		holder.setListServicos(getServicosAbertosByPlaca(placa, "%"));
 		if(containInspecao(holder.getListServicos())){

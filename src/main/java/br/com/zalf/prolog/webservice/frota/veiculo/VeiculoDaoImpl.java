@@ -30,6 +30,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
             + "WHERE V.PLACA = ?";
 
+    public VeiculoDaoImpl() {
+
+    }
 
     @Override
     public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {

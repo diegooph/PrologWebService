@@ -1,15 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
+
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -252,7 +253,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
 
     @Override
     public boolean consertaItem (ItemOrdemServico item, String placa) throws SQLException {
-        VeiculoDao veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         Connection conn = null;
         PreparedStatement stmt = null;
         try{

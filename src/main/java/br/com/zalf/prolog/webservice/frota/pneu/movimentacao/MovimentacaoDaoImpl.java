@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.sql.*;
 import java.util.Date;
@@ -149,7 +149,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 veiculoDao.updateKmByPlaca(origemVeiculo.getVeiculo().getPlaca(), origemVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
@@ -174,7 +174,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
-                VeiculoDao veiculoDao = new VeiculoDaoImpl();
+                VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 veiculoDao.updateKmByPlaca(destinoVeiculo.getVeiculo().getPlaca(), destinoVeiculo.getVeiculo().getKmAtual(), conn);
                 stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
                 stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());

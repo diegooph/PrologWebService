@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -15,7 +16,7 @@ import java.util.Set;
  */
 public class VeiculoService {
 
-    private VeiculoDao dao = new VeiculoDaoImpl();
+    private VeiculoDao dao = Injection.provideVeiculoDao();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) {
         try {

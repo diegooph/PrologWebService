@@ -1,22 +1,22 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,7 +36,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        VeiculoDao veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -85,7 +85,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public NovaAfericao getNovaAfericao(String placa) throws SQLException {
-        VeiculoDao veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         NovaAfericao afericaoHolder = new NovaAfericao();
         afericaoHolder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
         if (afericaoHolder.getVeiculo().getPlaca() != null) {
@@ -259,7 +259,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         Afericao afericao = new Afericao();
         Veiculo veiculo = new Veiculo();
-        VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         List<Pneu> pneus = new ArrayList<>();
         PneuDaoImpl pneuDao = new PneuDaoImpl();
         try {
