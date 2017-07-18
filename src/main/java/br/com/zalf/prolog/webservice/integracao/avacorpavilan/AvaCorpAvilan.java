@@ -14,7 +14,7 @@ import java.util.List;
  */
 public final class AvaCorpAvilan extends Sistema {
 
-    protected AvaCorpAvilan(@NotNull final Integrador integradorHttp) {
+    public AvaCorpAvilan(@NotNull final Integrador integradorHttp) {
         super(integradorHttp);
     }
 

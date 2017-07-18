@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface OperacoesIntegradas {
     @NotNull
-    List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final String userToken, @NotNull final Long codUnidade);
+    List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade) throws Exception;
 }

@@ -1,13 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.integracao.OperacoesIntegradas;
+import br.com.zalf.prolog.webservice.integracao.router.Router;
+import br.com.zalf.prolog.webservice.integracao.router.RouterFlow;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +20,27 @@ public class VeiculoService {
 
     private VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) {
+    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade) {
         try {
-            return dao.getVeiculosAtivosByUnidade(codUnidade);
+            try {
+                Router.newInstance(Injection.provideIntegracaoDao())
+                        .accept(userToken, new RouterFlow() {
+                            @Override
+                            public void proced(@NotNull OperacoesIntegradas operacoesIntegradas) {
+
+                            }
+
+                            @Override
+                            public void cancel() throws SQLException {
+                                return dao.getVeiculosAtivosByUnidade(codUnidade);
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<Veiculo>();
+            return null;
         }
     }
 
@@ -32,7 +49,7 @@ public class VeiculoService {
             return dao.getTipoVeiculosByUnidade(codUnidade);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return null;
         }
     }
 
@@ -59,7 +76,7 @@ public class VeiculoService {
             return dao.getEixos();
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return null;
         }
     }
 
@@ -68,7 +85,7 @@ public class VeiculoService {
             return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<Veiculo>();
+            return null;
         }
     }
 
@@ -111,10 +128,7 @@ public class VeiculoService {
     public boolean insertModeloVeiculo(Modelo modelo, long codEmpresa, long codMarca) {
         try {
             return dao.insertModeloVeiculo(modelo, codEmpresa, codMarca);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (NullPointerException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
             return false;
         }
@@ -125,11 +139,10 @@ public class VeiculoService {
             return dao.getDiagramasVeiculos();
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptySet();
+            return null;
         }
     }
 
-    @Android
     public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) {
         try {
             return dao.getVeiculosByTipo(codUnidade, codTipo);

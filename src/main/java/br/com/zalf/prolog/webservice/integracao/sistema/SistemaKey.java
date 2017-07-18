@@ -15,6 +15,11 @@ public enum SistemaKey {
         this.key = key;
     }
 
+    @NotNull
+    public String getKey() {
+        return key;
+    }
+
     public static SistemaKey fromString(@NotNull final String key) {
         Preconditions.checkNotNull(key, "key não pode ser nula!");
 

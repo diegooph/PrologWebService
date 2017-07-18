@@ -1,30 +1,30 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
-import br.com.zalf.prolog.webservice.integracao.OperacoesIntegradas;
-import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
 import com.sun.istack.internal.NotNull;
-
-import java.util.List;
 
 /**
  * Created by luiz on 7/17/17.
  */
-public class Router implements OperacoesIntegradas {
+public class Router {
     private IntegracaoDao integracaoDao;
 
-    public Router(IntegracaoDao integracaoDao) {
+    private Router(IntegracaoDao integracaoDao) {
         this.integracaoDao = integracaoDao;
     }
 
-    @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull String userToken, @NotNull Long codUnidade) {
-        return getSistema(userToken).getVeiculosAtivosByUnidade(userToken, codUnidade);
+    public static Router newInstance(@NotNull final IntegracaoDao integracaoDao) {
+        return new Router(integracaoDao);
     }
 
-    private Sistema getSistema(@NotNull final String userToken) {
-        return SistemasFactory.createSistema(integracaoDao.getSistemaKey(userToken));
+    public void accept(@NotNull String userToken, @NotNull final RouterFlow routerFlow) throws Exception {
+        final SistemaKey sistemaKey = integracaoDao.getSistemaKey(userToken);
+        if (sistemaKey != null) {
+            routerFlow.proced(SistemasFactory.createSistema(sistemaKey));
+        } else {
+            routerFlow.cancel();
+        }
     }
 }
