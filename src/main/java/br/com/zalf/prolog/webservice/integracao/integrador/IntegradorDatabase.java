@@ -12,11 +12,16 @@ import java.util.List;
 /**
  * Created by luiz on 7/17/17.
  */
-public class IntegradorDatabase extends IntegradorBase {
+public final class IntegradorDatabase extends IntegradorBase {
     @Nullable
     private final VeiculoDao veiculoDao;
     @Nullable
     private final ChecklistDao checklistDao;
+
+    private IntegradorDatabase(VeiculoDao veiculoDao, ChecklistDao checklistDao) {
+        this.veiculoDao = veiculoDao;
+        this.checklistDao = checklistDao;
+    }
 
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) {
@@ -28,9 +33,9 @@ public class IntegradorDatabase extends IntegradorBase {
         }
     }
 
-    private IntegradorDatabase(VeiculoDao veiculoDao, ChecklistDao checklistDao) {
-        this.veiculoDao = veiculoDao;
-        this.checklistDao = checklistDao;
+    @Override
+    public Integrador getIntegradorDatabase() {
+        return this;
     }
 
     public static final class Builder {

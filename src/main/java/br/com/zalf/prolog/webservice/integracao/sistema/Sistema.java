@@ -24,7 +24,8 @@ public abstract class Sistema implements OperacoesIntegradasVeiculo {
         return integradorHttp;
     }
 
-    protected Integrador getIntegradorDatabase() {
+    @Override
+    public Integrador getIntegradorDatabase() {
         return integradorDatabase;
     }
 }

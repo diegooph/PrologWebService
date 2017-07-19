@@ -8,10 +8,10 @@ import java.sql.SQLException;
 /**
  * Created by luiz on 18/07/17.
  */
-public class IntegracaoDaoImpl implements IntegracaoDao {
+public final class IntegracaoDaoImpl implements IntegracaoDao {
 
     @Override
-    public SistemaKey getSistemaKey(@NotNull String userToken) throws SQLException {
+    public SistemaKey getSistemaKey(@NotNull String userToken, @NotNull RecursoIntegrado recursoIntegrado) throws SQLException {
         return null;
     }
 }

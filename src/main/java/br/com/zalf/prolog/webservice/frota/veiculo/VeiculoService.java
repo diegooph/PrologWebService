@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
-import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
+import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class VeiculoService {
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade) {
         try {
-            return new RouterVeiculo(
+            return new RouterVeiculos(
                     Injection.provideIntegracaoDao(),
                     new IntegradorDatabase.Builder()
                             .withVeiculoDao(Injection.provideVeiculoDao())
