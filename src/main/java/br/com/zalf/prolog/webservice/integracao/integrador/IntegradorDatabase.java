@@ -33,11 +33,6 @@ public final class IntegradorDatabase extends IntegradorBase {
         }
     }
 
-    @Override
-    public Integrador getIntegradorDatabase() {
-        return this;
-    }
-
     public static final class Builder {
         private VeiculoDao veiculoDao;
         private ChecklistDao checklistDao;

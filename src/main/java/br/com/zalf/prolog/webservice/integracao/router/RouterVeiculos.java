@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
-import br.com.zalf.prolog.webservice.integracao.OperacoesIntegradasVeiculo;
+import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasVeiculo;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
 import com.sun.istack.internal.NotNull;

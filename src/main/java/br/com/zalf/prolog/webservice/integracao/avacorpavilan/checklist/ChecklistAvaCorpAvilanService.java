@@ -1,14 +1,10 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
 
 
 /**
@@ -20,9 +16,7 @@ import javax.xml.ws.WebServiceFeature;
  * 
  */
 @WebServiceClient(name = "Checklist", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Checklist.asmx?WSDL")
-public class Checklist
-    extends Service
-{
+public class ChecklistAvaCorpAvilanService extends Service {
 
     private final static URL CHECKLIST_WSDL_LOCATION;
     private final static WebServiceException CHECKLIST_EXCEPTION;
@@ -40,27 +34,27 @@ public class Checklist
         CHECKLIST_EXCEPTION = e;
     }
 
-    public Checklist() {
+    public ChecklistAvaCorpAvilanService() {
         super(__getWsdlLocation(), CHECKLIST_QNAME);
     }
 
-    public Checklist(WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(WebServiceFeature... features) {
         super(__getWsdlLocation(), CHECKLIST_QNAME, features);
     }
 
-    public Checklist(URL wsdlLocation) {
+    public ChecklistAvaCorpAvilanService(URL wsdlLocation) {
         super(wsdlLocation, CHECKLIST_QNAME);
     }
 
-    public Checklist(URL wsdlLocation, WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(URL wsdlLocation, WebServiceFeature... features) {
         super(wsdlLocation, CHECKLIST_QNAME, features);
     }
 
-    public Checklist(URL wsdlLocation, QName serviceName) {
+    public ChecklistAvaCorpAvilanService(URL wsdlLocation, QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
-    public Checklist(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
@@ -70,8 +64,8 @@ public class Checklist
      *     returns ChecklistSoap
      */
     @WebEndpoint(name = "ChecklistSoap")
-    public ChecklistSoap getChecklistSoap() {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "ChecklistSoap"), ChecklistSoap.class);
+    public ChecklistAvaCorpAvilanSoap getChecklistSoap() {
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "ChecklistSoap"), ChecklistAvaCorpAvilanSoap.class);
     }
 
     /**
@@ -82,8 +76,8 @@ public class Checklist
      *     returns ChecklistSoap
      */
     @WebEndpoint(name = "ChecklistSoap")
-    public ChecklistSoap getChecklistSoap(WebServiceFeature... features) {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "ChecklistSoap"), ChecklistSoap.class, features);
+    public ChecklistAvaCorpAvilanSoap getChecklistSoap(WebServiceFeature... features) {
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "ChecklistSoap"), ChecklistAvaCorpAvilanSoap.class, features);
     }
 
     private static URL __getWsdlLocation() {

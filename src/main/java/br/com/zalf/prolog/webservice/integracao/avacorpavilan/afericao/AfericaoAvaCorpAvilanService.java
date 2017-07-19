@@ -16,9 +16,7 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "Afericao", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Afericao.asmx?WSDL")
-public class Afericao
-    extends Service
-{
+public class AfericaoAvaCorpAvilanService extends Service {
 
     private final static URL AFERICAO_WSDL_LOCATION;
     private final static WebServiceException AFERICAO_EXCEPTION;
@@ -36,27 +34,27 @@ public class Afericao
         AFERICAO_EXCEPTION = e;
     }
 
-    public Afericao() {
+    public AfericaoAvaCorpAvilanService() {
         super(__getWsdlLocation(), AFERICAO_QNAME);
     }
 
-    public Afericao(WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(WebServiceFeature... features) {
         super(__getWsdlLocation(), AFERICAO_QNAME, features);
     }
 
-    public Afericao(URL wsdlLocation) {
+    public AfericaoAvaCorpAvilanService(URL wsdlLocation) {
         super(wsdlLocation, AFERICAO_QNAME);
     }
 
-    public Afericao(URL wsdlLocation, WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(URL wsdlLocation, WebServiceFeature... features) {
         super(wsdlLocation, AFERICAO_QNAME, features);
     }
 
-    public Afericao(URL wsdlLocation, QName serviceName) {
+    public AfericaoAvaCorpAvilanService(URL wsdlLocation, QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
-    public Afericao(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
@@ -66,8 +64,8 @@ public class Afericao
      *     returns AfericaoSoap
      */
     @WebEndpoint(name = "AfericaoSoap")
-    public AfericaoSoap getAfericaoSoap() {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoSoap.class);
+    public AfericaoAvaCorpAvilanSoap getAfericaoSoap() {
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class);
     }
 
     /**
@@ -78,8 +76,8 @@ public class Afericao
      *     returns AfericaoSoap
      */
     @WebEndpoint(name = "AfericaoSoap")
-    public AfericaoSoap getAfericaoSoap(WebServiceFeature... features) {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoSoap.class, features);
+    public AfericaoAvaCorpAvilanSoap getAfericaoSoap(WebServiceFeature... features) {
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class, features);
     }
 
     private static URL __getWsdlLocation() {

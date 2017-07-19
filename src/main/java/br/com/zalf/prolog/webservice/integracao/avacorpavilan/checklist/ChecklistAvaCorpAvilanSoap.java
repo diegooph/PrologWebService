@@ -20,7 +20,7 @@ import javax.xml.ws.ResponseWrapper;
 @XmlSeeAlso({
     ObjectFactory.class
 })
-public interface ChecklistSoap {
+public interface ChecklistAvaCorpAvilanSoap {
 
 
     /**

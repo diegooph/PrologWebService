@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -15,7 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by luiz on 18/07/17.
  */
-abstract class Router implements OperacoesIntegradas {
+abstract class Router {
     @NotNull
     private final IntegracaoDao integracaoDao;
     @NotNull
@@ -48,8 +47,7 @@ abstract class Router implements OperacoesIntegradas {
         return SistemasFactory.createSistema(sistemaKey, integradorDatabase);
     }
 
-    @Override
-    public Integrador getIntegradorDatabase() {
+    Integrador getIntegradorDatabase() {
         return integradorDatabase;
     }
 }
