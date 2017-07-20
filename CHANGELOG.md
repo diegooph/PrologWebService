@@ -6,6 +6,8 @@ Change Log
 
 #### Features
 
+* Adiciona novas colunas no relatório de consolidado produtividade e troca para usar uma function
+
 #### Refactor
 
 * Altera forma de exibir a hora nos relatórios do quiz, de 12h para 24h
