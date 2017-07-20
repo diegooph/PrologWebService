@@ -200,8 +200,8 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "  CASE WHEN status_ITEM = 'P'\n" +
                 "    THEN 'PENDENTE'\n" +
                 "  ELSE 'RESOLVIDO' END                                                      AS \"STATUS ITEM\",\n" +
-                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH:MI')                           AS \"DATA CONSERTO\",\n" +
-                "  nome_mecanico                                                             AS \"MECÂNICO\",\n" +
+                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH24:MI')                           AS \"DATA CONSERTO\",\n" +
+                "  nome_mecanico                                                            AS \"MECÂNICO\",\n" +
                 "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\",\n" +
                 "  --   PASSAR PRA MINUTOS\n" +
                 "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\",\n" +
