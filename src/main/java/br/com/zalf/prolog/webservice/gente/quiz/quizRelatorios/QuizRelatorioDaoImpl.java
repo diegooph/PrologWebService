@@ -47,7 +47,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                 "  ) AS QT_APROVADOS, MAX(Q.qt_corretas) AS MAX_ACERTOS, MIN(q.qt_corretas) as MIN_ACERTOS FROM\n" +
                 "  COLABORADOR C LEFT JOIN QUIZ Q ON Q.cpf_colaborador = C.CPF\n" +
                 "  JOIN QUIZ_MODELO QM ON QM.CODIGO = Q.COD_MODELO AND QM.COD_UNIDADE = Q.COD_UNIDADE\n" +
-                "  WHERE Q.cod_modelo::TEXT LIKE ? and q.data_hora BETWEEN ? and ?\n" +
+                "  WHERE Q.cod_modelo::TEXT LIKE ? and q.data_hora::DATE BETWEEN ? and ?\n" +
                 "GROUP BY 1) AS REALIZADOS ON CPF_REALIZADOS = C.CPF\n" +
                 "WHERE c.status_ativo = true AND C.cod_unidade = ? AND C.status_ativo = TRUE\n" +
                 "ORDER BY \"REALIZADOS\" DESC;");
@@ -203,7 +203,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
     }
 
     private PreparedStatement getExtratoGeral(Connection conn, Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH:MM') as \"DATA DE REALIZAÇÃO\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH24:MI') as \"DATA DE REALIZAÇÃO\",\n" +
                 "  qm.nome as \"QUIZ\",\n" +
                 "  c.nome as \"COLABORADOR\",\n" +
                 "  f.nome as \"FUNÇÃO\",\n" +
@@ -217,7 +217,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                 "join colaborador c on c.cpf = q.cpf_colaborador and c.cod_unidade = q.cod_unidade\n" +
                 "  join unidade u on u.codigo = c.cod_unidade and u.codigo = q.cod_unidade\n" +
                 "join funcao f on f.codigo = c.cod_funcao and f.cod_empresa = u.cod_empresa\n" +
-                "  WHERE Q.cod_unidade = ? AND Q.data_hora BETWEEN ? AND ?\n" +
+                "  WHERE Q.cod_unidade = ? AND Q.data_hora::DATE BETWEEN ? AND ?\n" +
                 "order by q.data_hora desc");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
