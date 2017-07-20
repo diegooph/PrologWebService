@@ -203,7 +203,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
     }
 
     private PreparedStatement getExtratoGeral(Connection conn, Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH:MM') as \"DATA DE REALIZAÇÃO\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH24:MI') as \"DATA DE REALIZAÇÃO\",\n" +
                 "  qm.nome as \"QUIZ\",\n" +
                 "  c.nome as \"COLABORADOR\",\n" +
                 "  f.nome as \"FUNÇÃO\",\n" +
