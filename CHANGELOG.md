@@ -8,9 +8,14 @@ Change Log
 
 #### Refactor
 
+* Altera forma de exibir a hora nos relatórios do quiz, de 12h para 24h
+* Altera forma de exibir a hora nos relatórios de OS, de 12h para 24h
+
 #### Deprecated
 
 #### Bug Fixes
+
+* Corrige o erro no filtro de datas dos relatórios do Quiz
 
 
 <a name="v0.0.21"></a>
