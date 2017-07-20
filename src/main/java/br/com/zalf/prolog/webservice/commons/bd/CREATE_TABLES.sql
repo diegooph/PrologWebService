@@ -1847,73 +1847,51 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
     to_seconds((um.meta_tempo_largada_horas)::text) AS meta_tempo_largada_horas,
     to_seconds((um.meta_jornada_liquida_horas)::text) AS meta_jornada_liquida_horas,
         CASE
-    WHEN (((c.matricula_ambev = m.matricmotorista) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT)) OR ((m.cargaatual) :: TEXT = 'Recarga' :: TEXT))
-      THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
-    WHEN (((c.matricula_ambev = m.matricajud1) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT))  OR ((m.cargaatual) :: TEXT = 'Recarga' :: TEXT))
-      THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-    WHEN (((c.matricula_ambev = m.matricajud2) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT))  OR ((m.cargaatual) :: TEXT = 'Recarga' :: TEXT))
-      THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-    ELSE (0) :: REAL
-    END AS VALOR_ROTA,
-    CASE
-    WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT)) AND
-           (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual) :: TEXT <> 'Recarga' :: TEXT))
-      THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota) :: DOUBLE PRECISION) /
-            (m.fator) :: DOUBLE PRECISION) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
-    WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT)) AND
-           (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual) :: TEXT <> 'Recarga' :: TEXT))
-      THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota) :: DOUBLE PRECISION) /
-            (m.fator) :: DOUBLE PRECISION) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-    WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega) :: TEXT <> 'AS' :: TEXT)) AND
-           (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual) :: TEXT <> 'Recarga' :: TEXT))
-      THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota) :: DOUBLE PRECISION) /
-            (m.fator) :: DOUBLE PRECISION) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-    ELSE (0) :: DOUBLE PRECISION
-    END AS VALOR_DIFERENCA_ELD,
-
-  CASE
-  WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega) :: TEXT = 'AS' :: TEXT))
-    THEN
-      CASE
-      WHEN (m.entregas = 1)
-        THEN uv.rm_motorista_valor_as_1_entrega
-      WHEN (m.entregas = 2)
-        THEN uv.rm_motorista_valor_as_2_entregas
-      WHEN (m.entregas = 3)
-        THEN uv.rm_motorista_valor_as_3_entregas
-      WHEN (m.entregas > 3)
-        THEN uv.rm_motorista_valor_as_maior_3_entregas
-      ELSE (0) :: REAL
-      END
-  WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega) :: TEXT = 'AS' :: TEXT))
-    THEN
-      CASE
-      WHEN (m.entregas = 1)
-        THEN uv.rm_ajudante_valor_as_1_entrega
-      WHEN (m.entregas = 2)
-        THEN uv.rm_ajudante_valor_as_2_entregas
-      WHEN (m.entregas = 3)
-        THEN uv.rm_ajudante_valor_as_3_entregas
-      WHEN (m.entregas > 3)
-        THEN uv.rm_ajudante_valor_as_maior_3_entregas
-      ELSE (0) :: REAL
-      END
-  WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega) :: TEXT = 'AS' :: TEXT))
-    THEN
-      CASE
-      WHEN (m.entregas = 1)
-        THEN uv.rm_ajudante_valor_as_1_entrega
-      WHEN (m.entregas = 2)
-        THEN uv.rm_ajudante_valor_as_2_entregas
-      WHEN (m.entregas = 3)
-        THEN uv.rm_ajudante_valor_as_3_entregas
-      WHEN (m.entregas > 2)
-        THEN uv.rm_ajudante_valor_as_maior_3_entregas
-      ELSE (0) :: REAL
-      END
-  ELSE (0) :: REAL
-  END      AS valor_AS,
-      ((
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND (((m.entrega)::text <> 'AS'::text) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (m.vlbateujornmot + m.vlnaobateujornmot)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND (((m.entrega)::text <> 'AS'::text) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND (((m.entrega)::text <> 'AS'::text) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
+            ELSE (0)::real
+        END AS valor_rota,
+        CASE
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text))) THEN m.vlrecargamot
+            WHEN ((c.matricula_ambev = m.matricajud1) AND (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text))) THEN (m.vlrecargaaju / m.fator)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text))) THEN (m.vlrecargaaju / m.fator)
+            ELSE (0)::real
+        END AS valor_recarga,
+        CASE
+            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
+            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            ELSE (0)::double precision
+        END AS valor_diferenca_eld,
+        CASE
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_motorista_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_motorista_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_motorista_valor_as_3_entregas
+                WHEN (m.entregas > 3) THEN uv.rm_motorista_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_ajudante_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_ajudante_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_ajudante_valor_as_3_entregas
+                WHEN (m.entregas > 3) THEN uv.rm_ajudante_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text = 'AS'::text)) THEN
+            CASE
+                WHEN (m.entregas = 1) THEN uv.rm_ajudante_valor_as_1_entrega
+                WHEN (m.entregas = 2) THEN uv.rm_ajudante_valor_as_2_entregas
+                WHEN (m.entregas = 3) THEN uv.rm_ajudante_valor_as_3_entregas
+                WHEN (m.entregas > 2) THEN uv.rm_ajudante_valor_as_maior_3_entregas
+                ELSE (0)::real
+            END
+            ELSE (0)::real
+        END AS valor_as,
+    ((
         CASE
             WHEN (((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
             WHEN (((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
@@ -2002,3 +1980,48 @@ UNION
      JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
      JOIN colaborador c ON ((((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante)) AND (c.cod_unidade = m.cod_unidade))));
 COMMENT ON VIEW view_mapa_colaborador IS 'View utilizada para linkar os mapas relizados por cada colaborador';
+
+CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicial DATE, f_dt_final DATE, f_cod_unidade BIGINT)
+  RETURNS TABLE (
+    "COLABORADOR" TEXT,
+  "FUNÇÃO" TEXT,
+  "CXS ENTREGUES" INT,
+  "DEV PDV" NUMERIC,
+  "META DEV PDV" NUMERIC,
+  "RECEBE PRÊMIO" TEXT,
+    "Nº ROTAS" BIGINT,
+    "VALOR ROTA" TEXT,
+    "Nº RECARGAS" BIGINT,
+    "VALOR RECARGA" TEXT,
+    "Nº ELD" BIGINT,
+    "DIFERENÇA ELD" TEXT,
+    "Nº AS" BIGINT,
+    "VALOR AS" TEXT,
+    "Nº MAPAS TOTAL" BIGINT,
+    "VALOR TOTAL" TEXT
+  ) AS
+  $func$
+    SELECT
+  nome_colaborador AS "COLABORADOR",
+  funcao AS "FUNÇÃO",
+  trunc(sum(cxentreg))::INT        AS "CXS ENTREGUES",
+  round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2) as "DEV PDV",
+  round((meta_dev_pdv * 100)::numeric, 2) AS "META DEV PDV",
+  CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
+    'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
+      sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
+      'R$ ' || trunc(sum(valor_rota) :: NUMERIC, 2) AS "VALOR ROTA",
+      sum(CASE WHEN valor_recarga > 0 THEN 1 else 0 END) as "Nº RECARGAS",
+      'R$ ' || trunc(sum(valor_recarga) :: NUMERIC, 2) AS "VALOR RECARGA",
+      sum(CASE WHEN valor_diferenca_eld > 0 THEN 1 else 0 END) as "Nº ELD",
+      'R$ ' || trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS "DIFERENÇA ELD" ,
+      sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
+      'R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2) AS "VALOR AS",
+      sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
+      'R$ ' || trunc(sum(valor) :: NUMERIC, 2) AS "VALOR TOTAL"
+FROM view_produtividade_extrato
+-- WHERE cod_unidade = f_cod_unidade AND data BETWEEN f_dt_inicial AND f_dt_final
+WHERE cod_unidade = 4 AND data BETWEEN '2017-07-07' AND '2018-02-02'
+GROUP BY nome_colaborador, funcao, meta_dev_pdv
+ORDER BY funcao, nome_colaborador;
+  $func$ LANGUAGE SQL;
