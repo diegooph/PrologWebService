@@ -76,4 +76,7 @@ public class Veiculo {
         this.tipoVeiculo = value;
     }
 
+    public long getKmAtual() {
+        return 0;
+    }
 }

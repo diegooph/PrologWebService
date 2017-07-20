@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasAfericao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasChecklist;
@@ -48,7 +50,19 @@ public abstract class Sistema implements OperacoesIntegradasVeiculo, OperacoesIn
     }
 
     @Override
+    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+        return getIntegradorDatabase().getNovaAfericao(placaVeiculo);
+    }
+
+    @Override
     public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
         return getIntegradorDatabase().insertAfericao(afericao, codUnidade);
+    }
+
+    @Override
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo) throws Exception {
+        return getIntegradorDatabase().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
     }
 }

@@ -1,16 +1,22 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfQuestionarioVeiculos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.Questionario;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.QuestionarioVeiculos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -92,6 +98,95 @@ final class AvaCorpAvilanConverter {
         }
 
         return map;
+    }
+
+    static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculoQuestoes, String placaVeiculo) {
+        checkNotNull(veiculoQuestoes, "veiculoQuestoes não pode ser null!");
+        checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
+
+        final NovoChecklistHolder novoChecklistHolder = new NovoChecklistHolder();
+
+        // Seta informações Veículo
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(placaVeiculo);
+        // Seta o km do veículo buscando algum veículo que possua a placa informada
+        veiculo.setKmAtual(veiculoQuestoes
+                .getVeiculoQuestao()
+                .stream()
+                .filter(veiculoQuestao -> veiculoQuestao.getVeiculo().getPlaca().equals(placaVeiculo))
+                .collect(MoreCollectors.onlyElement())
+                .getVeiculo()
+                .getKmAtual());
+        novoChecklistHolder.setVeiculo(veiculo);
+
+
+        final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
+        for (VeiculoQuestao veiculoQuestao : veiculoQuestoes.getVeiculoQuestao()) {
+            final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
+            for (Questao questao : arrayOfQuestao.getQuestao()) {
+                final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+                pergunta.setCodigo((long) questao.getCodigoAvaliacao());
+                pergunta.setOrdemExibicao(questao.getSequenciaQuestao());
+                pergunta.setPergunta(questao.getDescricao());
+                final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                for (Resposta resposta : questao.getRespostas().getResposta()) {
+                    final AlternativaChecklist alternativa = new AlternativaChecklist();
+                    alternativa.setCodigo(resposta.getCodigoResposta());
+                    alternativa.setAlternativa(resposta.getDescricao());
+                    alternativas.add(alternativa);
+                }
+                pergunta.setAlternativasResposta(alternativas);
+                perguntas.add(pergunta);
+            }
+        }
+        novoChecklistHolder.setListPerguntas(perguntas);
+
+        return novoChecklistHolder;
+    }
+
+    static RespostasAvaliacao convert(Checklist checklist) {
+        checkNotNull(checklist, "checklist não pode ser null!");
+
+        final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
+        respostasAvaliacao.setCpf(String.valueOf(checklist.getColaborador().getCpf()));
+        respostasAvaliacao.setDtNascimento(createDatePattern(checklist.getColaborador().getDataNascimento()));
+        respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
+        respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
+
+        final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
+        for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+            final RespostaAval respostaAval = new RespostaAval();
+            respostaAval.setSequenciaQuestao(resposta.getOrdemExibicao());
+            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+                respostaAval.setCodigoResposta(Math.toIntExact(alternativa.getCodigo()));
+                if (alternativa.getTipo() == Alternativa.TIPO_OUTROS) {
+                    respostaAval.setObservacao(alternativa.getRespostaOutros());
+                }
+            }
+            arrayOfRespostaAval.getRespostaAval().add(respostaAval);
+        }
+
+        return respostasAvaliacao;
+    }
+
+    static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
+        checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
+        final List<Pneu> pneus = new ArrayList<>();
+
+        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
+            final Pneu pneu = new Pneu();
+            pneu.setCodigo(1 /* TODO: alterar código  */);
+            pneu.setPosicao(1 /* TODO: mapeamento entre posições avilan prolog */);
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setExterno(p.getSulco1());
+            sulcos.setCentralExterno(p.getSulco2());
+            sulcos.setCentralInterno(p.getSulco3());
+            sulcos.setInterno(p.getSulco4());
+            pneu.setSulcosAtuais(sulcos);
+            pneus.add(pneu);
+        }
+
+        return pneus;
     }
 
     /**
