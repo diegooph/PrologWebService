@@ -66,7 +66,7 @@ final class AvaCorpAvilanConverter {
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
             medidaPneu.setCalibragem(pneu.getPressaoAtual());
-            medidaPneu.setNumeroFogoPneu(String.valueOf(pneu.getCodigo()) /* TODO: parse para posições Avilan */);
+            medidaPneu.setNumeroFogoPneu(AvilanPosicaoPneuMapper.map(pneu.getPosicao()));
             medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
             medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
             medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
@@ -152,7 +152,6 @@ final class AvaCorpAvilanConverter {
         respostasAvaliacao.setDtNascimento(createDatePattern(checklist.getColaborador().getDataNascimento()));
         respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
-
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
             final RespostaAval respostaAval = new RespostaAval();
@@ -176,7 +175,10 @@ final class AvaCorpAvilanConverter {
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(1 /* TODO: alterar código  */);
-            pneu.setPosicao(1 /* TODO: mapeamento entre posições avilan prolog */);
+            pneu.setPosicao(AvilanPosicaoPneuMapper.map(p.getPosicao()));
+            // A vida atual do pneu começa em 1 quando ele é novo, por isso somamos 1 ao total de recapagens
+            // para ter a informação correta
+            pneu.setVidaAtual(p.getQtdRecapagens() + 1);
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(p.getSulco1());
             sulcos.setCentralExterno(p.getSulco2());

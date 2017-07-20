@@ -161,4 +161,7 @@ public class Pneu {
     }
 
 
+    public int getQtdRecapagens() {
+        return 0;
+    }
 }
