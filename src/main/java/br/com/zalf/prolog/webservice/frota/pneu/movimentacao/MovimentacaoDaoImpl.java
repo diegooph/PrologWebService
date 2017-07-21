@@ -64,14 +64,14 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setLong(2, movimentacao.getUnidade().getCodigo());
             for (Movimentacao mov : movimentacao.getMovimentacoes()) {
-                stmt.setLong(3, mov.getPneu().getCodigo());
-                stmt.setLong(4, mov.getPneu().getCodigo());
+                stmt.setString(3, mov.getPneu().getCodigo());
+                stmt.setString(4, mov.getPneu().getCodigo());
                 stmt.setLong(5, movimentacao.getUnidade().getCodigo());
-                stmt.setLong(6, mov.getPneu().getCodigo());
+                stmt.setString(6, mov.getPneu().getCodigo());
                 stmt.setLong(7, movimentacao.getUnidade().getCodigo());
-                stmt.setLong(8, mov.getPneu().getCodigo());
+                stmt.setString(8, mov.getPneu().getCodigo());
                 stmt.setLong(9, movimentacao.getUnidade().getCodigo());
-                stmt.setLong(10, mov.getPneu().getCodigo());
+                stmt.setString(10, mov.getPneu().getCodigo());
                 stmt.setLong(11, movimentacao.getUnidade().getCodigo());
                 stmt.setDouble(12, mov.getPneu().getVidaAtual());
                 stmt.setString(13, mov.getObservacao());
@@ -111,13 +111,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, int codPneu) throws SQLException {
+    private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, String codPneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND COD_PNEU = ?");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
-            stmt.setInt(3, codPneu);
+            stmt.setString(3, codPneu);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao deletar o pneu do veiculo");
@@ -141,10 +141,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     "placa, km_veiculo, posicao_pneu_origem) values ((SELECT p.status\n" +
                     "FROM pneu p " +
                     "WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? in (select p.status from pneu p WHERE p.codigo = ? and p.cod_unidade = ?)),?,?,?,?)");
-            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            stmt.setString(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo());
-            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setString(4, movimentacao.getPneu().getCodigo());
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
@@ -209,7 +209,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             } else {
                 stmt.setNull(3, Types.INTEGER);
             }
-            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setString(4, movimentacao.getPneu().getCodigo());
             stmt.setLong(5, codUnidade);
             stmt.executeUpdate();
         } finally {
@@ -224,7 +224,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     "VALUES (?,?,?,?)");
             DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
             stmt.setString(1, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(2, movimentacao.getPneu().getCodigo());
+            stmt.setString(2, movimentacao.getPneu().getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
             return stmt.executeUpdate() == 0;

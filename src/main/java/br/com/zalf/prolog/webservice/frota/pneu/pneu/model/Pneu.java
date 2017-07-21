@@ -25,8 +25,8 @@ public class Pneu {
     // Caso o pneu esteja com problema de NUMERO_INCORRETO (pneu instalado
     // é diferente do que esta no sistemas), enviar o codigo do pneu correto (que está
     // instalado atualmente)
-    private int codPneuProblema;
-    private int codigo;
+    private String codPneuProblema;
+    private String codigo;
     private Marca marca;
     private ModeloPneu modelo;
     private BigDecimal valor;
@@ -59,6 +59,7 @@ public class Pneu {
     private int posicao;
 
     public Pneu() {
+
     }
 
     public Banda getBanda() {
@@ -69,11 +70,11 @@ public class Pneu {
         this.banda = banda;
     }
 
-    public int getCodPneuProblema() {
+    public String getCodPneuProblema() {
         return codPneuProblema;
     }
 
-    public void setCodPneuProblema(int codPneuProblema) {
+    public void setCodPneuProblema(String codPneuProblema) {
         this.codPneuProblema = codPneuProblema;
     }
 
@@ -93,11 +94,11 @@ public class Pneu {
         this.pressaoAtual = pressaoAtual;
     }
 
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

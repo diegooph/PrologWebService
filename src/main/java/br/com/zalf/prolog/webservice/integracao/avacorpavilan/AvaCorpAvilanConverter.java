@@ -187,7 +187,7 @@ final class AvaCorpAvilanConverter {
 
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
-            pneu.setCodigo(1 /* TODO: alterar código  */);
+            pneu.setCodigo(p.getNumeroFogo());
             pneu.setPosicao(AvilanPosicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo

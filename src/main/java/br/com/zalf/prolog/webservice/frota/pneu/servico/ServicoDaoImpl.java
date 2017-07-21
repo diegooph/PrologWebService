@@ -281,7 +281,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
 			stmt.setLong(4, servico.getKmVeiculo());
 			stmt.setLong(5, servico.getCodAfericao());
-			stmt.setLong(6, servico.getPneu().getCodigo());
+			stmt.setString(6, servico.getPneu().getCodigo());
 			stmt.setString(7, servico.getTipo());
 			int count = stmt.executeUpdate();
 			if (count == 0) {
@@ -313,7 +313,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			stmt.setLong(4, servico.getKmVeiculo());
 			stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
 			stmt.setLong(6, servico.getCodAfericao());
-			stmt.setLong(7, servico.getPneu().getCodigo());
+			stmt.setString(7, servico.getPneu().getCodigo());
 			stmt.setString(8, servico.getTipo());
 			int count = stmt.executeUpdate();
 			if (count == 0) {

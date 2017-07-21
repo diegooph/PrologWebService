@@ -18,10 +18,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -315,7 +312,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
-            stmt.setLong(2, pneu.getCodigo());
+            stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setDouble(4, pneu.getPressaoAtual());
             stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
@@ -416,8 +413,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
-            stmt.setLong(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
-            stmt.setLong(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+            stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
+            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
             stmt.setInt(6, pneu.getPosicao());
             stmt.setLong(7, codUnidade);
             stmt.executeQuery();
@@ -459,13 +456,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO, COD_PNEU_INSERIDO)"
                 + " VALUES(?,?,?,?,?)");
         stmt.setLong(1, codAfericao);
-        stmt.setLong(2, pneu.getCodigo());
+        stmt.setString(2, pneu.getCodigo());
         stmt.setLong(3, codUnidade);
         stmt.setString(4, tipoServico);
         if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.NUMERO_INCORRETO)) {
-            stmt.setInt(5, pneu.getCodPneuProblema());
+            stmt.setString(5, pneu.getCodPneuProblema());
         } else {
-            stmt.setNull(5, java.sql.Types.INTEGER);
+            stmt.setNull(5, Types.VARCHAR);
         }
         stmt.executeUpdate();
     }
@@ -476,10 +473,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
-        stmt.setLong(1, pneu.getCodigo());
+        stmt.setString(1, pneu.getCodigo());
         stmt.setLong(2, codUnidade);
         stmt.setString(3, tipoServico);
-        stmt.setLong(4, pneu.getCodigo());
+        stmt.setString(4, pneu.getCodigo());
         stmt.setLong(5, codUnidade);
         stmt.setString(6, tipoServico);
         stmt.executeUpdate();
@@ -499,11 +496,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
-        stmt.setLong(1, pneu.getCodigo());
+        stmt.setString(1, pneu.getCodigo());
         stmt.setLong(2, codUnidade);
         stmt.setString(3, Servico.TIPO_CALIBRAGEM);
         stmt.setString(4, Servico.TIPO_INSPECAO);
-        stmt.setLong(5, pneu.getCodigo());
+        stmt.setString(5, pneu.getCodigo());
         stmt.setLong(6, codUnidade);
         stmt.setString(7, Servico.TIPO_CALIBRAGEM);
         stmt.executeUpdate();
