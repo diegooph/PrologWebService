@@ -18,7 +18,8 @@ import java.util.Map;
  */
 public final class AvaCorpAvilan extends Sistema {
 
-    public AvaCorpAvilan(@NotNull final Integrador integradorHttp, @NotNull final Integrador integradoDatabase) {
+    public AvaCorpAvilan(@NotNull final Integrador integradorHttp,
+                         @NotNull final Integrador integradoDatabase) {
         super(integradorHttp, integradoDatabase);
     }
 
@@ -39,12 +40,13 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+    public boolean insertAfericao(@NotNull Afericao afericao,
+                                  @NotNull Long codUnidade) throws Exception {
         return getIntegradorHttp().insertAfericao(afericao, codUnidade);
     }
 
     @Override
-    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
         return getIntegradorHttp().getNovaAfericao(placaVeiculo);
     }
 

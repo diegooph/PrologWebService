@@ -13,10 +13,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.CadastroA
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.VeiculosAtivos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.BuscaQuestionarioColaborador;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistAvaCorpAvilanService;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistAvaCorpAvilanSoap;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.PerguntasAlternativasQuestionario;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorHttp;
 import com.sun.istack.internal.NotNull;
 
@@ -61,7 +58,8 @@ public final class IntegradorHttpAvaCorpAvilan extends IntegradorHttp {
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
                                                                                     @NotNull Long codFuncao) throws Exception {
         // TODO: passar CPF aqui.
-        final BuscaQuestionarioColaborador request = getChecklistSoap().buscarQuestionariosColaborador("CPF AQUI");
+        final BuscaQuestionarioColaborador request = getChecklistSoap().buscarQuestionariosColaborador(""
+                /* TODO: CPF AQUI*/);
         if (request != null && request.isSucesso()) {
             return AvaCorpAvilanConverter.convert(request.getQuestionarioVeiculos());
         }
@@ -73,8 +71,14 @@ public final class IntegradorHttpAvaCorpAvilan extends IntegradorHttp {
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo) throws Exception {
+        final AdicionarChecklist adicionarChecklist = new AdicionarChecklist();
+        adicionarChecklist.setCpf("" /* TODO: passar CPF aqui */);
+        adicionarChecklist.setDtNascimento("" /* TODO: passar data nascimento aqui */);
+        adicionarChecklist.setVeiculo(placaVeiculo);
+        // As demais informações do objeto AdicionarChecklist não precisam ser setadas
+
         final PerguntasAlternativasQuestionario request
-                = getChecklistSoap().buscarPerguntasAlternativasQuestionario(null /* TODO */);
+                = getChecklistSoap().buscarPerguntasAlternativasQuestionario(adicionarChecklist);
         if (request != null && request.isSucesso()) {
             // Esse request retorna uma lista de VeiculoQuestao pois, dado um veículo ABC,
             // caso queiramos buscar seu questionário, ele pode estar atrelado a carretas DIK e XYZ, por exemplo.

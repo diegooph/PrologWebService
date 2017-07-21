@@ -60,7 +60,8 @@ final class AvaCorpAvilanConverter {
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
         incluirMedida2.setDataMedida(createDatePattern(afericao.getDataHora()));
-        // TODO: setar placas carreta?
+        // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
+        // seja aferida, então a placa dela será setada em .setVeiculo()
 
         ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
