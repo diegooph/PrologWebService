@@ -66,7 +66,7 @@ final class AvaCorpAvilanConverter {
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
             medidaPneu.setCalibragem(pneu.getPressaoAtual());
-            medidaPneu.setNumeroFogoPneu(String.valueOf(pneu.getCodigo()));
+            medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
             medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
             medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
             medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
