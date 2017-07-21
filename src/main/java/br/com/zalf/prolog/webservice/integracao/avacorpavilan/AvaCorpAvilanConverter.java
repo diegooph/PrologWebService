@@ -66,7 +66,7 @@ final class AvaCorpAvilanConverter {
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
             medidaPneu.setCalibragem(pneu.getPressaoAtual());
-            medidaPneu.setNumeroFogoPneu(AvilanPosicaoPneuMapper.map(pneu.getPosicao()));
+            medidaPneu.setNumeroFogoPneu(String.valueOf(pneu.getCodigo()));
             medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
             medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
             medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
@@ -175,7 +175,7 @@ final class AvaCorpAvilanConverter {
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(1 /* TODO: alterar código  */);
-            pneu.setPosicao(AvilanPosicaoPneuMapper.map(p.getPosicao()));
+            pneu.setPosicao(AvilanPosicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, por isso somamos 1 ao total de recapagens
             // para ter a informação correta
             pneu.setVidaAtual(p.getQtdRecapagens() + 1);
