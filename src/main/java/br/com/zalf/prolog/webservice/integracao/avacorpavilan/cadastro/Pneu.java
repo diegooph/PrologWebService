@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Pneu complex type.
+ * <p>Classe Java de Pneu complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Pneu">
@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="sulco2" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="sulco3" type="{http://www.w3.org/2001/XMLSchema}double"/>
  *         &lt;element name="sulco4" type="{http://www.w3.org/2001/XMLSchema}double"/>
+ *         &lt;element name="vidaPneu" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,7 +38,8 @@ import javax.xml.bind.annotation.XmlType;
     "sulco1",
     "sulco2",
     "sulco3",
-    "sulco4"
+    "sulco4",
+    "vidaPneu"
 })
 public class Pneu {
 
@@ -47,9 +49,10 @@ public class Pneu {
     protected double sulco2;
     protected double sulco3;
     protected double sulco4;
+    protected int vidaPneu;
 
     /**
-     * Gets the value of the numeroFogo property.
+     * Obtém o valor da propriedade numeroFogo.
      * 
      * @return
      *     possible object is
@@ -61,7 +64,7 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the numeroFogo property.
+     * Define o valor da propriedade numeroFogo.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +76,7 @@ public class Pneu {
     }
 
     /**
-     * Gets the value of the posicao property.
+     * Obtém o valor da propriedade posicao.
      * 
      * @return
      *     possible object is
@@ -85,7 +88,7 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the posicao property.
+     * Define o valor da propriedade posicao.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +100,7 @@ public class Pneu {
     }
 
     /**
-     * Gets the value of the sulco1 property.
+     * Obtém o valor da propriedade sulco1.
      * 
      */
     public double getSulco1() {
@@ -105,7 +108,7 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the sulco1 property.
+     * Define o valor da propriedade sulco1.
      * 
      */
     public void setSulco1(double value) {
@@ -113,7 +116,7 @@ public class Pneu {
     }
 
     /**
-     * Gets the value of the sulco2 property.
+     * Obtém o valor da propriedade sulco2.
      * 
      */
     public double getSulco2() {
@@ -121,7 +124,7 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the sulco2 property.
+     * Define o valor da propriedade sulco2.
      * 
      */
     public void setSulco2(double value) {
@@ -129,7 +132,7 @@ public class Pneu {
     }
 
     /**
-     * Gets the value of the sulco3 property.
+     * Obtém o valor da propriedade sulco3.
      * 
      */
     public double getSulco3() {
@@ -137,7 +140,7 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the sulco3 property.
+     * Define o valor da propriedade sulco3.
      * 
      */
     public void setSulco3(double value) {
@@ -145,7 +148,7 @@ public class Pneu {
     }
 
     /**
-     * Gets the value of the sulco4 property.
+     * Obtém o valor da propriedade sulco4.
      * 
      */
     public double getSulco4() {
@@ -153,15 +156,27 @@ public class Pneu {
     }
 
     /**
-     * Sets the value of the sulco4 property.
+     * Define o valor da propriedade sulco4.
      * 
      */
     public void setSulco4(double value) {
         this.sulco4 = value;
     }
 
-
-    public int getQtdRecapagens() {
-        return 0;
+    /**
+     * Obtém o valor da propriedade vidaPneu.
+     * 
+     */
+    public int getVidaPneu() {
+        return vidaPneu;
     }
+
+    /**
+     * Define o valor da propriedade vidaPneu.
+     * 
+     */
+    public void setVidaPneu(int value) {
+        this.vidaPneu = value;
+    }
+
 }

@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for RetornoPadrao complex type.
+ * <p>Classe Java de RetornoPadrao complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RetornoPadrao">
@@ -37,7 +37,7 @@ public class RetornoPadrao {
     protected String mensagem;
 
     /**
-     * Gets the value of the sucesso property.
+     * Obtém o valor da propriedade sucesso.
      * 
      */
     public boolean isSucesso() {
@@ -45,7 +45,7 @@ public class RetornoPadrao {
     }
 
     /**
-     * Sets the value of the sucesso property.
+     * Define o valor da propriedade sucesso.
      * 
      */
     public void setSucesso(boolean value) {
@@ -53,7 +53,7 @@ public class RetornoPadrao {
     }
 
     /**
-     * Gets the value of the mensagem property.
+     * Obtém o valor da propriedade mensagem.
      * 
      * @return
      *     possible object is
@@ -65,7 +65,7 @@ public class RetornoPadrao {
     }
 
     /**
-     * Sets the value of the mensagem property.
+     * Define o valor da propriedade mensagem.
      * 
      * @param value
      *     allowed object is

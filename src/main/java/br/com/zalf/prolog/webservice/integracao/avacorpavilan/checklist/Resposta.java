@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Resposta complex type.
+ * <p>Classe Java de Resposta complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Resposta">
@@ -46,7 +46,7 @@ public class Resposta {
     protected boolean padrao;
 
     /**
-     * Gets the value of the codigoResposta property.
+     * Obtém o valor da propriedade codigoResposta.
      * 
      * @return
      *     possible object is
@@ -58,7 +58,7 @@ public class Resposta {
     }
 
     /**
-     * Sets the value of the codigoResposta property.
+     * Define o valor da propriedade codigoResposta.
      * 
      * @param value
      *     allowed object is
@@ -70,7 +70,7 @@ public class Resposta {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -82,7 +82,7 @@ public class Resposta {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -94,7 +94,7 @@ public class Resposta {
     }
 
     /**
-     * Gets the value of the obrigatorioObservacao property.
+     * Obtém o valor da propriedade obrigatorioObservacao.
      * 
      * @return
      *     possible object is
@@ -106,7 +106,7 @@ public class Resposta {
     }
 
     /**
-     * Sets the value of the obrigatorioObservacao property.
+     * Define o valor da propriedade obrigatorioObservacao.
      * 
      * @param value
      *     allowed object is
@@ -118,7 +118,7 @@ public class Resposta {
     }
 
     /**
-     * Gets the value of the padrao property.
+     * Obtém o valor da propriedade padrao.
      * 
      */
     public boolean isPadrao() {
@@ -126,7 +126,7 @@ public class Resposta {
     }
 
     /**
-     * Sets the value of the padrao property.
+     * Define o valor da propriedade padrao.
      * 
      */
     public void setPadrao(boolean value) {

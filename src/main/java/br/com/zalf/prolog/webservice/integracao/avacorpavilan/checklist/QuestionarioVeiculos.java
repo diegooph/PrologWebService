@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for QuestionarioVeiculos complex type.
+ * <p>Classe Java de QuestionarioVeiculos complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="QuestionarioVeiculos">
@@ -37,7 +37,7 @@ public class QuestionarioVeiculos {
     protected ArrayOfVeiculo veiculos;
 
     /**
-     * Gets the value of the questionario property.
+     * Obtém o valor da propriedade questionario.
      * 
      * @return
      *     possible object is
@@ -49,7 +49,7 @@ public class QuestionarioVeiculos {
     }
 
     /**
-     * Sets the value of the questionario property.
+     * Define o valor da propriedade questionario.
      * 
      * @param value
      *     allowed object is
@@ -61,7 +61,7 @@ public class QuestionarioVeiculos {
     }
 
     /**
-     * Gets the value of the veiculos property.
+     * Obtém o valor da propriedade veiculos.
      * 
      * @return
      *     possible object is
@@ -73,7 +73,7 @@ public class QuestionarioVeiculos {
     }
 
     /**
-     * Sets the value of the veiculos property.
+     * Define o valor da propriedade veiculos.
      * 
      * @param value
      *     allowed object is

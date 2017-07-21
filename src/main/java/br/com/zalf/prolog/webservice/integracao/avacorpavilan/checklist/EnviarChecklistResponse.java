@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Classe Java de anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType>
@@ -36,7 +36,7 @@ public class EnviarChecklistResponse {
     protected EnviaRespostaAvaliacao enviarChecklistResult;
 
     /**
-     * Gets the value of the enviarChecklistResult property.
+     * Obtém o valor da propriedade enviarChecklistResult.
      * 
      * @return
      *     possible object is
@@ -48,7 +48,7 @@ public class EnviarChecklistResponse {
     }
 
     /**
-     * Sets the value of the enviarChecklistResult property.
+     * Define o valor da propriedade enviarChecklistResult.
      * 
      * @param value
      *     allowed object is

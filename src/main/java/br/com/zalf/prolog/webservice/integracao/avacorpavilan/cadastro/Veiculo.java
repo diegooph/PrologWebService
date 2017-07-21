@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Veiculo complex type.
+ * <p>Classe Java de Veiculo complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Veiculo">
@@ -37,7 +37,7 @@ public class Veiculo {
     protected int marcador;
 
     /**
-     * Gets the value of the placa property.
+     * Obtém o valor da propriedade placa.
      * 
      * @return
      *     possible object is
@@ -49,7 +49,7 @@ public class Veiculo {
     }
 
     /**
-     * Sets the value of the placa property.
+     * Define o valor da propriedade placa.
      * 
      * @param value
      *     allowed object is
@@ -61,7 +61,7 @@ public class Veiculo {
     }
 
     /**
-     * Gets the value of the marcador property.
+     * Obtém o valor da propriedade marcador.
      * 
      */
     public int getMarcador() {
@@ -69,7 +69,7 @@ public class Veiculo {
     }
 
     /**
-     * Sets the value of the marcador property.
+     * Define o valor da propriedade marcador.
      * 
      */
     public void setMarcador(int value) {

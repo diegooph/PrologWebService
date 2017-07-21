@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Questionario complex type.
+ * <p>Classe Java de Questionario complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Questionario">
@@ -49,7 +49,7 @@ public class Questionario {
     protected String nomeCliente;
 
     /**
-     * Gets the value of the codigoQuestionario property.
+     * Obtém o valor da propriedade codigoQuestionario.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class Questionario {
     }
 
     /**
-     * Sets the value of the codigoQuestionario property.
+     * Define o valor da propriedade codigoQuestionario.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class Questionario {
     }
 
     /**
-     * Gets the value of the vinculoCliente property.
+     * Obtém o valor da propriedade vinculoCliente.
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class Questionario {
     }
 
     /**
-     * Sets the value of the vinculoCliente property.
+     * Define o valor da propriedade vinculoCliente.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class Questionario {
     }
 
     /**
-     * Gets the value of the cliente property.
+     * Obtém o valor da propriedade cliente.
      * 
      * @return
      *     possible object is
@@ -109,7 +109,7 @@ public class Questionario {
     }
 
     /**
-     * Sets the value of the cliente property.
+     * Define o valor da propriedade cliente.
      * 
      * @param value
      *     allowed object is
@@ -121,7 +121,7 @@ public class Questionario {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -133,7 +133,7 @@ public class Questionario {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -145,7 +145,7 @@ public class Questionario {
     }
 
     /**
-     * Gets the value of the nomeCliente property.
+     * Obtém o valor da propriedade nomeCliente.
      * 
      * @return
      *     possible object is
@@ -157,7 +157,7 @@ public class Questionario {
     }
 
     /**
-     * Sets the value of the nomeCliente property.
+     * Define o valor da propriedade nomeCliente.
      * 
      * @param value
      *     allowed object is

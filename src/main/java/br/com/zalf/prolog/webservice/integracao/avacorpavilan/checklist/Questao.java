@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Questao complex type.
+ * <p>Classe Java de Questao complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Questao">
@@ -58,7 +58,7 @@ public class Questao {
     protected ArrayOfResposta respostas;
 
     /**
-     * Gets the value of the codigoAvaliacao property.
+     * Obtém o valor da propriedade codigoAvaliacao.
      * 
      */
     public int getCodigoAvaliacao() {
@@ -66,7 +66,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the codigoAvaliacao property.
+     * Define o valor da propriedade codigoAvaliacao.
      * 
      */
     public void setCodigoAvaliacao(int value) {
@@ -74,7 +74,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the sequenciaQuestao property.
+     * Obtém o valor da propriedade sequenciaQuestao.
      * 
      */
     public int getSequenciaQuestao() {
@@ -82,7 +82,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the sequenciaQuestao property.
+     * Define o valor da propriedade sequenciaQuestao.
      * 
      */
     public void setSequenciaQuestao(int value) {
@@ -90,7 +90,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the tipoResposta property.
+     * Obtém o valor da propriedade tipoResposta.
      * 
      */
     public int getTipoResposta() {
@@ -98,7 +98,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the tipoResposta property.
+     * Define o valor da propriedade tipoResposta.
      * 
      */
     public void setTipoResposta(int value) {
@@ -106,7 +106,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the complemento property.
+     * Obtém o valor da propriedade complemento.
      * 
      * @return
      *     possible object is
@@ -118,7 +118,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the complemento property.
+     * Define o valor da propriedade complemento.
      * 
      * @param value
      *     allowed object is
@@ -130,7 +130,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -142,7 +142,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -154,7 +154,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the obrigatorioObservacao property.
+     * Obtém o valor da propriedade obrigatorioObservacao.
      * 
      */
     public int getObrigatorioObservacao() {
@@ -162,7 +162,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the obrigatorioObservacao property.
+     * Define o valor da propriedade obrigatorioObservacao.
      * 
      */
     public void setObrigatorioObservacao(int value) {
@@ -170,7 +170,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the obrigatorioImagem property.
+     * Obtém o valor da propriedade obrigatorioImagem.
      * 
      */
     public int getObrigatorioImagem() {
@@ -178,7 +178,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the obrigatorioImagem property.
+     * Define o valor da propriedade obrigatorioImagem.
      * 
      */
     public void setObrigatorioImagem(int value) {
@@ -186,7 +186,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the agrupamento property.
+     * Obtém o valor da propriedade agrupamento.
      * 
      * @return
      *     possible object is
@@ -198,7 +198,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the agrupamento property.
+     * Define o valor da propriedade agrupamento.
      * 
      * @param value
      *     allowed object is
@@ -210,7 +210,7 @@ public class Questao {
     }
 
     /**
-     * Gets the value of the respostas property.
+     * Obtém o valor da propriedade respostas.
      * 
      * @return
      *     possible object is
@@ -222,7 +222,7 @@ public class Questao {
     }
 
     /**
-     * Sets the value of the respostas property.
+     * Define o valor da propriedade respostas.
      * 
      * @param value
      *     allowed object is

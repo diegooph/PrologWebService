@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Classe Java de anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType>
@@ -63,7 +63,7 @@ public class IntegrarArquivo {
     protected String conteudo;
 
     /**
-     * Gets the value of the tipodocumento property.
+     * Obtém o valor da propriedade tipodocumento.
      * 
      */
     public int getTipodocumento() {
@@ -71,7 +71,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the tipodocumento property.
+     * Define o valor da propriedade tipodocumento.
      * 
      */
     public void setTipodocumento(int value) {
@@ -79,7 +79,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the diferenciadornumero property.
+     * Obtém o valor da propriedade diferenciadornumero.
      * 
      */
     public int getDiferenciadornumero() {
@@ -87,7 +87,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the diferenciadornumero property.
+     * Define o valor da propriedade diferenciadornumero.
      * 
      */
     public void setDiferenciadornumero(int value) {
@@ -95,7 +95,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the serie property.
+     * Obtém o valor da propriedade serie.
      * 
      */
     public int getSerie() {
@@ -103,7 +103,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the serie property.
+     * Define o valor da propriedade serie.
      * 
      */
     public void setSerie(int value) {
@@ -111,7 +111,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the numerosequencia property.
+     * Obtém o valor da propriedade numerosequencia.
      * 
      */
     public int getNumerosequencia() {
@@ -119,7 +119,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the numerosequencia property.
+     * Define o valor da propriedade numerosequencia.
      * 
      */
     public void setNumerosequencia(int value) {
@@ -127,7 +127,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the numerosequenciaitem property.
+     * Obtém o valor da propriedade numerosequenciaitem.
      * 
      */
     public int getNumerosequenciaitem() {
@@ -135,7 +135,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the numerosequenciaitem property.
+     * Define o valor da propriedade numerosequenciaitem.
      * 
      */
     public void setNumerosequenciaitem(int value) {
@@ -143,7 +143,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the cnpjcpfcodigo property.
+     * Obtém o valor da propriedade cnpjcpfcodigo.
      * 
      * @return
      *     possible object is
@@ -155,7 +155,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the cnpjcpfcodigo property.
+     * Define o valor da propriedade cnpjcpfcodigo.
      * 
      * @param value
      *     allowed object is
@@ -167,7 +167,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the dtemissao property.
+     * Obtém o valor da propriedade dtemissao.
      * 
      * @return
      *     possible object is
@@ -179,7 +179,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the dtemissao property.
+     * Define o valor da propriedade dtemissao.
      * 
      * @param value
      *     allowed object is
@@ -191,7 +191,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the nomearquivo property.
+     * Obtém o valor da propriedade nomearquivo.
      * 
      * @return
      *     possible object is
@@ -203,7 +203,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the nomearquivo property.
+     * Define o valor da propriedade nomearquivo.
      * 
      * @param value
      *     allowed object is
@@ -215,7 +215,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the extensao property.
+     * Obtém o valor da propriedade extensao.
      * 
      * @return
      *     possible object is
@@ -227,7 +227,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the extensao property.
+     * Define o valor da propriedade extensao.
      * 
      * @param value
      *     allowed object is
@@ -239,7 +239,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Gets the value of the conteudo property.
+     * Obtém o valor da propriedade conteudo.
      * 
      * @return
      *     possible object is
@@ -251,7 +251,7 @@ public class IntegrarArquivo {
     }
 
     /**
-     * Sets the value of the conteudo property.
+     * Define o valor da propriedade conteudo.
      * 
      * @param value
      *     allowed object is

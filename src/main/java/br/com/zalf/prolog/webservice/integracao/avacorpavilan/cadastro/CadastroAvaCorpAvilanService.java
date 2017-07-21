@@ -1,10 +1,14 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebEndpoint;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceFeature;
 
 
 /**
@@ -16,7 +20,9 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "Cadastro", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Cadastro.asmx?WSDL")
-public class CadastroAvaCorpAvilanService extends Service {
+public class CadastroAvaCorpAvilanService
+    extends Service
+{
 
     private final static URL CADASTRO_WSDL_LOCATION;
     private final static WebServiceException CADASTRO_EXCEPTION;

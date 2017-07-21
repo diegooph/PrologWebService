@@ -1,10 +1,14 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebEndpoint;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceFeature;
 
 
 /**
@@ -16,7 +20,9 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "Checklist", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Checklist.asmx?WSDL")
-public class ChecklistAvaCorpAvilanService extends Service {
+public class ChecklistAvaCorpAvilanService
+    extends Service
+{
 
     private final static URL CHECKLIST_WSDL_LOCATION;
     private final static WebServiceException CHECKLIST_EXCEPTION;

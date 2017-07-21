@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for RespostasAvaliacao complex type.
+ * <p>Classe Java de RespostasAvaliacao complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RespostasAvaliacao">
@@ -46,7 +46,7 @@ public class RespostasAvaliacao {
     protected ArrayOfRespostaAval respostas;
 
     /**
-     * Gets the value of the odometro property.
+     * Obtém o valor da propriedade odometro.
      * 
      */
     public int getOdometro() {
@@ -54,7 +54,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Sets the value of the odometro property.
+     * Define o valor da propriedade odometro.
      * 
      */
     public void setOdometro(int value) {
@@ -62,7 +62,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Gets the value of the cpf property.
+     * Obtém o valor da propriedade cpf.
      * 
      * @return
      *     possible object is
@@ -74,7 +74,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Sets the value of the cpf property.
+     * Define o valor da propriedade cpf.
      * 
      * @param value
      *     allowed object is
@@ -86,7 +86,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Gets the value of the dtNascimento property.
+     * Obtém o valor da propriedade dtNascimento.
      * 
      * @return
      *     possible object is
@@ -98,7 +98,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Sets the value of the dtNascimento property.
+     * Define o valor da propriedade dtNascimento.
      * 
      * @param value
      *     allowed object is
@@ -110,7 +110,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Gets the value of the codigoAvaliacao property.
+     * Obtém o valor da propriedade codigoAvaliacao.
      * 
      */
     public int getCodigoAvaliacao() {
@@ -118,7 +118,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Sets the value of the codigoAvaliacao property.
+     * Define o valor da propriedade codigoAvaliacao.
      * 
      */
     public void setCodigoAvaliacao(int value) {
@@ -126,7 +126,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Gets the value of the respostas property.
+     * Obtém o valor da propriedade respostas.
      * 
      * @return
      *     possible object is
@@ -138,7 +138,7 @@ public class RespostasAvaliacao {
     }
 
     /**
-     * Sets the value of the respostas property.
+     * Define o valor da propriedade respostas.
      * 
      * @param value
      *     allowed object is

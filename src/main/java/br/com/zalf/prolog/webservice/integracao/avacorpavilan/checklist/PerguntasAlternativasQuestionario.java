@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for PerguntasAlternativasQuestionario complex type.
+ * <p>Classe Java de PerguntasAlternativasQuestionario complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="PerguntasAlternativasQuestionario">
@@ -40,7 +40,7 @@ public class PerguntasAlternativasQuestionario {
     protected ArrayOfVeiculoQuestao veiculoQuestoes;
 
     /**
-     * Gets the value of the sucesso property.
+     * Obtém o valor da propriedade sucesso.
      * 
      */
     public boolean isSucesso() {
@@ -48,7 +48,7 @@ public class PerguntasAlternativasQuestionario {
     }
 
     /**
-     * Sets the value of the sucesso property.
+     * Define o valor da propriedade sucesso.
      * 
      */
     public void setSucesso(boolean value) {
@@ -56,7 +56,7 @@ public class PerguntasAlternativasQuestionario {
     }
 
     /**
-     * Gets the value of the mensagem property.
+     * Obtém o valor da propriedade mensagem.
      * 
      * @return
      *     possible object is
@@ -68,7 +68,7 @@ public class PerguntasAlternativasQuestionario {
     }
 
     /**
-     * Sets the value of the mensagem property.
+     * Define o valor da propriedade mensagem.
      * 
      * @param value
      *     allowed object is
@@ -80,7 +80,7 @@ public class PerguntasAlternativasQuestionario {
     }
 
     /**
-     * Gets the value of the veiculoQuestoes property.
+     * Obtém o valor da propriedade veiculoQuestoes.
      * 
      * @return
      *     possible object is
@@ -92,7 +92,7 @@ public class PerguntasAlternativasQuestionario {
     }
 
     /**
-     * Sets the value of the veiculoQuestoes property.
+     * Define o valor da propriedade veiculoQuestoes.
      * 
      * @param value
      *     allowed object is

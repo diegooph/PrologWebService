@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for AdicionarChecklist complex type.
+ * <p>Classe Java de AdicionarChecklist complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="AdicionarChecklist">
@@ -46,7 +46,7 @@ public class AdicionarChecklist {
     protected String dtNascimento;
 
     /**
-     * Gets the value of the veiculo property.
+     * Obtém o valor da propriedade veiculo.
      * 
      * @return
      *     possible object is
@@ -58,7 +58,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Sets the value of the veiculo property.
+     * Define o valor da propriedade veiculo.
      * 
      * @param value
      *     allowed object is
@@ -70,7 +70,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Gets the value of the cliente property.
+     * Obtém o valor da propriedade cliente.
      * 
      * @return
      *     possible object is
@@ -82,7 +82,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Sets the value of the cliente property.
+     * Define o valor da propriedade cliente.
      * 
      * @param value
      *     allowed object is
@@ -94,7 +94,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Gets the value of the vinculoCliente property.
+     * Obtém o valor da propriedade vinculoCliente.
      * 
      */
     public int getVinculoCliente() {
@@ -102,7 +102,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Sets the value of the vinculoCliente property.
+     * Define o valor da propriedade vinculoCliente.
      * 
      */
     public void setVinculoCliente(int value) {
@@ -110,7 +110,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Gets the value of the cpf property.
+     * Obtém o valor da propriedade cpf.
      * 
      * @return
      *     possible object is
@@ -122,7 +122,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Sets the value of the cpf property.
+     * Define o valor da propriedade cpf.
      * 
      * @param value
      *     allowed object is
@@ -134,7 +134,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Gets the value of the dtNascimento property.
+     * Obtém o valor da propriedade dtNascimento.
      * 
      * @return
      *     possible object is
@@ -146,7 +146,7 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Sets the value of the dtNascimento property.
+     * Define o valor da propriedade dtNascimento.
      * 
      * @param value
      *     allowed object is

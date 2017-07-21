@@ -116,7 +116,7 @@ final class AvaCorpAvilanConverter {
                 .filter(veiculoQuestao -> veiculoQuestao.getVeiculo().getPlaca().equals(placaVeiculo))
                 .collect(MoreCollectors.onlyElement())
                 .getVeiculo()
-                .getKmAtual());
+                .getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
 
@@ -176,9 +176,10 @@ final class AvaCorpAvilanConverter {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(1 /* TODO: alterar código  */);
             pneu.setPosicao(AvilanPosicaoPneuMapper.mapToProLog(p.getPosicao()));
-            // A vida atual do pneu começa em 1 quando ele é novo, por isso somamos 1 ao total de recapagens
-            // para ter a informação correta
-            pneu.setVidaAtual(p.getQtdRecapagens() + 1);
+            // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
+            // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
+            // que é utilizado no ProLog
+            pneu.setVidaAtual(p.getVidaPneu() + 1);
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(p.getSulco1());
             sulcos.setCentralExterno(p.getSulco2());

@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Classe Java de anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType>
@@ -36,7 +36,7 @@ public class BuscarPerguntasAlternativasQuestionarioResponse {
     protected PerguntasAlternativasQuestionario buscarPerguntasAlternativasQuestionarioResult;
 
     /**
-     * Gets the value of the buscarPerguntasAlternativasQuestionarioResult property.
+     * Obtém o valor da propriedade buscarPerguntasAlternativasQuestionarioResult.
      * 
      * @return
      *     possible object is
@@ -48,7 +48,7 @@ public class BuscarPerguntasAlternativasQuestionarioResponse {
     }
 
     /**
-     * Sets the value of the buscarPerguntasAlternativasQuestionarioResult property.
+     * Define o valor da propriedade buscarPerguntasAlternativasQuestionarioResult.
      * 
      * @param value
      *     allowed object is

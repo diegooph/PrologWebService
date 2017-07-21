@@ -13,7 +13,10 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.CadastroA
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.VeiculosAtivos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.BuscaQuestionarioColaborador;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistAvaCorpAvilanSoap;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.PerguntasAlternativasQuestionario;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorHttp;
 import com.sun.istack.internal.NotNull;
 

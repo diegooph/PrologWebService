@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Veiculo complex type.
+ * <p>Classe Java de Veiculo complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Veiculo">
@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="placa" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="tipoVeiculo" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="marcador" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,15 +30,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Veiculo", propOrder = {
     "placa",
-    "tipoVeiculo"
+    "tipoVeiculo",
+    "marcador"
 })
 public class Veiculo {
 
     protected String placa;
     protected int tipoVeiculo;
+    protected int marcador;
 
     /**
-     * Gets the value of the placa property.
+     * Obtém o valor da propriedade placa.
      * 
      * @return
      *     possible object is
@@ -49,7 +52,7 @@ public class Veiculo {
     }
 
     /**
-     * Sets the value of the placa property.
+     * Define o valor da propriedade placa.
      * 
      * @param value
      *     allowed object is
@@ -61,7 +64,7 @@ public class Veiculo {
     }
 
     /**
-     * Gets the value of the tipoVeiculo property.
+     * Obtém o valor da propriedade tipoVeiculo.
      * 
      */
     public int getTipoVeiculo() {
@@ -69,14 +72,27 @@ public class Veiculo {
     }
 
     /**
-     * Sets the value of the tipoVeiculo property.
+     * Define o valor da propriedade tipoVeiculo.
      * 
      */
     public void setTipoVeiculo(int value) {
         this.tipoVeiculo = value;
     }
 
-    public long getKmAtual() {
-        return 0;
+    /**
+     * Obtém o valor da propriedade marcador.
+     * 
+     */
+    public int getMarcador() {
+        return marcador;
     }
+
+    /**
+     * Define o valor da propriedade marcador.
+     * 
+     */
+    public void setMarcador(int value) {
+        this.marcador = value;
+    }
+
 }

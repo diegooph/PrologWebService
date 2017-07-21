@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
@@ -27,5 +28,10 @@ public final class AvaCorpAvilan extends Sistema {
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
                                                                                     @NotNull Long codFuncao) throws Exception {
         return getIntegradorHttp().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+    }
+
+    @Override
+    public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
+        return getIntegradorHttp().insertChecklist(checklist);
     }
 }

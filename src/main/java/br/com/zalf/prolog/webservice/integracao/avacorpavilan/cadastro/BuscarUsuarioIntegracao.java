@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Classe Java de anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType>
@@ -39,7 +39,7 @@ public class BuscarUsuarioIntegracao {
     protected String dataNascimento;
 
     /**
-     * Gets the value of the cpf property.
+     * Obtém o valor da propriedade cpf.
      * 
      * @return
      *     possible object is
@@ -51,7 +51,7 @@ public class BuscarUsuarioIntegracao {
     }
 
     /**
-     * Sets the value of the cpf property.
+     * Define o valor da propriedade cpf.
      * 
      * @param value
      *     allowed object is
@@ -63,7 +63,7 @@ public class BuscarUsuarioIntegracao {
     }
 
     /**
-     * Gets the value of the dataNascimento property.
+     * Obtém o valor da propriedade dataNascimento.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class BuscarUsuarioIntegracao {
     }
 
     /**
-     * Sets the value of the dataNascimento property.
+     * Define o valor da propriedade dataNascimento.
      * 
      * @param value
      *     allowed object is

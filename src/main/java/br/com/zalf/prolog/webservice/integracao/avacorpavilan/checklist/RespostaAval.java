@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for RespostaAval complex type.
+ * <p>Classe Java de RespostaAval complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="RespostaAval">
@@ -40,7 +40,7 @@ public class RespostaAval {
     protected String observacao;
 
     /**
-     * Gets the value of the sequenciaQuestao property.
+     * Obtém o valor da propriedade sequenciaQuestao.
      * 
      */
     public int getSequenciaQuestao() {
@@ -48,7 +48,7 @@ public class RespostaAval {
     }
 
     /**
-     * Sets the value of the sequenciaQuestao property.
+     * Define o valor da propriedade sequenciaQuestao.
      * 
      */
     public void setSequenciaQuestao(int value) {
@@ -56,7 +56,7 @@ public class RespostaAval {
     }
 
     /**
-     * Gets the value of the codigoResposta property.
+     * Obtém o valor da propriedade codigoResposta.
      * 
      */
     public int getCodigoResposta() {
@@ -64,7 +64,7 @@ public class RespostaAval {
     }
 
     /**
-     * Sets the value of the codigoResposta property.
+     * Define o valor da propriedade codigoResposta.
      * 
      */
     public void setCodigoResposta(int value) {
@@ -72,7 +72,7 @@ public class RespostaAval {
     }
 
     /**
-     * Gets the value of the observacao property.
+     * Obtém o valor da propriedade observacao.
      * 
      * @return
      *     possible object is
@@ -84,7 +84,7 @@ public class RespostaAval {
     }
 
     /**
-     * Sets the value of the observacao property.
+     * Define o valor da propriedade observacao.
      * 
      * @param value
      *     allowed object is
