@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by luiz on 7/17/17.
  */
-public interface OperacoesIntegradasVeiculo {
+interface OperacoesIntegradasVeiculo {
     @NotNull
     List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade) throws Exception;
 }

@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -33,5 +36,22 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
         return getIntegradorHttp().insertChecklist(checklist);
+    }
+
+    @Override
+    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+        return getIntegradorHttp().insertAfericao(afericao, codUnidade);
+    }
+
+    @Override
+    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+        return getIntegradorHttp().getNovaAfericao(placaVeiculo);
+    }
+
+    @Override
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo) throws Exception {
+        return getIntegradorHttp().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by luiz on 19/07/17.
  */
-public interface OperacoesIntegradasChecklist {
+interface OperacoesIntegradasChecklist {
 
     Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
             @NotNull final Long codUnidade,

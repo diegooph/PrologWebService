@@ -25,7 +25,10 @@ import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
-    private static final String TAG = AfericaoDaoImpl.class.getSimpleName();
+
+    public AfericaoDaoImpl() {
+
+    }
 
     @Override
     public boolean insert(Afericao afericao, Long codUnidade) throws SQLException {

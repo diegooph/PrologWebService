@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by luiz on 18/07/17.
  */
-public final class Router implements OperacoesIntegradas {
+public abstract class Router implements OperacoesIntegradas {
     @NotNull
     private final IntegracaoDao integracaoDao;
     @NotNull

@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -104,7 +103,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			L.d("teste", "contem movimentacao");
 			holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));;
 		}
-		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
 
 		return holder;

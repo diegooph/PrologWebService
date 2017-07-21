@@ -7,9 +7,9 @@ import com.sun.istack.internal.NotNull;
 /**
  * Created by luiz on 19/07/17.
  */
-public interface OperacoesIntegradasAfericao {
+interface OperacoesIntegradasAfericao {
     @NotNull
     NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception;
-    @NotNull
+
     boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Exception;
 }

@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -180,7 +179,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		List<Aderencia> aderencias = new ArrayList<>();
 		Aderencia aderencia = null;
-		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		VeiculoDao veiculoDao = Injection.provideVeiculoDao();
 		Restricao restricao = afericaoDao.getRestricoesByCodUnidade(codUnidade);
 
@@ -245,7 +244,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Faixa> faixas = null;
-		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		if (!codUnidades.get(0).equals("%")) {
 			Restricao restricao = afericaoDao.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);

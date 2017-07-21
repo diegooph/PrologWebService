@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -26,5 +28,9 @@ public final class Injection {
 
     public static IntegracaoDao provideIntegracaoDao() {
         return new IntegracaoDaoImpl();
+    }
+
+    public static AfericaoDao provideAfericaoDao() {
+        return new AfericaoDaoImpl();
     }
 }

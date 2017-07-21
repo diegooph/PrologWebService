@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,68 +17,74 @@ import java.util.List;
  */
 public class AfericaoService {
 
-	private AfericaoDao afericaoDao = new AfericaoDaoImpl();
+    private final AfericaoDao dao = Injection.provideAfericaoDao();
 
-	public boolean Insert(Afericao afericao, Long codUnidade){
-		try{
-			return afericaoDao.insert(afericao, codUnidade);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
+    public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
+        afericao.setDataHora(new Date(System.currentTimeMillis()));
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .insertAfericao(afericao, codUnidade);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public boolean updateKmAfericao(Afericao afericao) {
-		try{
-			return afericaoDao.update(afericao);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public NovaAfericao getNovaAfericao(String placa){
-		try{
-			return afericaoDao.getNovaAfericao(placa);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new NovaAfericao();
-		}
-	}
-	
-	public Afericao getByCod (Long codAfericao, Long codUnidade){
-		try{
-			return afericaoDao.getByCod(codAfericao, codUnidade);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade){
-		try{
-			return afericaoDao.getSelecaoPlacaAfericao(codUnidade);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset){
-		try{
-			return afericaoDao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
-		}catch(SQLException e){
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-	}
+    public boolean updateKmAfericao(Afericao afericao) {
+        try {
+            return dao.update(afericao);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public Restricao getRestricoesByCodUnidade(Long codUnidade){
-		try{
-			return afericaoDao.getRestricoesByCodUnidade(codUnidade);
-		}catch (SQLException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public NovaAfericao getNovaAfericao(String placa, String userToken) {
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getNovaAfericao(placa);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new NovaAfericao();
+        }
+    }
+
+    public Afericao getByCod(Long codAfericao, Long codUnidade) {
+        try {
+            return dao.getByCod(codAfericao, codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) {
+        try {
+            return dao.getSelecaoPlacaAfericao(codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit,
+                                                          long offset) {
+        try {
+            return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Restricao getRestricoesByCodUnidade(Long codUnidade) {
+        try {
+            return dao.getRestricoesByCodUnidade(codUnidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -5,12 +5,11 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 
 @Path("/afericao")
@@ -24,9 +23,9 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/{codUnidade}")
     public Response insert(Afericao afericao,
-                           @PathParam("codUnidade") Long codUnidade) {
-        afericao.setDataHora(new Date(System.currentTimeMillis()));
-        if (service.Insert(afericao, codUnidade)) {
+                           @PathParam("codUnidade") Long codUnidade,
+                           @HeaderParam("Authorization") String userToken) {
+        if (service.insert(afericao, codUnidade, userToken)) {
             return Response.Ok("Aferição inserida com sucesso");
         } else {
             return Response.Error("Erro ao inserir aferição");
@@ -54,8 +53,9 @@ public class AfericaoResource {
     @GET
     @Path("/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa) {
-        return service.getNovaAfericao(placa);
+    public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa,
+                                        @HeaderParam("Authorization") String userToken) {
+        return service.getNovaAfericao(placa, userToken);
     }
 
     @GET

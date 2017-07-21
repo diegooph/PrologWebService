@@ -7,5 +7,4 @@ public interface OperacoesIntegradas extends
         OperacoesIntegradasAfericao,
         OperacoesIntegradasChecklist,
         OperacoesIntegradasVeiculo {
-
 }

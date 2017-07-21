@@ -37,7 +37,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 						// Linha já existe e será atualizada
 						L.d(TAG, "Update Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 					} else {
-						L.d(TAG, "Insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+						L.d(TAG, "insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 						// Linha não existe e será inserida
 						insertTracking(tracking, codUnidade, conn);
 				}

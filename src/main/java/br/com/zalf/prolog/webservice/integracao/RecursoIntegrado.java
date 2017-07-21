@@ -8,7 +8,8 @@ import com.sun.istack.internal.NotNull;
  */
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),
-    VEICULOS("VEICULOS");
+    VEICULOS("VEICULOS"),
+    AFERICAO("AFERICAO");
 
     @NotNull
     private final String key;
