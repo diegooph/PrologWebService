@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -106,8 +108,8 @@ public class IncluirMedida2 {
      * Sets the value of the tipoMarcador property.
      * 
      */
-    public void setTipoMarcador(int value) {
-        this.tipoMarcador = value;
+    public void setTipoMarcador(AvaCorpAvilanTipoMarcador tipoMarcador) {
+        this.tipoMarcador = tipoMarcador.asInt();
     }
 
     /**

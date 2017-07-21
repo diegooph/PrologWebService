@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoResposta;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -93,8 +95,8 @@ public class Questao {
      * Obtém o valor da propriedade tipoResposta.
      * 
      */
-    public int getTipoResposta() {
-        return tipoResposta;
+    public AvaCorpAvilanTipoResposta getTipoResposta() {
+        return AvaCorpAvilanTipoResposta.fromInt(tipoResposta);
     }
 
     /**

@@ -5,10 +5,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasAfericao;
-import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasChecklist;
-import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradasVeiculo;
 import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
+import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import com.sun.istack.internal.NotNull;
 
 import java.util.List;
@@ -19,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by luiz on 7/17/17.
  */
-public abstract class Sistema implements OperacoesIntegradasVeiculo, OperacoesIntegradasChecklist, OperacoesIntegradasAfericao {
+public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final Integrador integradorHttp;
     @NotNull

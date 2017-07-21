@@ -57,7 +57,7 @@ final class AvaCorpAvilanConverter {
 
         // seta valores
         incluirMedida2.setVeiculo(afericao.getVeiculo().getPlaca());
-        incluirMedida2.setTipoMarcador(1 /* hodômetro */);
+        incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
         incluirMedida2.setDataMedida(createDatePattern(afericao.getDataHora()));
         // TODO: setar placas carreta?
@@ -128,13 +128,26 @@ final class AvaCorpAvilanConverter {
                 pergunta.setCodigo((long) questao.getCodigoAvaliacao());
                 pergunta.setOrdemExibicao(questao.getSequenciaQuestao());
                 pergunta.setPergunta(questao.getDescricao());
+
                 final List<AlternativaChecklist> alternativas = new ArrayList<>();
-                for (Resposta resposta : questao.getRespostas().getResposta()) {
+                final AvaCorpAvilanTipoResposta tipoResposta = questao.getTipoResposta();
+                if (tipoResposta == AvaCorpAvilanTipoResposta.SELECAO_UNICA) {
+                    for (Resposta resposta : questao.getRespostas().getResposta()) {
+                        final AlternativaChecklist alternativa = new AlternativaChecklist();
+                        alternativa.setCodigo(resposta.getCodigoResposta());
+                        alternativa.setAlternativa(resposta.getDescricao());
+                        alternativas.add(alternativa);
+                    }
+                } else if (tipoResposta == AvaCorpAvilanTipoResposta.DESCRITIVA) {
                     final AlternativaChecklist alternativa = new AlternativaChecklist();
-                    alternativa.setCodigo(resposta.getCodigoResposta());
-                    alternativa.setAlternativa(resposta.getDescricao());
+                    alternativa.setCodigo(questao.getCodigoAvaliacao());
+                    alternativa.setAlternativa(questao.getDescricao());
+                    alternativa.setTipo(Alternativa.TIPO_OUTROS);
                     alternativas.add(alternativa);
                 }
+
+                // Sempre single choice
+                pergunta.setSingleChoice(true);
                 pergunta.setAlternativasResposta(alternativas);
                 perguntas.add(pergunta);
             }
