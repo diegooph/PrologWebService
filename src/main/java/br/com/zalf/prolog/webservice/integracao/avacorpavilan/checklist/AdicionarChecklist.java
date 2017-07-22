@@ -157,4 +157,7 @@ public class AdicionarChecklist {
         this.dtNascimento = value;
     }
 
+    public void setCodigoQuestionario(Long codModelo) {
+
+    }
 }
