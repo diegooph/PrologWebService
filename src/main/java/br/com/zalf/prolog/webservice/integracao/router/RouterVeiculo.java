@@ -4,8 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
-import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
+import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -16,7 +15,7 @@ public final class RouterVeiculo extends Router {
     public static RouterVeiculo create(@NotNull VeiculoDao veiculoDao, @NotNull String userToken) {
         return new RouterVeiculo(
                 Injection.provideIntegracaoDao(),
-                new IntegradorDatabase.Builder()
+                new IntegradorProLog.Builder()
                         .withVeiculoDao(veiculoDao)
                         .build(),
                 userToken,
@@ -24,9 +23,9 @@ public final class RouterVeiculo extends Router {
     }
 
     private RouterVeiculo(@NotNull IntegracaoDao integracaoDao,
-                         @NotNull Integrador integradorDatabase,
-                         @NotNull String userToken,
-                         @NotNull RecursoIntegrado recursoIntegrado) {
-        super(integracaoDao, integradorDatabase, userToken, recursoIntegrado);
+                           @NotNull IntegradorProLog integradorProLog,
+                           @NotNull String userToken,
+                           @NotNull RecursoIntegrado recursoIntegrado) {
+        super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

@@ -7,9 +7,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
@@ -28,7 +28,7 @@ public abstract class Router implements OperacoesIntegradas {
     @NotNull
     private final IntegracaoDao integracaoDao;
     @NotNull
-    private final Integrador integradorDatabase;
+    private final IntegradorProLog integradorProLog;
     @NotNull
     private final String userToken;
     @NotNull
@@ -38,11 +38,11 @@ public abstract class Router implements OperacoesIntegradas {
     private boolean hasTried;
 
     public Router(@NotNull final IntegracaoDao integracaoDao,
-                  @NotNull final Integrador integradorDatabase,
+                  @NotNull final IntegradorProLog integradorProLog,
                   @NotNull final String userToken,
                   @NotNull final RecursoIntegrado recursoIntegrado) {
         this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
-        this.integradorDatabase = checkNotNull(integradorDatabase, "integradorDatabase não pode ser null!");
+        this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser null!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser null!");
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
@@ -52,7 +52,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().getVeiculosAtivosByUnidade(codUnidade);
         } else {
-            return integradorDatabase.getVeiculosAtivosByUnidade(codUnidade);
+            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade);
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().getNovaAfericao(placaVeiculo);
         } else {
-            return integradorDatabase.getNovaAfericao(placaVeiculo);
+            return integradorProLog.getNovaAfericao(placaVeiculo);
         }
     }
 
@@ -70,7 +70,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().insertAfericao(afericao, codUnidade);
         } else {
-            return integradorDatabase.insertAfericao(afericao, codUnidade);
+            return integradorProLog.insertAfericao(afericao, codUnidade);
         }
     }
 
@@ -79,7 +79,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
         } else {
-            return integradorDatabase.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+            return integradorProLog.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
         }
     }
 
@@ -88,7 +88,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
         } else {
-            return integradorDatabase.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+            return integradorProLog.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
         }
     }
 
@@ -97,7 +97,7 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {
-            return integradorDatabase.insertChecklist(checklist);
+            return integradorProLog.insertChecklist(checklist);
         }
     }
 
@@ -107,7 +107,7 @@ public abstract class Router implements OperacoesIntegradas {
             hasTried = true;
         }
 
-        return SistemasFactory.createSistema(sistemaKey, integradorDatabase);
+        return SistemasFactory.createSistema(sistemaKey, integradorProLog);
     }
 
 }

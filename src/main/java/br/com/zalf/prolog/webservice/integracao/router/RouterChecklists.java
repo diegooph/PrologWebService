@@ -4,8 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
-import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
+import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -16,7 +15,7 @@ public final class RouterChecklists extends Router {
     public static RouterChecklists create(@NotNull ChecklistDao checklistDao, @NotNull String userToken) {
         return new RouterChecklists(
                 Injection.provideIntegracaoDao(),
-                new IntegradorDatabase.Builder()
+                new IntegradorProLog.Builder()
                         .withChecklistDao(checklistDao)
                         .build(),
                 userToken,
@@ -24,9 +23,9 @@ public final class RouterChecklists extends Router {
     }
 
     private RouterChecklists(@NotNull IntegracaoDao integracaoDao,
-                             @NotNull Integrador integradorDatabase,
-                             @NotNull String userToken,
-                             @NotNull RecursoIntegrado recursoIntegrado) {
-        super(integracaoDao, integradorDatabase, userToken, recursoIntegrado);
+                          @NotNull IntegradorProLog integradorProLog,
+                          @NotNull String userToken,
+                          @NotNull RecursoIntegrado recursoIntegrado) {
+        super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

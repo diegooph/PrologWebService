@@ -4,8 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.integrador.Integrador;
-import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorDatabase;
+import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -16,7 +15,7 @@ public class RouterAfericao extends Router {
     public static RouterAfericao create(@NotNull AfericaoDao afericaoDao, @NotNull String userToken) {
         return new RouterAfericao(
                 Injection.provideIntegracaoDao(),
-                new IntegradorDatabase.Builder()
+                new IntegradorProLog.Builder()
                         .withAfericaoDao(afericaoDao)
                         .build(),
                 userToken,
@@ -24,9 +23,9 @@ public class RouterAfericao extends Router {
     }
 
     private RouterAfericao(@NotNull IntegracaoDao integracaoDao,
-                           @NotNull Integrador integradorDatabase,
+                           @NotNull IntegradorProLog integradorProLog,
                            @NotNull String userToken,
                            @NotNull RecursoIntegrado recursoIntegrado) {
-        super(integracaoDao, integradorDatabase, userToken, recursoIntegrado);
+        super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

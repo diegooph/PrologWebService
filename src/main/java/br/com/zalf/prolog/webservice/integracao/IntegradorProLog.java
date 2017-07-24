@@ -1,22 +1,26 @@
-package br.com.zalf.prolog.webservice.integracao.integrador;
+package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by luiz on 7/17/17.
  */
-public final class IntegradorDatabase extends IntegradorBase {
+public final class IntegradorProLog implements OperacoesIntegradas {
     @Nullable
     private final VeiculoDao veiculoDao;
     @Nullable
@@ -24,7 +28,7 @@ public final class IntegradorDatabase extends IntegradorBase {
     @Nullable
     private final AfericaoDao afericaoDao;
 
-    private IntegradorDatabase(VeiculoDao veiculoDao, ChecklistDao checklistDao, AfericaoDao afericaoDao) {
+    private IntegradorProLog(VeiculoDao veiculoDao, ChecklistDao checklistDao, AfericaoDao afericaoDao) {
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
@@ -43,6 +47,17 @@ public final class IntegradorDatabase extends IntegradorBase {
     @Override
     public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
         return null;
+    }
+
+    @Override
+    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+        return afericaoDao.insert(afericao, codUnidade);
+    }
+
+    @Override
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
+                                                                                    @NotNull Long codFuncao) throws Exception {
+        return checklistDao.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
     }
 
     @Override
@@ -79,8 +94,8 @@ public final class IntegradorDatabase extends IntegradorBase {
             return this;
         }
 
-        public IntegradorDatabase build() {
-            return new IntegradorDatabase(veiculoDao, checklistDao, afericaoDao);
+        public IntegradorProLog build() {
+            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao);
         }
     }
 }
