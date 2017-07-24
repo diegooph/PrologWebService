@@ -19,9 +19,12 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -204,15 +207,5 @@ final class AvaCorpAvilanConverter {
         }
 
         return pneus;
-    }
-
-    /**
-     * Converte uma data para a representação em texto esperado no web service de integração da Avilan: yyyy-MM-dd.
-     *
-     * @param date um {@link Date}.
-     * @return uma {@link String} represetando a data.
-     */
-    private static String createDatePattern(@NotNull final Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 }

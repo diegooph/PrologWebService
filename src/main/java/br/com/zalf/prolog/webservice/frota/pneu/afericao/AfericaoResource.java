@@ -80,7 +80,7 @@ public class AfericaoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR})
     @Path("/restricoes/{codUnidade}")
-    public Restricao getRestricoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getRestricoesByCodUnidade(codUnidade);
+    public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
+        return service.getRestricaoByCodUnidade(codUnidade);
     }
 }

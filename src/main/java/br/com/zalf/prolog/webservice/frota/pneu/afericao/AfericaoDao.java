@@ -36,7 +36,7 @@ public interface AfericaoDao {
      * @return a restrição da unidade
      * @throws SQLException se ocorrer erro no banco
      */
-    Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException;
+    Restricao getRestricaoByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
      * retorna as restrições de medidas da placa

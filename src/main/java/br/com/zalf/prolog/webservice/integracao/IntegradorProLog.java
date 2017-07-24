@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao;
 
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
@@ -7,46 +10,74 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by luiz on 7/17/17.
  */
-public final class IntegradorProLog implements OperacoesIntegradas {
+public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     @Nullable
     private final VeiculoDao veiculoDao;
     @Nullable
     private final ChecklistDao checklistDao;
     @Nullable
-    private final AfericaoDao afericaoDao;
+    private AfericaoDao afericaoDao;
+    @Nullable
+    private ColaboradorDao colaboradorDao;
 
-    private IntegradorProLog(VeiculoDao veiculoDao, ChecklistDao checklistDao, AfericaoDao afericaoDao) {
+    private IntegradorProLog(VeiculoDao veiculoDao,
+                             ChecklistDao checklistDao,
+                             AfericaoDao afericaoDao,
+                             ColaboradorDao colaboradorDao) {
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
+        this.colaboradorDao = colaboradorDao;
+    }
+
+    //
+    //
+    // Informações Providas
+    //
+    //
+    @Override
+    public Colaborador getColaboradorByToken(@NotNull String userToken) throws Exception {
+        if (colaboradorDao == null) {
+            colaboradorDao = Injection.provideColaboradorDao();
+        }
+        return colaboradorDao.getByToken(userToken);
     }
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) {
-        try {
-            return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Exception {
+        if (afericaoDao == null) {
+            afericaoDao = Injection.provideAfericaoDao();
         }
+
+        return afericaoDao.getRestricaoByCodUnidade(codUnidade);
+    }
+
+    //
+    //
+    // Operações Integradas
+    //
+    //
+    @Override
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
     }
 
     @Override
     public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
-        return null;
+        return afericaoDao.getNovaAfericao(placaVeiculo);
     }
 
     @Override
@@ -56,12 +87,15 @@ public final class IntegradorProLog implements OperacoesIntegradas {
 
     @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao) throws Exception {
+                                                                                    @NotNull Long codFuncao)
+            throws Exception {
         return checklistDao.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade, @NotNull Long codModelo, @NotNull String placaVeiculo) throws Exception {
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo) throws Exception {
         return checklistDao.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
     }
 
@@ -74,6 +108,7 @@ public final class IntegradorProLog implements OperacoesIntegradas {
         private VeiculoDao veiculoDao;
         private ChecklistDao checklistDao;
         private AfericaoDao afericaoDao;
+        private ColaboradorDao colaboradorDao;
 
         public Builder() {
 
@@ -94,8 +129,13 @@ public final class IntegradorProLog implements OperacoesIntegradas {
             return this;
         }
 
+        public Builder withColaboradorDao(ColaboradorDao colaboradorDao) {
+            this.colaboradorDao = colaboradorDao;
+            return this;
+        }
+
         public IntegradorProLog build() {
-            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao);
+            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao, colaboradorDao);
         }
     }
 }

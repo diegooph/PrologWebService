@@ -6,7 +6,8 @@ import com.sun.istack.internal.NotNull;
 import java.util.List;
 
 /**
- * Created by luiz on 7/17/17.
+ * Operações referentes a veículos que possuem integração com algum sistema.
+ * Todas as operações devem ter como parâmetro ao menos o token
  */
 interface OperacoesIntegradasVeiculo {
     @NotNull

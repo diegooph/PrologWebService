@@ -8,8 +8,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
@@ -37,10 +37,10 @@ public abstract class Router implements OperacoesIntegradas {
     private SistemaKey sistemaKey;
     private boolean hasTried;
 
-    public Router(@NotNull final IntegracaoDao integracaoDao,
-                  @NotNull final IntegradorProLog integradorProLog,
-                  @NotNull final String userToken,
-                  @NotNull final RecursoIntegrado recursoIntegrado) {
+    Router(@NotNull final IntegracaoDao integracaoDao,
+           @NotNull final IntegradorProLog integradorProLog,
+           @NotNull final String userToken,
+           @NotNull final RecursoIntegrado recursoIntegrado) {
         this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser null!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser null!");
@@ -107,7 +107,6 @@ public abstract class Router implements OperacoesIntegradas {
             hasTried = true;
         }
 
-        return SistemasFactory.createSistema(sistemaKey, integradorProLog);
+        return SistemasFactory.createSistema(sistemaKey, integradorProLog, userToken);
     }
-
 }

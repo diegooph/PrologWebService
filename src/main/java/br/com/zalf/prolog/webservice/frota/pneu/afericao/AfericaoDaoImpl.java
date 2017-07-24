@@ -96,7 +96,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException {
+    public Restricao getRestricaoByCodUnidade(Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -197,7 +197,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             holder.setPlacaStatus(listPlacasMesmoModelo);
             listModelo.add(holder);
             selecaoPlacaAfericao.setPlacas(listModelo);
-            selecaoPlacaAfericao.setMeta(getRestricoesByCodUnidade(codUnidade).getPeriodoDiasAfericao());
+            selecaoPlacaAfericao.setMeta(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericao());
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -327,7 +327,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
-            Restricao restricao = getRestricoesByCodUnidade(codUnidade);
+            Restricao restricao = getRestricaoByCodUnidade(codUnidade);
             List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
             if (listServicosACadastrar.size() > 0) {// verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços
                 insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);

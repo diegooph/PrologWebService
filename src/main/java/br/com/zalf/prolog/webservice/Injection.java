@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
@@ -32,5 +34,9 @@ public final class Injection {
 
     public static AfericaoDao provideAfericaoDao() {
         return new AfericaoDaoImpl();
+    }
+
+    public static ColaboradorDao provideColaboradorDao() {
+        return new ColaboradorDaoImpl();
     }
 }

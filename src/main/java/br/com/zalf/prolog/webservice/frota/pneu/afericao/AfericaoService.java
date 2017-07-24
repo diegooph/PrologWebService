@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class AfericaoService {
                     .getNovaAfericao(placa);
         } catch (Exception e) {
             e.printStackTrace();
-            return new NovaAfericao();
+            return null;
         }
     }
 
@@ -75,13 +74,13 @@ public class AfericaoService {
             return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return null;
         }
     }
 
-    public Restricao getRestricoesByCodUnidade(Long codUnidade) {
+    public Restricao getRestricaoByCodUnidade(Long codUnidade) {
         try {
-            return dao.getRestricoesByCodUnidade(codUnidade);
+            return dao.getRestricaoByCodUnidade(codUnidade);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

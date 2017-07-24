@@ -21,9 +21,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final IntegradorProLog integradorProLog;
+    @NotNull
+    private final String userToken;
 
-    protected Sistema(IntegradorProLog integradorProLog) {
+    protected Sistema(IntegradorProLog integradorProLog, String userToken) {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
+        this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
     @Override
@@ -61,5 +64,9 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     protected IntegradorProLog getIntegradorProLog() {
         return integradorProLog;
+    }
+
+    protected String getUserToken() {
+        return userToken;
     }
 }

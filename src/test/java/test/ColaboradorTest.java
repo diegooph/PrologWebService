@@ -20,7 +20,7 @@ public class ColaboradorTest extends TestCase {
 		// Valida se encontrou algo
 		assertTrue(colaboradores.size() > 0);
 //		// Valida se encontrou um checklist
-//		Checklist check_1 = service.getByCod(2L, "jsds");
+//		Checklist check_1 = service.getByCpf(2L, "jsds");
 //		Long cpf = 12345678987L;
 //		assertEquals(cpf, check_1.getCpfColaborador());
 //		assertEquals("MKE2501", check_1.getPlacaVeiculo());

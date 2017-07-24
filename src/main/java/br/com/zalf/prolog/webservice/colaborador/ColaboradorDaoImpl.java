@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	 * @throws SQLException
 	 */
 	@Override
-	public Colaborador getByCod(Long cpf) throws SQLException {
+	public Colaborador getByCpf(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -165,6 +166,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
+		return null;
+	}
+
+	@Override
+	public Colaborador getByToken(@NotNull String token) throws SQLException {
+		// TODO:
 		return null;
 	}
 
@@ -226,7 +233,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	@Override
 	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();
-		loginHolder.setColaborador(getByCod(cpf));
+		loginHolder.setColaborador(getByCpf(cpf));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
@@ -264,6 +271,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 	}
 
+
 	private Visao getVisaoByCpf(Long cpf)throws SQLException {
 		Visao visao = new Visao();
 		List<Pilar> pilares = new ArrayList<>();
@@ -289,7 +297,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		visao.setPilares(pilares);
 		return visao;
 	}
-
 
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
@@ -372,8 +379,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return false;
 	}
 
-
-
+	@Override
 	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

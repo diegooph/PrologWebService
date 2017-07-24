@@ -181,7 +181,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		Aderencia aderencia = null;
 		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-		Restricao restricao = afericaoDao.getRestricoesByCodUnidade(codUnidade);
+		Restricao restricao = afericaoDao.getRestricaoByCodUnidade(codUnidade);
 
 		Date dataAtual = new Date(System.currentTimeMillis());
 		LocalDate dataInicial = LocalDate.of(ano, mes, 01);
@@ -246,7 +246,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		List<Faixa> faixas = null;
 		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		if (!codUnidades.get(0).equals("%")) {
-			Restricao restricao = afericaoDao.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
+			Restricao restricao = afericaoDao.getRestricaoByCodUnidade(Long.parseLong(codUnidades.get(0)));
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
 			faixas = criaFaixas(base, 30);
 		}else{

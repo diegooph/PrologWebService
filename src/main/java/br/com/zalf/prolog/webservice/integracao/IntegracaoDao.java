@@ -17,9 +17,10 @@ public interface IntegracaoDao {
      * Verifica se a empresa do {@link Colaborador} que faz o request possui integração com o {@link RecursoIntegrado}
      * informado.
      * Caso ela não possua integração, será retornado {@code null}. Do contrário, retorna a chave do {@link Sistema}
-     * com o qual a integração é feita para essa empresa. É importante ressaltar que caso retorne uma chave não nula
-     * para o {@link RecursoIntegrado#CHECKLIST}, por exemplo, isso não quer dizer que a empresa integra todos os
-     * métodos do checklist com o ProLog, mas que pelo menos um deles é integrado.
+     * com o qual a integração é feita para essa empresa.
+     * É importante ressaltar que caso retorne uma chave não nula para o {@link RecursoIntegrado#CHECKLIST},
+     * por exemplo, isso não quer dizer que a empresa integra todos os métodos do checklist com o ProLog, mas que pelo
+     * menos um deles é integrado.
      *
      * @param userToken token do usuário.
      * @param recursoIntegrado o recurso para verificar se está integrado.

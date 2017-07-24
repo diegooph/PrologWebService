@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-	private ColaboradorDao dao = new ColaboradorDaoImpl();
+	private final ColaboradorDao dao = Injection.provideColaboradorDao();
 	
 	public boolean insert(Colaborador colaborador) {
 		try {
@@ -41,7 +42,7 @@ public class ColaboradorService {
 	
 	public Colaborador getByCod(Long cpf) {
 		try {
-			return dao.getByCod(cpf);
+			return dao.getByCpf(cpf);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
