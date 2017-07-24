@@ -75,7 +75,7 @@ public final class IntegradorHttpAvaCorpAvilan extends IntegradorHttp {
         adicionarChecklist.setCpf("" /* TODO: passar CPF aqui */);
         adicionarChecklist.setDtNascimento("" /* TODO: passar data nascimento aqui */);
         adicionarChecklist.setVeiculo(placaVeiculo);
-        adicionarChecklist.setCodigoQuestionario(codModelo);
+        adicionarChecklist.setCodigoQuestionario(Math.toIntExact(codModelo));
         // As demais informações do objeto AdicionarChecklist não precisam ser setadas
 
         final PerguntasAlternativasQuestionario request

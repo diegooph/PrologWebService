@@ -17,8 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="veiculo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="cliente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="vinculoCliente" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="codigoQuestionario" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="cpf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="dtNascimento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
@@ -32,16 +31,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AdicionarChecklist", propOrder = {
     "veiculo",
-    "cliente",
-    "vinculoCliente",
+    "codigoQuestionario",
     "cpf",
     "dtNascimento"
 })
 public class AdicionarChecklist {
 
     protected String veiculo;
-    protected String cliente;
-    protected int vinculoCliente;
+    protected int codigoQuestionario;
     protected String cpf;
     protected String dtNascimento;
 
@@ -70,43 +67,19 @@ public class AdicionarChecklist {
     }
 
     /**
-     * Obtém o valor da propriedade cliente.
+     * Obtém o valor da propriedade codigoQuestionario.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getCliente() {
-        return cliente;
+    public int getCodigoQuestionario() {
+        return codigoQuestionario;
     }
 
     /**
-     * Define o valor da propriedade cliente.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCliente(String value) {
-        this.cliente = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade vinculoCliente.
+     * Define o valor da propriedade codigoQuestionario.
      * 
      */
-    public int getVinculoCliente() {
-        return vinculoCliente;
-    }
-
-    /**
-     * Define o valor da propriedade vinculoCliente.
-     * 
-     */
-    public void setVinculoCliente(int value) {
-        this.vinculoCliente = value;
+    public void setCodigoQuestionario(int value) {
+        this.codigoQuestionario = value;
     }
 
     /**
@@ -157,7 +130,4 @@ public class AdicionarChecklist {
         this.dtNascimento = value;
     }
 
-    public void setCodigoQuestionario(Long codModelo) {
-
-    }
 }
