@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.CadastroA
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.VeiculosAtivos;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderHandlerResolver;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegradorHttp;
 import com.sun.istack.internal.NotNull;
 
@@ -98,14 +99,20 @@ public final class IntegradorHttpAvaCorpAvilan extends IntegradorHttp {
     }
 
     private CadastroAvaCorpAvilanSoap getCadastroSoap() {
-        return new CadastroAvaCorpAvilanService().getCadastroSoap();
+        CadastroAvaCorpAvilanService service = new CadastroAvaCorpAvilanService();
+        service.setHandlerResolver(new HeaderHandlerResolver());
+        return service.getCadastroSoap();
     }
 
     private AfericaoAvaCorpAvilanSoap getAfericaoSoap() {
-        return new AfericaoAvaCorpAvilanService().getAfericaoSoap();
+        AfericaoAvaCorpAvilanService service = new AfericaoAvaCorpAvilanService();
+        service.setHandlerResolver(new HeaderHandlerResolver());
+        return service.getAfericaoSoap();
     }
 
     private ChecklistAvaCorpAvilanSoap getChecklistSoap() {
-        return new ChecklistAvaCorpAvilanService().getChecklistSoap();
+        ChecklistAvaCorpAvilanService service = new ChecklistAvaCorpAvilanService();
+        service.setHandlerResolver(new HeaderHandlerResolver());
+        return service.getChecklistSoap();
     }
 }
