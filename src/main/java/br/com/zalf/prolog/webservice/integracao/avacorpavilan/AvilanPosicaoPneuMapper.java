@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Classe responsável por mapear as posições utilizadas nos pneus pela Avilan para o equivalente no ProLog.
  */
-public class AvilanPosicaoPneuMapper {
+class AvilanPosicaoPneuMapper {
     private static final ImmutableMap<String, Integer> MAP_POSICOES;
 
     static {
@@ -40,7 +40,7 @@ public class AvilanPosicaoPneuMapper {
                 .build();
     }
 
-    public static int mapToProLog(@NotNull final String posicao) {
+    static int mapToProLog(@NotNull final String posicao) {
         Preconditions.checkNotNull(posicao, "posicao não pode ser null!");
         Preconditions.checkArgument(MAP_POSICOES.containsKey(posicao),
                 "posicao " + posicao + " não mapeada para as posições utilizadas no ProLog");
