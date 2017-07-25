@@ -28,7 +28,7 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by luiz on 18/07/17.
+ * Transforma os objetos utilizados pelo AvaCorp em entidades do ProLog e vice-versa.
  */
 final class AvaCorpAvilanConverter {
 

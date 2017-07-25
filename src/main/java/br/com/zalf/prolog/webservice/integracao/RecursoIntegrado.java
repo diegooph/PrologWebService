@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
 
 /**
- * Created by luiz on 7/18/17.
+ * Constantes definindo quais recursos são possíveis de serem integrados com o ProLog. Caso uma empresa integre o
+ * {@link RecursoIntegrado#CHECKLIST}, por exemplo, isso quer dizer que ela possui ao menos algum método dos disponíveis
+ * no {@link ChecklistResource} integrado com seu ERP (ou qualquer outro sistema de controle).
  */
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),

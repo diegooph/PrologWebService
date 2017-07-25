@@ -9,7 +9,9 @@ import com.sun.istack.internal.Nullable;
 import java.sql.SQLException;
 
 /**
- * Created by luiz on 7/17/17.
+ * DAO que conterá todos os métodos necessários para que as integrações funcionem.
+ * Essa DAO <b>NÃO DEVE</b> possuir métodos que servem para uma ou outra integração com empresas específicas.
+ * A ideia é que ela possua métodos que o ProLog utiliza para fazer as integrações (no geral) funcionarem do seu lado.
  */
 public interface IntegracaoDao {
 

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by luiz on 7/17/17.
+ * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
  */
 public final class AvaCorpAvilan extends Sistema {
     @NotNull

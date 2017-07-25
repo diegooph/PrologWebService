@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -22,7 +23,12 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by luiz on 18/07/17.
+ * Os Routers são as classes responsáveis por direcionar o fluxo de um request depois do mesmo atingir o servidor do
+ * ProLog. O que ele faz, na verdade, é verificar se a empresa do usuário que faz o request possui integração no recurso
+ * que está sendo consumido. Por exemplo, se um usuário da Avilan consome um método do {@link ChecklistResource}, como
+ * esse recurso possui integração com alguma empresa, o request pode ir parar em um Router (depende o método). Esse
+ * Router irá verificar se a Avilan possui integração com o {@link RecursoIntegrado#CHECKLIST} e, se possuir,
+ * instanciará a subclasse de {@link Sistema} correta para processar a requisição.
  */
 public abstract class Router implements OperacoesIntegradas {
     @NotNull

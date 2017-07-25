@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
+import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -21,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by luiz on 7/17/17.
+ * O {@link IntegradorProLog} possui todos os métodos dos quais o sistema ProLog possui integração, seja ela com
+ * qualquer empresa, encapsulados. Desse modo, se para qualquer método que se possua uma integração, também seja
+ * necessário utilizar o banco do ProLog para inserir ou buscar qualquer informação basta utilizar esse integrador.
+ * Toda classe {@link Sistema} possui um {@link IntegradorProLog}.
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     @Nullable
