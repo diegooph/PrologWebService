@@ -17,7 +17,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
     @Override
     public ArrayOfVeiculo getVeiculosAtivos(@NotNull String cpf) throws Exception {
-        final VeiculosAtivos request = getCadastroSoap().buscarVeiculosAtivos("CPF AQUI");
+        final VeiculosAtivos request = getCadastroSoap().buscarVeiculosAtivos(cpf);
         if (request != null && request.isSucesso()) {
             return request.getListaVeiculos();
         }
