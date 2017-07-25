@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by luiz on 19/07/17.
+ * Operações integradas do checklist.
  */
 interface OperacoesIntegradasChecklist {
 
