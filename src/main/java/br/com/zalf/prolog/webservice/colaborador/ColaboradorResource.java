@@ -45,7 +45,7 @@ public class ColaboradorResource {
 	
 	@GET
 	@Secured
-	@Path("/getByCpf/{cpf}")
+	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
 		L.d(TAG, cpf.toString());
 		return service.getByCod(cpf);
