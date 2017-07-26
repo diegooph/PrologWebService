@@ -112,6 +112,9 @@ public abstract class Router implements OperacoesIntegradas {
             sistemaKey = integracaoDao.getSistemaKey(userToken, recursoIntegrado);
             hasTried = true;
         }
+        if (sistemaKey == null) {
+            return null;
+        }
 
         return SistemasFactory.createSistema(sistemaKey, integradorProLog, userToken);
     }
