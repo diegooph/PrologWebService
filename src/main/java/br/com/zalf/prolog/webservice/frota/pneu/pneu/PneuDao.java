@@ -70,10 +70,9 @@ public interface PneuDao {
      * @param codUnidade código da unidade
      * @param status     status do pneu
      * @param conn       conexão do banco
-     * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
     //TODO - comentar o javadoc
     boolean registraMovimentacaoHistorico(Pneu pneu, Long codUnidade, String statusDestino,

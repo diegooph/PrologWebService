@@ -382,7 +382,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
      * @return
      * @throws SQLException
      */
-    private List<String> getServicosCadastradosByPneu(Long codPneu, Long codUnidade) throws SQLException {
+    private List<String> getServicosCadastradosByPneu(String codPneu, Long codUnidade) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -395,7 +395,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND DATA_HORA_RESOLUCAO IS NULL "
                     + "GROUP BY TIPO_SERVICO "
                     + "ORDER BY TIPO_SERVICO");
-            stmt.setLong(1, codPneu);
+            stmt.setString(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -438,7 +438,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private void insertOrUpdateServico(Pneu pneu, long codAfericao, Long codUnidade, Connection conn, List<String> servicosPendentes) throws SQLException {
 
-        List<String> servicosCadastrados = getServicosCadastradosByPneu(new Long(pneu.getCodigo()), codUnidade);
+        List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
 
         for (String servicoPendente : servicosPendentes) {
             //se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga calibragem para uma inspeção

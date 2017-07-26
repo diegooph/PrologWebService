@@ -134,7 +134,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private boolean insertOrigem(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void insertOrigem(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO movimentacao_origem (tipo_origem, cod_movimentacao, " +
@@ -159,13 +159,15 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 stmt.setNull(8, Types.BIGINT);
                 stmt.setNull(9, Types.INTEGER);
             }
-            return stmt.executeUpdate() == 0;
+            if(stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir a origem da movimentação");
+            }
         } finally {
             closeConnection(null, stmt, null);
         }
     }
 
-    private boolean insertDestino(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void insertDestino(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO movimentacao_destino(cod_movimentacao, " +
@@ -184,7 +186,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 stmt.setNull(4, Types.BIGINT);
                 stmt.setNull(5, Types.INTEGER);
             }
-            return stmt.executeUpdate() == 0;
+            if(stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o destino da movimentação");
+            }
         } finally {
             closeConnection(null, stmt, null);
         }
@@ -217,7 +221,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private boolean adicionaPneuVeiculo(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void adicionaPneuVeiculo(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
@@ -227,14 +231,16 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setString(2, movimentacao.getPneu().getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
-            return stmt.executeUpdate() == 0;
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao vincular o pneu " + movimentacao.getPneu() + " ao veículo " + destinoVeiculo.getVeiculo().getPlaca());
+            }
         } finally {
             closeConnection(null, stmt, null);
         }
     }
 
-    private boolean atualizaStatusPneu(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void atualizaStatusPneu(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
         PneuDaoImpl pneuDao = new PneuDaoImpl();
-        return pneuDao.updateStatus(movimentacao.getPneu(), codUnidade, movimentacao.getDestino().getTipo(), conn);
+        pneuDao.updateStatus(movimentacao.getPneu(), codUnidade, movimentacao.getDestino().getTipo(), conn);
     }
 }
