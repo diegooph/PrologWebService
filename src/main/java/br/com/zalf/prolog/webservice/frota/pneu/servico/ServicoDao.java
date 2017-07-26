@@ -39,10 +39,9 @@ public interface ServicoDao {
 	 * insere um serviço
 	 * @param servico um serviço
 	 * @param codUnidade código da unidade
-	 * @param token token
 	 * @return valor da operação
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
-	boolean insertManutencao(Servico servico, Long codUnidade, String token) throws SQLException;
+	boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException;
 
 }
