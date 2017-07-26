@@ -566,7 +566,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException {
+    public Pneu getPneuByCod(String codPneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -606,7 +606,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n" +
                     "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n" +
                     "WHERE P.CODIGO = ? AND P.cod_unidade = ?");
-            stmt.setLong(1, codPneu);
+            stmt.setString(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {

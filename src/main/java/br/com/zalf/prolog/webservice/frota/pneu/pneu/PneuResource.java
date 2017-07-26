@@ -140,7 +140,7 @@ public class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
+    public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 }
