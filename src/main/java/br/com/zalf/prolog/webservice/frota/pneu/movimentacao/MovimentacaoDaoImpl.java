@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.sql.*;
@@ -87,7 +87,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     // pneu voltou recapado, devemos incrementar a vida
                     if(mov.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE) &&
                             mov.getDestino().getTipo().equals(OrigemDestinoConstants.ESTOQUE)){
-                        PneuDaoImpl pneuDao = new PneuDaoImpl();
+                        PneuDao pneuDao = Injection.providePneuDao();
                         mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual()+1);
                         pneuDao.updateVida(conn, mov.getPneu(), movimentacao.getUnidade().getCodigo());
                         pneuDao.insertTrocaVidaPneu(mov.getPneu(), movimentacao.getUnidade().getCodigo(), conn);
@@ -240,7 +240,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
     }
 
     private void atualizaStatusPneu(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
-        PneuDaoImpl pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
         pneuDao.updateStatus(movimentacao.getPneu(), codUnidade, movimentacao.getDestino().getTipo(), conn);
     }
 }

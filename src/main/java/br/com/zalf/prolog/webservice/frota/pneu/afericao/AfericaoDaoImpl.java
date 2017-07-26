@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
@@ -261,7 +260,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Veiculo veiculo = new Veiculo();
         VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         List<Pneu> pneus = new ArrayList<>();
-        PneuDaoImpl pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, " +
@@ -307,7 +306,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
 
         PreparedStatement stmt = null;
-        PneuDao pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
 
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +

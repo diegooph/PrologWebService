@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -115,7 +114,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Servico> listServicos = new ArrayList<>();
-		pneuDao = new PneuDaoImpl();
+		PneuDao pneuDao = Injection.providePneuDao();
 
 		try{
 			conn = getConnection();
@@ -167,7 +166,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 		this.codUnidade = codUnidade;
 		Connection conn = getConnection();
 		conn.setAutoCommit(false);
-		pneuDao = new PneuDaoImpl();
+		PneuDao pneuDao = Injection.providePneuDao();
 
 		try{
 			switch (servico.getTipo()) {

@@ -1,13 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class PneuService {
 
-    private PneuDao dao = new PneuDaoImpl();
+    private final PneuDao dao = Injection.providePneuDao();
 
 
     public boolean insert(Pneu pneu, Long codUnidade) {
@@ -103,7 +104,8 @@ public class PneuService {
 
     public AbstractResponse insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) {
         try {
-            return ResponseWithCod.Ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda, codEmpresa));
+            return ResponseWithCod.Ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
+                    codEmpresa));
         } catch (SQLException e) {
             return Response.Error("Erro ao inserir o modelo da banda");
         }
@@ -130,7 +132,7 @@ public class PneuService {
     public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
