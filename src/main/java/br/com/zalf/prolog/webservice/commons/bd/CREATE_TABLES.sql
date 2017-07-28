@@ -1990,14 +1990,19 @@ UNION
      JOIN colaborador c ON ((((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante)) AND (c.cod_unidade = m.cod_unidade))));
 COMMENT ON VIEW view_mapa_colaborador IS 'View utilizada para linkar os mapas relizados por cada colaborador';
 
+DROP FUNCTION func_relatorio_consolidado_produtividade(DATE, DATE, BIGINT);
 CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicial DATE, f_dt_final DATE, f_cod_unidade BIGINT)
   RETURNS TABLE (
+  "MATRICULA AMBEV" INT,
     "COLABORADOR" TEXT,
   "FUNÇÃO" TEXT,
   "CXS ENTREGUES" INT,
-  "DEV PDV" NUMERIC,
-  "META DEV PDV" NUMERIC,
+  "DEV PDV" TEXT,
+  "META DEV PDV" TEXT,
   "RECEBE PRÊMIO" TEXT,
+    "VALOR PRÊMIO" TEXT,
+    "Nº FATOR 1" BIGINT,
+    "Nº FATOR 2" BIGINT,
     "Nº ROTAS" BIGINT,
     "VALOR ROTA" TEXT,
     "Nº RECARGAS" BIGINT,
@@ -2011,26 +2016,35 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   ) AS
   $func$
     SELECT
-  nome_colaborador AS "COLABORADOR",
+    matricula_ambev,
+  initcap(nome_colaborador) AS "COLABORADOR",
   funcao AS "FUNÇÃO",
   trunc(sum(cxentreg))::INT        AS "CXS ENTREGUES",
-  round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2) as "DEV PDV",
-  round((meta_dev_pdv * 100)::numeric, 2) AS "META DEV PDV",
+  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') as "DEV PDV",
+  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') AS "META DEV PDV",
   CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
-    'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
-      sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
-      'R$ ' || trunc(sum(valor_rota) :: NUMERIC, 2) AS "VALOR ROTA",
-      sum(CASE WHEN valor_recarga > 0 THEN 1 else 0 END) as "Nº RECARGAS",
-      'R$ ' || trunc(sum(valor_recarga) :: NUMERIC, 2) AS "VALOR RECARGA",
-      sum(CASE WHEN valor_diferenca_eld > 0 THEN 1 else 0 END) as "Nº ELD",
-      'R$ ' || trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS "DIFERENÇA ELD" ,
-      sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
-      'R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2) AS "VALOR AS",
-      sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
-      'R$ ' || trunc(sum(valor) :: NUMERIC, 2) AS "VALOR TOTAL"
-FROM view_produtividade_extrato
--- WHERE cod_unidade = f_cod_unidade AND data BETWEEN f_dt_inicial AND f_dt_final
-WHERE cod_unidade = 4 AND data BETWEEN '2017-07-07' AND '2018-02-02'
-GROUP BY nome_colaborador, funcao, meta_dev_pdv
+  'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
+  REPLACE(  (CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
+  PCI.bonus_motorista
+    WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_ajudante THEN
+  PCI.bonus_ajudante
+  ELSE 0 END)::TEXT, '.', ',') as "VALOR PRÊMIO",
+  sum(CASE WHEN fator = 1 then 1 else 0 end) as "Nº FATOR 1",
+  sum(CASE WHEN fator = 2 then 1 else 0 end) as "Nº FATOR 2",
+  sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
+  REPLACE('R$ ' || trunc(sum(valor_rota)::NUMERIC, 2),'.', ',') AS "VALOR ROTA",
+  sum(CASE WHEN valor_recarga > 0 THEN 1 else 0 END) as "Nº RECARGAS",
+  REPLACE('R$ ' || trunc(sum(valor_recarga) :: NUMERIC, 2),'.', ',') AS "VALOR RECARGA",
+  sum(CASE WHEN valor_diferenca_eld > 0 THEN 1 else 0 END) as "Nº ELD",
+  REPLACE('R$ ' || trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2), '.', ',') AS "DIFERENÇA ELD" ,
+  sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
+  REPLACE('R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2), '.', ',') AS "VALOR AS",
+  sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
+  REPLACE('R$ ' || trunc(sum(valor) :: NUMERIC, 2), '.', ',') AS "VALOR TOTAL"
+FROM view_produtividade_extrato vpe
+  LEFT JOIN pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
+-- WHERE vpe.cod_unidade = 11 AND data BETWEEN '2017-06-21' AND '2017-07-20'
+WHERE vpe.cod_unidade = f_cod_unidade AND vpe.data BETWEEN f_dt_inicial AND f_dt_final
+GROUP BY matricula_ambev, nome_colaborador, vpe.cod_funcao,funcao, meta_dev_pdv, PCI.cod_cargo_ajudante, PCI.cod_cargo_motorista, PCI.bonus_ajudante, PCI.bonus_motorista
 ORDER BY funcao, nome_colaborador;
   $func$ LANGUAGE SQL;
