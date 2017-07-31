@@ -73,7 +73,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
     /**
      * atualiza dados do veículo

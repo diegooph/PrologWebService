@@ -253,17 +253,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException {
+    public void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("UPDATE PNEU SET "
-                + "STATUS = ? "
-                + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-        stmt.setString(1, status);
-        stmt.setLong(2, pneu.getCodigo());
-        stmt.setLong(3, codUnidade);
-        int count = stmt.executeUpdate();
-        closeConnection(null, stmt, null);
-        return count == 0;
+        try {
+            stmt = conn.prepareStatement("UPDATE PNEU SET "
+                    + "STATUS = ? "
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setString(1, status);
+            stmt.setLong(2, pneu.getCodigo());
+            stmt.setLong(3, codUnidade);
+            if(stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o status do pneu");
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
     }
 
     @Override
