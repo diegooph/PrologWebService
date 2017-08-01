@@ -15,7 +15,7 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "Afericao", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Afericao.asmx?WSDL")
+@WebServiceClient(name = "Afericao", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://189.11.175.146/IntegracaoProlog/Afericao.asmx?WSDL")
 public class AfericaoAvaCorpAvilanService extends Service {
 
     private final static URL AFERICAO_WSDL_LOCATION;
@@ -26,7 +26,7 @@ public class AfericaoAvaCorpAvilanService extends Service {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://201.55.108.106/IntegracaoProlog/Afericao.asmx?WSDL");
+            url = new URL("http://189.11.175.146/IntegracaoProlog/Afericao.asmx?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

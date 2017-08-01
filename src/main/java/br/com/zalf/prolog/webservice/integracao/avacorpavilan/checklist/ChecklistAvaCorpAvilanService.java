@@ -1,14 +1,10 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
 
 
 /**
@@ -19,7 +15,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "Checklist", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://201.55.108.106/IntegracaoProlog/Checklist.asmx?WSDL")
+@WebServiceClient(name = "Checklist", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://189.11.175.146/IntegracaoProlog/Checklist.asmx?WSDL")
 public class ChecklistAvaCorpAvilanService
     extends Service
 {
@@ -32,7 +28,7 @@ public class ChecklistAvaCorpAvilanService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://201.55.108.106/IntegracaoProlog/Checklist.asmx?WSDL");
+            url = new URL("http://189.11.175.146/IntegracaoProlog/Checklist.asmx?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
