@@ -35,7 +35,10 @@ public class ContrachequeService {
             Reader in = new FileReader(path);
             List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             for (int i = 1; i < tabela.size(); i++) {
-                itens.add(createItemImportContracheque(tabela.get(i)));
+                ItemImportContracheque item = createItemImportContracheque(tabela.get(i));
+                if(item != null){
+                    itens.add(item);
+                }
             }
             if(dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)){
                 return Response.Ok("Dados inseridos com sucesso");
@@ -51,6 +54,9 @@ public class ContrachequeService {
     }
 
     private ItemImportContracheque createItemImportContracheque(CSVRecord linha){
+        if (linha.get(0).isEmpty()) {
+            return null;
+        }
         ItemImportContracheque item = new ItemImportContracheque();
         if(!linha.get(0).trim().replaceAll( "[^\\d]", "").isEmpty()) {
             item.setCpf(Long.parseLong(linha.get(0)));
