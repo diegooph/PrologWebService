@@ -119,6 +119,6 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         HeaderUtils.bindHeadersToService(
                 (BindingProvider) soap,
                 HeaderEntry.createAuthorizationBasic(cpf.concat(":").concat(dataNascimento)));
-        return service.getChecklistSoap();
+        return soap;
     }
 }
