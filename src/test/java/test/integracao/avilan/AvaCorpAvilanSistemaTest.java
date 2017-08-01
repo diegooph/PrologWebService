@@ -1,0 +1,88 @@
+package test.integracao.avilan;
+
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static test.integracao.avilan.AvaCorpAvilanConstants.*;
+
+/**
+ * Created by luiz on 01/08/17.
+ */
+public class AvaCorpAvilanSistemaTest {
+    private final Sistema sistema = SistemasFactory.createSistema(
+            SistemaKey.AVACORP_AVILAN,
+            IntegradorProLog.full(),
+            USER_TEST_PROLOG_TOKEN);
+
+    @Before
+    public void setup() {
+        // Printa no console todos os logs das requisições HTTP. Headers, Body...
+        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarVeiculosAtivos() throws Exception {
+        assertNotNull(sistema.getVeiculosAtivosByUnidade(0L));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarNovaAfericao() throws Exception {
+        assertNotNull(sistema.getNovaAfericao(VEICULO_TEST_PLACA));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
+    public void testInsertAfericao() throws Exception {
+        sistema.insertAfericao(new Afericao(), 0L);
+    }
+
+    @Test
+    public void testBuscarSelecaoModeloChecklistPlacaVeiculo() throws Exception {
+        assertNotNull(sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L));
+    }
+
+    @Test
+    public void testBuscarNovoChecklistHolder() throws Exception {
+        Map<ModeloChecklist, List<String>> map = sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L);
+        // Não pode ser nulo
+        assertNotNull(map);
+        // Esperamos que venha algum questionário
+        assertTrue(!map.isEmpty());
+
+        // Já que não está vazio pegamos o primeiro elemento
+        Map.Entry<ModeloChecklist ,List<String>> entry = map.entrySet().iterator().next();
+        ModeloChecklist modeloChecklist = entry.getKey();
+        List<String> placas= entry.getValue();
+
+        assertNotNull(modeloChecklist);
+        assertNotNull(placas);
+        // Deve ter pelo menos um veículo apto a realizar esse modelo de checklist
+        assertTrue(!placas.isEmpty());
+
+
+        assertNotNull(sistema.getNovoChecklistHolder(
+                0L,
+                modeloChecklist.getCodigo(),
+                /* Já que deve existir pelo menos um veículo, pegamos o primeiro da lista */
+                placas.get(0)));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
+    public void testInsertChecklist() throws Exception {
+        sistema.insertChecklist(new Checklist());
+    }
+}

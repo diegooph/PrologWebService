@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPne
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
@@ -30,7 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Transforma os objetos utilizados pelo AvaCorp em entidades do ProLog e vice-versa.
  */
-final class AvaCorpAvilanConverter {
+@VisibleForTesting
+public final class AvaCorpAvilanConverter {
 
     private AvaCorpAvilanConverter() {
         throw new IllegalStateException(AvaCorpAvilanConverter.class.getSimpleName() + " cannot be instantiated!");
