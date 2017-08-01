@@ -37,33 +37,33 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf()));
+        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf(), dataNascimento()));
     }
 
     @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
                                                                                     @NotNull Long codFuncao)
             throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(cpf()));
+        return AvaCorpAvilanConverter.convert(requester.getSelecaoModeloChecklistPlacaVeiculo(cpf(), dataNascimento()));
     }
 
     @Override
     public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
-        return requester.insertChecklist(AvaCorpAvilanConverter.convert(checklist));
+        return requester.insertChecklist(AvaCorpAvilanConverter.convert(checklist), cpf(), dataNascimento());
     }
 
     @Override
     public boolean insertAfericao(@NotNull Afericao afericao,
                                   @NotNull Long codUnidade) throws Exception {
-        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao));
+        return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), cpf(), dataNascimento());
     }
 
     @Override
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        final List<Veiculo> veiculos = AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf()));
+        final List<Veiculo> veiculos = AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf(), dataNascimento()));
         for (Veiculo veiculo : veiculos) {
             if (veiculo.getPlaca().equals(placaVeiculo)) {
-                final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo));
+                final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
                 final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
                 veiculo.setListPneus(pneus);
 
