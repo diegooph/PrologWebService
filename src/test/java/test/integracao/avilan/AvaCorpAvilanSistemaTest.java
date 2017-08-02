@@ -57,16 +57,16 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test
     public void testBuscarNovoChecklistHolder() throws Exception {
-        Map<ModeloChecklist, List<String>> map = sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L);
+        final Map<ModeloChecklist, List<String>> map = sistema.getSelecaoModeloChecklistPlacaVeiculo(0L, 0L);
         // Não pode ser nulo
         assertNotNull(map);
         // Esperamos que venha algum questionário
         assertTrue(!map.isEmpty());
 
         // Já que não está vazio pegamos o primeiro elemento
-        Map.Entry<ModeloChecklist ,List<String>> entry = map.entrySet().iterator().next();
-        ModeloChecklist modeloChecklist = entry.getKey();
-        List<String> placas= entry.getValue();
+        final Map.Entry<ModeloChecklist ,List<String>> entry = map.entrySet().iterator().next();
+        final ModeloChecklist modeloChecklist = entry.getKey();
+        final List<String> placas= entry.getValue();
 
         assertNotNull(modeloChecklist);
         assertNotNull(placas);

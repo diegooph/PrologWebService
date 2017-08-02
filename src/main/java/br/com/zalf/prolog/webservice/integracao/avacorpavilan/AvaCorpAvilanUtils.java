@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.sun.istack.internal.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -8,7 +9,8 @@ import java.util.Date;
 /**
  * Created by luiz on 7/24/17.
  */
-class AvaCorpAvilanUtils {
+@VisibleForTesting
+public class AvaCorpAvilanUtils {
 
     private AvaCorpAvilanUtils() {
         throw new IllegalStateException(AvaCorpAvilanUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -20,7 +22,7 @@ class AvaCorpAvilanUtils {
      * @param date um {@link Date}.
      * @return uma {@link String} represetando a data.
      */
-    static String createDatePattern(@NotNull final Date date) {
+    public static String createDatePattern(@NotNull final Date date) {
         return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 }
