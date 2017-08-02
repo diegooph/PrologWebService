@@ -88,7 +88,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         VeiculoDao veiculoDao = new VeiculoDaoImpl();
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
-        final List<Pneu> estepes = novaAfericao.getVeiculo().getEstepes();
+        final List<Pneu> estepes = veiculo.getEstepes();
         veiculo.removeEstepes();
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setEstepesVeiculo(estepes);
