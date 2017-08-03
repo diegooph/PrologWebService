@@ -8,6 +8,8 @@ Change Log
 
 #### Refactor
 
+* Corrige erro de parse em possível coluna vazia no campo "pontuação CNH" do prontuário
+
 #### Deprecated
 
 #### Bug Fixes
