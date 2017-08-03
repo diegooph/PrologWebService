@@ -24,7 +24,7 @@ public class AvaCorpAvilanSistemaTest {
     private final Sistema sistema = SistemasFactory.createSistema(
             SistemaKey.AVACORP_AVILAN,
             IntegradorProLog.full(),
-            USER_TEST_PROLOG_TOKEN);
+            ROLOG_TOKEN);
 
     @Before
     public void setup() {
@@ -42,7 +42,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarNovaAfericao() throws Exception {
-        assertNotNull(sistema.getNovaAfericao(VEICULO_TEST_PLACA));
+        assertNotNull(sistema.getNovaAfericao(VEICULO_COM_PNEUS));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)

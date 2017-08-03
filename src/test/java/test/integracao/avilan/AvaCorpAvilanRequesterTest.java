@@ -7,14 +7,14 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfQuestionarioVeiculos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -37,19 +37,19 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testIncluirMedidaAfericao() throws Exception {
-        assertTrue(requester.insertAfericao(createIncluirMedida(), USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO));
+        assertTrue(requester.insertAfericao(createIncluirMedida(), CPF, DATA_NASCIMENTO));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarVeiculosAtivos() throws Exception {
-        final ArrayOfVeiculo veiculos = requester.getVeiculosAtivos(USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO);
+        final ArrayOfVeiculo veiculos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
         assertNotNull(veiculos);
         assertTrue(!veiculos.getVeiculo().isEmpty());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarPneusVeiculo() throws Exception {
-        final ArrayOfPneu pneus = requester.getPneusVeiculo(VEICULO_TEST_PLACA, USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO);
+        final ArrayOfPneu pneus = requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO);
         assertNotNull(pneus);
         assertTrue(!pneus.getPneu().isEmpty());
     }
@@ -57,7 +57,7 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarQuestionariosColaborador() throws Exception {
         final ArrayOfQuestionarioVeiculos questionarios =
-                requester.getSelecaoModeloChecklistPlacaVeiculo(USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO);
+                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
     }
@@ -65,23 +65,90 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarPerguntasAlternativasQuestionario() throws Exception {
         final ArrayOfVeiculoQuestao veiculoQuestao =
-                requester.getQuestoesVeiculo(1, VEICULO_TEST_PLACA, USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO);
+                requester.getQuestoesVeiculo(
+                        1,
+                        VEICULO_COM_CHECK_VINCULADO,
+                        CPF,
+                        DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
         assertTrue(!veiculoQuestao.getVeiculoQuestao().isEmpty());
     }
 
-    @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
+    @Test(timeout = 7 * 60 * 1000)
     public void testEnviarChecklist() throws Exception {
-        requester.insertChecklist(null, USER_TEST_CPF, USER_TEST_DATA_NASCIMENTO);
+        //////////////////////////////////////////////////////////////////////////////
+        // BUSCA OS QUESTIONÁRIOS DISPONÍVEIS PARA UM VEÍCULO
+        //////////////////////////////////////////////////////////////////////////////
+        final ArrayOfQuestionarioVeiculos questionarios =
+                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
+        assertNotNull(questionarios);
+        assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+        final Questionario questionario = questionarios.getQuestionarioVeiculos().get(0).getQuestionario();
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculo veiculos =
+                questionarios.getQuestionarioVeiculos().get(0).getVeiculos();
+        assertNotNull(questionario);
+        assertNotNull(veiculos);
+        assertTrue(!veiculos.getVeiculo().isEmpty());
+
+        //////////////////////////////////////////////////////////////////////////////
+        // BUSCA AS QUESTÕES DE UM QUESTIONÁRIO PARA UM VEÍCULO
+        //////////////////////////////////////////////////////////////////////////////
+        final Veiculo veiculo = veiculos.getVeiculo().get(0);
+        assertNotNull(veiculo);
+        assertNotNull(veiculo.getPlaca());
+        assertTrue(veiculo.getMarcador() >= 0);
+        final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
+                questionario.getCodigoQuestionario(),
+                veiculo.getPlaca(),
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(arrayOfVeiculoQuestao);
+        assertTrue(!arrayOfVeiculoQuestao.getVeiculoQuestao().isEmpty());
+
+        //////////////////////////////////////////////////////////////////////////////
+        // RESPONDE TODAS AS PERGUNTAS DO QUESTIONÁRIO SELECIONADO E ENVIA
+        //////////////////////////////////////////////////////////////////////////////
+        int codigoAvaliacao = -1;
+        final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
+        for (VeiculoQuestao veiculoQuestao : arrayOfVeiculoQuestao.getVeiculoQuestao()) {
+            assertNotNull(veiculoQuestao);
+            assertNotNull(veiculoQuestao.getQuestoes());
+
+            final List<Questao> questoes = veiculoQuestao.getQuestoes().getQuestao();
+            assertNotNull(questoes);
+            for (Questao questao : questoes) {
+                assertNotNull(questao);
+                codigoAvaliacao = questao.getCodigoAvaliacao();
+
+                final ArrayOfResposta respostas = questao.getRespostas();
+                assertNotNull(respostas);
+                assertTrue(!respostas.getResposta().isEmpty());
+
+                final RespostaAval respostaAval = new RespostaAval();
+                // Responde sempre a primeira alternativa
+                respostaAval.setCodigoResposta(respostas.getResposta().get(0).getCodigoResposta());
+                respostaAval.setSequenciaQuestao(questao.getSequenciaQuestao());
+                arrayOfRespostaAval.getRespostaAval().add(respostaAval);
+            }
+        }
+
+        assertTrue(codigoAvaliacao != -1);
+        final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
+        respostasAvaliacao.setCodigoAvaliacao(codigoAvaliacao);
+        respostasAvaliacao.setOdometro(veiculo.getMarcador());
+        respostasAvaliacao.setDtNascimento(DATA_NASCIMENTO);
+        respostasAvaliacao.setCpf(CPF);
+        respostasAvaliacao.setRespostas(arrayOfRespostaAval);
+        assertTrue(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
     }
 
     private IncluirMedida2 createIncluirMedida() {
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
 
         // seta valores
-        incluirMedida2.setVeiculo(VEICULO_TEST_PLACA);
+        incluirMedida2.setVeiculo(VEICULO_COM_PNEUS);
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
-        incluirMedida2.setMarcador(542666);
+        incluirMedida2.setMarcador(642666);
         incluirMedida2.setDataMedida(AvaCorpAvilanUtils.createDatePattern(new Date(System.currentTimeMillis())));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo()
