@@ -167,7 +167,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             situacao.setMotivo(linha.get(indices.get(COLUMN_MOTIVO)));
 
             Cnh cnh = new Cnh();
-            cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
+            if(linha.get(indices.get(COLUMN_PONTUACAO_CNH)).isEmpty()){
+                cnh.setPontuacao(0);
+            }else{
+                cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
+            }
             cnh.setVencimento(ImportUtils.toTimestamp(linha.get(indices.get(COLUMN_VENCIMENTO_CNH))));
 
             Documento documento = new Documento();
