@@ -240,9 +240,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void updateCalibragem(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void updatePressaoAtual(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
 
-        PreparedStatement stmt = null;
+        PreparedStatement stmt;
         stmt = conn.prepareStatement("UPDATE PNEU SET "
                 + "PRESSAO_ATUAL = ? "
                 + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
@@ -253,33 +253,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException {
+    public void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("UPDATE PNEU SET "
-                + "STATUS = ? "
-                + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-        stmt.setString(1, status);
-        stmt.setLong(2, pneu.getCodigo());
-        stmt.setLong(3, codUnidade);
-        int count = stmt.executeUpdate();
-        closeConnection(null, stmt, null);
-        return count == 0;
-    }
-
-    @Override
-    public boolean registraMovimentacaoHistorico(Pneu pneu, Long codUnidade, String statusDestino, long kmVeiculo, String placaVeiculo, Connection conn, String token) throws SQLException {
-        PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU VALUES (?,?,?,?,?,?,?, (SELECT CPF_COLABORADOR FROM TOKEN_AUTENTICACAO WHERE TOKEN = ?))");
-        stmt.setTimestamp(1, br.com.zalf.prolog.webservice.commons.util.DateUtils.toTimestamp(new Time(System.currentTimeMillis())));
-        stmt.setLong(2, pneu.getCodigo());
-        stmt.setLong(3, codUnidade);
-        stmt.setString(4, pneu.getStatus());
-        stmt.setString(5, statusDestino);
-        stmt.setString(6, placaVeiculo);
-        stmt.setLong(7, kmVeiculo);
-        stmt.setString(8, token);
-        stmt.executeUpdate();
-        return true;
+        try {
+            stmt = conn.prepareStatement("UPDATE PNEU SET "
+                    + "STATUS = ? "
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setString(1, status);
+            stmt.setLong(2, pneu.getCodigo());
+            stmt.setLong(3, codUnidade);
+            if(stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o status do pneu");
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
     }
 
     @Override

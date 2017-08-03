@@ -27,7 +27,7 @@ public class ServicoResource {
 									 @HeaderParam("Authorization") String tokenHeader) {
 
 		String token = tokenHeader.substring("Bearer".length()).trim();
-		if (service.insertManutencao(servico, codUnidade, token)) {
+		if (service.insertManutencao(servico, codUnidade)) {
 			return Response.Ok("Serviço consertado com sucesso.");
 		} else {
 			return Response.Error("Erro ao marcar o item como consertado.");

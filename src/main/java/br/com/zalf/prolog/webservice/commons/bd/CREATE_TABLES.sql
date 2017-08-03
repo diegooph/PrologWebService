@@ -398,6 +398,7 @@ CREATE TABLE IF NOT EXISTS PNEU_VALOR_VIDA (
   CONSTRAINT FK_PNEU_VALOR_VIDA_PNEU FOREIGN KEY (COD_UNIDADE, COD_PNEU)
   REFERENCES PNEU (COD_UNIDADE, CODIGO)
 );
+ALTER TABLE PNEU_VALOR_VIDA ALTER COLUMN TYPE COD_PNEU VARCHAR(255);
 
 -- após inserir as tabelas marca e modelo banda deve-se editar a tabela pneu.
 ALTER TABLE pneu
@@ -471,6 +472,7 @@ CREATE TABLE IF NOT EXISTS VEICULO_PNEU (
   CONSTRAINT FK_VEICULO_PNEU_VEICULO FOREIGN KEY (PLACA)
   REFERENCES VEICULO (PLACA)
 );
+ALTER TABLE VEICULO_PNEU ALTER COLUMN COD_PNEU TYPE VARCHAR(255);
 
 --PNEU--AFERIÇÃO
 COMMENT ON TABLE AFERICAO IS 'Aferição - Coleta dos dados de sulcos e pressão de cada pneu de um veículo';
@@ -516,6 +518,7 @@ CREATE TABLE IF NOT EXISTS AFERICAO_VALORES (
   CONSTRAINT FK_AFERICAO_VALORES_PNEU FOREIGN KEY (COD_PNEU, COD_UNIDADE)
   REFERENCES PNEU (CODIGO, COD_UNIDADE)
 );
+ALTER TABLE AFERICAO_VALORES ALTER COLUMN COD_PNEU TYPE VARCHAR(255);
 
 ALTER TABLE afericao_valores RENAME COLUMN altura_sulco_central TO altura_sulco_central_interno;
 ALTER TABLE afericao_valores ADD COLUMN altura_sulco_central_externo REAL;
@@ -977,6 +980,7 @@ CREATE TABLE IF NOT EXISTS AFERICAO_MANUTENCAO (
   KM_MOMENTO_CONSERTO     BIGINT,
   COD_ALTERNATIVA         BIGINT, -- APENAS PARA INSPEÇÃO
   COD_PNEU_INSERIDO       BIGINT, -- APENAS PARA MOVIMENTAÇÃO
+  COD_MOVIMENTACAO        BIGINT, -- APENAS PARA MOVIMENTAÇÃO
   CONSTRAINT PK_AFERICAO_MANUTENCAO PRIMARY KEY (COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO),
   CONSTRAINT FK_AFERICAO_MANUTENCAO_AFERICAO FOREIGN KEY (COD_AFERICAO)
   REFERENCES AFERICAO (CODIGO) ON DELETE CASCADE,
@@ -991,6 +995,12 @@ CREATE TABLE IF NOT EXISTS AFERICAO_MANUTENCAO (
   CONSTRAINT AFERICAO_MANUTENCAO_ALTERNATIVA FOREIGN KEY (COD_ALTERNATIVA)
   REFERENCES AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO (CODIGO)
 );
+ALTER TABLE AFERICAO_MANUTENCAO ALTER COLUMN COD_PNEU TYPE VARCHAR(255);
+ALTER TABLE AFERICAO_MANUTENCAO ALTER COLUMN COD_PNEU_INCONSISTENCIA TYPE VARCHAR(255);
+ALTER TABLE AFERICAO_MANUTENCAO ALTER COLUMN COD_PNEU_INSERIDO TYPE VARCHAR(255);
+ALTER TABLE AFERICAO_MANUTENCAO ADD COLUMN COD_MOVIMENTACAO BIGINT;
+ALTER TABLE AFERICAO_MANUTENCAO ADD CONSTRAINT FK_AFERICAO_MANUTENCAO_MOVIMENTACAO FOREIGN KEY (COD_MOVIMENTACAO)
+REFERENCES MOVIMENTACAO(CODIGO);
 
 --PNEU-- ALTERNATIVAS A SEREM ESCOLHIDAS EM UM SERVIÇO DO TIPO "INSPEÇÃO"
 COMMENT ON TABLE AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO IS 'Alternativas para selecionar quando for consertar um item de inspeção';
@@ -1039,6 +1049,7 @@ CREATE TABLE IF NOT EXISTS MOVIMENTACAO (
   CONSTRAINT FK_MOVIMENTACAO_UNIDADE FOREIGN KEY (COD_UNIDADE)
   REFERENCES UNIDADE (CODIGO)
 );
+ALTER TABLE MOVIMENTACAO ALTER COLUMN COD_PNEU TYPE VARCHAR(255);
 
 ALTER TABLE movimentacao RENAME COLUMN sulco_central TO sulco_central_interno;
 ALTER TABLE movimentacao ADD COLUMN sulco_central_externo REAL;
@@ -1120,6 +1131,8 @@ CREATE TABLE IF NOT EXISTS VEICULO_PNEU_INCONSISTENCIA (
   CONSTRAINT FK_VEICULO_PNEU_INCONSISTENCIA_COLABORADOR FOREIGN KEY (CPF_FECHAMENTO)
   REFERENCES COLABORADOR (CPF)
 );
+ALTER TABLE veiculo_pneu_inconsistencia ALTER COLUMN COD_PNEU_CORRETO TYPE VARCHAR(255);
+ALTER TABLE veiculo_pneu_inconsistencia ALTER COLUMN COD_PNEU_INCORRETO TYPE VARCHAR(255);
 
 -- PILARES DO PROLOG
 COMMENT ON TABLE PILAR_PROLOG IS 'Pilares do sistema, baseado no DPO';
@@ -1979,14 +1992,19 @@ UNION
      JOIN colaborador c ON ((((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante)) AND (c.cod_unidade = m.cod_unidade))));
 COMMENT ON VIEW view_mapa_colaborador IS 'View utilizada para linkar os mapas relizados por cada colaborador';
 
+DROP FUNCTION func_relatorio_consolidado_produtividade(DATE, DATE, BIGINT);
 CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicial DATE, f_dt_final DATE, f_cod_unidade BIGINT)
   RETURNS TABLE (
+  "MATRICULA AMBEV" INT,
     "COLABORADOR" TEXT,
   "FUNÇÃO" TEXT,
   "CXS ENTREGUES" INT,
-  "DEV PDV" NUMERIC,
-  "META DEV PDV" NUMERIC,
+  "DEV PDV" TEXT,
+  "META DEV PDV" TEXT,
   "RECEBE PRÊMIO" TEXT,
+    "VALOR PRÊMIO" TEXT,
+    "Nº FATOR 1" BIGINT,
+    "Nº FATOR 2" BIGINT,
     "Nº ROTAS" BIGINT,
     "VALOR ROTA" TEXT,
     "Nº RECARGAS" BIGINT,
@@ -2000,26 +2018,35 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   ) AS
   $func$
     SELECT
-  nome_colaborador AS "COLABORADOR",
+    matricula_ambev,
+  initcap(nome_colaborador) AS "COLABORADOR",
   funcao AS "FUNÇÃO",
   trunc(sum(cxentreg))::INT        AS "CXS ENTREGUES",
-  round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2) as "DEV PDV",
-  round((meta_dev_pdv * 100)::numeric, 2) AS "META DEV PDV",
+  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') as "DEV PDV",
+  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') AS "META DEV PDV",
   CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
-    'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
-      sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
-      'R$ ' || trunc(sum(valor_rota) :: NUMERIC, 2) AS "VALOR ROTA",
-      sum(CASE WHEN valor_recarga > 0 THEN 1 else 0 END) as "Nº RECARGAS",
-      'R$ ' || trunc(sum(valor_recarga) :: NUMERIC, 2) AS "VALOR RECARGA",
-      sum(CASE WHEN valor_diferenca_eld > 0 THEN 1 else 0 END) as "Nº ELD",
-      'R$ ' || trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS "DIFERENÇA ELD" ,
-      sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
-      'R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2) AS "VALOR AS",
-      sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
-      'R$ ' || trunc(sum(valor) :: NUMERIC, 2) AS "VALOR TOTAL"
-FROM view_produtividade_extrato
--- WHERE cod_unidade = f_cod_unidade AND data BETWEEN f_dt_inicial AND f_dt_final
-WHERE cod_unidade = 4 AND data BETWEEN '2017-07-07' AND '2018-02-02'
-GROUP BY nome_colaborador, funcao, meta_dev_pdv
+  'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
+  REPLACE(  (CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
+  PCI.bonus_motorista
+    WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_ajudante THEN
+  PCI.bonus_ajudante
+  ELSE 0 END)::TEXT, '.', ',') as "VALOR PRÊMIO",
+  sum(CASE WHEN fator = 1 then 1 else 0 end) as "Nº FATOR 1",
+  sum(CASE WHEN fator = 2 then 1 else 0 end) as "Nº FATOR 2",
+  sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
+  REPLACE('R$ ' || trunc(sum(valor_rota)::NUMERIC, 2),'.', ',') AS "VALOR ROTA",
+  sum(CASE WHEN valor_recarga > 0 THEN 1 else 0 END) as "Nº RECARGAS",
+  REPLACE('R$ ' || trunc(sum(valor_recarga) :: NUMERIC, 2),'.', ',') AS "VALOR RECARGA",
+  sum(CASE WHEN valor_diferenca_eld > 0 THEN 1 else 0 END) as "Nº ELD",
+  REPLACE('R$ ' || trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2), '.', ',') AS "DIFERENÇA ELD" ,
+  sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
+  REPLACE('R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2), '.', ',') AS "VALOR AS",
+  sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
+  REPLACE('R$ ' || trunc(sum(valor) :: NUMERIC, 2), '.', ',') AS "VALOR TOTAL"
+FROM view_produtividade_extrato vpe
+  LEFT JOIN pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
+-- WHERE vpe.cod_unidade = 11 AND data BETWEEN '2017-06-21' AND '2017-07-20'
+WHERE vpe.cod_unidade = f_cod_unidade AND vpe.data BETWEEN f_dt_inicial AND f_dt_final
+GROUP BY matricula_ambev, nome_colaborador, vpe.cod_funcao,funcao, meta_dev_pdv, PCI.cod_cargo_ajudante, PCI.cod_cargo_motorista, PCI.bonus_ajudante, PCI.bonus_motorista
 ORDER BY funcao, nome_colaborador;
   $func$ LANGUAGE SQL;
