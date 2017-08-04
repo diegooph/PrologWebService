@@ -24,6 +24,10 @@ class AvilanPosicaoPneuMapper {
                 .put("2ºDE", 221)
                 .put("2ºDI", 222)
                 .put("DD", 121)
+                .put("TDE", 221)
+                .put("TDI", 222)
+                .put("TEE", 211)
+                .put("TEI", 212)
                 /* CARRETA 3 EIXOS */
                 .put("A_EE", 211)
                 .put("A_EI", 212)
