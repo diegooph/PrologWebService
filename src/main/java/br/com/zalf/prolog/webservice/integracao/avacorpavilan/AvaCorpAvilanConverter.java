@@ -125,7 +125,6 @@ public final class AvaCorpAvilanConverter {
                 .getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
-
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         for (VeiculoQuestao veiculoQuestao : veiculoQuestoes.getVeiculoQuestao()) {
             final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
