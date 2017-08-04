@@ -298,7 +298,7 @@ public class AvaCorpAvilanConverterTest {
         }
         checklist.setListRespostas(holder.getListPerguntas());
 
-        final RespostasAvaliacao respostasAvaliacao = AvaCorpAvilanConverter.convert(checklist);
+        final RespostasAvaliacao respostasAvaliacao = AvaCorpAvilanConverter.convert(checklist, CPF, DATA_NASCIMENTO);
         assertNotNull(respostasAvaliacao);
         assertNotNull(respostasAvaliacao.getCpf());
         assertNotNull(respostasAvaliacao.getDtNascimento());
