@@ -38,7 +38,7 @@ public final class AvaCorpAvilanConverter {
         throw new IllegalStateException(AvaCorpAvilanConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
+    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
 
         final List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo> veiculosAvilan
@@ -55,7 +55,7 @@ public final class AvaCorpAvilanConverter {
         return veiculos;
     }
 
-    static IncluirMedida2 convert(@NotNull final Afericao afericao) {
+    public static IncluirMedida2 convert(@NotNull final Afericao afericao) {
         checkNotNull(afericao, "afericao não pode ser null!");
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
@@ -84,7 +84,7 @@ public final class AvaCorpAvilanConverter {
         return incluirMedida2;
     }
 
-    static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
+    public static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
         final Map<ModeloChecklist, List<String>> map = new HashMap<>();
@@ -106,7 +106,7 @@ public final class AvaCorpAvilanConverter {
         return map;
     }
 
-    static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculoQuestoes, String placaVeiculo) {
+    public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculoQuestoes, String placaVeiculo) {
         checkNotNull(veiculoQuestoes, "veiculoQuestoes não pode ser null!");
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
 
@@ -163,7 +163,7 @@ public final class AvaCorpAvilanConverter {
         return novoChecklistHolder;
     }
 
-    static RespostasAvaliacao convert(Checklist checklist) {
+    public static RespostasAvaliacao convert(Checklist checklist) {
         checkNotNull(checklist, "checklist não pode ser null!");
 
         final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
@@ -187,7 +187,7 @@ public final class AvaCorpAvilanConverter {
         return respostasAvaliacao;
     }
 
-    static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
+    public static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
 
