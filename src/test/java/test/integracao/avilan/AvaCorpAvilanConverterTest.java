@@ -239,32 +239,14 @@ public class AvaCorpAvilanConverterTest {
 
             final List<AlternativaChecklist> alternativas = perguntaProLog.getAlternativasResposta();
             assertNotNull(alternativas);
+            // Sepre vai possuir apenas uma alternativa
+            assertTrue(alternativas.size() == 1);
 
-            // Se for descritiva, não irá possuir opções de resposta e terá apenas uma alternativa no lado do ProLog:
-            // Outros (especificar).
-            if (perguntaAvilan.getTipoResposta() == AvaCorpAvilanTipoResposta.DESCRITIVA) {
-                assertTrue(alternativas.size() == 1);
+            final AlternativaChecklist alternativa = alternativas.get(0);
+            assertNotNull(alternativa);
+            assertTrue(alternativa.getTipo() == Alternativa.TIPO_OUTROS);
 
-                final AlternativaChecklist alternativa = alternativas.get(0);
-                assertNotNull(alternativa);
-                assertTrue(alternativa.getTipo() == Alternativa.TIPO_OUTROS);
-                assertNotNull(alternativa.getAlternativa());
-                assertFalse(alternativa.getAlternativa().isEmpty());
-            } else { // Seleção única
-                final List<Resposta> respostas = perguntaAvilan.getRespostas().getResposta();
-                assertFalse(respostas.isEmpty());
-
-                assertTrue(alternativas.size() == respostas.size());
-                for (int j = 0; j < alternativas.size(); j++) {
-                    final AlternativaChecklist alternativa = alternativas.get(j);
-                    final Resposta resposta = respostas.get(j);
-                    assertNotNull(alternativa);
-                    assertNotNull(resposta);
-
-                    assertTrue(resposta.getDescricao().equals(alternativa.getAlternativa()));
-                    assertTrue(Long.valueOf(resposta.getCodigoResposta()).equals(alternativa.getCodigo()));
-                }
-            }
+            // TODO: Verificar se as duas respostas da Avilan são OK e NOK
         }
     }
 
@@ -342,22 +324,17 @@ public class AvaCorpAvilanConverterTest {
 
             final List<AlternativaChecklist> alternativas = respostaProLog.getAlternativasResposta();
             assertNotNull(alternativas);
-            assertFalse(alternativas.isEmpty());
-            for (int j = 0; j < alternativas.size(); j++) {
-                final AlternativaChecklist alternativa = alternativas.get(j);
-                assertNotNull(alternativa);
-                if (alternativa.selected) {
-                    assertTrue(respostaAvilan.getCodigoResposta() == alternativa.getCodigo());
-                    if (alternativa.getTipo() == Alternativa.TIPO_OUTROS) {
-                        assertNotNull(alternativa.getRespostaOutros());
-                        assertNotNull(respostaAvilan.getObservacao());
-                        assertTrue(alternativa.getRespostaOutros().equals(respostaAvilan.getObservacao()));
-                    }
-                    break;
-                } else if (j == alternativas.size() - 1) {
-                    throw new IllegalStateException("Nenhuma alternativa foi selecionada para a pergunta: "
-                            + respostaProLog.getPergunta());
-                }
+            assertTrue(alternativas.size() == 1);
+            final Alternativa alternativa = alternativas.get(0);
+            assertNotNull(alternativa);
+            if (respostaProLog.respondeuOk()) {
+                assertTrue(alternativa.getOrdemExibicao() == respostaAvilan.getCodigoResposta());
+            } else {
+                assertTrue(alternativa.getCodigo() == respostaAvilan.getCodigoResposta());
+                assertTrue(alternativa.getTipo() == Alternativa.TIPO_OUTROS);
+                assertNotNull(alternativa.getRespostaOutros());
+                assertNotNull(respostaAvilan.getObservacao());
+                assertTrue(alternativa.getRespostaOutros().equals(respostaAvilan.getObservacao()));
             }
         }
     }
