@@ -49,7 +49,10 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
-        return requester.insertChecklist(AvaCorpAvilanConverter.convert(checklist), cpf(), dataNascimento());
+        return requester.insertChecklist(
+                AvaCorpAvilanConverter.convert(checklist, cpf(), dataNascimento()),
+                cpf(),
+                dataNascimento());
     }
 
     @Override
