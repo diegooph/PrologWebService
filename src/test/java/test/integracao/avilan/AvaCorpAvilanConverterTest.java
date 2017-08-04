@@ -3,6 +3,7 @@ package test.integracao.avilan;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -27,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
@@ -44,6 +46,7 @@ public class AvaCorpAvilanConverterTest {
         System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
         System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
         System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -103,7 +106,7 @@ public class AvaCorpAvilanConverterTest {
     public void Should_Fail_If_Tire_Measurements_Transformation_Diverges() throws Exception {
         final Date now = new Date(System.currentTimeMillis());
         final long kmVeiculo = 42;
-        final long tempoRealizacao = 5 * 60 * 1000;
+        final long tempoRealizacaoMillis = TimeUnit.MINUTES.toMillis(5);
 
         final Afericao afericao = new Afericao();
         final Colaborador colaborador = new Colaborador();
@@ -112,7 +115,7 @@ public class AvaCorpAvilanConverterTest {
         afericao.setColaborador(colaborador);
         afericao.setDataHora(now);
         afericao.setKmMomentoAfericao(kmVeiculo);
-        afericao.setTempoRealizacaoAfericaoInMillis(tempoRealizacao);
+        afericao.setTempoRealizacaoAfericaoInMillis(tempoRealizacaoMillis);
 
         final List<Pneu> pneus =
                 AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO));
@@ -268,73 +271,99 @@ public class AvaCorpAvilanConverterTest {
         }
     }
 
-//    @Test(timeout = 7 * 60 * 1000)
-//    public void testEnviarChecklist() throws Exception {
-//        //////////////////////////////////////////////////////////////////////////////
-//        // BUSCA OS QUESTIONÁRIOS DISPONÍVEIS PARA UM VEÍCULO
-//        //////////////////////////////////////////////////////////////////////////////
-//        final ArrayOfQuestionarioVeiculos questionarios =
-//                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
-//        assertNotNull(questionarios);
-//        assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
-//        final Questionario questionario = questionarios.getQuestionarioVeiculos().get(0).getQuestionario();
-//        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculo veiculos =
-//                questionarios.getQuestionarioVeiculos().get(0).getVeiculos();
-//        assertNotNull(questionario);
-//        assertNotNull(veiculos);
-//        assertTrue(!veiculos.getVeiculo().isEmpty());
-//
-//        //////////////////////////////////////////////////////////////////////////////
-//        // BUSCA AS QUESTÕES DE UM QUESTIONÁRIO PARA UM VEÍCULO
-//        //////////////////////////////////////////////////////////////////////////////
-//        final Veiculo veiculo = veiculos.getVeiculo().get(0);
-//        assertNotNull(veiculo);
-//        assertNotNull(veiculo.getPlaca());
-//        assertTrue(veiculo.getMarcador() >= 0);
-//        final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
-//                questionario.getCodigoQuestionario(),
-//                veiculo.getPlaca(),
-//                CPF,
-//                DATA_NASCIMENTO);
-//        assertNotNull(arrayOfVeiculoQuestao);
-//        assertTrue(!arrayOfVeiculoQuestao.getVeiculoQuestao().isEmpty());
-//
-//        //////////////////////////////////////////////////////////////////////////////
-//        // RESPONDE TODAS AS PERGUNTAS DO QUESTIONÁRIO SELECIONADO E ENVIA
-//        //////////////////////////////////////////////////////////////////////////////
-//        int codigoAvaliacao = -1;
-//        final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
-//        for (VeiculoQuestao veiculoQuestao : arrayOfVeiculoQuestao.getVeiculoQuestao()) {
-//            assertNotNull(veiculoQuestao);
-//            assertNotNull(veiculoQuestao.getQuestoes());
-//
-//            final List<Questao> questoes = veiculoQuestao.getQuestoes().getQuestao();
-//            assertNotNull(questoes);
-//            for (Questao questao : questoes) {
-//                assertNotNull(questao);
-//                codigoAvaliacao = questao.getCodigoAvaliacao();
-//
-//                final ArrayOfResposta respostas = questao.getRespostas();
-//                assertNotNull(respostas);
-//                assertTrue(!respostas.getResposta().isEmpty());
-//
-//                final RespostaAval respostaAval = new RespostaAval();
-//                // Responde sempre a primeira alternativa
-//                respostaAval.setCodigoResposta(respostas.getResposta().get(0).getCodigoResposta());
-//                respostaAval.setSequenciaQuestao(questao.getSequenciaQuestao());
-//                arrayOfRespostaAval.getRespostaAval().add(respostaAval);
-//            }
-//        }
-//
-//        assertTrue(codigoAvaliacao != -1);
-//        final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
-//        respostasAvaliacao.setCodigoAvaliacao(codigoAvaliacao);
-//        respostasAvaliacao.setOdometro(veiculo.getMarcador());
-//        respostasAvaliacao.setDtNascimento(DATA_NASCIMENTO);
-//        respostasAvaliacao.setCpf(CPF);
-//        respostasAvaliacao.setRespostas(arrayOfRespostaAval);
-//        assertTrue(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
-//    }
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void Should_Fail_If_Checklist_Transformation_Diverges() throws Exception {
+        // Uso interno
+        final int codigoQuestionarioModelo = 1;
+        final Date now = new Date(System.currentTimeMillis());
+        final long tempoRealizacaoMillis = TimeUnit.MINUTES.toMillis(2);
+        final long kmVeiculo = 42;
+        final String veiculoUtilizado = VEICULO_COM_CHECK_VINCULADO;
+
+        final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
+                codigoQuestionarioModelo,
+                veiculoUtilizado,
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(arrayOfVeiculoQuestao);
+        assertFalse(arrayOfVeiculoQuestao.getVeiculoQuestao().isEmpty());
+        final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
+                arrayOfVeiculoQuestao,
+                veiculoUtilizado);
+        assertNotNull(holder);
+        assertNotNull(holder.getVeiculo());
+        assertNotNull(holder.getListPerguntas());
+        assertFalse(holder.getListPerguntas().isEmpty());
+
+        final Checklist checklist = new Checklist();
+        checklist.setCodModelo((long) codigoQuestionarioModelo);
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(Long.parseLong(CPF));
+        colaborador.setDataNascimento(parseDate(DATA_NASCIMENTO));
+        checklist.setColaborador(colaborador);
+        checklist.setData(now);
+        checklist.setTempoRealizacaoCheckInMillis(tempoRealizacaoMillis);
+        checklist.setKmAtualVeiculo(kmVeiculo);
+        checklist.setPlacaVeiculo(veiculoUtilizado);
+        // Não precisamos setar o tipo pois o ERP da Avilan não lida com essa informação. Ele seta automaticamente
+        // o tipo do checklist
+//        checklist.setTipo();
+
+        // Responde as perguntas
+        for (final PerguntaRespostaChecklist respostas : holder.getListPerguntas()) {
+            final AlternativaChecklist alternativa = respostas.getAlternativasResposta().get(0);
+            alternativa.selected = true;
+            if (alternativa.getTipo() == Alternativa.TIPO_OUTROS) {
+                alternativa.setRespostaOutros("TESTE RESPOSTA OUTROS");
+            }
+        }
+        checklist.setListRespostas(holder.getListPerguntas());
+
+        final RespostasAvaliacao respostasAvaliacao = AvaCorpAvilanConverter.convert(checklist);
+        assertNotNull(respostasAvaliacao);
+        assertNotNull(respostasAvaliacao.getCpf());
+        assertNotNull(respostasAvaliacao.getDtNascimento());
+        assertNotNull(respostasAvaliacao.getRespostas());
+        assertFalse(respostasAvaliacao.getRespostas().getRespostaAval().isEmpty());
+        assertTrue(Long.valueOf(respostasAvaliacao.getCpf()).equals(checklist.getColaborador().getCpf()));
+        assertTrue(respostasAvaliacao.getDtNascimento().equals(
+                AvaCorpAvilanUtils.createDatePattern(checklist.getColaborador().getDataNascimento())));
+        assertTrue(respostasAvaliacao.getOdometro() == kmVeiculo);
+        assertTrue(respostasAvaliacao.getOdometro() == checklist.getKmAtualVeiculo());
+
+
+        final List<RespostaAval> respostasAvilan = respostasAvaliacao.getRespostas().getRespostaAval();
+        final List<PerguntaRespostaChecklist> respostasProLog = checklist.getListRespostas();
+        assertTrue(respostasAvilan.size() == respostasProLog.size());
+
+        for (int i = 0; i < respostasAvilan.size(); i++) {
+            final RespostaAval respostaAvilan = respostasAvilan.get(i);
+            final PerguntaRespostaChecklist respostaProLog = respostasProLog.get(i);
+            assertNotNull(respostaAvilan);
+            assertNotNull(respostaProLog);
+            assertTrue(respostaAvilan.getSequenciaQuestao() == respostaProLog.getOrdemExibicao());
+
+            final List<AlternativaChecklist> alternativas = respostaProLog.getAlternativasResposta();
+            assertNotNull(alternativas);
+            assertFalse(alternativas.isEmpty());
+            for (int j = 0; j < alternativas.size(); j++) {
+                final AlternativaChecklist alternativa = alternativas.get(j);
+                assertNotNull(alternativa);
+                if (alternativa.selected) {
+                    assertTrue(respostaAvilan.getCodigoResposta() == alternativa.getCodigo());
+                    if (alternativa.getTipo() == Alternativa.TIPO_OUTROS) {
+                        assertNotNull(alternativa.getRespostaOutros());
+                        assertNotNull(respostaAvilan.getObservacao());
+                        assertTrue(alternativa.getRespostaOutros().equals(respostaAvilan.getObservacao()));
+                    }
+                    break;
+                } else if (j == alternativas.size() - 1) {
+                    throw new IllegalStateException("Nenhuma alternativa foi selecionada para a pergunta: "
+                            + respostaProLog.getPergunta());
+                }
+            }
+        }
+    }
 
     private Date parseDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);

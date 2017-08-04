@@ -139,6 +139,7 @@ public final class AvaCorpAvilanConverter {
                 if (tipoResposta == AvaCorpAvilanTipoResposta.SELECAO_UNICA) {
                     for (Resposta resposta : questao.getRespostas().getResposta()) {
                         final AlternativaChecklist alternativa = new AlternativaChecklist();
+                        // TODO: aqui não faz mal usar o código da resposta
                         alternativa.setCodigo(resposta.getCodigoResposta());
                         alternativa.setAlternativa(resposta.getDescricao());
                         alternativas.add(alternativa);
@@ -172,6 +173,7 @@ public final class AvaCorpAvilanConverter {
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+            // TODO: Só devemos criar resposta aval para as alternativas selecionadas
             final RespostaAval respostaAval = new RespostaAval();
             respostaAval.setSequenciaQuestao(resposta.getOrdemExibicao());
             for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
@@ -182,7 +184,7 @@ public final class AvaCorpAvilanConverter {
             }
             arrayOfRespostaAval.getRespostaAval().add(respostaAval);
         }
-
+        respostasAvaliacao.setRespostas(arrayOfRespostaAval);
         return respostasAvaliacao;
     }
 
