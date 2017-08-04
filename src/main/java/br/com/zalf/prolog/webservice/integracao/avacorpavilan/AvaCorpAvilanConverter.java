@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPne
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
@@ -30,13 +31,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Transforma os objetos utilizados pelo AvaCorp em entidades do ProLog e vice-versa.
  */
-final class AvaCorpAvilanConverter {
+@VisibleForTesting
+public final class AvaCorpAvilanConverter {
 
     private AvaCorpAvilanConverter() {
         throw new IllegalStateException(AvaCorpAvilanConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
+    @VisibleForTesting
+    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
 
         final List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo> veiculosAvilan
@@ -53,7 +56,8 @@ final class AvaCorpAvilanConverter {
         return veiculos;
     }
 
-    static IncluirMedida2 convert(@NotNull final Afericao afericao) {
+    @VisibleForTesting
+    public static IncluirMedida2 convert(@NotNull final Afericao afericao) {
         checkNotNull(afericao, "afericao não pode ser null!");
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
@@ -82,7 +86,8 @@ final class AvaCorpAvilanConverter {
         return incluirMedida2;
     }
 
-    static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
+    @VisibleForTesting
+    public static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
         final Map<ModeloChecklist, List<String>> map = new HashMap<>();
@@ -104,8 +109,9 @@ final class AvaCorpAvilanConverter {
         return map;
     }
 
-    static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculoQuestoes, String placaVeiculo) {
-        checkNotNull(veiculoQuestoes, "veiculoQuestoes não pode ser null!");
+    @VisibleForTesting
+    public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes, String placaVeiculo) {
+        checkNotNull(veiculosQuestoes, "veiculosQuestoes não pode ser null!");
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
 
         final NovoChecklistHolder novoChecklistHolder = new NovoChecklistHolder();
@@ -113,55 +119,63 @@ final class AvaCorpAvilanConverter {
         // Seta informações Veículo
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(placaVeiculo);
-        // Seta o km do veículo buscando algum veículo que possua a placa informada
-        veiculo.setKmAtual(veiculoQuestoes
+        // Recebemos uma lista de VeiculoQuestao, pois se buscamos pela placa de um cavalo e existam carretas atreladas
+        // a ele, as perguntas para essas carretas também são enviadas. Nós, porém, ignoramos qualquer outra placa.
+        final VeiculoQuestao veiculoQuestao = veiculosQuestoes
                 .getVeiculoQuestao()
                 .stream()
-                .filter(veiculoQuestao -> veiculoQuestao.getVeiculo().getPlaca().equals(placaVeiculo))
-                .collect(MoreCollectors.onlyElement())
-                .getVeiculo()
-                .getMarcador());
+                .filter(v -> v.getVeiculo().getPlaca().equals(placaVeiculo))
+                .collect(MoreCollectors.onlyElement());
+        // Seta o km do veículo
+        veiculo.setKmAtual(veiculoQuestao.getVeiculo().getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
-
+        // Cria as perguntas/respostas do checklist
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
-        for (VeiculoQuestao veiculoQuestao : veiculoQuestoes.getVeiculoQuestao()) {
-            final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
-            for (Questao questao : arrayOfQuestao.getQuestao()) {
-                final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-                pergunta.setCodigo((long) questao.getCodigoAvaliacao());
-                pergunta.setOrdemExibicao(questao.getSequenciaQuestao());
-                pergunta.setPergunta(questao.getDescricao());
+        final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
+        for (Questao questao : arrayOfQuestao.getQuestao()) {
+            final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+            pergunta.setCodigo((long) questao.getCodigoAvaliacao());
+            pergunta.setOrdemExibicao(questao.getSequenciaQuestao());
+            pergunta.setPergunta(questao.getDescricao());
 
-                final List<AlternativaChecklist> alternativas = new ArrayList<>();
-                final AvaCorpAvilanTipoResposta tipoResposta = questao.getTipoResposta();
-                if (tipoResposta == AvaCorpAvilanTipoResposta.SELECAO_UNICA) {
-                    for (Resposta resposta : questao.getRespostas().getResposta()) {
-                        final AlternativaChecklist alternativa = new AlternativaChecklist();
-                        alternativa.setCodigo(resposta.getCodigoResposta());
-                        alternativa.setAlternativa(resposta.getDescricao());
-                        alternativas.add(alternativa);
-                    }
-                } else if (tipoResposta == AvaCorpAvilanTipoResposta.DESCRITIVA) {
-                    final AlternativaChecklist alternativa = new AlternativaChecklist();
-                    alternativa.setCodigo(questao.getCodigoAvaliacao());
-                    alternativa.setAlternativa(questao.getDescricao());
-                    alternativa.setTipo(Alternativa.TIPO_OUTROS);
-                    alternativas.add(alternativa);
+            final List<AlternativaChecklist> alternativas = new ArrayList<>();
+
+            Resposta respostaOk = null;
+            Resposta respostaNok = null;
+            for (int i = 0; i < questao.getRespostas().getResposta().size(); i++) {
+                final Resposta resposta = questao.getRespostas().getResposta().get(i);
+                if (resposta.getDescricao().trim().equalsIgnoreCase("OK")) {
+                   respostaOk = resposta;
+                } else if (resposta.getDescricao().trim().equalsIgnoreCase("NOK")) {
+                    respostaNok = resposta;
                 }
-
-                // Sempre single choice
-                pergunta.setSingleChoice(true);
-                pergunta.setAlternativasResposta(alternativas);
-                perguntas.add(pergunta);
             }
+
+            if (respostaOk == null || respostaNok == null) {
+                throw new IllegalStateException("Resposta OK ou NOK não presente na pergunta");
+            }
+
+            // Nós vamos ignorar quaisquer alternativas que sejam enviadas e vamos sempre enviar apenas uma alternativa:
+            // a de tipo OUTROS. Que permite ao colaborador digitar a resposta.
+            final AlternativaChecklist alternativa = new AlternativaChecklist();
+            alternativa.setOrdemExibicao(respostaOk.getCodigoResposta());
+            alternativa.setCodigo(respostaNok.getCodigoResposta());
+            alternativa.setTipo(Alternativa.TIPO_OUTROS);
+            alternativas.add(alternativa);
+
+            // Sempre single choice
+            pergunta.setSingleChoice(true);
+            pergunta.setAlternativasResposta(alternativas);
+            perguntas.add(pergunta);
         }
         novoChecklistHolder.setListPerguntas(perguntas);
 
         return novoChecklistHolder;
     }
 
-    static RespostasAvaliacao convert(Checklist checklist) {
+    @VisibleForTesting
+    public static RespostasAvaliacao convert(Checklist checklist) {
         checkNotNull(checklist, "checklist não pode ser null!");
 
         final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
@@ -171,21 +185,26 @@ final class AvaCorpAvilanConverter {
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+
             final RespostaAval respostaAval = new RespostaAval();
             respostaAval.setSequenciaQuestao(resposta.getOrdemExibicao());
-            for (AlternativaChecklist alternativa : resposta.getAlternativasResposta()) {
+            // Sempre terá apenas uma alternativa
+            final Alternativa alternativa = resposta.getAlternativasResposta().get(0);
+            if (resposta.respondeuOk()) {
+                respostaAval.setCodigoResposta(alternativa.getOrdemExibicao());
+            } else {
                 respostaAval.setCodigoResposta(Math.toIntExact(alternativa.getCodigo()));
-                if (alternativa.getTipo() == Alternativa.TIPO_OUTROS) {
-                    respostaAval.setObservacao(alternativa.getRespostaOutros());
-                }
+                respostaAval.setObservacao(alternativa.getRespostaOutros());
             }
+
             arrayOfRespostaAval.getRespostaAval().add(respostaAval);
         }
-
+        respostasAvaliacao.setRespostas(arrayOfRespostaAval);
         return respostasAvaliacao;
     }
 
-    static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
+    @VisibleForTesting
+    public static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
 

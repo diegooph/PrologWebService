@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -8,7 +9,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Classe responsável por mapear as posições utilizadas nos pneus pela Avilan para o equivalente no ProLog.
  */
-class AvilanPosicaoPneuMapper {
+@VisibleForTesting
+public class AvilanPosicaoPneuMapper {
     private static final ImmutableMap<String, Integer> MAP_POSICOES;
 
     static {
@@ -24,6 +26,10 @@ class AvilanPosicaoPneuMapper {
                 .put("2ºDE", 221)
                 .put("2ºDI", 222)
                 .put("DD", 121)
+                .put("TDE", 221)
+                .put("TDI", 222)
+                .put("TEE", 211)
+                .put("TEI", 212)
                 /* CARRETA 3 EIXOS */
                 .put("A_EE", 211)
                 .put("A_EI", 212)
@@ -40,7 +46,8 @@ class AvilanPosicaoPneuMapper {
                 .build();
     }
 
-    static int mapToProLog(@NotNull final String posicao) {
+    @VisibleForTesting
+    public static int mapToProLog(@NotNull final String posicao) {
         Preconditions.checkNotNull(posicao, "posicao não pode ser null!");
         Preconditions.checkArgument(MAP_POSICOES.containsKey(posicao),
                 "posicao " + posicao + " não mapeada para as posições utilizadas no ProLog");

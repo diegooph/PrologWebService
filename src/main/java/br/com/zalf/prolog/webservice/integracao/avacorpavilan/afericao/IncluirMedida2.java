@@ -100,8 +100,8 @@ public class IncluirMedida2 {
      * Gets the value of the tipoMarcador property.
      * 
      */
-    public int getTipoMarcador() {
-        return tipoMarcador;
+    public AvaCorpAvilanTipoMarcador getTipoMarcador() {
+        return AvaCorpAvilanTipoMarcador.fromInt(tipoMarcador);
     }
 
     /**

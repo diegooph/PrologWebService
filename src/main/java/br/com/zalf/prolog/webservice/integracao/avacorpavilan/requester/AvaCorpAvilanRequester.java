@@ -13,18 +13,26 @@ import com.sun.istack.internal.NotNull;
  * Created by luiz on 24/07/17.
  */
 public interface AvaCorpAvilanRequester extends Requester {
-    ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf) throws Exception;
+    ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
+                                     @NotNull String dataNascimento) throws Exception;
 
-    ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf) throws Exception;
+    ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf,
+                                                                      @NotNull String dataNascimento) throws Exception;
 
-    boolean insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao) throws Exception;
+    boolean insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao,
+                            @NotNull String cpf,
+                            @NotNull String dataNascimento) throws Exception;
 
     ArrayOfVeiculoQuestao getQuestoesVeiculo(int codigoQuestionario,
                                              @NotNull String placaVeiculo,
                                              @NotNull String cpf,
                                              @NotNull String dataNascimento) throws Exception;
 
-    boolean insertAfericao(@NotNull final IncluirMedida2 medidas) throws Exception;
+    boolean insertAfericao(@NotNull final IncluirMedida2 medidas,
+                           @NotNull String cpf,
+                           @NotNull String dataNascimento) throws Exception;
 
-    ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo) throws Exception;
+    ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
+                                @NotNull String cpf,
+                                @NotNull String dataNascimento) throws Exception;
 }

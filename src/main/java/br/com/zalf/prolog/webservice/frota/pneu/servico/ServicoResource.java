@@ -22,12 +22,8 @@ public class ServicoResource {
 	@POST
 	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico,
-									 @PathParam("codUnidade") Long codUnidade,
-									 @HeaderParam("Authorization") String tokenHeader) {
-
-		String token = tokenHeader.substring("Bearer".length()).trim();
-		if (service.insertManutencao(servico, codUnidade, token)) {
+	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade) {
+		if (service.insertManutencao(servico, codUnidade)) {
 			return Response.Ok("Serviço consertado com sucesso.");
 		} else {
 			return Response.Error("Erro ao marcar o item como consertado.");

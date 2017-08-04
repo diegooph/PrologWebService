@@ -53,7 +53,7 @@ public class ChecklistTest extends TestCase {
 //		assertEquals("MKE2501", c.getPlacaVeiculo());
 //		assertEquals('s', c.getTipo());
 //		for ( Map.Entry<Pergunta, Resposta> entry : c.getPerguntaRespostaMap().entrySet()) {
-//		    Pergunta p = entry.getKey();
+//		    Pergunta p = entry.getName();
 //		    Resposta r = entry.getValue();
 //		    assertEquals(pergunta.getCodigo(), p.getCodigo());
 //		    assertEquals(resposta.getResposta(), r.getResposta());

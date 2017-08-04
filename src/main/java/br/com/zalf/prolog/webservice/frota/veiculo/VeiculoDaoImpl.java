@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -171,7 +171,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        PneuDao pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(VEICULOS_BY_PLACA);

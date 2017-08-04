@@ -23,6 +23,19 @@ public class PerguntaRespostaChecklist extends Pergunta {
 
     }
 
+    /**
+     *
+     * @return {@code true} caso o usuário tenha respondido como OK essa pergunta; {@code false} caso contrário.
+     */
+    public boolean respondeuOk() {
+        for (AlternativaChecklist alternativaChecklist : alternativasResposta) {
+            if (alternativaChecklist.selected)
+                return false;
+        }
+
+        return true;
+    }
+
     public String getPrioridade() {
         return prioridade;
     }
@@ -78,22 +91,4 @@ public class PerguntaRespostaChecklist extends Pergunta {
                 super.toString() +
                 '}';
     }
-
-//    public static class AlternativaChecklist extends br.com.zalf.prolog.webservice.commons.questoes.Alternativa {
-//        /**
-//         * Indica se a alternativa atual está marcada (selecionada) ou não.
-//         */
-//        public boolean selected;
-//
-//        public AlternativaChecklist() {
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "AlternativaChecklist{" +
-//                    "selected=" + selected +
-//                    super.toString() +
-//                    '}';
-//        }
-//    }
 }

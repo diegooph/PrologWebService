@@ -47,9 +47,12 @@ public abstract class Router implements OperacoesIntegradas {
            @NotNull final IntegradorProLog integradorProLog,
            @NotNull final String userToken,
            @NotNull final RecursoIntegrado recursoIntegrado) {
+        checkNotNull(userToken, "userToken não pode ser null!");
         this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser null!");
-        this.userToken = checkNotNull(userToken, "userToken não pode ser null!");
+        // Remove o "Bearer " de antes do token
+        // TODO: tirar essa remoção daqui e do AuthorizationFilter tbm, botar em uma Utils.
+        this.userToken = userToken.substring("Bearer".length()).trim();
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 
@@ -111,6 +114,9 @@ public abstract class Router implements OperacoesIntegradas {
         if (sistemaKey == null && !hasTried) {
             sistemaKey = integracaoDao.getSistemaKey(userToken, recursoIntegrado);
             hasTried = true;
+        }
+        if (sistemaKey == null) {
+            return null;
         }
 
         return SistemasFactory.createSistema(sistemaKey, integradorProLog, userToken);

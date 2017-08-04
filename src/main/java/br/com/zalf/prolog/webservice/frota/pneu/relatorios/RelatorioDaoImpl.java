@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
@@ -150,7 +149,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		ResultSet rSet = null;
 		List<Pneu> pneus = new ArrayList<>();
 		Pneu pneu = new Pneu();
-		PneuDao pneuDao = new PneuDaoImpl();
+		PneuDao pneuDao = Injection.providePneuDao();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(SULCOS_PNEUS_BY_FAIXAS);

@@ -2,8 +2,12 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -16,7 +20,7 @@ public class MovimentacaoResource {
 
     MovimentacaoService service = new MovimentacaoService();
 
-//    @Secured
+    @Secured
     @POST
     public Response insert(ProcessoMovimentacao movimentacao){
         return service.insert(movimentacao);

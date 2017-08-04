@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import com.google.common.annotations.VisibleForTesting;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -45,6 +46,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
         this.colaboradorDao = colaboradorDao;
+    }
+
+    @VisibleForTesting
+    public static IntegradorProLog full() {
+        return new IntegradorProLog(
+                Injection.provideVeiculoDao(),
+                Injection.provideChecklistDao(),
+                Injection.provideAfericaoDao(),
+                Injection.provideColaboradorDao());
     }
 
     //
