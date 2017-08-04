@@ -175,12 +175,12 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static RespostasAvaliacao convert(Checklist checklist) {
+    public static RespostasAvaliacao convert(Checklist checklist, String cpf, String dataNascimento) {
         checkNotNull(checklist, "checklist não pode ser null!");
 
         final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
-        respostasAvaliacao.setCpf(String.valueOf(checklist.getColaborador().getCpf()));
-        respostasAvaliacao.setDtNascimento(createDatePattern(checklist.getColaborador().getDataNascimento()));
+        respostasAvaliacao.setCpf(cpf);
+        respostasAvaliacao.setDtNascimento(dataNascimento);
         respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
