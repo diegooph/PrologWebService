@@ -38,6 +38,7 @@ public final class AvaCorpAvilanConverter {
         throw new IllegalStateException(AvaCorpAvilanConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    @VisibleForTesting
     public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
 
@@ -55,6 +56,7 @@ public final class AvaCorpAvilanConverter {
         return veiculos;
     }
 
+    @VisibleForTesting
     public static IncluirMedida2 convert(@NotNull final Afericao afericao) {
         checkNotNull(afericao, "afericao não pode ser null!");
 
@@ -84,6 +86,7 @@ public final class AvaCorpAvilanConverter {
         return incluirMedida2;
     }
 
+    @VisibleForTesting
     public static Map<ModeloChecklist, List<String>> convert(ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
@@ -106,6 +109,7 @@ public final class AvaCorpAvilanConverter {
         return map;
     }
 
+    @VisibleForTesting
     public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculoQuestoes, String placaVeiculo) {
         checkNotNull(veiculoQuestoes, "veiculoQuestoes não pode ser null!");
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
@@ -163,6 +167,7 @@ public final class AvaCorpAvilanConverter {
         return novoChecklistHolder;
     }
 
+    @VisibleForTesting
     public static RespostasAvaliacao convert(Checklist checklist) {
         checkNotNull(checklist, "checklist não pode ser null!");
 
@@ -188,6 +193,7 @@ public final class AvaCorpAvilanConverter {
         return respostasAvaliacao;
     }
 
+    @VisibleForTesting
     public static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();

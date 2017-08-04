@@ -9,10 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaCheck
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoResposta;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
@@ -93,12 +90,12 @@ public class AvaCorpAvilanConverterTest {
             assertNotNull(pneuProLog);
 
             assertTrue(pneuAvilan.getNumeroFogo().equals(pneuProLog.getCodigo()));
-            assertTrue(pneuAvilan.getPosicao().equals(String.valueOf(pneuProLog.getPosicao())));
+            assertTrue(AvilanPosicaoPneuMapper.mapToProLog(pneuAvilan.getPosicao()) == pneuProLog.getPosicao());
             assertTrue(pneuAvilan.getSulco1() == pneuProLog.getSulcosAtuais().getExterno());
             assertTrue(pneuAvilan.getSulco2() == pneuProLog.getSulcosAtuais().getCentralExterno());
             assertTrue(pneuAvilan.getSulco3() == pneuProLog.getSulcosAtuais().getCentralInterno());
             assertTrue(pneuAvilan.getSulco4() == pneuProLog.getSulcosAtuais().getInterno());
-            assertTrue(pneuAvilan.getVidaPneu() == pneuProLog.getVidaAtual());
+            assertTrue(pneuAvilan.getVidaPneu() + 1 == pneuProLog.getVidaAtual());
         }
     }
 
