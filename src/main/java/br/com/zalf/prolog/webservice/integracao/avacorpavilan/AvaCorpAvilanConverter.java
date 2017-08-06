@@ -190,7 +190,7 @@ public final class AvaCorpAvilanConverter {
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
 
             final RespostaAval respostaAval = new RespostaAval();
-            respostaAval.setSequenciaQuestao(resposta.getOrdemExibicao());
+            respostaAval.setSequenciaQuestao(Math.toIntExact(resposta.getCodigo()));
             // Sempre terá apenas uma alternativa
             final Alternativa alternativa = resposta.getAlternativasResposta().get(0);
             if (resposta.respondeuOk()) {

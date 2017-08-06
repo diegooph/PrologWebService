@@ -272,10 +272,12 @@ public class AvaCorpAvilanConverterTest {
         assertNotNull(holder);
         assertNotNull(holder.getVeiculo());
         assertNotNull(holder.getListPerguntas());
+        assertNotNull(holder.getCodigoModeloChecklist());
+        assertTrue(holder.getCodigoModeloChecklist() > 0);
         assertFalse(holder.getListPerguntas().isEmpty());
 
         final Checklist checklist = new Checklist();
-        checklist.setCodModelo((long) codigoQuestionarioModelo);
+        checklist.setCodModelo(holder.getCodigoModeloChecklist());
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(Long.parseLong(CPF));
         colaborador.setDataNascimento(parseDate(DATA_NASCIMENTO));
@@ -284,6 +286,7 @@ public class AvaCorpAvilanConverterTest {
         checklist.setTempoRealizacaoCheckInMillis(tempoRealizacaoMillis);
         checklist.setKmAtualVeiculo(kmVeiculo);
         checklist.setPlacaVeiculo(veiculoUtilizado);
+        assertTrue(holder.getCodigoModeloChecklist().equals(checklist.getCodModelo()));
         // Não precisamos setar o tipo pois o ERP da Avilan não lida com essa informação. Ele seta automaticamente
         // o tipo do checklist
 //        checklist.setTipo();
@@ -320,7 +323,7 @@ public class AvaCorpAvilanConverterTest {
             final PerguntaRespostaChecklist respostaProLog = respostasProLog.get(i);
             assertNotNull(respostaAvilan);
             assertNotNull(respostaProLog);
-            assertTrue(respostaAvilan.getSequenciaQuestao() == respostaProLog.getOrdemExibicao());
+            assertTrue(respostaAvilan.getSequenciaQuestao() == respostaProLog.getCodigo());
 
             final List<AlternativaChecklist> alternativas = respostaProLog.getAlternativasResposta();
             assertNotNull(alternativas);
