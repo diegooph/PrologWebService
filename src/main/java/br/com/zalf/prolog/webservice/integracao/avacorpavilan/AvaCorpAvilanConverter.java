@@ -133,10 +133,13 @@ public final class AvaCorpAvilanConverter {
         // Cria as perguntas/respostas do checklist
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();
         final ArrayOfQuestao arrayOfQuestao = veiculoQuestao.getQuestoes();
-        for (Questao questao : arrayOfQuestao.getQuestao()) {
+        for (final Questao questao : arrayOfQuestao.getQuestao()) {
+            // Todas as questões em uma mesma lista possuem o mesmo código de avaliação.
+            // Deixamos setar para cada iteração porque assim é mais fácil
+            novoChecklistHolder.setCodigoModeloChecklist((long) questao.getCodigoAvaliacao());
+
             final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
-            pergunta.setCodigo((long) questao.getCodigoAvaliacao());
-            pergunta.setOrdemExibicao(questao.getSequenciaQuestao());
+            pergunta.setCodigo((long) questao.getSequenciaQuestao());
             pergunta.setPergunta(questao.getDescricao());
 
             final List<AlternativaChecklist> alternativas = new ArrayList<>();

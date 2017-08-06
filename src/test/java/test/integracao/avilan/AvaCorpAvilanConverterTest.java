@@ -231,9 +231,9 @@ public class AvaCorpAvilanConverterTest {
             final PerguntaRespostaChecklist perguntaProLog = perguntasProLog.get(i);
             assertNotNull(perguntaAvilan);
             assertNotNull(perguntaProLog);
-            assertTrue(perguntaAvilan.getSequenciaQuestao() == perguntaProLog.getOrdemExibicao());
+            assertTrue(Long.valueOf(perguntaAvilan.getCodigoAvaliacao()).equals(novoChecklistHolder.getCodigoModeloChecklist()));
             assertTrue(perguntaAvilan.getDescricao().equals(perguntaProLog.getPergunta()));
-            assertTrue(Long.valueOf(perguntaAvilan.getCodigoAvaliacao()).equals(perguntaProLog.getCodigo()));
+            assertTrue(Long.valueOf(perguntaAvilan.getSequenciaQuestao()).equals(perguntaProLog.getCodigo()));
             // No AvaCorp sempre são SingleChoice
             assertTrue(perguntaProLog.isSingleChoice());
 

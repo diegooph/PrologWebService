@@ -206,6 +206,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
 		veiculoDao = Injection.provideVeiculoDao();
+		holder.setCodigoModeloChecklist(codModelo);
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
 		return holder;
