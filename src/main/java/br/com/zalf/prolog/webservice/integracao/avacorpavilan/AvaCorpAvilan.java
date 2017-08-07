@@ -7,18 +7,17 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,32 +59,9 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
-        // TODO: Precisa do ModeloVeiculo no objeto Veiculo na busca dos ativos e também na busca por todos
-        final List<Veiculo> veiculos =
-                AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf(), dataNascimento()));
-
-        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
-        cronogramaAfericao.setMeta(restricao.getPeriodoDiasAfericao());
-
-        final PlacaModeloHolder modeloHolder = new PlacaModeloHolder();
-        final List<PlacaModeloHolder.PlacaStatus> placas = new ArrayList<>();
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < veiculos.size(); i++) {
-            final Veiculo veiculo = veiculos.get(i);
-            final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
-            // Fixo 0, por enquanto.
-            placaStatus.intervaloUltimaAfericao = 0;
-            placaStatus.placa = veiculo.getPlaca();
-            // Fixo 1, por enquanto. Ao menos assim dá pra selecionar o veículo para aferir.
-            placaStatus.quantidadePneus = 1;
-            placas.add(placaStatus);
-        }
-
-        modeloHolder.setModelo("Modelo Veículo");
-        modeloHolder.setPlacaStatus(placas);
-        cronogramaAfericao.setPlacas(new ArrayList<PlacaModeloHolder>(){{add(modeloHolder);}});
-        return cronogramaAfericao;
+        final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(cpf(), dataNascimento());
+        return AvaCorpAvilanConverter.convert(arrayOfVeiculo, restricao);
     }
 
     @Override

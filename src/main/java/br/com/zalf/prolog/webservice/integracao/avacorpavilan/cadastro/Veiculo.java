@@ -35,6 +35,9 @@ public class Veiculo {
 
     protected String placa;
     protected int marcador;
+    protected String modelo;
+    protected int qtdPneus;
+    protected String dataUltimaAfericao;
 
     /**
      * Obtém o valor da propriedade placa.
@@ -76,4 +79,27 @@ public class Veiculo {
         this.marcador = value;
     }
 
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public int getQtdPneus() {
+        return qtdPneus;
+    }
+
+    public void setQtdPneus(int qtdPneus) {
+        this.qtdPneus = qtdPneus;
+    }
+
+    public String getDataUltimaAfericao() {
+        return dataUltimaAfericao;
+    }
+
+    public void setDataUltimaAfericao(String dataUltimaAfericao) {
+        this.dataUltimaAfericao = dataUltimaAfericao;
+    }
 }

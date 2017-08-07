@@ -7,7 +7,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -54,6 +58,41 @@ public final class AvaCorpAvilanConverter {
         }
 
         return veiculos;
+    }
+
+    @VisibleForTesting
+    public static CronogramaAfericao convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo,
+                                             @NotNull final Restricao restricao) {
+        checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
+        checkNotNull(restricao, "restricao não pode ser null!");
+
+        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+        cronogramaAfericao.setMeta(restricao.getPeriodoDiasAfericao());
+        final List<PlacaModeloHolder> modelos = new ArrayList<>();
+
+        Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
+                arrayOfVeiculo.getVeiculo().stream().collect(Collectors.groupingBy(v -> v.getModelo()));
+
+        modelosVeiculos.forEach((modeloVeiculo, veiculos) -> {
+            final PlacaModeloHolder modeloHolder = new PlacaModeloHolder();
+            modeloHolder.setModelo(modeloVeiculo);
+            final List<PlacaModeloHolder.PlacaStatus> placas = new ArrayList<>();
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < veiculos.size(); i++) {
+                final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo v = veiculos.get(i);
+                final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
+                placaStatus.placa = v.getPlaca();
+                placaStatus.quantidadePneus = v.getQtdPneus();
+                placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDataUltimaAfericao());
+                placas.add(placaStatus);
+            }
+            modeloHolder.setPlacaStatus(placas);
+            modelos.add(modeloHolder);
+        });
+
+        cronogramaAfericao.setPlacas(modelos);
+
+        return cronogramaAfericao;
     }
 
     @VisibleForTesting
