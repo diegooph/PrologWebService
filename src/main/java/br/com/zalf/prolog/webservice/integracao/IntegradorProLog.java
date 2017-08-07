@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -87,6 +88,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
+    }
+
+    @Override
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+        return afericaoDao.getCronogramaAfericao(codUnidade);
     }
 
     @Override

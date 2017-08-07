@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -145,12 +145,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) throws SQLException {
+    public CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
+        CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         PlacaModeloHolder holder = new PlacaModeloHolder(); //possui a lista de placaStatus
         List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
         List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
@@ -195,12 +195,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             holder.setPlacaStatus(listPlacasMesmoModelo);
             listModelo.add(holder);
-            selecaoPlacaAfericao.setPlacas(listModelo);
-            selecaoPlacaAfericao.setMeta(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericao());
+            cronogramaAfericao.setPlacas(listModelo);
+            cronogramaAfericao.setMeta(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericao());
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return selecaoPlacaAfericao;
+        return cronogramaAfericao;
     }
 
     private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {

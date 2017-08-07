@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -62,6 +63,15 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getVeiculosAtivosByUnidade(codUnidade);
         } else {
             return integradorProLog.getVeiculosAtivosByUnidade(codUnidade);
+        }
+    }
+
+    @Override
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getCronogramaAfericao(codUnidade);
+        } else {
+            return integradorProLog.getCronogramaAfericao(codUnidade);
         }
     }
 

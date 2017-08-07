@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -45,9 +45,9 @@ public class AfericaoResource {
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/listaAfericao/{codUnidade}")
-    public SelecaoPlacaAfericao getSelecaoPlacasAfericao(
-            @PathParam("codUnidade") Long codUnidade) {
-        return service.getSelecaoPlacaAfericao(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
+                                                    @HeaderParam("Authorization") String userToken) {
+        return service.getCronogramaAfericao(codUnidade, userToken);
     }
 
     @GET

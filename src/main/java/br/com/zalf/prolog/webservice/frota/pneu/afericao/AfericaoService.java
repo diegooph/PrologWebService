@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 
@@ -59,10 +59,12 @@ public class AfericaoService {
         }
     }
 
-    public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) {
+    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) {
         try {
-            return dao.getSelecaoPlacaAfericao(codUnidade);
-        } catch (SQLException e) {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getCronogramaAfericao(codUnidade);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
