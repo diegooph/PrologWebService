@@ -2,15 +2,25 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -168,17 +178,18 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
-    public void insertManutencao(Servico servico, Long codUnidade) throws SQLException {
-        Connection conn = getConnection();
-        conn.setAutoCommit(false);
-        PneuDao pneuDao = Injection.providePneuDao();
-        try {
+    public void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
+        Connection conn = null;
+        try{
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipo()) {
                 case Servico.TIPO_CALIBRAGEM:
-                    insertCalibragem((Calibragem) servico, conn);
+                    insertCalibragem((Calibragem) servico, codUnidade, pneuDao, conn);
                     break;
                 case Servico.TIPO_INSPECAO:
-                    insertInspecao((Inspecao) servico, conn);
+                    insertInspecao((Inspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case Servico.TIPO_MOVIMENTACAO:
                     MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
@@ -186,12 +197,37 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     break;
             }
             conn.commit();
-        } catch (SQLException e) {
+        }catch(SQLException e){
             e.printStackTrace();
             conn.rollback();
-        } finally {
+        }finally{
             closeConnection(conn, null, null);
         }
+    }
+
+    private ProcessoMovimentacao convertServicoToProcessoMovimentacao(Movimentacao servico, Long codUnidade){
+        List<br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao> movimentacoes = new ArrayList<>();
+        Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(servico.getCpfMecanico());
+        Unidade unidade = new Unidade();
+        unidade.setCodigo(codUnidade);
+        Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(servico.getPlaca());
+        veiculo.setKmAtual(servico.getKmVeiculo());
+        OrigemEstoque origemEstoque = new OrigemEstoque();
+        DestinoVeiculo destinoVeiculo = new DestinoVeiculo(veiculo, servico.getPneu().getPosicao());
+        br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao movimentacaoPneuInserido =
+                new br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao(
+                        null,servico.getPneuNovo(), origemEstoque, destinoVeiculo, null);
+        OrigemVeiculo origemVeiculo = new OrigemVeiculo(veiculo, servico.getPneu().getPosicao());
+        DestinoEstoque destinoEstoque = new DestinoEstoque();
+        br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao movimentacaoPneuRemovido =
+                new br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao(null, servico.getPneu(), origemVeiculo, destinoEstoque, null);
+        movimentacoes.add(movimentacaoPneuRemovido);
+        movimentacoes.add(movimentacaoPneuInserido);
+        ProcessoMovimentacao processoMovimentacao = new ProcessoMovimentacao(null, movimentacoes, colaborador, null, "Fechamento de serviço");
+        processoMovimentacao.setUnidade(unidade);
+        return processoMovimentacao;
     }
 
     private boolean containInspecao(List<Servico> listServicos) {

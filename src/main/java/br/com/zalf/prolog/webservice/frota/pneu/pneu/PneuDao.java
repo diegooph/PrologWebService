@@ -72,11 +72,7 @@ public interface PneuDao {
      * @param conn       conexão do banco
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
-
-
-    boolean registraMovimentacaoHistorico(Pneu pneu, Long codUnidade, String statusDestino,
-                                          long kmVeiculo, String placaVeiculo, Connection conn, String token) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
     boolean insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
