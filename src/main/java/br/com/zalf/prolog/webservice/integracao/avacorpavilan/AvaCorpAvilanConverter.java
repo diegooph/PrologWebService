@@ -9,9 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
@@ -262,6 +260,13 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
 
+        // Modelo de Pneu e Banda serão iguais para todos os pneus. Pneus sempre terão 4 sulcos.
+        final ModeloPneu modeloPneu = new ModeloPneu();
+        modeloPneu.setQuantidadeSulcos(4);
+        final Banda banda = new Banda();
+        final ModeloBanda modeloBanda = new ModeloBanda();
+        modeloBanda.setQuantidadeSulcos(4);
+
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(p.getNumeroFogo());
@@ -276,6 +281,8 @@ public final class AvaCorpAvilanConverter {
             sulcos.setCentralInterno(p.getSulco3());
             sulcos.setInterno(p.getSulco4());
             pneu.setSulcosAtuais(sulcos);
+            pneu.setModelo(modeloPneu);
+            pneu.setBanda(banda);
             pneus.add(pneu);
         }
 

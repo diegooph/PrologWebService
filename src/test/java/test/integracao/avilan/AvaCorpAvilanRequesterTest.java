@@ -38,6 +38,7 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testIncluirMedidaAfericao() throws Exception {
+        requester.getVeiculoAtivo("MLK7250", CPF, DATA_NASCIMENTO);
         assertTrue(requester.insertAfericao(createIncluirMedida(), CPF, DATA_NASCIMENTO));
     }
 
