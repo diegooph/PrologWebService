@@ -53,26 +53,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getConsolidadoProdutividade(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  nome_colaborador AS \"COLABORADOR\",\n" +
-                "  funcao AS \"FUNÇÃO\",\n" +
-                "  count(mapa)                     AS \"Nº MAPAS\",\n" +
-                "  trunc(sum(cxentreg))            AS \"CXS ENTREGUES\",\n" +
-                "  round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4)*100 as \"DEV PDV\",\n" +
-                "  round((meta_dev_pdv * 100)::numeric, 2) AS \"META DEV PDV\",\n" +
-                "  CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN\n" +
-                "    'SIM' ELSE 'NÃO' END as \"RECEBE PRÊMIO\",\n" +
-                "  trunc(sum(valor_rota) :: NUMERIC, 2) AS \"VALOR ROTA\",\n" +
-                "  trunc(sum(valor_DIFERENCA_ELD) :: NUMERIC, 2) AS \"DIFERENÇA ELD\" ,\n" +
-                "  trunc(sum(valor_AS) :: NUMERIC, 2) AS \"VALOR AS\",\n" +
-                "  trunc(sum(valor) :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\"\n" +
-                "FROM view_produtividade_extrato\n" +
-                "WHERE cod_unidade = ? AND data BETWEEN ? AND ?\n" +
-                "GROUP BY nome_colaborador, funcao, meta_dev_pdv\n" +
-                "ORDER BY funcao, nome_colaborador");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
+        PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_consolidado_produtividade(?, ?, ?)");
+        stmt.setDate(1, dataInicial);
+        stmt.setDate(2, dataFinal);
+        stmt.setLong(3, codUnidade);
         return stmt;
     }
 

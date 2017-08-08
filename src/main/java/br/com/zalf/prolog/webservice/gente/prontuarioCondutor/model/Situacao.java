@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Created by Zart on 03/07/2017.
  */
@@ -12,6 +14,16 @@ public class Situacao {
     private String motivo;
 
     public Situacao() {
+
+    }
+
+    public Situacao(String status, String motivo) {
+        Preconditions.checkArgument(
+                status.equals(BLOQUEADO) || status.equals(LIBERADO),
+                "status precisa ser " + BLOQUEADO  + " ou " + LIBERADO);
+
+        this.status = status;
+        this.motivo = motivo;
     }
 
     public String getStatus() {
@@ -19,6 +31,10 @@ public class Situacao {
     }
 
     public void setStatus(String status) {
+        Preconditions.checkArgument(
+                status.equals(BLOQUEADO) || status.equals(LIBERADO),
+                "status precisa ser " + BLOQUEADO  + " ou " + LIBERADO);
+
         this.status = status;
     }
 

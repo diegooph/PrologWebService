@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
@@ -42,6 +43,6 @@ public interface ServicoDao {
 	 * @return valor da operação
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
-	boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException;
+	void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
 
 }

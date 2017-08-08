@@ -168,32 +168,30 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
-    public boolean insertManutencao(Servico servico, Long codUnidade) throws SQLException {
+    public void insertManutencao(Servico servico, Long codUnidade) throws SQLException {
         Connection conn = getConnection();
         conn.setAutoCommit(false);
         PneuDao pneuDao = Injection.providePneuDao();
         try {
             switch (servico.getTipo()) {
                 case Servico.TIPO_CALIBRAGEM:
-                    insertCalibragem((Calibragem) servico, codUnidade, pneuDao, conn);
+                    insertCalibragem((Calibragem) servico, conn);
                     break;
                 case Servico.TIPO_INSPECAO:
-                    insertInspecao((Inspecao) servico, codUnidade, pneuDao, conn);
+                    insertInspecao((Inspecao) servico, conn);
                     break;
                 case Servico.TIPO_MOVIMENTACAO:
-//					 chamar movimentacão da DAO específica
-//					insertMovimentacao((Movimentacao) servico, conn, token);
+                    MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
+                    movimentacaoDao.insert(convertServicoToProcessoMovimentacao((Movimentacao) servico, codUnidade));
                     break;
             }
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
-            return false;
         } finally {
             closeConnection(conn, null, null);
         }
-        return true;
     }
 
     private boolean containInspecao(List<Servico> listServicos) {
@@ -266,66 +264,65 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return movimentacao;
     }
 
-    private boolean insertCalibragem(Calibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws
-			SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                    + "DATA_HORA_RESOLUCAO = ?, "
-                    + "CPF_MECANICO = ?, "
-                    + "PSI_APOS_CONSERTO = ?, "
-                    + "KM_MOMENTO_CONSERTO = ? "
-                    + "WHERE COD_AFERICAO = ? AND "
-                    + "DATA_HORA_RESOLUCAO IS NULL AND "
-                    + "COD_PNEU = ? "
-                    + "AND TIPO_SERVICO = ?");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(2, servico.getCpfMecanico());
-            stmt.setDouble(3, servico.getPneu().getPressaoAtual());
-            stmt.setLong(4, servico.getKmVeiculo());
-            stmt.setLong(5, servico.getCodAfericao());
-            stmt.setString(6, servico.getPneu().getCodigo());
-            stmt.setString(7, servico.getTipo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inserir o item consertado");
-            }
-            pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
-        } finally {
-            closeConnection(null, stmt, null);
-        }
-        return true;
-    }
+	private void insertCalibragem(Calibragem servico, Long codUnidade, PneuDao pneuDao,Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+					+ "DATA_HORA_RESOLUCAO = ?, "
+					+ "CPF_MECANICO = ?, "
+					+ "PSI_APOS_CONSERTO = ?, "
+					+ "KM_MOMENTO_CONSERTO = ? "
+					+ "WHERE COD_AFERICAO = ? AND "
+					+ "DATA_HORA_RESOLUCAO IS NULL AND "
+					+ "COD_PNEU = ? "
+					+ "AND TIPO_SERVICO = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, servico.getCpfMecanico());
+			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setLong(4, servico.getKmVeiculo());
+			stmt.setLong(5, servico.getCodAfericao());
+			stmt.setString(6, servico.getPneu().getCodigo());
+			stmt.setString(7, servico.getTipo());
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir o item consertado");
+			}
+			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
+		}finally {
+			closeConnection(null, stmt, null);
+		}
 
-    private boolean insertInspecao(Inspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                    + "DATA_HORA_RESOLUCAO = ?, "
-                    + "CPF_MECANICO = ?, "
-                    + "PSI_APOS_CONSERTO = ?, "
-                    + "KM_MOMENTO_CONSERTO = ?, "
-                    + "COD_ALTERNATIVA = ? "
-                    + "WHERE COD_AFERICAO = ? AND "
-                    + "COD_PNEU = ? AND "
-                    + "DATA_HORA_RESOLUCAO IS NULL "
-                    + "AND TIPO_SERVICO = ?");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(2, servico.getCpfMecanico());
-            stmt.setDouble(3, servico.getPneu().getPressaoAtual());
-            stmt.setLong(4, servico.getKmVeiculo());
-            stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
-            stmt.setLong(6, servico.getCodAfericao());
-            stmt.setString(7, servico.getPneu().getCodigo());
-            stmt.setString(8, servico.getTipo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inserir o item consertado");
-            }
-            pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
-        } finally {
-            closeConnection(null, stmt, null);
-        }
-        return true;
-    }
+	}
+
+	private void insertInspecao(Inspecao servico, Long codUnidade, PneuDao pneuDao,Connection conn) throws SQLException{
+		PreparedStatement stmt = null;
+		try{
+			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+					+ "DATA_HORA_RESOLUCAO = ?, "
+					+ "CPF_MECANICO = ?, "
+					+ "PSI_APOS_CONSERTO = ?, "
+					+ "KM_MOMENTO_CONSERTO = ?, "
+					+ "COD_ALTERNATIVA = ? "
+					+ "WHERE COD_AFERICAO = ? AND "
+					+ "COD_PNEU = ? AND "
+					+ "DATA_HORA_RESOLUCAO IS NULL "
+					+ "AND TIPO_SERVICO = ?");
+			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setLong(2, servico.getCpfMecanico());
+			stmt.setDouble(3, servico.getPneu().getPressaoAtual());
+			stmt.setLong(4, servico.getKmVeiculo());
+			stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
+			stmt.setLong(6, servico.getCodAfericao());
+			stmt.setString(7, servico.getPneu().getCodigo());
+			stmt.setString(8, servico.getTipo());
+			int count = stmt.executeUpdate();
+			if (count == 0) {
+				throw new SQLException("Erro ao inserir o item consertado");
+			}
+			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
+		}finally {
+			closeConnection(null, stmt, null);
+		}
+
+	}
 }
