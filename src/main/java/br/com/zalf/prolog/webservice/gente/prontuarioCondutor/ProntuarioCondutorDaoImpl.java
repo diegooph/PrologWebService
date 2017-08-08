@@ -97,8 +97,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         indices = new ArrayList<>();
         CSVRecord linhaValidacao1 = tabela.get(LINHA_VALIDACAO_1);
         CSVRecord linhaValidacao2 = tabela.get(LINHA_VALIDACAO_2);
-        for (int i = 0; i < linhaValidacao1.size(); i ++) {
-            if(!linhaValidacao1.get(i).isEmpty() || !linhaValidacao2.get(i).isEmpty()) {
+        for (int i = 0; i < linhaValidacao1.size(); i++) {
+            if (!linhaValidacao1.get(i).isEmpty() || !linhaValidacao2.get(i).isEmpty()) {
                 indices.add(i);
             }
         }
@@ -119,11 +119,12 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 return rSet.getDouble("PONTUACAO_PONDERADA");
             }
             return null;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, rSet);
         }
     }
 
+    @Override
     public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -131,25 +132,32 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         List<ProntuarioCondutor> prontuarios = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT c.cpf, initcap(c.nome) as nome, pc.PONTUACAO_PONDERADA\n" +
-                    "FROM prontuario_condutor_consolidado pc JOIN colaborador c on c.cpf = pc.CPF_COLABORADOR\n" +
-                    "JOIN equipe e ON e.codigo = c.cod_equipe AND e.cod_unidade = c.cod_unidade\n" +
-                    "WHERE c.cod_unidade = ? and e.codigo::text like ?\n" +
+            stmt = conn.prepareStatement("SELECT c.cpf, initcap(c.nome) as nome, pc.PONTUACAO_PONDERADA, " +
+                    "pc.STATUS, pc.MOTIVO, pc.PONTUACAO, pc.VENCIMENTO_CNH " +
+                    "FROM prontuario_condutor_consolidado pc JOIN colaborador c on c.cpf = pc.CPF_COLABORADOR " +
+                    "JOIN equipe e ON e.codigo = c.cod_equipe AND e.cod_unidade = c.cod_unidade " +
+                    "WHERE c.cod_unidade = ? and e.codigo::text like ? " +
                     "ORDER BY pc.PONTUACAO_PONDERADA desc, initcap(c.nome) asc");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codEquipe);
             rSet = stmt.executeQuery();
-            while(rSet.next()) {
-                ProntuarioCondutor prontuario = new ProntuarioCondutor();
-                Colaborador colaborador = new Colaborador();
+            while (rSet.next()) {
+                final ProntuarioCondutor prontuario = new ProntuarioCondutor();
+                final Colaborador colaborador = new Colaborador();
                 colaborador.setCpf(rSet.getLong("CPF"));
                 colaborador.setNome(rSet.getString("NOME"));
                 prontuario.setColaborador(colaborador);
                 prontuario.setPontuacaoTotalPonderada(rSet.getDouble("PONTUACAO_PONDERADA"));
+                prontuario.setCnh(new Cnh(
+                        rSet.getInt("PONTUACAO"),
+                        rSet.getDate("VENCIMENTO_CNH")));
+                prontuario.setSituacao(new Situacao(
+                        rSet.getString("STATUS"),
+                        rSet.getString("MOTIVO")));
                 prontuarios.add(prontuario);
             }
             return prontuarios;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, rSet);
         }
     }
@@ -167,7 +175,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             situacao.setMotivo(linha.get(indices.get(COLUMN_MOTIVO)));
 
             Cnh cnh = new Cnh();
-            cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
+            if (linha.get(indices.get(COLUMN_PONTUACAO_CNH)).isEmpty()) {
+                cnh.setPontuacao(0);
+            } else {
+                cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
+            }
             cnh.setVencimento(ImportUtils.toTimestamp(linha.get(indices.get(COLUMN_VENCIMENTO_CNH))));
 
             Documento documento = new Documento();
@@ -175,7 +187,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             documento.setEc(linha.get(indices.get(COLUMN_DOCUMENTOS_EC)));
             documento.setIt(linha.get(indices.get(COLUMN_DOCUMENTOS_IT)));
 
-            prontuario.setPontuacaoTotalPonderada(Double.parseDouble(linha.get(indices.get(COLUMN_PONTUACAO_PONDERADA)).replace(",", ".")));
+            prontuario.setPontuacaoTotalPonderada(Double.parseDouble(linha.get(indices.get
+                    (COLUMN_PONTUACAO_PONDERADA)).replace(",", ".")));
 
             AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
             acidentesTrabalho.setFai(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_FAI))));
@@ -184,9 +197,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             acidentesTrabalho.setMti(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_MTI))));
 
             AcidentesTransito acidentesTransito = new AcidentesTransito();
-            acidentesTransito.setCapotamentos(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS))));
+            acidentesTransito.setCapotamentos(Integer.parseInt(linha.get(indices.get
+                    (COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS))));
             acidentesTransito.setColisoes(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRANSITO_COLISOES))));
-            acidentesTransito.setTombamentos(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS))));
+            acidentesTransito.setTombamentos(Integer.parseInt(linha.get(indices.get
+                    (COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS))));
 
             Multas multas = new Multas();
             multas.setGrave(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_GRAVE))));
@@ -207,9 +222,12 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             sav.setImprudencia(Integer.parseInt(linha.get(indices.get(COLUMN_SAV_IMPRUDENCIA))));
 
             Telemetria telemetria = new Telemetria();
-            telemetria.setExcessoVelocidade1(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1))));
-            telemetria.setExcessoVelocidade2(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_2))));
-            telemetria.setExcessoVelocidade3(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_3))));
+            telemetria.setExcessoVelocidade1(Integer.parseInt(linha.get(indices.get
+                    (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1))));
+            telemetria.setExcessoVelocidade2(Integer.parseInt(linha.get(indices.get
+                    (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_2))));
+            telemetria.setExcessoVelocidade3(Integer.parseInt(linha.get(indices.get
+                    (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_3))));
             telemetria.setForcaG(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_FORCA_G))));
             telemetria.setFrenagemBrusca(Integer.parseInt(linha.get(indices.get(COLUMN_TELEMETRIA_FRENAGEM_BRUSCA))));
 
@@ -231,7 +249,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private boolean insertProntuario(ProntuarioCondutor prontuario, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," +
+            stmt = conn.prepareStatement("INSERT INTO PRONTUARIO_CONDUTOR_CONSOLIDADO VALUES (?,?,?,?,?,?,?,?,?,?,?," +
+                    "?,?,?,?,?," +
                     "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, prontuario.getColaborador().getCpf());
             stmt.setString(2, prontuario.getSituacao().getStatus());
@@ -267,7 +286,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setTimestamp(32, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             int count = stmt.executeUpdate();
             if (count == 0) {
-                throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador().getCpf());
+                throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador()
+                        .getCpf());
             }
         } finally {
             closeConnection(null, stmt, null);

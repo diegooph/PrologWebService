@@ -61,7 +61,7 @@ public interface PneuDao {
      * @param conn       conexão
      * @throws SQLException caso ocorra erro no banco
      */
-    void updateCalibragem(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void updatePressaoAtual(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza status do pneu
@@ -73,11 +73,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
-
-    //TODO - comentar o javadoc
-    boolean registraMovimentacaoHistorico(Pneu pneu, Long codUnidade, String statusDestino,
-                                          long kmVeiculo, String placaVeiculo, Connection conn, String token) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
     /**
      * atualiza dados do veículo

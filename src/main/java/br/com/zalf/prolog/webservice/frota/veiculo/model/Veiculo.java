@@ -3,7 +3,9 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import com.sun.istack.internal.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -112,6 +114,24 @@ public class Veiculo {
         }
 
         return false;
+    }
+
+    @NotNull
+    public List<Pneu> getEstepes() {
+        List<Pneu> estepes = new ArrayList<>();
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < listPneus.size(); i++) {
+            final Pneu pneu = listPneus.get(i);
+            if (pneu.isEstepe())
+                estepes.add(pneu);
+        }
+
+        return estepes;
+    }
+
+    public void removeEstepes() {
+        listPneus.removeIf(Pneu::isEstepe);
     }
 
     @Override

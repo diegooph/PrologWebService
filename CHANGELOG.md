@@ -1,8 +1,32 @@
 Change Log
 ==========
 
+<a name="v0.0.24"></a>
+## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (release date) - [Unreleased]
+
+### Features
+
+* Implementa método para buscar apenas os motoristas e ajudantes de uma unidade
+
+#### Refactor
+
+* Altera query de busca do relatório de realização do Quiz por cargo, agora usa function
+
+<a name="v0.0.23"></a>
+## Version [v0.0.23](https://github.com/luizfp/PrologWebService/compare/v0.0.22...v0.0.23) (2017-08-03)
+
+#### Refactor
+* Corrige erro de parse em possível coluna vazia no campo "pontuação CNH" do prontuário
+* Adiciona informações de Situação e CNH no resumo dos prontuários
+* Altera busca do objeto `NovaAfericao` para retornar estepes do veículo em uma listagem separada
+* Refatora algumas DAOs para não retornar mais boolean e em caso de erro lançar uma exceção
+
+#### Bug Fixes
+* Corrige fechamento de movimentação na `ServicoDaoImpl`
+* Corrige import de contracheque com linhas em branco
+
 <a name="v0.0.22"></a>
-## Version [v0.0.22](https://github.com/luizfp/PrologWebService/compare/v0.0.21...v0.0.22) (release date) - [Unreleased]
+## Version [v0.0.22](https://github.com/luizfp/PrologWebService/compare/v0.0.21...v0.0.22) (2017-07-20)
 
 #### Features
 
@@ -13,104 +37,38 @@ Change Log
 * Altera forma de exibir a hora nos relatórios do quiz, de 12h para 24h
 * Altera forma de exibir a hora nos relatórios de OS, de 12h para 24h
 
-#### Deprecated
-
 #### Bug Fixes
-
 * Corrige o erro no filtro de datas dos relatórios do Quiz
 
-
 <a name="v0.0.21"></a>
-## Version [v0.0.21](https://github.com/luizfp/PrologWebService/compare/v0.0.20...v0.0.21) (release date) - [Unreleased]
+## Version [v0.0.21](https://github.com/luizfp/PrologWebService/compare/v0.0.20...v0.0.21) (2017-07-17)
 
 #### Features
-
 * Adicionadas colunas para estratificar a remuneração variável nos dois relatórios disponíveis.
 
-#### Refactor
-
-#### Deprecated
 
 #### Bug Fixes
-
 * Corrigido erro que setava todos os excessos de velocidade como "excesso de veolocidade 1"
 
 <a name="v0.0.20"></a>
-## Version [v0.0.20](https://github.com/luizfp/PrologWebService/compare/v0.0.19...v0.0.20) (release date) - [Unreleased]
+## Version [v0.0.20](https://github.com/luizfp/PrologWebService/compare/v0.0.19...v0.0.20) (2017-07-12)
 
-#### Features
 
 #### Refactor
-
 * Corrige upload do prontuário
 
-#### Deprecated
-
-#### Bug Fixes
-
 <a name="v0.0.19"></a>
-## Version [v0.0.19](https://github.com/luizfp/PrologWebService/compare/v0.0.18...v0.0.19) (release date) - [Unreleased]
+## Version [v0.0.19](https://github.com/luizfp/PrologWebService/compare/v0.0.18...v0.0.19) (2017-07-07)
 
 #### Features
-
 * Cria tabelas para o prontuário do condutor
 * Implementa dao para o prontuário
 
 #### Refactor
-
 * Remove coluna "cumpriu prazo" do relatório estratificação de OS
 
-#### Deprecated
-
-#### Bug Fixes
-
-<a name="v0.0.18"></a>
-## Version [v0.0.18](https://github.com/luizfp/PrologWebService/compare/v0.0.17...v0.0.18) (release date) - [Unreleased]
-
-#### Features
-
-
-#### Refactor
-
-#### Deprecated
-
-#### Bug Fixes
-
-<a name="v0.0.17"></a>
-## Version [v0.0.17](https://github.com/luizfp/PrologWebService/compare/v0.0.16...v0.0.17) (release date) - [Unreleased]
-
-#### Features
-
-* Implementa método para a busca única de um pneu
-* Implementa relatório estratificação das OS
-
-#### Refactor
-
-* Troca a obrigatoriedade de 3 imagens no envio de um relato para apenas uma.
-    * Drop not null nas colunas url_foto_2 / 3
-
-#### Deprecated
-
-#### Bug Fixes
-
-* Corrige calculo do indicador devolução PDV acumulado
-* Atualiza sulcos de um pneu após retorno da recapagem
-* Corrige km de abertura de uma OS (edição na view) 
-
-<a name="v0.0.16"></a>
-## Version [v0.0.16](https://github.com/luizfp/PrologWebService/compare/v0.0.15...v0.0.16) (release date) - [Unreleased]
-
-#### Features
-
-#### Refactor
-
-#### Deprecated
-
-#### Bug Fixes
-
-
 <a name="v0.0.15"></a>
-## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (release date) - [Unreleased]
+## Version [v0.0.15](https://github.com/luizfp/PrologWebService/compare/v0.0.14...v0.0.15) (2017-06-19)
 
 #### Features
 * Cria um novo sistema de associar `diagramas` aos veículos
@@ -138,8 +96,6 @@ a recarga pode ou não fazer parte do calculo do prêmio, além de algumas adapt
     * Renomeadas as constraints
     * Criada a tabela pre_contracheque_calculo_premio para armazenar os códigos dos itens que compõe o calculo do prêmio
     
-
-#### Deprecated
 
 #### Bug Fixes
 * Corrige erro ao importar tabela mapa com linhas vazias no final do arquivo
