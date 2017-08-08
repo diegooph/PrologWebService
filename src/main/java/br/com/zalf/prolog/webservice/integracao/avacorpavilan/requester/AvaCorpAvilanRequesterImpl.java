@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
@@ -59,7 +60,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     public boolean insertChecklist(@NotNull RespostasAvaliacao respostasAvaliacao,
                                    @NotNull String cpf,
                                    @NotNull String dataNascimento) throws Exception {
-        return getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao).isSucesso();
+        final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
+
+        if (request != null && request.isSucesso()) {
+            return true;
+        }
+
+        throw new Exception(request != null ? request.getMensagem() : "");
     }
 
     @Override
@@ -92,7 +99,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     public boolean insertAfericao(@NotNull IncluirMedida2 medidas,
                                   @NotNull String cpf,
                                   @NotNull String dataNascimento) throws Exception {
-        return getAfericaoSoap(cpf, dataNascimento).incluirMedida(medidas).isSucesso();
+        final IncluirRegistroVeiculo request = getAfericaoSoap(cpf, dataNascimento).incluirMedida(medidas);
+
+        if (request != null && request.isSucesso()) {
+            return true;
+        }
+
+        throw new Exception(request != null ? request.getMensagem() : "");
     }
 
     @Override
