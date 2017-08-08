@@ -76,7 +76,10 @@ public final class AvaCorpAvilanConverter {
         final List<PlacaModeloHolder> modelos = new ArrayList<>();
 
         Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
-                arrayOfVeiculo.getVeiculo().stream().collect(Collectors.groupingBy(v -> v.getModelo()));
+                arrayOfVeiculo
+                        .getVeiculo()
+                        .stream()
+                        .collect(Collectors.groupingBy(v -> v.getModelo()));
 
         modelosVeiculos.forEach((modeloVeiculo, veiculos) -> {
             final PlacaModeloHolder modeloHolder = new PlacaModeloHolder();

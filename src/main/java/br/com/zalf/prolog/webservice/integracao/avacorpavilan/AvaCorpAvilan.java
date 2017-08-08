@@ -71,7 +71,7 @@ public final class AvaCorpAvilan extends Sistema {
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
         veiculo.setListPneus(pneus);
 
-        // Cria NovaAfericao
+        // Cria NovaAfericao.
         final NovaAfericao novaAfericao = new NovaAfericao();
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
