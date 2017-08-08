@@ -2052,3 +2052,53 @@ WHERE vpe.cod_unidade = f_cod_unidade AND vpe.data BETWEEN f_dt_inicial AND f_dt
 GROUP BY matricula_ambev, nome_colaborador, vpe.cod_funcao,funcao, meta_dev_pdv, PCI.cod_cargo_ajudante, PCI.cod_cargo_motorista, PCI.bonus_ajudante, PCI.bonus_motorista
 ORDER BY funcao, nome_colaborador;
   $func$ LANGUAGE SQL;
+
+-- query para gerar o relatório de realização do quiz por cargos
+CREATE OR REPLACE FUNCTION func_relatorio_quiz_realizacao_cargo (f_cod_unidade BIGINT, f_equipe TEXT)
+  RETURNS TABLE (
+  "QUIZ" TEXT,
+    "CARGO" TEXT,
+    "COLABORADORES CADASTRADOS" BIGINT,
+    "COLABORADORES QUE REALIZARAM" BIGINT,
+    "PROPORÇÃO" TEXT
+  ) AS
+  $func$
+SELECT
+  qm.nome,
+  F.nome,
+  realizar.total_deveriam_ter_realizado,
+  coalesce(realizados.total_realizaram,0) AS REALIZARAM,
+  trunc((coalesce(realizados.total_realizaram, 0) / realizar.total_deveriam_ter_realizado :: FLOAT) * 100) || '%'
+FROM quiz_modelo_funcao qmf
+  JOIN quiz_modelo qm ON qm.codigo = qmf.cod_modelo AND qm.cod_unidade = qmf.cod_unidade
+  JOIN unidade U ON U.codigo = QMF.cod_unidade
+  JOIN FUNCAO F ON F.codigo = QMF.cod_funcao_colaborador AND U.cod_empresa = F.cod_empresa
+  JOIN (SELECT
+          qmf.cod_modelo,
+          qmf.cod_funcao_colaborador AS cod_funcao_deveriam,
+          count(c.cpf)               AS total_deveriam_ter_realizado
+        FROM quiz_modelo_funcao qmf
+          JOIN colaborador c ON c.cod_funcao = qmf.cod_funcao_colaborador AND c.cod_unidade = qmf.cod_unidade and c.status_ativo is true
+        WHERE qmf.cod_unidade = f_cod_unidade AND qmf.cod_modelo :: TEXT LIKE f_equipe
+        GROUP BY 1, 2) AS realizar
+    ON qmf.cod_funcao_colaborador = realizar.cod_funcao_deveriam AND qmf.cod_modelo = realizar.cod_modelo
+  LEFT JOIN (SELECT
+               calculo.cod_modelo,
+               calculo.cod_funcao AS cod_funcao_realizaram,
+               count(calculo.cpf) AS total_realizaram
+             FROM
+               (SELECT
+                  q.cod_modelo,
+                  c.cpf,
+                  c.cod_funcao,
+                  count(c.cod_funcao)
+                FROM quiz q
+                  JOIN colaborador c ON c.cpf = q.cpf_colaborador and c.status_ativo is true
+                WHERE q.cod_unidade = f_cod_unidade AND q.cod_modelo :: TEXT LIKE f_equipe
+                GROUP BY 1, 2, 3) AS calculo
+             GROUP BY 1, 2) AS realizados
+    ON qmf.cod_funcao_colaborador = realizados.cod_funcao_realizaram AND realizados.cod_modelo = qmf.cod_modelo
+WHERE qmf.cod_unidade = f_cod_unidade AND qmf.cod_modelo :: TEXT LIKE f_equipe
+ORDER BY qm.nome, f.nome;
+  $func$ LANGUAGE SQL;
+

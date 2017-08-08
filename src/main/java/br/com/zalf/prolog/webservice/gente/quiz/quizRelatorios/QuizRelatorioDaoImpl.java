@@ -25,7 +25,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
                                                               Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT c.matricula_ambev as \"MAT PROMAX\",\n" +
                 "  c.matricula_trans as \"MAT RH\",\n" +
-                "  C.NOME AS \"NOME\",\n" +
+                "  initcap(C.NOME) AS \"NOME\",\n" +
                 "  f.nome AS \"FUNÇÃO\",\n" +
                 "  COALESCE(REALIZADOS.REALIZADOS,REALIZADOS.REALIZADOS,0) AS \"REALIZADOS\",\n" +
                 "  COALESCE(REALIZADOS.QT_APROVADOS,REALIZADOS.QT_APROVADOS,0) AS \"APROVADOS\",\n" +
@@ -90,35 +90,9 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
 
     private PreparedStatement getRealizacaoQuizByCargo(Connection conn, Long codUnidade, String codModeloQuiz)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT qm.nome as \"MODELO QUIZ\", F.nome AS \"FUNÇÃO\",\n" +
-                "  realizar.total_deveriam_ter_realizado AS \"CADASTRADOS\",\n" +
-                "  coalesce(realizados.total_realizaram, 0) AS \"REALIZARAM\",\n" +
-                "  trunc((coalesce(realizados.total_realizaram, 0) / realizar.total_deveriam_ter_realizado::float)*100) || '%' as \"PROPORÇÃO\"\n" +
-                "FROM quiz_modelo_funcao qmf\n" +
-                "  JOIN quiz_modelo qm on qm.codigo = qmf.cod_modelo and qm.cod_unidade = qmf.cod_unidade\n" +
-                "  JOIN unidade U ON U.codigo = QMF.cod_unidade\n" +
-                "  JOIN FUNCAO F ON F.codigo = QMF.cod_funcao_colaborador AND U.cod_empresa = F.cod_empresa\n" +
-                "  JOIN (SELECT qmf.cod_modelo ,qmf.cod_funcao_colaborador as cod_funcao_deveriam, count(c.cpf) as total_deveriam_ter_realizado\n" +
-                "        FROM quiz_modelo_funcao qmf\n" +
-                "        JOIN colaborador c on c.cod_funcao = qmf.cod_funcao_colaborador and c.cod_unidade = qmf.cod_unidade\n" +
-                "        WHERE qmf.cod_unidade = ? and qmf.cod_modelo::text like ?\n" +
-                "        GROUP BY 1, 2) as realizar on qmf.cod_funcao_colaborador = realizar.cod_funcao_deveriam and qmf.cod_modelo = realizar.cod_modelo\n" +
-                "  LEFT JOIN (SELECT calculo.cod_modelo, calculo.cod_funcao as cod_funcao_realizaram, count(calculo.cpf) as total_realizaram\n" +
-                "              FROM\n" +
-                "                        (SELECT q.cod_modelo ,c.cpf, c.cod_funcao, count(c.cod_funcao)\n" +
-                "                        FROM quiz q\n" +
-                "                        JOIN colaborador c ON c.cpf = q.cpf_colaborador\n" +
-                "                         WHERE q.cod_unidade = ? and q.cod_modelo::text like ?\n" +
-                "                        GROUP BY 1, 2, 3) AS calculo\n" +
-                "  GROUP BY 1, 2) as realizados on qmf.cod_funcao_colaborador = realizados.cod_funcao_realizaram and realizados.cod_modelo = qmf.cod_modelo\n" +
-                "WHERE qmf.cod_unidade = ? and qmf.cod_modelo::text like ?\n" +
-                "ORDER BY qm.nome, f.nome");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_quiz_realizacao_cargo(?,?);");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, codModeloQuiz);
-        stmt.setLong(3, codUnidade);
-        stmt.setString(4, codModeloQuiz);
-        stmt.setLong(5, codUnidade);
-        stmt.setString(6, codModeloQuiz);
         return stmt;
     }
 
@@ -205,7 +179,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
     private PreparedStatement getExtratoGeral(Connection conn, Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT to_char(q.data_hora, 'DD/MM/YYYY HH24:MI') as \"DATA DE REALIZAÇÃO\",\n" +
                 "  qm.nome as \"QUIZ\",\n" +
-                "  c.nome as \"COLABORADOR\",\n" +
+                "  initcap(c.nome) as \"COLABORADOR\",\n" +
                 "  f.nome as \"FUNÇÃO\",\n" +
                 "q.qt_corretas as \"QT CORRETAS\",\n" +
                 "  q.qt_erradas as \"QT ERRADAS\",\n" +
