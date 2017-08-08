@@ -22,10 +22,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
@@ -289,6 +286,9 @@ public final class AvaCorpAvilanConverter {
             pneu.setBanda(banda);
             pneus.add(pneu);
         }
+
+        // Ordena lista pelas posições do ProLog.
+        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
     }

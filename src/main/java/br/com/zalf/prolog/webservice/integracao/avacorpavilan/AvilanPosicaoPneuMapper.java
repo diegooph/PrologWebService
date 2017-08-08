@@ -30,6 +30,17 @@ public class AvilanPosicaoPneuMapper {
                 .put("TDI", 222)
                 .put("TEE", 211)
                 .put("TEI", 212)
+                /* BITRUCK */
+                .put("2_DD", 221)
+                .put("2_DE", 211)
+                .put("4_EE", 411)
+                .put("4_EI", 412)
+                .put("4_DI", 422)
+                .put("4_DE", 421)
+                /* ESTEPES */
+                .put("EST_1", 900)
+                .put("EST_2", 901)
+                .put("EST_3", 902)
                 /* CARRETA 3 EIXOS */
                 .put("A_EE", 211)
                 .put("A_EI", 212)

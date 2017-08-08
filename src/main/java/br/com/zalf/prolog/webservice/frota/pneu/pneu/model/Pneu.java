@@ -4,7 +4,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.sun.istack.internal.Nullable;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
  * Created by jean on 04/04/16.
@@ -193,6 +196,8 @@ public class Pneu {
     public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
+
+    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {
