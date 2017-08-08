@@ -4,6 +4,10 @@ Change Log
 <a name="v0.0.24"></a>
 ## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (release date) - [Unreleased]
 
+### Features
+
+* Implementa método para buscar apenas os motoristas e ajudantes de uma unidade
+
 #### Refactor
 
 * Altera query de busca do relatório de realização do Quiz por cargo, agora usa function
