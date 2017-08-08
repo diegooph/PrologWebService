@@ -64,6 +64,13 @@ public class ColaboradorResource {
 	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade) {
 		return service.getAll(codUnidade);
 	}
+
+	@GET
+	@Path("/{codUnidade}/motoristas-e-ajudantes")
+	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
+	public List<Colaborador> getMotoristasAndAjudantes(@PathParam("codUnidade") Long codUnidade) {
+		return service.getMotoristasAndAjudantes(codUnidade);
+	}
 	
 	@DELETE
 	@Path("/{cpf}")

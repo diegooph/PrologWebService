@@ -56,6 +56,14 @@ public interface ColaboradorDao {
 	List<Colaborador> getAll(Long codUnidade) throws SQLException;
 
 	/**
+	 * Busca apenas os motoristas e ajudantes de uma unidade
+	 * @param codUnidade código da unidade
+	 * @return uma lista de colaboradores
+	 * @throws SQLException caso não seja possível realizar a busca
+	 */
+	List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) throws SQLException;
+
+	/**
 	 * retorna um objeto {@link LoginHolder} contendo o colaborador com o cpf marcado e informações
 	 * úteis para a execução da aplicação.
 	 *

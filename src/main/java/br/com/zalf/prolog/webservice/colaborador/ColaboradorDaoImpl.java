@@ -223,6 +223,60 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return list;
 	}
 
+	public List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) throws SQLException {
+		List<Colaborador> list = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT\n" +
+					"  C.CPF,\n" +
+					"  C.MATRICULA_AMBEV,\n" +
+					"  C.MATRICULA_TRANS,\n" +
+					"  C.DATA_NASCIMENTO,\n" +
+					"  C.DATA_ADMISSAO,\n" +
+					"  C.DATA_DEMISSAO,\n" +
+					"  C.STATUS_ATIVO,\n" +
+					"  initcap(C.NOME) AS NOME_COLABORADOR,\n" +
+					"  EM.NOME         AS NOME_EMPRESA,\n" +
+					"  EM.CODIGO       AS COD_EMPRESA,\n" +
+					"  EM.LOGO_THUMBNAIL_URL,\n" +
+					"  R.REGIAO        AS NOME_REGIONAL,\n" +
+					"  R.CODIGO        AS COD_REGIONAL,\n" +
+					"  U.NOME          AS NOME_UNIDADE,\n" +
+					"  U.CODIGO        AS COD_UNIDADE,\n" +
+					"  EQ.NOME         AS NOME_EQUIPE,\n" +
+					"  EQ.CODIGO       AS COD_EQUIPE,\n" +
+					"  S.NOME          AS NOME_SETOR,\n" +
+					"  S.CODIGO        AS COD_SETOR,\n" +
+					"  C.COD_FUNCAO,\n" +
+					"  F.NOME          AS NOME_FUNCAO,\n" +
+					"  C.COD_PERMISSAO AS PERMISSAO\n" +
+					"FROM COLABORADOR C\n" +
+					"  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO\n" +
+					"  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE\n" +
+					"  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE\n" +
+					"  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA\n" +
+					"  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL\n" +
+					"  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
+					"  JOIN unidade_funcao_produtividade UFP ON UFP.cod_unidade = C.cod_unidade AND\n" +
+					"                                           (C.cod_funcao = UFP.cod_funcao_ajudante OR\n" +
+					"                                            C.COD_FUNCAO = UFP.cod_funcao_motorista)\n" +
+					"WHERE C.COD_UNIDADE = ?\n" +
+					"ORDER BY 8");
+			stmt.setLong(1, codUnidade);
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				Colaborador c = createColaborador(rSet);
+				list.add(c);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return list;
+	}
+
 	@Override
 	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();

@@ -56,6 +56,15 @@ public class ColaboradorService {
 			return Collections.emptyList();
 		}
 	}
+
+	public List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) {
+		try {
+			return dao.getMotoristasAndAjudantes(codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public LoginHolder getLoginHolder(Long cpf) {
 		try{
