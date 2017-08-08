@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoA
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
@@ -24,6 +25,20 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosAtivos(cpf);
         if (request != null && request.isSucesso()) {
             return request.getListaVeiculos();
+        }
+
+        throw new Exception(request != null ? request.getMensagem() : "");
+    }
+
+    @Override
+    public Veiculo getVeiculoAtivo(@NotNull final String placaVeiculo,
+                                   @NotNull final String dataNascimento,
+                                   @NotNull final String cpf) throws Exception {
+        final VeiculosAtivos request = getCadastroSoap(cpf, placaVeiculo).buscarVeiculoAtivo(cpf, placaVeiculo);
+        if (request != null && request.isSucesso()) {
+            final ArrayOfVeiculo veiculos = request.getListaVeiculos();
+            // Irá retornar sempre um único veículo. Lista com tamanho 1.
+            return veiculos.getVeiculo().get(0);
         }
 
         throw new Exception(request != null ? request.getMensagem() : "");

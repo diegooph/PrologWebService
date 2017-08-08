@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="cpf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="dataNascimento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="placa" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,13 +30,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "cpf",
-    "dataNascimento"
+    "placa"
 })
-@XmlRootElement(name = "buscarUsuarioIntegracao")
-public class BuscarUsuarioIntegracao {
+@XmlRootElement(name = "buscarVeiculoAtivo")
+public class BuscarVeiculoAtivo {
 
     protected String cpf;
-    protected String dataNascimento;
+    protected String placa;
 
     /**
      * Gets the value of the cpf property.
@@ -63,27 +63,27 @@ public class BuscarUsuarioIntegracao {
     }
 
     /**
-     * Gets the value of the dataNascimento property.
+     * Gets the value of the placa property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDataNascimento() {
-        return dataNascimento;
+    public String getPlaca() {
+        return placa;
     }
 
     /**
-     * Sets the value of the dataNascimento property.
+     * Sets the value of the placa property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDataNascimento(String value) {
-        this.dataNascimento = value;
+    public void setPlaca(String value) {
+        this.placa = value;
     }
 
 }

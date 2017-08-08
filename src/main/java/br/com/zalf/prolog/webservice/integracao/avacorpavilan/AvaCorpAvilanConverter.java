@@ -50,14 +50,20 @@ public final class AvaCorpAvilanConverter {
                 = arrayOfVeiculo.getVeiculo();
 
         final List<Veiculo> veiculos = new ArrayList<>();
-        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo v : veiculosAvilan) {
-            Veiculo veiculo = new Veiculo();
-            veiculo.setPlaca(v.getPlaca());
-            veiculo.setKmAtual(v.getMarcador());
-            veiculos.add(veiculo);
-        }
+        veiculosAvilan.forEach(v -> veiculos.add(convert(v)));
 
         return veiculos;
+    }
+
+    @VisibleForTesting
+    public static Veiculo convert(
+            @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan) {
+        checkNotNull(veiculoAvilan, "veiculoAvilan não pode ser null!");
+
+        Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(veiculoAvilan.getPlaca());
+        veiculo.setKmAtual(veiculoAvilan.getMarcador());
+        return veiculo;
     }
 
     @VisibleForTesting
@@ -82,8 +88,8 @@ public final class AvaCorpAvilanConverter {
                 final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo v = veiculos.get(i);
                 final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
                 placaStatus.placa = v.getPlaca();
-                placaStatus.quantidadePneus = v.getQtdPneus();
-                placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDataUltimaAfericao());
+                placaStatus.quantidadePneus = v.getQuantidadePneu();
+                placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
                 placas.add(placaStatus);
             }
             modeloHolder.setPlacaStatus(placas);

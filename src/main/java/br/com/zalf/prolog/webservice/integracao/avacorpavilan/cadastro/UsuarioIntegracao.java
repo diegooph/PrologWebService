@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de UsuarioIntegracao complex type.
+ * <p>Java class for UsuarioIntegracao complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="UsuarioIntegracao">
@@ -40,7 +40,7 @@ public class UsuarioIntegracao {
     protected String mensagem;
 
     /**
-     * Obtém o valor da propriedade codigo.
+     * Gets the value of the codigo property.
      * 
      */
     public int getCodigo() {
@@ -48,7 +48,7 @@ public class UsuarioIntegracao {
     }
 
     /**
-     * Define o valor da propriedade codigo.
+     * Sets the value of the codigo property.
      * 
      */
     public void setCodigo(int value) {
@@ -56,7 +56,7 @@ public class UsuarioIntegracao {
     }
 
     /**
-     * Obtém o valor da propriedade sucesso.
+     * Gets the value of the sucesso property.
      * 
      */
     public boolean isSucesso() {
@@ -64,7 +64,7 @@ public class UsuarioIntegracao {
     }
 
     /**
-     * Define o valor da propriedade sucesso.
+     * Sets the value of the sucesso property.
      * 
      */
     public void setSucesso(boolean value) {
@@ -72,7 +72,7 @@ public class UsuarioIntegracao {
     }
 
     /**
-     * Obtém o valor da propriedade mensagem.
+     * Gets the value of the mensagem property.
      * 
      * @return
      *     possible object is
@@ -84,7 +84,7 @@ public class UsuarioIntegracao {
     }
 
     /**
-     * Define o valor da propriedade mensagem.
+     * Sets the value of the mensagem property.
      * 
      * @param value
      *     allowed object is

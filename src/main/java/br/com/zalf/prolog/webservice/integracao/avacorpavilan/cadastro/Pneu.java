@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Pneu complex type.
+ * <p>Java class for Pneu complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Pneu">
@@ -52,7 +52,7 @@ public class Pneu {
     protected int vidaPneu;
 
     /**
-     * Obtém o valor da propriedade numeroFogo.
+     * Gets the value of the numeroFogo property.
      * 
      * @return
      *     possible object is
@@ -64,7 +64,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade numeroFogo.
+     * Sets the value of the numeroFogo property.
      * 
      * @param value
      *     allowed object is
@@ -76,7 +76,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade posicao.
+     * Gets the value of the posicao property.
      * 
      * @return
      *     possible object is
@@ -88,7 +88,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade posicao.
+     * Sets the value of the posicao property.
      * 
      * @param value
      *     allowed object is
@@ -100,7 +100,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade sulco1.
+     * Gets the value of the sulco1 property.
      * 
      */
     public double getSulco1() {
@@ -108,7 +108,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade sulco1.
+     * Sets the value of the sulco1 property.
      * 
      */
     public void setSulco1(double value) {
@@ -116,7 +116,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade sulco2.
+     * Gets the value of the sulco2 property.
      * 
      */
     public double getSulco2() {
@@ -124,7 +124,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade sulco2.
+     * Sets the value of the sulco2 property.
      * 
      */
     public void setSulco2(double value) {
@@ -132,7 +132,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade sulco3.
+     * Gets the value of the sulco3 property.
      * 
      */
     public double getSulco3() {
@@ -140,7 +140,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade sulco3.
+     * Sets the value of the sulco3 property.
      * 
      */
     public void setSulco3(double value) {
@@ -148,7 +148,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade sulco4.
+     * Gets the value of the sulco4 property.
      * 
      */
     public double getSulco4() {
@@ -156,7 +156,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade sulco4.
+     * Sets the value of the sulco4 property.
      * 
      */
     public void setSulco4(double value) {
@@ -164,7 +164,7 @@ public class Pneu {
     }
 
     /**
-     * Obtém o valor da propriedade vidaPneu.
+     * Gets the value of the vidaPneu property.
      * 
      */
     public int getVidaPneu() {
@@ -172,7 +172,7 @@ public class Pneu {
     }
 
     /**
-     * Define o valor da propriedade vidaPneu.
+     * Sets the value of the vidaPneu property.
      * 
      */
     public void setVidaPneu(int value) {

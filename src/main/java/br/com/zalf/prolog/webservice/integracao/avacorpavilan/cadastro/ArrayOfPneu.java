@@ -10,9 +10,9 @@ import java.util.List;
 
 
 /**
- * <p>Classe Java de ArrayOfPneu complex type.
+ * <p>Java class for ArrayOfPneu complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ArrayOfPneu">

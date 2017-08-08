@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfQuestionarioVeiculos;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.RespostasAvaliacao;
@@ -15,6 +16,10 @@ import com.sun.istack.internal.NotNull;
 public interface AvaCorpAvilanRequester extends Requester {
     ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
                                      @NotNull String dataNascimento) throws Exception;
+
+    Veiculo getVeiculoAtivo(@NotNull final String placaVeiculo,
+                            @NotNull final String cpf,
+                            @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf,
                                                                       @NotNull String dataNascimento) throws Exception;

@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="buscarVeiculosAtivosResult" type="{http://www.avacorp.com.br/integracaoprolog}VeiculosAtivos" minOccurs="0"/>
+ *         &lt;element name="buscarVeiculoAtivoResult" type="{http://www.avacorp.com.br/integracaoprolog}VeiculosAtivos" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,35 +28,35 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "buscarVeiculosAtivosResult"
+    "buscarVeiculoAtivoResult"
 })
-@XmlRootElement(name = "buscarVeiculosAtivosResponse")
-public class BuscarVeiculosAtivosResponse {
+@XmlRootElement(name = "buscarVeiculoAtivoResponse")
+public class BuscarVeiculoAtivoResponse {
 
-    protected VeiculosAtivos buscarVeiculosAtivosResult;
+    protected VeiculosAtivos buscarVeiculoAtivoResult;
 
     /**
-     * Gets the value of the buscarVeiculosAtivosResult property.
+     * Gets the value of the buscarVeiculoAtivoResult property.
      * 
      * @return
      *     possible object is
      *     {@link VeiculosAtivos }
      *     
      */
-    public VeiculosAtivos getBuscarVeiculosAtivosResult() {
-        return buscarVeiculosAtivosResult;
+    public VeiculosAtivos getBuscarVeiculoAtivoResult() {
+        return buscarVeiculoAtivoResult;
     }
 
     /**
-     * Sets the value of the buscarVeiculosAtivosResult property.
+     * Sets the value of the buscarVeiculoAtivoResult property.
      * 
      * @param value
      *     allowed object is
      *     {@link VeiculosAtivos }
      *     
      */
-    public void setBuscarVeiculosAtivosResult(VeiculosAtivos value) {
-        this.buscarVeiculosAtivosResult = value;
+    public void setBuscarVeiculoAtivoResult(VeiculosAtivos value) {
+        this.buscarVeiculoAtivoResult = value;
     }
 
 }

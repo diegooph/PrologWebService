@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de PneusVeiculo complex type.
+ * <p>Java class for PneusVeiculo complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PneusVeiculo">
@@ -42,7 +42,7 @@ public class PneusVeiculo {
     protected ArrayOfPneu pneus;
 
     /**
-     * Obtém o valor da propriedade sucesso.
+     * Gets the value of the sucesso property.
      * 
      */
     public boolean isSucesso() {
@@ -50,7 +50,7 @@ public class PneusVeiculo {
     }
 
     /**
-     * Define o valor da propriedade sucesso.
+     * Sets the value of the sucesso property.
      * 
      */
     public void setSucesso(boolean value) {
@@ -58,7 +58,7 @@ public class PneusVeiculo {
     }
 
     /**
-     * Obtém o valor da propriedade mensagem.
+     * Gets the value of the mensagem property.
      * 
      * @return
      *     possible object is
@@ -70,7 +70,7 @@ public class PneusVeiculo {
     }
 
     /**
-     * Define o valor da propriedade mensagem.
+     * Sets the value of the mensagem property.
      * 
      * @param value
      *     allowed object is
@@ -82,7 +82,7 @@ public class PneusVeiculo {
     }
 
     /**
-     * Obtém o valor da propriedade pneus.
+     * Gets the value of the pneus property.
      * 
      * @return
      *     possible object is
@@ -94,7 +94,7 @@ public class PneusVeiculo {
     }
 
     /**
-     * Define o valor da propriedade pneus.
+     * Sets the value of the pneus property.
      * 
      * @param value
      *     allowed object is

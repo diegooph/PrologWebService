@@ -102,6 +102,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link BuscarVeiculoAtivo }
+     * 
+     */
+    public BuscarVeiculoAtivo createBuscarVeiculoAtivo() {
+        return new BuscarVeiculoAtivo();
+    }
+
+    /**
+     * Create an instance of {@link BuscarVeiculoAtivoResponse }
+     * 
+     */
+    public BuscarVeiculoAtivoResponse createBuscarVeiculoAtivoResponse() {
+        return new BuscarVeiculoAtivoResponse();
+    }
+
+    /**
      * Create an instance of {@link Veiculo }
      * 
      */

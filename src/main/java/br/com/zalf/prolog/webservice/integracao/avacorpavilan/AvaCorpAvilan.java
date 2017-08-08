@@ -66,22 +66,16 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        final List<Veiculo> veiculos = AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf(), dataNascimento()));
-        for (Veiculo veiculo : veiculos) {
-            if (veiculo.getPlaca().equals(placaVeiculo)) {
-                final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
-                final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
-                veiculo.setListPneus(pneus);
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(requester.getVeiculoAtivo(placaVeiculo, cpf(), dataNascimento()));
+        final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
+        final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
+        veiculo.setListPneus(pneus);
 
-                // Cria NovaAfericao
-                final NovaAfericao novaAfericao = new NovaAfericao();
-                novaAfericao.setVeiculo(veiculo);
-                novaAfericao.setRestricao(restricao);
-                return novaAfericao;
-            }
-        }
-
-        throw new IllegalStateException();
+        // Cria NovaAfericao
+        final NovaAfericao novaAfericao = new NovaAfericao();
+        novaAfericao.setVeiculo(veiculo);
+        novaAfericao.setRestricao(restricao);
+        return novaAfericao;
     }
 
     @Override

@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Veiculo complex type.
+ * <p>Java class for Veiculo complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Veiculo">
@@ -18,6 +18,9 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="placa" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="marcador" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="modelo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="quantidadePneu" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="dtUltimaAfericao" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,18 +32,21 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Veiculo", propOrder = {
     "placa",
-    "marcador"
+    "marcador",
+    "modelo",
+    "quantidadePneu",
+    "dtUltimaAfericao"
 })
 public class Veiculo {
 
     protected String placa;
     protected int marcador;
     protected String modelo;
-    protected int qtdPneus;
-    protected String dataUltimaAfericao;
+    protected int quantidadePneu;
+    protected String dtUltimaAfericao;
 
     /**
-     * Obtém o valor da propriedade placa.
+     * Gets the value of the placa property.
      * 
      * @return
      *     possible object is
@@ -52,7 +58,7 @@ public class Veiculo {
     }
 
     /**
-     * Define o valor da propriedade placa.
+     * Sets the value of the placa property.
      * 
      * @param value
      *     allowed object is
@@ -64,7 +70,7 @@ public class Veiculo {
     }
 
     /**
-     * Obtém o valor da propriedade marcador.
+     * Gets the value of the marcador property.
      * 
      */
     public int getMarcador() {
@@ -72,34 +78,75 @@ public class Veiculo {
     }
 
     /**
-     * Define o valor da propriedade marcador.
+     * Sets the value of the marcador property.
      * 
      */
     public void setMarcador(int value) {
         this.marcador = value;
     }
 
+    /**
+     * Gets the value of the modelo property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
     public String getModelo() {
         return modelo;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    /**
+     * Sets the value of the modelo property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setModelo(String value) {
+        this.modelo = value;
     }
 
-    public int getQtdPneus() {
-        return qtdPneus;
+    /**
+     * Gets the value of the quantidadePneu property.
+     * 
+     */
+    public int getQuantidadePneu() {
+        return quantidadePneu;
     }
 
-    public void setQtdPneus(int qtdPneus) {
-        this.qtdPneus = qtdPneus;
+    /**
+     * Sets the value of the quantidadePneu property.
+     * 
+     */
+    public void setQuantidadePneu(int value) {
+        this.quantidadePneu = value;
     }
 
-    public String getDataUltimaAfericao() {
-        return dataUltimaAfericao;
+    /**
+     * Gets the value of the dtUltimaAfericao property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDtUltimaAfericao() {
+        return dtUltimaAfericao;
     }
 
-    public void setDataUltimaAfericao(String dataUltimaAfericao) {
-        this.dataUltimaAfericao = dataUltimaAfericao;
+    /**
+     * Sets the value of the dtUltimaAfericao property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDtUltimaAfericao(String value) {
+        this.dtUltimaAfericao = value;
     }
+
 }

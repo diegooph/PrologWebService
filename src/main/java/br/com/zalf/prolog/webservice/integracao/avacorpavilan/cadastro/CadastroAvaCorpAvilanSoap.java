@@ -16,7 +16,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "CadastroSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+@WebService(name = "CadastroAvaCorpAvilanSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
 @XmlSeeAlso({
     ObjectFactory.class
 })
@@ -37,6 +37,24 @@ public interface CadastroAvaCorpAvilanSoap {
     public VeiculosAtivos buscarVeiculosAtivos(
             @WebParam(name = "cpf", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
                     String cpf);
+
+    /**
+     * Busca Veiculo ativo
+     * 
+     * @param cpf
+     * @param placa
+     * @return
+     *     returns br.com.avacorp.integracaoprolog.VeiculosAtivos
+     */
+    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/buscarVeiculoAtivo")
+    @WebResult(name = "buscarVeiculoAtivoResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+    @RequestWrapper(localName = "buscarVeiculoAtivo", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivo")
+    @ResponseWrapper(localName = "buscarVeiculoAtivoResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivoResponse")
+    public VeiculosAtivos buscarVeiculoAtivo(
+            @WebParam(name = "cpf", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+                    String cpf,
+            @WebParam(name = "placa", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+                    String placa);
 
     /**
      * Busca Pneus de um  veiculo
