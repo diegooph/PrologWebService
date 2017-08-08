@@ -32,9 +32,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
     @Override
     public Veiculo getVeiculoAtivo(@NotNull final String placaVeiculo,
-                                   @NotNull final String dataNascimento,
-                                   @NotNull final String cpf) throws Exception {
-        final VeiculosAtivos request = getCadastroSoap(cpf, placaVeiculo).buscarVeiculoAtivo(cpf, placaVeiculo);
+                                   @NotNull final String cpf,
+                                   @NotNull final String dataNascimento) throws Exception {
+        final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculoAtivo(cpf, placaVeiculo);
         if (request != null && request.isSucesso()) {
             final ArrayOfVeiculo veiculos = request.getListaVeiculos();
             // Irá retornar sempre um único veículo. Lista com tamanho 1.

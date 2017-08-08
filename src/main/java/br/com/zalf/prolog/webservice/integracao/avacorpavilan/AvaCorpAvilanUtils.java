@@ -35,7 +35,7 @@ public class AvaCorpAvilanUtils {
         Preconditions.checkNotNull(stringDate, "stringDate não pode ser nula!");
 
         final DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd")
+                .ofPattern("dd/MM/yyyy hh:mm:ss")
                 .withLocale(Locale.getDefault());
         final LocalDate date = LocalDate.parse(stringDate, formatter);
         final LocalDate now = LocalDate.now();

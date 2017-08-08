@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPn
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
@@ -89,7 +90,12 @@ public final class AvaCorpAvilanConverter {
                 final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
                 placaStatus.placa = v.getPlaca();
                 placaStatus.quantidadePneus = v.getQuantidadePneu();
-                placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
+                    // Veículo nunca foi aferido.
+                    placaStatus.intervaloUltimaAfericao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+                } else {
+                    placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                }
                 placas.add(placaStatus);
             }
             modeloHolder.setPlacaStatus(placas);

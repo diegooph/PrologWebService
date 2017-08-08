@@ -16,7 +16,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "CadastroAvaCorpAvilanSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+@WebService(name = "CadastroSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
 @XmlSeeAlso({
     ObjectFactory.class
 })

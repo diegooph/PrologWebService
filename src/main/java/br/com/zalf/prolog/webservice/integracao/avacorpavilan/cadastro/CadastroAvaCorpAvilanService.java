@@ -15,20 +15,20 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "CadastroAvaCorpAvilanService", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://189.11.175.146/IntegracaoProlog/CadastroAvaCorpAvilanService.asmx?WSDL")
+@WebServiceClient(name = "Cadastro", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://189.11.175.146/IntegracaoProlog/Cadastro.asmx?WSDL")
 public class CadastroAvaCorpAvilanService
     extends Service
 {
 
     private final static URL CADASTRO_WSDL_LOCATION;
     private final static WebServiceException CADASTRO_EXCEPTION;
-    private final static QName CADASTRO_QNAME = new QName("http://www.avacorp.com.br/integracaoprolog", "CadastroAvaCorpAvilanService");
+    private final static QName CADASTRO_QNAME = new QName("http://www.avacorp.com.br/integracaoprolog", "Cadastro");
 
     static {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://189.11.175.146/IntegracaoProlog/CadastroAvaCorpAvilanService.asmx?WSDL");
+            url = new URL("http://189.11.175.146/IntegracaoProlog/Cadastro.asmx?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -63,11 +63,11 @@ public class CadastroAvaCorpAvilanService
     /**
      * 
      * @return
-     *     returns CadastroAvaCorpAvilanSoap
+     *     returns CadastroSoap
      */
-    @WebEndpoint(name = "CadastroAvaCorpAvilanSoap")
+    @WebEndpoint(name = "CadastroSoap")
     public CadastroAvaCorpAvilanSoap getCadastroSoap() {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "CadastroAvaCorpAvilanSoap"), CadastroAvaCorpAvilanSoap.class);
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "CadastroSoap"), CadastroAvaCorpAvilanSoap.class);
     }
 
     /**
@@ -75,11 +75,11 @@ public class CadastroAvaCorpAvilanService
      * @param features
      *     A list of {@link WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return
-     *     returns CadastroAvaCorpAvilanSoap
+     *     returns CadastroSoap
      */
-    @WebEndpoint(name = "CadastroAvaCorpAvilanSoap")
+    @WebEndpoint(name = "CadastroSoap")
     public CadastroAvaCorpAvilanSoap getCadastroSoap(WebServiceFeature... features) {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "CadastroAvaCorpAvilanSoap"), CadastroAvaCorpAvilanSoap.class, features);
+        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "CadastroSoap"), CadastroAvaCorpAvilanSoap.class, features);
     }
 
     private static URL __getWsdlLocation() {
