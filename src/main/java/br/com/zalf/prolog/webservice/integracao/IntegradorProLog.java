@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
@@ -31,9 +32,9 @@ import java.util.Map;
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     @Nullable
-    private final VeiculoDao veiculoDao;
+    private VeiculoDao veiculoDao;
     @Nullable
-    private final ChecklistDao checklistDao;
+    private ChecklistDao checklistDao;
     @Nullable
     private AfericaoDao afericaoDao;
     @Nullable
@@ -78,6 +79,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         return afericaoDao.getRestricaoByCodUnidade(codUnidade);
+    }
+
+    @Override
+    public DiagramaVeiculo getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.getDiagramaVeiculoByPlaca(placaVeiculo);
     }
 
     //

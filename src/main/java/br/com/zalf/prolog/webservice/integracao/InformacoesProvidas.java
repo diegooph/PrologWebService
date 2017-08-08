@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
 
@@ -16,4 +17,7 @@ public interface InformacoesProvidas {
 
     @NotNull
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Exception;
+
+    @NotNull
+    DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
 }

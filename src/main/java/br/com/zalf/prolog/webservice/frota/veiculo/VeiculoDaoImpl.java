@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
+import com.sun.istack.internal.NotNull;
 
 import javax.ws.rs.DELETE;
 import java.sql.Connection;
@@ -512,25 +513,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        Set<DiagramaVeiculo> diagramas = new HashSet<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                diagramas.add(createDiagramaVeiculo(rSet, conn));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return diagramas;
-    }
-
-    private DiagramaVeiculo getDiagramaByPlaca(String placa) throws SQLException {
+    public DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -549,6 +532,25 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             closeConnection(conn, stmt, rSet);
         }
         return null;
+    }
+
+    @Override
+    public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Set<DiagramaVeiculo> diagramas = new HashSet<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                diagramas.add(createDiagramaVeiculo(rSet, conn));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return diagramas;
     }
 
     private DiagramaVeiculo createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
@@ -605,7 +607,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("MODELO"));
         veiculo.setModelo(modelo);
-        veiculo.setDiagrama(getDiagramaByPlaca(veiculo.getPlaca()));
+        veiculo.setDiagrama(getDiagramaVeiculoByPlaca(veiculo.getPlaca()));
         return veiculo;
     }
 
