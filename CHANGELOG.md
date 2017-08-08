@@ -1,8 +1,15 @@
 Change Log
 ==========
 
+<a name="v0.0.24"></a>
+## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (release date) - [Unreleased]
+
+#### Refactor
+
+* Altera query de busca do relatório de realização do Quiz por cargo, agora usa function
+
 <a name="v0.0.23"></a>
-## Version [v0.0.23](https://github.com/luizfp/PrologWebService/compare/v0.0.22...v0.0.23) (release date) - [Unreleased]
+## Version [v0.0.23](https://github.com/luizfp/PrologWebService/compare/v0.0.22...v0.0.23) (2017-08-03)
 
 #### Refactor
 * Corrige erro de parse em possível coluna vazia no campo "pontuação CNH" do prontuário
