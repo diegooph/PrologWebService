@@ -266,9 +266,10 @@ public final class AvaCorpAvilanConverter {
         // Modelo de Pneu e Banda serão iguais para todos os pneus. Pneus sempre terão 4 sulcos.
         final ModeloPneu modeloPneu = new ModeloPneu();
         modeloPneu.setQuantidadeSulcos(4);
-        final Banda banda = new Banda();
         final ModeloBanda modeloBanda = new ModeloBanda();
         modeloBanda.setQuantidadeSulcos(4);
+        final Banda banda = new Banda();
+        banda.setModelo(modeloBanda);
 
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
