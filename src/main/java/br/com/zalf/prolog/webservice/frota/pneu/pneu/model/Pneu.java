@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import com.google.common.math.DoubleMath;
 import com.sun.istack.internal.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
@@ -195,6 +197,10 @@ public class Pneu {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+    }
+
+    public int getPressaoAtualAsInt() {
+        return DoubleMath.roundToInt(pressaoAtual, RoundingMode.HALF_DOWN);
     }
 
     public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));

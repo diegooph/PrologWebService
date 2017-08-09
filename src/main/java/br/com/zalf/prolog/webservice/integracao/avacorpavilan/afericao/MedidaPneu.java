@@ -46,7 +46,7 @@ public class MedidaPneu {
     protected double triangulo1SegundoSulco;
     protected double triangulo1TerceiroSulco;
     protected double triangulo1QuartoSulco;
-    protected double calibragem;
+    protected int calibragem;
 
     /**
      * Gets the value of the numeroFogoPneu property.
@@ -140,7 +140,7 @@ public class MedidaPneu {
      * Gets the value of the calibragem property.
      * 
      */
-    public double getCalibragem() {
+    public int getCalibragem() {
         return calibragem;
     }
 
@@ -148,7 +148,7 @@ public class MedidaPneu {
      * Sets the value of the calibragem property.
      * 
      */
-    public void setCalibragem(double value) {
+    public void setCalibragem(int value) {
         this.calibragem = value;
     }
 

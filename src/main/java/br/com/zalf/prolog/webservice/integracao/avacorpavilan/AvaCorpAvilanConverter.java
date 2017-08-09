@@ -22,7 +22,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
@@ -122,7 +125,7 @@ public final class AvaCorpAvilanConverter {
         ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
-            medidaPneu.setCalibragem(pneu.getPressaoAtual());
+            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
             medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
             medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
             medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
