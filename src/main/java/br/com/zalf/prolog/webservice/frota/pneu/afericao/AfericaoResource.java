@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/afericao")
+@DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AfericaoResource {

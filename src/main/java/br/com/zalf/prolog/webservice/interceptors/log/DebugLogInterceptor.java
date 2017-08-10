@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,7 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
     }
 
     private boolean isJson(ContainerRequestContext request) {
-        return request.getMediaType().toString().contains("application/json");
+        final MediaType mediaType = request.getMediaType();
+        return mediaType != null && mediaType.toString().contains("application/json");
     }
 }
