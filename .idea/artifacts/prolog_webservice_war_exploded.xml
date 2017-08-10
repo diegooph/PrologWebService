@@ -46,7 +46,8 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.6" />
           <element id="library" level="project" name="Maven: joda-time:joda-time:2.8.1" />
           <element id="library" level="project" name="Maven: com.amazonaws:jmespath-java:1.11.126" />
-          <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.8.2" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.8.2" />
           <element id="library" level="project" name="Maven: com.thetransactioncompany:cors-filter:2.5" />
           <element id="library" level="project" name="Maven: com.thetransactioncompany:java-property-utils:1.10" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:22.0" />
