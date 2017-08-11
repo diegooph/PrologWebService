@@ -10,7 +10,9 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
+import com.google.common.base.Strings;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import javax.xml.ws.BindingProvider;
 
@@ -24,11 +26,14 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     public ArrayOfVeiculo getVeiculosAtivos(@NotNull String cpf,
                                             @NotNull String dataNascimento) throws Exception {
         final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosAtivos(cpf);
-        if (request != null && request.isSucesso()) {
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getListaVeiculos();
         }
 
-        throw new Exception(request != null ? request.getMensagem() : "");
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar os veículos ativos da Avilan para o CPF: " + cpf
+                : request.getMensagem());
     }
 
     @Override
@@ -36,13 +41,16 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                    @NotNull final String cpf,
                                    @NotNull final String dataNascimento) throws Exception {
         final VeiculosAtivos request = getCadastroSoap(cpf, dataNascimento).buscarVeiculoAtivo(cpf, placaVeiculo);
-        if (request != null && request.isSucesso()) {
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
             final ArrayOfVeiculo veiculos = request.getListaVeiculos();
             // Irá retornar sempre um único veículo. Lista com tamanho 1.
             return veiculos.getVeiculo().get(0);
         }
 
-        throw new Exception(request != null ? request.getMensagem() : "");
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar veículo ativo da Avilan com placa: " + placaVeiculo
+                : request.getMensagem());
     }
 
     @Override
@@ -79,15 +87,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         adicionarChecklist.setDtNascimento(dataNascimento);
         adicionarChecklist.setVeiculo(placaVeiculo);
         adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
-        // As demais informações do objeto AdicionarChecklist não precisam ser setadas
 
         final PerguntasAlternativasQuestionario request
                 = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
         if (request != null && request.isSucesso()) {
             // Esse request retorna uma lista de VeiculoQuestao pois, dado um veículo ABC,
             // caso queiramos buscar seu questionário, ele pode estar atrelado a carretas DIK e XYZ, por exemplo.
-            // Desse modo, as questões vêm separadas por veículo. Como essa distinção não existe no ProLog, iremos
-            // agrupar tudo na mesma lista de perguntas.
+            // Desse modo, as questões vêm separadas por veículo.
             return request.getVeiculoQuestoes();
         }
 
@@ -113,11 +119,23 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                        @NotNull String cpf,
                                        @NotNull String dataNascimento) throws Exception {
         final PneusVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarPneusVeiculo(placaVeiculo);
-        if (request != null && request.isSucesso()) {
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getPneus();
         }
 
-        throw new Exception(request != null ? request.getMensagem() : "");
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar pneus da Avilan para o veículo: " + placaVeiculo
+                : request.getMensagem());
+    }
+
+
+    private boolean error(final boolean sucesso, @Nullable final String mensagem) {
+        // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou
+        // vazio.
+        // Se a busca tiver sido feita SEM sucesso, então sucesso false e mensagem diferente de null ou vazio.
+
+        return !sucesso && !Strings.isNullOrEmpty(mensagem);
     }
 
     private CadastroAvaCorpAvilanSoap getCadastroSoap(@NotNull String cpf,
