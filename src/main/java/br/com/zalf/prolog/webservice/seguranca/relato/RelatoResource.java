@@ -39,7 +39,7 @@ public class RelatoResource {
 
     @GET
     @Path("/{status}/colaborador/{cpf}")
-    @Secured(permissions = { Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getByColaborador(@PathParam("status") String status,
                                          @PathParam("cpf") Long cpf,
@@ -54,7 +54,8 @@ public class RelatoResource {
 
     @GET
     @Path("/classificados/{cpf}/{status}")
-    @Secured
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR})
     public List<Relato> getClassificadosByColaborador(
             @PathParam("cpf") Long cpf,
             @PathParam("status") String status,
@@ -85,7 +86,7 @@ public class RelatoResource {
 
     @GET
     @Path("{status}/exceto/colaborador/{cpf}")
-    @Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR})
     public List<Relato> getAllExcetoColaborador(
             @PathParam("cpf") Long cpf,
             @PathParam("status") String status,
