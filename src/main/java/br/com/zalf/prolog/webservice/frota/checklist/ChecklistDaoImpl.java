@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
@@ -10,18 +11,21 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.Date;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
-	private static final String TAG = ChecklistDaoImpl.class.getSimpleName();
 	private VeiculoDao veiculoDao;
 
+	public ChecklistDaoImpl() {
+
+	}
 
 	/**
 	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
@@ -36,7 +40,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		veiculoDao = new VeiculoDaoImpl();
+		veiculoDao = Injection.provideVeiculoDao();
 		Long codUnidade = null;
 		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
 		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
@@ -201,7 +205,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
-		veiculoDao = new VeiculoDaoImpl();
+		veiculoDao = Injection.provideVeiculoDao();
+		holder.setCodigoModeloChecklist(codModelo);
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));
 		return holder;

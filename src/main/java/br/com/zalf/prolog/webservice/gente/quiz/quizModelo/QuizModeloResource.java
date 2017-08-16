@@ -18,7 +18,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class QuizModeloResource {
 
-    QuizModeloService service = new QuizModeloService();
+    private QuizModeloService service = new QuizModeloService();
 
     @GET
     @Secured(permissions = {Pilares.Gente.Quiz.Modelo.VISUALIZAR, Pilares.Gente.Quiz.REALIZAR})

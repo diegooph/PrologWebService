@@ -1,34 +1,33 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
-    private static final String TAG = AfericaoDaoImpl.class.getSimpleName();
+
+    public AfericaoDaoImpl() {
+
+    }
 
     @Override
     public boolean insert(Afericao afericao, Long codUnidade) throws SQLException {
@@ -36,7 +35,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        VeiculoDao veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -85,7 +84,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public NovaAfericao getNovaAfericao(String placa) throws SQLException {
-        VeiculoDao veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
         final List<Pneu> estepes = veiculo.getEstepes();
@@ -97,7 +96,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException {
+    public Restricao getRestricaoByCodUnidade(Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -147,12 +146,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) throws SQLException {
+    public CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        SelecaoPlacaAfericao selecaoPlacaAfericao = new SelecaoPlacaAfericao();
+        CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         PlacaModeloHolder holder = new PlacaModeloHolder(); //possui a lista de placaStatus
         List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
         List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
@@ -197,12 +196,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             holder.setPlacaStatus(listPlacasMesmoModelo);
             listModelo.add(holder);
-            selecaoPlacaAfericao.setPlacas(listModelo);
-            selecaoPlacaAfericao.setMeta(getRestricoesByCodUnidade(codUnidade).getPeriodoDiasAfericao());
+            cronogramaAfericao.setPlacas(listModelo);
+            cronogramaAfericao.setMeta(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericao());
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return selecaoPlacaAfericao;
+        return cronogramaAfericao;
     }
 
     private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {
@@ -260,9 +259,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         Afericao afericao = new Afericao();
         Veiculo veiculo = new Veiculo();
-        VeiculoDaoImpl veiculoDao = new VeiculoDaoImpl();
+        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         List<Pneu> pneus = new ArrayList<>();
-        PneuDaoImpl pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, " +
@@ -308,7 +307,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
 
         PreparedStatement stmt = null;
-        PneuDao pneuDao = new PneuDaoImpl();
+        PneuDao pneuDao = Injection.providePneuDao();
 
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +
@@ -316,7 +315,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
-            stmt.setLong(2, pneu.getCodigo());
+            stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setDouble(4, pneu.getPressaoAtual());
             stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
@@ -328,7 +327,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
-            Restricao restricao = getRestricoesByCodUnidade(codUnidade);
+            Restricao restricao = getRestricaoByCodUnidade(codUnidade);
             List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
             if (listServicosACadastrar.size() > 0) {// verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços
                 insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);
@@ -383,7 +382,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
      * @return
      * @throws SQLException
      */
-    private List<String> getServicosCadastradosByPneu(Long codPneu, Long codUnidade) throws SQLException {
+    private List<String> getServicosCadastradosByPneu(String codPneu, Long codUnidade) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -396,7 +395,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND DATA_HORA_RESOLUCAO IS NULL "
                     + "GROUP BY TIPO_SERVICO "
                     + "ORDER BY TIPO_SERVICO");
-            stmt.setLong(1, codPneu);
+            stmt.setString(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -417,8 +416,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
-            stmt.setLong(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
-            stmt.setLong(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+            stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
+            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
             stmt.setInt(6, pneu.getPosicao());
             stmt.setLong(7, codUnidade);
             stmt.executeQuery();
@@ -439,7 +438,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private void insertOrUpdateServico(Pneu pneu, long codAfericao, Long codUnidade, Connection conn, List<String> servicosPendentes) throws SQLException {
 
-        List<String> servicosCadastrados = getServicosCadastradosByPneu(new Long(pneu.getCodigo()), codUnidade);
+        List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
 
         for (String servicoPendente : servicosPendentes) {
             //se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga calibragem para uma inspeção
@@ -460,13 +459,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_MANUTENCAO(COD_AFERICAO, COD_PNEU, COD_UNIDADE, TIPO_SERVICO, COD_PNEU_INSERIDO)"
                 + " VALUES(?,?,?,?,?)");
         stmt.setLong(1, codAfericao);
-        stmt.setLong(2, pneu.getCodigo());
+        stmt.setString(2, pneu.getCodigo());
         stmt.setLong(3, codUnidade);
         stmt.setString(4, tipoServico);
         if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.NUMERO_INCORRETO)) {
-            stmt.setInt(5, pneu.getCodPneuProblema());
+            stmt.setString(5, pneu.getCodPneuProblema());
         } else {
-            stmt.setNull(5, java.sql.Types.INTEGER);
+            stmt.setNull(5, Types.VARCHAR);
         }
         stmt.executeUpdate();
     }
@@ -477,10 +476,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
-        stmt.setLong(1, pneu.getCodigo());
+        stmt.setString(1, pneu.getCodigo());
         stmt.setLong(2, codUnidade);
         stmt.setString(3, tipoServico);
-        stmt.setLong(4, pneu.getCodigo());
+        stmt.setString(4, pneu.getCodigo());
         stmt.setLong(5, codUnidade);
         stmt.setString(6, tipoServico);
         stmt.executeUpdate();
@@ -500,11 +499,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
-        stmt.setLong(1, pneu.getCodigo());
+        stmt.setString(1, pneu.getCodigo());
         stmt.setLong(2, codUnidade);
         stmt.setString(3, Servico.TIPO_CALIBRAGEM);
         stmt.setString(4, Servico.TIPO_INSPECAO);
-        stmt.setLong(5, pneu.getCodigo());
+        stmt.setString(5, pneu.getCodigo());
         stmt.setLong(6, codUnidade);
         stmt.setString(7, Servico.TIPO_CALIBRAGEM);
         stmt.executeUpdate();

@@ -15,7 +15,7 @@ public class ChecklistTest extends TestCase {
 //		// Valida se encontrou algo
 //		assertTrue(checklists.size() > 0);
 //		// Valida se encontrou um checklist
-//		Checklist check_1 = service.getByCod(2L, "jsds");
+//		Checklist check_1 = service.getByCpf(2L, "jsds");
 //		Long cpf = 12345678987L;
 //		assertEquals(cpf, check_1.getCpfColaborador());
 //		assertEquals("MKE2501", check_1.getPlacaVeiculo());
@@ -45,7 +45,7 @@ public class ChecklistTest extends TestCase {
 //		assertNotNull(id);
 		
 		// Busca no bd pra confirmar que o checklist foi salvo
-//		c = service.getByCod(id);
+//		c = service.getByCpf(id);
 //		Long cpf = new Long(12345678987L);
 //		assertEquals(cpf, c.getCpfColaborador());
 //		assertEquals(id, c.getCodigo());
@@ -53,7 +53,7 @@ public class ChecklistTest extends TestCase {
 //		assertEquals("MKE2501", c.getPlacaVeiculo());
 //		assertEquals('s', c.getTipo());
 //		for ( Map.Entry<Pergunta, Resposta> entry : c.getPerguntaRespostaMap().entrySet()) {
-//		    Pergunta p = entry.getKey();
+//		    Pergunta p = entry.getName();
 //		    Resposta r = entry.getValue();
 //		    assertEquals(pergunta.getCodigo(), p.getCodigo());
 //		    assertEquals(resposta.getResposta(), r.getResposta());
@@ -64,13 +64,13 @@ public class ChecklistTest extends TestCase {
 //		service.update(c);
 //		
 //		// Busca o checklist novamente (deve estar atualizado)
-//		c = service.getByCod(id);
+//		c = service.getByCpf(id);
 //		assertEquals('r', c.getTipo());
 //		
 //		// Deleta o carro
 //		service.delete(id);
 //		// Busca o carro novamente
-//		c = service.getByCod(id);
+//		c = service.getByCpf(id);
 //		// Agora deve ser null
 //		assertNull(c);	
 //	}

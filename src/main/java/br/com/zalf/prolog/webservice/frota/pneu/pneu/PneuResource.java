@@ -94,21 +94,27 @@ public class PneuResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/{codEmpresa}")
     public List<Marca> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloBanda(codEmpresa);
     }
 
     @POST
-    @Secured
+    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/marcas/{codEmpresa}")
     public AbstractResponse insertMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
         return service.insertMarcaBanda(marca, codEmpresa);
     }
 
     @POST
-    @Secured
+    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/modelos/{codEmpresa}/{codMarcaBanda}")
     public AbstractResponse insertModeloBanda(ModeloBanda modelo, @PathParam("codMarcaBanda") Long codMarcaBanda,
                                               @PathParam("codEmpresa") Long codEmpresa) {
@@ -140,7 +146,7 @@ public class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
+    public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 }

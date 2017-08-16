@@ -1630,10 +1630,23 @@ CREATE TABLE IF NOT EXISTS prontuario_condutor_consolidado (
 );
 
 /**
+ * Tabela para vincular uma empresa com um recurso integrado e com uma chave de sistema
+ * indicando quem é o responsável (sistema) por cuidar dessa integração.
+ * Por exemplo, a empresa Avilan, de código 1, se integrasse o checklist, poderia ter
+ * a seguinte entrada: 1 | AVILAN_AVACORP | CHECKLIST.
+ */
+CREATE TABLE IF NOT EXISTS INTEGRACAO (
+  COD_EMPRESA BIGINT NOT NULL,
+  CHAVE_SISTEMA VARCHAR(255) NOT NULL,
+  RECURSO_INTEGRADO VARCHAR(255) NOT NULL,
+  CONSTRAINT PK_INTEGRACAO PRIMARY KEY (COD_EMPRESA, CHAVE_SISTEMA, RECURSO_INTEGRADO),
+  CONSTRAINT FK_INTEGRACAO_EMPRESA FOREIGN KEY (COD_EMPRESA)
+  REFERENCES EMPRESA (CODIGO)
+);
+
+/**
     =======================    VIEWS    =======================
  */
-
-
 
 -- VIEW UTILIZADA PARA SUBSTITUIR O USO DA TABELA MAPA_COLABORADOR
 COMMENT ON VIEW VIEW_MAPA_COLABORADOR IS 'View utilizada para linkar os mapas relizados por cada colaborador';
@@ -2098,5 +2111,65 @@ FROM quiz_modelo_funcao qmf
     ON qmf.cod_funcao_colaborador = realizados.cod_funcao_realizaram AND realizados.cod_modelo = qmf.cod_modelo
 WHERE qmf.cod_unidade = f_cod_unidade AND qmf.cod_modelo :: TEXT LIKE f_equipe
 ORDER BY qm.nome, f.nome;
+  $func$ LANGUAGE SQL;
+
+-- query que faz a estratificação dos serviços fechados de determinada unidade, em determinado período
+  CREATE OR REPLACE FUNCTION func_relatorio_pneu_extrato_servicos_fechados (f_cod_unidade BIGINT, f_data_inicial DATE, f_data_final DATE)
+  RETURNS TABLE (
+  "DATA AFERIÇÃO" TEXT,
+    "DATA RESOLUÇÃO" TEXT,
+    "HORAS PARA RESOLVER" DOUBLE PRECISION,
+    "MINUTOS PARA RESOLVER" DOUBLE PRECISION,
+    "PLACA" TEXT,
+    "KM AFERIÇÃO" BIGINT,
+    "KM CONSERTO" BIGINT,
+    "KM PERCORRIDO" BIGINT,
+    "COD PNEU" BIGINT,
+    "PRESSÃO RECOMENDADA" REAL,
+    "PRESSÃO AFERIÇÃO" TEXT,
+    "DISPERSÃO RECOMENDADA x AFERIÇÃO" TEXT,
+    "PRESSÃO INSERIDA" TEXT,
+    "DISPERSÃO RECOMENDADA x INSERIDA" TEXT,
+    "POSIÇÃO" TEXT,
+    "SERVIÇO" TEXT,
+    "MECÂNICO" TEXT,
+    "PROBLEMA APONTADO(INSPEÇÃO)" TEXT
+  ) AS
+  $func$
+SELECT
+  to_char(A.data_hora, 'DD/MM/YYYY HH24:MM:SS') as data_hora_afericao,
+  to_char(AM.data_hora_resolucao, 'DD/MM/YYYY HH24:MM:SS') as data_hora_resolucao,
+  trunc(extract(epoch from (am.data_hora_resolucao - a.data_hora))/3600) as horas_resolucao,
+  trunc(extract(epoch from (am.data_hora_resolucao - a.data_hora))/60) as minutos_resolucao,
+  A.placa_veiculo,
+  A.km_veiculo AS KM_AFERICAO,
+  AM.km_momento_conserto,
+  am.km_momento_conserto - a.km_veiculo as km_percorrido,
+  AV.cod_pneu,
+  P.pressao_recomendada,
+  replace(round(AV.psi::numeric,2)::text, '.', ',')       AS PSI_AFERICAO,
+  replace(round((((av.psi / p.pressao_recomendada) - 1)*100)::numeric, 2) || '%', '.', ',') as dispersao_pressao_antes,
+  replace(round(AM.psi_apos_conserto::numeric, 2)::text, '.', ',') as psi_pos_conserto,
+  replace(round((((am.psi_apos_conserto / p.pressao_recomendada) - 1)*100)::numeric, 2) || '%', '.', ',') as dispersao_pressao_depois,
+  pon.nomenclatura as posicao,
+  AM.tipo_servico,
+  initcap(c.nome) as nome_mecanico,
+  coalesce(aa.alternativa, '-') as problema_apontado
+FROM
+  AFERICAO_MANUTENCAO AM
+  JOIN AFERICAO_VALORES AV ON AM.cod_unidade = AV.cod_unidade AND AM.cod_afericao = AV.cod_afericao
+                              AND AM.cod_pneu = AV.cod_pneu
+  JOIN AFERICAO A ON A.codigo = AV.cod_afericao
+    JOIN COLABORADOR C ON am.cpf_mecanico = c.cpf
+  JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND
+                 P.cod_unidade = AV.cod_unidade
+    JOIN VEICULO_PNEU VP ON vp.cod_pneu = p.codigo and vp.cod_unidade = p.cod_unidade
+  LEFT JOIN afericao_alternativa_manutencao_inspecao aa ON aa.codigo = am.cod_alternativa
+  JOIN VEICULO V ON V.PLACA = VP.placa
+  JOIN pneu_ordem_nomenclatura_unidade pon on pon.cod_unidade = p.cod_unidade and pon.cod_tipo_veiculo = v.cod_tipo
+  and pon.posicao_prolog = av.posicao
+WHERE AV.cod_unidade = f_cod_unidade and am.cpf_mecanico is not null
+      and a.data_hora::date >= f_data_inicial and a.data_hora::date <= f_data_final
+ORDER BY a.data_hora desc
   $func$ LANGUAGE SQL;
 

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,25 @@ public class RelatorioService {
         }catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, long dataInicial,
+                                                          long dataFinal) {
+        try {
+            return dao.getEstratificacaoServicosFechadosReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, long dataInicial,
+                                                        long dataFinal) {
+        try {
+            dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
     }
 

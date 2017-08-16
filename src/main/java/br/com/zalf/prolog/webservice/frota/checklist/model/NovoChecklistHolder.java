@@ -10,8 +10,13 @@ import java.util.List;
 public class NovoChecklistHolder {
     private List<PerguntaRespostaChecklist> listPerguntas;
     private Veiculo veiculo;
+    /**
+     * Código do modelo de checklist do qual as perguntas {@link #listPerguntas} são referentes.
+     */
+    private Long codigoModeloChecklist;
 
     public NovoChecklistHolder() {
+
     }
 
     public List<PerguntaRespostaChecklist> getListPerguntas() {
@@ -28,6 +33,14 @@ public class NovoChecklistHolder {
 
     public void setVeiculo(Veiculo veiculo) {
         this.veiculo = veiculo;
+    }
+
+    public Long getCodigoModeloChecklist() {
+        return codigoModeloChecklist;
+    }
+
+    public void setCodigoModeloChecklist(Long codigoModeloChecklist) {
+        this.codigoModeloChecklist = codigoModeloChecklist;
     }
 
     @Override

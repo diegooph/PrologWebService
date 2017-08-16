@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -100,5 +101,11 @@ public interface RelatorioDao {
 	public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws SQLException, IOException;
 
 	public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
+
+	public Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
+														  Date dataFinal) throws SQLException;
+
+	public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
+													 Date dataFinal) throws IOException, SQLException;
 
 }

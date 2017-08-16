@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoService;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-public class FotaTest extends TestCase{
+public class FrotaTest extends TestCase {
 	
 	private ServicoService service = new ServicoService();
 	

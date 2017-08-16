@@ -24,6 +24,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/resumoSulcos")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public List<Faixa> getQtPneusByFaixaSulco(
 			@QueryParam("codUnidades") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
@@ -32,6 +33,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/resumoPressao")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public List<Faixa> getQtPneusByFaixaPressao(
 			@QueryParam("codUnidades") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
@@ -40,6 +42,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/aderencia/{codUnidade}/{ano}/{mes}")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public List<Aderencia> getAderenciaByUnidade(
 			@PathParam("ano") int ano,
 			@PathParam("mes") int mes,
@@ -67,6 +70,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/previsao-trocas/{codUnidade}/report")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public Report getPrevisaoTrocaReport(@PathParam("codUnidade") Long codUnidade,
 										 @QueryParam("dataInicial") long dataInicial,
 										 @QueryParam("dataFinal") long dataFinal){
@@ -84,6 +88,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/previsao-trocas/consolidados/{codUnidade}/report")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public Report getPrevisaoTrocaConsolidadoReport(@PathParam("codUnidade") Long codUnidade,
 													@QueryParam("dataInicial") long dataInicial,
 													@QueryParam("dataFinal") long dataFinal) throws SQLException{
@@ -126,6 +131,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/afericoes/resumo/pneus/{codUnidade}/report")
+	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 	public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
 		return service.getDadosUltimaAfericaoReport(codUnidade);
 	}
@@ -153,5 +159,21 @@ public class RelatorioResource {
 											  @QueryParam("dataInicial") long dataInicial,
 											  @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/servicos/estratificacao/fechados/{codUnidade}/report")
+	public Report getEstratificacaoServicosFechadosReport(@PathParam("codUnidade") Long codUnidade,
+														  @QueryParam("dataInicial") long dataInicial,
+														  @QueryParam("dataFinal") long dataFinal) {
+		return service.getEstratificacaoServicosFechadosReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/servicos/estratificacao/fechados/{codUnidade}/csv")
+	public StreamingOutput getEstratificacaoServicosFechadosCsv(@PathParam("codUnidade") Long codUnidade,
+																@QueryParam("dataInicial") long dataInicial,
+																@QueryParam("dataFinal") long dataFinal) {
+		return outputStream -> service.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, dataInicial, dataFinal);
 	}
 }

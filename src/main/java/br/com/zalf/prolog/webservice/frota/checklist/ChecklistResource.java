@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.commons.util.L;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/checklist")
+@DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource {
@@ -27,10 +29,10 @@ public class ChecklistResource {
 
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-	public Response insert(Checklist checklist) {
+	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
 		L.d("ChecklistResource", "Chamou o resource");
 		checklist.setData(new Date(System.currentTimeMillis()));
-		if (service.insert(checklist)) {
+		if (service.insert(checklist, userToken)) {
 			return Response.Ok("Checklist inserido com sucesso");
 		} else {
 			return Response.Error("Erro ao inserir checklist");
@@ -89,8 +91,9 @@ public class ChecklistResource {
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
 			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codFuncaoColaborador") Long codFuncao) {
-		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
+			@PathParam("codFuncaoColaborador") Long codFuncao,
+			@HeaderParam("Authorization") String userToken) {
+		return service.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao, userToken);
 	}
 
 	@GET
@@ -99,8 +102,9 @@ public class ChecklistResource {
 	public NovoChecklistHolder getNovoChecklistHolder(
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codModelo") Long codModelo,
-			@PathParam("placa") String placa){
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa);
+			@PathParam("placa") String placa,
+			@HeaderParam("Authorization") String userToken){
+		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, userToken);
 	}
 
 	/**
