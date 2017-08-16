@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,7 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
             return;
 
         L.d(TAG, "--> " + request.getMethod() + " " + request.getUriInfo().getPath());
+        printQueryParameters(request);
         printHeaders(request);
         final String sizeBody = request.getLength() >= 0 ? " (" + request.getLength() + "-byte body)" : "";
         L.d(TAG, "--> END " + request.getMethod() + sizeBody);
@@ -33,6 +35,13 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
             L.d(TAG, json);
             final InputStream in = IOUtils.toInputStream(json, StandardCharsets.UTF_8);
             request.setEntityStream(in);
+        }
+    }
+
+    private void printQueryParameters(ContainerRequestContext request) {
+        final MultivaluedMap<String, String> map = request.getUriInfo().getQueryParameters();
+        if (map != null && !map.isEmpty()) {
+            L.d(TAG, "Query-Parameters: " + map.toString());
         }
     }
 
