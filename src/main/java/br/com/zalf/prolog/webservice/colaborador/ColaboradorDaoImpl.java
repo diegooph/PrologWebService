@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	 * @throws SQLException
 	 */
 	@Override
-	public Colaborador getByCod(Long cpf) throws SQLException {
+	public Colaborador getByCpf(Long cpf) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -156,6 +157,40 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
 					+ "WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
 			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				Colaborador c = createColaborador(rSet);
+				c.setVisao(getVisaoByCpf(c.getCpf()));
+				return c;
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return null;
+	}
+
+	@Override
+	public Colaborador getByToken(@NotNull String token) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+					+ "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
+					+ "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM.LOGO_THUMBNAIL_URL, "
+					+ "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
+					+ "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+					+ "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO "
+					+ "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
+					+ " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
+					+ " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
+					+ " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA "
+					+ " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
+					+ " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
+					+ " JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? AND TA.CPF_COLABORADOR = C.CPF "
+					+ "WHERE C.STATUS_ATIVO = TRUE");
+			stmt.setString(1, token);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -280,7 +315,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	@Override
 	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();
-		loginHolder.setColaborador(getByCod(cpf));
+		loginHolder.setColaborador(getByCpf(cpf));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
@@ -318,6 +353,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		}
 	}
 
+
 	private Visao getVisaoByCpf(Long cpf)throws SQLException {
 		Visao visao = new Visao();
 		List<Pilar> pilares = new ArrayList<>();
@@ -343,7 +379,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		visao.setPilares(pilares);
 		return visao;
 	}
-
 
 	private Funcao createFuncao(ResultSet rSet) throws SQLException {
 		Funcao f = new Funcao();
@@ -426,8 +461,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return false;
 	}
 
-
-
+	@Override
 	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
 		Connection conn = null;
 		PreparedStatement stmt = null;

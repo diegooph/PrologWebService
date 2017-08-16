@@ -1632,10 +1632,23 @@ CREATE TABLE IF NOT EXISTS prontuario_condutor_consolidado (
 );
 
 /**
+ * Tabela para vincular uma empresa com um recurso integrado e com uma chave de sistema
+ * indicando quem é o responsável (sistema) por cuidar dessa integração.
+ * Por exemplo, a empresa Avilan, de código 1, se integrasse o checklist, poderia ter
+ * a seguinte entrada: 1 | AVILAN_AVACORP | CHECKLIST.
+ */
+CREATE TABLE IF NOT EXISTS INTEGRACAO (
+  COD_EMPRESA BIGINT NOT NULL,
+  CHAVE_SISTEMA VARCHAR(255) NOT NULL,
+  RECURSO_INTEGRADO VARCHAR(255) NOT NULL,
+  CONSTRAINT PK_INTEGRACAO PRIMARY KEY (COD_EMPRESA, CHAVE_SISTEMA, RECURSO_INTEGRADO),
+  CONSTRAINT FK_INTEGRACAO_EMPRESA FOREIGN KEY (COD_EMPRESA)
+  REFERENCES EMPRESA (CODIGO)
+);
+
+/**
     =======================    VIEWS    =======================
  */
-
-
 
 -- VIEW UTILIZADA PARA SUBSTITUIR O USO DA TABELA MAPA_COLABORADOR
 COMMENT ON VIEW VIEW_MAPA_COLABORADOR IS 'View utilizada para linkar os mapas relizados por cada colaborador';

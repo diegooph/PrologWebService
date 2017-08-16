@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
@@ -8,9 +9,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
@@ -18,7 +17,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -151,7 +149,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		ResultSet rSet = null;
 		List<Pneu> pneus = new ArrayList<>();
 		Pneu pneu = new Pneu();
-		PneuDao pneuDao = new PneuDaoImpl();
+		PneuDao pneuDao = Injection.providePneuDao();
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(SULCOS_PNEUS_BY_FAIXAS);
@@ -180,9 +178,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 		List<Aderencia> aderencias = new ArrayList<>();
 		Aderencia aderencia = null;
-		AfericaoDao afericaoDao = new AfericaoDaoImpl();
-		VeiculoDao veiculoDao = new VeiculoDaoImpl();
-		Restricao restricao = afericaoDao.getRestricoesByCodUnidade(codUnidade);
+		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+		VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+		Restricao restricao = afericaoDao.getRestricaoByCodUnidade(codUnidade);
 
 		Date dataAtual = new Date(System.currentTimeMillis());
 		LocalDate dataInicial = LocalDate.of(ano, mes, 01);
@@ -245,9 +243,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		List<Faixa> faixas = null;
-		AfericaoDao afericaoDao = new AfericaoDaoImpl();
+		AfericaoDao afericaoDao = Injection.provideAfericaoDao();
 		if (!codUnidades.get(0).equals("%")) {
-			Restricao restricao = afericaoDao.getRestricoesByCodUnidade(Long.parseLong(codUnidades.get(0)));
+			Restricao restricao = afericaoDao.getRestricaoByCodUnidade(Long.parseLong(codUnidades.get(0)));
 			Integer base = (int) Math.round(restricao.getToleranciaCalibragem()*100);
 			faixas = criaFaixas(base, 30);
 		}else{

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.SelecaoPlacaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 
 import java.sql.SQLException;
@@ -36,7 +36,7 @@ public interface AfericaoDao {
      * @return a restrição da unidade
      * @throws SQLException se ocorrer erro no banco
      */
-    Restricao getRestricoesByCodUnidade(Long codUnidade) throws SQLException;
+    Restricao getRestricaoByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
      * retorna as restrições de medidas da placa
@@ -48,7 +48,7 @@ public interface AfericaoDao {
     Restricao getRestricoesByPlaca(String placa) throws SQLException;
 
     //TODO - comentar o javadoc
-    SelecaoPlacaAfericao getSelecaoPlacaAfericao(Long codUnidade) throws SQLException;
+    CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException;
 
     /**
      * pega a lista de aferições executadas

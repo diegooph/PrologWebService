@@ -66,8 +66,9 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{codUnidade}")
-    public List<Veiculo> getVeiculosAtivosByUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getVeiculosAtivosByUnidade(codUnidade);
+    public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") String userToken,
+                                                    @PathParam("codUnidade") Long codUnidade) {
+        return service.getVeiculosAtivosByUnidade(userToken, codUnidade);
     }
 
     @POST

@@ -5,12 +5,13 @@ import java.util.List;
 /**
  * Created by jean on 04/04/16.
  */
-public class SelecaoPlacaAfericao {
+public class CronogramaAfericao {
 
     List<PlacaModeloHolder> placas;
     private int meta;
 
-    public SelecaoPlacaAfericao() {
+    public CronogramaAfericao() {
+
     }
 
     public List<PlacaModeloHolder> getPlacas() {
@@ -31,7 +32,7 @@ public class SelecaoPlacaAfericao {
 
     @Override
     public String toString() {
-        return "SelecaoPlacaAfericao{" +
+        return "CronogramaAfericao{" +
                 "placas=" + placas +
                 ", meta=" + meta +
                 '}';
