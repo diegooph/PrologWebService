@@ -6,6 +6,8 @@ Change Log
 
 ### Features
 
+* Implementa relatório de estratificação dos serviços fechados (pneus)
+
 #### Refactor
 
 <a name="v0.0.24"></a>
