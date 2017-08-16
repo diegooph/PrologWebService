@@ -160,4 +160,20 @@ public class RelatorioResource {
 											  @QueryParam("dataFinal") long dataFinal) throws SQLException{
 		return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
 	}
+
+	@GET
+	@Path("/servicos/estratificacao/fechados/{codUnidade}/report")
+	public Report getEstratificacaoServicosFechadosReport(@PathParam("codUnidade") Long codUnidade,
+														  @QueryParam("dataInicial") long dataInicial,
+														  @QueryParam("dataFinal") long dataFinal) {
+		return service.getEstratificacaoServicosFechadosReport(codUnidade, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/servicos/estratificacao/fechados/{codUnidade}/csv")
+	public StreamingOutput getEstratificacaoServicosFechadosCsv(@PathParam("codUnidade") Long codUnidade,
+																@QueryParam("dataInicial") long dataInicial,
+																@QueryParam("dataFinal") long dataFinal) {
+		return outputStream -> service.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, dataInicial, dataFinal);
+	}
 }
