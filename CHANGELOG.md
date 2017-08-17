@@ -14,8 +14,11 @@ Change Log
 ### Features
 
 * Implementa relatório de estratificação dos serviços fechados (pneus)
+* Implementa integração com AvaCorp(Avilan)
 
 #### Refactor
+
+* Altera o código do pneu de BIGINT para VARCHAR em todas as tabelas
 
 <a name="v0.0.24"></a>
 ## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (2017-08-08)
