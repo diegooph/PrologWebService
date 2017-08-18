@@ -2014,6 +2014,8 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
     "COLABORADOR" TEXT,
   "FUNÇÃO" TEXT,
   "CXS ENTREGUES" INT,
+  "JORNADAS BATIDAS" BIGINT,
+  "RESULTADO JORNADA" TEXT,
   "DEV PDV" TEXT,
   "META DEV PDV" TEXT,
   "RECEBE PRÊMIO" TEXT,
@@ -2037,8 +2039,12 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   initcap(nome_colaborador) AS "COLABORADOR",
   funcao AS "FUNÇÃO",
   trunc(sum(cxentreg))::INT        AS "CXS ENTREGUES",
-  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') as "DEV PDV",
-  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') AS "META DEV PDV",
+  sum( case when (tempo_largada + tempo_rota + tempointerno) <= meta_jornada_liquida_horas
+       then 1 else 0 end ) as qtde_jornada_batida,
+  trunc((sum( case when (tempo_largada + tempo_rota + tempointerno) <= meta_jornada_liquida_horas
+       then 1 else 0 end )::float / count(meta_jornada_liquida_horas))*100) || '%' as porcentagem_jornada,
+  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') || '%' as "DEV PDV",
+  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') || '%' AS "META DEV PDV",
   CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
   'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
   REPLACE(  (CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
@@ -2172,6 +2178,22 @@ FROM
   and pon.posicao_prolog = av.posicao
 WHERE AV.cod_unidade = f_cod_unidade and am.cpf_mecanico is not null
       and a.data_hora::date >= f_data_inicial and a.data_hora::date <= f_data_final
-ORDER BY a.data_hora desc
-  $func$ LANGUAGE SQL;
+  ORDER BY a.data_hora desc
+$func$ LANGUAGE SQL;
+
+create function to_seconds(t text) returns integer
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    hs INTEGER;
+    ms INTEGER;
+    s INTEGER;
+BEGIN
+    SELECT (EXTRACT( HOUR FROM  t::time) * 60*60)::INTEGER INTO hs;
+    SELECT (EXTRACT (MINUTES FROM t::time) * 60)::INTEGER INTO ms;
+    SELECT (EXTRACT (SECONDS from t::time))::INTEGER INTO s;
+    SELECT (hs + ms + s) INTO s;
+    RETURN s;
+END;
+$$;
 
