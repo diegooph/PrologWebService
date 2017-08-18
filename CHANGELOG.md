@@ -6,6 +6,8 @@ Change Log
 
 ### Features
 
+* Adiciona colunas referente a Jornada no relatório consolidado da produtividade
+
 #### Refactor
 
 <a name="v0.0.25"></a>
