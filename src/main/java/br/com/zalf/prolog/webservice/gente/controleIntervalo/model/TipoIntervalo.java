@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleIntervalo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
+import com.google.gson.annotations.SerializedName;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -15,11 +16,13 @@ public class TipoIntervalo {
     private Long codigo;
     private String nome;
     private String icone;
+    @SerializedName("tempoRecomendadoSegundos")
     private Duration tempoRecomendado;
     private Time horarioSugerido;
     private Unidade unidade;
     private List<Funcao> cargos;
     private boolean ativo;
+    @SerializedName("tempoLimiteEstouro")
     private Duration tempoLimiteEstouro;
 
     public TipoIntervalo() {
