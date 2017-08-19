@@ -285,8 +285,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException {
-        List<Funcao> listFuncao = new ArrayList<>();
+    public List<Cargo> getFuncoesByCodUnidade(Long codUnidade) throws SQLException {
+        List<Cargo> listCargo = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -300,14 +300,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Funcao funcao = createFuncao(rSet);
-                funcao.setPermissoes(getPilaresCargo(codUnidade, funcao.getCodigo()));
-                listFuncao.add(funcao);
+                Cargo cargo = createFuncao(rSet);
+                cargo.setPermissoes(getPilaresCargo(codUnidade, cargo.getCodigo()));
+                listCargo.add(cargo);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return listFuncao;
+        return listCargo;
     }
 
     @Override
@@ -569,11 +569,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return equipe;
     }
 
-    private Funcao createFuncao(ResultSet rSet) throws SQLException {
-        Funcao funcao = new Funcao();
-        funcao.setCodigo(rSet.getLong("CODIGO"));
-        funcao.setNome(rSet.getString("NOME"));
-        return funcao;
+    private Cargo createFuncao(ResultSet rSet) throws SQLException {
+        Cargo cargo = new Cargo();
+        cargo.setCodigo(rSet.getLong("CODIGO"));
+        cargo.setNome(rSet.getString("NOME"));
+        return cargo;
     }
 
     // buscar permisões para colaboradores com permissão = 3 = tudo
@@ -850,7 +850,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Long insertFuncao(Funcao funcao, Long codUnidade) throws SQLException {
+    public Long insertFuncao(Cargo cargo, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -859,7 +859,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO funcao(nome, cod_empresa) VALUES " +
                     "(?,(SELECT cod_empresa FROM unidade WHERE codigo = ?)) RETURNING CODIGO");
-            stmt.setString(1, funcao.getNome());
+            stmt.setString(1, cargo.getNome());
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if(rSet.next()){

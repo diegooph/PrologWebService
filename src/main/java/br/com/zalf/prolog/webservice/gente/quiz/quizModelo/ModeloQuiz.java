@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import com.sun.istack.internal.Nullable;
@@ -19,7 +19,7 @@ public class ModeloQuiz {
 	/**
 	 * Fun��es (cargos) que t�m acesso a este modelo de quiz.
 	 */
-	private List<Funcao> funcoesLiberadas;
+	private List<Cargo> funcoesLiberadas;
 
 	private List<PerguntaQuiz> perguntas;
 
@@ -80,11 +80,11 @@ public class ModeloQuiz {
 		this.dataHoraFechamento = dataHoraFechamento;
 	}
 
-	public List<Funcao> getFuncoesLiberadas() {
+	public List<Cargo> getFuncoesLiberadas() {
 		return funcoesLiberadas;
 	}
 
-	public void setFuncoesLiberadas(List<Funcao> funcoesLiberadas) {
+	public void setFuncoesLiberadas(List<Cargo> funcoesLiberadas) {
 		this.funcoesLiberadas = funcoesLiberadas;
 	}
 

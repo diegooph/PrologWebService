@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.empresa;
 
 import br.com.zalf.prolog.webservice.colaborador.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -86,7 +86,7 @@ public class EmpresaResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/funcoes")
-    public List<Funcao> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
+    public List<Cargo> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getFuncoesByCodUnidade(codUnidade);
     }
 
@@ -145,7 +145,7 @@ public class EmpresaResource {
     @POST
     @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
     @Path("/funcoes/{codUnidade}")
-    public AbstractResponse insertFuncao(Funcao funcao, @PathParam("codUnidade") Long codUnidade) {
-        return service.insertFuncao(funcao, codUnidade);
+    public AbstractResponse insertFuncao(Cargo cargo, @PathParam("codUnidade") Long codUnidade) {
+        return service.insertFuncao(cargo, codUnidade);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 public class Colaborador {
 	private long cpf;
 	private Date dataNascimento;
-	private Funcao funcao;
+	private Cargo funcao;
 	private Setor setor;
 	private long codUnidade;
 	private String nome;
@@ -39,12 +39,12 @@ public class Colaborador {
 		this.equipe = equipe;
 	}
 
-	public Funcao getFuncao() {
+	public Cargo getFuncao() {
 		return funcao;
 	}
 
-	public void setFuncao(Funcao funcao) {
-		this.funcao = funcao;
+	public void setFuncao(Cargo cargo) {
+		this.funcao = cargo;
 	}
 
 	public Setor getSetor() {

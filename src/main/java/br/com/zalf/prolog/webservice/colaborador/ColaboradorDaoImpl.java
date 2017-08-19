@@ -380,8 +380,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return visao;
 	}
 
-	private Funcao createFuncao(ResultSet rSet) throws SQLException {
-		Funcao f = new Funcao();
+	private Cargo createFuncao(ResultSet rSet) throws SQLException {
+		Cargo f = new Cargo();
 		f.setCodigo(rSet.getLong("CODIGO"));
 		f.setNome(rSet.getString("NOME"));
 		return f;
@@ -391,10 +391,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 
-		Funcao funcao = new Funcao();
-		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
-		funcao.setNome(rSet.getString("NOME_FUNCAO"));
-		c.setFuncao(funcao);
+		Cargo cargo = new Cargo();
+		cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
+		cargo.setNome(rSet.getString("NOME_FUNCAO"));
+		c.setFuncao(cargo);
 
 		Empresa empresa = new Empresa();
 		empresa.setCodigo(rSet.getInt("COD_EMPRESA"));

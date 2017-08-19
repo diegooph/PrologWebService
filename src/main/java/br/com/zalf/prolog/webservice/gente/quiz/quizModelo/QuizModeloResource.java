@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -56,7 +56,7 @@ public class QuizModeloResource {
     @PUT
     @Secured
     @Path("/funcoes/{codUnidade}/{codModeloQuiz}")
-    public Response updateCargosModeloQuiz(List<Funcao> funcoes,@PathParam("codModeloQuiz") Long codModeloQuiz,
+    public Response updateCargosModeloQuiz(List<Cargo> funcoes, @PathParam("codModeloQuiz") Long codModeloQuiz,
                                            @PathParam("codUnidade") Long codUnidade) {
         if(service.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade)){
             return Response.Ok("Funções alteradas com sucesso");

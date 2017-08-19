@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,7 +20,7 @@ public class TipoIntervalo {
     private Duration tempoRecomendado;
     private Time horarioSugerido;
     private Unidade unidade;
-    private List<Funcao> cargos;
+    private List<Cargo> cargos;
     private boolean ativo;
     @SerializedName("tempoLimiteEstouroSegundos")
     private Duration tempoLimiteEstouro;
@@ -77,11 +77,11 @@ public class TipoIntervalo {
         this.unidade = unidade;
     }
 
-    public List<Funcao> getCargos() {
+    public List<Cargo> getCargos() {
         return cargos;
     }
 
-    public void setCargos(List<Funcao> cargos) {
+    public void setCargos(List<Cargo> cargos) {
         this.cargos = cargos;
     }
 

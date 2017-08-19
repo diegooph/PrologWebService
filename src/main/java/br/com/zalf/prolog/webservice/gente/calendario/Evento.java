@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 
 import java.util.Date;
@@ -16,7 +16,7 @@ public class Evento {
     private String descricao;
     private String local;
     private Equipe equipe;
-    private Funcao funcao;
+    private Cargo funcao;
     private Unidade unidade;
 
     public Evento() {
@@ -37,12 +37,12 @@ public class Evento {
         this.equipe = equipe;
     }
 
-    public Funcao getFuncao() {
+    public Cargo getFuncao() {
         return funcao;
     }
 
-    public void setFuncao(Funcao funcao) {
-        this.funcao = funcao;
+    public void setFuncao(Cargo cargo) {
+        this.funcao = cargo;
     }
 
     public Unidade getUnidade() {

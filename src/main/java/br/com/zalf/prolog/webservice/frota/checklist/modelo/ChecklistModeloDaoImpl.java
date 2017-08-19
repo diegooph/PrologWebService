@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -167,7 +167,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Funcao> listFuncao = new ArrayList<>();
+		List<Cargo> listCargo = new ArrayList<>();
 
 		try {
 			conn = getConnection();
@@ -215,12 +215,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 		return listTipos;
 	}
 
-	private List<Funcao> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
+	private List<Cargo> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Funcao> listFuncao = new ArrayList<>();
+		List<Cargo> listCargo = new ArrayList<>();
 
 		try {
 			conn = getConnection();
@@ -234,15 +234,15 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			stmt.setLong(2, codModelo);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Funcao funcao = new Funcao();
-				funcao.setCodigo(rSet.getLong("CODIGO"));
-				funcao.setNome(rSet.getString("NOME"));
-				listFuncao.add(funcao);
+				Cargo cargo = new Cargo();
+				cargo.setCodigo(rSet.getLong("CODIGO"));
+				cargo.setNome(rSet.getString("NOME"));
+				listCargo.add(cargo);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return listFuncao;
+		return listCargo;
 	}
 
 	private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException{
@@ -279,11 +279,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
 	private void insertModeloFuncao(Connection conn, ModeloChecklist modeloChecklist) throws SQLException{
 		PreparedStatement stmt = null;
-		for(Funcao funcao : modeloChecklist.getListFuncao()){
+		for(Cargo cargo : modeloChecklist.getListFuncao()){
 			stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_FUNCAO VALUES (?,?,?)");
 			stmt.setLong(1, modeloChecklist.getCodUnidade());
 			stmt.setLong(2, modeloChecklist.getCodigo());
-			stmt.setLong(3, funcao.getCodigo());
+			stmt.setLong(3, cargo.getCodigo());
 			stmt.executeUpdate();
 		}
 	};

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
@@ -161,11 +161,11 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         }
     }
 
-    private Funcao createFuncao(ResultSet rSet) throws SQLException {
-        Funcao funcao = new Funcao();
-        funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
-        funcao.setNome(rSet.getString("NOME_FUNCAO"));
-        return funcao;
+    private Cargo createFuncao(ResultSet rSet) throws SQLException {
+        Cargo cargo = new Cargo();
+        cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
+        cargo.setNome(rSet.getString("NOME_FUNCAO"));
+        return cargo;
     }
 
     private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
@@ -248,13 +248,13 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         }
     }
 
-    private void insertFuncoesLiberadasTreinamento(List<Funcao> listFuncao, Long codTreinamento, Connection conn) throws SQLException {
+    private void insertFuncoesLiberadasTreinamento(List<Cargo> listCargo, Long codTreinamento, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RESTRICAO_TREINAMENTO VALUES (?,?)");
             stmt.setLong(1, codTreinamento);
-            for (Funcao funcao : listFuncao) {
-                stmt.setLong(2, funcao.getCodigo());
+            for (Cargo cargo : listCargo) {
+                stmt.setLong(2, cargo.getCodigo());
                 int count = stmt.executeUpdate();
                 if (count == 0) {
                     throw new SQLException("Erro ao inserir funções que estão liberadas para ver o treinamento = " + codTreinamento);
@@ -357,10 +357,10 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         return urls;
     }
 
-    private List<Funcao> getFuncoesLiberadasByTreinamento(Connection conn, Long codTreinamento) throws SQLException {
+    private List<Cargo> getFuncoesLiberadasByTreinamento(Connection conn, Long codTreinamento) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Funcao> funcoes = new ArrayList<>();
+        List<Cargo> funcoes = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT f.*\n" +
@@ -373,10 +373,10 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Funcao funcao = new Funcao();
-                funcao.setCodigo(rSet.getLong("CODIGO"));
-                funcao.setNome(rSet.getString("NOME"));
-                funcoes.add(funcao);
+                Cargo cargo = new Cargo();
+                cargo.setCodigo(rSet.getLong("CODIGO"));
+                cargo.setNome(rSet.getString("NOME"));
+                funcoes.add(cargo);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
