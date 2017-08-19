@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Intervalo {
     private List<EdicaoIntervalo> edicoes;
     private String justificativaEstouro;
     private boolean valido;
+    private Duration tempoDecorrido;
 
     public Intervalo() {
 
@@ -84,5 +86,13 @@ public class Intervalo {
 
     public void setJustificativaEstouro(String justificativaEstouro) {
         this.justificativaEstouro = justificativaEstouro;
+    }
+
+    public Duration getTempoDecorrido() {
+        return tempoDecorrido;
+    }
+
+    public void setTempoDecorrido(Duration tempoDecorrido) {
+        this.tempoDecorrido = tempoDecorrido;
     }
 }
