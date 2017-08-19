@@ -101,6 +101,20 @@ public final class Pilares {
 
         public static final int RANKING = 33;
 
+        public final class Intervalo {
+            private Intervalo() {}
+
+            /**
+             * Quem tiver essa permissão, automaticamente está liberado para visualizar suas pŕoprias marcações.
+             */
+            public static final int MARCAR_INTERVALO = 336;
+            public static final int VISUALIZAR_TODAS_MARCACOES = 337;
+            public static final int EDITAR_MARCACAO = 338;
+            public static final int ATIVAR_INATIVAR_MARCACAO = 339;
+            public static final int CRIAR_TIPO_INTERVALO = 340;
+            public static final int ATIVAR_INATIVAR_TIPO_INTERVALO = 341;
+        }
+
         public final class ProntuarioCondutor {
             private ProntuarioCondutor() {}
 
