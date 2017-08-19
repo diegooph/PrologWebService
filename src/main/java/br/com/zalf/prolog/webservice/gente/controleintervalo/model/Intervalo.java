@@ -16,7 +16,7 @@ public class Intervalo {
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
     private String justificativaEstouro;
-    private boolean ativo;
+    private boolean valido;
 
     public Intervalo() {
 
@@ -62,12 +62,12 @@ public class Intervalo {
         this.colaborador = colaborador;
     }
 
-    public boolean isAtivo() {
-        return ativo;
+    public boolean isValido() {
+        return valido;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public void setValido(boolean valido) {
+        this.valido = valido;
     }
 
     public List<EdicaoIntervalo> getEdicoes() {
