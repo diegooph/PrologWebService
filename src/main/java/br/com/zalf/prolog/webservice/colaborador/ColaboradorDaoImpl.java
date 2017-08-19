@@ -333,7 +333,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		if(verificaSeMarcaIntervalo(loginHolder.getColaborador().getVisao().getPilares())){
 			ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
-			loginHolder.setTiposIntervalos(intervaloDao.getTipoIntervalos(cpf, false));
+			loginHolder.setTiposIntervalos(intervaloDao.getTiposIntervalos(cpf, false));
 		}
 
 

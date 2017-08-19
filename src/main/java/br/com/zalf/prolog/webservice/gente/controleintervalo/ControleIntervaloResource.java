@@ -40,7 +40,7 @@ public class ControleIntervaloResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    @Path("abertos/{cpf}/{codTipoIntervalo}")
+    @Path("/abertos/{cpf}/{codTipoIntervalo}")
     public Intervalo getIntervaloAberto(@PathParam("cpf") Long cpf, @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
         TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(codTipoInvervalo);
@@ -49,7 +49,9 @@ public class ControleIntervaloResource {
 
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    public AbstractResponse iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
+    @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
+    public AbstractResponse iniciaIntervalo(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
+                                            @PathParam("codTipoIntervalo") Long codTipo) {
         Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
         if(codIntervalo != null){
             return ResponseWithCod.Ok("Intervalo iniciado com sucesso", codIntervalo);
@@ -60,12 +62,21 @@ public class ControleIntervaloResource {
 
     @PUT
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    public Response insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
+    @Path("/{codUnidade}")
+    public Response insereFinalizacaoIntervalo(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
         if(service.insereFinalizacaoIntervalo(intervalo, codUnidade)){
             return Response.Ok("Intervalo finalizado com sucesso");
         }else {
             return Response.Error("Erro ao finalizar o intervalo");
         }
+    }
+
+    @GET
+    @Path("/{cpf}")
+    @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO, Pilares.Gente.Intervalo.EDITAR_MARCACAO,
+            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO, Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
+    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf) {
+        return service.getIntervalosColaborador(cpf);
     }
 
 }

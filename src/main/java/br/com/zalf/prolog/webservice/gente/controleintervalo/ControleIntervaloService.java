@@ -47,7 +47,15 @@ public class ControleIntervaloService {
             e.printStackTrace();
             return false;
         }
+    }
 
+    public List<Intervalo> getIntervalosColaborador(Long cpf) {
+        try {
+            return dao.getIntervalosColaborador(cpf);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
