@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleIntervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
@@ -15,6 +15,7 @@ public class EdicaoIntervalo {
     private String observacao;
 
     public EdicaoIntervalo() {
+
     }
 
     public Colaborador getColaborador() {

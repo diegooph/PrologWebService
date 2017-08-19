@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleIntervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 
@@ -9,16 +9,17 @@ import java.util.List;
  * Created by Zart on 18/08/2017.
  */
 public class Intervalo {
-
     private Long codigo;
     private TipoIntervalo tipo;
     private Date dataHoraInicio;
     private Date dataHoraFim;
     private Colaborador colaborador;
+    private List<EdicaoIntervalo> edicoes;
+    private String justificativaEstouro;
     private boolean ativo;
-    private List<EdicaoIntervalo> logEdicoes;
 
     public Intervalo() {
+
     }
 
     public Long getCodigo() {
@@ -69,11 +70,19 @@ public class Intervalo {
         this.ativo = ativo;
     }
 
-    public List<EdicaoIntervalo> getLogEdicoes() {
-        return logEdicoes;
+    public List<EdicaoIntervalo> getEdicoes() {
+        return edicoes;
     }
 
-    public void setLogEdicoes(List<EdicaoIntervalo> logEdicoes) {
-        this.logEdicoes = logEdicoes;
+    public void setEdicoes(List<EdicaoIntervalo> edicoes) {
+        this.edicoes = edicoes;
+    }
+
+    public String getJustificativaEstouro() {
+        return justificativaEstouro;
+    }
+
+    public void setJustificativaEstouro(String justificativaEstouro) {
+        this.justificativaEstouro = justificativaEstouro;
     }
 }
