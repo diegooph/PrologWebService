@@ -29,7 +29,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT IT.* FROM\n" +
+            stmt = conn.prepareStatement("SELECT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS NOME_TIPO_INTERVALO, " +
+                    " IT.COD_UNIDADE, IT.ATIVO, IT.HORARIO_SUGERIDO, IT.ICONE, IT.TEMPO_ESTOURO_MINUTOS, IT.TEMPO_RECOMENDADO_MINUTOS FROM\n" +
                     "  INTERVALO_TIPO_CARGO ITC JOIN INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC.COD_TIPO_INTERVALO = IT.CODIGO\n" +
                     "  JOIN COLABORADOR C ON C.cod_unidade = ITC.COD_UNIDADE AND C.cod_funcao = ITC.COD_CARGO\n" +
                     "WHERE C.cpf = ? AND IT.ATIVO IS TRUE");
@@ -46,8 +47,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
 
     private TipoIntervalo createTipoInvervalo(ResultSet rSet, boolean withCargos, Connection conn) throws SQLException {
         TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(rSet.getLong("CODIGO"));
-        tipoIntervalo.setNome(rSet.getString("NOME"));
+        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
+        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
         Unidade unidade = new Unidade();
         unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
         tipoIntervalo.setUnidade(unidade);
@@ -86,7 +87,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT *\n" +
+            stmt = conn.prepareStatement("SELECT *, extract(epoch from now() - i.DATA_HORA_INICIO) as tempo_decorrido \n" +
                     "FROM\n" +
                     "  INTERVALO I\n" +
                     "WHERE I.CPF_COLABORADOR = ? AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE\n" +
@@ -120,6 +121,13 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         intervalo.setCodigo(rSet.getLong("CODIGO"));
         intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
         intervalo.setValido(rSet.getBoolean("VALIDO"));
+        intervalo.setTempoDecorrido(Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO")));
+        Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
+        TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
+        intervalo.setTipo(tipoIntervalo);
+        intervalo.setColaborador(colaborador);
         return intervalo;
     }
 
@@ -158,12 +166,12 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             if (intervalo.getDataHoraInicio() != null) {
                 stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
             } else {
-                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(4, Types.TIMESTAMP);
             }
             if (intervalo.getDataHoraFim() != null) {
                 stmt.setTimestamp(5, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
             } else {
-                stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(5, Types.TIMESTAMP);
             }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -202,8 +210,11 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         Connection conn = null;
         try {
             conn = getConnection();
-            if (getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo()) != null) {
-                return finalizaIntervaloEmAberto(intervalo);
+            Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
+            if (intervaloEmAberto != null) {
+                if(intervalo.getCodigo() == intervaloEmAberto.getCodigo()){
+                    return finalizaIntervaloEmAberto(intervalo);
+                }
             } else {
                 intervalo.setDataHoraInicio(null);
                 intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
@@ -216,5 +227,54 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, null, null);
         }
         return false;
+    }
+
+    @Override
+    public List<Intervalo> getIntervalosColaborador (Long cpf) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Intervalo> intervalos = new ArrayList<>();
+        try{
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT i.codigo as cod_intervalo, it.CODIGO as codigo_tipo_intervalo, i.DATA_HORA_INICIO, i.DATA_HORA_FIM,\n" +
+                    "i.JUSTIFICATIVA_ESTOURO, i.VALIDO, it.nome as nome_tipo_intervalo, it.ICONE, it.TEMPO_RECOMENDADO_MINUTOS, it.TEMPO_ESTOURO_MINUTOS,\n" +
+                    "it.HORARIO_SUGERIDO,i.cod_unidade, it.ativo, ULTIMA_ABERTURA.*,\n" +
+                    "  CASE WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO = ULTIMA_ABERTURA.ULTIMO_INICIO THEN\n" +
+                    "  EXTRACT(EPOCH FROM now() - i.DATA_HORA_INICIO)\n" +
+                    "  WHEN I.DATA_HORA_INICIO IS NULL THEN NULL\n" +
+                    "  WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO <> ULTIMA_ABERTURA.ULTIMO_INICIO THEN NULL\n" +
+                    "    ELSE EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) END  AS TEMPO_DECORRIDO\n" +
+                    "FROM\n" +
+                    "  INTERVALO I JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO\n" +
+                    "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = 00051257076\n" +
+                    "GROUP BY 1,2) AS ULTIMA_ABERTURA ON ULTIMA_ABERTURA.COD_UNIDADE = I.COD_UNIDADE AND ULTIMA_ABERTURA.COD_TIPO_ULTIMO_INICIO = I.COD_TIPO_INTERVALO\n" +
+                    "WHERE I.CPF_COLABORADOR = ?\n" +
+                    "ORDER BY cod_intervalo;");
+            stmt.setLong(1, cpf);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                intervalos.add(createIntervalo(rSet, conn));
+            }
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return intervalos;
+    }
+
+    private Intervalo createIntervalo(ResultSet rSet, Connection conn) throws SQLException {
+        TipoIntervalo tipo = createTipoInvervalo(rSet, false, conn);
+        Intervalo intervalo = new Intervalo();
+        intervalo.setCodigo(rSet.getLong("COD_INTERVALO"));
+        intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
+        intervalo.setDataHoraFim(rSet.getTimestamp("DATA_HORA_FIM"));
+        intervalo.setValido(rSet.getBoolean("VALIDO"));
+        intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
+        long tempoDecorrido = rSet.getLong("TEMPO_DECORRIDO");
+        if(!rSet.wasNull()){
+            intervalo.setTempoDecorrido(Duration.ofSeconds(tempoDecorrido));
+        }
+        intervalo.setTipo(tipo);
+        return intervalo;
     }
 }

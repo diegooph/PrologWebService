@@ -53,4 +53,6 @@ public interface ControleIntervaloDao {
      */
     Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException;
 
+    List<Intervalo> getIntervalosColaborador (Long cpf) throws SQLException;
+
 }
