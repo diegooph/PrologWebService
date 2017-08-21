@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
 import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
@@ -85,7 +85,7 @@ public class EmpresaService {
         }
     }
 
-    public List<Funcao> getFuncoesByCodUnidade(long codUnidade) {
+    public List<Cargo> getFuncoesByCodUnidade(long codUnidade) {
         try {
             return dao.getFuncoesByCodUnidade(codUnidade);
         } catch (SQLException e) {
@@ -182,9 +182,9 @@ public class EmpresaService {
         }
     }
 
-    public AbstractResponse insertFuncao(Funcao funcao, Long codUnidade) {
+    public AbstractResponse insertFuncao(Cargo cargo, Long codUnidade) {
         try {
-            Long codFuncaoInserida = dao.insertFuncao(funcao, codUnidade);
+            Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
             if(codFuncaoInserida != null){
                 return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
             }else{

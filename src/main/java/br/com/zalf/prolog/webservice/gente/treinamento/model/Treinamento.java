@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 
 import java.util.Date;
 import java.util.List;
@@ -25,14 +25,14 @@ public class Treinamento {
 	private List<String> urlsImagensArquivo;
 	private Date dataLiberacao;
 	private Date dataHoraCadastro;
-	private List<Funcao> funcoesLiberadas;
+	private List<Cargo> funcoesLiberadas;
 
 	public Treinamento() {
 		
 	}
 
 	public Treinamento(Long codigo, Long codUnidade, String titulo, String descricao, String urlArquivo,
-			Date dataLiberacao, List<Funcao> funcoesLiberadas) {
+			Date dataLiberacao, List<Cargo> funcoesLiberadas) {
 		super();
 		this.codigo = codigo;
 		this.codUnidade = codUnidade;
@@ -107,11 +107,11 @@ public class Treinamento {
 		this.dataLiberacao = dataLiberacao;
 	}
 
-	public List<Funcao> getFuncoesLiberadas() {
+	public List<Cargo> getFuncoesLiberadas() {
 		return funcoesLiberadas;
 	}
 
-	public void setFuncoesLiberadas(List<Funcao> funcoesLiberadas) {
+	public void setFuncoesLiberadas(List<Cargo> funcoesLiberadas) {
 		this.funcoesLiberadas = funcoesLiberadas;
 	}
 

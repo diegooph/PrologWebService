@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -90,7 +90,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 		List<Evento> eventos = new ArrayList<>();
 		Evento e;
 		Unidade unidade;
-		Funcao funcaoTreinamento;
+		Cargo cargoTreinamento;
 		Equipe equipeTreinamento;
 		EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
 
@@ -130,14 +130,14 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 				unidade.setCodigo(rSet.getLong("cod_unidade"));
 				unidade.setNome(rSet.getString("unidade"));
 				e.setUnidade(unidade);
-				funcaoTreinamento = new Funcao();
-				funcaoTreinamento.setCodigo(rSet.getLong("cod_funcao"));
-				if (funcaoTreinamento.getCodigo() == -1){
-					funcaoTreinamento.setNome("Todas");
+				cargoTreinamento = new Cargo();
+				cargoTreinamento.setCodigo(rSet.getLong("cod_funcao"));
+				if (cargoTreinamento.getCodigo() == -1){
+					cargoTreinamento.setNome("Todas");
 				}else{
-					funcaoTreinamento.setNome(rSet.getString("funcao"));
+					cargoTreinamento.setNome(rSet.getString("funcao"));
 				}
-				e.setFuncao(funcaoTreinamento);
+				e.setFuncao(cargoTreinamento);
 				equipeTreinamento = new Equipe();
 				equipeTreinamento.setCodigo(rSet.getLong("cod_equipe"));
 				if (equipeTreinamento.getCodigo() == -1){

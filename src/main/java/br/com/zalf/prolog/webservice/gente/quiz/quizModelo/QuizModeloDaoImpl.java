@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
@@ -57,10 +57,10 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelos;
     }
 
-    private List<Funcao> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
+    private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Funcao> funcoes = new ArrayList<>();
+        List<Cargo> funcoes = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT F.* FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
                     "  ON QM.cod_unidade = QMF.cod_unidade\n" +
@@ -73,10 +73,10 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setLong(2, codModeloQuiz);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Funcao funcao = new Funcao();
-                funcao.setCodigo(rSet.getLong("CODIGO"));
-                funcao.setNome(rSet.getString("NOME"));
-                funcoes.add(funcao);
+                Cargo cargo = new Cargo();
+                cargo.setCodigo(rSet.getLong("CODIGO"));
+                cargo.setNome(rSet.getString("NOME"));
+                funcoes.add(cargo);
             }
         } finally {
             closeConnection(null, stmt, rSet);
@@ -261,15 +261,15 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         }
     }
 
-    private void insertCargosModeloQuiz(List<Funcao> funcoesLiberadas, Long codModeloQuiz, Long codUnidade,
+    private void insertCargosModeloQuiz(List<Cargo> funcoesLiberadas, Long codModeloQuiz, Long codUnidade,
                                         Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO quiz_modelo_funcao(cod_unidade, cod_modelo, cod_funcao_colaborador) VALUES (?,?,?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloQuiz);
-            for (Funcao funcao : funcoesLiberadas) {
-                stmt.setLong(3, funcao.getCodigo());
+            for (Cargo cargo : funcoesLiberadas) {
+                stmt.setLong(3, cargo.getCodigo());
                 int count = stmt.executeUpdate();
                 if (count == 0) {
                     throw new SQLException("Erro ao vincular o cargo ao modelo de quiz");
@@ -316,7 +316,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         }
     }
 
-    public boolean updateCargosModeloQuiz(List<Funcao> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException {
+    public boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {

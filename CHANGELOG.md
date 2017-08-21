@@ -1,14 +1,27 @@
 Change Log
 ==========
 
+<a name="v0.0.26"></a>
+## Version [v0.0.26](https://github.com/luizfp/PrologWebService/compare/v0.0.25...v0.0.26) (release date) - [Unreleased]
+
+### Features
+
+* Adiciona colunas referente a Jornada no relatório consolidado da produtividade
+* Implementa controle de intervalos
+
+#### Refactor
+
 <a name="v0.0.25"></a>
-## Version [v0.0.25](https://github.com/luizfp/PrologWebService/compare/v0.0.24...v0.0.25) (release date) - [Unreleased]
+## Version [v0.0.25](https://github.com/luizfp/PrologWebService/compare/v0.0.24...v0.0.25) (2017-08-16)
 
 ### Features
 
 * Implementa relatório de estratificação dos serviços fechados (pneus)
+* Implementa integração com AvaCorp(Avilan)
 
 #### Refactor
+
+* Altera o código do pneu de BIGINT para VARCHAR em todas as tabelas
 
 <a name="v0.0.24"></a>
 ## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (2017-08-08)

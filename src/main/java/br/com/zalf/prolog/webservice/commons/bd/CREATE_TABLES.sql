@@ -1644,6 +1644,53 @@ CREATE TABLE IF NOT EXISTS INTEGRACAO (
   REFERENCES EMPRESA (CODIGO)
 );
 
+CREATE TABLE IF NOT EXISTS INTERVALO_TIPO (
+  COD_UNIDADE BIGINT NOT NULL,
+  CODIGO BIGSERIAL NOT NULL,
+  NOME VARCHAR(255) NOT NULL,
+  ICONE VARCHAR(255),
+  TEMPO_RECOMENDADO_MINUTOS BIGINT,
+  TEMPO_ESTOURO_MINUTOS BIGINT,
+  HORARIO_SUGERIDO TIME,
+  ATIVO BOOLEAN NOT NULL,
+  CONSTRAINT PK_INTERVALO_TIPO PRIMARY KEY (COD_UNIDADE, CODIGO),
+  CONSTRAINT FK_INTERVALO_TIPO_UNIDADE FOREIGN KEY (COD_UNIDADE)
+  REFERENCES UNIDADE(CODIGO)
+);
+
+CREATE TABLE IF NOT EXISTS INTERVALO_TIPO_CARGO (
+ COD_UNIDADE BIGINT NOT NULL,
+ COD_TIPO_INTERVALO BIGINT NOT NULL,
+ COD_CARGO BIGINT NOT NULL,
+ CONSTRAINT PK_INTERVALO_TIPO_CARGO PRIMARY KEY (COD_UNIDADE, COD_TIPO_INTERVALO, COD_CARGO),
+ CONSTRAINT FK_INTERVALO_TIPO_CARGO_UNIDADE FOREIGN KEY (COD_UNIDADE)
+ REFERENCES UNIDADE(CODIGO),
+ CONSTRAINT FK_INTERVALO_TIPO_CARGO_INTERVALO_TIPO FOREIGN KEY (COD_UNIDADE, COD_TIPO_INTERVALO)
+ REFERENCES INTERVALO_TIPO(COD_UNIDADE, CODIGO),
+ CONSTRAINT FK_INTERVALO_TIPO_CARGO FOREIGN KEY (COD_UNIDADE, COD_CARGO)
+ REFERENCES UNIDADE_FUNCAO (COD_UNIDADE, COD_FUNCAO)
+);
+
+CREATE TABLE IF NOT EXISTS INTERVALO (
+  COD_UNIDADE BIGINT NOT NULL,
+  CODIGO BIGSERIAL NOT NULL,
+  COD_TIPO_INTERVALO BIGINT NOT NULL,
+  CPF_COLABORADOR BIGINT NOT NULL,
+  DATA_HORA_INICIO TIMESTAMP,
+  DATA_HORA_FIM TIMESTAMP,
+  JUSTIFICATIVA_ESTOURO TEXT,
+  VALIDO BOOLEAN,
+  CONSTRAINT PK_INTERVALO PRIMARY KEY (COD_UNIDADE, CODIGO),
+  CONSTRAINT FK_INTERVALO_UNIDADE FOREIGN KEY (COD_UNIDADE)
+  REFERENCES UNIDADE(CODIGO),
+  CONSTRAINT FK_INTERVALO_INTERVALO_TIPO FOREIGN KEY(COD_TIPO_INTERVALO, COD_UNIDADE)
+  REFERENCES INTERVALO_TIPO(CODIGO, COD_UNIDADE),
+  CONSTRAINT FK_INTERVALO_COLABORADOR FOREIGN KEY (CPF_COLABORADOR)
+  REFERENCES COLABORADOR(CPF),
+  UNIQUE(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, DATA_HORA_INICIO),
+  UNIQUE(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, DATA_HORA_TERMINO)
+);
+
 /**
     =======================    VIEWS    =======================
  */
@@ -2012,6 +2059,8 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
     "COLABORADOR" TEXT,
   "FUNÇÃO" TEXT,
   "CXS ENTREGUES" INT,
+  "JORNADAS BATIDAS" BIGINT,
+  "RESULTADO JORNADA" TEXT,
   "DEV PDV" TEXT,
   "META DEV PDV" TEXT,
   "RECEBE PRÊMIO" TEXT,
@@ -2035,8 +2084,12 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   initcap(nome_colaborador) AS "COLABORADOR",
   funcao AS "FUNÇÃO",
   trunc(sum(cxentreg))::INT        AS "CXS ENTREGUES",
-  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') as "DEV PDV",
-  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') AS "META DEV PDV",
+  sum( case when (tempo_largada + tempo_rota + tempointerno) <= meta_jornada_liquida_horas
+       then 1 else 0 end ) as qtde_jornada_batida,
+  trunc((sum( case when (tempo_largada + tempo_rota + tempointerno) <= meta_jornada_liquida_horas
+       then 1 else 0 end )::float / count(meta_jornada_liquida_horas))*100) || '%' as porcentagem_jornada,
+  REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') || '%' as "DEV PDV",
+  REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') || '%' AS "META DEV PDV",
   CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
   'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
   REPLACE(  (CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
@@ -2170,6 +2223,22 @@ FROM
   and pon.posicao_prolog = av.posicao
 WHERE AV.cod_unidade = f_cod_unidade and am.cpf_mecanico is not null
       and a.data_hora::date >= f_data_inicial and a.data_hora::date <= f_data_final
-ORDER BY a.data_hora desc
-  $func$ LANGUAGE SQL;
+  ORDER BY a.data_hora desc
+$func$ LANGUAGE SQL;
+
+create function to_seconds(t text) returns integer
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    hs INTEGER;
+    ms INTEGER;
+    s INTEGER;
+BEGIN
+    SELECT (EXTRACT( HOUR FROM  t::time) * 60*60)::INTEGER INTO hs;
+    SELECT (EXTRACT (MINUTES FROM t::time) * 60)::INTEGER INTO ms;
+    SELECT (EXTRACT (SECONDS from t::time))::INTEGER INTO s;
+    SELECT (hs + ms + s) INTO s;
+    RETURN s;
+END;
+$$;
 

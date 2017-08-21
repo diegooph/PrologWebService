@@ -130,7 +130,7 @@ public interface EmpresaDao {
      * @return lista de funções da unidade
      * @throws SQLException caso ocorrer erro no banco
      */
-    List<Funcao> getFuncoesByCodUnidade(Long codUnidade) throws SQLException;
+    List<Cargo> getFuncoesByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
      * Busca os itens do Filtro (empresa, unidade, equipe).
@@ -146,7 +146,7 @@ public interface EmpresaDao {
      *
      * @param codUnidade código da unidade
      * @param codCargo   código do cargo
-     * @return {@link Visao} de uma {@link Funcao}
+     * @return {@link Visao} de uma {@link Cargo}
      * @throws SQLException caso não seja possível realizar a busca
      */
     Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException;
@@ -163,7 +163,7 @@ public interface EmpresaDao {
     /**
      * Insere ou atualiza as funções do prolog cadastradas para determinado cargo.
      *
-     * @param visao      {@link Visao} de uma {@link Funcao}
+     * @param visao      {@link Visao} de uma {@link Cargo}
      * @param codUnidade código da unidade
      * @param codCargo   código do cargo
      * @return boolean com o resultado da operação
@@ -176,10 +176,10 @@ public interface EmpresaDao {
     /**
      * Insere um cargo (função).
      *
-     * @param funcao função que será inserida
+     * @param cargo função que será inserida
      * @param codUnidade unidade que está solicitando o cadastro
      * @return código da função
      * @throws SQLException caso não seja possível realizar a operação
      */
-    Long insertFuncao(Funcao funcao, Long codUnidade) throws SQLException;
+    Long insertFuncao(Cargo cargo, Long codUnidade) throws SQLException;
 }

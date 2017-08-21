@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Funcao;
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 
@@ -15,7 +15,7 @@ public class ModeloChecklist {
     private String nome;
     private Long codUnidade;
     private List<TipoVeiculo> listTipoVeiculo;
-    private List<Funcao> listFuncao;
+    private List<Cargo> listFuncao;
     private List<PerguntaRespostaChecklist> listPerguntas;
 
     public ModeloChecklist() {
@@ -53,12 +53,12 @@ public class ModeloChecklist {
         this.codUnidade = codUnidade;
     }
 
-    public List<Funcao> getListFuncao() {
+    public List<Cargo> getListFuncao() {
         return listFuncao;
     }
 
-    public void setListFuncao(List<Funcao> listFuncao) {
-        this.listFuncao = listFuncao;
+    public void setListFuncao(List<Cargo> listCargo) {
+        this.listFuncao = listCargo;
     }
 
     public List<PerguntaRespostaChecklist> getListPerguntas() {

@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -328,6 +330,13 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		if(verificaSeFazGsd(loginHolder.getColaborador().getVisao().getPilares())){
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
 		}
+
+		if(verificaSeMarcaIntervalo(loginHolder.getColaborador().getVisao().getPilares())){
+			ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
+			loginHolder.setTiposIntervalos(intervaloDao.getTiposIntervalos(cpf, false));
+		}
+
+
 		return loginHolder;
 	}
 
@@ -380,8 +389,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return visao;
 	}
 
-	private Funcao createFuncao(ResultSet rSet) throws SQLException {
-		Funcao f = new Funcao();
+	private Cargo createFuncao(ResultSet rSet) throws SQLException {
+		Cargo f = new Cargo();
 		f.setCodigo(rSet.getLong("CODIGO"));
 		f.setNome(rSet.getString("NOME"));
 		return f;
@@ -391,10 +400,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		Colaborador c = new Colaborador();
 		c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 
-		Funcao funcao = new Funcao();
-		funcao.setCodigo(rSet.getLong("COD_FUNCAO"));
-		funcao.setNome(rSet.getString("NOME_FUNCAO"));
-		c.setFuncao(funcao);
+		Cargo cargo = new Cargo();
+		cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
+		cargo.setNome(rSet.getString("NOME_FUNCAO"));
+		c.setFuncao(cargo);
 
 		Empresa empresa = new Empresa();
 		empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
@@ -440,6 +449,19 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			if (pilar.codigo == Pilares.SEGURANCA) {
 				for (FuncaoProLog funcao : pilar.funcoes) {
 					if (funcao.getCodigo() == Pilares.Seguranca.Relato.REALIZAR) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean verificaSeMarcaIntervalo(List<Pilar> pilares){
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.GENTE) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Gente.Intervalo.MARCAR_INTERVALO) {
 						return true;
 					}
 				}

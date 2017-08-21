@@ -7,16 +7,16 @@ import java.util.List;
 /**
  * Função do colaborador
  */
-public class Funcao {
+public class Cargo {
 	private Long codigo;
 	private String nome;
 	private List<Pilar> permissoes;
 	
-	public Funcao() {
+	public Cargo() {
 		
 	}
 	
-	public Funcao(Long codigo, String nome) {
+	public Cargo(Long codigo, String nome) {
 		this.codigo = codigo;
 		this.nome = nome;
 	}
@@ -47,7 +47,7 @@ public class Funcao {
 
 	@Override
 	public String toString() {
-		return "Funcao{" +
+		return "Cargo{" +
 				"codigo=" + codigo +
 				", nome='" + nome + '\'' +
 				", permissões=" + permissoes +
