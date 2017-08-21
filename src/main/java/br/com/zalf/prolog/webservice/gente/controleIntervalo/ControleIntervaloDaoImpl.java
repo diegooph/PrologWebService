@@ -230,7 +230,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
-    public List<Intervalo> getIntervalosColaborador (Long cpf) throws SQLException {
+    public List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -249,9 +249,13 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                     "  INTERVALO I JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO\n" +
                     "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = 00051257076\n" +
                     "GROUP BY 1,2) AS ULTIMA_ABERTURA ON ULTIMA_ABERTURA.COD_UNIDADE = I.COD_UNIDADE AND ULTIMA_ABERTURA.COD_TIPO_ULTIMO_INICIO = I.COD_TIPO_INTERVALO\n" +
-                    "WHERE I.CPF_COLABORADOR = ?\n" +
-                    "ORDER BY cod_intervalo;");
+                    "WHERE I.CPF_COLABORADOR = ? and i.cod_tipo_intervalo::text like ?\n" +
+                    "ORDER BY cod_intervalo DESC " +
+                    "LIMIT ? OFFSET ?;");
             stmt.setLong(1, cpf);
+            stmt.setString(2, codTipo);
+            stmt.setLong(3, limit);
+            stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()){
                 intervalos.add(createIntervalo(rSet, conn));
