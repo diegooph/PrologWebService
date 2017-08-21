@@ -247,15 +247,16 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                     "    ELSE EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) END  AS TEMPO_DECORRIDO\n" +
                     "FROM\n" +
                     "  INTERVALO I JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO\n" +
-                    "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = 00051257076\n" +
+                    "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = ? \n" +
                     "GROUP BY 1,2) AS ULTIMA_ABERTURA ON ULTIMA_ABERTURA.COD_UNIDADE = I.COD_UNIDADE AND ULTIMA_ABERTURA.COD_TIPO_ULTIMO_INICIO = I.COD_TIPO_INTERVALO\n" +
                     "WHERE I.CPF_COLABORADOR = ? and i.cod_tipo_intervalo::text like ?\n" +
                     "ORDER BY cod_intervalo DESC " +
                     "LIMIT ? OFFSET ?;");
             stmt.setLong(1, cpf);
-            stmt.setString(2, codTipo);
-            stmt.setLong(3, limit);
-            stmt.setLong(4, offset);
+            stmt.setLong(2, cpf);
+            stmt.setString(3, codTipo);
+            stmt.setLong(4, limit);
+            stmt.setLong(5, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()){
                 intervalos.add(createIntervalo(rSet, conn));
