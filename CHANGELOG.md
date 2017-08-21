@@ -7,6 +7,7 @@ Change Log
 ### Features
 
 * Adiciona colunas referente a Jornada no relatório consolidado da produtividade
+* Implementa controle de intervalos
 
 #### Refactor
 
