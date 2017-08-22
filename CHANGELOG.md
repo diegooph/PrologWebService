@@ -6,6 +6,8 @@ Change Log
 
 ### Features
 
+* Implementa relatório com o resumo dos checklists realizados (csv/report)
+
 #### Refactor
 
 <a name="v0.0.26"></a>
