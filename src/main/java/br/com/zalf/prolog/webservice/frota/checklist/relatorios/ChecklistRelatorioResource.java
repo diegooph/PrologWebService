@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -12,7 +14,7 @@ import javax.ws.rs.core.StreamingOutput;
 @Path("/checklists/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-//@Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
+@Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
 public class ChecklistRelatorioResource {
     private ChecklistRelatorioService service = new ChecklistRelatorioService();
 
