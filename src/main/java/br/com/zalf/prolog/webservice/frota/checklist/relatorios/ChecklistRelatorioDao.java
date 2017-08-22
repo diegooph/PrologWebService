@@ -17,6 +17,7 @@ public interface ChecklistRelatorioDao {
                                        @NotNull Long codUnidade,
                                        @NotNull Date dataInicial,
                                        @NotNull Date dataFinal) throws SQLException, IOException;
+
     @NotNull
     Report getChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
                                             @NotNull Date dataInicial,
@@ -26,17 +27,31 @@ public interface ChecklistRelatorioDao {
                                               @NotNull Long codUnidade,
                                               @NotNull Date dataInicial,
                                               @NotNull Date dataFinal) throws SQLException, IOException;
+
     @NotNull
     Report getExtratoChecklistsRealizadosDiaReport(@NotNull Long codUnidade,
                                                    @NotNull Date dataInicial,
                                                    @NotNull Date dataFinal) throws SQLException;
 
     void getTempoRealizacaoChecklistMotoristaCsv(@NotNull OutputStream outputStream,
-                                       @NotNull Long codUnidade,
-                                       @NotNull Date dataInicial,
-                                       @NotNull Date dataFinal) throws SQLException, IOException;
+                                                 @NotNull Long codUnidade,
+                                                 @NotNull Date dataInicial,
+                                                 @NotNull Date dataFinal) throws SQLException, IOException;
+
     @NotNull
     Report getTempoRealizacaoChecklistMotoristaReport(@NotNull Long codUnidade,
-                                            @NotNull Date dataInicial,
-                                            @NotNull Date dataFinal) throws SQLException;
+                                                      @NotNull Date dataInicial,
+                                                      @NotNull Date dataFinal) throws SQLException;
+
+    void getResumoChecklistCsv(@NotNull OutputStream outputStream,
+                               @NotNull Long codUnidade,
+                               @NotNull Date dataInicial,
+                               @NotNull Date dataFinal,
+                               @NotNull String placa) throws SQLException, IOException;
+
+    @NotNull
+    Report getResumoChecklistReport(@NotNull Long codUnidade,
+                                    @NotNull Date dataInicial,
+                                    @NotNull Date dataFinal,
+                                    @NotNull String placa) throws SQLException;
 }
