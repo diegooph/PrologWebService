@@ -6,7 +6,11 @@ Change Log
 
 ### Features
 
+* Implementa relatório com o resumo dos checklists realizados (csv/report)
+
 #### Refactor
+
+* Comenta método que retorna os intervalos de um colaborador
 
 <a name="v0.0.26"></a>
 ## Version [v0.0.26](https://github.com/luizfp/PrologWebService/compare/v0.0.25...v0.0.26) (2017-08-21)

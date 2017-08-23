@@ -2242,3 +2242,76 @@ BEGIN
 END;
 $$;
 
+-- Function para mostrar os checklists realizados, de forma resumida
+CREATE OR REPLACE FUNCTION func_relatorio_checklist_resumo_realizados (f_cod_unidade BIGINT, f_data_inicial DATE,
+  f_data_final DATE, f_placa_veiculo TEXT)
+  RETURNS TABLE (
+  "DATA" text,
+    "HORA" TIME,
+    "COLABORADOR" text,
+    "PLACA" text,
+    "KM" bigint,
+    "TEMPO REALIZAÇÃO (SEGUNDOS)" bigint,
+    "TIPO" text,
+    "TOTAL DE PERGUNTAS" bigint,
+    "TOTAL NOK" bigint,
+    "PRIORIDADE BAIXA" bigint,
+    "PRIORIDADE ALTA" bigint,
+    "PRIORIDADE CRÍTICA" bigint
+  ) AS
+  $func$
+SELECT
+  to_char(C.data_hora :: DATE, 'DD/MM/YYYY'),
+  C.data_hora :: TIME,
+  CO.NOME,
+  C.PLACA_VEICULO,
+  C.km_veiculo,
+  C.tempo_realizacao/1000,
+  case when C.tipo = 'S' then 'Saída' else 'Retorno' end,
+  somatorio_total_perguntas.total,
+  count(checklist_pergunta_prioridade.COD_CHECKLIST) AS total_nok,
+  SUM(CASE WHEN checklist_pergunta_prioridade.prioridade = 'BAIXA'
+    THEN 1
+      ELSE 0 END)                                    AS TOTAL_BAIXAS,
+  SUM(CASE WHEN checklist_pergunta_prioridade.prioridade = 'ALTA'
+    THEN 1
+      ELSE 0 END)                                    AS TOTAL_ALTAS,
+  SUM(CASE WHEN checklist_pergunta_prioridade.prioridade = 'CRITICA'
+    THEN 1
+      ELSE 0 END)                                    AS TOTAL_CRITICAS
+FROM CHECKLIST C
+  JOIN COLABORADOR CO ON C.cpf_colaborador = CO.CPF
+  JOIN
+  (SELECT
+     total_perguntas.cod_unidade,
+     total_perguntas.cod_checklist,
+     count(total_perguntas.cod_pergunta) AS total
+   FROM
+     (SELECT DISTINCT
+        cr.cod_unidade,
+        cr.cod_checklist,
+        cr.cod_pergunta
+      FROM checklist_respostas cr
+      GROUP BY 1, 2, cr.cod_pergunta) AS total_perguntas
+   GROUP BY 1, 2) AS somatorio_total_perguntas ON somatorio_total_perguntas.cod_unidade = c.cod_unidade AND
+                                                  somatorio_total_perguntas.cod_checklist = c.codigo
+  LEFT JOIN
+  (SELECT
+     cr.cod_unidade,
+     cr.cod_checklist AS COD_CHECKLIST,
+     cr.cod_pergunta,
+     cp.prioridade
+   FROM CHECKLIST_RESPOSTAS CR
+     JOIN checklist_perguntas CP ON CP.cod_unidade = CR.cod_unidade
+                                    AND CP.cod_checklist_modelo = CR.cod_checklist_modelo
+                                    AND CP.codigo = CR.cod_pergunta
+   WHERE cr.resposta <> 'OK'
+   GROUP BY 1, 2, 3, 4) AS checklist_pergunta_prioridade
+    ON checklist_pergunta_prioridade.cod_unidade = c.cod_unidade AND
+       checklist_pergunta_prioridade.COD_CHECKLIST = c.codigo
+WHERE c.cod_unidade = f_cod_unidade and c.placa_veiculo like f_placa_veiculo and c.data_hora::date BETWEEN f_data_inicial and f_data_final
+-- WHERE c.cod_unidade = 7 and c.placa_veiculo like '%' and c.data_hora::date BETWEEN '2017-08-22' and '2017-08-22'
+GROUP BY c.data_hora, 2, 3, 4, 5, 6, 7, 8
+ORDER BY c.data_hora DESC
+$func$ LANGUAGE SQL;
+

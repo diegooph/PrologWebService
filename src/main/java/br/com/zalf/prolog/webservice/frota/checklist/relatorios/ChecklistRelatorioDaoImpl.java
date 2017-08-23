@@ -122,7 +122,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @NotNull
     private PreparedStatement getCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
-        throws SQLException {
+            throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT c.data_hora::date as \"DATA\",\n" +
                 "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\",\n" +
                 "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\",\n" +
@@ -194,5 +194,53 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
         return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getResumoChecklistStatement(Connection conn, Long codUnidade, Date dataInicial,
+                                                          Date dataFinal, String placa)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_checklist_resumo_realizados(?,?,?,?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, dataInicial);
+        stmt.setDate(3, dataFinal);
+        stmt.setString(4, placa);
+        return stmt;
+    }
+
+    @NotNull
+    public Report getResumoChecklistReport(@NotNull Long codUnidade,
+                                           @NotNull Date dataInicial,
+                                           @NotNull Date dataFinal,
+                                           @NotNull String placa) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getResumoChecklistStatement(conn, codUnidade, dataInicial, dataFinal, placa);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    public void getResumoChecklistCsv(@NotNull OutputStream outputStream,
+                               @NotNull Long codUnidade,
+                               @NotNull Date dataInicial,
+                               @NotNull Date dataFinal,
+                               @NotNull String placa) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getResumoChecklistStatement(conn, codUnidade, dataInicial, dataFinal, placa);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 }

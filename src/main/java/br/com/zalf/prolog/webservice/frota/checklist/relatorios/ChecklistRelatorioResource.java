@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.StreamingOutput;
 @Path("/checklists/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
 public class ChecklistRelatorioResource {
     private ChecklistRelatorioService service = new ChecklistRelatorioService();
 
@@ -64,5 +67,23 @@ public class ChecklistRelatorioResource {
                                                              @QueryParam("dataInicial") long dataInicial,
                                                              @QueryParam("dataFinal") long dataFinal) {
         return service.getTempoRealizacaoChecklistMotoristaReport(codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/resumos/{codUnidade}/{placa}/csv")
+    public StreamingOutput getResumoChecklistCsv(@PathParam("codUnidade") Long codUnidade,
+                                                 @QueryParam("dataInicial") Long dataInicial,
+                                                 @QueryParam("dataFinal") Long dataFinal,
+                                                 @PathParam("placa") String placa) {
+        return outputStream -> service.getResumoChecklistCsv(outputStream, codUnidade, dataInicial, dataFinal, placa);
+    }
+
+    @GET
+    @Path("/resumos/{codUnidade}/{placa}/report")
+    public Report getResumoChecklistReport(@PathParam("codUnidade") Long codUnidade,
+                                           @QueryParam("dataInicial") Long dataInicial,
+                                           @QueryParam("dataFinal") Long dataFinal,
+                                           @PathParam("placa") String placa) {
+        return service.getResumoChecklistReport(codUnidade, dataInicial, dataFinal, placa);
     }
 }

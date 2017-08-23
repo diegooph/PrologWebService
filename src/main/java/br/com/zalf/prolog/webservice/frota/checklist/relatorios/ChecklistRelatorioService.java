@@ -84,4 +84,29 @@ class ChecklistRelatorioService {
             return null;
         }
     }
+
+    void getResumoChecklistCsv(@NotNull OutputStream outputStream,
+                               @NotNull Long codUnidade,
+                               @NotNull Long dataInicial,
+                               @NotNull Long dataFinal,
+                               @NotNull String placa) {
+        try {
+            dao.getResumoChecklistCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NotNull
+    Report getResumoChecklistReport(@NotNull Long codUnidade,
+                                    @NotNull Long dataInicial,
+                                    @NotNull Long dataFinal,
+                                    @NotNull String placa) {
+        try {
+            return dao.getResumoChecklistReport(codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

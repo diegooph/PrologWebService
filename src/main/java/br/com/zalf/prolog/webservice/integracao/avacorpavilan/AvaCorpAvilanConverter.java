@@ -217,6 +217,7 @@ public final class AvaCorpAvilanConverter {
             alternativa.setOrdemExibicao(respostaOk.getCodigoResposta());
             alternativa.setCodigo(respostaNok.getCodigoResposta());
             alternativa.setTipo(Alternativa.TIPO_OUTROS);
+            alternativa.setAlternativa("Outros");
             alternativas.add(alternativa);
 
             // Sempre single choice
