@@ -54,7 +54,9 @@ public class PneuResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR,
+    @Secured(permissions = {Pilares.Frota.Pneu.VISUALIZAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{status}")
     public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade, @PathParam("status") String status) {
