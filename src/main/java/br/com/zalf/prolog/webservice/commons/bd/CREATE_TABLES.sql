@@ -1900,7 +1900,7 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
     tracking.total_apontamentos AS total_tracking,
     to_seconds((
         CASE
-            WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
+            WHEN ((m.hrsai)::time without time zone < m.hrmatinal) or m.hrmatinal = '00:00:00' THEN um.meta_tempo_largada_horas
             ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
         END)::text) AS tempo_largada,
     um.meta_tracking,
@@ -1932,9 +1932,9 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
             ELSE (0)::real
         END AS valor_recarga,
         CASE
-            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
-            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
-            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
             ELSE (0)::double precision
         END AS valor_diferenca_eld,
         CASE
@@ -1966,15 +1966,15 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
         END AS valor_as,
     ((
         CASE
-            WHEN (((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
-            WHEN (((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-            WHEN (((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
             ELSE (0)::real
         END +
         CASE
-            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision)
-            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
-            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
             ELSE (0)::double precision
         END) +
         CASE
