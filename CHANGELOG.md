@@ -8,6 +8,10 @@ Change Log
 
 #### Refactor
 
+#### Bug Fixes
+
+* Corrige tempo de largada de alguns mapas com HRMATINAL igual a zero
+
 <a name="v0.0.27"></a>
 ## Version [v0.0.27](https://github.com/luizfp/PrologWebService/compare/v0.0.26...v0.0.27) (2017-08-23)
 
