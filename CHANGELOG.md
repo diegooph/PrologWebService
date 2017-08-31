@@ -6,6 +6,8 @@ Change Log
 
 ### Features
 
+* Implementa relatório com o extrato de intervalos realizados
+
 #### Refactor
 
 #### Bug Fixes
