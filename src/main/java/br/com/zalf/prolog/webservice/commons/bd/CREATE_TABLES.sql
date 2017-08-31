@@ -1898,7 +1898,7 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
     tracking.total_apontamentos AS total_tracking,
     to_seconds((
         CASE
-            WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
+            WHEN ((m.hrsai)::time without time zone < m.hrmatinal) or m.hrmatinal = '00:00:00' THEN um.meta_tempo_largada_horas
             ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
         END)::text) AS tempo_largada,
     um.meta_tracking,
@@ -1930,9 +1930,9 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
             ELSE (0)::real
         END AS valor_recarga,
         CASE
-            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
-            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
-            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN (((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision) - (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
             ELSE (0)::double precision
         END AS valor_diferenca_eld,
         CASE
@@ -1964,15 +1964,15 @@ CREATE VIEW view_produtividade_extrato AS SELECT vmc.cod_unidade,
         END AS valor_as,
     ((
         CASE
-            WHEN (((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
-            WHEN (((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
-            WHEN (((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND ((m.tempoprevistoroad <= um.meta_tempo_rota_horas) OR ((m.cargaatual)::text = 'Recarga'::text))) THEN (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator)
             ELSE (0)::real
         END +
         CASE
-            WHEN ((((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision)
-            WHEN ((((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
-            WHEN ((((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text)) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas)) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) / (m.fator)::double precision)
             ELSE (0)::double precision
         END) +
         CASE
@@ -2315,3 +2315,42 @@ GROUP BY c.data_hora, 2, 3, 4, 5, 6, 7, 8
 ORDER BY c.data_hora DESC
 $func$ LANGUAGE SQL;
 
+-- Função para gerar o relatórios de marcações realizadas, filtros: unidade, data inicial, data final, colaborador
+CREATE OR REPLACE FUNCTION func_relatorio_marcacao_ponto_realizados (f_cod_unidade BIGINT, f_data_inicial DATE,
+  f_data_final DATE, f_cpf TEXT)
+  RETURNS TABLE (
+ "NOME" TEXT,
+    "CARGO" TEXT,
+    "INTERVALO" TEXT,
+    "INICIO INTERVALO" TEXT,
+    "FIM INTERVALO" TEXT,
+    "TEMPO DECORRIDO (MINUTOS)" TEXT,
+    "TEMPO RECOMENDADO (MINUTOS)" BIGINT,
+    "CUMPRIU TEMPO MÍNIMO" TEXT
+  ) AS
+  $func$
+SELECT
+  C.NOME AS NOME_COLABORADOR,
+  F.NOME AS CARGO,
+  IT.NOME AS INTERVALO,
+  COALESCE(TO_CHAR(I.DATA_HORA_INICIO, 'DD/MM/YYYY HH24:mi:ss'), '') AS DATA_HORA_INICIO,
+  COALESCE(TO_CHAR(I.DATA_HORA_FIM, 'DD/MM/YYYY HH24:mi:ss'), '') AS DATA_HORA_FIM,
+  COALESCE(TRUNC(EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) / 60)::TEXT, '') AS TEMPO_DECORRIDO_MINUTOS,
+  IT.TEMPO_RECOMENDADO_MINUTOS,
+  CASE WHEN I.DATA_HORA_FIM IS NULL
+    THEN ''
+  WHEN IT.TEMPO_RECOMENDADO_MINUTOS > (EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) / 60)
+    THEN
+      'NÃO'
+  ELSE 'SIM' END AS                                             CUMPRIU_TEMPO_MINIMO
+FROM
+  INTERVALO I
+  JOIN COLABORADOR C ON C.CPF = I.CPF_COLABORADOR
+  JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO
+  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE AND C.cod_empresa = U.cod_empresa
+  JOIN FUNCAO F ON F.cod_empresa = U.cod_empresa AND F.CODIGO = C.cod_funcao
+  WHERE I.COD_UNIDADE = f_cod_unidade and i.DATA_HORA_INICIO::date BETWEEN f_data_inicial and f_data_final and i.CPF_COLABORADOR::TEXT LIKE f_cpf
+ORDER BY EXTRACT(DAY FROM I.DATA_HORA_INICIO), C.NOME, I.DATA_HORA_INICIO
+$func$ LANGUAGE SQL;
+
+--
