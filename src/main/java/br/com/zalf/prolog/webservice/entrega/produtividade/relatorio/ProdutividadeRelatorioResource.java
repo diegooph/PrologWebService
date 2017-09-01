@@ -38,6 +38,7 @@ public class ProdutividadeRelatorioResource {
 
     @GET
     @Path("/extratos/individuais/{codUnidade}/{cpf}/csv")
+    @Produces("application/csv")
     public StreamingOutput getExtratoIndividualProdutividadeCsv(@PathParam("cpf") String cpf,
                                                                 @PathParam("codUnidade") Long codUnidade,
                                                                 @QueryParam("dataInicial") long dataInicial,
