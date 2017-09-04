@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Secured {
 
+    AuthType authType() default AuthType.BEARER;
     int[] permissions() default {};
     boolean needsToHaveAll() default false;
 }
