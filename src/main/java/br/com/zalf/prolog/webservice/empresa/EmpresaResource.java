@@ -112,9 +112,9 @@ public class EmpresaResource {
                                       @PathParam("codUnidade") Long codUnidade,
                                       @PathParam("codCargo") Long codCargo) {
         if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
-            return Response.Ok("Funções inseridas com sucesso");
+            return Response.Ok("Alterações realizadas com sucesso");
         } else {
-            return Response.Error("Erro ao inserir as funções");
+            return Response.Error("Erro ao alterar permissões");
         }
     }
 
