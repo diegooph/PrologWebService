@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -20,7 +21,14 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleIntervaloResource {
 
-    private ControleIntervaloService service = new ControleIntervaloService();
+    private final ControleIntervaloService service = new ControleIntervaloService();
+
+    @POST
+    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
+    public Response insertIntervalo(Intervalo intervalo) {
+        // TODO: retorna OK direto apenas para testes
+        return Response.Ok("Intervalo inserido com sucesso");
+    }
 
     @GET
     @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
@@ -79,5 +87,4 @@ public class ControleIntervaloResource {
                                                     @QueryParam("limit") long limit, @QueryParam("offset") long offset) {
         return service.getIntervalosColaborador(cpf, codTipo, limit, offset);
     }
-
 }
