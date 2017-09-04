@@ -68,11 +68,11 @@ public interface ColaboradorDao {
 	 * retorna um objeto {@link LoginHolder} contendo o colaborador com o cpf marcado e informações
 	 * úteis para a execução da aplicação.
 	 *
-	 * @param cpf cpf do usuario a se logar
+	 * @param loginRequest Um {@link LoginRequest}.
 	 * @return o login do colaborador com o cpf marcado
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException;
+	LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException;
 
 	/**
 	 * Verifica se determinado CPF existe em determinada unidade.

@@ -67,9 +67,9 @@ public class ColaboradorService {
 		}
 	}
 	
-	public LoginHolder getLoginHolder(Long cpf) {
+	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
 		try{
-			return dao.getLoginHolder(cpf);
+			return dao.getLoginHolder(loginRequest);
 		}catch(SQLException | AmazonCredentialsException e){
 			e.printStackTrace();
 			return null;

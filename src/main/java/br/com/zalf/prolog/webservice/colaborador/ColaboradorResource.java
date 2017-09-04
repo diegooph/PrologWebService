@@ -50,12 +50,12 @@ public class ColaboradorResource {
 		L.d(TAG, cpf.toString());
 		return service.getByCod(cpf);
 	}
-	
-	@GET
+
+	@POST
 	@Secured
-	@Path("/loginHolder/{cpf}")
-	public LoginHolder getLoginHolder(@PathParam("cpf") Long cpf) {
-		return service.getLoginHolder(cpf);
+	@Path("/login/app")
+	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
+		return service.getLoginHolder(loginRequest);
 	}
 	
 	@GET
@@ -81,6 +81,17 @@ public class ColaboradorResource {
 		} else {
 			return Response.error("Falha ao deletar colaborador");
 		}
+	}
+
+	/**
+	 * @deprecated in v0.0.29. Use {@link #getLoginHolder(LoginRequest)} instead.
+	 */
+	@GET
+	@Secured
+	@Path("/loginHolder/{cpf}")
+	@Deprecated
+	public LoginHolder DEPRECATE_GET_LOGIN_HOLDER(@PathParam("cpf") Long cpf) {
+		return service.getLoginHolder(new LoginRequest(cpf, null));
 	}
 
 	/**

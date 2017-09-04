@@ -315,9 +315,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	}
 
 	@Override
-	public LoginHolder getLoginHolder(Long cpf) throws SQLException, AmazonCredentialsException {
+	public LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException {
 		LoginHolder loginHolder = new LoginHolder();
-		loginHolder.setColaborador(getByCpf(cpf));
+		loginHolder.setColaborador(getByCpf(loginRequest.getCpf()));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
@@ -333,7 +333,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		if(verificaSeMarcaIntervalo(loginHolder.getColaborador().getVisao().getPilares())){
 			ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
-			loginHolder.setTiposIntervalos(intervaloDao.getTiposIntervalos(cpf, false));
+			loginHolder.setTiposIntervalos(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
 		}
 
 
