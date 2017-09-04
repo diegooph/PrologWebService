@@ -316,7 +316,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 	@Override
 	public LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException {
-		LoginHolder loginHolder = new LoginHolder();
+		final LoginHolder loginHolder = new LoginHolder();
+		// TODO: Verificar data
+		loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_ATUALIZADA));
 		loginHolder.setColaborador(getByCpf(loginRequest.getCpf()));
 
 		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
