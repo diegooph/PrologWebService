@@ -23,9 +23,9 @@ public class RelatoResource {
     public Response insert(Relato relato) {
         relato.setDataDatabase(new Date(System.currentTimeMillis()));
         if (service.insert(relato)) {
-            return Response.Ok("Relato inserido com sucesso");
+            return Response.ok("Relato inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir relato");
+            return Response.error("Erro ao inserir relato");
         }
     }
 
@@ -131,9 +131,9 @@ public class RelatoResource {
     @Secured(permissions = Pilares.Seguranca.Relato.CLASSIFICAR)
     public Response classificaRelato(Relato relato) {
         if (service.classificaRelato(relato)) {
-            return Response.Ok("Relato classificado com sucesso");
+            return Response.ok("Relato classificado com sucesso");
         } else {
-            return Response.Error("Erro ao classificar o relato");
+            return Response.error("Erro ao classificar o relato");
         }
     }
 
@@ -142,9 +142,9 @@ public class RelatoResource {
     @Secured(permissions = {Pilares.Seguranca.Relato.FECHAR, Pilares.Seguranca.Relato.CLASSIFICAR})
     public Response fechaRelato(Relato relato){
         if (service.fechaRelato(relato)) {
-            return Response.Ok("Relato fechado com sucesso");
+            return Response.ok("Relato fechado com sucesso");
         } else {
-            return Response.Error("Erro ao fechar o relato");
+            return Response.error("Erro ao fechar o relato");
         }
     }
 
@@ -153,9 +153,9 @@ public class RelatoResource {
     @Secured(permissions = Pilares.Seguranca.Relato.FECHAR)
     public Response delete(@PathParam("codigo") Long codigo) {
         if (service.delete(codigo)) {
-            return Response.Ok("Relato deletado com sucesso");
+            return Response.ok("Relato deletado com sucesso");
         } else {
-            return Response.Error("Erro ao deletar relato");
+            return Response.error("Erro ao deletar relato");
         }
     }
 }

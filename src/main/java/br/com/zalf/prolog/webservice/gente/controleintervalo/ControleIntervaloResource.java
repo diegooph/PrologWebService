@@ -27,7 +27,7 @@ public class ControleIntervaloResource {
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
     public Response insertIntervalo(Intervalo intervalo) {
         // TODO: retorna OK direto apenas para testes
-        return Response.Ok("Intervalo inserido com sucesso");
+        return Response.ok("Intervalo inserido com sucesso");
     }
 
     @GET
@@ -64,7 +64,7 @@ public class ControleIntervaloResource {
         if(codIntervalo != null){
             return ResponseWithCod.Ok("Intervalo iniciado com sucesso", codIntervalo);
         }else{
-            return Response.Error("Erro ao iniciar o intervalo");
+            return Response.error("Erro ao iniciar o intervalo");
         }
     }
 
@@ -73,9 +73,9 @@ public class ControleIntervaloResource {
     @Path("/{codUnidade}")
     public Response insereFinalizacaoIntervalo(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
         if(service.insereFinalizacaoIntervalo(intervalo, codUnidade)){
-            return Response.Ok("Intervalo finalizado com sucesso");
+            return Response.ok("Intervalo finalizado com sucesso");
         }else {
-            return Response.Error("Erro ao finalizar o intervalo");
+            return Response.error("Erro ao finalizar o intervalo");
         }
     }
 

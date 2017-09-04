@@ -41,16 +41,16 @@ public class ContrachequeService {
                 }
             }
             if(dao.insertOrUpdateItemImportContracheque(itens, ano, mes, codUnidade)){
-                return Response.Ok("Dados inseridos com sucesso");
+                return Response.ok("Dados inseridos com sucesso");
             }
         }catch (SQLException e){
             e.printStackTrace();
-            return Response.Error("Erro relacionado ao banco de dados");
+            return Response.error("Erro relacionado ao banco de dados");
         }catch (IOException e){
             e.printStackTrace();
-            return Response.Error("Erro no processamento do arquivo");
+            return Response.error("Erro no processamento do arquivo");
         }
-        return Response.Error("Erro ao inserir os dados");
+        return Response.error("Erro ao inserir os dados");
     }
 
     private ItemImportContracheque createItemImportContracheque(CSVRecord linha){

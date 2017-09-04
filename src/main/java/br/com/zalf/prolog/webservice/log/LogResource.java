@@ -19,9 +19,9 @@ public class LogResource {
 	@Consumes(MediaType.TEXT_PLAIN + ";charset=utf-8")
 	public Response insert(String log, @PathParam("identificador") String identificador) {
 		if (service.insert(log, identificador.toUpperCase())) {
-			return Response.Ok("Log inserido com sucesso.");
+			return Response.ok("Log inserido com sucesso.");
 		}else{
-			return Response.Error("Erro ao inserir o log.");
+			return Response.error("Erro ao inserir o log.");
 		}
 		
 	}

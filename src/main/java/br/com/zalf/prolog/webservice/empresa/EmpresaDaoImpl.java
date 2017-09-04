@@ -103,7 +103,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             if (rSet.next()) {
                 return ResponseWithCod.Ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
             } else {
-                return Response.Error("Erro ao inserir a equipe");
+                return Response.error("Erro ao inserir a equipe");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -214,7 +214,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             if (rSet.next()) {
                 return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
             } else {
-                return Response.Error("Erro ao inserir o setor");
+                return Response.error("Erro ao inserir o setor");
             }
         } finally {
             closeConnection(conn, stmt, rSet);

@@ -38,9 +38,9 @@ public class AutenticacaoResource {
 	@Secured
 	public Response delete(@PathParam("token") String token) {
 		if (service.delete(token)) {
-			return Response.Ok("Token deletado com sucesso");
+			return Response.ok("Token deletado com sucesso");
 		} else {
-			return Response.Error("Erro ao deletar token");
+			return Response.error("Erro ao deletar token");
 		}
 	}
 

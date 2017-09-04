@@ -36,9 +36,9 @@ public class EmpresaResource {
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
     public Response updateEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe, Equipe equipe) {
         if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
-            return Response.Ok("Equipe editada com sucesso");
+            return Response.ok("Equipe editada com sucesso");
         } else {
-            return Response.Error("Erro ao editar a equipe");
+            return Response.error("Erro ao editar a equipe");
         }
     }
 
@@ -63,9 +63,9 @@ public class EmpresaResource {
                                         @PathParam("codSetor") Long codSetor,
                                         Setor setor) {
         if (service.updateSetor(codUnidade, codSetor, setor)) {
-            return Response.Ok("Setor editado com sucesso");
+            return Response.ok("Setor editado com sucesso");
         } else {
-            return Response.Error("Erro ao editar a setor");
+            return Response.error("Erro ao editar a setor");
         }
     }
 
@@ -112,9 +112,9 @@ public class EmpresaResource {
                                       @PathParam("codUnidade") Long codUnidade,
                                       @PathParam("codCargo") Long codCargo) {
         if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
-            return Response.Ok("Alterações realizadas com sucesso");
+            return Response.ok("Alterações realizadas com sucesso");
         } else {
-            return Response.Error("Erro ao alterar permissões");
+            return Response.error("Erro ao alterar permissões");
         }
     }
 

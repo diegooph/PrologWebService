@@ -20,9 +20,9 @@ public class ChecklistModeloResource {
 	@Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
 	public Response insertModeloChecklist(ModeloChecklist modeloChecklist) {
 		if (service.insertModeloChecklist(modeloChecklist)) {
-			return Response.Ok("Modelo de checklist inserido com sucesso");
+			return Response.ok("Modelo de checklist inserido com sucesso");
 		} else {
-			return Response.Error("Erro ao inserir modelo de checklist");
+			return Response.error("Erro ao inserir modelo de checklist");
 		}
 	}
 
@@ -62,9 +62,9 @@ public class ChecklistModeloResource {
 			@PathParam("codUnidade") Long codUnidade,
 			@PathParam("codModelo") Long codModelo){
 		if (service.setModeloChecklistInativo(codUnidade, codModelo)) {
-			return Response.Ok("Modelo desativado com sucesso");
+			return Response.ok("Modelo desativado com sucesso");
 		} else {
-			return Response.Error("Erro ao desativar o modelo");
+			return Response.error("Erro ao desativar o modelo");
 		}
 	}
 }

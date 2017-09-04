@@ -24,7 +24,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 		try {
 			// verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias)
 			if (ChronoUnit.DAYS.between(LocalDate.now(), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
-				return Response.Error("Erro ao inserir a solicitação de folga");
+				return Response.error("Erro ao inserir a solicitação de folga");
 			}
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
@@ -40,7 +40,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			if(rSet.next()){
 				return ResponseWithCod.Ok("Solicitação inserida com sucesso", rSet.getLong("CODIGO"));
 			}else{
-				return Response.Error("Erro ao inserir a solicitação de folga");
+				return Response.error("Erro ao inserir a solicitação de folga");
 			}
 		}
 		finally {

@@ -25,9 +25,9 @@ public class ColaboradorResource {
 	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
 	public Response insert(Colaborador colaborador) {
 		if (service.insert(colaborador)) {
-			return Response.Ok("Colaborador inserido com sucesso");
+			return Response.ok("Colaborador inserido com sucesso");
 		} else {
-			return Response.Error("Erro ao inserir colaborador");
+			return Response.error("Erro ao inserir colaborador");
 		}
 	}
 	
@@ -37,9 +37,9 @@ public class ColaboradorResource {
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
 	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
 		if (service.update(cpfAntigo, colaborador)) {
-			return Response.Ok("Colaborador atualizado com sucesso");
+			return Response.ok("Colaborador atualizado com sucesso");
 		} else {
-			return Response.Error("Erro ao atualizar o colaborador");
+			return Response.error("Erro ao atualizar o colaborador");
 		}
 	}
 	
@@ -77,9 +77,9 @@ public class ColaboradorResource {
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
  	public Response delete(@PathParam("cpf") Long cpf) {
 		if (service.delete(cpf)) {
-			return Response.Ok("Colaborador deletado com sucesso");
+			return Response.ok("Colaborador deletado com sucesso");
 		} else {
-			return Response.Error("Falha ao deletar colaborador");
+			return Response.error("Falha ao deletar colaborador");
 		}
 	}
 
