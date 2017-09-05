@@ -10,6 +10,8 @@ Change Log
 
 #### Bug Fixes
 
+* Corrige comparação de códigos ao finalizar um intervalo
+
 <a name="v0.0.28"></a>
 ## Version [v0.0.28](https://github.com/luizfp/PrologWebService/compare/v0.0.27...v0.0.28) (2017-08-31)
 
