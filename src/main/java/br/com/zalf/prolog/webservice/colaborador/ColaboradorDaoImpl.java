@@ -397,17 +397,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt.setInt(2, codFuncaoProLog);
 			rSet = stmt.executeQuery();
 
-			if (!rSet.isBeforeFirst()) {
+			if (!rSet.next()) {
 				return Optional.empty();
 			} else {
 				final List<Colaborador> colaboradores = new ArrayList<>();
-				while (rSet.next()) {
+				do {
 					final Colaborador colaborador = new Colaborador();
 					colaborador.setCpf(rSet.getLong("CPF"));
 					colaborador.setNome(rSet.getString("NOME"));
 					colaborador.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
 					colaboradores.add(colaborador);
-				}
+				} while (rSet.next());
 				return Optional.of(colaboradores);
 			}
 		} finally {
