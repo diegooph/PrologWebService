@@ -345,6 +345,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					codUnidade);
 			optional.ifPresent(intervalo::setColaboradores);
 			intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
+			intervalo.setVersaoDadosIntervalo(versaoDadosBanco);
 			loginHolder.setIntervaloOfflineSupport(intervalo);
 		} else if (versaoDadosApp.equals(versaoDadosBanco)) {
 			// Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
