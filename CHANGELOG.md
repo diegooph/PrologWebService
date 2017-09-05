@@ -1,12 +1,17 @@
 Change Log
 ==========
 
-<a name="v0.0.29"></a>
-## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (release-date) [unreleased]
+<a name="v0.0.30"></a>
+## Version [v0.0.30](https://github.com/luizfp/PrologWebService/compare/v0.0.29...v0.0.30) (release-date) [unreleased]
 
 ### Features
 
 #### Refactor
+
+#### Bug Fixes
+
+<a name="v0.0.29"></a>
+## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (2017-09-05)
 
 #### Bug Fixes
 
