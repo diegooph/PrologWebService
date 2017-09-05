@@ -13,7 +13,9 @@ public class Intervalo {
     private Long codigo;
     private TipoIntervalo tipo;
     private Date dataHoraInicio;
+    private Boolean dataHoraInicioDaRede;
     private Date dataHoraFim;
+    private Boolean dataHoraFimDaRede;
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
     private String justificativaEstouro;
@@ -26,6 +28,22 @@ public class Intervalo {
 
     public Long getCodigo() {
         return codigo;
+    }
+
+    public Boolean getDataHoraInicioDaRede() {
+        return dataHoraInicioDaRede;
+    }
+
+    public void setDataHoraInicioDaRede(Boolean dataHoraInicioDaRede) {
+        this.dataHoraInicioDaRede = dataHoraInicioDaRede;
+    }
+
+    public Boolean getDataHoraFimDaRede() {
+        return dataHoraFimDaRede;
+    }
+
+    public void setDataHoraFimDaRede(Boolean dataHoraFimDaRede) {
+        this.dataHoraFimDaRede = dataHoraFimDaRede;
     }
 
     public void setCodigo(Long codigo) {
