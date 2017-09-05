@@ -2,9 +2,11 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,4 +57,6 @@ public interface ControleIntervaloDao {
 
     List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
 
+    @NotNull
+    Date getDataHoraUltimaAlteracaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

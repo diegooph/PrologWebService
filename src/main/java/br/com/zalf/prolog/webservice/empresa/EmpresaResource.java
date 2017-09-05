@@ -22,7 +22,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EmpresaResource {
 
-    private EmpresaService service = new EmpresaService();
+    private final EmpresaService service = new EmpresaService();
 
     @POST
     @Path("/unidades/{codUnidade}/equipes")

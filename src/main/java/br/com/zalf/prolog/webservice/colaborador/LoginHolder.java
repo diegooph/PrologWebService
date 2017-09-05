@@ -83,10 +83,12 @@ public class LoginHolder {
         this.intervaloOfflineSupport = intervaloOfflineSupport;
     }
 
+    @Deprecated
     public List<TipoIntervalo> getTiposIntervalos() {
         return tiposIntervalos;
     }
 
+    @Deprecated
     public void setTiposIntervalos(List<TipoIntervalo> tiposIntervalos) {
         this.tiposIntervalos = tiposIntervalos;
     }

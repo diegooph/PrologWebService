@@ -12,12 +12,14 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
@@ -248,7 +250,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					"  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
 					"WHERE C.COD_UNIDADE = ?\n" +
 					"ORDER BY 8");
-				stmt.setLong(1, codUnidade);
+			stmt.setLong(1, codUnidade);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Colaborador c = createColaborador(rSet);
@@ -260,6 +262,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return list;
 	}
 
+	@Override
 	public List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) throws SQLException {
 		List<Colaborador> list = new ArrayList<>();
 		Connection conn = null;
@@ -317,29 +320,126 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 	@Override
 	public LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException {
 		final LoginHolder loginHolder = new LoginHolder();
-		// TODO: Verificar data
-		loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_ATUALIZADA));
 		loginHolder.setColaborador(getByCpf(loginRequest.getCpf()));
 
-		if(verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())){
+		if (verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())) {
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
-			RelatoDao relatoDao = new RelatoDaoImpl();
+			final RelatoDao relatoDao = new RelatoDaoImpl();
 			loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 					loginHolder.getColaborador().getCodUnidade(),
 					loginHolder.getColaborador().getSetor().getCodigo()));
 		}
 
-		if(verificaSeFazGsd(loginHolder.getColaborador().getVisao().getPilares())){
+		if (verificaSeFazGsd(loginHolder.getColaborador().getVisao().getPilares())) {
 			loginHolder.setAmazonCredentials(getAmazonCredentials());
 		}
 
-		if(verificaSeMarcaIntervalo(loginHolder.getColaborador().getVisao().getPilares())){
-			ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
-			loginHolder.setTiposIntervalos(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
+		final Long codUnidade = getCodUnidadeByCpf(loginRequest.getCpf());
+		final ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
+		final Date dataHoraBanco = intervaloDao.getDataHoraUltimaAlteracaoDadosIntervaloByUnidade(codUnidade);
+		final Date dataHoraApp = loginRequest.getDataHoraUltimaAlteracaoDadosIntervalo();
+		if (dataHoraApp == null || dataHoraApp.before(dataHoraBanco)) {
+			final IntervaloOfflineSupport intervalo = new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_DESATUALIZADA);
+			final Optional<List<Colaborador>> optional = getColaboradoresComAcessoFuncaoByUnidade(
+					Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+					codUnidade);
+			optional.ifPresent(intervalo::setColaboradores);
+			intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
+			loginHolder.setIntervaloOfflineSupport(intervalo);
+		} else if (dataHoraApp.equals(dataHoraBanco)) {
+			// Se a data está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
+			loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_ATUALIZADA));
+		} else {
+			// DataHoraApp é depois da DataHoraBanco, isso não deveria acontecer, como proceder?
+			// TODO: ??
 		}
 
-
 		return loginHolder;
+	}
+
+	@Override
+	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
+					+ "COLABORADOR C WHERE C.CPF = ? AND C.cod_unidade = ?)");
+			stmt.setLong(1, cpf);
+			stmt.setLong(2, codUnidade);
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getBoolean("EXISTS");
+			}
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return false;
+	}
+
+	@NotNull
+	private Optional<List<Colaborador>> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
+																				 @NotNull final Long codUnidade)
+			throws SQLException {
+
+		Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT CPF, NOME, DATA_NASCIMENTO FROM COLABORADOR C JOIN " +
+					"CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
+					"AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR WHERE C.COD_UNIDADE = ? AND COD_FUNCAO_PROLOG = ?;");
+			stmt.setLong(1, codUnidade);
+			stmt.setInt(2, codFuncaoProLog);
+			rSet = stmt.executeQuery();
+
+			if (!rSet.isBeforeFirst()) {
+				return Optional.empty();
+			} else {
+				final List<Colaborador> colaboradores = new ArrayList<>();
+				while (rSet.next()) {
+					final Colaborador colaborador = new Colaborador();
+					colaborador.setCpf(rSet.getLong("CPF"));
+					colaborador.setNome(rSet.getString("NOME"));
+					colaborador.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
+					colaboradores.add(colaborador);
+				}
+				return Optional.of(colaboradores);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	/**
+	 * Esse método não lida com a possibilidade de o código unidade não existir ou de o CPF pelo qual você busca não
+	 * estar cadastrado no banco. Tenha certeza de que o {@link Colaborador} do qual vocẽ está utilizando o CPF esteja
+	 * cadastrado no banco.
+	 *
+	 * @param cpf Um CPF.
+	 * @return O código da {@link Unidade}.
+	 * @throws SQLException Caso aconteça algum erro na requisação ao banco.
+	 */
+	@NotNull
+	private Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException {
+		Preconditions.checkNotNull(cpf, "cpf não pode ser null!");
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?;");
+			stmt.setLong(1, cpf);
+			rSet = stmt.executeQuery();
+			return rSet.getLong("COD_UNIDADE");
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
 	}
 
 	private AmazonCredentials getAmazonCredentials() throws SQLException, AmazonCredentialsException{
@@ -459,19 +559,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return false;
 	}
 
-	private boolean verificaSeMarcaIntervalo(List<Pilar> pilares){
-		for (Pilar pilar : pilares) {
-			if (pilar.codigo == Pilares.GENTE) {
-				for (FuncaoProLog funcao : pilar.funcoes) {
-					if (funcao.getCodigo() == Pilares.Gente.Intervalo.MARCAR_INTERVALO) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	private boolean verificaSeFazGsd(List<Pilar> pilares) {
 		for (Pilar pilar : pilares) {
 			if (pilar.codigo == Pilares.SEGURANCA) {
@@ -485,23 +572,16 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		return false;
 	}
 
-	@Override
-	public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException{
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rSet = null;
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
-					+ "COLABORADOR C WHERE C.CPF = ? AND C.cod_unidade = ?)");
-			stmt.setLong(1, cpf);
-			stmt.setLong(2, codUnidade);
-			rSet = stmt.executeQuery();
-			if(rSet.next()){
-				return rSet.getBoolean("EXISTS");
+	@Deprecated
+	private boolean verificaSeMarcaIntervalo(List<Pilar> pilares){
+		for (Pilar pilar : pilares) {
+			if (pilar.codigo == Pilares.GENTE) {
+				for (FuncaoProLog funcao : pilar.funcoes) {
+					if (funcao.getCodigo() == Pilares.Gente.Intervalo.MARCAR_INTERVALO) {
+						return true;
+					}
+				}
 			}
-		}finally {
-			closeConnection(conn, stmt, rSet);
 		}
 		return false;
 	}

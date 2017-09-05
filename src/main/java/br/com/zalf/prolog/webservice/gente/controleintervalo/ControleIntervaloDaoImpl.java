@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
 import java.time.Duration;
@@ -45,41 +46,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return tipos;
     }
 
-    private TipoIntervalo createTipoInvervalo(ResultSet rSet, boolean withCargos, Connection conn) throws SQLException {
-        TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
-        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
-        Unidade unidade = new Unidade();
-        unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
-        tipoIntervalo.setUnidade(unidade);
-        tipoIntervalo.setAtivo(rSet.getBoolean("ATIVO"));
-        tipoIntervalo.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
-        tipoIntervalo.setIcone(Icone.fromString(rSet.getString("ICONE")));
-        tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
-        tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
-        if (withCargos) {
-            tipoIntervalo.setCargos(getCargosByTipoIntervalo(tipoIntervalo, conn));
-        }
-        return tipoIntervalo;
-    }
-
-    private List<Cargo> getCargosByTipoIntervalo(TipoIntervalo tipoIntervalo, Connection conn) throws SQLException {
-        List<Cargo> cargos = new ArrayList<>();
-        ResultSet rSet = null;
-        PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM\n" +
-                "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE\n" +
-                "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO\n" +
-                "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?");
-        stmt.setLong(1, tipoIntervalo.getCodigo());
-        stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
-        rSet = stmt.executeQuery();
-        while (rSet.next()) {
-            Cargo cargo = new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME"));
-            cargos.add(cargo);
-        }
-        return cargos;
-    }
-
     @Override
     public Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException {
         Connection conn = null;
@@ -114,21 +80,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, stmt, rSet);
         }
         return null;
-    }
-
-    private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {
-        Intervalo intervalo = new Intervalo();
-        intervalo.setCodigo(rSet.getLong("CODIGO"));
-        intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
-        intervalo.setValido(rSet.getBoolean("VALIDO"));
-        intervalo.setTempoDecorrido(Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO")));
-        Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
-        intervalo.setTipo(tipoIntervalo);
-        intervalo.setColaborador(colaborador);
-        return intervalo;
     }
 
     @Override
@@ -265,6 +216,61 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, stmt, rSet);
         }
         return intervalos;
+    }
+
+    @Override
+    public Date getDataHoraUltimaAlteracaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+        return null;
+    }
+
+    private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {
+        Intervalo intervalo = new Intervalo();
+        intervalo.setCodigo(rSet.getLong("CODIGO"));
+        intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
+        intervalo.setValido(rSet.getBoolean("VALIDO"));
+        intervalo.setTempoDecorrido(Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO")));
+        Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
+        TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
+        intervalo.setTipo(tipoIntervalo);
+        intervalo.setColaborador(colaborador);
+        return intervalo;
+    }
+
+    private TipoIntervalo createTipoInvervalo(ResultSet rSet, boolean withCargos, Connection conn) throws SQLException {
+        TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
+        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
+        Unidade unidade = new Unidade();
+        unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
+        tipoIntervalo.setUnidade(unidade);
+        tipoIntervalo.setAtivo(rSet.getBoolean("ATIVO"));
+        tipoIntervalo.setHorarioSugerido(rSet.getTime("HORARIO_SUGERIDO"));
+        tipoIntervalo.setIcone(Icone.fromString(rSet.getString("ICONE")));
+        tipoIntervalo.setTempoLimiteEstouro(Duration.ofMinutes(rSet.getLong("TEMPO_ESTOURO_MINUTOS")));
+        tipoIntervalo.setTempoRecomendado(Duration.ofMinutes(rSet.getLong("TEMPO_RECOMENDADO_MINUTOS")));
+        if (withCargos) {
+            tipoIntervalo.setCargos(getCargosByTipoIntervalo(tipoIntervalo, conn));
+        }
+        return tipoIntervalo;
+    }
+
+    private List<Cargo> getCargosByTipoIntervalo(TipoIntervalo tipoIntervalo, Connection conn) throws SQLException {
+        List<Cargo> cargos = new ArrayList<>();
+        ResultSet rSet = null;
+        PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM\n" +
+                "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE\n" +
+                "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO\n" +
+                "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?");
+        stmt.setLong(1, tipoIntervalo.getCodigo());
+        stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
+        rSet = stmt.executeQuery();
+        while (rSet.next()) {
+            Cargo cargo = new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME"));
+            cargos.add(cargo);
+        }
+        return cargos;
     }
 
     private Intervalo createIntervalo(ResultSet rSet, Connection conn) throws SQLException {
