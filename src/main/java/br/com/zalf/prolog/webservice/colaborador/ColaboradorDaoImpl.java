@@ -336,21 +336,21 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
 		final Long codUnidade = getCodUnidadeByCpf(loginRequest.getCpf());
 		final ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
-		final Date dataHoraBanco = intervaloDao.getDataHoraUltimaAlteracaoDadosIntervaloByUnidade(codUnidade);
-		final Date dataHoraApp = loginRequest.getDataHoraUltimaAlteracaoDadosIntervalo();
-		if (dataHoraApp == null || dataHoraApp.before(dataHoraBanco)) {
-			final IntervaloOfflineSupport intervalo = new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_DESATUALIZADA);
+		final Long versaoDadosBanco = intervaloDao.getVersaoDadosIntervaloByUnidade(codUnidade);
+		final Long versaoDadosApp = loginRequest.getVersaoDadosIntervalo();
+		if (versaoDadosApp == null || versaoDadosApp < versaoDadosBanco) {
+			final IntervaloOfflineSupport intervalo = new IntervaloOfflineSupport(EstadoIntervaloSupport.VERSAO_DESATUALIZADA);
 			final Optional<List<Colaborador>> optional = getColaboradoresComAcessoFuncaoByUnidade(
 					Pilares.Gente.Intervalo.MARCAR_INTERVALO,
 					codUnidade);
 			optional.ifPresent(intervalo::setColaboradores);
 			intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
 			loginHolder.setIntervaloOfflineSupport(intervalo);
-		} else if (dataHoraApp.equals(dataHoraBanco)) {
-			// Se a data está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
-			loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.DATA_ATUALIZADA));
+		} else if (versaoDadosApp.equals(versaoDadosBanco)) {
+			// Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
+			loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.VERSAO_ATUALIZADA));
 		} else {
-			// DataHoraApp é depois da DataHoraBanco, isso não deveria acontecer, como proceder?
+			// Versão dados do app é depois da do banco, isso não deveria acontecer, como proceder?
 			// TODO: ??
 		}
 
@@ -436,10 +436,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			stmt = conn.prepareStatement("SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?;");
 			stmt.setLong(1, cpf);
 			rSet = stmt.executeQuery();
-			return rSet.getLong("COD_UNIDADE");
+			if (rSet.next()) {
+                return rSet.getLong("COD_UNIDADE");
+            }
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
+
+		throw new IllegalStateException("Unidade não encontrada para o CPF: " + cpf);
 	}
 
 	private AmazonCredentials getAmazonCredentials() throws SQLException, AmazonCredentialsException{

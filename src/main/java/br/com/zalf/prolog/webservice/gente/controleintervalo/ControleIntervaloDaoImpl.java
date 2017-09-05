@@ -219,8 +219,24 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
-    public Date getDataHoraUltimaAlteracaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
-        return null;
+    @NotNull
+    public Long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("VERSAO_DADOS");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+        throw new IllegalStateException("Unidade com código " + codUnidade + " não encontrada na tabela INTERVALO_UNIDADE");
     }
 
     private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {

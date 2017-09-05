@@ -3,19 +3,17 @@ package br.com.zalf.prolog.webservice.colaborador;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
-import java.util.Date;
-
 public class LoginRequest {
 
     @NotNull
     private Long cpf;
 
     @Nullable
-    private Date dataHoraUltimaAlteracaoDadosIntervalo;
+    private Long versaoDadosIntervalo;
 
-    public LoginRequest(@NotNull final Long cpf,@Nullable final Date dataHoraUltimaAlteracaoDadosIntervalo) {
+    public LoginRequest(@NotNull final Long cpf,@Nullable final Long versaoDadosIntervalo) {
         this.cpf = cpf;
-        this.dataHoraUltimaAlteracaoDadosIntervalo = dataHoraUltimaAlteracaoDadosIntervalo;
+        this.versaoDadosIntervalo = versaoDadosIntervalo;
     }
 
     public Long getCpf() {
@@ -26,11 +24,11 @@ public class LoginRequest {
         this.cpf = cpf;
     }
 
-    public Date getDataHoraUltimaAlteracaoDadosIntervalo() {
-        return dataHoraUltimaAlteracaoDadosIntervalo;
+    public Long getVersaoDadosIntervalo() {
+        return versaoDadosIntervalo;
     }
 
-    public void setDataHoraUltimaAlteracaoDadosIntervalo(Date dataHoraUltimaAlteracaoDadosIntervalo) {
-        this.dataHoraUltimaAlteracaoDadosIntervalo = dataHoraUltimaAlteracaoDadosIntervalo;
+    public void setVersaoDadosIntervalo(Long versaoDadosIntervalo) {
+        this.versaoDadosIntervalo = versaoDadosIntervalo;
     }
 }

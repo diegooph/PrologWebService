@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
-import java.util.Date;
 import java.util.List;
 
 public class IntervaloOfflineSupport {
@@ -16,7 +15,7 @@ public class IntervaloOfflineSupport {
     private List<TipoIntervalo> tiposIntervalo;
 
     @Nullable
-    private Date dataHoraUltimaAlteracaoDadosIntervalo;
+    private Long versaoDadosIntervalo;
 
     @NotNull
     private EstadoIntervaloSupport estadoIntervaloSupport;
@@ -41,12 +40,12 @@ public class IntervaloOfflineSupport {
         this.tiposIntervalo = tiposIntervalo;
     }
 
-    public Date getDataHoraUltimaAlteracaoDadosIntervalo() {
-        return dataHoraUltimaAlteracaoDadosIntervalo;
+    public Long getVersaoDadosIntervalo() {
+        return versaoDadosIntervalo;
     }
 
-    public void setDataHoraUltimaAlteracaoDadosIntervalo(Date dataHoraUltimaAlteracaoDadosIntervalo) {
-        this.dataHoraUltimaAlteracaoDadosIntervalo = dataHoraUltimaAlteracaoDadosIntervalo;
+    public void setVersaoDadosIntervalo(Long versaoDadosIntervalo) {
+        this.versaoDadosIntervalo = versaoDadosIntervalo;
     }
 
     public EstadoIntervaloSupport getEstadoIntervaloSupport() {
