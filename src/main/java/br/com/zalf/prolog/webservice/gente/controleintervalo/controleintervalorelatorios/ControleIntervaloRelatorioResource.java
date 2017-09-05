@@ -18,6 +18,7 @@ public class ControleIntervaloRelatorioResource {
 
     @GET
     @Secured
+    @Produces("application/csv")
     @Path("/realizados/{codUnidade}/{cpf}/csv")
     public StreamingOutput getIntervalosCsv(@PathParam("codUnidade") Long codUnidade,
                                             @QueryParam("dataInicial") Long dataInicial,
