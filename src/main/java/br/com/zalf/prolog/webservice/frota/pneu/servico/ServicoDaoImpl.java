@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
@@ -196,6 +197,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     movimentacaoDao.insert(convertServicoToProcessoMovimentacao((Movimentacao) servico, codUnidade));
                     break;
             }
+            // atualiza KM do veículo
+            VeiculoDao veiculoDao = new VeiculoDaoImpl();
+            veiculoDao.updateKmByPlaca(servico.getPlaca(), servico.getKmVeiculo(), conn);
             conn.commit();
         }catch(SQLException e){
             e.printStackTrace();

@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 public class Movimentacao extends Servico {
 
     private Pneu pneuNovo;
-    private String placa;
     private String destinoPneu;
 
 
@@ -19,14 +18,6 @@ public class Movimentacao extends Servico {
 
     public Movimentacao() {
         setTipo(Servico.TIPO_MOVIMENTACAO);
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
     }
 
     public Pneu getPneuNovo() {
@@ -49,7 +40,6 @@ public class Movimentacao extends Servico {
     public String toString() {
         return "Movimentacao{" +
                 "pneuNovo=" + pneuNovo +
-                ", placa='" + placa + '\'' +
                 ", destinoPneu='" + destinoPneu + '\'' +
                 '}';
     }
