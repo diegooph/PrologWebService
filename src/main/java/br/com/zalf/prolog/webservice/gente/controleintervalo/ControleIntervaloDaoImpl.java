@@ -212,7 +212,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             conn = getConnection();
             Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
             if (intervaloEmAberto != null) {
-                if(intervalo.getCodigo() == intervaloEmAberto.getCodigo()){
+                if(intervalo.getCodigo().equals(intervaloEmAberto.getCodigo())){
                     return finalizaIntervaloEmAberto(intervalo);
                 }
             } else {
