@@ -143,6 +143,7 @@ public class EmpresaResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS,
             Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
             Pilares.Frota.Afericao.REALIZAR,
