@@ -16,6 +16,7 @@ public class Servico {
     private Long cpfMecanico;
     private int qtApontamentos;
     private long kmVeiculo;
+    private String placa;
 
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos
@@ -91,5 +92,13 @@ public class Servico {
 
     public void setTempoRealizacaoServicoInMillis(long tempoRealizacaoServicoInMillis) {
         this.tempoRealizacaoServicoInMillis = tempoRealizacaoServicoInMillis;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
     }
 }
