@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -147,5 +148,13 @@ public class EmpresaResource {
     @Path("/funcoes/{codUnidade}")
     public AbstractResponse insertFuncao(Cargo cargo, @PathParam("codUnidade") Long codUnidade) {
         return service.insertFuncao(cargo, codUnidade);
+    }
+
+    @GET
+    @Secured
+    @Path("/unidades/{codUnidade}/current-time")
+    public Date getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) {
+        // TODO: pegar o tempo de cada unidade de acordo com o TimeZone dela no Banco
+        return new Date(System.currentTimeMillis());
     }
 }
