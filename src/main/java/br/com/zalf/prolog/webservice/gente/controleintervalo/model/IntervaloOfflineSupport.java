@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.colaborador;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 

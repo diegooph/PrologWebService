@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.sun.istack.internal.NotNull;

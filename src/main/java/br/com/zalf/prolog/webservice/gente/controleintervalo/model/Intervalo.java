@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Unidade;
 
 import java.time.Duration;
 import java.util.Date;
@@ -13,14 +14,20 @@ public class Intervalo {
     private Long codigo;
     private TipoIntervalo tipo;
     private Date dataHoraInicio;
-    private Boolean dataHoraInicioDaRede;
+    private FonteDataHora fonteDataHoraInicio;
     private Date dataHoraFim;
-    private Boolean dataHoraFimDaRede;
+    private FonteDataHora fonteDataHoraFim;
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
     private String justificativaEstouro;
-    private boolean valido;
     private Duration tempoDecorrido;
+
+    /**
+     * Quando um intervalo é criado, ele é por default válido (valido é {@code true}. Porém, alguém
+     * do RH de uma {@link Unidade} pode invalidar esse intervalo. Ele não será deletado do BD mas
+     * poderá ter uma visualização diferente quando exibido.
+     */
+    private boolean valido;
 
     public Intervalo() {
 
@@ -30,20 +37,20 @@ public class Intervalo {
         return codigo;
     }
 
-    public Boolean getDataHoraInicioDaRede() {
-        return dataHoraInicioDaRede;
+    public FonteDataHora getFonteDataHoraInicio() {
+        return fonteDataHoraInicio;
     }
 
-    public void setDataHoraInicioDaRede(Boolean dataHoraInicioDaRede) {
-        this.dataHoraInicioDaRede = dataHoraInicioDaRede;
+    public void setFonteDataHoraInicio(FonteDataHora fonteDataHoraInicio) {
+        this.fonteDataHoraInicio = fonteDataHoraInicio;
     }
 
-    public Boolean getDataHoraFimDaRede() {
-        return dataHoraFimDaRede;
+    public FonteDataHora getFonteDataHoraFim() {
+        return fonteDataHoraFim;
     }
 
-    public void setDataHoraFimDaRede(Boolean dataHoraFimDaRede) {
-        this.dataHoraFimDaRede = dataHoraFimDaRede;
+    public void setFonteDataHoraFim(FonteDataHora fonteDataHoraFim) {
+        this.fonteDataHoraFim = fonteDataHoraFim;
     }
 
     public void setCodigo(Long codigo) {

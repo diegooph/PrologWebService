@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoIntervaloSupport;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
