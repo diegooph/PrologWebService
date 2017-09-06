@@ -10,6 +10,8 @@ Change Log
 
 #### Bug Fixes
 
+* Corrige calculo do tempo decorrido de um intervalo
+
 <a name="v0.0.29"></a>
 ## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (2017-09-05)
 
