@@ -26,8 +26,11 @@ public class ControleIntervaloResource {
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
     public Response insertIntervalo(Intervalo intervalo) {
-        // TODO: retorna OK direto apenas para testes
-        return Response.ok("Intervalo inserido com sucesso");
+        if (service.insertIntervalo(intervalo)) {
+            return Response.ok("Intervalo inserido com sucesso");
+        } else {
+            return Response.error("Erro ao inserir intervalo");
+        }
     }
 
     @GET

@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.sun.istack.internal.NotNull;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -44,15 +43,7 @@ public interface ControleIntervaloDao {
      */
     boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException;
 
-    /**
-     * Insere um intervalo
-     * @param intervalo
-     * @param codUnidade
-     * @param conn
-     * @return
-     * @throws SQLException
-     */
-    Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException;
+    void insertIntervalo(Intervalo intervalo) throws SQLException;
 
     List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
 

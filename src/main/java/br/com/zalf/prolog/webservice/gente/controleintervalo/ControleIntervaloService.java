@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -29,6 +30,17 @@ public class ControleIntervaloService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    boolean insertIntervalo(@NotNull final Intervalo intervalo) {
+        try {
+            dao.insertIntervalo(intervalo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {

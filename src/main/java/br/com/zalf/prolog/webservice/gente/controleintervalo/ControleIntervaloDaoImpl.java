@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
 
-
     @Override
     public List<TipoIntervalo> getTiposIntervalos(Long cpf, boolean withCargos) throws SQLException {
         Connection conn = null;
@@ -102,8 +101,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         }
     }
 
-    @Override
-    public Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
+    private Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -178,6 +176,11 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, null, null);
         }
         return false;
+    }
+
+    @Override
+    public void insertIntervalo(Intervalo intervalo) throws SQLException {
+        // TODO: Insere intervalo. Boa sorte, Zart!
     }
 
     @Override
