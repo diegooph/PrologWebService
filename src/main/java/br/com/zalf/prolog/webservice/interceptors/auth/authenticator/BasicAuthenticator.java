@@ -4,6 +4,10 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import com.sun.istack.internal.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Locale;
 
 public final class BasicAuthenticator extends ProLogAuthenticator {
 
@@ -11,9 +15,23 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
         super(service);
     }
 
+    private static final SimpleDateFormat FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION =
+            new SimpleDateFormat("yyyy-MM-dd", new Locale("pt", "BR"));
+
     @Override
     public void validate(@NotNull final String value,
                             @NotNull final int[] permissions,
                             final boolean needsToHaveAll) throws NotAuthorizedException {
+        String[] valor = new String(Base64.getDecoder().decode(value.getBytes())).split(":");
+        if(valor.length != 2){
+            throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+        }
+        try{
+            service.userHasPermission(Long.parseLong(valor[0]), FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(valor[1]).getTime(), permissions,
+                    needsToHaveAll);
+        }catch (ParseException e){
+            e.printStackTrace();
+            throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+        }
     }
 }

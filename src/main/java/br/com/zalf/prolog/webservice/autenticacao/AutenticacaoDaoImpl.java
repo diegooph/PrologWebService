@@ -82,23 +82,49 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt.setString(1, token);
 			rSet = stmt.executeQuery();
 			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
-			if (!rSet.next()) {
-				return false;
-			}
-			rSet.beforeFirst();
-			while (rSet.next()) {
-				if (needsToHaveAll) {
-					if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
-						return false;
-					}
-				} else {
-					if (permissoes.contains(rSet.getInt("cod_permissao"))) {
-						return true;
-					}
-				}
-			}
+			return verifyPermissions(needsToHaveAll, permissoes, rSet);
 		}finally {
 			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public boolean userHasPermission(@NotNull Long cpf, @NotNull Long dataNascimento, @NotNull int[] permissions, boolean needsToHaveAll)
+			throws SQLException{
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try{
+			conn = getConnection();
+			stmt = conn.prepareStatement( "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
+					"FROM colaborador C JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
+					"WHERE c.cpf = ? and c.data_nascimento = ? ", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, cpf);
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataNascimento)));
+			rSet = stmt.executeQuery();
+			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			return verifyPermissions(needsToHaveAll, permissoes, rSet);
+		}finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	private boolean verifyPermissions(boolean needsToHaveAll, List<Integer> permissoes, ResultSet rSet) throws SQLException{
+		if (!rSet.next()) {
+			return false;
+		}
+		rSet.beforeFirst();
+		while (rSet.next()) {
+			if (needsToHaveAll) {
+				if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
+					return false;
+				}
+			} else {
+				if (permissoes.contains(rSet.getInt("cod_permissao"))) {
+					return true;
+				}
+			}
 		}
 		return needsToHaveAll;
 	}

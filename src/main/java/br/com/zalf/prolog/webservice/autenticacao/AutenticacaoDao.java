@@ -46,6 +46,18 @@ public interface AutenticacaoDao {
 	 */
 	boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
 			throws SQLException;
+
+	/**
+	 * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
+	 * @param cpf um cpf
+	 * @param dataNascimento uma data de nascimento
+	 * @param permissions as permissões que esse cpf precisa ter
+	 * @param needsToHaveAll um valor booleano informando se o usuário precisa ter todas
+	 *                       as permissões passadas no array ou apenas uma
+	 * @return verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
+	 */
+	boolean userHasPermission(@NotNull Long cpf, @NotNull Long dataNascimento, @NotNull int[] permissions,
+							  boolean needsToHaveAll) throws SQLException;
 	
 	/**
 	 * Deleta um token da tabela, usado quando o usuário solicita logout do sistema.
