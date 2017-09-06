@@ -105,7 +105,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     @Override
     public Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
-        ResultSet rSet;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, DATA_HORA_INICIO," +
@@ -129,7 +129,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 return rSet.getLong("CODIGO");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return null;
     }
