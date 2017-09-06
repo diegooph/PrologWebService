@@ -16,34 +16,11 @@ public interface ControleIntervaloDao {
 
     Intervalo getIntervaloAberto (Long cpf, TipoIntervalo tipoInvervalo) throws SQLException;
 
-    /**
-     * Inicia um novo intervalo
-     * @param codUnidade
-     * @param cpf
-     * @param codTipo
-     * @return
-     * @throws SQLException
-     */
-    Long iniciaIntervalo (Long codUnidade, Long cpf, Long codTipo) throws SQLException;
-
-    /**
-     * Finaliza um intervalo que está em aberto
-     * @param intervalo
-     * @return
-     * @throws SQLException
-     */
-    boolean finalizaIntervaloEmAberto (Intervalo intervalo) throws SQLException;
-
-    /**
-     * Insere um intervalo que não teve início
-     * @param intervalo
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
-    boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException;
-
     void insertIntervalo(Intervalo intervalo) throws SQLException;
+
+    void updateIntervalo(Intervalo intervalo) throws SQLException;
+
+    boolean insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
 
     List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
 

@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
-import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,9 +13,9 @@ public class ControleIntervaloService {
 
     private ControleIntervaloDao dao = new ControleIntervaloDaoImpl();
 
-    public List<TipoIntervalo> getTiposIntervalos(Long cpf, boolean withCargos) {
+    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) {
         try {
-            return dao.getTiposIntervalos(cpf, withCargos);
+            return dao.getTiposIntervalos(codUnidade, withCargos);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -32,33 +31,15 @@ public class ControleIntervaloService {
         }
     }
 
-    boolean insertIntervalo(@NotNull final Intervalo intervalo) {
+    public boolean insertOrUpdateIntervalo(Intervalo intervalo) {
         try {
-            dao.insertIntervalo(intervalo);
+            dao.insertOrUpdateIntervalo(intervalo);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
 
         return true;
-    }
-
-    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
-        try {
-            return dao.iniciaIntervalo(codUnidade, cpf, codTipo);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public boolean insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
-        try {
-            return dao.insereFinalizacaoIntervalo(intervalo, codUnidade);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo,long limit ,long offset) {

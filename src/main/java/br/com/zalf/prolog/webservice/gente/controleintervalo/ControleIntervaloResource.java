@@ -1,16 +1,19 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
-import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +22,7 @@ import java.util.List;
 @Path("/intervalos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@DebugLog
 public class ControleIntervaloResource {
 
     private final ControleIntervaloService service = new ControleIntervaloService();
@@ -26,7 +30,7 @@ public class ControleIntervaloResource {
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
     public Response insertIntervalo(Intervalo intervalo) {
-        if (service.insertIntervalo(intervalo)) {
+        if (service.insertOrUpdateIntervalo(intervalo)) {
             return Response.ok("Intervalo inserido com sucesso");
         } else {
             return Response.error("Erro ao inserir intervalo");
@@ -36,17 +40,17 @@ public class ControleIntervaloResource {
     @GET
     @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
     Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/{cpf}/completos")
-    public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("cpf") Long cpf) {
-        return service.getTiposIntervalos(cpf, true);
+    @Path("/{codUnidade}/completos")
+    public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
+        return service.getTiposIntervalos(codUnidade, true);
     }
 
     @GET
     @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/{cpf}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("cpf") Long cpf) {
-        return service.getTiposIntervalos(cpf, false);
+    @Path("/{codUnidade}/resumidos")
+    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
+        return service.getTiposIntervalos(codUnidade, false);
     }
 
     @GET
@@ -61,25 +65,28 @@ public class ControleIntervaloResource {
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public AbstractResponse iniciaIntervalo(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
+    public void iniciaIntervalo(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
                                             @PathParam("codTipoIntervalo") Long codTipo) {
-        Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
-        if(codIntervalo != null){
-            return ResponseWithCod.Ok("Intervalo iniciado com sucesso", codIntervalo);
-        }else{
-            return Response.error("Erro ao iniciar o intervalo");
-        }
+        Intervalo intervalo = new Intervalo();
+        Colaborador colaborador = new Colaborador();
+        Unidade unidade = new Unidade();
+        unidade.setCodigo(codUnidade);
+        colaborador.setCpf(cpf);
+        colaborador.setUnidade(unidade);
+        intervalo.setColaborador(colaborador);
+        intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
+        intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
+        service.insertOrUpdateIntervalo(intervalo);
     }
 
     @PUT
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}")
-    public Response insereFinalizacaoIntervalo(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
-        if(service.insereFinalizacaoIntervalo(intervalo, codUnidade)){
-            return Response.ok("Intervalo finalizado com sucesso");
-        }else {
-            return Response.error("Erro ao finalizar o intervalo");
-        }
+    public void insereFinalizacaoIntervalo(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
+        intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
+        intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
+        intervalo.getColaborador().getUnidade().setCodigo(codUnidade);
+        service.insertOrUpdateIntervalo(intervalo);
     }
 
     @GET

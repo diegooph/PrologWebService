@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
@@ -13,7 +14,6 @@ import com.sun.istack.internal.NotNull;
 import java.sql.*;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,19 +22,18 @@ import java.util.List;
 public class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
 
     @Override
-    public List<TipoIntervalo> getTiposIntervalos(Long cpf, boolean withCargos) throws SQLException {
+    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS NOME_TIPO_INTERVALO, " +
+            stmt = conn.prepareStatement("SELECT DISTINCT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS NOME_TIPO_INTERVALO, " +
                     " IT.COD_UNIDADE, IT.ATIVO, IT.HORARIO_SUGERIDO, IT.ICONE, IT.TEMPO_ESTOURO_MINUTOS, IT.TEMPO_RECOMENDADO_MINUTOS FROM\n" +
                     "  INTERVALO_TIPO_CARGO ITC JOIN INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC.COD_TIPO_INTERVALO = IT.CODIGO\n" +
-                    "  JOIN COLABORADOR C ON C.cod_unidade = ITC.COD_UNIDADE AND C.cod_funcao = ITC.COD_CARGO\n" +
-                    "WHERE C.cpf = ? AND IT.ATIVO IS TRUE");
-            stmt.setLong(1, cpf);
+                    " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
+            stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tipos.add(createTipoInvervalo(rSet, withCargos, conn));
@@ -81,69 +80,21 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return null;
     }
 
-    @Override
-    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            Intervalo intervalo = new Intervalo();
-            TipoIntervalo tipoIntervalo = new TipoIntervalo();
-            tipoIntervalo.setCodigo(codTipo);
-            Colaborador colaborador = new Colaborador();
-            colaborador.setCpf(cpf);
-            intervalo.setTipo(tipoIntervalo);
-            intervalo.setColaborador(colaborador);
-            intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
-            intervalo.setDataHoraFim(null);
-            return insertIntervalo(intervalo, codUnidade, conn);
-        } finally {
-            closeConnection(conn, null, null);
-        }
-    }
-
-    private Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, DATA_HORA_INICIO," +
-                    "DATA_HORA_FIM) \n" +
-                    "    VALUES (?,?,?,?,?) RETURNING CODIGO");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, intervalo.getTipo().getCodigo());
-            stmt.setLong(3, intervalo.getColaborador().getCpf());
-            if (intervalo.getDataHoraInicio() != null) {
-                stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
-            } else {
-                stmt.setNull(4, Types.TIMESTAMP);
-            }
-            if (intervalo.getDataHoraFim() != null) {
-                stmt.setTimestamp(5, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
-            } else {
-                stmt.setNull(5, Types.TIMESTAMP);
-            }
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean finalizaIntervaloEmAberto(Intervalo intervalo) throws SQLException {
+    public void updateIntervalo(Intervalo intervalo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE INTERVALO SET DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ? " +
+            stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
+                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ? " +
                     "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setString(2, intervalo.getJustificativaEstouro());
-            stmt.setLong(3, intervalo.getColaborador().getCpf());
-            stmt.setLong(4, intervalo.getCodigo());
+            stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
+            stmt.setTimestamp(2, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
+            stmt.setString(3, intervalo.getFonteDataHoraFim().key());
+            stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
+            stmt.setString(5, intervalo.getJustificativaEstouro());
+            stmt.setLong(6, intervalo.getColaborador().getCpf());
+            stmt.setLong(7, intervalo.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao finalizar o intervalo");
@@ -151,26 +102,33 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
     @Override
-    public boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException{
+    public boolean insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException{
         Connection conn = null;
         try {
             conn = getConnection();
-            Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
-            if (intervaloEmAberto != null) {
-                if(intervalo.getCodigo() == intervaloEmAberto.getCodigo()){
-                    return finalizaIntervaloEmAberto(intervalo);
+
+            if(intervalo.getDataHoraInicio() != null && intervalo.getFonteDataHoraFim() != null) {
+//                intervalo completo, apenas inserir
+                insertIntervalo(intervalo);
+            }else if(intervalo.getDataHoraInicio() == null && intervalo.getFonteDataHoraFim() != null) {
+                Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
+//                intervalo veio apenas com data de finalização, verificar se existe um em aberto para fazer o update,
+//                caso não tenha, inserir a finalização avulsa
+                if(intervaloEmAberto != null) {
+                    intervaloEmAberto.setDataHoraFim(intervalo.getDataHoraFim());
+                    intervaloEmAberto.setFonteDataHoraFim(intervalo.getFonteDataHoraFim());
+                    intervaloEmAberto.setJustificativaEstouro(intervalo.getJustificativaEstouro());
+                    intervaloEmAberto.setJustificativaTempoRecomendado(intervalo.getJustificativaTempoRecomendado());
+                    updateIntervalo(intervaloEmAberto);
+                }else{
+                    insertIntervalo(intervalo);
                 }
-            } else {
-                intervalo.setDataHoraInicio(null);
-                intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
-                Long codigo = insertIntervalo(intervalo, codUnidade, conn);
-                if (codigo != null) {
-                    return true;
-                }
+            }else{
+//                intervalo veio apenas com data_hora de inicio, inserir na tabela
+                insertIntervalo(intervalo);
             }
         } finally {
             closeConnection(conn, null, null);
@@ -180,7 +138,37 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
 
     @Override
     public void insertIntervalo(Intervalo intervalo) throws SQLException {
-        // TODO: Insere intervalo. Boa sorte, Zart!
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR," +
+                    "FONTE_DATA_HORA_INICIO, DATA_HORA_INICIO, FONTE_DATA_HORA_FIM, DATA_HORA_FIM) \n" +
+                    "    VALUES (?,?,?,?,?,?,?)");
+            stmt.setLong(1, intervalo.getColaborador().getUnidade().getCodigo());
+            stmt.setLong(2, intervalo.getTipo().getCodigo());
+            stmt.setLong(3, intervalo.getColaborador().getCpf());
+            if (intervalo.getDataHoraInicio() != null) {
+                stmt.setString(4, intervalo.getFonteDataHoraInicio().key());
+                stmt.setTimestamp(5, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
+            } else {
+                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(5, Types.TIMESTAMP);
+            }
+            if (intervalo.getDataHoraFim() != null) {
+                stmt.setString(6, intervalo.getFonteDataHoraFim().key());
+                stmt.setTimestamp(7, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
+            } else {
+                stmt.setNull(6, Types.VARCHAR);
+                stmt.setNull(7, Types.TIMESTAMP);
+            }
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao inserir o intervalo");
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
     }
 
     @Override
@@ -254,6 +242,14 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
         intervalo.setColaborador(colaborador);
+        String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
+        String fonteDataHoraFim = rSet.getString("FONTE_DATA_HORA_FIM");
+        if(fonteDataHoraInicio != null){
+            intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
+        }
+        if(fonteDataHoraFim != null){
+            intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraFim));
+        }
         return intervalo;
     }
 
