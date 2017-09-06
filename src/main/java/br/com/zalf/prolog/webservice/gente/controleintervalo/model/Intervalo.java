@@ -19,8 +19,21 @@ public class Intervalo {
     private FonteDataHora fonteDataHoraFim;
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
-    private String justificativaEstouro;
     private Duration tempoDecorrido;
+
+    /**
+     * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
+     * com um {@link #tempoDecorrido} <b>maior</b> que o {@link TipoIntervalo#tempoLimiteEstouro} do
+     * {@link TipoIntervalo} ao qual ele é referente.
+     */
+    private String justificativaEstouro;
+
+    /**
+     * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
+     * com um {@link #tempoDecorrido} <b>menor</b> que o {@link TipoIntervalo#tempoRecomendado} do
+     * {@link TipoIntervalo} ao qual ele é referente.
+     */
+    private String justificativaTempoRecomendado;
 
     /**
      * Quando um intervalo é criado, ele é por default válido (valido é {@code true}. Porém, alguém
@@ -111,6 +124,14 @@ public class Intervalo {
 
     public void setJustificativaEstouro(String justificativaEstouro) {
         this.justificativaEstouro = justificativaEstouro;
+    }
+
+    public String getJustificativaTempoRecomendado() {
+        return justificativaTempoRecomendado;
+    }
+
+    public void setJustificativaTempoRecomendado(String justificativaTempoRecomendado) {
+        this.justificativaTempoRecomendado = justificativaTempoRecomendado;
     }
 
     public Duration getTempoDecorrido() {
