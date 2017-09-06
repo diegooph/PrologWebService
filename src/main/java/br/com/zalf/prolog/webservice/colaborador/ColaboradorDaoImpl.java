@@ -346,7 +346,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 					Pilares.Gente.Intervalo.MARCAR_INTERVALO,
 					codUnidade);
 			optional.ifPresent(intervalo::setColaboradores);
-			intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(loginRequest.getCpf(), false));
+			intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(codUnidade, false));
 			intervalo.setVersaoDadosIntervalo(versaoDadosBanco);
 			loginHolder.setIntervaloOfflineSupport(intervalo);
 		} else if (versaoDadosApp.equals(versaoDadosBanco)) {
