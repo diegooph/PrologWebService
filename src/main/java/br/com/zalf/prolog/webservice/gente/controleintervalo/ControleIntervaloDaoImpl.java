@@ -87,7 +87,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT *, extract(epoch from now() - i.DATA_HORA_INICIO) as tempo_decorrido \n" +
+            stmt = conn.prepareStatement("SELECT * \n" +
                     "FROM\n" +
                     "  INTERVALO I\n" +
                     "WHERE I.CPF_COLABORADOR = ? AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE\n" +
@@ -121,7 +121,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         intervalo.setCodigo(rSet.getLong("CODIGO"));
         intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
         intervalo.setValido(rSet.getBoolean("VALIDO"));
-        intervalo.setTempoDecorrido(Duration.ofSeconds(rSet.getLong("TEMPO_DECORRIDO")));
+        intervalo.setTempoDecorrido(Duration.ofSeconds(DateUtils.secondsBetween(intervalo.getDataHoraInicio().getTime(), System.currentTimeMillis())));
         Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
         TipoIntervalo tipoIntervalo = new TipoIntervalo();
