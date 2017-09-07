@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+
 /**
  * Classe para erros específicos do ProLog
  * 
@@ -7,30 +10,33 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
  *
  */
 public abstract class ProLogException extends Exception {
-
 	private static final long serialVersionUID = 1L;
-		
-	/** detailed error description for developers*/
+
+	private final int httpStatusCode;
+	private final int applicationErrorCode;
+	@NotNull
+	private final String message;
+	@Nullable
 	private final String developerMessage;
-	private final ApplicationExceptions type;
-	
+	@Nullable
+	private final String moreInfoLink;
+
 	public ProLogException() {
-		this(null, null);
+		this.httpStatusCode = getHttpStatusCode();
+		this.applicationErrorCode = getApplicationErrorCode();
+		this.message = getMessage();
+		this.developerMessage = getDeveloperMessage();
+		this.moreInfoLink = getMoreInfoLink();
 	}
-	
-	public ProLogException(String message, String developerMessage) {
-		super(message);
-		this.developerMessage = developerMessage;
-		this.type = whatIsYourType();
-	}
-	
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-	
-	public ApplicationExceptions getType() {
-		return type;
-	}
-	
-	protected abstract ApplicationExceptions whatIsYourType();
+
+	public abstract int getHttpStatusCode();
+
+	public abstract int getApplicationErrorCode();
+
+	@Override
+	public abstract String getMessage();
+
+	public abstract String getDeveloperMessage();
+
+	public abstract String getMoreInfoLink();
 }

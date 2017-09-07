@@ -1,22 +1,22 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
-import br.com.zalf.prolog.webservice.errorhandling.exception.ApplicationExceptions;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import com.sun.istack.internal.NotNull;
 
 public class ErrorMessageFactory {
 
 	private ErrorMessageFactory() {
-
+		throw new IllegalStateException(ErrorMessageFactory.class.getSimpleName() + " cannot be instantiated!");
 	}
 
+	@NotNull
 	public static ErrorMessage create(ProLogException ex) {
-		ErrorMessage errorMessage = new ErrorMessage();
-		ApplicationExceptions type = ex.getType();
-		errorMessage.setDeveloperMessage(ex.getDeveloperMessage() == null ? type.developerMessage : ex.getDeveloperMessage());
-		errorMessage.setMessage(ex.getMessage() == null ? type.message : ex.getMessage());
-		errorMessage.setApplicationErrorCode(type.applicationErrorCode);	
-		errorMessage.setHttpStatusCode(type.httpStatusCode);
-		errorMessage.setMoreInfoLink(type.moreInfoLink);
+		final ErrorMessage errorMessage = new ErrorMessage();
+		errorMessage.setDeveloperMessage(ex.getDeveloperMessage());
+		errorMessage.setMessage(ex.getMessage());
+		errorMessage.setApplicationErrorCode(ex.getApplicationErrorCode());
+		errorMessage.setHttpStatusCode(ex.getHttpStatusCode());
+		errorMessage.setMoreInfoLink(ex.getMoreInfoLink());
 		return errorMessage;
 	}
 }

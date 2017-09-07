@@ -7,6 +7,7 @@ import com.sun.istack.internal.Nullable;
 import java.util.List;
 
 public class IntervaloOfflineSupport {
+    public static final String HEADER_NAME_VERSAO_DADOS_INTERVALO = "ProLog-Versao-Dados-Intervalo";
 
     @Nullable
     private List<Colaborador> colaboradores;

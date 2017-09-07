@@ -12,7 +12,6 @@ public class Colaborador {
 	private Date dataNascimento;
 	private Cargo funcao;
 	private Setor setor;
-	private long codUnidade;
 	private String nome;
 	private int matriculaAmbev;
 	private int matriculaTrans;
@@ -23,9 +22,13 @@ public class Colaborador {
 	private Unidade unidade;
 	private Regional regional;
 	private Equipe equipe;
-	private long codPermissao;
-	private long codEmpresa;
 	private Visao visao;
+	private long codPermissao;
+
+	@Deprecated
+	private long codEmpresa;
+	@Deprecated
+	private long codUnidade;
 
 	public Colaborador() {
 
@@ -80,7 +83,7 @@ public class Colaborador {
 	}
 
 	public long getCodUnidade() {
-		return codUnidade;
+		return unidade.getCodigo();
 	}
 
 	public void setCodUnidade(long codUnidade) {

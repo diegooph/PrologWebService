@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -29,8 +30,11 @@ public class ControleIntervaloResource {
 
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
-    public Response insertIntervalo(Intervalo intervalo) {
-        if (service.insertOrUpdateIntervalo(intervalo)) {
+    public Response insertIntervalo(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            Intervalo intervalo) throws VersaoDadosIntervaloDesatualizadaException {
+
+        if (service.insertOrUpdateIntervalo(versaoDadosIntervalo, intervalo)) {
             return Response.ok("Intervalo inserido com sucesso");
         } else {
             return Response.error("Erro ao inserir intervalo");

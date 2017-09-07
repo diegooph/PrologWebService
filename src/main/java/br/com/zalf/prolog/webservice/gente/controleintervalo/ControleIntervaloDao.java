@@ -20,10 +20,10 @@ public interface ControleIntervaloDao {
 
     void updateIntervalo(Intervalo intervalo) throws SQLException;
 
-    boolean insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
+    void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
 
     List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
 
     @NotNull
-    Long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }

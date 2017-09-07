@@ -106,7 +106,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
-    public boolean insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException {
+    public void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -134,7 +134,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         } finally {
             closeConnection(conn, null, null);
         }
-        return false;
     }
 
     @Override
@@ -215,7 +214,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
 
     @Override
     @NotNull
-    public Long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+    public long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -230,6 +229,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+
         throw new IllegalStateException("Unidade com código " + codUnidade + " não encontrada na tabela INTERVALO_UNIDADE");
     }
 

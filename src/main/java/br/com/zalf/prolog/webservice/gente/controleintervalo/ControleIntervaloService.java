@@ -31,15 +31,24 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean insertOrUpdateIntervalo(Intervalo intervalo) {
+    public boolean insertOrUpdateIntervalo(long versaoDadosIntervalo, Intervalo intervalo)
+            throws VersaoDadosIntervaloDesatualizadaException {
+        final long codUnidade = intervalo.getColaborador().getCodUnidade();
+        if (versaoDadosIntervalo <= 0) {
+            throw new VersaoDadosIntervaloDesatualizadaException(codUnidade, versaoDadosIntervalo);
+        }
+
         try {
+            final long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
+            if (versaoDadosBanco > versaoDadosIntervalo) {
+                throw new VersaoDadosIntervaloDesatualizadaException(codUnidade, versaoDadosIntervalo);
+            }
             dao.insertOrUpdateIntervalo(intervalo);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
-        return true;
     }
 
     public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo,long limit ,long offset) {
@@ -51,4 +60,15 @@ public class ControleIntervaloService {
         }
     }
 
+
+    @Deprecated
+    public boolean insertOrUpdateIntervalo(Intervalo intervalo) {
+        try {
+            dao.insertOrUpdateIntervalo(intervalo);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -464,7 +464,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 				amazonCredentials.setUser(rSet.getString("USER_ID"));
 				return amazonCredentials;
 			}else{
-				throw new AmazonCredentialsException("Sem credencial cadastrada", "Tabela amazon_credentials não possui dados");
+				throw new AmazonCredentialsException();
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);
