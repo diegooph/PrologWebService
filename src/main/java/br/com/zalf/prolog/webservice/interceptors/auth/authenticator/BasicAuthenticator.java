@@ -22,14 +22,20 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
     public void validate(@NotNull final String value,
                             @NotNull final int[] permissions,
                             final boolean needsToHaveAll) throws NotAuthorizedException {
-        String[] valor = new String(Base64.getDecoder().decode(value.getBytes())).split(":");
-        if(valor.length != 2){
+        final String[] cpfDataNascimento = new String(Base64.getDecoder().decode(value.getBytes())).split(":");
+        if (cpfDataNascimento.length != 2) {
             throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
         }
-        try{
-            service.userHasPermission(Long.parseLong(valor[0]), FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(valor[1]).getTime(), permissions,
-                    needsToHaveAll);
-        }catch (ParseException e){
+
+        try {
+            if (!service.userHasPermission(
+                    Long.parseLong(cpfDataNascimento[0]),
+                    FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime(),
+                    permissions,
+                    needsToHaveAll)) {
+                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+            }
+        } catch (ParseException e) {
             e.printStackTrace();
             throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
         }

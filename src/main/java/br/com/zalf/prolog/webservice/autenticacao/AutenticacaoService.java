@@ -55,10 +55,10 @@ public class AutenticacaoService {
 		}
 	}
 
-	public boolean userHasPermission(Long cpf, Long dataNascimento, int[] permissions, boolean needsToHaveAll) {
+	public boolean userHasPermission(long cpf, long dataNascimento, int[] permissions, boolean needsToHaveAll) {
 		try {
 			return dao.userHasPermission(cpf, dataNascimento, permissions, needsToHaveAll);
-		}catch (SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}

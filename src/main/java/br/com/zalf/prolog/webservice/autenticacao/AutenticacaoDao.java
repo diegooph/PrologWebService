@@ -56,7 +56,7 @@ public interface AutenticacaoDao {
 	 *                       as permissões passadas no array ou apenas uma
 	 * @return verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
 	 */
-	boolean userHasPermission(@NotNull Long cpf, @NotNull Long dataNascimento, @NotNull int[] permissions,
+	boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
 							  boolean needsToHaveAll) throws SQLException;
 	
 	/**

@@ -89,8 +89,8 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean userHasPermission(@NotNull Long cpf, @NotNull Long dataNascimento, @NotNull int[] permissions, boolean needsToHaveAll)
-			throws SQLException{
+	public boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
+									 boolean needsToHaveAll) throws SQLException{
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
