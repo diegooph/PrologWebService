@@ -12,8 +12,8 @@ public class ProLogExceptionMapper implements ExceptionMapper<ProLogException>{
 
 	public Response toResponse(ProLogException ex) {
 		return Response
-				.noContent()
-				.entity(ErrorMessageFactory.create(ex))
+				.status(ex.getHttpStatusCode())
+				.entity(ProLogErrorFactory.create(ex))
 				.type(MediaType.APPLICATION_JSON).
 				build();
 	}

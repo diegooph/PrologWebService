@@ -22,6 +22,7 @@ public abstract class ProLogException extends Exception {
 	private final String moreInfoLink;
 
 	public ProLogException() {
+		super();
 		this.httpStatusCode = getHttpStatusCode();
 		this.applicationErrorCode = getApplicationErrorCode();
 		this.message = getMessage();
