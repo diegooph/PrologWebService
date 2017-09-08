@@ -23,7 +23,7 @@ public class VersaoDadosIntervaloDesatualizadaException extends ProLogException 
     }
 
     @Override
-    public int getApplicationErrorCode() {
+    public int getProLogErrorCode() {
         return ProLogErrorCodes.VERSAO_DADOS_INTERVALO_DESATUALIZADA.errorCode();
     }
 

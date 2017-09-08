@@ -14,7 +14,7 @@ public class ProLogErrorFactory {
 		final ProLogError proLogError = new ProLogError();
 		proLogError.setDeveloperMessage(ex.getDeveloperMessage());
 		proLogError.setMessage(ex.getMessage());
-		proLogError.setApplicationErrorCode(ex.getApplicationErrorCode());
+		proLogError.setProLogErrorCode(ex.getProLogErrorCode());
 		proLogError.setHttpStatusCode(ex.getHttpStatusCode());
 		proLogError.setMoreInfoLink(ex.getMoreInfoLink());
 		return proLogError;

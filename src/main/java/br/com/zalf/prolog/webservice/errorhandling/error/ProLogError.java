@@ -9,7 +9,7 @@ public class ProLogError {
 	private int httpStatusCode;
 	
 	/** application specific error code */
-	private int applicationErrorCode;
+	private int proLogErrorCode;
 	
 	/** message describing the error*/
 	@NotNull
@@ -35,12 +35,12 @@ public class ProLogError {
 		this.httpStatusCode = httpStatusCode;
 	}
 
-	public int getApplicationErrorCode() {
-		return applicationErrorCode;
+	public int getProLogErrorCode() {
+		return proLogErrorCode;
 	}
 
-	public void setApplicationErrorCode(int code) {
-		this.applicationErrorCode = code;
+	public void setProLogErrorCode(int code) {
+		this.proLogErrorCode = code;
 	}
 
 	public String getMessage() {
@@ -70,7 +70,7 @@ public class ProLogError {
 
 	@Override
 	public String toString() {
-		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", applicationErrorCode=" + applicationErrorCode
+		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
 				+ ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
 				+ "]";
 	}

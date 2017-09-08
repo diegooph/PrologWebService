@@ -17,7 +17,7 @@ public class AmazonCredentialsException extends ProLogException {
     }
 
     @Override
-    public int getApplicationErrorCode() {
+    public int getProLogErrorCode() {
         return ProLogErrorCodes.AMAZON_CREDENTIALS.errorCode();
     }
 
