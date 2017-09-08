@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoVersaoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 
 import java.sql.SQLException;
@@ -31,23 +33,21 @@ public class ControleIntervaloService {
         }
     }
 
-    public boolean insertOrUpdateIntervalo(long versaoDadosIntervalo, Intervalo intervalo)
-            throws VersaoDadosIntervaloDesatualizadaException {
-        final long codUnidade = intervalo.getColaborador().getCodUnidade();
-        if (versaoDadosIntervalo <= 0) {
-            throw new VersaoDadosIntervaloDesatualizadaException(codUnidade, versaoDadosIntervalo);
-        }
-
+    public ResponseIntervalo insertOrUpdateIntervalo(long versaoDadosIntervalo, Intervalo intervalo) {
+        EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
+            final long codUnidade = intervalo.getColaborador().getCodUnidade();
             final long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
-            if (versaoDadosBanco > versaoDadosIntervalo) {
-                throw new VersaoDadosIntervaloDesatualizadaException(codUnidade, versaoDadosIntervalo);
+            if (versaoDadosIntervalo < versaoDadosBanco) {
+                estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
+            } else {
+                estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
             }
             dao.insertOrUpdateIntervalo(intervalo);
-            return true;
+            return ResponseIntervalo.ok("Intervalo inserido com sucesso", estadoVersaoIntervalo);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return ResponseIntervalo.error("Erro ao inserir intervalo", estadoVersaoIntervalo);
         }
     }
 

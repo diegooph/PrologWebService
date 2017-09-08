@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
-public enum EstadoIntervaloSupport {
+public enum EstadoVersaoIntervalo {
     VERSAO_DESATUALIZADA("VERSAO_DESATUALIZADA"),
     VERSAO_ATUALIZADA("VERSAO_ATUALIZADA"),
-    SEM_PERMISSAO_INTERVALO("SEM_PERMISSAO_INTERVALO");
+    UNIDADE_SEM_USO_INTERVALO("UNIDADE_SEM_USO_INTERVALO");
 
     private final String key;
 
-    EstadoIntervaloSupport(String key) {
+    EstadoVersaoIntervalo(String key) {
         this.key = key;
     }
 

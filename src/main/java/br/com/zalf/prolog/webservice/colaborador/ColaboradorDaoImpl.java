@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoIntervaloSupport;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoVersaoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
@@ -341,7 +341,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 		final Long versaoDadosBanco = intervaloDao.getVersaoDadosIntervaloByUnidade(codUnidade);
 		final Long versaoDadosApp = loginRequest.getVersaoDadosIntervalo();
 		if (versaoDadosApp == null || versaoDadosApp < versaoDadosBanco) {
-			final IntervaloOfflineSupport intervalo = new IntervaloOfflineSupport(EstadoIntervaloSupport.VERSAO_DESATUALIZADA);
+			final IntervaloOfflineSupport intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_DESATUALIZADA);
 			final Optional<List<Colaborador>> optional = getColaboradoresComAcessoFuncaoByUnidade(
 					Pilares.Gente.Intervalo.MARCAR_INTERVALO,
 					codUnidade);
@@ -351,7 +351,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 			loginHolder.setIntervaloOfflineSupport(intervalo);
 		} else if (versaoDadosApp.equals(versaoDadosBanco)) {
 			// Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
-			loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoIntervaloSupport.VERSAO_ATUALIZADA));
+			loginHolder.setIntervaloOfflineSupport(new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_ATUALIZADA));
 		} else {
 			// Versão dados do app é depois da do banco, isso não deveria acontecer, como proceder?
 			// TODO: ??

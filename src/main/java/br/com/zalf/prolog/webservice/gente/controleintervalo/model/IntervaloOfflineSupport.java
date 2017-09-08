@@ -19,10 +19,10 @@ public class IntervaloOfflineSupport {
     private Long versaoDadosIntervalo;
 
     @NotNull
-    private EstadoIntervaloSupport estadoIntervaloSupport;
+    private EstadoVersaoIntervalo estadoVersaoIntervalo;
 
-    public IntervaloOfflineSupport(@NotNull EstadoIntervaloSupport estadoIntervaloSupport) {
-        this.estadoIntervaloSupport = estadoIntervaloSupport;
+    public IntervaloOfflineSupport(@NotNull EstadoVersaoIntervalo estadoVersaoIntervalo) {
+        this.estadoVersaoIntervalo = estadoVersaoIntervalo;
     }
 
     public List<Colaborador> getColaboradores() {
@@ -49,11 +49,11 @@ public class IntervaloOfflineSupport {
         this.versaoDadosIntervalo = versaoDadosIntervalo;
     }
 
-    public EstadoIntervaloSupport getEstadoIntervaloSupport() {
-        return estadoIntervaloSupport;
+    public EstadoVersaoIntervalo getEstadoVersaoIntervalo() {
+        return estadoVersaoIntervalo;
     }
 
-    public void setEstadoIntervaloSupport(EstadoIntervaloSupport estadoIntervaloSupport) {
-        this.estadoIntervaloSupport = estadoIntervaloSupport;
+    public void setEstadoVersaoIntervalo(EstadoVersaoIntervalo estadoVersaoIntervalo) {
+        this.estadoVersaoIntervalo = estadoVersaoIntervalo;
     }
 }
