@@ -335,10 +335,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     loginHolder.getColaborador().getSetor().getCodigo()));
         }
 
-        if (verificaSeFazGsd(loginHolder.getColaborador().getVisao().getPilares())) {
-            loginHolder.setAmazonCredentials(getAmazonCredentials());
-        }
-
         final Long codUnidade = getCodUnidadeByCpf(loginRequest.getCpf());
         final ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
         final Optional<Long> versaoDadosBanco = intervaloDao.getVersaoDadosIntervaloByUnidade(codUnidade);
@@ -591,6 +587,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return false;
     }
 
+    @Deprecated
     private boolean verificaSeFazGsd(List<Pilar> pilares) {
         for (Pilar pilar : pilares) {
             if (pilar.codigo == Pilares.SEGURANCA) {
