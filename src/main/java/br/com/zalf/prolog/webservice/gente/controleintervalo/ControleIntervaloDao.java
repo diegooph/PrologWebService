@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Zart on 18/08/2017.
@@ -25,5 +26,5 @@ public interface ControleIntervaloDao {
     List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
 
     @NotNull
-    long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+    Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
 }
