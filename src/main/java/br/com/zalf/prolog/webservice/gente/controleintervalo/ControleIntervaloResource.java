@@ -26,8 +26,13 @@ public class ControleIntervaloResource {
 
     private final ControleIntervaloService service = new ControleIntervaloService();
 
+    /**
+     * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes
+     * tinha permissão passar a não ter mais, ele não poderia sincronizar possíveis intervalos que tenha no celular.
+     * Por esse motivo, não pedimos permissão alguma.
+     */
     @POST
-    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
+    @Secured(authType = AuthType.BASIC)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             Intervalo intervalo) {
