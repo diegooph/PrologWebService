@@ -342,7 +342,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
         // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
         // e não existir nada, assumimos que a unidade também não possui nenhum colaborador com acesso a essa
-        // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco agilizando o login.
+        // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco, agilizando o login.
         // Porém, para isso funcionar bem, o ProLog deve garantir que se existe alguém de uma unidade com permissão de
         // marcação de intervalo, DEVE existir para essa unidade um valor de versão dos dados.
         if (!versaoDadosBanco.isPresent()) {
@@ -356,10 +356,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_ATUALIZADA);
             } else {
                 intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_DESATUALIZADA);
-                final Optional<List<Colaborador>> optional = getColaboradoresComAcessoFuncaoByUnidade(
+                final List<Colaborador> colaboradores = getColaboradoresComAcessoFuncaoByUnidade(
                         Pilares.Gente.Intervalo.MARCAR_INTERVALO,
                         codUnidade);
-                optional.ifPresent(intervalo::setColaboradores);
+                intervalo.setColaboradores(colaboradores);
                 intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(codUnidade, false));
                 intervalo.setVersaoDadosIntervalo(versaoDadosBanco.get());
 
@@ -400,8 +400,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @NotNull
-    private Optional<List<Colaborador>> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                                 @NotNull final Long codUnidade)
+    private List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
+                                                                       @NotNull final Long codUnidade)
             throws SQLException {
 
         Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
@@ -419,7 +419,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             rSet = stmt.executeQuery();
 
             if (!rSet.next()) {
-                return Optional.empty();
+                return Collections.emptyList();
             } else {
                 final List<Colaborador> colaboradores = new ArrayList<>();
                 do {
@@ -430,7 +430,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     colaboradores.add(colaborador);
                 } while (rSet.next());
 
-                return Optional.of(colaboradores);
+                return colaboradores;
             }
         } finally {
             closeConnection(conn, stmt, rSet);
