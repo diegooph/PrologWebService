@@ -38,7 +38,7 @@ public class ControleIntervaloService {
         try {
             final long codUnidade = intervalo.getColaborador().getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
-            @SuppressWarnings("OptionalGetWithoutIsPresent")
+            @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
             final long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDadosBanco) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
