@@ -13,9 +13,11 @@ import java.util.Optional;
  */
 public interface ControleIntervaloDao {
 
-    List<TipoIntervalo> getTiposIntervalos (Long cpf, boolean withCargos) throws SQLException;
+    List<TipoIntervalo> getTiposIntervalosByCpf(Long cpf, boolean withCargos) throws SQLException;
 
-    Intervalo getIntervaloAberto (Long cpf, TipoIntervalo tipoInvervalo) throws SQLException;
+    List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
+
+    Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException;
 
     void insertIntervalo(Intervalo intervalo) throws SQLException;
 
@@ -23,7 +25,7 @@ public interface ControleIntervaloDao {
 
     void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
 
-    List<Intervalo> getIntervalosColaborador (Long cpf, String codTipo, long limit, long offset) throws SQLException;
+    List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo, long limit, long offset) throws SQLException;
 
     @NotNull
     Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;

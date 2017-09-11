@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -38,6 +39,15 @@ public class ControleIntervaloResource {
             Intervalo intervalo) {
 
         return service.insertOrUpdateIntervalo(versaoDadosIntervalo, intervalo);
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Path("/{codUnidade}/offline-support")
+    public IntervaloOfflineSupport getIntervaloOfflineSupport(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            @PathParam("codUnidade") Long codUnidade) {
+        return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 
     @GET

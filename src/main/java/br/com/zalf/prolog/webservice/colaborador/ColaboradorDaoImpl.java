@@ -2,25 +2,18 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.EstadoVersaoIntervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.permissao.Visao;
-import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
-import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
@@ -323,62 +316,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException {
-        final LoginHolder loginHolder = new LoginHolder();
-        loginHolder.setColaborador(getByCpf(loginRequest.getCpf()));
-
-        if (verificaSeFazRelato(loginHolder.getColaborador().getVisao().getPilares())) {
-            loginHolder.setAmazonCredentials(getAmazonCredentials());
-            final RelatoDao relatoDao = new RelatoDaoImpl();
-            loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
-                    loginHolder.getColaborador().getCodUnidade(),
-                    loginHolder.getColaborador().getSetor().getCodigo()));
-        }
-
-        final Long codUnidade = getCodUnidadeByCpf(loginRequest.getCpf());
-        final ControleIntervaloDao intervaloDao = new ControleIntervaloDaoImpl();
-        final Optional<Long> versaoDadosBanco = intervaloDao.getVersaoDadosIntervaloByUnidade(codUnidade);
-        IntervaloOfflineSupport intervalo;
-
-        // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
-        // e não existir nada, assumimos que a unidade também não possui nenhum colaborador com acesso a essa
-        // funcionalidade, o que faz sentido. Além disso, poupamos uma nova requisição ao banco, agilizando o login.
-        // Porém, para isso funcionar bem, o ProLog deve garantir que se existe alguém de uma unidade com permissão de
-        // marcação de intervalo, DEVE existir para essa unidade um valor de versão dos dados.
-        if (!versaoDadosBanco.isPresent()) {
-            intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.UNIDADE_SEM_USO_INTERVALO);
-        } else {
-            // Se a unidade tem uma versão dos dados de intervalo no banco, nós precisamos comparar com a versão que
-            // o App enviou.
-            final Long versaoDadosApp = loginRequest.getVersaoDadosIntervalo();
-            if (versaoDadosApp != null && versaoDadosApp.equals(versaoDadosBanco.get())) {
-                // Se a versão está atualizada não precisamos setar mais nada no IntervaloOfflineSupport.
-                intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_ATUALIZADA);
-            } else {
-                intervalo = new IntervaloOfflineSupport(EstadoVersaoIntervalo.VERSAO_DESATUALIZADA);
-                final List<Colaborador> colaboradores = getColaboradoresComAcessoFuncaoByUnidade(
-                        Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-                        codUnidade);
-                intervalo.setColaboradores(colaboradores);
-                intervalo.setTiposIntervalo(intervaloDao.getTiposIntervalos(codUnidade, false));
-                intervalo.setVersaoDadosIntervalo(versaoDadosBanco.get());
-
-                if (versaoDadosApp != null && versaoDadosApp > versaoDadosBanco.get()) {
-                    // Isso nunca deveria acontecer! Porém, para não impedirmos o login do usuário, vamos retornar
-                    // como se sua versão estivesse desatualizada e mandar os dados que temos.
-                    L.e(TAG, "Erro versão dados intervalo",
-                            new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode ser " +
-                                    "maior do que a versão dos dados no banco(" + versaoDadosBanco.get() + ")!"));
-                }
-            }
-        }
-
-        loginHolder.setIntervaloOfflineSupport(intervalo);
-
-        return loginHolder;
-    }
-
-    @Override
     public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -400,7 +337,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @NotNull
-    private List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
+    @Override
+    public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
                                                                        @NotNull final Long codUnidade)
             throws SQLException {
 
@@ -447,7 +385,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
      * @throws SQLException Caso aconteça algum erro na requisação ao banco.
      */
     @NotNull
-    private Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException {
+    @Override
+    public Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException {
         Preconditions.checkNotNull(cpf, "cpf não pode ser null!");
 
         Connection conn = null;
@@ -572,46 +511,5 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setCodPermissao(rSet.getLong("PERMISSAO"));
         c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         return c;
-    }
-
-    private boolean verificaSeFazRelato(List<Pilar> pilares) {
-        for (Pilar pilar : pilares) {
-            if (pilar.codigo == Pilares.SEGURANCA) {
-                for (FuncaoProLog funcao : pilar.funcoes) {
-                    if (funcao.getCodigo() == Pilares.Seguranca.Relato.REALIZAR) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    @Deprecated
-    private boolean verificaSeFazGsd(List<Pilar> pilares) {
-        for (Pilar pilar : pilares) {
-            if (pilar.codigo == Pilares.SEGURANCA) {
-                for (FuncaoProLog funcao : pilar.funcoes) {
-                    if (funcao.getCodigo() == Pilares.Seguranca.GSD) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    @Deprecated
-    private boolean verificaSeMarcaIntervalo(List<Pilar> pilares) {
-        for (Pilar pilar : pilares) {
-            if (pilar.codigo == Pilares.GENTE) {
-                for (FuncaoProLog funcao : pilar.funcoes) {
-                    if (funcao.getCodigo() == Pilares.Gente.Intervalo.MARCAR_INTERVALO) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }
