@@ -25,7 +25,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     private static final String TAG = ControleIntervaloDaoImpl.class.getSimpleName();
 
     @Override
-    public List<TipoIntervalo> getTiposIntervalosByCpf(Long codUnidade, boolean withCargos) throws SQLException {
+    public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -45,12 +45,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, stmt, rSet);
         }
         return tipos;
-    }
-
-    @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        // TODO::!!!
-        return null;
     }
 
     @Override

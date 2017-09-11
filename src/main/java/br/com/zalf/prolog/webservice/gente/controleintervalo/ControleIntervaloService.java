@@ -21,7 +21,7 @@ public class ControleIntervaloService {
 
     public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) {
         try {
-            return dao.getTiposIntervalosByCpf(codUnidade, withCargos);
+            return dao.getTiposIntervalosByUnidade(codUnidade, withCargos);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

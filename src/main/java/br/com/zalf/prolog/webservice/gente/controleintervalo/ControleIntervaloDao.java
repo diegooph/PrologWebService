@@ -13,9 +13,7 @@ import java.util.Optional;
  */
 public interface ControleIntervaloDao {
 
-    List<TipoIntervalo> getTiposIntervalosByCpf(Long cpf, boolean withCargos) throws SQLException;
-
-    List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException;
+    List<TipoIntervalo> getTiposIntervalosByUnidade(Long cpf, boolean withCargos) throws SQLException;
 
     Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException;
 
