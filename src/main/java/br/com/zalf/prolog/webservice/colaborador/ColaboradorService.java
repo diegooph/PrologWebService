@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
-import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
@@ -79,25 +80,25 @@ public class ColaboradorService {
 		final LoginHolder loginHolder = new LoginHolder();
 		try {
 			loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf()));
-			final Visao visao = loginHolder.getColaborador().getVisao();
+			final Colaborador colaborador = loginHolder.getColaborador();
 
 			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
-			if (visao.hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
-//				loginHolder.setAmazonCredentials(getAmazonCredentials()); TODO!!
+			if (colaborador.getVisao().hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
+				loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
 				final RelatoDao relatoDao = new RelatoDaoImpl();
 				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
-						loginHolder.getColaborador().getCodUnidade(),
-						loginHolder.getColaborador().getSetor().getCodigo()));
+						colaborador.getCodUnidade(),
+						colaborador.getSetor().getCodigo()));
 			}
 
 			final ControleIntervaloService intervaloService = new ControleIntervaloService();
 			final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
 					loginRequest.getVersaoDadosIntervalo(),
-					dao.getCodUnidadeByCpf(loginRequest.getCpf()),
+					colaborador.getUnidade().getCodigo(),
 					this);
 			loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
 
-		} catch (SQLException e) {
+		} catch (SQLException | AmazonCredentialsException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Erro ao criar LoginHolder");
 		}

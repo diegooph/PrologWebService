@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
-import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
@@ -407,32 +406,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         throw new IllegalStateException("Unidade não encontrada para o CPF: " + cpf);
     }
 
-    private AmazonCredentials getAmazonCredentials() throws SQLException, AmazonCredentialsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM AMAZON_CREDENTIALS");
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                AmazonCredentials amazonCredentials = new AmazonCredentials();
-                amazonCredentials.setAccessKeyId(rSet.getString("ACCESS_KEY_ID"));
-                amazonCredentials.setSecretAccessKey(rSet.getString("SECRET_KEY"));
-                amazonCredentials.setUser(rSet.getString("USER_ID"));
-                return amazonCredentials;
-            } else {
-                throw new AmazonCredentialsException();
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-
     private Visao getVisaoByCpf(Long cpf) throws SQLException {
         Visao visao = new Visao();
-        List<Pilar> pilares = new ArrayList<>();
+        List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
