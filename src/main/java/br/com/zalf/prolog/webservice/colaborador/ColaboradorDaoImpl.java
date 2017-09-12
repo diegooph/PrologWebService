@@ -350,7 +350,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT CPF, NOME, DATA_NASCIMENTO FROM COLABORADOR C JOIN " +
                     "CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR WHERE C.COD_UNIDADE = ? AND COD_FUNCAO_PROLOG = ?;");
+                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
+                    "WHERE C.COD_UNIDADE = ? AND CFP.COD_FUNCAO_PROLOG = ? AND C.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setInt(2, codFuncaoProLog);
             rSet = stmt.executeQuery();
