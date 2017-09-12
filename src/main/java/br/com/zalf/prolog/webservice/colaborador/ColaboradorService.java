@@ -20,7 +20,7 @@ import java.util.List;
 public class ColaboradorService {
 
 	private final ColaboradorDao dao = Injection.provideColaboradorDao();
-	
+
 	public boolean insert(Colaborador colaborador) {
 		try {
 			return dao.insert(colaborador);
@@ -29,7 +29,7 @@ public class ColaboradorService {
 			return false;
 		}
 	}
-	
+
 	public boolean update(Long cpfAntigo, Colaborador colaborador) {
 		try {
 			return dao.update(cpfAntigo, colaborador);
@@ -38,7 +38,7 @@ public class ColaboradorService {
 			return false;
 		}
 	}
-	
+
 	public boolean delete(Long cpf) {
 		try {
 			return dao.delete(cpf);
@@ -47,7 +47,7 @@ public class ColaboradorService {
 			return false;
 		}
 	}
-	
+
 	public Colaborador getByCod(Long cpf) {
 		try {
 			return dao.getByCpf(cpf);
@@ -56,7 +56,7 @@ public class ColaboradorService {
 			return null;
 		}
 	}
-	
+
 	public List<Colaborador> getAll(Long codUnidade) {
 		try {
 			return dao.getAll(codUnidade);
@@ -74,9 +74,8 @@ public class ColaboradorService {
 			return null;
 		}
 	}
-	
-	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
 
+	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
 		final LoginHolder loginHolder = new LoginHolder();
 		try {
 			loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf()));
@@ -107,7 +106,7 @@ public class ColaboradorService {
 	}
 
 	public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-															   @NotNull final Long codUnidade) {
+																	  @NotNull final Long codUnidade) {
 		try {
 			return dao.getColaboradoresComAcessoFuncaoByUnidade(codFuncaoProLog, codUnidade);
 		}catch (SQLException e){

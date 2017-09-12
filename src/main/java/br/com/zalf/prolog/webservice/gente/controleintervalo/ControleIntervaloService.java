@@ -66,12 +66,10 @@ public class ControleIntervaloService {
         }
     }
 
-
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,
                                                               ColaboradorService colaboradorService) {
-
         IntervaloOfflineSupport intervaloOfflineSupport = null;
         try {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
