@@ -1,14 +1,13 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
-import java.sql.Date;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +30,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE token_autenticacao SET " +
 					"DATA_HORA = ? WHERE TOKEN = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
 			stmt.setString(2, token);
 			int count =  stmt.executeUpdate();
 			if (count > 0) {
@@ -44,7 +43,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyLogin(long cpf, java.util.Date dataNascimento) throws SQLException {
+	public boolean verifyIfUserExists(long cpf, long dataNascimento) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -54,7 +53,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
 					+ "AND C.STATUS_ATIVO = TRUE)");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
+			stmt.setDate(2, new Date(dataNascimento));
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				return rSet.getBoolean("EXISTS");
@@ -101,7 +100,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 					"FROM colaborador C JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
 					"WHERE c.cpf = ? and c.data_nascimento = ? ", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataNascimento)));
+			stmt.setDate(2, new Date(dataNascimento));
 			rSet = stmt.executeQuery();
 			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
 			return verifyPermissions(needsToHaveAll, permissoes, rSet);

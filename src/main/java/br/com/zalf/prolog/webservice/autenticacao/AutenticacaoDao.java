@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.autenticacao;
 
 import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
-import java.util.Date;
 
 /**
  * Autenticação do usuário no sistema.
@@ -33,7 +32,7 @@ public interface AutenticacaoDao {
 	 * @return valor booleano que representa se o usuário está cadastrado no banco de dados
 	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
 	 */
-	boolean verifyLogin(long cpf, Date dataNascimento) throws SQLException;
+	boolean verifyIfUserExists(long cpf, long dataNascimento) throws SQLException;
 
 	/**
 	 * Verifica se o usuário tem as permissões necessárias para acessar determinada função.

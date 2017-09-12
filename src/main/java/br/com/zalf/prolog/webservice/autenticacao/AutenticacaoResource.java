@@ -24,7 +24,7 @@ public class AutenticacaoResource {
 									@FormParam("dataNascimento") long dataNascimento) {
 
 		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-		if (service.verifyLogin(cpf, new Date(dataNascimento))) {
+		if (service.verifyIfUserExists(cpf, dataNascimento)) {
 			Autenticacao autenticacao = service.insertOrUpdate(cpf);
 			L.d(TAG, autenticacao.getToken());
 			return autenticacao;

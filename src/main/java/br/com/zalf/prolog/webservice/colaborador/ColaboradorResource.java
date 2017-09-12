@@ -1,16 +1,15 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
-import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 
 @Path("/colaboradores")
@@ -102,10 +101,10 @@ public class ColaboradorResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Deprecated
 	public Autenticacao DEPRECATED_VERIFY_LOGIN(@FormParam("cpf") Long cpf,
-									@FormParam("dataNascimento") long dataNascimento) {
+												@FormParam("dataNascimento") long dataNascimento) {
 		
 		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-		if (new AutenticacaoService().verifyLogin(cpf, new Date(dataNascimento))) {
+		if (new AutenticacaoService().verifyIfUserExists(cpf, dataNascimento)) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
 			L.d(TAG, autenticacao.getToken());

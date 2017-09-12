@@ -37,9 +37,9 @@ public class AutenticacaoService {
 		}
 	}
 
-	public boolean verifyLogin(long cpf, Date dataNascimento) {
+	public boolean verifyIfUserExists(long cpf, long dataNascimento) {
 		try {
-			return dao.verifyLogin(cpf, dataNascimento);
+			return dao.verifyIfUserExists(cpf, dataNascimento);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

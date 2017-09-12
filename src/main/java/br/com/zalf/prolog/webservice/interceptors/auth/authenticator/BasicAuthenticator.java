@@ -28,12 +28,20 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
         }
 
         try {
-            if (!service.userHasPermission(
-                    Long.parseLong(cpfDataNascimento[0]),
-                    FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime(),
-                    permissions,
-                    needsToHaveAll)) {
-                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+            if (permissions.length == 0) {
+                if (!service.verifyIfUserExists(
+                        Long.parseLong(cpfDataNascimento[0]),
+                        FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime())) {
+                    throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+                }
+            } else {
+                if (!service.userHasPermission(
+                        Long.parseLong(cpfDataNascimento[0]),
+                        FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime(),
+                        permissions,
+                        needsToHaveAll)) {
+                    throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
