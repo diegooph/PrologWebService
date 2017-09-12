@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -26,13 +27,27 @@ public class ControleIntervaloResource {
 
     private final ControleIntervaloService service = new ControleIntervaloService();
 
+    /**
+     * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes
+     * tinha permissão passar a não ter mais, ele não poderia sincronizar possíveis intervalos que tenha no celular.
+     * Por esse motivo, não pedimos permissão alguma.
+     */
     @POST
-    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO, authType = AuthType.BASIC)
+    @Secured(authType = AuthType.BASIC)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             Intervalo intervalo) {
 
         return service.insertOrUpdateIntervalo(versaoDadosIntervalo, intervalo);
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Path("/{codUnidade}/offline-support")
+    public IntervaloOfflineSupport getIntervaloOfflineSupport(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
+            @PathParam("codUnidade") Long codUnidade) {
+        return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 
     @GET

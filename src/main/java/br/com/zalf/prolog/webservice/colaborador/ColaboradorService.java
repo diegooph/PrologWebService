@@ -1,7 +1,14 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import com.sun.istack.internal.NotNull;
+
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -68,12 +75,43 @@ public class ColaboradorService {
 	}
 	
 	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
-		try{
-			return dao.getLoginHolder(loginRequest);
-		}catch(SQLException | AmazonCredentialsException e){
+
+		final LoginHolder loginHolder = new LoginHolder();
+		try {
+			loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf()));
+			final Visao visao = loginHolder.getColaborador().getVisao();
+
+			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
+			if (visao.hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
+//				loginHolder.setAmazonCredentials(getAmazonCredentials()); TODO!!
+				final RelatoDao relatoDao = new RelatoDaoImpl();
+				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
+						loginHolder.getColaborador().getCodUnidade(),
+						loginHolder.getColaborador().getSetor().getCodigo()));
+			}
+
+			final ControleIntervaloService intervaloService = new ControleIntervaloService();
+			final IntervaloOfflineSupport intervaloOfflineSupport = intervaloService.getIntervaloOfflineSupport(
+					loginRequest.getVersaoDadosIntervalo(),
+					dao.getCodUnidadeByCpf(loginRequest.getCpf()),
+					this);
+			loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
+
+		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new RuntimeException("Erro ao criar LoginHolder");
 		}
-		
+
+		return loginHolder;
+	}
+
+	public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
+															   @NotNull final Long codUnidade) {
+		try {
+			return dao.getColaboradoresComAcessoFuncaoByUnidade(codFuncaoProLog, codUnidade);
+		}catch (SQLException e){
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao buscar colaboradores com acesso a unidade");
+		}
 	}
 }

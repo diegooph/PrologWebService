@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
@@ -65,16 +64,6 @@ public interface ColaboradorDao {
 	List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) throws SQLException;
 
 	/**
-	 * retorna um objeto {@link LoginHolder} contendo o colaborador com o cpf marcado e informações
-	 * úteis para a execução da aplicação.
-	 *
-	 * @param loginRequest Um {@link LoginRequest}.
-	 * @return o login do colaborador com o cpf marcado
-	 * @throws SQLException caso ocorrer erro no banco
-	 */
-	LoginHolder getLoginHolder(LoginRequest loginRequest) throws SQLException, AmazonCredentialsException;
-
-	/**
 	 * Verifica se determinado CPF existe em determinada unidade.
 	 *
 	 * @param cpf cpf a ser verificado
@@ -93,4 +82,9 @@ public interface ColaboradorDao {
 	 */
 	@NotNull
     Colaborador getByToken(@NotNull final String token) throws SQLException;
+
+	List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
+															   @NotNull final Long codUnidade) throws SQLException;
+
+	Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException;
 }

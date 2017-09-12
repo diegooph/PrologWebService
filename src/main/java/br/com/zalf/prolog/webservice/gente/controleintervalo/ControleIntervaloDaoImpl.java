@@ -15,14 +15,17 @@ import java.sql.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Zart on 18/08/2017.
  */
 public class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
 
+    private static final String TAG = ControleIntervaloDaoImpl.class.getSimpleName();
+
     @Override
-    public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) throws SQLException {
+    public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -214,7 +217,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
 
     @Override
     @NotNull
-    public long getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
+    public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -224,13 +227,13 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getLong("VERSAO_DADOS");
+                return Optional.of(rSet.getLong("VERSAO_DADOS"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
 
-        throw new IllegalStateException("Unidade com código " + codUnidade + " não encontrada na tabela INTERVALO_UNIDADE");
+        return Optional.empty();
     }
 
     private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {
