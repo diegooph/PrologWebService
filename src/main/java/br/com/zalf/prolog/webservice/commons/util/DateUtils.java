@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class DateUtils {
 
@@ -106,6 +107,9 @@ public class DateUtils {
 		}else{
 			return DateUtils.toSqlDate(LocalDate.of(ano, mes-1, 21));
 		}
+	}
 
+	public static long secondsBetween(final long startDateMillis, final long endDateMillis) {
+		return TimeUnit.MILLISECONDS.toSeconds(endDateMillis - startDateMillis);
 	}
 }

@@ -1,14 +1,28 @@
 Change Log
 ==========
 
-<a name="v0.0.29"></a>
-## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (release-date) [unreleased]
+<a name="v0.0.31"></a>
+## Version [v0.0.31](https://github.com/luizfp/PrologWebService/compare/v0.0.30...v0.0.31) (release-date) [unreleased]
 
 ### Features
 
 #### Refactor
 
 #### Bug Fixes
+
+<a name="v0.0.30"></a>
+## Version [v0.0.30](https://github.com/luizfp/PrologWebService/compare/v0.0.29...v0.0.30) (2017-09-06)
+
+#### Bug Fixes
+
+* Corrige calculo do tempo decorrido de um intervalo
+
+<a name="v0.0.29"></a>
+## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (2017-09-05)
+
+#### Bug Fixes
+
+* Corrige comparação de códigos ao finalizar um intervalo
 
 <a name="v0.0.28"></a>
 ## Version [v0.0.28](https://github.com/luizfp/PrologWebService/compare/v0.0.27...v0.0.28) (2017-08-31)

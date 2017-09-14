@@ -2065,8 +2065,8 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   "RESULTADO JORNADA" TEXT,
   "DEV PDV" TEXT,
   "META DEV PDV" TEXT,
-  "RECEBE PRÊMIO" TEXT,
-    "VALOR PRÊMIO" TEXT,
+  "RECEBE BÔNUS" TEXT,
+    "VALOR BÔNUS" TEXT,
     "Nº FATOR 1" BIGINT,
     "Nº FATOR 2" BIGINT,
     "Nº ROTAS" BIGINT,
@@ -2093,12 +2093,12 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   REPLACE(round( ((sum(entregasnaorealizadas + entregasparciais))::numeric / sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric)*100, 2)::TEXT, '.', ',') || '%' as "DEV PDV",
   REPLACE(round((meta_dev_pdv * 100)::numeric, 2)::TEXT, '.', ',') || '%' AS "META DEV PDV",
   CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv THEN
-  'SIM' ELSE 'NÃO' END as "RECEBE PRÊMIO",
+  'SIM' ELSE 'NÃO' END as "RECEBE BÔNUS",
   REPLACE(  (CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
   PCI.bonus_motorista
     WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_ajudante THEN
   PCI.bonus_ajudante
-  ELSE 0 END)::TEXT, '.', ',') as "VALOR PRÊMIO",
+  ELSE 0 END)::TEXT, '.', ',') as "VALOR BÔNUS",
   sum(CASE WHEN fator = 1 then 1 else 0 end) as "Nº FATOR 1",
   sum(CASE WHEN fator = 2 then 1 else 0 end) as "Nº FATOR 2",
   sum(CASE WHEN valor_rota > 0 THEN 1 else 0 END) as "Nº ROTAS",
@@ -2110,14 +2110,19 @@ CREATE OR REPLACE FUNCTION func_relatorio_consolidado_produtividade (f_dt_inicia
   sum(CASE WHEN valor_as > 0 THEN 1 else 0 END) as "Nº AS",
   REPLACE('R$ ' || trunc(sum(valor_AS) :: NUMERIC, 2), '.', ',') AS "VALOR AS",
   sum(CASE WHEN valor > 0 THEN 1 else 0 END) as "Nº MAPAS TOTAL",
-  REPLACE('R$ ' || trunc(sum(valor) :: NUMERIC, 2), '.', ',') AS "VALOR TOTAL"
+  REPLACE('R$ ' ||trunc(((CASE WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_motorista THEN
+  PCI.bonus_motorista
+    WHEN round(1 - sum(entregascompletas)/sum(entregascompletas+entregasparciais+entregasnaorealizadas)::numeric, 4) <= meta_dev_pdv AND VPE.cod_funcao = PCI.cod_cargo_ajudante THEN
+  PCI.bonus_ajudante
+  ELSE 0 END) +
+   sum(valor)) :: NUMERIC, 2), '.', ',') AS "VALOR TOTAL"
 FROM view_produtividade_extrato vpe
   LEFT JOIN pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
 -- WHERE vpe.cod_unidade = 11 AND data BETWEEN '2017-06-21' AND '2017-07-20'
 WHERE vpe.cod_unidade = f_cod_unidade AND vpe.data BETWEEN f_dt_inicial AND f_dt_final
 GROUP BY matricula_ambev, nome_colaborador, vpe.cod_funcao,funcao, meta_dev_pdv, PCI.cod_cargo_ajudante, PCI.cod_cargo_motorista, PCI.bonus_ajudante, PCI.bonus_motorista
 ORDER BY funcao, nome_colaborador;
-  $func$ LANGUAGE SQL;
+$func$ LANGUAGE SQL;
 
 -- query para gerar o relatório de realização do quiz por cargos
 CREATE OR REPLACE FUNCTION func_relatorio_quiz_realizacao_cargo (f_cod_unidade BIGINT, f_equipe TEXT)
