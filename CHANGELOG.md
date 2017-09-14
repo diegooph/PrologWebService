@@ -1,47 +1,40 @@
 Change Log
 ==========
 
-<a name="v0.0.31"></a>
-## Version [v0.0.31](https://github.com/luizfp/PrologWebService/compare/v0.0.30...v0.0.31) (release-date) [unreleased]
+<a name="v0.0.32"></a>
+## Version [v0.0.32](https://github.com/luizfp/PrologWebService/compare/v0.0.31...v0.0.32) (release-date) - [unreleased]
 
-### Features
+<a name="v0.0.31"></a>
+## Version [v0.0.31](https://github.com/luizfp/PrologWebService/compare/v0.0.30...v0.0.31) (2017-09-14)
 
 #### Refactor
-
-#### Bug Fixes
+* Cria novo resource para o checklist, pluralizado -> `checklists`
 
 <a name="v0.0.30"></a>
 ## Version [v0.0.30](https://github.com/luizfp/PrologWebService/compare/v0.0.29...v0.0.30) (2017-09-06)
 
 #### Bug Fixes
-
 * Corrige calculo do tempo decorrido de um intervalo
 
 <a name="v0.0.29"></a>
 ## Version [v0.0.29](https://github.com/luizfp/PrologWebService/compare/v0.0.28...v0.0.29) (2017-09-05)
 
 #### Bug Fixes
-
 * Corrige comparação de códigos ao finalizar um intervalo
 
 <a name="v0.0.28"></a>
 ## Version [v0.0.28](https://github.com/luizfp/PrologWebService/compare/v0.0.27...v0.0.28) (2017-08-31)
 
 ### Features
-
 * Implementa relatório com o extrato de intervalos realizados
 
-#### Refactor
-
 #### Bug Fixes
-
 * Corrige tempo de largada de alguns mapas com HRMATINAL igual a zero
 
 <a name="v0.0.27"></a>
 ## Version [v0.0.27](https://github.com/luizfp/PrologWebService/compare/v0.0.26...v0.0.27) (2017-08-23)
 
 ### Features
-
 * Implementa relatório com o resumo dos checklists realizados (csv/report)
 
 #### Refactor
@@ -52,7 +45,6 @@ Change Log
 ## Version [v0.0.26](https://github.com/luizfp/PrologWebService/compare/v0.0.25...v0.0.26) (2017-08-21)
 
 ### Features
-
 * Adiciona colunas referente a Jornada no relatório consolidado da produtividade
 * Implementa controle de intervalos
 
@@ -62,23 +54,19 @@ Change Log
 ## Version [v0.0.25](https://github.com/luizfp/PrologWebService/compare/v0.0.24...v0.0.25) (2017-08-16)
 
 ### Features
-
 * Implementa relatório de estratificação dos serviços fechados (pneus)
 * Implementa integração com AvaCorp(Avilan)
 
 #### Refactor
-
 * Altera o código do pneu de BIGINT para VARCHAR em todas as tabelas
 
 <a name="v0.0.24"></a>
 ## Version [v0.0.24](https://github.com/luizfp/PrologWebService/compare/v0.0.23...v0.0.24) (2017-08-08)
 
 ### Features
-
 * Implementa método para buscar apenas os motoristas e ajudantes de uma unidade
 
 #### Refactor
-
 * Altera query de busca do relatório de realização do Quiz por cargo, agora usa function
 
 <a name="v0.0.23"></a>
