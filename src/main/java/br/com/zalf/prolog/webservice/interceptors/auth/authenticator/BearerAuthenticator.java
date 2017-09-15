@@ -15,14 +15,15 @@ public final class BearerAuthenticator extends ProLogAuthenticator {
 
     @Override
     public void validate(@NotNull final String value,
-                            @NotNull final int[] permissions,
-                            final boolean needsToHaveAll) throws NotAuthorizedException {
+                         @NotNull final int[] permissions,
+                         final boolean needsToHaveAllPermissions,
+                         final boolean considerOnlyActiveUsers) throws NotAuthorizedException {
         L.d(TAG, "Token: " + value);
         if (permissions.length == 0) {
-            if (!service.verifyIfTokenExists(value))
+            if (!service.verifyIfTokenExists(value, considerOnlyActiveUsers))
                 throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
         } else {
-            if (!service.userHasPermission(value, permissions, needsToHaveAll))
+            if (!service.userHasPermission(value, permissions, needsToHaveAllPermissions, considerOnlyActiveUsers))
                 throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
         }
     }

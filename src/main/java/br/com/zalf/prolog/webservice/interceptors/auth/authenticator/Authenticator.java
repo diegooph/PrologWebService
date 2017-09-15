@@ -7,5 +7,6 @@ import javax.ws.rs.NotAuthorizedException;
 public interface Authenticator {
     void validate(@NotNull final String value,
                   @NotNull final int[] permissions,
-                  final boolean needsToHaveAll) throws NotAuthorizedException;
+                  final boolean needsToHaveAllPermissions,
+                  final boolean considerOnlyActiveUsers) throws NotAuthorizedException;
 }

@@ -65,7 +65,7 @@ public class AuthenticationManager {
 
         @Override
         public Boolean load(String token) throws Exception {
-            return autenticacaoService.verifyIfTokenExists(token);
+            return autenticacaoService.verifyIfTokenExists(token, true);
         }
     }
 }

@@ -104,7 +104,7 @@ public class ColaboradorResource {
 												@FormParam("dataNascimento") long dataNascimento) {
 		
 		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-		if (new AutenticacaoService().verifyIfUserExists(cpf, dataNascimento)) {
+		if (new AutenticacaoService().verifyIfUserExists(cpf, dataNascimento, true)) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
 			L.d(TAG, autenticacao.getToken());

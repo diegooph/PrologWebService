@@ -19,31 +19,38 @@ public interface AutenticacaoDao {
 	 * Verifica a existência de um token.
 	 *
 	 * @param token um token
+	 * @param apenasUsuariosAtivos indica se devemos considerar na verificação apenas usuário
+	 *                             que estão ativados no sistema (STATUS_ATIVO = true).
 	 * @return boolean com o resultado da requisição
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	boolean verifyIfTokenExists(String token) throws SQLException;
+	boolean verifyIfTokenExists(String token, boolean apenasUsuariosAtivos) throws SQLException;
 
 	/**
 	 * Verifica a existência de um CPF e data de nascimento.
 	 *
 	 * @param cpf do colaborador a ser verificada a existência
 	 * @param dataNascimento do colaborador a ser verificada a existência
+	 * @param apenasUsuariosAtivos indica se devemos considerar na verificação apenas usuário
+	 *                             que estão ativados no sistema (STATUS_ATIVO = true).
 	 * @return valor booleano que representa se o usuário está cadastrado no banco de dados
 	 * @throws SQLException caso não seja possível verificar a existência no banco de dados
 	 */
-	boolean verifyIfUserExists(long cpf, long dataNascimento) throws SQLException;
+	boolean verifyIfUserExists(long cpf, long dataNascimento, boolean apenasUsuariosAtivos) throws SQLException;
 
 	/**
 	 * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
 	 *
 	 * @param token um token
 	 * @param permissions as permissões que esse token precisa ter
-	 * @param needsToHaveAll um valor booleano informando se o usuário precisa ter todas
-	 *                       as permissões passadas no array ou apenas uma
+	 * @param needsToHaveAllPermissions um valor booleano informando se o usuário precisa ter todas
+	 *                       			as permissões passadas no array ou apenas uma
+	 * @param apenasUsuariosAtivos indica se devemos considerar na verificação apenas usuário
+	 *                             que estão ativados no sistema (STATUS_ATIVO = true).
 	 * @return verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
 	 */
-	boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
+	boolean userHasPermission(@NotNull String token, @NotNull int[] permissions,
+							  boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos)
 			throws SQLException;
 
 	/**
@@ -51,13 +58,15 @@ public interface AutenticacaoDao {
 	 * @param cpf um cpf
 	 * @param dataNascimento uma data de nascimento
 	 * @param permissions as permissões que esse cpf precisa ter
-	 * @param needsToHaveAll um valor booleano informando se o usuário precisa ter todas
-	 *                       as permissões passadas no array ou apenas uma
+	 * @param needsToHaveAllPermissions um valor booleano informando se o usuário precisa ter todas
+	 *                       as permissões passadas no array ou apenas uma.
+	 * @param apenasUsuariosAtivos indica se devemos considerar na verificação apenas usuário
+	 *                             que estão ativados no sistema (STATUS_ATIVO = true).
 	 * @return verdadeiro se o usuário tem acesso a uma ou todas as permissões passadas; caso contrário falso.
 	 */
 	boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
-							  boolean needsToHaveAll) throws SQLException;
-	
+							  boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos) throws SQLException;
+
 	/**
 	 * Deleta um token da tabela, usado quando o usuário solicita logout do sistema.
 	 *

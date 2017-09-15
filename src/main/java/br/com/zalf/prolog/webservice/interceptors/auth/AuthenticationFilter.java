@@ -54,13 +54,21 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
-            authenticator.validate(value, methodAnnot.permissions(), methodAnnot.needsToHaveAll());
+            authenticator.validate(
+                    value,
+                    methodAnnot.permissions(),
+                    methodAnnot.needsToHaveAllPermissions(),
+                    methodAnnot.considerOnlyActiveUsers());
         }
 
         final Class<?> resourceClass = resourceInfo.getResourceClass();
         final Secured classAnnot = resourceClass.getAnnotation(Secured.class);
         if (classAnnot != null) {
-            authenticator.validate(value, classAnnot.permissions(), classAnnot.needsToHaveAll());
+            authenticator.validate(
+                    value,
+                    classAnnot.permissions(),
+                    classAnnot.needsToHaveAllPermissions(),
+                    classAnnot.considerOnlyActiveUsers());
         }
     }
 }

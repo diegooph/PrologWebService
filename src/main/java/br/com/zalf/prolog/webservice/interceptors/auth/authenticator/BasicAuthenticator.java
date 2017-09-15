@@ -20,8 +20,9 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
 
     @Override
     public void validate(@NotNull final String value,
-                            @NotNull final int[] permissions,
-                            final boolean needsToHaveAll) throws NotAuthorizedException {
+                         @NotNull final int[] permissions,
+                         final boolean needsToHaveAllPermissions,
+                         final boolean considerOnlyActiveUsers) throws NotAuthorizedException {
         final String[] cpfDataNascimento = new String(Base64.getDecoder().decode(value.getBytes())).split(":");
         if (cpfDataNascimento.length != 2) {
             throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
@@ -31,7 +32,8 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
             if (permissions.length == 0) {
                 if (!service.verifyIfUserExists(
                         Long.parseLong(cpfDataNascimento[0]),
-                        FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime())) {
+                        FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime(),
+                        considerOnlyActiveUsers)) {
                     throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
                 }
             } else {
@@ -39,7 +41,8 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
                         Long.parseLong(cpfDataNascimento[0]),
                         FORMAT_DATA_NASCIMENTO_BASIC_AUTHORIZATION.parse(cpfDataNascimento[1]).getTime(),
                         permissions,
-                        needsToHaveAll)) {
+                        needsToHaveAllPermissions,
+                        considerOnlyActiveUsers)) {
                     throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
                 }
             }

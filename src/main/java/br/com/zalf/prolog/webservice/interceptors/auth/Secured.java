@@ -13,5 +13,6 @@ public @interface Secured {
 
     AuthType authType() default AuthType.BEARER;
     int[] permissions() default {};
-    boolean needsToHaveAll() default false;
+    boolean needsToHaveAllPermissions() default false;
+    boolean considerOnlyActiveUsers() default true;
 }

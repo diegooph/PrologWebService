@@ -133,7 +133,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     @Override
     public boolean createEquipe(Request<Equipe> request) throws SQLException {
         AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
-        if (autenticacaoDao.verifyIfTokenExists(request.getToken())) {
+        if (autenticacaoDao.verifyIfTokenExists(request.getToken(), true)) {
             Connection conn = null;
             PreparedStatement stmt = null;
             try {
