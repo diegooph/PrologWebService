@@ -30,10 +30,11 @@ public class ControleIntervaloResource {
     /**
      * O motivo deste método não necessitar nem da permissão de marcacão de intervalo, é que se um colaborador que antes
      * tinha permissão passar a não ter mais, ele não poderia sincronizar possíveis intervalos que tenha no celular.
-     * Por esse motivo, não pedimos permissão alguma.
+     * Por esse motivo, não pedimos permissão alguma. Para permitir que mesmo colaboradores que estejam inativos
+     * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
     @POST
-    @Secured(authType = AuthType.BASIC)
+    @Secured(authType = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             Intervalo intervalo) {
