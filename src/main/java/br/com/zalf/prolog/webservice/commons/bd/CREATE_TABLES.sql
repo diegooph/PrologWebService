@@ -2360,4 +2360,23 @@ FROM
 ORDER BY EXTRACT(DAY FROM I.DATA_HORA_INICIO), C.NOME, I.DATA_HORA_INICIO
 $func$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION func_relatorio_acessos_produtividade_estratificado (f_cod_unidade BIGINT, f_data_inicial DATE,
+  f_data_final DATE, f_cpf TEXT)
+  RETURNS TABLE (
+  "NOME" TEXT,
+    "CARGO" TEXT,
+    "EQUIPE" TEXT,
+    "DATA DO ACESSO" TEXT,
+    "PERÍODO CONSULTADO" TEXT
+  ) AS
+  $func$
+SELECT C.NOME, F.NOME, E.nome, TO_CHAR(AP.data_hora_consulta, 'DD/MM/YYYY HH24:MM'), AP.mes_ano_consultado
+FROM acessos_produtividade AP JOIN COLABORADOR C ON C.CPF = AP.cpf_colaborador
+  JOIN EQUIPE E ON E.CODIGO = C.cod_equipe AND E.cod_unidade = C.COD_UNIDADE
+  JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND F.COD_EMPRESA = C.cod_empresa
+WHERE AP.cpf_colaborador :: TEXT LIKE f_cpf AND AP.data_hora_consulta :: DATE BETWEEN f_data_inicial AND f_data_final AND
+      AP.cod_unidade = f_cod_unidade
+ORDER BY AP.data_hora_consulta
+$func$ LANGUAGE SQL;
+
 --
