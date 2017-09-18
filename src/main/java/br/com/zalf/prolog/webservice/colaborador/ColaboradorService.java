@@ -3,8 +3,11 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
@@ -113,5 +116,36 @@ public class ColaboradorService {
 			e.printStackTrace();
 			throw new RuntimeException("Erro ao buscar colaboradores com acesso a unidade");
 		}
+	}
+
+	@Deprecated
+	public LoginHolder getLoginHolder(Long cpf) {
+		final LoginHolder loginHolder = new LoginHolder();
+		try {
+			loginHolder.setColaborador(dao.getByCpf(cpf));
+			final Colaborador colaborador = loginHolder.getColaborador();
+
+			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
+			if (colaborador.getVisao().hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
+				loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
+				final RelatoDao relatoDao = new RelatoDaoImpl();
+				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
+						colaborador.getCodUnidade(),
+						colaborador.getSetor().getCodigo()));
+			}
+
+			// Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
+			if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
+				final ControleIntervaloDao dao = new ControleIntervaloDaoImpl();
+				final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
+						colaborador.getUnidade().getCodigo(),
+						false);
+				loginHolder.setTiposIntervalos(tiposIntervalo);
+			}
+		} catch (SQLException | AmazonCredentialsException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao criar LoginHolder");
+		}
+		return loginHolder;
 	}
 }

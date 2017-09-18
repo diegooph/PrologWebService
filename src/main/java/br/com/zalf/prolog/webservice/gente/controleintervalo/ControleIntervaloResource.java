@@ -98,12 +98,22 @@ public class ControleIntervaloResource {
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
                                                         @PathParam("codTipoIntervalo") Long codTipo) {
-        final Intervalo intervalo = new Intervalo();
-        final Colaborador colaborador = new Colaborador();
+        // Cria unidade.
         final Unidade unidade = new Unidade();
         unidade.setCodigo(codUnidade);
+
+        // Cria colaborador.
+        final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(cpf);
         colaborador.setUnidade(unidade);
+
+        // Cria tipo intervalo.
+        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(codTipo);
+
+        // Cria intervalo.
+        final Intervalo intervalo = new Intervalo();
+        intervalo.setTipo(tipoIntervalo);
         intervalo.setColaborador(colaborador);
         intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
         intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
@@ -119,9 +129,14 @@ public class ControleIntervaloResource {
     @Path("/{codUnidade}")
     @Deprecated
     public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
+        // Seta por questões de compatibilidade.
+        intervalo.setDataHoraInicio(null);
         intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
         intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
-        intervalo.getColaborador().getUnidade().setCodigo(codUnidade);
+        final Colaborador colaborador = intervalo.getColaborador();
+        final Unidade unidade = new Unidade();
+        unidade.setCodigo(codUnidade);
+        colaborador.setUnidade(unidade);
         if (service.insertOrUpdateIntervalo(intervalo)) {
             return Response.ok("Intervalo finalizado com sucesso");
         } else {

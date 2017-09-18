@@ -90,7 +90,7 @@ public class ColaboradorResource {
 	@Path("/loginHolder/{cpf}")
 	@Deprecated
 	public LoginHolder DEPRECATE_GET_LOGIN_HOLDER(@PathParam("cpf") Long cpf) {
-		return service.getLoginHolder(new LoginRequest(cpf, null));
+		return service.getLoginHolder(cpf);
 	}
 
 	/**
