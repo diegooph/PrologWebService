@@ -120,10 +120,19 @@ public class ControleIntervaloService {
     }
 
     @Deprecated
-    public boolean insertOrUpdateIntervalo(Intervalo intervalo) {
+    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
         try {
-            dao.insertOrUpdateIntervalo(intervalo);
-            return true;
+            return dao.iniciaIntervalo(codUnidade, cpf, codTipo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Deprecated
+    public boolean insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
+        try {
+            return dao.insereFinalizacaoIntervalo(intervalo, codUnidade);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

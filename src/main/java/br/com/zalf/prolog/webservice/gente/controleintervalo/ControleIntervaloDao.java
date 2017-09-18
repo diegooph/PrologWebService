@@ -27,4 +27,13 @@ public interface ControleIntervaloDao {
 
     @NotNull
     Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException;
+
+    @Deprecated
+    Long iniciaIntervalo (Long codUnidade, Long cpf, Long codTipo) throws SQLException;
+
+    @Deprecated
+    boolean finalizaIntervaloEmAberto (Intervalo intervalo) throws SQLException;
+
+    @Deprecated
+    boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException;
 }

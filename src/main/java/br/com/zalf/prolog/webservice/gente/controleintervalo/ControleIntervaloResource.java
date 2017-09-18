@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.colaborador.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -13,7 +15,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -98,29 +99,11 @@ public class ControleIntervaloResource {
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
                                                         @PathParam("codTipoIntervalo") Long codTipo) {
-        // Cria unidade.
-        final Unidade unidade = new Unidade();
-        unidade.setCodigo(codUnidade);
-
-        // Cria colaborador.
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(cpf);
-        colaborador.setUnidade(unidade);
-
-        // Cria tipo intervalo.
-        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(codTipo);
-
-        // Cria intervalo.
-        final Intervalo intervalo = new Intervalo();
-        intervalo.setTipo(tipoIntervalo);
-        intervalo.setColaborador(colaborador);
-        intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
-        intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
-        if (service.insertOrUpdateIntervalo(intervalo)) {
-            return Response.ok("Intervalo finalizado com sucesso");
-        }else {
-            return Response.error("Erro ao finalizar o intervalo");
+        Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
+        if(codIntervalo != null){
+            return ResponseWithCod.Ok("Intervalo iniciado com sucesso", codIntervalo);
+        }else{
+            return Response.error("Erro ao iniciar o intervalo");
         }
     }
 
@@ -129,17 +112,9 @@ public class ControleIntervaloResource {
     @Path("/{codUnidade}")
     @Deprecated
     public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(Intervalo intervalo, @PathParam("codUnidade") Long codUnidade) {
-        // Seta por questões de compatibilidade.
-        intervalo.setDataHoraInicio(null);
-        intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
-        intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
-        final Colaborador colaborador = intervalo.getColaborador();
-        final Unidade unidade = new Unidade();
-        unidade.setCodigo(codUnidade);
-        colaborador.setUnidade(unidade);
-        if (service.insertOrUpdateIntervalo(intervalo)) {
+        if(service.insereFinalizacaoIntervalo(intervalo, codUnidade)){
             return Response.ok("Intervalo finalizado com sucesso");
-        } else {
+        }else {
             return Response.error("Erro ao finalizar o intervalo");
         }
     }

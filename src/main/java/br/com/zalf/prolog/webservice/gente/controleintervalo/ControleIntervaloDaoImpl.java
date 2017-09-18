@@ -83,31 +83,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return null;
     }
 
-    public void updateIntervalo(Intervalo intervalo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
-                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ? " +
-                    "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
-            stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
-            stmt.setTimestamp(2, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
-            stmt.setString(3, intervalo.getFonteDataHoraFim().key());
-            stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
-            stmt.setString(5, intervalo.getJustificativaEstouro());
-            stmt.setString(6, intervalo.getJustificativaTempoRecomendado());
-            stmt.setLong(7, intervalo.getColaborador().getCpf());
-            stmt.setLong(8, intervalo.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao finalizar o intervalo");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
     @Override
     public void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException {
         Connection conn = null;
@@ -179,6 +154,32 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
+    public void updateIntervalo(Intervalo intervalo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
+                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ? " +
+                    "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
+            stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
+            stmt.setTimestamp(2, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
+            stmt.setString(3, intervalo.getFonteDataHoraFim().key());
+            stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
+            stmt.setString(5, intervalo.getJustificativaEstouro());
+            stmt.setString(6, intervalo.getJustificativaTempoRecomendado());
+            stmt.setLong(7, intervalo.getColaborador().getCpf());
+            stmt.setLong(8, intervalo.getCodigo());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao finalizar o intervalo");
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
     public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo, long limit, long offset) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -235,6 +236,115 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         }
 
         return Optional.empty();
+    }
+
+    @Deprecated
+    @Override
+    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            Intervalo intervalo = new Intervalo();
+            TipoIntervalo tipoIntervalo = new TipoIntervalo();
+            tipoIntervalo.setCodigo(codTipo);
+            Colaborador colaborador = new Colaborador();
+            colaborador.setCpf(cpf);
+            intervalo.setTipo(tipoIntervalo);
+            intervalo.setColaborador(colaborador);
+            intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
+            intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
+            return insertIntervalo(intervalo, codUnidade, conn);
+        } finally {
+            closeConnection(conn, null, null);
+        }
+    }
+
+    @Deprecated
+    @Override
+    public boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException{
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            // Seta fontes por questão de compatibilidade.
+            intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
+            intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
+            Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
+            if (intervaloEmAberto != null) {
+                if(intervalo.getCodigo().equals(intervaloEmAberto.getCodigo())){
+                    return finalizaIntervaloEmAberto(intervalo);
+                }
+            } else {
+                intervalo.setDataHoraInicio(null);
+                intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
+                Long codigo = insertIntervalo(intervalo, codUnidade, conn);
+                if (codigo != null) {
+                    return true;
+                }
+            }
+        } finally {
+            closeConnection(conn, null, null);
+        }
+        return false;
+    }
+
+    @Deprecated
+    @Override
+    public boolean finalizaIntervaloEmAberto(Intervalo intervalo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE INTERVALO SET DATA_HORA_FIM = ?, FONTE_DATA_HORA_FIM = ?, " +
+                    "JUSTIFICATIVA_ESTOURO = ? WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
+            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setString(2, intervalo.getFonteDataHoraFim().key());
+            stmt.setString(3, intervalo.getJustificativaEstouro());
+            stmt.setLong(4, intervalo.getColaborador().getCpf());
+            stmt.setLong(5, intervalo.getCodigo());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao finalizar o intervalo");
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+        return true;
+    }
+
+    @Deprecated
+    private Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
+                    "DATA_HORA_INICIO, FONTE_DATA_HORA_INICIO, DATA_HORA_FIM, FONTE_DATA_HORA_FIM) VALUES (?,?,?,?,?,?,?) " +
+                    "RETURNING CODIGO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, intervalo.getTipo().getCodigo());
+            stmt.setLong(3, intervalo.getColaborador().getCpf());
+            if (intervalo.getDataHoraInicio() != null) {
+                stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
+                stmt.setString(5, intervalo.getFonteDataHoraInicio().key());
+            } else {
+                stmt.setNull(4, Types.TIMESTAMP);
+                stmt.setNull(5, Types.VARCHAR);
+            }
+            if (intervalo.getDataHoraFim() != null) {
+                stmt.setTimestamp(6, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
+                stmt.setString(7, intervalo.getFonteDataHoraInicio().key());
+            } else {
+                stmt.setNull(6, Types.TIMESTAMP);
+                stmt.setNull(7, Types.VARCHAR);
+            }
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
     }
 
     private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {
