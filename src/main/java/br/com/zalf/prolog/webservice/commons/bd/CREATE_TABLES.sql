@@ -2370,7 +2370,7 @@ CREATE OR REPLACE FUNCTION func_relatorio_acessos_produtividade_estratificado (f
     "PERÍODO CONSULTADO" TEXT
   ) AS
   $func$
-SELECT C.NOME, F.NOME, E.nome, TO_CHAR(AP.data_hora_consulta, 'DD/MM/YYYY HH24:MM'), AP.mes_ano_consultado
+SELECT C.NOME, F.NOME, E.nome, TO_CHAR(AP.data_hora_consulta, 'DD/MM/YYYY HH24:MI'), AP.mes_ano_consultado
 FROM acessos_produtividade AP JOIN COLABORADOR C ON C.CPF = AP.cpf_colaborador
   JOIN EQUIPE E ON E.CODIGO = C.cod_equipe AND E.cod_unidade = C.COD_UNIDADE
   JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND F.COD_EMPRESA = C.cod_empresa
