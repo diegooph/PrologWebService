@@ -52,15 +52,19 @@ public class ControleIntervaloResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-    Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
     @Path("/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
     @Path("/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
@@ -78,8 +82,12 @@ public class ControleIntervaloResource {
 
     @GET
     @Path("/{cpf}/{codTipoIntervalo}")
-    @Secured(permissions = {Pilares.Gente.Intervalo.MARCAR_INTERVALO, Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO, Pilares.Gente.Intervalo.EDITAR_MARCACAO,
-            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO, Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.EDITAR_MARCACAO,
+            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO,
+            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf, @PathParam("codTipoIntervalo") String codTipo,
                                                     @QueryParam("limit") long limit, @QueryParam("offset") long offset) {
         return service.getIntervalosColaborador(cpf, codTipo, limit, offset);
@@ -89,10 +97,10 @@ public class ControleIntervaloResource {
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
     public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") Long codUnidade, @PathParam("cpf") Long cpf,
-                                            @PathParam("codTipoIntervalo") Long codTipo) {
-        Intervalo intervalo = new Intervalo();
-        Colaborador colaborador = new Colaborador();
-        Unidade unidade = new Unidade();
+                                                        @PathParam("codTipoIntervalo") Long codTipo) {
+        final Intervalo intervalo = new Intervalo();
+        final Colaborador colaborador = new Colaborador();
+        final Unidade unidade = new Unidade();
         unidade.setCodigo(codUnidade);
         colaborador.setCpf(cpf);
         colaborador.setUnidade(unidade);

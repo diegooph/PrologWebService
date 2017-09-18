@@ -113,14 +113,15 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         Connection conn = null;
         try {
             conn = getConnection();
-
             if (intervalo.getDataHoraInicio() != null && intervalo.getFonteDataHoraFim() != null) {
-//                intervalo completo, apenas inserir
+                // Intervalo completo, apenas inserir.
                 insertIntervalo(intervalo);
             } else if (intervalo.getDataHoraInicio() == null && intervalo.getFonteDataHoraFim() != null) {
-                Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
-//                intervalo veio apenas com data de finalização, verificar se existe um em aberto para fazer o update,
-//                caso não tenha, inserir a finalização avulsa
+                // Intervalo veio apenas com data de finalização, verificar se existe um em aberto para fazer o update,
+                // caso não tenha, inserir a finalização avulsa.
+                final Intervalo intervaloEmAberto = getIntervaloAberto(
+                        intervalo.getColaborador().getCpf(),
+                        intervalo.getTipo());
                 if (intervaloEmAberto != null) {
                     intervaloEmAberto.setDataHoraFim(intervalo.getDataHoraFim());
                     intervaloEmAberto.setFonteDataHoraFim(intervalo.getFonteDataHoraFim());
@@ -131,7 +132,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                     insertIntervalo(intervalo);
                 }
             } else {
-//                intervalo veio apenas com data_hora de inicio, inserir na tabela
+                // Intervalo veio apenas com data_hora de início, inserir na tabela.
                 insertIntervalo(intervalo);
             }
         } finally {
