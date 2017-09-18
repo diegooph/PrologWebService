@@ -83,21 +83,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return null;
     }
 
-    private Intervalo createIntervaloAberto(ResultSet rSet) throws SQLException {
-        Intervalo intervalo = new Intervalo();
-        intervalo.setCodigo(rSet.getLong("CODIGO"));
-        intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
-        intervalo.setValido(rSet.getBoolean("VALIDO"));
-        intervalo.setTempoDecorrido(Duration.ofSeconds(DateUtils.secondsBetween(intervalo.getDataHoraInicio().getTime(), System.currentTimeMillis())));
-        Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
-        intervalo.setTipo(tipoIntervalo);
-        intervalo.setColaborador(colaborador);
-        return intervalo;
-    }
-
     @Override
     public void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException {
         Connection conn = null;
@@ -192,30 +177,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         } finally {
             closeConnection(conn, stmt, null);
         }
-    }
-
-    @Override
-    public boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException{
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
-            if (intervaloEmAberto != null) {
-                if(intervalo.getCodigo().equals(intervaloEmAberto.getCodigo())){
-                    return finalizaIntervaloEmAberto(intervalo);
-                }
-            } else {
-                intervalo.setDataHoraInicio(null);
-                intervalo.setDataHoraFim(new Date(System.currentTimeMillis()));
-                Long codigo = insertIntervalo(intervalo, codUnidade, conn);
-                if (codigo != null) {
-                    return true;
-                }
-            }
-        } finally {
-            closeConnection(conn, null, null);
-        }
-        return false;
     }
 
     @Override
