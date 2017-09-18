@@ -27,7 +27,7 @@ public class EmpresaService {
             return dao.insertEquipe(codUnidade, equipe);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao inserir a equipe");
+            return Response.error("Erro ao inserir a equipe");
         }
     }
 
@@ -54,7 +54,7 @@ public class EmpresaService {
             return dao.insertSetor(codUnidade, setor);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao inserir o setor");
+            return Response.error("Erro ao inserir o setor");
         }
     }
 
@@ -188,10 +188,10 @@ public class EmpresaService {
             if(codFuncaoInserida != null){
                 return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
             }else{
-                return Response.Error("Erro ao inserir o cargo");
+                return Response.error("Erro ao inserir o cargo");
             }
         }catch (SQLException e) {
-            return Response.Error("Erro ao inserir o cargo");
+            return Response.error("Erro ao inserir o cargo");
         }
     }
 }

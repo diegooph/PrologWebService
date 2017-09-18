@@ -39,11 +39,11 @@ public class QuizModeloService {
             if (codigo != null) {
                 return ResponseWithCod.Ok("Modelo de Quiz inserido com sucesso", codigo);
             } else {
-                return Response.Error("Erro ao inserir o modelo de Quiz");
+                return Response.error("Erro ao inserir o modelo de Quiz");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao inserir o modelo de Quiz");
+            return Response.error("Erro ao inserir o modelo de Quiz");
         }
     }
 

@@ -60,7 +60,7 @@ public class ContrachequeResource {
             return service.insertOrUpdateContracheque(file.getPath(), ano, mes, codUnidade);
         } catch (IOException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao inserir os dados");
+            return Response.error("Erro ao inserir os dados");
         }
     }
 
@@ -73,9 +73,9 @@ public class ContrachequeResource {
                                                  @PathParam("mes") int mes,
                                                  @PathParam("codUnidade") Long codUnidade) {
         if (service.updateItemImportContracheque(item, ano, mes, codUnidade)) {
-            return Response.Ok("Item alterado com sucesso.");
+            return Response.ok("Item alterado com sucesso.");
         } else {
-            return Response.Error("Erro ao editar o item.");
+            return Response.error("Erro ao editar o item.");
         }
     }
 
@@ -112,9 +112,9 @@ public class ContrachequeResource {
                                                         @PathParam("codUnidade") Long codUnidade,
                                                         @PathParam("cpf") Long cpf) {
         if (service.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, item.getCodigo())) {
-            return Response.Ok("Item excluido com sucesso.");
+            return Response.ok("Item excluido com sucesso.");
         } else {
-            return Response.Error("Erro ao excluir o item");
+            return Response.error("Erro ao excluir o item");
         }
     }
 
@@ -129,9 +129,9 @@ public class ContrachequeResource {
                                                  @PathParam("cpf") Long cpf,
                                                  @PathParam("codItem") String codItem) {
         if (service.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, codItem)) {
-            return Response.Ok("Item excluido com sucesso.");
+            return Response.ok("Item excluido com sucesso.");
         } else {
-            return Response.Error("Erro ao excluir o item");
+            return Response.error("Erro ao excluir o item");
         }
     }
 }

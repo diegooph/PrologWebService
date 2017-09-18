@@ -98,7 +98,7 @@ public class PneuService {
         try {
             return ResponseWithCod.Ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
         } catch (SQLException e) {
-            return Response.Error("Erro ao inserir a marca da banda");
+            return Response.error("Erro ao inserir a marca da banda");
         }
     }
 
@@ -107,7 +107,7 @@ public class PneuService {
             return ResponseWithCod.Ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
                     codEmpresa));
         } catch (SQLException e) {
-            return Response.Error("Erro ao inserir o modelo da banda");
+            return Response.error("Erro ao inserir o modelo da banda");
         }
     }
 

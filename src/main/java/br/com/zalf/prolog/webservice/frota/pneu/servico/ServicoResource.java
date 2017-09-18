@@ -24,9 +24,9 @@ public class ServicoResource {
 	@Path("/conserto/{codUnidade}")
 	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insertManutencao(servico, codUnidade)) {
-			return Response.Ok("Serviço consertado com sucesso.");
+			return Response.ok("Serviço consertado com sucesso.");
 		} else {
-			return Response.Error("Erro ao marcar o item como consertado.");
+			return Response.error("Erro ao marcar o item como consertado.");
 		}
 	}
 

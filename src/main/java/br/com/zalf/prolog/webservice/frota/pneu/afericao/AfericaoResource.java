@@ -28,9 +28,9 @@ public class AfericaoResource {
                            @PathParam("codUnidade") Long codUnidade,
                            @HeaderParam("Authorization") String userToken) {
         if (service.insert(afericao, codUnidade, userToken)) {
-            return Response.Ok("Aferição inserida com sucesso");
+            return Response.ok("Aferição inserida com sucesso");
         } else {
-            return Response.Error("Erro ao inserir aferição");
+            return Response.error("Erro ao inserir aferição");
         }
     }
 
@@ -38,9 +38,9 @@ public class AfericaoResource {
     @Secured
     public Response update(Afericao afericao) {
         if (service.updateKmAfericao(afericao)) {
-            return Response.Ok("Km atualizado com sucesso");
+            return Response.ok("Km atualizado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o KM");
+            return Response.error("Erro ao atualizar o KM");
         }
     }
 

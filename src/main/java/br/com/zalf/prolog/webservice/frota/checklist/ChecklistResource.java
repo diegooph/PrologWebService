@@ -31,9 +31,9 @@ public class ChecklistResource {
     public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
         checklist.setData(new Date(System.currentTimeMillis()));
         if (service.insert(checklist, userToken)) {
-            return Response.Ok("Checklist inserido com sucesso");
+            return Response.ok("Checklist inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir checklist");
+            return Response.error("Erro ao inserir checklist");
         }
     }
 

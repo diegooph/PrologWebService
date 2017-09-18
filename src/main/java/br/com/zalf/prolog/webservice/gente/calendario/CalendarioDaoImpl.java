@@ -205,7 +205,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			if(rSet.next()){
 				return ResponseWithCod.Ok("Evento inserido com sucesso", rSet.getLong("codigo"));
 			}else{
-				return Response.Error("Erro ao inserir o evento");
+				return Response.error("Erro ao inserir o evento");
 			}
 		}finally {
 			closeConnection(conn, stmt, rSet);

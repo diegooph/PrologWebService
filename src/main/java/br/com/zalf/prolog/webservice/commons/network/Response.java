@@ -8,14 +8,14 @@ public class Response extends AbstractResponse{
 	public Response() {
 	}
 
-	public static Response Ok(String string) {
+	public static Response ok(String string) {
 		Response r = new Response();
 		r.setStatus(OK);
 		r.setMsg(string);
 		return r;
 	}
 
-	public static Response Error(String string) {
+	public static Response error(String string) {
 		Response r = new Response();
 		r.setStatus(ERROR);
 		r.setMsg(string);

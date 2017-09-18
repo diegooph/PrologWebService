@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,19 +27,30 @@ public class LoginHolder {
     private List<Alternativa> alternativasRelato;
 
     /**
-     * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO}, essa lista conterá os
-     * {@link TipoIntervalo} que existem para sua unidade. Se ele não tiver essa permissão, a lista será {@code null}.
-     */
-    @Nullable
-    private List<TipoIntervalo> tiposIntervalos;
-
-    /**
      * As credenciais de acesso a Amazon. Será diferente de null se o colaborador tiver acesso ao envio de relato
      * ou gsd.
      */
     @Nullable
     private AmazonCredentials amazonCredentials;
 
+    /**
+     * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO} ou alguém
+     * da sua unidade possuir, esse objeto conterá um {@link List<Colaborador>} que possuirá
+     * todos os colaboradores que têm essa permissão.
+     * O objeto também conterá um {@link List<TipoIntervalo>} referente aos tipos de intervalo da unidade,
+     * além disso um {@link Date} sinalizando a última vez que este objeto sofreu atualização.
+     */
+    @NotNull
+    private IntervaloOfflineSupport intervaloOfflineSupport;
+
+    /**
+     * Caso o colaborador tenha a permissão {@link Pilares.Gente.Intervalo#MARCAR_INTERVALO}, essa
+     * lista conterá os {@link TipoIntervalo} que existem para sua unidade. Se ele não tiver essa
+     * permissão, a lista será {@code null}.
+     */
+    @Nullable
+    @Deprecated
+    private List<TipoIntervalo> tiposIntervalos;
 
     public Colaborador getColaborador() {
         return colaborador;
@@ -63,10 +76,20 @@ public class LoginHolder {
         this.amazonCredentials = amazonCredentials;
     }
 
+    public IntervaloOfflineSupport getIntervaloOfflineSupport() {
+        return intervaloOfflineSupport;
+    }
+
+    public void setIntervaloOfflineSupport(IntervaloOfflineSupport intervaloOfflineSupport) {
+        this.intervaloOfflineSupport = intervaloOfflineSupport;
+    }
+
+    @Deprecated
     public List<TipoIntervalo> getTiposIntervalos() {
         return tiposIntervalos;
     }
 
+    @Deprecated
     public void setTiposIntervalos(List<TipoIntervalo> tiposIntervalos) {
         this.tiposIntervalos = tiposIntervalos;
     }

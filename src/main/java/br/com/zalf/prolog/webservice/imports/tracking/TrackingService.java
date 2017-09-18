@@ -16,18 +16,18 @@ public class TrackingService {
 	public Response insertOrUpdateTracking (String path, Long codUnidade){
 		try{
 			if(dao.insertOrUpdateTracking(path, codUnidade)){
-				return Response.Ok("Arquivo do tracking inserido com sucesso");
+				return Response.ok("Arquivo do tracking inserido com sucesso");
 			}else{
-				return Response.Error("Problema ao inserir o arquivo");
+				return Response.error("Problema ao inserir o arquivo");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return Response.Error("Erro relacionado ao banco de dados ao inserir o arquivo");
+			return Response.error("Erro relacionado ao banco de dados ao inserir o arquivo");
 		}catch (IOException e){
 			e.printStackTrace();
-			return Response.Error("Erro relacionado ao processamento do arquivo");
+			return Response.error("Erro relacionado ao processamento do arquivo");
 		}catch (ParseException e) {
-			return Response.Error("Erro nos dados da planilha");
+			return Response.error("Erro nos dados da planilha");
 		}
 	}
 

@@ -35,9 +35,9 @@ public class CalendarioResource {
 							@PathParam("nomeEquipe") String nomeEquipe,
 							@PathParam("codFuncao") String codFuncao) {
 		if (service.update(evento, codUnidade, codFuncao, nomeEquipe)) {
-			return Response.Ok("Evento alterado com sucesso");
+			return Response.ok("Evento alterado com sucesso");
 		} else {
-			return Response.Error("Erro ao editar o evento");
+			return Response.error("Erro ao editar o evento");
 		}
 	}
 
@@ -68,9 +68,9 @@ public class CalendarioResource {
 	@Path("/{codUnidade}/{codEvento}")
 	public Response delete(@PathParam("codUnidade") Long codUnidade, @PathParam("codEvento") Long codEvento) {
 		if (service.delete(codUnidade, codEvento)) {
-			return Response.Ok("Evento deletado com sucesso");
+			return Response.ok("Evento deletado com sucesso");
 		} else {
-			return Response.Error("Erro ao deletar o evento");
+			return Response.error("Erro ao deletar o evento");
 		}
 	}
 }
