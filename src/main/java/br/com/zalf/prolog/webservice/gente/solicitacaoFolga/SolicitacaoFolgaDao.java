@@ -15,7 +15,7 @@ public interface SolicitacaoFolgaDao {
 	/**
 	 * Insere uma SolicitacaoFolga no banco de dados
 	 * @param solicitacao uma SolicitacaoFolga
-	 * @return Reponse.Ok com o codigo gerado, ou .Error caso não seja possível inserir
+	 * @return Reponse.ok com o codigo gerado, ou .error caso não seja possível inserir
 	 * @throws SQLException caso não seja possível inserir a solicitação de folga
 	 */
 	AbstractResponse insert(SolicitacaoFolga solicitacao) throws SQLException;

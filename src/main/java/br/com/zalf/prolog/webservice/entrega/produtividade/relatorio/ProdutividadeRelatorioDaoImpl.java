@@ -122,5 +122,45 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         return stmt;
     }
 
+    @Override
+    public void getAcessosProdutividadeCsv(OutputStream outputStream, String cpf, Long codUnidade, Date dataInicial, Date dataFinal)
+            throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAcessosProdutividadeStatement(conn, cpf, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 
+    @Override
+    public Report getAcessosProdutividadeReport(String cpf,Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAcessosProdutividadeStatement(conn, cpf, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getAcessosProdutividadeStatement(Connection conn, String cpf, Long codUnidade,
+                                                                Date dataInicial, Date dataFinal) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_acessos_produtividade_estratificado" +
+                "(?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, dataInicial);
+        stmt.setDate(3, dataFinal);
+        stmt.setString(4, cpf);
+        return stmt;
+    }
 }

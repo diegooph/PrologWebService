@@ -47,9 +47,9 @@ public class QuizModeloResource {
     @Path("/{codUnidade}")
     public Response updateModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
         if (service.updateModeloQuiz(modeloQuiz, codUnidade)){
-            return Response.Ok("Modelo de quiz atualizado com sucesso");
+            return Response.ok("Modelo de quiz atualizado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o quiz");
+            return Response.error("Erro ao atualizar o quiz");
         }
     }
 
@@ -59,9 +59,9 @@ public class QuizModeloResource {
     public Response updateCargosModeloQuiz(List<Cargo> funcoes, @PathParam("codModeloQuiz") Long codModeloQuiz,
                                            @PathParam("codUnidade") Long codUnidade) {
         if(service.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade)){
-            return Response.Ok("Funções alteradas com sucesso");
+            return Response.ok("Funções alteradas com sucesso");
         }else {
-            return Response.Error("Erro ao alterar as funções vinculadas ao quiz");
+            return Response.error("Erro ao alterar as funções vinculadas ao quiz");
         }
     }
 

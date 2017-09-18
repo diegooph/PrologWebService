@@ -73,7 +73,7 @@ public class ProntuarioCondutorResource {
             return service.insertOrUpdate(file.getPath());
         } catch (IOException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao enviar o arquivo.");
+            return Response.error("Erro ao enviar o arquivo.");
         }
     }
 }

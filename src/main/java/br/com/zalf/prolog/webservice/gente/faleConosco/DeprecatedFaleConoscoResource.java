@@ -22,9 +22,9 @@ public class DeprecatedFaleConoscoResource {
 	@Deprecated
 	public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insert(faleConosco, codUnidade)) {
-			return Response.Ok("Fale conosco inserido com sucesso");
+			return Response.ok("Fale conosco inserido com sucesso");
 		} else {
-			return Response.Error("Erro ao inserir fale conosco");
+			return Response.error("Erro ao inserir fale conosco");
 		}
 	}
 
@@ -34,9 +34,9 @@ public class DeprecatedFaleConoscoResource {
 	@Deprecated
 	public Response insertFeedback(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
 		if (service.insertFeedback(faleConosco, codUnidade)) {
-			return Response.Ok("Feedback inserido com sucesso.");
+			return Response.ok("Feedback inserido com sucesso.");
 		} else {
-			return Response.Error("Erro ao inserir o feedback no fale conosco.");
+			return Response.error("Erro ao inserir o feedback no fale conosco.");
 		}
 	}
 

@@ -25,9 +25,9 @@ public class PneuResource {
     @Path("/{codUnidade}")
     public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) {
         if (service.insert(pneu, codUnidade)) {
-            return Response.Ok("Pneu inserido com sucesso.");
+            return Response.ok("Pneu inserido com sucesso.");
         } else {
-            return Response.Error("Erro ao inserir o pneu");
+            return Response.error("Erro ao inserir o pneu");
         }
     }
 
@@ -36,9 +36,9 @@ public class PneuResource {
     @Path("/{codUnidade}/{codPneuOriginal}")
     public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal) {
         if (service.update(pneu, codUnidade, codOriginal)) {
-            return Response.Ok("Pneu atualizado com sucesso.");
+            return Response.ok("Pneu atualizado com sucesso.");
         } else {
-            return Response.Error("Erro ao atualizar o pneu.");
+            return Response.error("Erro ao atualizar o pneu.");
         }
     }
 
@@ -47,9 +47,9 @@ public class PneuResource {
     @Path("/modelo/{codEmpresa}/{codMarca}")
     public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
         if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
-            return Response.Ok("Modelo de pneu inserido com sucesso.");
+            return Response.ok("Modelo de pneu inserido com sucesso.");
         } else {
-            return Response.Error("Erro ao inserir o modelo de pneu.");
+            return Response.error("Erro ao inserir o modelo de pneu.");
         }
     }
 
@@ -87,9 +87,9 @@ public class PneuResource {
     @Path("/vincular/{placa}")
     public Response vinculaPneuVeiculo(@PathParam("placa") String placa, List<Pneu> pneus) {
         if (service.vinculaPneuVeiculo(placa, pneus)) {
-            return Response.Ok("Pneus vinculados com sucesso.");
+            return Response.ok("Pneus vinculados com sucesso.");
         } else {
-            return Response.Error("Erro ao víncular os pneus ao veículo");
+            return Response.error("Erro ao víncular os pneus ao veículo");
         }
     }
 
@@ -126,9 +126,9 @@ public class PneuResource {
     @Path("bandas/marcas/{codEmpresa}")
     public Response updateMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
         if(service.updateMarcaBanda(marca, codEmpresa)){
-            return Response.Ok("Marca atualizada com sucesso");
+            return Response.ok("Marca atualizada com sucesso");
         }else {
-            return Response.Error("Erro ao atualizar a marca");
+            return Response.error("Erro ao atualizar a marca");
         }
     }
 
@@ -137,9 +137,9 @@ public class PneuResource {
     @Path("bandas/modelos")
     public Response updateModeloBanda(Modelo modelo) {
         if (service.updateModeloBanda(modelo)) {
-            return Response.Ok("Modelo de banda atualizado com sucesso");
+            return Response.ok("Modelo de banda atualizado com sucesso");
         }else {
-            return Response.Error("Erro ao atualizar o modelo de banda");
+            return Response.error("Erro ao atualizar o modelo de banda");
         }
     }
 

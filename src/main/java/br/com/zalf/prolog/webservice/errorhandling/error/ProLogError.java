@@ -1,41 +1,46 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
-public class ErrorMessage {
+public class ProLogError {
 	/** contains the same HTTP Status code returned by the server */
-	private Integer httpStatusCode;
+	private int httpStatusCode;
 	
 	/** application specific error code */
-	private Integer applicationErrorCode;
+	private int proLogErrorCode;
 	
 	/** message describing the error*/
+	@NotNull
 	private String message;
 		
 	/** link point to page where the error message is documented */
+	@Nullable
 	private String moreInfoLink;
 	
 	/** extra information that might useful for developers */
+	@Nullable
 	private String developerMessage;
 	
-	public ErrorMessage() {
+	public ProLogError() {
 		
 	}
 
-	public Integer getHttpStatusCode() {
+	public int getHttpStatusCode() {
 		return httpStatusCode;
 	}
 
-	public void setHttpStatusCode(Integer httpStatusCode) {
+	public void setHttpStatusCode(int httpStatusCode) {
 		this.httpStatusCode = httpStatusCode;
 	}
 
-	public int getApplicationErrorCode() {
-		return applicationErrorCode;
+	public int getProLogErrorCode() {
+		return proLogErrorCode;
 	}
 
-	public void setApplicationErrorCode(int code) {
-		this.applicationErrorCode = code;
+	public void setProLogErrorCode(int code) {
+		this.proLogErrorCode = code;
 	}
 
 	public String getMessage() {
@@ -65,7 +70,7 @@ public class ErrorMessage {
 
 	@Override
 	public String toString() {
-		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", applicationErrorCode=" + applicationErrorCode
+		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
 				+ ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
 				+ "]";
 	}

@@ -7,30 +7,20 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
  *
  */
 public abstract class ProLogException extends Exception {
-
 	private static final long serialVersionUID = 1L;
-		
-	/** detailed error description for developers*/
-	private final String developerMessage;
-	private final ApplicationExceptions type;
-	
+
 	public ProLogException() {
-		this(null, null);
+		super();
 	}
-	
-	public ProLogException(String message, String developerMessage) {
-		super(message);
-		this.developerMessage = developerMessage;
-		this.type = whatIsYourType();
-	}
-	
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
-	
-	public ApplicationExceptions getType() {
-		return type;
-	}
-	
-	protected abstract ApplicationExceptions whatIsYourType();
+
+	public abstract int getHttpStatusCode();
+
+	public abstract int getProLogErrorCode();
+
+	@Override
+	public abstract String getMessage();
+
+	public abstract String getDeveloperMessage();
+
+	public abstract String getMoreInfoLink();
 }

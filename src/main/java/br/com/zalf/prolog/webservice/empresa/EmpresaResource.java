@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EmpresaResource {
 
-    private EmpresaService service = new EmpresaService();
+    private final EmpresaService service = new EmpresaService();
 
     @POST
     @Path("/unidades/{codUnidade}/equipes")
@@ -36,9 +37,9 @@ public class EmpresaResource {
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
     public Response updateEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe, Equipe equipe) {
         if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
-            return Response.Ok("Equipe editada com sucesso");
+            return Response.ok("Equipe editada com sucesso");
         } else {
-            return Response.Error("Erro ao editar a equipe");
+            return Response.error("Erro ao editar a equipe");
         }
     }
 
@@ -63,9 +64,9 @@ public class EmpresaResource {
                                         @PathParam("codSetor") Long codSetor,
                                         Setor setor) {
         if (service.updateSetor(codUnidade, codSetor, setor)) {
-            return Response.Ok("Setor editado com sucesso");
+            return Response.ok("Setor editado com sucesso");
         } else {
-            return Response.Error("Erro ao editar a setor");
+            return Response.error("Erro ao editar a setor");
         }
     }
 
@@ -112,9 +113,9 @@ public class EmpresaResource {
                                       @PathParam("codUnidade") Long codUnidade,
                                       @PathParam("codCargo") Long codCargo) {
         if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
-            return Response.Ok("Alterações realizadas com sucesso");
+            return Response.ok("Alterações realizadas com sucesso");
         } else {
-            return Response.Error("Erro ao alterar permissões");
+            return Response.error("Erro ao alterar permissões");
         }
     }
 
@@ -147,5 +148,13 @@ public class EmpresaResource {
     @Path("/funcoes/{codUnidade}")
     public AbstractResponse insertFuncao(Cargo cargo, @PathParam("codUnidade") Long codUnidade) {
         return service.insertFuncao(cargo, codUnidade);
+    }
+
+    @GET
+    @Secured
+    @Path("/unidades/{codUnidade}/current-time")
+    public Date getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) {
+        // TODO: pegar o tempo de cada unidade de acordo com o TimeZone dela no Banco
+        return new Date(System.currentTimeMillis());
     }
 }

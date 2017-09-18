@@ -25,9 +25,9 @@ public class VeiculoResource {
     @Path("/{codUnidade}")
     public Response insert(Veiculo veiculo, @PathParam("codUnidade") Long codUnidade) {
         if (service.insert(veiculo, codUnidade)) {
-            return Response.Ok("Veículo inserido com sucesso");
+            return Response.ok("Veículo inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir o veículo");
+            return Response.error("Erro ao inserir o veículo");
         }
     }
 
@@ -36,9 +36,9 @@ public class VeiculoResource {
     @Path("/{placaOriginal}")
     public Response update(Veiculo veiculo, @PathParam("placaOriginal") String placaOriginal) {
         if (service.update(veiculo, placaOriginal)) {
-            return Response.Ok("Veículo atualizado com sucesso");
+            return Response.ok("Veículo atualizado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o veículo");
+            return Response.error("Erro ao atualizar o veículo");
         }
     }
 
@@ -47,9 +47,9 @@ public class VeiculoResource {
     @Path("/{placa}")
     public Response delete(@PathParam("placa") String placa) {
         if (service.delete(placa)) {
-            return Response.Ok("Veículo deletado com sucesso.");
+            return Response.ok("Veículo deletado com sucesso.");
         } else {
-            return Response.Error("Erro ao deletar o veículo.");
+            return Response.error("Erro ao deletar o veículo.");
         }
     }
 
@@ -76,9 +76,9 @@ public class VeiculoResource {
     @Path("/{codUnidade}/tipo")
     public Response insertTipoVeiculo(TipoVeiculo tipoVeiculo, @PathParam("codUnidade") Long codUnidade) {
         if (service.insertTipoVeiculo(tipoVeiculo, codUnidade)) {
-            return Response.Ok("Tipo de veículo inserido com sucesso");
+            return Response.ok("Tipo de veículo inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir o tipo de veículo");
+            return Response.error("Erro ao inserir o tipo de veículo");
         }
     }
 
@@ -113,9 +113,9 @@ public class VeiculoResource {
     @Path("/modelo/{codEmpresa}/{codMarca}")
     public Response insertModeloVeiculo(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
         if (service.insertModeloVeiculo(modelo, codEmpresa, codMarca)) {
-            return Response.Ok("Modelo inserido com sucesso");
+            return Response.ok("Modelo inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir o modelo");
+            return Response.error("Erro ao inserir o modelo");
         }
     }
 
@@ -131,9 +131,9 @@ public class VeiculoResource {
     @Path("/modelos/{codUnidade}/{codMarca}/{codModelo}")
     public Response updateModelo(Modelo modelo, @PathParam("codUnidade") Long codUnidade, @PathParam("codMarca") Long codMarca) {
         if(service.updateModelo(modelo, codUnidade, codMarca)){
-            return Response.Ok("Modelo alterado com sucesso");
+            return Response.ok("Modelo alterado com sucesso");
         }else{
-            return Response.Error("Erro ao atualizar o modelo");
+            return Response.error("Erro ao atualizar o modelo");
         }
     }
 
@@ -142,9 +142,9 @@ public class VeiculoResource {
     @Path("/modelos/{codUnidade}/{codModelo}")
     public Response deleteModelo(@PathParam("codModelo") Long codModelo, @PathParam("codUnidade") Long codUnidade) {
         if(service.deleteModelo(codModelo, codUnidade)){
-            return Response.Ok("Modelo deletado com sucesso");
+            return Response.ok("Modelo deletado com sucesso");
         }else{
-            return Response.Error("Erro ao deletar o modelo");
+            return Response.error("Erro ao deletar o modelo");
         }
     }
 
@@ -181,9 +181,9 @@ public class VeiculoResource {
     @Path("/tipos/{codUnidade}/{codTipo}")
     public Response updateTipoVeiculo(TipoVeiculo tipo, @PathParam("codUnidade") Long codUnidade) {
         if(service.updateTipoVeiculo(tipo, codUnidade)){
-            return Response.Ok("Tipo alterado com sucesso");
+            return Response.ok("Tipo alterado com sucesso");
         }else{
-            return Response.Error("Erro ao alterar o tipo");
+            return Response.error("Erro ao alterar o tipo");
         }
     }
 
@@ -192,9 +192,9 @@ public class VeiculoResource {
     @Path("/tipos/{codUnidade}/{codTipo}")
     public Response deleteTipoVeiculo(@PathParam("codTipo") Long codTipo, @PathParam("codUnidade") Long codUnidade) {
         if (service.deleteTipoVeiculo(codTipo, codUnidade)) {
-            return Response.Ok("Tipo deletado com sucesso");
+            return Response.ok("Tipo deletado com sucesso");
         } else {
-            return Response.Error("Erro ao deletar o tipo");
+            return Response.error("Erro ao deletar o tipo");
         }
     }
 

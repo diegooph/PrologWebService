@@ -30,9 +30,9 @@ public class DeprecatedSolicitacaoFolgaResource {
 	@Secured(permissions = Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO)
 	public Response update(SolicitacaoFolga solicitacaoFolga) {
 		if (service.update(solicitacaoFolga)) {
-			return Response.Ok("Solicitação atualizada com sucesso");
+			return Response.ok("Solicitação atualizada com sucesso");
 		} else {
-			return Response.Error("Erro ao atualizar a solicitação");
+			return Response.error("Erro ao atualizar a solicitação");
 		}
 	}
 
@@ -85,9 +85,9 @@ public class DeprecatedSolicitacaoFolgaResource {
 	@Path("{codigo}")
 	public Response delete(@PathParam("codigo") Long codigo) {
 		if (service.delete(codigo)) {
-			return Response.Ok("Solicitação deletada com sucesso");
+			return Response.ok("Solicitação deletada com sucesso");
 		} else {
-			return Response.Error("Erro ao deletar a solicitação");
+			return Response.error("Erro ao deletar a solicitação");
 		}
 	}
 }

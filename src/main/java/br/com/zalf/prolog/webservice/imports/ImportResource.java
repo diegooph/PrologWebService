@@ -65,7 +65,7 @@ public class ImportResource {
 			return mapaService.insertOrUpdateMapa(file.getPath(), colaborador.getCodUnidade());
 		} catch (IOException e) {
 			e.printStackTrace();
-			return Response.Error("Erro ao enviar o arquivo.");
+			return Response.error("Erro ao enviar o arquivo.");
 		}
 	}
 
@@ -101,7 +101,7 @@ public class ImportResource {
 			return mapaService.insertOrUpdateMapa(file.getPath(), codUnidade);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return Response.Error("Erro ao enviar o arquivo.");
+			return Response.error("Erro ao enviar o arquivo.");
 		}
 	}
 
@@ -143,7 +143,7 @@ public class ImportResource {
 			return trackingService.insertOrUpdateTracking(file.getPath(), colaborador.getCodUnidade());
 		} catch (IOException e) {
 			e.printStackTrace();
-			return Response.Error("Erro ao enviar o arquivo.");
+			return Response.error("Erro ao enviar o arquivo.");
 		}
 	}
 
@@ -180,7 +180,7 @@ public class ImportResource {
 			return trackingService.insertOrUpdateTracking(file.getPath(), codUnidade);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return Response.Error("Erro ao enviar o arquivo.");
+			return Response.error("Erro ao enviar o arquivo.");
 		}
 	}
 
