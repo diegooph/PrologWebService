@@ -101,7 +101,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ResponseWithCod.Ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
+                return ResponseWithCod.ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
             } else {
                 return Response.error("Erro ao inserir a equipe");
             }
@@ -212,7 +212,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(2, setor.getNome());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+                return ResponseWithCod.ok("Setor inserido com sucesso", rSet.getLong("codigo"));
             } else {
                 return Response.error("Erro ao inserir o setor");
             }

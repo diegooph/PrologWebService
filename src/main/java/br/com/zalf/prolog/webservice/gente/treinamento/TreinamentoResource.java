@@ -44,7 +44,7 @@ public class TreinamentoResource {
         } else {
             Long codTreinamento = service.insert(fileInputStream, treinamento);
             if (codTreinamento != null) {
-                return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
+                return ResponseWithCod.ok("Treinamento inserido com sucesso", codTreinamento);
             } else {
                 return Response.error("Erro ao inserir treinamento");
             }

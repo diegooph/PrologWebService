@@ -38,7 +38,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			stmt.setString(6, s.getPeriodo());
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				return ResponseWithCod.Ok("Solicitação inserida com sucesso", rSet.getLong("CODIGO"));
+				return ResponseWithCod.ok("Solicitação inserida com sucesso", rSet.getLong("CODIGO"));
 			}else{
 				return Response.error("Erro ao inserir a solicitação de folga");
 			}

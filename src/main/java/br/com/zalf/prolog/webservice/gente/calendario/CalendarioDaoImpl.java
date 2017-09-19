@@ -203,7 +203,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 			stmt.setString(6, evento.getLocal());
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				return ResponseWithCod.Ok("Evento inserido com sucesso", rSet.getLong("codigo"));
+				return ResponseWithCod.ok("Evento inserido com sucesso", rSet.getLong("codigo"));
 			}else{
 				return Response.error("Erro ao inserir o evento");
 			}

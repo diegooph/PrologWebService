@@ -37,7 +37,7 @@ public class QuizModeloService {
         try {
             Long codigo = dao.insertModeloQuiz(modeloQuiz, codUnidade);
             if (codigo != null) {
-                return ResponseWithCod.Ok("Modelo de Quiz inserido com sucesso", codigo);
+                return ResponseWithCod.ok("Modelo de Quiz inserido com sucesso", codigo);
             } else {
                 return Response.error("Erro ao inserir o modelo de Quiz");
             }

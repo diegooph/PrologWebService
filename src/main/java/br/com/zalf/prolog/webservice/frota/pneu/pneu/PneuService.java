@@ -96,7 +96,7 @@ public class PneuService {
 
     public AbstractResponse insertMarcaBanda(Marca marca, Long codEmpresa) {
         try {
-            return ResponseWithCod.Ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
+            return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
         } catch (SQLException e) {
             return Response.error("Erro ao inserir a marca da banda");
         }
@@ -104,7 +104,7 @@ public class PneuService {
 
     public AbstractResponse insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) {
         try {
-            return ResponseWithCod.Ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
+            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
                     codEmpresa));
         } catch (SQLException e) {
             return Response.error("Erro ao inserir o modelo da banda");

@@ -186,7 +186,7 @@ public class EmpresaService {
         try {
             Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
             if(codFuncaoInserida != null){
-                return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
+                return ResponseWithCod.ok("Cargo inserido com sucesso", codFuncaoInserida);
             }else{
                 return Response.error("Erro ao inserir o cargo");
             }

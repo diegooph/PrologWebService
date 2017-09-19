@@ -101,7 +101,7 @@ public class ControleIntervaloResource {
                                                         @PathParam("codTipoIntervalo") Long codTipo) {
         Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
         if(codIntervalo != null){
-            return ResponseWithCod.Ok("Intervalo iniciado com sucesso", codIntervalo);
+            return ResponseWithCod.ok("Intervalo iniciado com sucesso", codIntervalo);
         }else{
             return Response.error("Erro ao iniciar o intervalo");
         }
