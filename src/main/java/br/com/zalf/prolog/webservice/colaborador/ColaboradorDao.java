@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
