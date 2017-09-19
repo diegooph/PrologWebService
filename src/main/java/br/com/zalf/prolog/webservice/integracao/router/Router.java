@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.router;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -120,6 +121,17 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
+    @Override
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getStatusLiberacaoVeiculos(codUnidade);
+        } else {
+            return integradorProLog.getStatusLiberacaoVeiculos(codUnidade);
+        }
+    }
+
+    @Nullable
     private Sistema getSistema() throws Exception {
         if (sistemaKey == null && !hasTried) {
             sistemaKey = integracaoDao.getSistemaKey(userToken, recursoIntegrado);

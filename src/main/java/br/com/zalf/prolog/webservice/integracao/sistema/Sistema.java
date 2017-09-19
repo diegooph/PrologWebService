@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -66,6 +67,11 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo) throws Exception {
         return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+    }
+
+    @Override
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+        return getIntegradorProLog().getStatusLiberacaoVeiculos(codUnidade);
     }
 
     protected IntegradorProLog getIntegradorProLog() {

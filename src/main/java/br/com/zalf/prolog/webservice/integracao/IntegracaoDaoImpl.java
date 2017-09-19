@@ -3,7 +3,9 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 public final class IntegracaoDaoImpl extends DatabaseConnection implements IntegracaoDao {
     private static final String TAG = IntegracaoDaoImpl.class.getSimpleName();
 
+    @Nullable
     @Override
     public SistemaKey getSistemaKey(@NotNull String userToken,
                                     @NotNull RecursoIntegrado recursoIntegrado) throws SQLException {
@@ -44,5 +47,30 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 userToken,
                 recursoIntegrado.getKey()));
         return null;
+    }
+
+    @NotNull
+    @Override
+    public String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException {
+        Preconditions.checkNotNull(codUnidadeProLog, "codUnidadeProLog não pode ser null!");
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT IU.COD_UNIDADE_CLIENTE FROM INTEGRACAO_UNIDADE IU " +
+                    "WHERE IU.COD_UNIDADE_PROLOG = ?");
+            stmt.setLong(1, codUnidadeProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("COD_UNIDADE_CLIENTE");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+        throw new IllegalStateException("Código da unidade do cliente não encontrado para o código da unidade do " +
+                "ProLog: " + codUnidadeProLog);
     }
 }

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -39,15 +40,19 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private AfericaoDao afericaoDao;
     @Nullable
     private ColaboradorDao colaboradorDao;
+    @Nullable
+    private IntegracaoDao integracaoDao;
 
     private IntegradorProLog(VeiculoDao veiculoDao,
                              ChecklistDao checklistDao,
                              AfericaoDao afericaoDao,
-                             ColaboradorDao colaboradorDao) {
+                             ColaboradorDao colaboradorDao,
+                             IntegracaoDao integracaoDao) {
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
         this.colaboradorDao = colaboradorDao;
+        this.integracaoDao = integracaoDao;
     }
 
     @VisibleForTesting
@@ -56,7 +61,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 Injection.provideVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideAfericaoDao(),
-                Injection.provideColaboradorDao());
+                Injection.provideColaboradorDao(),
+                Injection.provideIntegracaoDao());
     }
 
     //
@@ -87,6 +93,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             veiculoDao = Injection.provideVeiculoDao();
         }
         return veiculoDao.getDiagramaVeiculoByPlaca(placaVeiculo);
+    }
+
+    @Override
+    public String getCodUnidadeClienteByCodUnidadeProLog(Long codUnidadeProLog) throws Exception {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getCodUnidadeErpClienteByCodUnidadeProLog(codUnidadeProLog);
     }
 
     //
@@ -133,11 +148,18 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.insert(checklist);
     }
 
+    @NotNull
+    @Override
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+        return checklistDao.getStatusLiberacaoVeiculos(codUnidade);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
         private ChecklistDao checklistDao;
         private AfericaoDao afericaoDao;
         private ColaboradorDao colaboradorDao;
+        private IntegracaoDao integracaoDao;
 
         public Builder() {
 
@@ -163,8 +185,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withIntegracaoDao(IntegracaoDao integracaoDao) {
+            this.integracaoDao = integracaoDao;
+            return this;
+        }
+
         public IntegradorProLog build() {
-            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao, colaboradorDao);
+            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
         }
     }
 }

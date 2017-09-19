@@ -20,4 +20,7 @@ public interface InformacoesProvidas {
 
     @NotNull
     DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
+
+    @NotNull
+    String getCodUnidadeClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Exception;
 }

@@ -89,12 +89,14 @@ public class ChecklistService {
         }
     }
 
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) {
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade, String userToken) {
         try {
-            return dao.getStatusLiberacaoVeiculos(codUnidade);
-        } catch (SQLException e) {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getStatusLiberacaoVeiculos(codUnidade);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }
 

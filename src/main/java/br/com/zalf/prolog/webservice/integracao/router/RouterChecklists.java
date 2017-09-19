@@ -23,9 +23,9 @@ public final class RouterChecklists extends Router {
     }
 
     private RouterChecklists(@NotNull IntegracaoDao integracaoDao,
-                          @NotNull IntegradorProLog integradorProLog,
-                          @NotNull String userToken,
-                          @NotNull RecursoIntegrado recursoIntegrado) {
+                             @NotNull IntegradorProLog integradorProLog,
+                             @NotNull String userToken,
+                             @NotNull RecursoIntegrado recursoIntegrado) {
         super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }

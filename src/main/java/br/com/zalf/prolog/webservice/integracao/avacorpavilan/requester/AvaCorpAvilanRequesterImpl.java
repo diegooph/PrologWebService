@@ -129,6 +129,22 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 : request.getMensagem());
     }
 
+    @Override
+    public Object getFarolChecklist(@NotNull final String codUnidadeAvilan,
+                                    @NotNull final String cpf,
+                                    @NotNull final String dataNascimento) throws Exception {
+        // TODO:
+        final PneusVeiculo request = null;
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getPneus();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar o farol do checklist par a unidade: " + codUnidadeAvilan + " da Avilan"
+                : request.getMensagem());
+    }
+
 
     private boolean error(final boolean sucesso, @Nullable final String mensagem) {
         // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou

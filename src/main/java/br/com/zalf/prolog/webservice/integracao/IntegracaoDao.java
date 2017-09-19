@@ -33,4 +33,19 @@ public interface IntegracaoDao {
     @Nullable
     SistemaKey getSistemaKey(@NotNull final String userToken, @NotNull final RecursoIntegrado recursoIntegrado)
             throws SQLException;
+
+    /**
+     * Esse método retorna o código da unidade utilizado no ERP do cliente equivalente a mesma unidade utilizada
+     * no ProLog.
+     *
+     * Por exemplo, se quisermos saber o código de Santa Maria no ERP da Avilan, basta chamarmos essa função passando
+     * o número 3 (código da unidade de Santa Maria no ProLog) e ela irá retornar o código único utilizado pela Avilan
+     * para representar Santa Maria em seu ERP.
+     *
+     * @param codUnidadeProLog código da unidade utilizado no ProLog.
+     * @return código da unidade no ERP do cliente.
+     * @throws SQLException caso aconteça algum erro na consulta.
+     */
+    @NotNull
+    String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
 }

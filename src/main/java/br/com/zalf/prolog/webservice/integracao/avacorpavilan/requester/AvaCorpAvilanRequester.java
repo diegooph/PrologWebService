@@ -15,29 +15,33 @@ import com.sun.istack.internal.NotNull;
  */
 public interface AvaCorpAvilanRequester extends Requester {
     ArrayOfVeiculo getVeiculosAtivos(@NotNull final String cpf,
-                                     @NotNull String dataNascimento) throws Exception;
+                                     @NotNull final String dataNascimento) throws Exception;
 
     Veiculo getVeiculoAtivo(@NotNull final String placaVeiculo,
                             @NotNull final String cpf,
                             @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf,
-                                                                      @NotNull String dataNascimento) throws Exception;
+                                                                      @NotNull final String dataNascimento) throws Exception;
 
     boolean insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao,
-                            @NotNull String cpf,
-                            @NotNull String dataNascimento) throws Exception;
+                            @NotNull final String cpf,
+                            @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfVeiculoQuestao getQuestoesVeiculo(int codigoQuestionario,
-                                             @NotNull String placaVeiculo,
-                                             @NotNull String cpf,
-                                             @NotNull String dataNascimento) throws Exception;
+    ArrayOfVeiculoQuestao getQuestoesVeiculo(final int codigoQuestionario,
+                                             @NotNull final String placaVeiculo,
+                                             @NotNull final String cpf,
+                                             @NotNull final String dataNascimento) throws Exception;
 
     boolean insertAfericao(@NotNull final IncluirMedida2 medidas,
                            @NotNull String cpf,
                            @NotNull String dataNascimento) throws Exception;
 
     ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
-                                @NotNull String cpf,
-                                @NotNull String dataNascimento) throws Exception;
+                                @NotNull final String cpf,
+                                @NotNull final String dataNascimento) throws Exception;
+
+    Object getFarolChecklist(@NotNull final String codUnidadeAvilan,
+                             @NotNull final String cpf,
+                             @NotNull final String dataNascimento) throws Exception;
 }

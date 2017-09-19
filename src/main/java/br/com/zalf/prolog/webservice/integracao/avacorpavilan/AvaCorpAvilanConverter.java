@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -295,5 +292,12 @@ public final class AvaCorpAvilanConverter {
         pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
+    }
+
+    @VisibleForTesting
+    public static List<VeiculoLiberacao> convert(Object farolChecklist) {
+        checkNotNull(farolChecklist, "farolChecklist não pode ser null!");
+        // TODO:
+        return null;
     }
 }

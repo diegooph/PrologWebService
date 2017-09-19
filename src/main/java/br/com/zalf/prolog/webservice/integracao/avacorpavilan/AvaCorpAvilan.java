@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -101,12 +102,19 @@ public final class AvaCorpAvilan extends Sistema {
         return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);
     }
 
+    @Override
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
+        final Object farolChecklist = requester.getFarolChecklist(codUnidadeAvilan, cpf(), dataNascimento());
+        return AvaCorpAvilanConverter.convert(farolChecklist);
+    }
+
     private String cpf() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
         }
 
-        // Preenche com 0 a esquerda caso CPF tenha menos do que 11 caracteres
+        // Preenche com 0 a esquerda caso CPF tenha menos do que 11 caracteres.
         return String.format("%011d",  colaborador.getCpf());
     }
 

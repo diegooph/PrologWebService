@@ -48,8 +48,9 @@ public class ChecklistResource {
     @GET
     @Path("/liberacao/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
-        return service.getStatusLiberacaoVeiculos(codUnidade);
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade,
+                                                             @HeaderParam("Authorization") String userToken) {
+        return service.getStatusLiberacaoVeiculos(codUnidade, userToken);
     }
 
     @GET

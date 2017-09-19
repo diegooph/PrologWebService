@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import com.sun.istack.internal.NotNull;
 
@@ -23,4 +24,7 @@ interface OperacoesIntegradasChecklist {
             @NotNull final String placaVeiculo) throws Exception;
 
     boolean insertChecklist(@NotNull final Checklist checklist) throws Exception;
+
+    @NotNull
+    List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@NotNull final Long codUnidade) throws Exception;
 }
