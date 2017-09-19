@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -22,10 +22,10 @@ public class AutenticacaoResource {
 	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
 									@FormParam("dataNascimento") long dataNascimento) {
 
-		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
+		Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
 		if (service.verifyIfUserExists(cpf, dataNascimento, true)) {
 			Autenticacao autenticacao = service.insertOrUpdate(cpf);
-			L.d(TAG, autenticacao.getToken());
+			Log.d(TAG, autenticacao.getToken());
 			return autenticacao;
 		} else {
 			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");

@@ -43,7 +43,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		veiculoDao = Injection.provideVeiculoDao();
 		Long codUnidade = null;
 		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
-		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
+		//Log.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);

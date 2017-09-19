@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
 
@@ -31,7 +31,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         // Get the HTTP Authorization header from the request
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        L.d(TAG, "AuthorizationHeader: " + authorizationHeader);
+        Log.d(TAG, "AuthorizationHeader: " + authorizationHeader);
         // Check if the HTTP Authorization header is present and formatted correctly.
         if (authorizationHeader == null) {
             throw new NotAuthorizedException("Authorization header must be provided!");

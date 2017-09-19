@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -463,7 +463,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codUnidade);
             stmt.setInt(3, ano);
             stmt.setInt(4, mes);
-            L.d(TAG, stmt.toString());
+            Log.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tempMapa = rSet.getInt("mapa");

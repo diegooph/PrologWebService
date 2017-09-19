@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.imports;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.imports.mapa.MapaService;
 import br.com.zalf.prolog.webservice.imports.tracking.TrackingService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.commons.util.Site;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -38,7 +38,7 @@ public class ImportResource {
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("colaborador") FormDataBodyPart jsonPart) {
 		jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-		L.d(TAG, jsonPart.toString());
+		Log.d(TAG, jsonPart.toString());
 		Colaborador colaborador = jsonPart.getValueAs(Colaborador.class);
 		try {
 			// Salva o arquivo
@@ -46,10 +46,10 @@ public class ImportResource {
 			// ser que substitua enquanto está ainda usando o arquivo
 			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
 					String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
-			L.d(TAG, "fileName: " + fileName);
-			L.d(TAG, "Colaborador");
-			L.d(TAG, "CPF: " + colaborador.getCpf());
-			L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
+			Log.d(TAG, "fileName: " + fileName);
+			Log.d(TAG, "Colaborador");
+			Log.d(TAG, "CPF: " + colaborador.getCpf());
+			Log.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
 			// Pasta temporária da JVM
 			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
 			if (!tmpDir.exists()) {
@@ -84,8 +84,8 @@ public class ImportResource {
 			// ser que substitua enquanto está ainda usando o arquivo
 			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
 					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
-			L.d(TAG, "fileName: " + fileName);
-			L.d(TAG, "CodUnidade: " + codUnidade);
+			Log.d(TAG, "fileName: " + fileName);
+			Log.d(TAG, "CodUnidade: " + codUnidade);
 			// Pasta temporária da JVM
 			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
 			if (!tmpDir.exists()) {
@@ -124,10 +124,10 @@ public class ImportResource {
 			// ser que substitua enquanto está ainda usando o arquivo
 			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
 					String.valueOf(colaborador.getCpf()) + "_" + fileDetail.getFileName().replace(" ", "_");
-			L.d(TAG, "fileName: " + fileName);
-			L.d(TAG, "Colaborador");
-			L.d(TAG, "CPF: " + colaborador.getCpf());
-			L.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
+			Log.d(TAG, "fileName: " + fileName);
+			Log.d(TAG, "Colaborador");
+			Log.d(TAG, "CPF: " + colaborador.getCpf());
+			Log.d(TAG, "CodUnidade: " + colaborador.getCodUnidade());
 			// Pasta temporária da JVM
 			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
 			if (!tmpDir.exists()) {
@@ -162,9 +162,9 @@ public class ImportResource {
 			// ser que substitua enquanto está ainda usando o arquivo
 			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
 					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
-			L.d(TAG, "fileName: " + fileName);
-			L.d(TAG, "Colaborador");
-			L.d(TAG, "CodUnidade: " + codUnidade);
+			Log.d(TAG, "fileName: " + fileName);
+			Log.d(TAG, "Colaborador");
+			Log.d(TAG, "CodUnidade: " + codUnidade);
 			// Pasta temporária da JVM
 			File tmpDir = new File(System.getProperty("java.io.tmpdir"), "tracking");
 			if (!tmpDir.exists()) {

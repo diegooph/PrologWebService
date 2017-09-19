@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.commons.util.Android;
-import br.com.zalf.prolog.webservice.commons.util.L;
 import br.com.zalf.prolog.webservice.commons.util.Site;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -45,7 +45,7 @@ public class ContrachequeResource {
         try {
             String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + mes + "_" + ano + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
-            L.d(TAG, "fileName: " + fileName);
+            Log.d(TAG, "fileName: " + fileName);
             // Pasta temporária da JVM
             File tmpDir = new File(System.getProperty("java.io.tmpdir"), "contracheque");
             if (!tmpDir.exists()) {

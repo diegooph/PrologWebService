@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.commons.util;
 import br.com.zalf.prolog.webservice.BuildConfig;
 import org.apache.logging.log4j.LogManager;
 
-public class L {
+public class Log {
 	
 	public static void d(String tag, String message) {
 		if (BuildConfig.DEBUG) {

@@ -79,11 +79,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 if (prontuario != null) {
                     if (updateProntuario(prontuario, conn)) {
                         // Prontuário ja existia e foi atualizado
-//                        L.d(TAG, "update prontuarioCondutor: " + prontuario.getColaborador().getCpf());
+//                        Log.d(TAG, "update prontuarioCondutor: " + prontuario.getColaborador().getCpf());
                     } else {
                         // Mapa não existia e foi inserido na base
                         insertProntuario(prontuario, conn);
-//                        L.d(TAG, "insert prontuarioCondutor: " + prontuario.getColaborador().getCpf());
+//                        Log.d(TAG, "insert prontuarioCondutor: " + prontuario.getColaborador().getCpf());
                     }
                 }
             }

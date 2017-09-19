@@ -84,7 +84,7 @@ public class RankingDaoImpl extends DatabaseConnection implements RankingDao {
 //		finally {
 //			closeConnection(conn, stmt, rSet);
 //		}
-//		L.d(tag, listPosicao.toString());
+//		Log.d(tag, listPosicao.toString());
 //		return listPosicao;
 //	}
 //	/**

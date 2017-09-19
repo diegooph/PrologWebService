@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,7 +32,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setDate(1, DateUtils.getDataInicialPeriodoProdutividade(ano, mes));
 			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
 			stmt.setLong(3, cpf);
-			L.d(TAG, stmt.toString());
+			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				ItemProdutividade item = new ItemProdutividade();
@@ -123,7 +123,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setLong(3, codUnidade);
 			stmt.setString(4, equipe);
 			stmt.setString(5, codFuncao);
-			L.d(TAG, stmt.toString());
+			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while (rSet.next()){
 				if (holder == null){

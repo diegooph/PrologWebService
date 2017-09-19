@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.sun.istack.internal.NotNull;
@@ -96,7 +96,7 @@ public class ControleIntervaloService {
                     if (versaoDadosApp != null && versaoDadosApp > versaoDadosBanco.get()) {
                         // Isso nunca deveria acontecer! Porém, para não impedirmos o login do usuário, vamos retornar
                         // como se sua versão estivesse desatualizada e mandar os dados que temos.
-                        L.e(TAG, "Erro versão dados intervalo",
+                        Log.e(TAG, "Erro versão dados intervalo",
                                 new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode ser " +
                                         "maior do que a versão dos dados no banco(" + versaoDadosBanco.get() + ")!"));
                     }

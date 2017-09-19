@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.imports.tracking;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -32,12 +32,12 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
 			for (int i = 1; i < tabela.size(); i++) {
 				TrackingImport tracking = createTracking(tabela.get(i));
-				L.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+				Log.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 					if (updateTracking(tracking, codUnidade, conn)) {
 						// Linha já existe e será atualizada
-						L.d(TAG, "Update Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+						Log.d(TAG, "Update Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 					} else {
-						L.d(TAG, "insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
+						Log.d(TAG, "insert Tracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 						// Linha não existe e será inserida
 						insertTracking(tracking, codUnidade, conn);
 				}

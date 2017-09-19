@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.report;
 
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.ResultSet;
@@ -43,7 +43,7 @@ public class ReportTransformer {
 
     private static @NotNull List<String> getHeader(@NotNull final ResultSetMetaData metaData) throws SQLException {
         final List<String> header = new ArrayList<>();
-        L.d(TAG, String.valueOf(metaData.getColumnCount()));
+        Log.d(TAG, String.valueOf(metaData.getColumnCount()));
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             header.add(metaData.getColumnLabel(i));
         }

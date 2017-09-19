@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import com.google.common.io.Files;
@@ -48,7 +48,7 @@ public class UploadTreinamentoHelper {
             fileSender.sendFile(BUCKET_NAME_IMAGES, imagem.getName(), imagem);
             final String imageUrl = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
             urls.add(imageUrl);
-            L.d(TAG, "Imagem enviada: " + imageUrl);
+            Log.d(TAG, "Imagem enviada: " + imageUrl);
         }
         treinamento.setUrlsImagensArquivo(urls);
 

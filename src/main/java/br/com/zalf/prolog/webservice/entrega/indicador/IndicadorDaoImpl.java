@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.*;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -183,7 +183,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			stmt.setString(5, codUnidade);
 			stmt.setString(6, equipe);
 			stmt.setString(7, codEmpresa);
-			L.d(TAG, stmt.toString());
+			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			itens = createExtratoIndicador(rSet, indicador);
 		} finally {
@@ -204,7 +204,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
-            L.d(TAG, stmt.toString());
+            Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			if(rSet.next()) {
 				acumulados = createAcumulados(rSet);

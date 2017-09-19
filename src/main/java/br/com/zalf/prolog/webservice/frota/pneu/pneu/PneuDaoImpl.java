@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.L;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -283,7 +283,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         try {
             stmt = null;
-            L.d(TAG, pneu.getCodigo() + " " + pneuNovo.getCodigo() + " " + placa);
+            Log.d(TAG, pneu.getCodigo() + " " + pneuNovo.getCodigo() + " " + placa);
             stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET COD_PNEU = ? WHERE PLACA = ? AND COD_PNEU = ?");
             stmt.setString(1, pneuNovo.getCodigo());
             stmt.setString(2, placa);
