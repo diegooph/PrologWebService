@@ -45,7 +45,7 @@ public class CalendarioService {
 			return dao.insert(evento, codUnidade, codFuncao, nomeEquipe);
 		}catch (SQLException e){
 			e.printStackTrace();
-			return Response.Error("Erro ao inserir o evento");
+			return Response.error("Erro ao inserir o evento");
 		}
 	}
 

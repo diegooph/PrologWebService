@@ -35,8 +35,8 @@ public class DatabaseConnection {
 //	private static final String TESTE_URL = "jdbc:postgresql://"
 //			+ "prolog-db-instance.csg59phgb0xp.sa-east-1.rds.amazonaws.com:"
 //			+ "5432/prolog_database_testes_janeiro";
-//	private static final String TESTE_URL = "jdbc:postgresql://192.168.15.11:5432/postgresMaio";
-	private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_setembro";
+	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.7:5432/prolog_setembro";
+//	private static final String TESTE_URL = "jdbc:postgresql://localhost:5433/postgresSetembro";
 	private static final String TESTE_USUARIO = "postgres";
 	private static final String TESTE_SENHA = "postgres";
 

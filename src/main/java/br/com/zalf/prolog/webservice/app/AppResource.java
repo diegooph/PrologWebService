@@ -21,9 +21,9 @@ public class AppResource {
 	@Secured
 	public Response isThisCurrentVersion(AppVersion appVersion) {
 		if (service.isThisCurrentVersion(appVersion)) {
-			return Response.Ok("Você está com a versão mais atualizada");
+			return Response.ok("Você está com a versão mais atualizada");
 		} else {
-			return Response.Error("Nova versão disponível para download");
+			return Response.error("Nova versão disponível para download");
 		}
 	}
 }

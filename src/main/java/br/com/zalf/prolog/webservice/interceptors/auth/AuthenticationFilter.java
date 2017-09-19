@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -18,7 +20,7 @@ import java.lang.reflect.Method;
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
-public class AuthenticationFilter implements ContainerRequestFilter {
+public final class AuthenticationFilter implements ContainerRequestFilter {
     private static final String TAG = AuthenticationFilter.class.getSimpleName();
 
     @Context
@@ -27,42 +29,46 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // Get the HTTP Authorization header from the request
-        String authorizationHeader = 
-            requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        L.d(TAG, "authorizationHeader: " + authorizationHeader);
-        // Check if the HTTP Authorization header is present and formatted correctly 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
-        }
-        
-        String token = authorizationHeader.substring("Bearer".length()).trim();
-
-        Method resourceMethod = resourceInfo.getResourceMethod();
-        Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
-        if (methodAnnot != null) {
-           validateToken(token, methodAnnot.permissions(), methodAnnot.needsToHaveAll());
+        L.d(TAG, "AuthorizationHeader: " + authorizationHeader);
+        // Check if the HTTP Authorization header is present and formatted correctly.
+        if (authorizationHeader == null) {
+            throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        Class<?> resourceClass = resourceInfo.getResourceClass();
-        Secured classAnnot = resourceClass.getAnnotation(Secured.class);
-        if (classAnnot != null) {
-            validateToken(token, classAnnot.permissions(), classAnnot.needsToHaveAll());
-        }
-    }
-
-    private void validateToken(String token, int[] permissions, boolean needsToHaveAll) throws NotAuthorizedException {
-        AutenticacaoService service = new AutenticacaoService();
-
-        // Check if it was issued by the server and if it's not expired
-        // Throw an Exception if the token is invalid
-    	L.d(TAG, "Token: " + token);
-    	if (permissions.length == 0) {
-    	    if (!service.verifyIfTokenExists(token))
-                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+        AuthType authType;
+        if (authorizationHeader.startsWith("Basic ")) {
+            authType = AuthType.BASIC;
+        } else if (authorizationHeader.startsWith("Bearer ")) {
+            authType = AuthType.BEARER;
         } else {
-            if (!service.userHasPermission(token, permissions, needsToHaveAll))
-                throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");
+            throw new NotAuthorizedException("Authorization header must be provided!");
+        }
+
+        final String value =  authorizationHeader.substring(authType.value().length()).trim();
+        final Authenticator authenticator = AuthenticatorFactory.createAuthenticator(
+                authType,
+                new AutenticacaoService());
+
+        final Method resourceMethod = resourceInfo.getResourceMethod();
+        final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
+        if (methodAnnot != null) {
+            authenticator.validate(
+                    value,
+                    methodAnnot.permissions(),
+                    methodAnnot.needsToHaveAllPermissions(),
+                    methodAnnot.considerOnlyActiveUsers());
+        }
+
+        final Class<?> resourceClass = resourceInfo.getResourceClass();
+        final Secured classAnnot = resourceClass.getAnnotation(Secured.class);
+        if (classAnnot != null) {
+            authenticator.validate(
+                    value,
+                    classAnnot.permissions(),
+                    classAnnot.needsToHaveAllPermissions(),
+                    classAnnot.considerOnlyActiveUsers());
         }
     }
 }

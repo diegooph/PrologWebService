@@ -16,19 +16,19 @@ public class MapaService {
     public Response insertOrUpdateMapa(String path, Long codUnidade) {
         try {
             if (dao.insertOrUpdateMapa(path, codUnidade)) {
-                return Response.Ok("Arquivo do mapa inserido com sucesso");
+                return Response.ok("Arquivo do mapa inserido com sucesso");
             } else {
-                return Response.Error("Problema ao inserir o arquivo");
+                return Response.error("Problema ao inserir o arquivo");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro relacionado ao banco de dados ao inserir o arquivo");
+            return Response.error("Erro relacionado ao banco de dados ao inserir o arquivo");
         } catch (IOException e) {
             e.printStackTrace();
-            return Response.Error("Erro relacionado ao processamento do arquivo");
+            return Response.error("Erro relacionado ao processamento do arquivo");
         } catch (ParseException e) {
             e.printStackTrace();
-            return Response.Error("Erro nos dados da planilha");
+            return Response.error("Erro nos dados da planilha");
         }
     }
 

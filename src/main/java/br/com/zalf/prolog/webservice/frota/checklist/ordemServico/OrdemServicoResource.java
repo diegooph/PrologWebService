@@ -27,9 +27,9 @@ public class OrdemServicoResource {
     public Response consertaItem(ItemOrdemServico item,
                                  @PathParam("placa") String placa) {
         if (service.consertaItem(item, placa)) {
-            return Response.Ok("Serviço consertado com sucesso");
+            return Response.ok("Serviço consertado com sucesso");
         } else {
-            return Response.Error("Erro ao consertar o item");
+            return Response.error("Erro ao consertar o item");
         }
     }
 

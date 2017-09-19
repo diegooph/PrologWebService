@@ -16,13 +16,13 @@ public class MovimentacaoService {
     public Response insert(ProcessoMovimentacao movimentacao) {
         try{
             if(dao.insert(movimentacao)){
-                return Response.Ok("Movimentações realizadas com sucesso");
+                return Response.ok("Movimentações realizadas com sucesso");
             }else{
-                return Response.Error("Erro ao realizar as movimentações");
+                return Response.error("Erro ao realizar as movimentações");
             }
         }catch (SQLException | OrigemDestinoInvalidaException e){
             e.printStackTrace();
-            return Response.Error("Erro ao realizar as movimentações");
+            return Response.error("Erro ao realizar as movimentações");
         }
     }
 

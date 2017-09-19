@@ -23,9 +23,9 @@ public class QuizResource {
     @Secured(permissions = Pilares.Gente.Quiz.REALIZAR)
     public Response insert(Quiz quiz) {
         if (service.insert(quiz)) {
-            return Response.Ok("Quiz inserido com sucesso");
+            return Response.ok("Quiz inserido com sucesso");
         } else {
-            return Response.Error("Erro ao inserir o Quiz");
+            return Response.error("Erro ao inserir o Quiz");
         }
     }
 

@@ -36,9 +36,9 @@ public class DeprecatedEmpresaResource {
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
     public Response updateEquipe(@PathParam("codUnidade") Long codUnidade, @PathParam("codEquipe") Long codEquipe, Equipe equipe) {
         if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
-            return Response.Ok("Equipe editada com sucesso");
+            return Response.ok("Equipe editada com sucesso");
         } else {
-            return Response.Error("Erro ao editar a equipe");
+            return Response.error("Erro ao editar a equipe");
         }
     }
 
@@ -99,9 +99,9 @@ public class DeprecatedEmpresaResource {
                                       @PathParam("codUnidade") Long codUnidade,
                                       @PathParam("codCargo") Long codCargo) {
         if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
-            return Response.Ok("Funções inseridas com sucesso");
+            return Response.ok("Funções inseridas com sucesso");
         } else {
-            return Response.Error("Erro ao inserir as funções");
+            return Response.error("Erro ao inserir as funções");
         }
     }
 
@@ -162,9 +162,9 @@ public class DeprecatedEmpresaResource {
     @Deprecated
     public Response DEPRECATED_INSERT_EQUIPE(Request<Equipe> request) {
         if (service.createEquipe(request)) {
-            return Response.Ok("Equipe inserida com sucesso");
+            return Response.ok("Equipe inserida com sucesso");
         } else {
-            return Response.Error("Erro ao inserir equipe");
+            return Response.error("Erro ao inserir equipe");
         }
     }
 
@@ -251,9 +251,9 @@ public class DeprecatedEmpresaResource {
         Visao visao = new Visao();
         visao.setPilares(pilares);
         if (service.alterarVisaoCargo(visao, codUnidade, codCargo)) {
-            return Response.Ok("Funções inseridas com sucesso");
+            return Response.ok("Funções inseridas com sucesso");
         } else {
-            return Response.Error("Erro ao inserir as funções");
+            return Response.error("Erro ao inserir as funções");
         }
     }
 }

@@ -20,7 +20,7 @@ public class SolicitacaoFolgaService {
             return dao.insert(solicitacaoFolga);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro ao inserir a solicitação de folga.");
+            return Response.error("Erro ao inserir a solicitação de folga.");
         }
     }
 

@@ -35,18 +35,18 @@ public class TreinamentoResource {
             @FormDataParam("treinamento") FormDataBodyPart jsonPart) {
 
         if (!fileDetail.getFileName().toLowerCase().endsWith(".pdf"))
-            return Response.Error("ERRO! Arquivo não está no formato PDF!");
+            return Response.error("ERRO! Arquivo não está no formato PDF!");
 
         jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         Treinamento treinamento = jsonPart.getValueAs(Treinamento.class);
         if (treinamento == null) {
-            return Response.Error("ERRO! Treinamento veio nulo");
+            return Response.error("ERRO! Treinamento veio nulo");
         } else {
             Long codTreinamento = service.insert(fileInputStream, treinamento);
             if (codTreinamento != null) {
                 return ResponseWithCod.Ok("Treinamento inserido com sucesso", codTreinamento);
             } else {
-                return Response.Error("Erro ao inserir treinamento");
+                return Response.error("Erro ao inserir treinamento");
             }
         }
     }
@@ -56,9 +56,9 @@ public class TreinamentoResource {
     @Path("/{codigo}")
     public Response updateTreinamento(Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
-            return Response.Ok("Treinamento atualizado com sucesso");
+            return Response.ok("Treinamento atualizado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o treinamento");
+            return Response.error("Erro ao atualizar o treinamento");
         }
     }
 
@@ -68,9 +68,9 @@ public class TreinamentoResource {
     public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
                                                @PathParam("cpf") Long cpf) {
         if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
-            return Response.Ok("Treinamento marcado com sucesso");
+            return Response.ok("Treinamento marcado com sucesso");
         } else {
-            return Response.Error("Erro ao marcar treinamento");
+            return Response.error("Erro ao marcar treinamento");
         }
     }
 
@@ -117,9 +117,9 @@ public class TreinamentoResource {
     @Deprecated
     public Response DEPRECATED_UPDATE(Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
-            return Response.Ok("Treinamento atualizado com sucesso");
+            return Response.ok("Treinamento atualizado com sucesso");
         } else {
-            return Response.Error("Erro ao atualizar o treinamento");
+            return Response.error("Erro ao atualizar o treinamento");
         }
     }
 
@@ -146,9 +146,9 @@ public class TreinamentoResource {
         treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
         if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
                 treinamentoColaborador.getColaborador().getCpf())) {
-            return Response.Ok("Treinamento marcado com sucesso");
+            return Response.ok("Treinamento marcado com sucesso");
         } else {
-            return Response.Error("Erro ao marcar treinamento");
+            return Response.error("Erro ao marcar treinamento");
         }
     }
 
@@ -157,9 +157,9 @@ public class TreinamentoResource {
 //    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     public Response deleteTreinamento(@PathParam("codTreinamento") Long codTreinamento) {
         if(service.deleteTreinamento(codTreinamento)){
-            return Response.Ok("Treinamento deletado com sucesso");
+            return Response.ok("Treinamento deletado com sucesso");
         }else {
-            return Response.Error("Erro ao deletar o treinamento");
+            return Response.error("Erro ao deletar o treinamento");
         }
     }
 }

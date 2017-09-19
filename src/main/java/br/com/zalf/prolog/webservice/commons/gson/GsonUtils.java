@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import com.google.gson.Gson;
@@ -86,7 +87,8 @@ public final class GsonUtils {
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
                 .of(AbstractResponse.class)
                 .registerSubtype(Response.class)
-                .registerSubtype(ResponseWithCod.class);
+                .registerSubtype(ResponseWithCod.class)
+				.registerSubtype(ResponseIntervalo.class);
 
 		builder.registerTypeAdapterFactory(adapterServico);
 		builder.registerTypeAdapterFactory(adapterAlternativa);

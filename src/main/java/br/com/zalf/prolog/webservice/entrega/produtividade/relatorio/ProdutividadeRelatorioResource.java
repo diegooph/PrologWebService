@@ -54,4 +54,23 @@ public class ProdutividadeRelatorioResource {
                                                           @QueryParam("dataFinal") long dataFinal) {
         return service.getExtratoIndividualProdutividadeReport(cpf, codUnidade, dataInicial, dataFinal);
     }
+
+    @GET
+    @Path("/extratos/acessos/{codUnidade}/{cpf}/csv")
+    @Produces("application/csv")
+    public StreamingOutput getAcessosProdutividadeCsv(@PathParam("cpf") String cpf,
+                                                                @PathParam("codUnidade") Long codUnidade,
+                                                                @QueryParam("dataInicial") long dataInicial,
+                                                                @QueryParam("dataFinal") long dataFinal) {
+        return outputStream -> service.getAcessosProdutividadeCsv(outputStream, cpf, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/extratos/acessos/{codUnidade}/{cpf}/report")
+    public Report getAcessosProdutividadeReport(@PathParam("cpf") String cpf,
+                                                          @PathParam("codUnidade") Long codUnidade,
+                                                          @QueryParam("dataInicial") long dataInicial,
+                                                          @QueryParam("dataFinal") long dataFinal) {
+        return service.getAcessosProdutividadeReport(cpf, codUnidade, dataInicial, dataFinal);
+    }
 }

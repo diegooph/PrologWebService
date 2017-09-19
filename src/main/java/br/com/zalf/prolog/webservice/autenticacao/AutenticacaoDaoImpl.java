@@ -1,18 +1,17 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
-import java.sql.Date;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Classe AutenticacaoDaoImpl, responsavel pela execução da lógica e comunicação com o banco de dados da aplicação
+ * Classe responsável pela comunicação com o banco de dados da aplicação.
  */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
@@ -24,15 +23,20 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyIfTokenExists(String token) throws SQLException {
+	public boolean verifyIfTokenExists(String token, boolean apenasUsuariosAtivos) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("UPDATE token_autenticacao SET " +
-					"DATA_HORA = ? WHERE TOKEN = ?");
-			stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+					"DATA_HORA = ? WHERE TOKEN = ? " +
+					"AND (SELECT C.STATUS_ATIVO " +
+						 "FROM COLABORADOR C " +
+						 "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?");
+			stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
 			stmt.setString(2, token);
+			stmt.setString(3, token);
+			stmt.setString(4, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			int count =  stmt.executeUpdate();
 			if (count > 0) {
 				return true;
@@ -44,17 +48,17 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyLogin(long cpf, java.util.Date dataNascimento) throws SQLException {
+	public boolean verifyIfUserExists(long cpf, long dataNascimento, boolean apenasUsuariosAtivos) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM "
-					+ "COLABORADOR C WHERE C.CPF = ? AND DATA_NASCIMENTO = ? "
-					+ "AND C.STATUS_ATIVO = TRUE)");
+			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM COLABORADOR C WHERE C.CPF = ? " +
+					"AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?);");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, DateUtils.toSqlDate(dataNascimento));
+			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				return rSet.getBoolean("EXISTS");
@@ -66,41 +70,51 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean userHasPermission(@NotNull String token, @NotNull int[] permissions, boolean needsToHaveAll)
-			throws SQLException{
+	public boolean userHasPermission(@NotNull String token, @NotNull int[] permissions,
+									 boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			String query = "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
+					"FROM token_autenticacao TA\n" +
+					"  JOIN colaborador C ON C.cpf = TA.cpf_colaborador\n" +
+					"  JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
+					"WHERE TA.token = ? AND C.STATUS_ATIVO::TEXT LIKE ?;";
+			conn = getConnection();
+			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt.setString(1, token);
+			stmt.setString(2, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
+			rSet = stmt.executeQuery();
+			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			return verifyPermissions(needsToHaveAllPermissions, permissoes, rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	@Override
+	public boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
+									 boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos) throws SQLException {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try{
+			String query = "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
+					"FROM colaborador C JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
+					"WHERE c.cpf = ? and c.data_nascimento = ? AND C.STATUS_ATIVO::TEXT LIKE ?;";
 			conn = getConnection();
-			stmt = conn.prepareStatement( "SELECT cfp.cod_funcao_prolog AS cod_permissao\n" +
-					"FROM token_autenticacao TA\n" +
-					"  JOIN colaborador C ON C.cpf = TA.cpf_colaborador\n" +
-					"  JOIN cargo_funcao_prolog_v11 CFP ON CFP.cod_unidade = C.cod_unidade AND CFP.cod_funcao_colaborador = C.cod_funcao\n" +
-					"WHERE TA.token = ? ", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			stmt.setString(1, token);
+			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt.setLong(1, cpf);
+			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
 			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
-			if (!rSet.next()) {
-				return false;
-			}
-			rSet.beforeFirst();
-			while (rSet.next()) {
-				if (needsToHaveAll) {
-					if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
-						return false;
-					}
-				} else {
-					if (permissoes.contains(rSet.getInt("cod_permissao"))) {
-						return true;
-					}
-				}
-			}
+			return verifyPermissions(needsToHaveAllPermissions, permissoes, rSet);
 		}finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return needsToHaveAll;
 	}
 
 	@Override
@@ -145,6 +159,25 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 		}
 		autenticacao.setStatus(Autenticacao.OK);
 		return autenticacao;
+	}
+
+	private boolean verifyPermissions(boolean needsToHaveAll, List<Integer> permissoes, ResultSet rSet) throws SQLException{
+		if (!rSet.next()) {
+			return false;
+		}
+		rSet.beforeFirst();
+		while (rSet.next()) {
+			if (needsToHaveAll) {
+				if (!permissoes.contains(rSet.getInt("cod_permissao"))) {
+					return false;
+				}
+			} else {
+				if (permissoes.contains(rSet.getInt("cod_permissao"))) {
+					return true;
+				}
+			}
+		}
+		return needsToHaveAll;
 	}
 
 	@Deprecated

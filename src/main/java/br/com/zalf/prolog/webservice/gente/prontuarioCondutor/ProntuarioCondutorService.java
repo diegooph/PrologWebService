@@ -45,19 +45,19 @@ public class ProntuarioCondutorService {
     public Response insertOrUpdate(String path) {
         try {
             if (dao.insertOrUpdate(path)) {
-                return Response.Ok("Prontuários inseridos com sucesso.");
+                return Response.ok("Prontuários inseridos com sucesso.");
             } else {
-                return Response.Error("Erro ao inserir os prontuários");
+                return Response.error("Erro ao inserir os prontuários");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return Response.Error("Erro relacionado ao banco de dados ao inserir o arquivo");
+            return Response.error("Erro relacionado ao banco de dados ao inserir o arquivo");
         } catch (IOException e) {
             e.printStackTrace();
-            return Response.Error("Erro relacionado ao processamento do arquivo");
+            return Response.error("Erro relacionado ao processamento do arquivo");
         } catch (ParseException e) {
             e.printStackTrace();
-            return Response.Error("Erro nos dados da planilha");
+            return Response.error("Erro nos dados da planilha");
         }
     }
 

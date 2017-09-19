@@ -61,6 +61,31 @@ public class ProdutividadeRelatorioService {
         }
     }
 
+    public void getAcessosProdutividadeCsv( OutputStream outputStream,
+                                     String cpf,
+                                     Long codUnidade,
+                                     Long dataInicial,
+                                     Long dataFinal) {
+        try {
+            dao.getAcessosProdutividadeCsv(outputStream, cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Report getAcessosProdutividadeReport( String cpf,
+                                          Long codUnidade,
+                                          Long dataInicial,
+                                          Long dataFinal) {
+        try {
+            return dao.getAcessosProdutividadeReport(cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 }

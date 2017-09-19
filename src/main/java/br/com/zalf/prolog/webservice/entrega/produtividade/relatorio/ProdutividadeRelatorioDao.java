@@ -21,7 +21,7 @@ public interface ProdutividadeRelatorioDao {
      * @param dataInicial  data inicial em milissegundos
      * @param dataFinal    data final em milissegundos
      * @throws SQLException caso ocorrer um erro ao buscar os dados no banco de dados
-     * @throws IOException caso ocorra algum erro ao escrever o arquivo csv no arquivo binário
+     * @throws IOException  caso ocorra algum erro ao escrever o arquivo csv no arquivo binário
      */
     void getConsolidadoProdutividadeCsv(@NotNull OutputStream outputStream,
                                         @NotNull Long codUnidade,
@@ -51,7 +51,7 @@ public interface ProdutividadeRelatorioDao {
      * @param dataInicial  data inicial em milissegundos
      * @param dataFinal    data final em milissegundos
      * @throws SQLException caso ocorrer um erro ao buscar os dados no banco de dados
-     * @throws IOException caso ocorra algum erro ao escrever o arquivo csv no arquiv
+     * @throws IOException  caso ocorra algum erro ao escrever o arquivo csv no arquiv
      */
     void getExtratoIndividualProdutividadeCsv(@NotNull OutputStream outputStream,
                                               @NotNull String cpf,
@@ -74,5 +74,16 @@ public interface ProdutividadeRelatorioDao {
                                                    @NotNull Long codUnidade,
                                                    @NotNull Date dataInicial,
                                                    @NotNull Date dataFinal) throws SQLException;
+
+    void getAcessosProdutividadeCsv(@NotNull OutputStream outputStream,
+                                    @NotNull String cpf,
+                                    @NotNull Long codUnidade,
+                                    @NotNull Date dataInicial,
+                                    @NotNull Date dataFinal) throws SQLException, IOException;
+
+    Report getAcessosProdutividadeReport(@NotNull String cpf,
+                                         @NotNull Long codUnidade,
+                                         @NotNull Date dataInicial,
+                                         @NotNull Date dataFinal) throws SQLException;
 
 }
