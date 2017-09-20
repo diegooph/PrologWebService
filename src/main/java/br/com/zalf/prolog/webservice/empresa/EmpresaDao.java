@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.validation.constraints.NotNull;
@@ -166,10 +167,12 @@ public interface EmpresaDao {
      * @param visao      {@link Visao} de uma {@link Cargo}
      * @param codUnidade código da unidade
      * @param codCargo   código do cargo
+     * @param listener   listener para aviso das mudanças
      * @return boolean com o resultado da operação
-     * @throws SQLException caso não seja possível realizar a operação
+     * @throws Throwable caso não seja possível realizar a operação
      */
-    boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
+    boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo, DadosIntervaloChangedListener listener)
+            throws Throwable;
 
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 
