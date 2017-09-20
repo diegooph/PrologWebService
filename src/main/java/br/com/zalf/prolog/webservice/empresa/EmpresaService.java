@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.core.NoContentException;
@@ -144,8 +145,8 @@ public class EmpresaService {
 
     public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) {
         try {
-            return dao.alterarVisaoCargo(visao, codUnidade, codCargo);
-        } catch (SQLException e) {
+            return dao.alterarVisaoCargo(visao, codUnidade, codCargo, new VersaoDadosIntervaloAtualizador());
+        } catch (Throwable e) {
             e.printStackTrace();
             return false;
         }
