@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
@@ -107,21 +108,31 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return true;
     }
 
-    /**
-     * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
-     * setamos o status para inativo.
-     */
     @Override
-    public boolean delete(Long cpf) throws SQLException {
+    public void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "STATUS_ATIVO = FALSE "
                     + "WHERE CPF = ?;");
             stmt.setLong(1, cpf);
-            return (stmt.executeUpdate() > 0);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
+            }
+
+            // Já inativamos o colaborador, repassamos o evento ao listener.
+            listener.onColaboradorInativado(conn, this, cpf);
+
+            // Se deu tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -406,6 +417,31 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         }
 
         throw new IllegalStateException("Unidade não encontrada para o CPF: " + cpf);
+    }
+
+    @Override
+    public boolean colaboradorTemAcessoFuncao(@NotNull Long cpf, int codPilar, int codFuncaoProLog) throws SQLException {
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.CPF FROM COLABORADOR C " +
+                    "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
+                    "AND C.COD_UNIDADE = CFP.COD_UNIDADE WHERE C.CPF = ? AND CFP.COD_PILAR_PROLOG = ? " +
+                    "AND CFP.COD_FUNCAO_PROLOG = ?);");
+            stmt.setLong(1, cpf);
+            stmt.setInt(2, codPilar);
+            stmt.setInt(3, codFuncaoProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTS");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+        return false;
     }
 
     private Visao getVisaoByCpf(Long cpf) throws SQLException {
