@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
@@ -10,6 +12,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 
@@ -22,6 +26,9 @@ public final class Injection {
         throw new IllegalStateException(Injection.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    // ================================================
+    // DAOS
+    // ================================================
     public static ChecklistDao provideChecklistDao() {
         return new ChecklistDaoImpl();
     }
@@ -44,5 +51,16 @@ public final class Injection {
 
     public static PneuDao providePneuDao() {
         return new PneuDaoImpl();
+    }
+
+    public static EmpresaDao provideEmpresaDao() {
+        return new EmpresaDaoImpl();
+    }
+
+    // ================================================
+    // OUTROS
+    // ================================================
+    public static DadosIntervaloChangedListener provideDadosIntervaloChangedListener() {
+        return new VersaoDadosIntervaloAtualizador();
     }
 }

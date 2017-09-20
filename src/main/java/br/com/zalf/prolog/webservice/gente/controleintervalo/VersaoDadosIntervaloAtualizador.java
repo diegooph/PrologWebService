@@ -15,6 +15,10 @@ import static br.com.zalf.prolog.webservice.permissao.pilares.Pilares.Gente.Inte
 
 public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChangedListener {
 
+    public VersaoDadosIntervaloAtualizador() {
+
+    }
+
     @Override
     public void onTiposIntervaloChanged(@NotNull final Connection connection,
                                         @NotNull final Long codUnidade) throws Throwable {

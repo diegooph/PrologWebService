@@ -88,6 +88,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     //TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
     //a equipe está ligada como fk de colaborador e fk de calendário
 
+    public EmpresaDaoImpl() {
+
+    }
+
     @Override
     public AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
         Connection conn = null;
@@ -371,6 +375,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return pilares;
     }
 
+    @Override
     public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
         List<Pilar> pilares = new ArrayList<>();
         List<FuncaoProLog> funcoes = new ArrayList<>();

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -68,7 +69,7 @@ public class ControleIntervaloService {
 
     public boolean updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
         try {
-            dao.updateTipoIntervalo(tipoIntervalo, new VersaoDadosIntervaloAtualizador());
+            dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
             e.printStackTrace();

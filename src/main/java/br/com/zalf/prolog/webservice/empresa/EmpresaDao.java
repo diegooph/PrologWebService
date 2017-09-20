@@ -5,9 +5,11 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -185,4 +187,7 @@ public interface EmpresaDao {
      * @throws SQLException caso não seja possível realizar a operação
      */
     Long insertFuncao(Cargo cargo, Long codUnidade) throws SQLException;
+
+    // TODO: Não deveria estar aqui. Deveria estar em um Converter.
+    List<Pilar> createPilares(ResultSet rSet) throws SQLException;
 }

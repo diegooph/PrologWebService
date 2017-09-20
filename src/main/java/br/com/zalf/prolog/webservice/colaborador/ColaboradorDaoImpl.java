@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -58,7 +59,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             }
 
             // Avisamos o listener que um colaborador foi inserido.
-            listener.onColaboradorInserido(conn, new EmpresaDaoImpl(), colaborador);
+            listener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
 
             // Tudo certo, commita.
             conn.commit();
@@ -113,7 +114,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             }
 
             // Avisa o listener que atualizamos um colaborador.
-            listener.onColaboradorAtualizado(conn, new EmpresaDaoImpl(), this, colaborador, cpfAntigo);
+            listener.onColaboradorAtualizado(conn, Injection.provideEmpresaDao(), this, colaborador, cpfAntigo);
 
             // Tudo certo, commita.
             conn.commit();
@@ -469,8 +470,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
-        EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
-
+        final EmpresaDao empresaDao = Injection.provideEmpresaDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, " +
