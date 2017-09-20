@@ -12,13 +12,13 @@ import java.util.List;
 public interface ColaboradorDao {
 
 	/**
-	 * Insere um colaborador no bando de dados.
+	 * Insere um {@link Colaborador colaborador} no bando de dados.
 	 *
 	 * @param colaborador dados do colaborador a ser inserido e dados do solicitante
-	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
-	 * @throws SQLException caso não seja possível inserir no banco de dados
+	 * @param listener para repassarmos o evento de que um colaborador está sendo inativado.
+	 * @throws Throwable caso não seja possível inserir no banco de dados
 	 */
-	boolean insert(Colaborador colaborador) throws SQLException;
+	void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
 	 * Atualiza os dados de um colaborador.

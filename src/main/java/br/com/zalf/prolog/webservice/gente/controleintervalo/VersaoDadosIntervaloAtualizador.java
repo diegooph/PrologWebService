@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -48,6 +49,24 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
         // que caso esse colaborador esteja no BD local em algum aplicativo, ele será removido.
         if (colaboradorTemAcessoMarcacaoIntervalo) {
             incrementaVersaoDadosUnidade(connection, colaboradorDao.getCodUnidadeByCpf(cpf));
+        }
+    }
+
+    @Override
+    public void onColaboradorInserido(@NotNull final Connection connection,
+                                      @NotNull final EmpresaDao empresaDao,
+                                      @NotNull final Colaborador colaborador) throws Throwable {
+        final Visao visaoCargoColaborador = empresaDao.getVisaoCargo(
+                colaborador.getUnidade().getCodigo(),
+                colaborador.getFuncao().getCodigo());
+
+        if (visaoCargoColaborador == null)
+            throw new IllegalStateException();
+
+        // Se o cargo no qual esse colaborador foi adicionado tem permissão para marcar intervalo, precisamos
+        // incrementar a versão dos dados para invalidar o BD local nos aplicativos.
+        if (visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
+            incrementaVersaoDadosUnidade(connection, colaborador.getUnidade().getCodigo());
         }
     }
 

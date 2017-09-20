@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsEx
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -29,8 +30,9 @@ public class ColaboradorService {
 
 	public boolean insert(Colaborador colaborador) {
 		try {
-			return dao.insert(colaborador);
-		} catch (SQLException e) {
+			dao.insert(colaborador, new VersaoDadosIntervaloAtualizador());
+			return true;
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -47,8 +49,9 @@ public class ColaboradorService {
 
 	public boolean delete(Long cpf) {
 		try {
-			return dao.delete(cpf);
-		} catch (SQLException e) {
+			dao.delete(cpf, new VersaoDadosIntervaloAtualizador());
+			return true;
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 		}

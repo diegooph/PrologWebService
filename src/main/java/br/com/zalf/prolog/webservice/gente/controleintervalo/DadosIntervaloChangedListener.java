@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import com.sun.istack.internal.NotNull;
@@ -21,4 +22,8 @@ public interface DadosIntervaloChangedListener {
     void onColaboradorInativado(@NotNull final Connection connection,
                                 @NotNull final ColaboradorDao colaboradorDao,
                                 @NotNull final Long cpf) throws Throwable;
+
+    void onColaboradorInserido(@NotNull final Connection connection,
+                               @NotNull final EmpresaDao empresaDao,
+                               @NotNull final Colaborador colaborador) throws Throwable;
 }

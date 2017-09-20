@@ -23,12 +23,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
     @Override
-    public boolean insert(Colaborador colaborador) throws SQLException {
+    public void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
@@ -56,10 +56,20 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o colaborador");
             }
+
+            // Avisamos o listener que um colaborador foi inserido.
+            listener.onColaboradorInserido(conn, new EmpresaDaoImpl(), colaborador);
+
+            // Tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw  e;
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
     @Override
