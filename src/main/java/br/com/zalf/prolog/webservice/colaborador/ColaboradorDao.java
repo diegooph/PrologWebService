@@ -21,14 +21,13 @@ public interface ColaboradorDao {
 	void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
-	 * Atualiza os dados de um colaborador.
+	 * Atualiza os dados de um {@link Colaborador colaborador}.
 	 *
-	 * @param cpfAntigo cpf do colaborador a ser atualizado
-	 * @param colaborador dados do colaborador a ser atualizados
-	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
-	 * @throws SQLException caso não seja possível atualizar os dados
+	 * @param cpfAntigo CPF do colaborador a ser atualizado.
+	 * @param colaborador dados do colaborador a ser atualizados.
+	 * @throws Throwable caso não seja possível atualizar o colaborador.
 	 */
-	boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException;
+	void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
 	 * Para manter histórico no banco de dados, não é feita exclusão de colaborador,

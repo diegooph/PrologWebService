@@ -73,11 +73,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException {
+    public void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
                     + "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
@@ -106,16 +107,24 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(13, colaborador.getCodEmpresa());
             stmt.setLong(14, colaborador.getEquipe().getCodigo());
             stmt.setLong(15, cpfAntigo);
-
             int count = stmt.executeUpdate();
-
             if (count == 0) {
-                throw new SQLException("Erro ao atualizar o colaborador");
+                throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
             }
+
+            // Avisa o listener que atualizamos um colaborador.
+            listener.onColaboradorAtualizado(conn, new EmpresaDaoImpl(), this, colaborador, cpfAntigo);
+
+            // Tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+          throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
     @Override

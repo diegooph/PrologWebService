@@ -26,4 +26,10 @@ public interface DadosIntervaloChangedListener {
     void onColaboradorInserido(@NotNull final Connection connection,
                                @NotNull final EmpresaDao empresaDao,
                                @NotNull final Colaborador colaborador) throws Throwable;
+
+    void onColaboradorAtualizado(@NotNull final Connection connection,
+                                 @NotNull final EmpresaDao empresaDao,
+                                 @NotNull final ColaboradorDao colaboradorDao,
+                                 @NotNull final Colaborador colaborador,
+                                 @NotNull final Long cpfAntigo) throws Throwable;
 }

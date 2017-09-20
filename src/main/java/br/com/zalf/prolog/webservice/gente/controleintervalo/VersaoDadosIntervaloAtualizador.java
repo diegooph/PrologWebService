@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import static br.com.zalf.prolog.webservice.permissao.pilares.Pilares.Gente.Intervalo.MARCAR_INTERVALO;
+
 public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChangedListener {
 
     @Override
@@ -43,10 +45,10 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
         final boolean colaboradorTemAcessoMarcacaoIntervalo = colaboradorDao.colaboradorTemAcessoFuncao(
                 cpf,
                 Pilares.GENTE,
-                Pilares.Gente.Intervalo.MARCAR_INTERVALO);
+                MARCAR_INTERVALO);
 
         // Se ele tinha acesso à marcação precisamos atualizar a versão dos dados para garantir
-        // que caso esse colaborador esteja no BD local em algum aplicativo, ele será removido.
+        // que caso esse colaborador esteja no BD de algum aplicativo, ele será removido.
         if (colaboradorTemAcessoMarcacaoIntervalo) {
             incrementaVersaoDadosUnidade(connection, colaboradorDao.getCodUnidadeByCpf(cpf));
         }
@@ -64,8 +66,41 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
             throw new IllegalStateException();
 
         // Se o cargo no qual esse colaborador foi adicionado tem permissão para marcar intervalo, precisamos
-        // incrementar a versão dos dados para invalidar o BD local nos aplicativos.
-        if (visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
+        // incrementar a versão dos dados para invalidar o BD dos aplicativos.
+        if (visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)) {
+            incrementaVersaoDadosUnidade(connection, colaborador.getUnidade().getCodigo());
+        }
+    }
+
+    @Override
+    public void onColaboradorAtualizado(@NotNull final Connection connection,
+                                        @NotNull final EmpresaDao empresaDao,
+                                        @NotNull final ColaboradorDao colaboradorDao,
+                                        @NotNull final Colaborador colaborador,
+                                        @NotNull final Long cpfAntigo) throws Throwable {
+
+        // Como atualização ainda não foi concretizada, essa busca retorna se o cargo antigo do colaborador lhe dava
+        // ou não acesso a marcção de intervalo.
+        final boolean colaboradorTemAcessoMarcacaoIntervalo = colaboradorDao.colaboradorTemAcessoFuncao(
+                cpfAntigo,
+                Pilares.GENTE,
+                MARCAR_INTERVALO);
+
+        // Visao do novo cargo do colaborador. Cargo pode ter sido atualizado nesse update.
+        final Visao visaoCargoColaborador = empresaDao.getVisaoCargo(
+                colaborador.getUnidade().getCodigo(),
+                colaborador.getFuncao().getCodigo());
+
+        if (visaoCargoColaborador == null)
+            throw new IllegalStateException();
+
+        // Se o colaborador tinha permissão de marcação e parou de ter ou vice-versa, precisamos incrementar a versão
+        // dos dados para invalidar o BD dos aplicativos.
+        if (colaboradorTemAcessoMarcacaoIntervalo
+                && !visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)
+                ||
+                !colaboradorTemAcessoMarcacaoIntervalo
+                        && visaoCargoColaborador.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)) {
             incrementaVersaoDadosUnidade(connection, colaborador.getUnidade().getCodigo());
         }
     }
@@ -81,10 +116,10 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     }
 
     private boolean permissaoMarcacaoIntervaloRemovidaOuAdicionada(Visao visaoAtual, Visao visaoNova) throws Throwable {
-        return (visaoAtual.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-                && !visaoNova.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO))
+        return (visaoAtual.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)
+                && !visaoNova.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO))
                 ||
-                (!visaoAtual.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-                        && visaoNova.hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO));
+                (!visaoAtual.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO)
+                        && visaoNova.hasAccessToFunction(Pilares.GENTE, MARCAR_INTERVALO));
     }
 }
