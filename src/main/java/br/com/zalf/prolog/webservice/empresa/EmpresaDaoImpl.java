@@ -812,9 +812,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // Avisamos o listener que estamos prestes a atualizar um cargo.
-            listener.onPreUpdateCargo(conn, this, visao, codCargo, codUnidade);
-
             // TODO: Por que esse delete?
             // Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
             deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
@@ -833,6 +830,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                     }
                 }
             }
+
+            // Avisamos o listener que um cargo foi atualizado.
+            listener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+
+            // Tudo certo, commita.
             conn.commit();
         } catch (Throwable e) {
             if (conn != null) {

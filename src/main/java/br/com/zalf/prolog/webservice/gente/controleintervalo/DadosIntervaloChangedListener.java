@@ -13,11 +13,11 @@ public interface DadosIntervaloChangedListener {
     void onTiposIntervaloChanged(@NotNull final Connection connection,
                                  @NotNull final Long codUnidade) throws Throwable;
 
-    void onPreUpdateCargo(@NotNull final Connection connection,
-                          @NotNull final EmpresaDao empresaDao,
-                          @NotNull final Visao visaoNova,
-                          @NotNull final Long codCargo,
-                          @NotNull final Long codUnidade) throws Throwable;
+    void onCargoAtualizado(@NotNull final Connection connection,
+                           @NotNull final EmpresaDao empresaDao,
+                           @NotNull final Visao visaoNova,
+                           @NotNull final Long codCargo,
+                           @NotNull final Long codUnidade) throws Throwable;
 
     void onColaboradorInativado(@NotNull final Connection connection,
                                 @NotNull final ColaboradorDao colaboradorDao,
