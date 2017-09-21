@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.log;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.apache.commons.io.IOUtils;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -24,15 +24,15 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
         if (!BuildConfig.DEBUG)
             return;
 
-        L.d(TAG, "--> " + request.getMethod() + " " + request.getUriInfo().getPath());
+        Log.d(TAG, "--> " + request.getMethod() + " " + request.getUriInfo().getPath());
         printQueryParameters(request);
         printHeaders(request);
         final String sizeBody = request.getLength() >= 0 ? " (" + request.getLength() + "-byte body)" : "";
-        L.d(TAG, "--> END " + request.getMethod() + sizeBody);
+        Log.d(TAG, "--> END " + request.getMethod() + sizeBody);
 
         if (isJson(request)) {
             final String json = IOUtils.toString(request.getEntityStream(), StandardCharsets.UTF_8);
-            L.d(TAG, json);
+            Log.d(TAG, json);
             final InputStream in = IOUtils.toInputStream(json, StandardCharsets.UTF_8);
             request.setEntityStream(in);
         }
@@ -41,7 +41,7 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
     private void printQueryParameters(ContainerRequestContext request) {
         final MultivaluedMap<String, String> map = request.getUriInfo().getQueryParameters();
         if (map != null && !map.isEmpty()) {
-            L.d(TAG, "Query-Parameters: " + map.toString());
+            Log.d(TAG, "Query-Parameters: " + map.toString());
         }
     }
 
@@ -49,7 +49,7 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
         if (request.getHeaders() == null)
             return;
 
-        request.getHeaders().forEach((s, strings) -> L.d(TAG, s + ": " + strings));
+        request.getHeaders().forEach((s, strings) -> Log.d(TAG, s + ": " + strings));
     }
 
     private boolean isJson(ContainerRequestContext request) {

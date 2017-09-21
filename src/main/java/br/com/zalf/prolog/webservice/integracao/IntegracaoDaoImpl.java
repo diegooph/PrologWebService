@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.sun.istack.internal.NotNull;
 
@@ -39,7 +39,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             closeConnection(conn, stmt, rSet);
         }
 
-        L.d(TAG, String.format(
+        Log.d(TAG, String.format(
                 "Empresa do colaborador %s não possui integração com %s",
                 userToken,
                 recursoIntegrado.getKey()));

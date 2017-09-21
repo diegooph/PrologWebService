@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.colaborador.AmazonCredentials;
+import br.com.zalf.prolog.webservice.colaborador.model.AmazonCredentials;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 
 import java.sql.Connection;

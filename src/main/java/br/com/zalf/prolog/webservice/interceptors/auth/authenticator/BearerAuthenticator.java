@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import com.sun.istack.internal.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;
@@ -18,7 +18,7 @@ public final class BearerAuthenticator extends ProLogAuthenticator {
                          @NotNull final int[] permissions,
                          final boolean needsToHaveAllPermissions,
                          final boolean considerOnlyActiveUsers) throws NotAuthorizedException {
-        L.d(TAG, "Token: " + value);
+        Log.d(TAG, "Token: " + value);
         if (permissions.length == 0) {
             if (!service.verifyIfTokenExists(value, considerOnlyActiveUsers))
                 throw new NotAuthorizedException("Usuário não tem permissão para utilizar esse método");

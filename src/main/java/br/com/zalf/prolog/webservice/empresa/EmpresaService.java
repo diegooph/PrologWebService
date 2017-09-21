@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.Empresa;
-import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Setor;
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class EmpresaService {
 
-    private EmpresaDao dao = new EmpresaDaoImpl();
+    private final EmpresaDao dao = Injection.provideEmpresaDao();
 
     public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
         try {
@@ -144,8 +145,9 @@ public class EmpresaService {
 
     public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) {
         try {
-            return dao.alterarVisaoCargo(visao, codUnidade, codCargo);
-        } catch (SQLException e) {
+            dao.alterarVisaoCargo(visao, codUnidade, codCargo, Injection.provideDadosIntervaloChangedListener());
+            return true;
+        } catch (Throwable e) {
             e.printStackTrace();
             return false;
         }
@@ -186,7 +188,7 @@ public class EmpresaService {
         try {
             Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
             if(codFuncaoInserida != null){
-                return ResponseWithCod.Ok("Cargo inserido com sucesso", codFuncaoInserida);
+                return ResponseWithCod.ok("Cargo inserido com sucesso", codFuncaoInserida);
             }else{
                 return Response.error("Erro ao inserir o cargo");
             }

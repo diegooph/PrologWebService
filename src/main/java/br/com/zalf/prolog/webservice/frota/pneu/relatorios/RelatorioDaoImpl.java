@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -369,7 +369,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		L.d(TAG, servicos.toString());
+		Log.d(TAG, servicos.toString());
 		return servicos;
 	}
 
@@ -583,7 +583,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				}
 			}
 		}
-		L.d(TAG, "Populadas: " + faixas.toString());
+		Log.d(TAG, "Populadas: " + faixas.toString());
 		return faixas;
 	}
 
@@ -643,7 +643,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		int totalPneus = valores.size();
 		List<Faixa> faixas = new ArrayList<>();
 		//cria as faixas
-		L.d("kk", valores.toString());
+		Log.d("kk", valores.toString());
 		while(minimo < valores.get(0)){
 			Faixa faixa = new Faixa();
 			faixa.setInicio(minimo);

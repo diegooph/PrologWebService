@@ -70,6 +70,7 @@ public class ProdutividadeRelatorioService {
             dao.getAcessosProdutividadeCsv(outputStream, cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar os dados");
         }
 
     }
@@ -85,7 +86,4 @@ public class ProdutividadeRelatorioService {
             return null;
         }
     }
-
-
-
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.imports;
 
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.Time;
 import java.text.DateFormat;
@@ -21,7 +21,7 @@ public class ImportUtils {
 	public static Date toTimestamp(String data){
 		DateFormat dateFormat;
 		Date date = null;
-		L.d("data", data);
+		Log.d("data", data);
 		try {
 			if(data.trim().replace(" ", "").length() == 13){
 				dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm");

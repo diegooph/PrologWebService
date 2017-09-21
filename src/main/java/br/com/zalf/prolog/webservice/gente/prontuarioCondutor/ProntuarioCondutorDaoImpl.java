@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Situacao;
@@ -79,11 +79,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 if (prontuario != null) {
                     if (updateProntuario(prontuario, conn)) {
                         // Prontuário ja existia e foi atualizado
-//                        L.d(TAG, "update prontuarioCondutor: " + prontuario.getColaborador().getCpf());
+//                        Log.d(TAG, "update prontuarioCondutor: " + prontuario.getColaborador().getCpf());
                     } else {
                         // Mapa não existia e foi inserido na base
                         insertProntuario(prontuario, conn);
-//                        L.d(TAG, "insert prontuarioCondutor: " + prontuario.getColaborador().getCpf());
+//                        Log.d(TAG, "insert prontuarioCondutor: " + prontuario.getColaborador().getCpf());
                     }
                 }
             }

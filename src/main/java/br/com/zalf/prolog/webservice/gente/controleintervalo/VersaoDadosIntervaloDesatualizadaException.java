@@ -6,7 +6,7 @@ import com.sun.istack.internal.NotNull;
 
 import javax.ws.rs.core.Response;
 
-public class VersaoDadosIntervaloDesatualizadaException extends ProLogException {
+public final class VersaoDadosIntervaloDesatualizadaException extends ProLogException {
 
     @NotNull
     private final Long codUnidade;

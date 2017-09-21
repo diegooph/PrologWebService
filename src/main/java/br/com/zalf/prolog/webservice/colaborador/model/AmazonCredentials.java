@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.colaborador;
+package br.com.zalf.prolog.webservice.colaborador.model;
 
 import com.sun.istack.internal.NotNull;
 

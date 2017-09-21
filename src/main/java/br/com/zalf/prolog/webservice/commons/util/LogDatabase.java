@@ -22,7 +22,7 @@ public class LogDatabase extends DatabaseConnection{
 			stmt.setString(1, json);
 			stmt.executeUpdate();
 		}catch(SQLException e){
-			L.e(TAG, "ERRO", e);
+			Log.e(TAG, "ERRO", e);
 		}
 		finally {
 			closeConnection(conn, stmt, null);
@@ -39,7 +39,7 @@ public class LogDatabase extends DatabaseConnection{
 			stmt.setString(1, json);
 			stmt.executeUpdate();
 		}catch(SQLException e){
-			L.e(TAG, "ERRO", e);
+			Log.e(TAG, "ERRO", e);
 		}
 		finally {
 			closeConnection(conn, stmt, null);

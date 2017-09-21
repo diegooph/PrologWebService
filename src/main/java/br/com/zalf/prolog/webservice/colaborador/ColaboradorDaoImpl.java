@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
@@ -21,12 +24,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
     @Override
-    public boolean insert(Colaborador colaborador) throws SQLException {
+    public void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
@@ -54,18 +57,29 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o colaborador");
             }
+
+            // Avisamos o listener que um colaborador foi inserido.
+            listener.onColaboradorInserido(conn, Injection.provideEmpresaDao(), colaborador);
+
+            // Tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw  e;
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
     @Override
-    public boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException {
+    public void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
                     + "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
@@ -94,33 +108,51 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(13, colaborador.getCodEmpresa());
             stmt.setLong(14, colaborador.getEquipe().getCodigo());
             stmt.setLong(15, cpfAntigo);
-
             int count = stmt.executeUpdate();
-
             if (count == 0) {
-                throw new SQLException("Erro ao atualizar o colaborador");
+                throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
             }
+
+            // Avisa o listener que atualizamos um colaborador.
+            listener.onColaboradorAtualizado(conn, Injection.provideEmpresaDao(), this, colaborador, cpfAntigo);
+
+            // Tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+          throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
-    /**
-     * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
-     * setamos o status para inativo.
-     */
     @Override
-    public boolean delete(Long cpf) throws SQLException {
+    public void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "STATUS_ATIVO = FALSE "
                     + "WHERE CPF = ?;");
             stmt.setLong(1, cpf);
-            return (stmt.executeUpdate() > 0);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
+            }
+
+            // Já inativamos o colaborador, repassamos o evento ao listener.
+            listener.onColaboradorInativado(conn, this, cpf);
+
+            // Se deu tudo certo, commita.
+            conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -407,14 +439,38 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         throw new IllegalStateException("Unidade não encontrada para o CPF: " + cpf);
     }
 
+    @Override
+    public boolean colaboradorTemAcessoFuncao(@NotNull Long cpf, int codPilar, int codFuncaoProLog) throws SQLException {
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.CPF FROM COLABORADOR C " +
+                    "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
+                    "AND C.COD_UNIDADE = CFP.COD_UNIDADE WHERE C.CPF = ? AND CFP.COD_PILAR_PROLOG = ? " +
+                    "AND CFP.COD_FUNCAO_PROLOG = ?);");
+            stmt.setLong(1, cpf);
+            stmt.setInt(2, codPilar);
+            stmt.setInt(3, codFuncaoProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTS");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+        return false;
+    }
+
     private Visao getVisaoByCpf(Long cpf) throws SQLException {
         Visao visao = new Visao();
         List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
-        EmpresaDaoImpl empresaDao = new EmpresaDaoImpl();
-
+        final EmpresaDao empresaDao = Injection.provideEmpresaDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, " +

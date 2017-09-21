@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.Empresa;
-import br.com.zalf.prolog.webservice.colaborador.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.Setor;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;

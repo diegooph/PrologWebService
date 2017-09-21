@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.colaborador;
+package br.com.zalf.prolog.webservice.colaborador.model;
 
 /**
  * Created by jean on 23/02/16.
