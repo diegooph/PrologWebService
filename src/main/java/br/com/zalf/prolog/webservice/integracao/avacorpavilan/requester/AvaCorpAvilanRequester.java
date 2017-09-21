@@ -6,9 +6,12 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfQuestionarioVeiculos;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.RespostasAvaliacao;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import com.sun.istack.internal.NotNull;
+
+import java.util.List;
 
 /**
  * Created by luiz on 24/07/17.
@@ -41,7 +44,10 @@ public interface AvaCorpAvilanRequester extends Requester {
                                 @NotNull final String cpf,
                                 @NotNull final String dataNascimento) throws Exception;
 
-    Object getFarolChecklist(@NotNull final String codUnidadeAvilan,
-                             @NotNull final String cpf,
-                             @NotNull final String dataNascimento) throws Exception;
+    List<FarolDia> getFarolChecklist(@NotNull final String codUnidadeAvilan,
+                                     @NotNull final String dataInicial,
+                                     @NotNull final String dataFinal,
+                                     @NotNull final boolean itensCriticosRetroativos,
+                                     @NotNull final String cpf,
+                                     @NotNull final String dataNascimento) throws Exception;
 }

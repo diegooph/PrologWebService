@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import com.sun.istack.internal.NotNull;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,8 +71,11 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
-        return getIntegradorProLog().getStatusLiberacaoVeiculos(codUnidade);
+    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
+                                                    @NotNull final Date dataInicial,
+                                                    @NotNull final Date dataFinal,
+                                                    final boolean itensCriticosRetroativos) throws Exception {
+        return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
     protected IntegradorProLog getIntegradorProLog() {

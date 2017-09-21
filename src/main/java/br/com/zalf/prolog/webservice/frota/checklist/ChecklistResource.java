@@ -46,14 +46,6 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("/liberacao/{codUnidade}")
-    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade,
-                                                             @HeaderParam("Authorization") String userToken) {
-        return service.getStatusLiberacaoVeiculos(codUnidade, userToken);
-    }
-
-    @GET
     @Path("{codigo}")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     public Checklist getByCod(@PathParam("codigo") Long codigo) {
@@ -83,6 +75,17 @@ public class ChecklistResource {
             @QueryParam("offset") long offset) {
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
                 DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
+    }
+
+    @GET
+    @Path("farois/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                    @QueryParam("dataInicial") long dataInicial,
+                                    @QueryParam("dataFinal") long dataFinal,
+                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                    @HeaderParam("Authorization") String userToken) {
+        return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
     }
 
     @GET
@@ -122,5 +125,16 @@ public class ChecklistResource {
         Date datainicial = java.sql.Date.valueOf(dataInicial);
         return service.getAll(DateUtils.toLocalDate(datainicial),
                 DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
+    }
+
+    /**
+     * @deprecated in v0.0.32.
+     */
+    @GET
+    @Path("/liberacao/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    @Deprecated
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
+        return service.getStatusLiberacaoVeiculos(codUnidade);
     }
 }

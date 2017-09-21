@@ -15,6 +15,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import javax.xml.ws.BindingProvider;
+import java.util.List;
 
 
 /**
@@ -130,18 +131,21 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public Object getFarolChecklist(@NotNull final String codUnidadeAvilan,
-                                    @NotNull final String cpf,
-                                    @NotNull final String dataNascimento) throws Exception {
-        // TODO:
-        final PneusVeiculo request = null;
+    public List<FarolDia> getFarolChecklist(@NotNull final String codUnidadeAvilan,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal,
+                                            @NotNull final boolean itensCriticosRetroativos,
+                                            @NotNull final String cpf,
+                                            @NotNull final String dataNascimento) throws Exception {
+        final BuscaFarolDia request = getChecklistSoap(cpf, dataNascimento)
+                .getFarol(codUnidadeAvilan, dataInicial, dataFinal, itensCriticosRetroativos);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
-            return request.getPneus();
+            return request.getFarol();
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar o farol do checklist par a unidade: " + codUnidadeAvilan + " da Avilan"
+                ? "Erro ao buscar o farol do checklist para a unidade: " + codUnidadeAvilan + " da Avilan"
                 : request.getMensagem());
     }
 

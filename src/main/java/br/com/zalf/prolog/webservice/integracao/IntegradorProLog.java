@@ -22,6 +22,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -150,8 +151,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
-        return checklistDao.getStatusLiberacaoVeiculos(codUnidade);
+    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
+                                                    @NotNull final Date dataInicial,
+                                                    @NotNull final Date dataFinal,
+                                                    final boolean itensCriticosRetroativos) throws Exception {
+        return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
     public static final class Builder {

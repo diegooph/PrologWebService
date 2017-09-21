@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -89,15 +90,28 @@ public class ChecklistService {
         }
     }
 
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade, String userToken) {
+    public Object getFarolChecklist(Long codUnidade,
+                                    long dataInicial,
+                                    long dataFinal,
+                                    boolean itensCriticosRetroativos,
+                                    String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getStatusLiberacaoVeiculos(codUnidade);
+                    .getFarolChecklist(codUnidade, new Date(dataInicial), new Date(dataFinal), itensCriticosRetroativos);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }
 
+    @Deprecated
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) {
+        try {
+            return dao.getStatusLiberacaoVeiculos(codUnidade);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar farol do checklist");
+        }
+    }
 }

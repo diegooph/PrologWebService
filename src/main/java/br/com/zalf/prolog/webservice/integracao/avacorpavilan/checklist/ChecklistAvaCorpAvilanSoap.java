@@ -22,6 +22,8 @@ import javax.xml.ws.ResponseWrapper;
 })
 public interface ChecklistAvaCorpAvilanSoap {
 
+    public BuscaFarolDia getFarol(String codUnidade, String dataInicial, String dataFinal, boolean itensCriticosRetroativos);
+
 
     /**
      * Adicionar nova avaliação e retorna as questões

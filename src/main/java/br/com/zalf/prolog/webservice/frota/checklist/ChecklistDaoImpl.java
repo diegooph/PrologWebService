@@ -265,6 +265,15 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return modeloPlaca;
 	}
 
+	@Override
+	public List<VeiculoLiberacao> getFarolChecklist(Long codUnidade,
+													Date dataInicial,
+													Date dataFinal,
+													boolean itensCriticosRetroativos) throws SQLException {
+		// TODO: Fazer busca no banco.
+		return null;
+	}
+
 	/**
 	 * Busca uma lista de todas as placas da unidade, separando em 3 status:
 	 * PENDENTE: não tem checklist realizado no dia atual e não tem itens críticos a serem arrumados

@@ -295,7 +295,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<VeiculoLiberacao> convert(Object farolChecklist) {
+    public static List<VeiculoLiberacao> convert(List<FarolDia> farolChecklist) {
         checkNotNull(farolChecklist, "farolChecklist não pode ser null!");
         // TODO:
         return null;

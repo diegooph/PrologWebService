@@ -15,11 +15,13 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -103,9 +105,18 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
+                                                    @NotNull final Date dataInicial,
+                                                    @NotNull final Date dataFinal,
+                                                    final boolean itensCriticosRetroativos) throws Exception {
         final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
-        final Object farolChecklist = requester.getFarolChecklist(codUnidadeAvilan, cpf(), dataNascimento());
+        final List<FarolDia> farolChecklist = requester.getFarolChecklist(
+                codUnidadeAvilan,
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                itensCriticosRetroativos,
+                cpf(),
+                dataNascimento());
         return AvaCorpAvilanConverter.convert(farolChecklist);
     }
 

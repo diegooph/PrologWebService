@@ -19,6 +19,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -123,11 +124,14 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws Exception {
+    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
+                                                    @NotNull final Date dataInicial,
+                                                    @NotNull final Date dataFinal,
+                                                    final boolean itensCriticosRetroativos) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getStatusLiberacaoVeiculos(codUnidade);
+            return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
         } else {
-            return integradorProLog.getStatusLiberacaoVeiculos(codUnidade);
+            return integradorProLog.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
         }
     }
 

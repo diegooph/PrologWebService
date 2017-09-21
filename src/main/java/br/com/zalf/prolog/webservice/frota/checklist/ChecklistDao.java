@@ -4,9 +4,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -77,12 +79,19 @@ public interface ChecklistDao {
 	//TODO - adicionar comentário javadoc
 	Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
 
+
+	@NotNull
+	List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
+											 @NotNull final Date dataInicial,
+											 @NotNull final Date dataFinal,
+											 final boolean itensCriticosRetroativos) throws SQLException;
+
 	/**
 	 * busca o status de liberação do veículo
 	 * @param codUnidade código da unidade
 	 * @return lista de veiculos com liberação
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
+	@Deprecated
 	List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException;
-	
 }
