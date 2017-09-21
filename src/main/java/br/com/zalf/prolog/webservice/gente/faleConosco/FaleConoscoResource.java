@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -18,12 +19,8 @@ public class FaleConoscoResource {
     @POST
     @Secured(permissions = Pilares.Gente.FaleConosco.REALIZAR)
     @Path("/{codUnidade}")
-    public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insert(faleConosco, codUnidade)) {
-            return Response.ok("Fale conosco inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir fale conosco");
-        }
+    public AbstractResponse insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
+        return service.insert(faleConosco, codUnidade);
     }
 
     @PUT

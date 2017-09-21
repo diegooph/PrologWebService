@@ -13,14 +13,15 @@ import java.util.List;
 public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConoscoDao {
 
 	@Override
-	public boolean insert(FaleConosco faleConosco, Long codUnidade) throws SQLException {
+	public Long insert(FaleConosco faleConosco, Long codUnidade) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ResultSet rSet;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
 					+ "(DATA_HORA, DESCRICAO, CATEGORIA, CPF_COLABORADOR, COD_UNIDADE, STATUS) VALUES "
-					+ "(?,?,?,?,?,?) ");
+					+ "(?,?,?,?,?,?) RETURNING CODIGO");
 			// A data do fale conosco é pegada com System.currentTimeMillis()
 			// pois assim a data vem do servidor, que sempre estará certa 
 			// o que não poderíamos garantir caso viesse do lado do cliente.
@@ -30,15 +31,16 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 			stmt.setLong(4, faleConosco.getColaborador().getCpf());
 			stmt.setLong(5, codUnidade);
 			stmt.setString(6, FaleConosco.STATUS_PENDENTE);
-			int count = stmt.executeUpdate();
-			if(count == 0){
+			rSet = stmt.executeQuery();
+			if(rSet.next()){
+				return rSet.getLong("CODIGO");
+			} else {
 				throw new SQLException("Erro ao inserir o fale conosco");
-			}	
+			}
 		}
 		finally {
 			closeConnection(conn, stmt, null);
-		}		
-		return true;
+		}
 	}
 
 	@Override

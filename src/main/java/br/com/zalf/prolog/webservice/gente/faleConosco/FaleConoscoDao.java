@@ -16,10 +16,10 @@ public interface FaleConoscoDao {
 	 * insere uma nova requisição faleConosco
 	 * @param faleConosco objeto faleConosco
 	 * @param codUnidade código da unidade
-	 * @return valor da operação
+	 * @return código do fale conosco inserido
 	 * @throws SQLException caso operação falhar
 	 */
-	boolean insert(FaleConosco faleConosco, Long codUnidade) throws SQLException;
+	Long insert(FaleConosco faleConosco, Long codUnidade) throws SQLException;
 
 	/**
 	 * Atualiza/Edita um FaleConosco existente no banco de dados
