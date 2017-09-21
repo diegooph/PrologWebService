@@ -31,7 +31,6 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                                   @NotNull final Visao visaoNova,
                                   @NotNull final Long codCargo,
                                   @NotNull final Long codUnidade) throws Throwable {
-        // TODO: Apenas cargos que tem pessoas associadas e o que retorna caso não tenha cargo nenhum? Optional?
         final Visao visaoAtual = empresaDao.getVisaoCargo(codUnidade, codCargo);
 
         if (visaoAtual == null || visaoNova == null)
