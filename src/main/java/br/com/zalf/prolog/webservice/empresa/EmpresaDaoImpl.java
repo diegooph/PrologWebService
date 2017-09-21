@@ -807,7 +807,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public boolean alterarVisaoCargo(Visao visao,
+    public void alterarVisaoCargo(Visao visao,
                                      Long codUnidade,
                                      Long codCargo,
                                      DadosIntervaloChangedListener listener) throws Throwable {
@@ -817,21 +817,22 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // TODO: Por que esse delete?
-            // Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
-            deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
+            // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
+            deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
+
             stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
                     "COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
-            for (Pilar pilar : visao.getPilares()) {
-                for (FuncaoProLog funcao : pilar.funcoes) {
+            for (final Pilar pilar : visao.getPilares()) {
+                for (final FuncaoProLog funcao : pilar.funcoes) {
                     stmt.setInt(3, funcao.getCodigo());
                     stmt.setInt(4, pilar.codigo);
                     int count = stmt.executeUpdate();
                     if (count == 0) {
-                        conn.rollback();
-                        return false;
+                        throw new SQLException("Erro ao vincular a permissão "
+                                + funcao.getCodigo() + " do ProLog ao cargo "
+                                + codCargo + " da unidade " + codUnidade);
                     }
                 }
             }
@@ -849,22 +850,16 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
-    private boolean deleteCargoFuncaoProlog(long codCargo, Long codUnidade, Connection conn, PreparedStatement stmt) throws SQLException {
-        try {
-            stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE COD_UNIDADE = ? AND " +
-                    "COD_FUNCAO_COLABORADOR = ? ");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codCargo);
-            int count = stmt.executeUpdate();
-            if (count > 0) {
-                return true;
-            }
-        } finally {
+    private void deleteCargoFuncaoProlog(Long codCargo, Long codUnidade, Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE " +
+                "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ?;");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codCargo);
+        if (stmt.executeUpdate() == 0) {
+            throw new SQLException("Erro ao deletar funções do cargo: " + codCargo + " da unidade: " + codUnidade);
         }
-        return false;
     }
 
     @Override

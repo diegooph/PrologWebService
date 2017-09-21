@@ -145,7 +145,8 @@ public class EmpresaService {
 
     public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) {
         try {
-            return dao.alterarVisaoCargo(visao, codUnidade, codCargo, Injection.provideDadosIntervaloChangedListener());
+            dao.alterarVisaoCargo(visao, codUnidade, codCargo, Injection.provideDadosIntervaloChangedListener());
+            return true;
         } catch (Throwable e) {
             e.printStackTrace();
             return false;

@@ -170,10 +170,9 @@ public interface EmpresaDao {
      * @param codUnidade código da unidade
      * @param codCargo   código do cargo
      * @param listener   listener para aviso das mudanças
-     * @return boolean com o resultado da operação
      * @throws Throwable caso não seja possível realizar a operação
      */
-    boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo, DadosIntervaloChangedListener listener)
+    void alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo, DadosIntervaloChangedListener listener)
             throws Throwable;
 
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
