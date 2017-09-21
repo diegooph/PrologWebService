@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Created by luiz on 4/20/16.
  */
+@Deprecated
 public class VeiculoLiberacao {
     public static final String STATUS_LIBERADO = "LIBERADO";
     public static final String STATUS_NAO_LIBERADO = "NAO_LIBERADO";
