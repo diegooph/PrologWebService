@@ -83,13 +83,13 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                                         @NotNull final Long cpfAntigo) throws Throwable {
 
         // Como atualização ainda não foi concretizada, essa busca retorna se o cargo antigo do colaborador lhe dava
-        // ou não acesso a marcção de intervalo.
+        // ou não acesso a marcação de intervalo.
         final boolean colaboradorTemAcessoMarcacaoIntervalo = colaboradorDao.colaboradorTemAcessoFuncao(
                 cpfAntigo,
                 Pilares.GENTE,
                 MARCAR_INTERVALO);
 
-        // Visao do novo cargo do colaborador. Cargo pode ter sido atualizado nesse update.
+        // O colaborador pode ter tido seu cargo alterado nesse update. Através do código do cargo, buscamos a sua visão.
         final Visao visaoCargoColaborador = empresaDao.getVisaoCargo(
                 colaborador.getUnidade().getCodigo(),
                 colaborador.getFuncao().getCodigo());
