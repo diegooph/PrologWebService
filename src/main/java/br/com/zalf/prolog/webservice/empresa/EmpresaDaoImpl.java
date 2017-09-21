@@ -358,14 +358,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_V11 CF\n" +
                     "JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
                     "JOIN FUNCAO_PROLOG_V11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
-                    "WHERE CF.cod_unidade = ? AND cod_funcao_colaborador::text like ?\n" +
+                    "WHERE CF.cod_unidade = ? AND cod_funcao_colaborador = ?\n" +
                     "ORDER BY PP.pilar, FP.funcao");
             stmt.setLong(1, codUnidade);
-            if (codCargo == null) {
-                stmt.setString(2, "%");
-            } else {
-                stmt.setString(2, String.valueOf(codCargo));
-            }
+            stmt.setLong(2, codCargo);
             rSet = stmt.executeQuery();
             pilares = createPilares(rSet);
         } finally {
@@ -808,9 +804,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public void alterarVisaoCargo(Visao visao,
-                                     Long codUnidade,
-                                     Long codCargo,
-                                     DadosIntervaloChangedListener listener) throws Throwable {
+                                  Long codUnidade,
+                                  Long codCargo,
+                                  DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
