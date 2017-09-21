@@ -339,7 +339,18 @@ public final class AvaCorpAvilanConverter {
                     itemOrdemServico.setDataApontamento(
                             AvaCorpAvilanUtils.createDatePattern(itemCriticoFarol.getDataHoraApontamento()));
 
-                    // TODO: adicionar nome do item ao item da OS.
+                    // Seta o nome do item com problema.
+                    // Alternativa.
+                    final AlternativaChecklist alternativa = new AlternativaChecklist();
+                    alternativa.setAlternativa(itemCriticoFarol.getNomeItem());
+                    final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                    alternativas.add(alternativa);
+                    // Pergunta.
+                    final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+                    pergunta.setPrioridade(PerguntaRespostaChecklist.CRITICA);
+                    pergunta.setAlternativasResposta(alternativas);
+                    itemOrdemServico.setPergunta(pergunta);
+
                     itensCriticos.add(itemOrdemServico);
                 }
             }
