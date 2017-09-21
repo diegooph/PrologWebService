@@ -5,8 +5,10 @@ import java.util.List;
 public class VeiculoFarol {
     protected String placa;
     protected boolean realizouCheckSaida;
+    protected String dataHoraCheckSaida;
     protected boolean realizouCheckRetorno;
-    protected List<String> itensCriticosAbertos;
+    protected String dataHoraCheckRetorno;
+    protected List<ItemCriticoFarol> itensCriticosAbertos;
 
     public VeiculoFarol() {
 
@@ -36,11 +38,27 @@ public class VeiculoFarol {
         this.realizouCheckRetorno = realizouCheckRetorno;
     }
 
-    public List<String> getItensCriticosAbertos() {
+    public List<ItemCriticoFarol> getItensCriticosAbertos() {
         return itensCriticosAbertos;
     }
 
-    public void setItensCriticosAbertos(List<String> itensCriticosAbertos) {
+    public void setItensCriticosAbertos(List<ItemCriticoFarol> itensCriticosAbertos) {
         this.itensCriticosAbertos = itensCriticosAbertos;
+    }
+
+    public String getDataHoraCheckSaida() {
+        return dataHoraCheckSaida;
+    }
+
+    public void setDataHoraCheckSaida(String dataHoraCheckSaida) {
+        this.dataHoraCheckSaida = dataHoraCheckSaida;
+    }
+
+    public String getDataHoraCheckRetorno() {
+        return dataHoraCheckRetorno;
+    }
+
+    public void setDataHoraCheckRetorno(String dataHoraCheckRetorno) {
+        this.dataHoraCheckRetorno = dataHoraCheckRetorno;
     }
 }
