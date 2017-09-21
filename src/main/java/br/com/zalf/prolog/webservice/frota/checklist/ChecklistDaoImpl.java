@@ -266,7 +266,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public List<VeiculoLiberacao> getFarolChecklist(Long codUnidade,
+	public FarolChecklist getFarolChecklist(Long codUnidade,
 													Date dataInicial,
 													Date dataFinal,
 													boolean itensCriticosRetroativos) throws SQLException {

@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -124,10 +124,10 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
-                                                    @NotNull final Date dataInicial,
-                                                    @NotNull final Date dataFinal,
-                                                    final boolean itensCriticosRetroativos) throws Exception {
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Exception {
         if (getSistema() != null) {
             return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
         } else {

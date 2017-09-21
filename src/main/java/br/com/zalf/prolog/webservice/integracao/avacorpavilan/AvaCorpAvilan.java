@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -105,10 +106,10 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
-                                                    @NotNull final Date dataInicial,
-                                                    @NotNull final Date dataFinal,
-                                                    final boolean itensCriticosRetroativos) throws Exception {
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                                  @NotNull final Date dataInicial,
+                                                  @NotNull final Date dataFinal,
+                                                  final boolean itensCriticosRetroativos) throws Exception {
         final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
         final List<FarolDia> farolChecklist = requester.getFarolChecklist(
                 codUnidadeAvilan,

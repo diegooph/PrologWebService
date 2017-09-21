@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -45,8 +46,8 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, String placa, long limit, long offset) throws SQLException;
-	
+						   Long codUnidade, String placa, long limit, long offset) throws SQLException;
+
 	/**
 	 * Busca os checklists realizados por um colaborador
 	 * @param cpf um cpf
@@ -81,10 +82,10 @@ public interface ChecklistDao {
 
 
 	@NotNull
-	List<VeiculoLiberacao> getFarolChecklist(@NotNull final Long codUnidade,
-											 @NotNull final Date dataInicial,
-											 @NotNull final Date dataFinal,
-											 final boolean itensCriticosRetroativos) throws SQLException;
+	FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+									 @NotNull final Date dataInicial,
+									 @NotNull final Date dataFinal,
+									 final boolean itensCriticosRetroativos) throws SQLException;
 
 	/**
 	 * busca o status de liberação do veículo

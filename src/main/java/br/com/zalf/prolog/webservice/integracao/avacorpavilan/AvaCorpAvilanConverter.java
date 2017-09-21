@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
@@ -19,6 +20,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -295,9 +298,55 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<VeiculoLiberacao> convert(List<FarolDia> farolChecklist) {
-        checkNotNull(farolChecklist, "farolChecklist não pode ser null!");
-        // TODO:
-        return null;
+    public static FarolChecklist convert(List<FarolDia> farolDia) throws ParseException {
+        checkNotNull(farolDia, "farolDia não pode ser null!");
+        checkArgument(farolDia.size() == 1, "farolDia não pode vir com mais de um elemento " +
+                "pois estamos filtrando apenas por um único dia!");
+
+        final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
+        final List<VeiculoFarol> veiculosFarol = farolDia.get(0).getVeiculosFarol();
+        for (VeiculoFarol veiculoFarol : veiculosFarol) {
+            // Cria Veículo.
+            final Veiculo veiculo = new Veiculo();
+            veiculo.setPlaca(veiculoFarol.getPlaca());
+
+            // Checklists realizados no dia.
+            List<Checklist> checklists = null;
+            if (veiculoFarol.isRealizouCheckSaida() || veiculoFarol.isRealizouCheckRetorno()) {
+                checklists = new ArrayList<>();
+                if (veiculoFarol.isRealizouCheckSaida()) {
+                    final Checklist checklist = new Checklist();
+                    checklist.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckSaida()));
+                    checklist.setTipo(Checklist.TIPO_SAIDA);
+                    checklists.add(checklist);
+                }
+                if (veiculoFarol.isRealizouCheckRetorno()) {
+                    final Checklist checklist = new Checklist();
+                    checklist.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckRetorno()));
+                    checklist.setTipo(Checklist.TIPO_RETORNO);
+                    checklists.add(checklist);
+                }
+            }
+
+            // Cria os itens críticos.
+            List<ItemOrdemServico> itensCriticos = null;
+            if (veiculoFarol.getItensCriticosAbertos() != null) {
+                itensCriticos = new ArrayList<>();
+                final List<ItemCriticoFarol> itensAvilan = veiculoFarol.getItensCriticosAbertos();
+                for (ItemCriticoFarol itemCriticoFarol : itensAvilan) {
+                    final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
+                    itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
+                    itemOrdemServico.setDataApontamento(
+                            AvaCorpAvilanUtils.createDatePattern(itemCriticoFarol.getDataHoraApontamento()));
+
+                    // TODO: adicionar nome do item ao item da OS.
+                    itensCriticos.add(itemOrdemServico);
+                }
+            }
+
+            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklists, itensCriticos));
+        }
+
+        return new FarolChecklist(farolVeiculos);
     }
 }

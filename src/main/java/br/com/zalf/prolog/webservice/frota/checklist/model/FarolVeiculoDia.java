@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import java.util.List;
 
@@ -14,14 +15,14 @@ import java.util.List;
 public final class FarolVeiculoDia {
     @NotNull
     private final Veiculo veiculo;
-    @NotNull
+    @Nullable
     private final List<Checklist> checklistsRealizadosDia;
-    @NotNull
+    @Nullable
     private final List<ItemOrdemServico> itensCriticoEmAberto;
 
     public FarolVeiculoDia(@NotNull final Veiculo veiculo,
-                           @NotNull final List<Checklist> checklistsRealizadosDia,
-                           @NotNull final List<ItemOrdemServico> itensCriticoEmAberto) {
+                           @Nullable final List<Checklist> checklistsRealizadosDia,
+                           @Nullable final List<ItemOrdemServico> itensCriticoEmAberto) {
         this.veiculo = veiculo;
         this.checklistsRealizadosDia = checklistsRealizadosDia;
         this.itensCriticoEmAberto = itensCriticoEmAberto;
