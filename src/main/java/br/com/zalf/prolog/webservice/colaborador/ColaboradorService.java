@@ -139,7 +139,7 @@ public class ColaboradorService {
 				final ControleIntervaloDao dao = new ControleIntervaloDaoImpl();
 				final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
 						colaborador.getUnidade().getCodigo(),
-						false);
+						true);
 				loginHolder.setTiposIntervalos(tiposIntervalo);
 			}
 		} catch (SQLException | AmazonCredentialsException e) {
