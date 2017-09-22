@@ -86,7 +86,7 @@ public class ControleIntervaloService {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
                     Pilares.Gente.Intervalo.MARCAR_INTERVALO,
                     codUnidade);
-            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade, false);
+            final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(codUnidade, true);
             final Optional<Long> versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade);
             EstadoVersaoIntervalo estadoVersaoIntervalo;
 
