@@ -380,9 +380,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CPF, NOME, DATA_NASCIMENTO FROM COLABORADOR C JOIN " +
+            stmt = conn.prepareStatement("SELECT C.CPF, C.NOME AS NOME_COLABORADOR, C.DATA_NASCIMENTO, " +
+                    "F.NOME AS NOME_CARGO, F.CODIGO AS CODIGO_CARGO" +
+                    "FROM COLABORADOR C JOIN " +
                     "CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
+                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND " +
+                    "F.CODIGO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_EMPRESA = F.COD_EMPRESA " +
                     "WHERE C.COD_UNIDADE = ? AND CFP.COD_FUNCAO_PROLOG = ? AND C.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setInt(2, codFuncaoProLog);
@@ -395,8 +398,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                 do {
                     final Colaborador colaborador = new Colaborador();
                     colaborador.setCpf(rSet.getLong("CPF"));
-                    colaborador.setNome(rSet.getString("NOME"));
+                    colaborador.setNome(rSet.getString("NOME_COLABORADOR"));
                     colaborador.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
+                    colaborador.setFuncao(createFuncao(rSet));
                     colaboradores.add(colaborador);
                 } while (rSet.next());
 
@@ -492,9 +496,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     private Cargo createFuncao(ResultSet rSet) throws SQLException {
-        Cargo f = new Cargo();
-        f.setCodigo(rSet.getLong("CODIGO"));
-        f.setNome(rSet.getString("NOME"));
+        final Cargo f = new Cargo();
+        f.setCodigo(rSet.getLong("CODIGO_CARGO"));
+        f.setNome(rSet.getString("NOME_CARGO"));
         return f;
     }
 
