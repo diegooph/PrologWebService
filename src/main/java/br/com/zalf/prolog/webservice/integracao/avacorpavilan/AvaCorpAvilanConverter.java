@@ -201,7 +201,7 @@ public final class AvaCorpAvilanConverter {
             for (int i = 0; i < questao.getRespostas().getResposta().size(); i++) {
                 final Resposta resposta = questao.getRespostas().getResposta().get(i);
                 if (resposta.getDescricao().trim().equalsIgnoreCase("OK")) {
-                   respostaOk = resposta;
+                    respostaOk = resposta;
                 } else if (resposta.getDescricao().trim().equalsIgnoreCase("NOK")) {
                     respostaNok = resposta;
                 }
@@ -311,21 +311,19 @@ public final class AvaCorpAvilanConverter {
             veiculo.setPlaca(veiculoFarol.getPlaca());
 
             // Checklists realizados no dia.
-            List<Checklist> checklists = null;
-            if (veiculoFarol.isRealizouCheckSaida() || veiculoFarol.isRealizouCheckRetorno()) {
-                checklists = new ArrayList<>();
-                if (veiculoFarol.isRealizouCheckSaida()) {
-                    final Checklist checklist = new Checklist();
-                    checklist.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckSaida()));
-                    checklist.setTipo(Checklist.TIPO_SAIDA);
-                    checklists.add(checklist);
-                }
-                if (veiculoFarol.isRealizouCheckRetorno()) {
-                    final Checklist checklist = new Checklist();
-                    checklist.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckRetorno()));
-                    checklist.setTipo(Checklist.TIPO_RETORNO);
-                    checklists.add(checklist);
-                }
+            Checklist checklistSaidaDia = null;
+            if (veiculoFarol.isRealizouCheckSaida()) {
+                checklistSaidaDia= new Checklist();
+                checklistSaidaDia.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckSaida()));
+                checklistSaidaDia.setTipo(Checklist.TIPO_SAIDA);
+
+            }
+
+            Checklist checklistRetornoDia = null;
+            if (veiculoFarol.isRealizouCheckRetorno()) {
+                checklistRetornoDia = new Checklist();
+                checklistRetornoDia.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckRetorno()));
+                checklistRetornoDia.setTipo(Checklist.TIPO_RETORNO);
             }
 
             // Cria os itens críticos.
@@ -355,7 +353,7 @@ public final class AvaCorpAvilanConverter {
                 }
             }
 
-            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklists, itensCriticos));
+            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
         }
 
         return new FarolChecklist(farolVeiculos);

@@ -16,15 +16,19 @@ public final class FarolVeiculoDia {
     @NotNull
     private final Veiculo veiculo;
     @Nullable
-    private final List<Checklist> checklistsRealizadosDia;
+    private final Checklist checklistSaidaDia;
+    @Nullable
+    private final Checklist checklistRetornoDia;
     @Nullable
     private final List<ItemOrdemServico> itensCriticoEmAberto;
 
     public FarolVeiculoDia(@NotNull final Veiculo veiculo,
-                           @Nullable final List<Checklist> checklistsRealizadosDia,
+                           @Nullable final Checklist checklistSaidaDia,
+                           @Nullable final Checklist checklistRetornoDia,
                            @Nullable final List<ItemOrdemServico> itensCriticoEmAberto) {
         this.veiculo = veiculo;
-        this.checklistsRealizadosDia = checklistsRealizadosDia;
+        this.checklistSaidaDia = checklistSaidaDia;
+        this.checklistRetornoDia = checklistRetornoDia;
         this.itensCriticoEmAberto = itensCriticoEmAberto;
     }
 
@@ -32,8 +36,12 @@ public final class FarolVeiculoDia {
         return veiculo;
     }
 
-    public List<Checklist> getChecklistsRealizadosDia() {
-        return checklistsRealizadosDia;
+    public Checklist getChecklistSaidaDia() {
+        return checklistSaidaDia;
+    }
+
+    public Checklist getChecklistRetornoDia() {
+        return checklistRetornoDia;
     }
 
     public List<ItemOrdemServico> getItensCriticoEmAberto() {
