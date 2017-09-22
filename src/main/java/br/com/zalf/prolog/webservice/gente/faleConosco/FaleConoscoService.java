@@ -1,5 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,12 +14,12 @@ public class FaleConoscoService {
 
 	private FaleConoscoDao dao = new FaleConoscoDaoImpl();
 
-	public boolean insert(FaleConosco faleConosco, Long codUnidade) {
+	public AbstractResponse insert(FaleConosco faleConosco, Long codUnidade) {
 		try {
-			return dao.insert(faleConosco, codUnidade);
+			return ResponseWithCod.ok("Fale conosco inserido com sucesso.", dao.insert(faleConosco, codUnidade));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return Response.error("Erro ao inserir fale conosco.");
 		}
 	}
 

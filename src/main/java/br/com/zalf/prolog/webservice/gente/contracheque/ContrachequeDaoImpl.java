@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
@@ -216,7 +216,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             conn = getConnection();
             for (ItemImportContracheque item : itens) {
                 if (updateItemImportContracheque(item, ano, mes, codUnidade)) {
-                    L.d(TAG, "Atualizado o item:" + item.toString());
+                    Log.d(TAG, "Atualizado o item:" + item.toString());
                 } else {
                     insertItemImportContracheque(item, ano, mes, conn, codUnidade);
                 }

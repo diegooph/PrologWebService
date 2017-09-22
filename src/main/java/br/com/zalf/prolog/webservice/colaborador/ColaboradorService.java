@@ -2,6 +2,9 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
+import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
@@ -26,8 +29,9 @@ public class ColaboradorService {
 
 	public boolean insert(Colaborador colaborador) {
 		try {
-			return dao.insert(colaborador);
-		} catch (SQLException e) {
+			dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
+			return true;
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -35,8 +39,9 @@ public class ColaboradorService {
 
 	public boolean update(Long cpfAntigo, Colaborador colaborador) {
 		try {
-			return dao.update(cpfAntigo, colaborador);
-		} catch (SQLException e) {
+			dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
+			return true;
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -44,8 +49,9 @@ public class ColaboradorService {
 
 	public boolean delete(Long cpf) {
 		try {
-			return dao.delete(cpf);
-		} catch (SQLException e) {
+			dao.delete(cpf, Injection.provideDadosIntervaloChangedListener());
+			return true;
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 		}

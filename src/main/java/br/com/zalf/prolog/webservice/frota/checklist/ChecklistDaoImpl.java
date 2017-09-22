@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
@@ -43,7 +43,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		veiculoDao = Injection.provideVeiculoDao();
 		Long codUnidade = null;
 		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
-		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
+		//Log.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);

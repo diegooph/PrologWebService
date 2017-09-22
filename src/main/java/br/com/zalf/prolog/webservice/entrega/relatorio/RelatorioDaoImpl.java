@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -216,7 +216,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             stmt.setString(3, codRegional);
             stmt.setString(4 ,codUnidade);
             stmt.setString(5, equipe);
-            L.d(TAG, stmt.toString());
+            Log.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 MapaEstratificado mapa = new MapaEstratificado();

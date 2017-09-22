@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.imports.mapa;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -41,9 +41,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 if (mapa != null) {
                     if (updateMapa(mapa, codUnidade, conn)) {
                         // Mapa ja existia e foi atualizado
-                        L.d(TAG, "update mapa: " + mapa.mapa);
+                        Log.d(TAG, "update mapa: " + mapa.mapa);
                     } else {
-                        L.d(TAG, "insert mapa: " + mapa.mapa);
+                        Log.d(TAG, "insert mapa: " + mapa.mapa);
                         // Mapa não existia e foi inserido na base
                         insertMapa(mapa, codUnidade, conn);
                     }
@@ -61,9 +61,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     private boolean insertOrUpdateMapaColaborador(int mapa, long codUnidade, int matricula, Connection conn) throws SQLException {
         if (matricula > 0) {
             if (verifyExistsMapaColaborador(mapa, codUnidade, matricula, conn)) {
-                L.d(TAG, "update mapa_colaborador: " + mapa);
+                Log.d(TAG, "update mapa_colaborador: " + mapa);
             } else {
-                L.d(TAG, "insert mapa_colaborador: " + mapa);
+                Log.d(TAG, "insert mapa_colaborador: " + mapa);
                 insertMapaColaborador(mapa, codUnidade, matricula, conn);
             }
         }

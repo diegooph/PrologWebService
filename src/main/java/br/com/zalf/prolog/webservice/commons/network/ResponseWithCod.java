@@ -17,7 +17,7 @@ public class ResponseWithCod extends AbstractResponse {
         this.codigo = codigo;
     }
 
-    public static ResponseWithCod Ok(String msg, Long cod){
+    public static ResponseWithCod ok(String msg, Long cod){
         ResponseWithCod r = new ResponseWithCod();
         r.setStatus(OK);
         r.setMsg(msg);

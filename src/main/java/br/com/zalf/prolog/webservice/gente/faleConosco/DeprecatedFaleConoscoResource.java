@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -20,11 +21,13 @@ public class DeprecatedFaleConoscoResource {
 	@Secured(permissions = Pilares.Gente.FaleConosco.REALIZAR)
 	@Path("/{codUnidade}")
 	@Deprecated
-	public Response insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
-		if (service.insert(faleConosco, codUnidade)) {
-			return Response.ok("Fale conosco inserido com sucesso");
+	public AbstractResponse insert(FaleConosco faleConosco, @PathParam("codUnidade") Long codUnidade) {
+		// Retorna um Response para manter compatibilidade com App antigo que não usa o AbstractResponse.
+		AbstractResponse response = service.insert(faleConosco, codUnidade);
+		if (response.getStatus().equals(AbstractResponse.OK)) {
+			return Response.ok(response.getMsg());
 		} else {
-			return Response.error("Erro ao inserir fale conosco");
+			return Response.error(response.getMsg());
 		}
 	}
 

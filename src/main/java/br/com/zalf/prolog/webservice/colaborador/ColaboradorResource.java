@@ -3,8 +3,11 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
+import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -46,7 +49,7 @@ public class ColaboradorResource {
 	@Secured
 	@Path("/getByCod/{cpf}")
 	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
-		L.d(TAG, cpf.toString());
+		Log.d(TAG, cpf.toString());
 		return service.getByCod(cpf);
 	}
 
@@ -103,11 +106,11 @@ public class ColaboradorResource {
 	public Autenticacao DEPRECATED_VERIFY_LOGIN(@FormParam("cpf") Long cpf,
 												@FormParam("dataNascimento") long dataNascimento) {
 		
-		L.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
+		Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
 		if (new AutenticacaoService().verifyIfUserExists(cpf, dataNascimento, true)) {
 			AutenticacaoService autenticacaoService = new AutenticacaoService();
 			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
-			L.d(TAG, autenticacao.getToken());
+			Log.d(TAG, autenticacao.getToken());
 			return autenticacao;
 		} else {
 			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
