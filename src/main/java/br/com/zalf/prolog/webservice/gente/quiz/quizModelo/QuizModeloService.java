@@ -33,6 +33,15 @@ public class QuizModeloService {
         }
     }
 
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) {
+        try {
+            return dao.getModeloQuiz(codUnidade, codModeloQuiz);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
         try {
             Long codigo = dao.insertModeloQuiz(modeloQuiz, codUnidade);

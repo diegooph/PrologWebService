@@ -7,6 +7,9 @@ Change Log
 ### Refactor
 * Cria métodos necessários para dar suporte a realização de intervalo offline no aplicativo
 
+### Features
+* Implementa busca por um modelo de quiz completo
+
 <a name="v0.0.31"></a>
 ## Version [v0.0.31](https://github.com/luizfp/PrologWebService/compare/v0.0.30...v0.0.31) (2017-09-14)
 

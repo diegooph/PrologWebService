@@ -35,6 +35,13 @@ public class QuizModeloResource {
         return service.getModelosQuizByCodUnidade(codUnidade);
     }
 
+    @GET
+    @Secured
+    @Path("/{codUnidade}/{codModeloQuiz}/completos")
+    public ModeloQuiz getModeloQuiz(@PathParam("codUnidade") Long codUnidade,@PathParam("codModeloQuiz") Long codModeloQuiz) {
+        return service.getModeloQuiz(codUnidade, codModeloQuiz);
+    }
+
     @POST
     @Secured
     @Path("/{codUnidade}")
@@ -64,5 +71,4 @@ public class QuizModeloResource {
             return Response.error("Erro ao alterar as funções vinculadas ao quiz");
         }
     }
-
 }

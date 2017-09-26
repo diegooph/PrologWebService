@@ -22,6 +22,15 @@ public interface QuizModeloDao {
     public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
 
     /**
+     * Busca um único modelo de quiz
+     * @param codUnidade codUnidade
+     * @param codModeloQuiz codModeloQuiz
+     * @return um modelo de quiz completo
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException;
+
+    /**
      * Busca apenas o nome dos modelos de quiz cadastrados para determinada unidade
      *
      * @param codUnidade código da unidade
