@@ -3,12 +3,13 @@ package br.com.zalf.prolog.webservice.empresa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
-import br.com.zalf.prolog.webservice.colaborador.*;
+import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -87,6 +88,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     //TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
     //a equipe está ligada como fk de colaborador e fk de calendário
 
+    public EmpresaDaoImpl() {
+
+    }
+
     @Override
     public AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
         Connection conn = null;
@@ -101,7 +106,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ResponseWithCod.Ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
+                return ResponseWithCod.ok("Equipe inserida com sucesso", rSet.getLong("CODIGO"));
             } else {
                 return Response.error("Erro ao inserir a equipe");
             }
@@ -212,7 +217,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(2, setor.getNome());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ResponseWithCod.Ok("Setor inserido com sucesso", rSet.getLong("codigo"));
+                return ResponseWithCod.ok("Setor inserido com sucesso", rSet.getLong("codigo"));
             } else {
                 return Response.error("Erro ao inserir o setor");
             }
@@ -312,47 +317,17 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException {
-        Visao visao = new Visao();
+        final Visao visao = new Visao();
         visao.setPilares(getPilaresCargo(codUnidade, codCargo));
         return visao;
     }
 
-    private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
+    @Override
+    public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
         List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
-
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_V11 CF\n" +
-                    "JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-                    "JOIN FUNCAO_PROLOG_V11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
-                    "WHERE CF.cod_unidade = ? AND cod_funcao_colaborador::text like ?\n" +
-                    "ORDER BY PP.pilar, FP.funcao");
-            stmt.setLong(1, codUnidade);
-            if (codCargo == null) {
-                stmt.setString(2, "%");
-            } else {
-                stmt.setString(2, String.valueOf(codCargo));
-            }
-            rSet = stmt.executeQuery();
-            pilares = createPilares(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-
-        return pilares;
-    }
-
-    @Override
-    public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
-        List<Pilar> pilares = new ArrayList<>();
-
-        ResultSet rSet = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao\n" +
@@ -373,6 +348,30 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return visao;
     }
 
+    private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
+        List<Pilar> pilares;
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_V11 CF\n" +
+                    "JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
+                    "JOIN FUNCAO_PROLOG_V11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
+                    "WHERE CF.cod_unidade = ? AND cod_funcao_colaborador = ?\n" +
+                    "ORDER BY PP.pilar, FP.funcao");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            rSet = stmt.executeQuery();
+            pilares = createPilares(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+
+        return pilares;
+    }
+
+    @Override
     public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
         List<Pilar> pilares = new ArrayList<>();
         List<FuncaoProLog> funcoes = new ArrayList<>();
@@ -463,7 +462,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codUnidade);
             stmt.setInt(3, ano);
             stmt.setInt(4, mes);
-            L.d(TAG, stmt.toString());
+            Log.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tempMapa = rSet.getInt("mapa");
@@ -804,49 +803,59 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException {
+    public void alterarVisaoCargo(Visao visao,
+                                  Long codUnidade,
+                                  Long codCargo,
+                                  DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            // Primeiro deletamos qualquer funcao cadastrada nesse cargo para essa unidade
-            deleteCargoFuncaoProlog(codCargo, codUnidade, conn, stmt);
+
+            // Primeiro deletamos qualquer função do ProLog cadastrada nesse cargo para essa unidade.
+            deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
+
             stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
                     "COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
-            for (Pilar pilar : visao.getPilares()) {
-                for (FuncaoProLog funcao : pilar.funcoes) {
+            for (final Pilar pilar : visao.getPilares()) {
+                for (final FuncaoProLog funcao : pilar.funcoes) {
                     stmt.setInt(3, funcao.getCodigo());
                     stmt.setInt(4, pilar.codigo);
                     int count = stmt.executeUpdate();
                     if (count == 0) {
-                        conn.rollback();
-                        return false;
+                        throw new SQLException("Erro ao vincular a permissão "
+                                + funcao.getCodigo() + " do ProLog ao cargo "
+                                + codCargo + " da unidade " + codUnidade);
                     }
                 }
             }
+
+            // Avisamos o listener que um cargo foi atualizado.
+            listener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+
+            // Tudo certo, commita.
             conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
-    private boolean deleteCargoFuncaoProlog(long codCargo, Long codUnidade, Connection conn, PreparedStatement stmt) throws SQLException {
-        try {
-            stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE COD_UNIDADE = ? AND " +
-                    "COD_FUNCAO_COLABORADOR = ? ");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codCargo);
-            int count = stmt.executeUpdate();
-            if (count > 0) {
-                return true;
-            }
-        } finally {
+    private void deleteCargoFuncaoProlog(Long codCargo, Long codUnidade, Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE " +
+                "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ?;");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codCargo);
+        if (stmt.executeUpdate() == 0) {
+            throw new SQLException("Erro ao deletar funções do cargo: " + codCargo + " da unidade: " + codUnidade);
         }
-        return false;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.controleintervalorelatorios;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;

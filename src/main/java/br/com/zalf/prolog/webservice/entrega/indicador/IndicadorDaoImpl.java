@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.*;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.*;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.L;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,10 +36,10 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"sum(case when (m.hrentr - m.hrsai) <= m.tempoprevistoroad and (m.hrentr - m.hrsai) > '00:00' and m.tempoprevistoroad > '00:00' then 1\n" +
 			"else 0\n" +
 			"end) as total_mapas_bateram_dispersao_tempo,\n" +
-			"to_seconds(avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\n" +
-			"end)::text) as media_dispersao_tempo_realizado,\n" +
-			"to_seconds(avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad\n" +
-			"end)::text) as media_dispersao_tempo_planejado,\n" +
+			"extract(epoch from avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then (m.hrentr - m.hrsai)\n" +
+			"end)) as media_dispersao_tempo_realizado,\n" +
+			"extract(epoch from avg(case WHEN (m.hrentr - m.hrsai) > '00:00'  and m.tempoprevistoroad > '00:00' then m.tempoprevistoroad\n" +
+			"end)) as media_dispersao_tempo_planejado,\n" +
 			"-- Jornada --  primeiro verifica se é >00:00, depois verifica se é menor do que a meta\n" +
 			"sum(case when\n" +
 			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
@@ -49,10 +49,10 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::timetz + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
 			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
 			"end) <= um.meta_jornada_liquida_horas then 1 else 0 end) as total_mapas_bateram_jornada,\n" +
-			"to_seconds(avg(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
+			"extract(epoch from avg(case when m.hrsai::time < m.hrmatinal then (um.meta_tempo_largada_horas::interval + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
 			"when m.hrsai::time >= m.hrmatinal then ((m.hrsai::time - m.hrmatinal) + (m.hrentr - m.hrsai) + m.tempointerno)\n" +
 			"else null\n" +
-			"end)::text) as media_jornada,\n" +
+			"end)) as media_jornada,\n" +
 			"--Tempo Interno\n" +
 			"sum(case when m.tempointerno <= um.meta_tempo_interno_horas and m.tempointerno > '00:00' then 1\n" +
 			"else 0\n" +
@@ -60,9 +60,9 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"sum(case when m.tempointerno <= '05:00' and m.tempointerno > '00:00' then 1\n" +
 			"else 0\n" +
 			"end) as total_mapas_validos_tempo_interno,\n" +
-			"to_seconds(avg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno\n" +
+			"extract(epoch from avg(case when m.tempointerno > '00:00' and m.tempointerno <= '05:00' then m.tempointerno\n" +
 			"else null\n" +
-			"end)::text) as media_tempo_interno,\n" +
+			"end)) as media_tempo_interno,\n" +
 			"-- Tempo largada\n" +
 			"sum(case when\n" +
 			"(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
@@ -74,22 +74,28 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"else (m.hrsai - m.hrmatinal)::time\n" +
 			"end) <= '05:00' then 1\n" +
 			"else 0 end) as total_mapas_validos_tempo_largada,\n" +
-			"to_seconds(avg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
+			"extract(epoch from avg(case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas\n" +
 			"when (m.hrsai - m.hrmatinal)::time > '05:00' then '00:30'\n" +
 			"else (m.hrsai - m.hrmatinal)::time\n" +
-			"end)::text) media_tempo_largada,\n" +
+			"end)) media_tempo_largada,\n" +
 			"-- Tempo Rota\n" +
 			"sum(case when (m.hrentr - m.hrsai) > '00:00' and (m.hrentr - m.hrsai) <= meta_tempo_rota_horas then 1\n" +
 			"else 0 end) as total_mapas_bateram_tempo_rota,\n" +
-			"to_seconds(avg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai)\n" +
-			"end)::text) as media_tempo_rota,\n" +
+			"-- to_seconds(avg(case when (m.hrentr - m.hrsai) > '00:00' then (m.hrentr - m.hrsai)\n" +
+			"-- end)::text) as media_tempo_rota,\n" +
+			"\n" +
+			"      extract(epoch from avg(CASE WHEN (m.hrentr - m.hrsai) > '00:00'\n" +
+			"    THEN (m.hrentr - m.hrsai)\n" +
+			"                 END)) :: text\n" +
+			"    AS media_tempo_rota,\n" +
+			"\n" +
 			"-- Tracking\n" +
 			"sum(tracking.apontamentos_ok) as total_apontamentos_ok,\n" +
 			"sum(tracking.total_apontamentos) as total_apontamentos,\n" +
 			"um.meta_tracking,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
 			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,um.meta_tempo_interno_mapas,to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
-			"um.meta_tempo_largada_mapas, um.meta_dev_nf ";
+			"um.meta_tempo_largada_mapas, um.meta_dev_nf\n ";
 
 	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
 			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, " +
@@ -117,9 +123,8 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
 			" M.DATA,  M.mapa, M.PLACA, E.nome as equipe,\n" +
-			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
-			"M.HRSAI,  M.HRENTR, to_seconds((M.hrentr - M.hrsai)::text) AS TEMPO_ROTA,  to_seconds(M.TEMPOINTERNO::text) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, to_seconds((case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time\n" +
-			"end)::text) as tempo_largada,\n" +
+			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr, extract(epoch from (M.tempoprevistoroad)) as tempoprevistoroad,\n" +
+			"M.HRSAI,  M.HRENTR, extract(epoch from ((M.hrentr - M.hrsai))) AS TEMPO_ROTA,  extract(epoch from (M.TEMPOINTERNO)) as tempointerno,  M.HRMATINAL,  TRACKING.TOTAL_APONTAMENTOS AS TOTAL_TRACKING,  TRACKING.APONTAMENTOS_OK, extract(epoch from (case when m.hrsai::time < m.hrmatinal then um.meta_tempo_largada_horas else (m.hrsai - m.hrmatinal)::time end)) as tempo_largada,\n" +
 			"um.meta_tracking,um.meta_tempo_rota_mapas, um.meta_caixa_viagem,\n" +
 			"um.meta_dev_hl, um.meta_dev_pdv, um.meta_dev_nf, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_mapas, um.meta_raio_tracking, um.meta_tempo_interno_mapas, um.meta_tempo_largada_mapas,to_seconds(um.meta_tempo_rota_horas::text) as meta_tempo_rota_horas, to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas\n" +
@@ -183,7 +188,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			stmt.setString(5, codUnidade);
 			stmt.setString(6, equipe);
 			stmt.setString(7, codEmpresa);
-			L.d(TAG, stmt.toString());
+			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			itens = createExtratoIndicador(rSet, indicador);
 		} finally {
@@ -204,7 +209,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
-            L.d(TAG, stmt.toString());
+            Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			if(rSet.next()) {
 				acumulados = createAcumulados(rSet);

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +20,15 @@ public interface QuizModeloDao {
      * @throws SQLException caso não seja possível realizar as buscas
      */
     public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
+
+    /**
+     * Busca um único modelo de quiz
+     * @param codUnidade codUnidade
+     * @param codModeloQuiz codModeloQuiz
+     * @return um modelo de quiz completo
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException;
 
     /**
      * Busca apenas o nome dos modelos de quiz cadastrados para determinada unidade

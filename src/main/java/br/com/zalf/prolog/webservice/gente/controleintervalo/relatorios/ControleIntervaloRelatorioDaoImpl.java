@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.controleintervalorelatorios;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;

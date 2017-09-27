@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.controleintervalorelatorios;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import java.io.IOException;
 import java.io.OutputStream;

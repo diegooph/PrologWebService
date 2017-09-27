@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.log;
 
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
 import org.apache.commons.io.IOUtils;
 
@@ -22,7 +22,7 @@ public class BodyInterceptor implements ContainerRequestFilter {
 		if (isJson(requestContext)) {
 			String json = IOUtils.toString(requestContext.getEntityStream(), StandardCharsets.UTF_8);
 				
-			L.d(TAG, json);
+			Log.d(TAG, json);
 			LogDatabase.insertLog(json);
 			
             InputStream in = IOUtils.toInputStream(json, StandardCharsets.UTF_8);

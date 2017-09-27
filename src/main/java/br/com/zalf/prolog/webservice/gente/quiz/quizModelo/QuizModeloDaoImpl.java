@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
@@ -55,6 +55,36 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             closeConnection(conn, stmt, rSet);
         }
         return modelos;
+    }
+
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
+        ModeloQuiz modelo = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
+                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
+                    "  AND QM.codigo = QMF.cod_modelo\n" +
+                    "  LEFT JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
+                    "    QMT.cod_unidade = QM.cod_unidade\n" +
+                    " WHERE \n" +
+                    "  QMF.cod_unidade = ? and qm.codigo = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModeloQuiz);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                modelo = QuizModeloConverter.createModeloQuiz(rSet);
+                modelo.setFuncoesLiberadas(getFuncoesLiberadas(modelo.getCodigo(), codUnidade, conn));
+                modelo.setPerguntas(getPerguntasQuiz(modelo.getCodigo(), codUnidade, conn));
+                modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(rSet.getLong("COD_TREINAMENTO"), codUnidade));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return modelo;
     }
 
     private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {

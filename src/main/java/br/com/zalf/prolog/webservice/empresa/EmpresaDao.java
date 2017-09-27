@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.empresa;
 
-import br.com.zalf.prolog.webservice.colaborador.*;
+import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.NoContentException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -161,15 +164,17 @@ public interface EmpresaDao {
     Visao getVisaoUnidade(Long codUnidade) throws SQLException;
 
     /**
-     * Insere ou atualiza as funções do prolog cadastradas para determinado cargo.
+     * Insere ou atualiza as funções do prolog cadastradas para determinado cargo. Apenas cargos que têm algum
+     * {@link Colaborador colaborador} vinculado podem ser editados.
      *
      * @param visao      {@link Visao} de uma {@link Cargo}
      * @param codUnidade código da unidade
      * @param codCargo   código do cargo
-     * @return boolean com o resultado da operação
-     * @throws SQLException caso não seja possível realizar a operação
+     * @param listener   listener para aviso das mudanças
+     * @throws Throwable caso não seja possível realizar a operação
      */
-    boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) throws SQLException;
+    void alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo, DadosIntervaloChangedListener listener)
+            throws Throwable;
 
     Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException;
 
@@ -182,4 +187,7 @@ public interface EmpresaDao {
      * @throws SQLException caso não seja possível realizar a operação
      */
     Long insertFuncao(Cargo cargo, Long codUnidade) throws SQLException;
+
+    // TODO: Não deveria estar aqui. Deveria estar em um Converter.
+    List<Pilar> createPilares(ResultSet rSet) throws SQLException;
 }

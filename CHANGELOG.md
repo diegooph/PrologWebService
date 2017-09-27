@@ -1,8 +1,22 @@
 Change Log
 ==========
 
+<a name="v0.0.33"></a>
+## Version [v0.0.33](https://github.com/luizfp/PrologWebService/compare/v0.0.32...v0.0.33) (2017-09-27)
+
+### Features
+* Implementa busca por um modelo de quiz completo
+
+### Refactor
+* Retorna código do `FaleConosco` inserido no método de insert
+* Realiza refatorações na busca do `IntervaloOfflineSupport` para retornar informações de cargo junto dos tipos de 
+intervalo
+
+### Bug Fixes
+* Corrige erro nas queries que utilizam a func to_seconds
+
 <a name="v0.0.32"></a>
-## Version [v0.0.32](https://github.com/luizfp/PrologWebService/compare/v0.0.31...v0.0.32) (release-date) - [unreleased]
+## Version [v0.0.32](https://github.com/luizfp/PrologWebService/compare/v0.0.31...v0.0.32) (2017-09-18)
 
 ### Refactor
 * Cria métodos necessários para dar suporte a realização de intervalo offline no aplicativo

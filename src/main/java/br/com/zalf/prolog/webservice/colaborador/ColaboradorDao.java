@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
@@ -10,32 +12,32 @@ import java.util.List;
 public interface ColaboradorDao {
 
 	/**
-	 * Insere um colaborador no bando de dados.
+	 * Insere um {@link Colaborador colaborador} no bando de dados.
 	 *
 	 * @param colaborador dados do colaborador a ser inserido e dados do solicitante
-	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
-	 * @throws SQLException caso não seja possível inserir no banco de dados
+	 * @param listener para repassarmos o evento de que um colaborador está sendo inativado.
+	 * @throws Throwable caso não seja possível inserir no banco de dados
 	 */
-	boolean insert(Colaborador colaborador) throws SQLException;
+	void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
-	 * Atualiza os dados de um colaborador.
+	 * Atualiza os dados de um {@link Colaborador colaborador}.
 	 *
-	 * @param cpfAntigo cpf do colaborador a ser atualizado
-	 * @param colaborador dados do colaborador a ser atualizados
-	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
-	 * @throws SQLException caso não seja possível atualizar os dados
+	 * @param cpfAntigo CPF do colaborador a ser atualizado.
+	 * @param colaborador dados do colaborador a ser atualizados.
+	 * @throws Throwable caso não seja possível atualizar o colaborador.
 	 */
-	boolean update(Long cpfAntigo, Colaborador colaborador) throws SQLException;
+	void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
-	 * Deleta um colaborador.
+	 * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
+	 * setamos o status para inativo.
 	 *
-	 * @param cpf contém o cpf do colaborador a ser deletado e dados do solicitante
-	 * @return verdadeiro caso operação realizada com sucesso, falso caso contrário
-	 * @throws SQLException caso não seja possível atualizar os dados
+	 * @param cpf CPF do colaborador a ser inativado.
+	 * @param listener para repassarmos o evento de que um colaborador está sendo inativado.
+	 * @throws Throwable caso não seja possível inativar o colaborador.
 	 */
-	boolean delete(Long cpf) throws SQLException;
+	void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
 	 * Busca um colaborador pelo seu CPF.
@@ -87,4 +89,16 @@ public interface ColaboradorDao {
 															   @NotNull final Long codUnidade) throws SQLException;
 
 	Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException;
+
+	/**
+	 * Verifica se um colaborador tem acesso a uma funcionalidade específica do ProLog. A verificação acontece
+	 * estando o colaborador ativo ou não.
+	 *
+	 * @param cpf CPF do colaborador.
+	 * @param codPilar código do pilar do qual a função pertence.
+	 * @param codFuncaoProLog código único da função no ProLog.
+	 * @return {@code true} se o colaborador tem acesso; {@code false} caso contrário.
+	 * @throws SQLException caso aconteça algum erro na consulta.
+	 */
+	boolean colaboradorTemAcessoFuncao(@NotNull final Long cpf, final int codPilar, final int codFuncaoProLog) throws SQLException;
 }

@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -154,7 +154,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     if (ordens != null) {//verifica se ja tem algum item em aberto
                         tempCodOs = jaPossuiItemEmAberto(pergunta.getCodigo(), alternativa.codigo, ordens);
                         if (tempCodOs != null) {
-                            L.d("tempCodOs", tempCodOs.toString());
+                            Log.d("tempCodOs", tempCodOs.toString());
                         }
                     }
                     if (tempCodOs != null) {
@@ -311,7 +311,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possivel inserir a OS
      */
     private Long createOs (String placa, Long codChecklist, Connection conn) throws SQLException {
-        L.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
+        Log.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         try{
@@ -345,7 +345,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possível realizar a busca
      */
     private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
-        L.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
+        Log.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
         PreparedStatement stmt = null;
         try{
             stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
@@ -375,7 +375,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possivel realizar a busca
      */
     private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
-        L.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
+        Log.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try{
@@ -535,7 +535,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @return Long com o código da OS no qual o item se encontra em aberto
      */
     private Long jaPossuiItemEmAberto(Long codPergunta, long codAlternativa, List<OrdemServico> oss){
-        L.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
+        Log.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         for (OrdemServico os:oss) {
             for (ItemOrdemServico item:os.getItens()) {
                 for (Alternativa alternativa: item.getPergunta().getAlternativasResposta()) {

@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.Unidade;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Icone;
@@ -112,6 +112,37 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             }
         } finally {
             closeConnection(conn, null, null);
+        }
+    }
+
+    @Override
+    public void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            // TODO: Query para atualizar um tipo de intervalo.
+            stmt = conn.prepareStatement("");
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
+            }
+
+            // Avisamos o listener que um tipo de intervalo mudou.
+            listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
+
+            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+            conn.commit();
+        } catch (Throwable e) {
+            // Pegamos apenas para fazer o rollback, depois subimos o erro.
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, null);
         }
     }
 

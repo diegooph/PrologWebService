@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.Unidade;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 
 public enum EstadoVersaoIntervalo {
     VERSAO_DESATUALIZADA("VERSAO_DESATUALIZADA"),

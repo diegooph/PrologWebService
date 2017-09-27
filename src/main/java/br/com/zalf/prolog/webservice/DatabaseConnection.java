@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -55,7 +55,7 @@ public class DatabaseConnection {
 			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
 //			conexao = DriverManager.getConnection(TESTE_URL, TESTE_USUARIO, TESTE_SENHA);
 		} catch(Exception e) {
-		    L.e(TAG, String.format("Erro ao abrir conexão com o banco: %s", URL), e);
+		    Log.e(TAG, String.format("Erro ao abrir conexão com o banco: %s", URL), e);
 		}
 		return conexao;
 	}
@@ -80,7 +80,7 @@ public class DatabaseConnection {
 				rSet.close();
 			}
 		} catch(Exception e) {
-            L.e(TAG, String.format("Erro ao fechar conexão com o banco: %s", URL), e);
+            Log.e(TAG, String.format("Erro ao fechar conexão com o banco: %s", URL), e);
 		}
 	}
 }

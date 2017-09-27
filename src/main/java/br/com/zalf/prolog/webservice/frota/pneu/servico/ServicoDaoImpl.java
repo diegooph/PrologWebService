@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.Unidade;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
@@ -113,7 +113,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             holder.setListAlternativaInspecao(getListAlternativasInspecao());
         }
         if (containMovimentacao(holder.getListServicos())) {
-            L.d("teste", "contem movimentacao");
+            Log.d("teste", "contem movimentacao");
             holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
         }
         AfericaoDao afericaoDao = Injection.provideAfericaoDao();

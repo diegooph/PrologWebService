@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
-import br.com.zalf.prolog.webservice.colaborador.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
@@ -33,11 +33,20 @@ public class QuizModeloService {
         }
     }
 
+    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) {
+        try {
+            return dao.getModeloQuiz(codUnidade, codModeloQuiz);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) {
         try {
             Long codigo = dao.insertModeloQuiz(modeloQuiz, codUnidade);
             if (codigo != null) {
-                return ResponseWithCod.Ok("Modelo de Quiz inserido com sucesso", codigo);
+                return ResponseWithCod.ok("Modelo de Quiz inserido com sucesso", codigo);
             } else {
                 return Response.error("Erro ao inserir o modelo de Quiz");
             }

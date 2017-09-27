@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Android;
-import br.com.zalf.prolog.webservice.commons.util.L;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -93,7 +93,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     public boolean delete(String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        L.d("delete", placa);
+        Log.d("delete", placa);
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
@@ -347,14 +347,14 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (marcas.size() == 0 && modelos.size() == 0) { //primeiro resultado do rset
-                    L.d("metodo", "marcas.size == 0");
+                    Log.d("metodo", "marcas.size == 0");
                     marca.setCodigo(rSet.getLong("COD_MARCA"));
                     marca.setNome(rSet.getString("MARCA"));
                     if (rSet.getString("MODELO") != null) {
                         modelos.add(createModelo(rSet));
                     }
                 } else {
-                    L.d("metodo", "marcas.size > 0");
+                    Log.d("metodo", "marcas.size > 0");
                     if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
                         if (rSet.getString("MODELO") != null) {
                             modelos.add(createModelo(rSet));
