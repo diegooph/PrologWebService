@@ -63,7 +63,7 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("/colaborador/{cpf}/resumido")
+    @Path("/colaboradores/{cpf}/resumidos")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public List<Checklist> getByColaboradorResumidos(
             @PathParam("cpf") Long cpf,
@@ -88,7 +88,7 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("{codUnidade}/{equipe}/{placa}/resumido")
+    @Path("{codUnidade}/{equipe}/{placa}/resumidos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     public List<Checklist> getAllResumido(
             @PathParam("codUnidade") Long codUnidade,
