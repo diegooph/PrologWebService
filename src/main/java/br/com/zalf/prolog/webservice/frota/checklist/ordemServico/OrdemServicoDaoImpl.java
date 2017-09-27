@@ -134,6 +134,33 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
+    @Override
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, Date dataInicial, Date dataFinal,
+                                                             boolean itensCriticosRetroativos) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try{
+            conn = getConnection();
+            String query = "select * from estratificacao_os e \n" +
+                    "where e.status_item like 'P' and e.prioridade like 'CRITICA' and e.placa_veiculo = ? \n" +
+                    "and e.data_hora::date %s ? \n " +
+                    "ORDER BY E.placa_veiculo, e.prioridade, e.data_hora DESC ";
+            if(itensCriticosRetroativos){
+                query = String.format(query, "<=");
+            } else {
+                query = String.format(query, "=");
+            }
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, placa);
+            stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+            rSet = stmt.executeQuery();
+            return createItensOs(rSet);
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     /**
      * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
      * o item com problema a uma OS existente

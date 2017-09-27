@@ -78,7 +78,7 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("farois/{codUnidade}")
+    @Path("/farois/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
     public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
                                     @QueryParam("dataInicial") long dataInicial,

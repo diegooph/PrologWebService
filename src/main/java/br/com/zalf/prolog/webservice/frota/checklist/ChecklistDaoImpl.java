@@ -8,9 +8,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -270,8 +272,73 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 													Date dataInicial,
 													Date dataFinal,
 													boolean itensCriticosRetroativos) throws SQLException {
-		// TODO: Fazer busca no banco.
-		return null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("select dados_checklist.*, COS.nome AS \"COLABORADOR_SAIDA\", COR.NOME AS \"COLABORADOR_RETORNO\" from\n" +
+					"  (SELECT\n" +
+					"  AD.data,\n" +
+					"  V.PLACA,\n" +
+					"  max(CASE WHEN C.TIPO = 'S' THEN C.codigo END) as cod_checklist_saida,\n" +
+					"  MAX(CASE WHEN C.TIPO = 'S' THEN C.DATA_HORA END) AS DATA_HORA_ULTIMO_CHECKLIST_SAIDA,\n" +
+					"  max(CASE WHEN C.TIPO = 'R' THEN C.codigo END) as cod_checklist_retorno,\n" +
+					"  MAX(CASE WHEN C.TIPO = 'R' THEN C.DATA_HORA END) AS DATA_HORA_ULTIMO_CHECKLIST_RETORNO\n" +
+					"FROM aux_data AD\n" +
+					"  LEFT JOIN VEICULO V ON V.cod_unidade = ?\n" +
+					"  LEFT JOIN CHECKLIST C ON AD.data = C.data_hora::DATE AND C.placa_veiculo = V.placa\n" +
+					"WHERE AD.data BETWEEN ? AND ?\n" +
+					"GROUP BY 1, 2\n" +
+					"ORDER BY 1, 2) as dados_checklist LEFT JOIN CHECKLIST CS ON CS.CODIGO = dados_checklist.cod_checklist_saida\n" +
+					"LEFT JOIN CHECKLIST CR ON CR.CODIGO = dados_checklist.cod_checklist_retorno\n" +
+					"LEFT JOIN COLABORADOR COS ON COS.cpf = CS.cpf_colaborador\n" +
+					"LEFT JOIN COLABORADOR COR ON COR.cpf = CR.cpf_colaborador\n" +
+					"ORDER BY dados_checklist.placa;");
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+			rSet = stmt.executeQuery();
+			List<FarolVeiculoDia> farois = new ArrayList<>();
+			while (rSet.next()) {
+				farois.add(createFarolVeiculoDia(rSet, dataInicial, dataFinal, itensCriticosRetroativos));
+			}
+			return new FarolChecklist(farois);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	private FarolVeiculoDia createFarolVeiculoDia(ResultSet rSet,
+												  Date dataInicial,
+												  Date dataFinal,
+												  boolean itensCriticosRetroativos) throws SQLException {
+		Checklist checkSaida = null;
+		Long codChecklistSaida = rSet.getLong("COD_CHECKLIST_SAIDA");
+		if (!rSet.wasNull()) {
+			checkSaida = new Checklist();
+			Colaborador colaboradorSaida = new Colaborador();
+			colaboradorSaida.setNome(rSet.getString("COLABORADOR_SAIDA"));
+			checkSaida.setCodigo(codChecklistSaida);
+			checkSaida.setColaborador(colaboradorSaida);
+			checkSaida.setData(rSet.getDate("DATA_HORA_ULTIMO_CHECKLIST_SAIDA"));
+		}
+		Checklist checkRetorno = null;
+		Long codChecklistRetorno = rSet.getLong("COD_CHECKLIST_RETORNO");
+		if (!rSet.wasNull()) {
+			checkRetorno = new Checklist();
+			Colaborador colaboradorRetorno = new Colaborador();
+			colaboradorRetorno.setNome(rSet.getString("COLABORADOR_RETORNO"));
+			checkRetorno.setCodigo(codChecklistRetorno);
+			checkRetorno.setColaborador(colaboradorRetorno);
+			checkRetorno.setData(rSet.getDate("DATA_HORA_ULTIMO_CHECKLIST_RETORNO"));
+		}
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(rSet.getString("PLACA"));
+		List<ItemOrdemServico> itensCriticos = Injection
+				.provideOrdemServicoDao()
+				.getItensOsManutencaoHolder(veiculo.getPlaca(), dataInicial, dataFinal, itensCriticosRetroativos);
+		return new FarolVeiculoDia(veiculo, checkSaida, checkRetorno, itensCriticos);
 	}
 
 	/**
