@@ -89,6 +89,15 @@ public class ChecklistResource {
     }
 
     @GET
+    @Path("/farois/{codUnidade}/hoje")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                    @HeaderParam("Authorization") String userToken) {
+        return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
+    }
+
+    @GET
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     @Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
