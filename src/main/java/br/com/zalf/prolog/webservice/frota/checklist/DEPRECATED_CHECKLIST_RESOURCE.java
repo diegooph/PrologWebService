@@ -67,7 +67,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset) {
-		return service.getByColaborador(cpf, limit, offset);
+		return service.getByColaborador(cpf, limit, offset, false);
 	}
 
 	@GET
@@ -82,7 +82,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
+				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
 	}
 
 	@GET
@@ -121,6 +121,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
 		Date datainicial = java.sql.Date.valueOf(dataInicial);
 		return service.getAll(DateUtils.toLocalDate(datainicial),
-				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
+				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
 	}
 }

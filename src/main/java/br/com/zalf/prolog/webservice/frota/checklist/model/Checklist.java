@@ -25,6 +25,8 @@ public class Checklist {
 	private char tipo;
 	private long kmAtualVeiculo;
 	private long tempoRealizacaoCheckInMillis;
+	private int qtdItensOk;
+	private int qtdItensNok;
 	
 	public Checklist() {
 		
@@ -110,6 +112,22 @@ public class Checklist {
 		this.kmAtualVeiculo = kmAtualVeiculo;
 	}
 
+	public int getQtdItensOk() {
+		return qtdItensOk;
+	}
+
+	public void setQtdItensOk(int qtdItensOk) {
+		this.qtdItensOk = qtdItensOk;
+	}
+
+	public int getQtdItensNok() {
+		return qtdItensNok;
+	}
+
+	public void setQtdItensNok(int qtdItensNok) {
+		this.qtdItensNok = qtdItensNok;
+	}
+
 	@Override
 	public String toString() {
 		return "Checklist{" +
@@ -122,6 +140,8 @@ public class Checklist {
 				", tipo=" + tipo +
 				", kmAtualVeiculo=" + kmAtualVeiculo +
 				", tempoRealizacaoCheckInMillis=" + tempoRealizacaoCheckInMillis +
+				", qtdItensOk=" + qtdItensOk +
+				", qtdItensNok=" + qtdItensNok +
 				'}';
 	}
 }

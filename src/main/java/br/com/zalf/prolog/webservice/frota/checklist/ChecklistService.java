@@ -73,18 +73,18 @@ public class ChecklistService {
     }
 
     public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-                                  Long codUnidade, String placa, long limit, long offset) {
+                                  Long codUnidade, String placa, long limit, long offset, boolean resumido) {
         try {
-            return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset);
+            return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<Checklist> getByColaborador(Long cpf, int limit, long offset) {
+    public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) {
         try {
-            return dao.getByColaborador(cpf, limit, offset);
+            return dao.getByColaborador(cpf, limit, offset, resumido);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

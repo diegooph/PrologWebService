@@ -92,8 +92,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(1, codChecklist);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
-				return checklist;
+				return createChecklist(rSet, false);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
@@ -103,7 +102,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-								  Long codUnidade, String placa, long limit, long offset) throws SQLException {
+								  Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -131,7 +130,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
+				Checklist checklist = createChecklist(rSet, resumido);
 				checklists.add(checklist);
 			}
 		} finally {
@@ -141,7 +140,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException {
+	public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -159,7 +158,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(3, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
+				Checklist checklist = createChecklist(rSet, resumido);
 				checklists.add(checklist);
 			}
 		} finally {
@@ -498,7 +497,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 	}
 
-	private Checklist createChecklist(ResultSet rSet) throws SQLException {
+	private Checklist createChecklist(ResultSet rSet, boolean resumido) throws SQLException {
 		Checklist checklist = new Checklist();
 		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
@@ -508,7 +507,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
 		checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-		createPerguntasRespostas(checklist);
+		if(resumido){
+            setQtdOkOrNok(checklist);
+        }else{
+            checklist.setListRespostas(getPerguntasRespostas(checklist));
+        }
 		return checklist;
 	}
 
@@ -519,7 +522,22 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return colaborador;
 	}
 
-	private void createPerguntasRespostas(Checklist checklist) throws SQLException {
+	private void setQtdOkOrNok(Checklist checklist) throws SQLException {
+	    List<PerguntaRespostaChecklist> respostas = getPerguntasRespostas(checklist);
+	    int qtdNok = 0;
+	    for(PerguntaRespostaChecklist resposta : respostas) {
+	        for(AlternativaChecklist alternativa : resposta.getAlternativasResposta()){
+	            if(alternativa.selected) {
+	                qtdNok ++;
+	                break;
+                }
+            }
+        }
+        checklist.setQtdItensNok(qtdNok);
+	    checklist.setQtdItensOk(respostas.size() - qtdNok);
+    }
+
+	private List<PerguntaRespostaChecklist> getPerguntasRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -582,7 +600,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		checklist.setListRespostas(perguntas);
+		return perguntas;
 	}
 
 	// remonta as alternativas de uma Pergunta

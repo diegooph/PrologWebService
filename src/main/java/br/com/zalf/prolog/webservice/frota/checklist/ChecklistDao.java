@@ -46,7 +46,7 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-						   Long codUnidade, String placa, long limit, long offset) throws SQLException;
+						   Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException;
 
 	/**
 	 * Busca os checklists realizados por um colaborador
@@ -56,7 +56,7 @@ public interface ChecklistDao {
 	 * @return lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException;
+	List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException;
 
 	/**
 	 * busca a url das imagens das perguntas

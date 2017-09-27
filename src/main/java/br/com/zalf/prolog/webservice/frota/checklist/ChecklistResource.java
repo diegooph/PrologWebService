@@ -59,7 +59,17 @@ public class ChecklistResource {
             @PathParam("cpf") Long cpf,
             @QueryParam("limit") int limit,
             @QueryParam("offset") long offset) {
-        return service.getByColaborador(cpf, limit, offset);
+        return service.getByColaborador(cpf, limit, offset, false);
+    }
+
+    @GET
+    @Path("/colaborador/{cpf}/resumido")
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
+    public List<Checklist> getByColaboradorResumidos(
+            @PathParam("cpf") Long cpf,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset) {
+        return service.getByColaborador(cpf, limit, offset, true);
     }
 
     @GET
@@ -74,7 +84,22 @@ public class ChecklistResource {
             @QueryParam("limit")long limit,
             @QueryParam("offset") long offset) {
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
+                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
+    }
+
+    @GET
+    @Path("{codUnidade}/{equipe}/{placa}/resumido")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<Checklist> getAllResumido(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("equipe") String equipe,
+            @PathParam("placa") String placa,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("limit")long limit,
+            @QueryParam("offset") long offset) {
+        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
+                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, true);
     }
 
     @GET
@@ -133,7 +158,7 @@ public class ChecklistResource {
         LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
         Date datainicial = java.sql.Date.valueOf(dataInicial);
         return service.getAll(DateUtils.toLocalDate(datainicial),
-                DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
+                DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
     }
 
     /**
