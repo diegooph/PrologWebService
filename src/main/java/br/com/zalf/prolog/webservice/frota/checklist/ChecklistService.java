@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -90,11 +91,11 @@ public class ChecklistService {
         }
     }
 
-    public Object getFarolChecklist(Long codUnidade,
-                                    long dataInicial,
-                                    long dataFinal,
-                                    boolean itensCriticosRetroativos,
-                                    String userToken) {
+    public FarolChecklist getFarolChecklist(Long codUnidade,
+                                            long dataInicial,
+                                            long dataFinal,
+                                            boolean itensCriticosRetroativos,
+                                            String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -103,6 +104,11 @@ public class ChecklistService {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar farol do checklist");
         }
+    }
+
+    public FarolChecklist getFarolChecklist(Long codUnidade, boolean itensCriticosRetroativos, String userToken) {
+        final long hoje = System.currentTimeMillis();
+        return getFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
     }
 
     @Deprecated

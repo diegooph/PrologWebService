@@ -269,9 +269,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public FarolChecklist getFarolChecklist(Long codUnidade,
-													Date dataInicial,
-													Date dataFinal,
-													boolean itensCriticosRetroativos) throws SQLException {
+											Date dataInicial,
+											Date dataFinal,
+											boolean itensCriticosRetroativos) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -604,8 +604,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	 * @param hasCheck boolean indicando se o veiculo possui checklist realizado no dia corrente
 	 * @param listProblemas lista de problemas que o veículo possui
 	 * @param listVeiculos lista final com os veiculos {@link VeiculoLiberacao}
-     * @param veiculo um veiculo {@link VeiculoLiberacao}
-     */
+	 * @param veiculo um veiculo {@link VeiculoLiberacao}
+	 */
 	private void verificaInsereListaLiberacao(boolean hasCheck, List<PerguntaRespostaChecklist> listProblemas,
 											  List<VeiculoLiberacao> listVeiculos, VeiculoLiberacao veiculo) {
 		if (listProblemas.size() > 0) {
