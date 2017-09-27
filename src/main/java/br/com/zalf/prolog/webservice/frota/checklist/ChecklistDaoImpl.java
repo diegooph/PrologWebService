@@ -321,7 +321,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			colaboradorSaida.setNome(rSet.getString("COLABORADOR_SAIDA"));
 			checkSaida.setCodigo(codChecklistSaida);
 			checkSaida.setColaborador(colaboradorSaida);
-			checkSaida.setData(rSet.getDate("DATA_HORA_ULTIMO_CHECKLIST_SAIDA"));
+			checkSaida.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_SAIDA"));
 		}
 		Checklist checkRetorno = null;
 		Long codChecklistRetorno = rSet.getLong("COD_CHECKLIST_RETORNO");
@@ -331,7 +331,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			colaboradorRetorno.setNome(rSet.getString("COLABORADOR_RETORNO"));
 			checkRetorno.setCodigo(codChecklistRetorno);
 			checkRetorno.setColaborador(colaboradorRetorno);
-			checkRetorno.setData(rSet.getDate("DATA_HORA_ULTIMO_CHECKLIST_RETORNO"));
+			checkRetorno.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_RETORNO"));
 		}
 		Veiculo veiculo = new Veiculo();
 		veiculo.setPlaca(rSet.getString("PLACA"));
