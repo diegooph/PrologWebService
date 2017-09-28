@@ -371,7 +371,7 @@ public final class AvaCorpAvilanConverter {
         for (int i = 0; i < avaliacoes.size(); i++) {
             final Avaliacao avaliacao = avaliacoes.get(i);
             final Checklist checklist = new Checklist();
-            checklist.setCodigo(Long.valueOf(avaliacao.getCodigo()));
+            checklist.setCodigo((long) avaliacao.getCodigo());
             checklist.setTipo(avaliacao.getTipo().equals("Saida") ? Checklist.TIPO_SAIDA : Checklist.TIPO_RETORNO);
             checklist.setData(AvaCorpAvilanUtils.createDatePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();

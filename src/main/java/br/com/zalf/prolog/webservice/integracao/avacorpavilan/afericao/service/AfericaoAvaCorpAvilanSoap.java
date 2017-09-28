@@ -1,6 +1,7 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ObjectFactory;
@@ -20,7 +21,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "AfericaoSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+@WebService(name = "AfericaoSoap", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
 @XmlSeeAlso({
     ObjectFactory.class
 })
@@ -33,12 +34,12 @@ public interface AfericaoAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprolog.IncluirRegistroVeiculo
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/incluirMedida")
-    @WebResult(name = "incluirMedidaResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
-    @RequestWrapper(localName = "incluirMedida", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.IncluirMedida")
-    @ResponseWrapper(localName = "incluirMedidaResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.IncluirMedidaResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/incluirMedida")
+    @WebResult(name = "incluirMedidaResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "incluirMedida", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.IncluirMedida")
+    @ResponseWrapper(localName = "incluirMedidaResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.IncluirMedidaResponse")
     public IncluirRegistroVeiculo incluirMedida(
-            @WebParam(name = "medida", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "medida", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     IncluirMedida2 medida);
 
 }

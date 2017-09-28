@@ -1,6 +1,7 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ObjectFactory;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.UsuarioIntegracao;
@@ -21,7 +22,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "CadastroSoap", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+@WebService(name = "CadastroSoap", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
 @XmlSeeAlso({
     ObjectFactory.class
 })
@@ -35,12 +36,12 @@ public interface CadastroAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprolog.VeiculosAtivos
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/buscarVeiculosAtivos")
-    @WebResult(name = "buscarVeiculosAtivosResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
-    @RequestWrapper(localName = "buscarVeiculosAtivos", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculosAtivos")
-    @ResponseWrapper(localName = "buscarVeiculosAtivosResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculosAtivosResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarVeiculosAtivos")
+    @WebResult(name = "buscarVeiculosAtivosResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarVeiculosAtivos", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarVeiculosAtivos")
+    @ResponseWrapper(localName = "buscarVeiculosAtivosResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarVeiculosAtivosResponse")
     public VeiculosAtivos buscarVeiculosAtivos(
-            @WebParam(name = "cpf", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "cpf", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String cpf);
 
     /**
@@ -51,14 +52,14 @@ public interface CadastroAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprolog.VeiculosAtivos
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/buscarVeiculoAtivo")
-    @WebResult(name = "buscarVeiculoAtivoResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
-    @RequestWrapper(localName = "buscarVeiculoAtivo", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivo")
-    @ResponseWrapper(localName = "buscarVeiculoAtivoResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivoResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarVeiculoAtivo")
+    @WebResult(name = "buscarVeiculoAtivoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarVeiculoAtivo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivo")
+    @ResponseWrapper(localName = "buscarVeiculoAtivoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarVeiculoAtivoResponse")
     public VeiculosAtivos buscarVeiculoAtivo(
-            @WebParam(name = "cpf", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "cpf", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String cpf,
-            @WebParam(name = "placa", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "placa", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String placa);
 
     /**
@@ -68,12 +69,12 @@ public interface CadastroAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprolog.PneusVeiculo
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/buscarPneusVeiculo")
-    @WebResult(name = "buscarPneusVeiculoResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
-    @RequestWrapper(localName = "buscarPneusVeiculo", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarPneusVeiculo")
-    @ResponseWrapper(localName = "buscarPneusVeiculoResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarPneusVeiculoResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarPneusVeiculo")
+    @WebResult(name = "buscarPneusVeiculoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarPneusVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarPneusVeiculo")
+    @ResponseWrapper(localName = "buscarPneusVeiculoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarPneusVeiculoResponse")
     public PneusVeiculo buscarPneusVeiculo(
-            @WebParam(name = "veiculo", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "veiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String veiculo);
 
     /**
@@ -84,14 +85,14 @@ public interface CadastroAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprolog.UsuarioIntegracao
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/buscarUsuarioIntegracao")
-    @WebResult(name = "buscarUsuarioIntegracaoResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
-    @RequestWrapper(localName = "buscarUsuarioIntegracao", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarUsuarioIntegracao")
-    @ResponseWrapper(localName = "buscarUsuarioIntegracaoResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.BuscarUsuarioIntegracaoResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarUsuarioIntegracao")
+    @WebResult(name = "buscarUsuarioIntegracaoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarUsuarioIntegracao", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarUsuarioIntegracao")
+    @ResponseWrapper(localName = "buscarUsuarioIntegracaoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.BuscarUsuarioIntegracaoResponse")
     public UsuarioIntegracao buscarUsuarioIntegracao(
-            @WebParam(name = "cpf", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "cpf", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String cpf,
-            @WebParam(name = "dataNascimento", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+            @WebParam(name = "dataNascimento", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String dataNascimento);
 
 }

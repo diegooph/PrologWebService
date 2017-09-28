@@ -14,6 +14,6 @@ public class AvaCorpAvilanConstants {
     public static final String BASE_URL = "http://189.11.175.146/IntegracaoPrologTestes/";
 //    public static final String BASE_URL = "http://189.11.175.146/IntegracaoProlog/";
 
-//    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprologtestes";
-    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprolog";
+    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprologtestes";
+//    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprolog";
 }

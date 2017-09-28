@@ -39,7 +39,7 @@ public class Avaliacao {
 
     protected String tipo;
     protected String data;
-    protected String codigo;
+    protected int codigo;
     protected String usuario;
 
     /**
@@ -92,25 +92,17 @@ public class Avaliacao {
 
     /**
      * Gets the value of the codigo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
      *     
      */
-    public String getCodigo() {
+    public int getCodigo() {
         return codigo;
     }
 
     /**
      * Sets the value of the codigo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
      *     
      */
-    public void setCodigo(String value) {
+    public void setCodigo(int value) {
         this.codigo = value;
     }
 
