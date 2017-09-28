@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -19,6 +20,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -304,43 +306,36 @@ public final class AvaCorpAvilanConverter {
                 "pois estamos filtrando apenas por um único dia!");
 
         final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
-        final List<VeiculoFarol> veiculosFarol = farolDia.get(0).getVeiculosFarol();
-        for (VeiculoFarol veiculoFarol : veiculosFarol) {
+        final List<VeiculoChecklist> veiculosFarol = farolDia.get(0).getVeiculosChecklist();
+        for (VeiculoChecklist veiculoChecklist : veiculosFarol) {
             // Cria Veículo.
             final Veiculo veiculo = new Veiculo();
-            veiculo.setPlaca(veiculoFarol.getPlaca());
+            veiculo.setPlaca(veiculoChecklist.getPlaca());
 
-            // Checklists realizados no dia.
+            final List<Avaliacao> avaliacoes = veiculoChecklist.getAvaliacoes();
             Checklist checklistSaidaDia = null;
-            if (veiculoFarol.isRealizouCheckSaida()) {
-                checklistSaidaDia= new Checklist();
-                checklistSaidaDia.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckSaida()));
-                checklistSaidaDia.setTipo(Checklist.TIPO_SAIDA);
-
-            }
-
             Checklist checklistRetornoDia = null;
-            if (veiculoFarol.isRealizouCheckRetorno()) {
-                checklistRetornoDia = new Checklist();
-                checklistRetornoDia.setData(AvaCorpAvilanUtils.createDatePattern(veiculoFarol.getDataHoraCheckRetorno()));
-                checklistRetornoDia.setTipo(Checklist.TIPO_RETORNO);
+            if (avaliacoes != null && !avaliacoes.isEmpty()) {
+                final List<Checklist> checklists = convertToChecklists(avaliacoes);
+                checklistSaidaDia = getChecklistMaisAtualByTipo(checklists, Checklist.TIPO_SAIDA);
+                checklistRetornoDia = getChecklistMaisAtualByTipo(checklists, Checklist.TIPO_RETORNO);
             }
 
             // Cria os itens críticos.
             List<ItemOrdemServico> itensCriticos = null;
-            if (veiculoFarol.getItensCriticosAbertos() != null) {
+            if (veiculoChecklist.getItensCriticos() != null) {
                 itensCriticos = new ArrayList<>();
-                final List<ItemCriticoFarol> itensAvilan = veiculoFarol.getItensCriticosAbertos();
-                for (ItemCriticoFarol itemCriticoFarol : itensAvilan) {
+                final List<ItemCritico> itensAvilan = veiculoChecklist.getItensCriticos();
+                for (ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
                     itemOrdemServico.setDataApontamento(
-                            AvaCorpAvilanUtils.createDatePattern(itemCriticoFarol.getDataHoraApontamento()));
+                            AvaCorpAvilanUtils.createDatePattern(itemCritico.getData()));
 
                     // Seta o nome do item com problema.
                     // Alternativa.
                     final AlternativaChecklist alternativa = new AlternativaChecklist();
-                    alternativa.setAlternativa(itemCriticoFarol.getNomeItem());
+                    alternativa.setAlternativa(itemCritico.getDescricao());
                     final List<AlternativaChecklist> alternativas = new ArrayList<>();
                     alternativas.add(alternativa);
                     // Pergunta.
@@ -357,5 +352,43 @@ public final class AvaCorpAvilanConverter {
         }
 
         return new FarolChecklist(farolVeiculos);
+    }
+
+    @NotNull
+    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
+        checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
+
+        final List<Checklist> checklists = new ArrayList<>();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < avaliacoes.size(); i++) {
+            final Avaliacao avaliacao = avaliacoes.get(i);
+            final Checklist checklist = new Checklist();
+            checklist.setCodigo(avaliacao.getCodigo());
+            checklist.setTipo(avaliacao.getTipo().equals("Saida") ? Checklist.TIPO_SAIDA : Checklist.TIPO_RETORNO);
+            checklist.setData(AvaCorpAvilanUtils.createDatePattern(avaliacao.getData()));
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setNome(avaliacao.getUsuario());
+            checklist.setColaborador(colaborador);
+            checklists.add(checklist);
+        }
+        return checklists;
+    }
+
+    @Nullable
+    private static Checklist getChecklistMaisAtualByTipo(@NotNull final List<Checklist> checklists,
+                                                        final char tipoChecklist) {
+        Checklist checklist = null;
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < checklists.size(); i++) {
+            final Checklist c = checklists.get(i);
+            if (c.getTipo() == tipoChecklist) {
+                if (checklist == null) {
+                    checklist = c;
+                } else if (c.getData().after(checklist.getData())){
+                    checklist = c;
+                }
+            }
+        }
+        return checklist;
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class FarolDia {
     protected String data;
-    protected List<VeiculoFarol> veiculosFarol;
+    protected List<VeiculoChecklist> veiculosChecklist;
 
     public FarolDia() {
 
@@ -18,11 +18,11 @@ public class FarolDia {
         this.data = data;
     }
 
-    public List<VeiculoFarol> getVeiculosFarol() {
-        return veiculosFarol;
+    public List<VeiculoChecklist> getVeiculosChecklist() {
+        return veiculosChecklist;
     }
 
-    public void setVeiculosFarol(List<VeiculoFarol> veiculosFarol) {
-        this.veiculosFarol = veiculosFarol;
+    public void setVeiculosChecklist(List<VeiculoChecklist> veiculosChecklist) {
+        this.veiculosChecklist = veiculosChecklist;
     }
 }
