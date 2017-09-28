@@ -144,7 +144,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                              @NotNull final String dataNascimento) throws Exception {
 
         final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
-                8,
+                codUnidadeAvilan,
                 1,
                 dataInicial,
                 dataFinal,

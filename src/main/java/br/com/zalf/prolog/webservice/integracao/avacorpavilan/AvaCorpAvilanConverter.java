@@ -312,7 +312,8 @@ public final class AvaCorpAvilanConverter {
                 .get(0)
                 .getVeiculosChecklist()
                 .getVeiculoChecklist();
-        for (VeiculoChecklist veiculoChecklist : veiculosFarol) {
+        for (int i = 0; i < veiculosFarol.size(); i++) {
+            final VeiculoChecklist veiculoChecklist = veiculosFarol.get(i);
             // Cria Veículo.
             final Veiculo veiculo = new Veiculo();
             veiculo.setPlaca(veiculoChecklist.getPlaca());
@@ -335,7 +336,7 @@ public final class AvaCorpAvilanConverter {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
                     itemOrdemServico.setDataApontamento(
-                            AvaCorpAvilanUtils.createDatePattern(itemCritico.getData()));
+                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
 
                     // Seta o nome do item com problema.
                     // Alternativa.
@@ -370,7 +371,7 @@ public final class AvaCorpAvilanConverter {
             final Checklist checklist = new Checklist();
             checklist.setCodigo((long) avaliacao.getCodigo());
             checklist.setTipo(avaliacao.getTipo().equals("Saida") ? Checklist.TIPO_SAIDA : Checklist.TIPO_RETORNO);
-            checklist.setData(AvaCorpAvilanUtils.createDatePattern(avaliacao.getData()));
+            checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();
             colaborador.setNome(avaliacao.getUsuario());
             checklist.setColaborador(colaborador);

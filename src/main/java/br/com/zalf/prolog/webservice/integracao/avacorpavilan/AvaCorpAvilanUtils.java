@@ -19,6 +19,7 @@ import java.util.Locale;
 public class AvaCorpAvilanUtils {
 
     private static final SimpleDateFormat AVILAN_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat AVILAN_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private AvaCorpAvilanUtils() {
         throw new IllegalStateException(AvaCorpAvilanUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -45,6 +46,11 @@ public class AvaCorpAvilanUtils {
     @NotNull
     public static Date createDatePattern(@NotNull final String dateString) throws ParseException {
         return AVILAN_DATE_FORMAT.parse(dateString);
+    }
+
+    @NotNull
+    public static Date createDateTimePattern(@NotNull final String dateTimeString) throws ParseException {
+        return AVILAN_DATE_TIME_FORMAT.parse(dateTimeString);
     }
 
     public static int calculateDaysBetweenDateAndNow(@NotNull final String stringDate) {

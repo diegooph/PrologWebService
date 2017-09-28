@@ -81,9 +81,9 @@ public class AvaCorpAvilanRequesterTest {
     public void buscarFarolChecklist() throws Exception {
         final ArrayOfFarolDia farolDia =
                 requester.getFarolChecklist(
-                        1,
-                        "2017-08-08",
-                        "2017-10-08",
+                        8,
+                        "2017-09-28",
+                        "2017-09-28",
                         false,
                         CPF,
                         DATA_NASCIMENTO);
