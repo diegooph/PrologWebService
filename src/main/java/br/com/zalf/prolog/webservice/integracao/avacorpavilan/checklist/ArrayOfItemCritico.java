@@ -1,25 +1,25 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
- * <p>Java class for ArrayOfFarolDia complex type.
+ * <p>Java class for ArrayOfItemCritico complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfFarolDia">
+ * &lt;complexType name="ArrayOfItemCritico">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="FarolDia" type="{http://www.avacorp.com.br/integracaoprolog}FarolDia" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ItemCritico" type="{http://www.avacorp.com.br/integracaoprologtestes}ItemCritico" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +29,41 @@ import java.util.List;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfFarolDia", propOrder = {
-    "farolDia"
+@XmlType(name = "ArrayOfItemCritico", propOrder = {
+    "itemCritico"
 })
-public class ArrayOfFarolDia {
+public class ArrayOfItemCritico {
 
-    @XmlElement(name = "FarolDia", nillable = true)
-    protected List<FarolDia> farolDia;
+    @XmlElement(name = "ItemCritico", nillable = true)
+    protected List<ItemCritico> itemCritico;
 
     /**
-     * Gets the value of the farolDia property.
+     * Gets the value of the itemCritico property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the farolDia property.
+     * This is why there is not a <CODE>set</CODE> method for the itemCritico property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFarolDia().add(newItem);
+     *    getItemCritico().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FarolDia }
+     * {@link ItemCritico }
      * 
      * 
      */
-    public List<FarolDia> getFarolDia() {
-        if (farolDia == null) {
-            farolDia = new ArrayList<FarolDia>();
+    public List<ItemCritico> getItemCritico() {
+        if (itemCritico == null) {
+            itemCritico = new ArrayList<ItemCritico>();
         }
-        return this.farolDia;
+        return this.itemCritico;
     }
 
 }

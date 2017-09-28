@@ -1,5 +1,5 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="veiculosChecklist" type="{http://www.avacorp.com.br/integracaoprolog}ArrayOfVeiculoChecklist" minOccurs="0"/>
+ *         &lt;element name="veiculosChecklist" type="{http://www.avacorp.com.br/integracaoprologtestes}ArrayOfVeiculoChecklist" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>

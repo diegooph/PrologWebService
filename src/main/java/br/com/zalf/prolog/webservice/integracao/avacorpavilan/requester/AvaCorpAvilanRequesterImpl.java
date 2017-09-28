@@ -10,9 +10,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Farol;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.FarolChecklist2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolChecklist2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
@@ -143,14 +142,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                              @NotNull final boolean itensCriticosRetroativos,
                                              @NotNull final String cpf,
                                              @NotNull final String dataNascimento) throws Exception {
-        final Farol farol = new Farol();
-        // Sapucaia.
-        farol.setFilial(8);
-        farol.setUnidade(1);
-        farol.setDataInicial(dataInicial);
-        farol.setDataFinal(dataFinal);
-        farol.setBuscarRetroativo(itensCriticosRetroativos);
-        final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(farol);
+
+        final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                8,
+                1,
+                dataInicial,
+                dataFinal,
+                itensCriticosRetroativos);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getFarolDia();

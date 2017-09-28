@@ -1,8 +1,6 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.*;
-
 import javax.xml.bind.annotation.XmlRegistry;
 
 
@@ -29,22 +27,6 @@ public class ObjectFactory {
      *
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link FarolChecklist }
-     *
-     */
-    public FarolChecklist createFarolChecklist() {
-        return new FarolChecklist();
-    }
-
-    /**
-     * Create an instance of {@link Farol }
-     *
-     */
-    public Farol createFarol() {
-        return new Farol();
     }
 
     /**

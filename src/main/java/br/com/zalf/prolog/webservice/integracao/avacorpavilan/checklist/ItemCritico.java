@@ -1,5 +1,5 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -1,5 +1,5 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="codigo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="codigo" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="usuario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -92,7 +92,7 @@ public class Avaliacao {
 
     /**
      * Gets the value of the codigo property.
-     *     
+     * 
      */
     public int getCodigo() {
         return codigo;
@@ -100,7 +100,7 @@ public class Avaliacao {
 
     /**
      * Sets the value of the codigo property.
-     *     
+     * 
      */
     public void setCodigo(int value) {
         this.codigo = value;

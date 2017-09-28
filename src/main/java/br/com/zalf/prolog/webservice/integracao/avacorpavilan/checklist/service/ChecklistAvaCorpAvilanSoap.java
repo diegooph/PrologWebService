@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Farol;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.FarolChecklist2;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -76,17 +74,29 @@ public interface ChecklistAvaCorpAvilanSoap {
     /**
      * Farol
      *
-     * @param farol
+     * @param filial
+     * @param unidade
+     * @param dataInicial
+     * @param buscarRetroativo
+     * @param dataFinal
      * @return
-     *     returns br.com.avacorp.integracaoprolog.FarolChecklist2
+     *     returns br.com.avacorp.integracaoprologtestes.FarolChecklist2
      */
-    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/farolChecklist")
-    @WebResult(name = "farolChecklistResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-    @RequestWrapper(localName = "farolChecklist", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.FarolChecklist")
-    @ResponseWrapper(localName = "farolChecklistResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.FarolChecklistResponse")
+    @WebMethod(action = "http://www.avacorp.com.br/integracaoprologtestes/farolChecklist")
+    @WebResult(name = "farolChecklistResult", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+    @RequestWrapper(localName = "farolChecklist", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes", className = "br.com.avacorp.integracaoprologtestes.FarolChecklist")
+    @ResponseWrapper(localName = "farolChecklistResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes", className = "br.com.avacorp.integracaoprologtestes.FarolChecklistResponse")
     public FarolChecklist2 farolChecklist(
-            @WebParam(name = "farol", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    Farol farol);
+            @WebParam(name = "filial", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+                    int filial,
+            @WebParam(name = "unidade", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+                    int unidade,
+            @WebParam(name = "dataInicial", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+                    String dataInicial,
+            @WebParam(name = "dataFinal", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+                    String dataFinal,
+            @WebParam(name = "buscarRetroativo", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+                    boolean buscarRetroativo);
 
     /**
      * Integração de arquivos binarios

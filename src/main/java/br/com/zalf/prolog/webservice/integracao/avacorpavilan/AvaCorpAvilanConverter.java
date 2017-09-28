@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -16,10 +17,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPne
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Avaliacao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ItemCritico;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.VeiculoChecklist;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;

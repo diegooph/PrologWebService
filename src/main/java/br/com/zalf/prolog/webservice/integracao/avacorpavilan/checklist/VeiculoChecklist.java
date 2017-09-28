@@ -1,5 +1,5 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="placa" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="descItemCritico" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="descAvaliacoes" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="itensCriticos" type="{http://www.avacorp.com.br/integracaoprolog}ArrayOfItemCritico" minOccurs="0"/>
- *         &lt;element name="avaliacoes" type="{http://www.avacorp.com.br/integracaoprolog}ArrayOfAvaliacao" minOccurs="0"/>
+ *         &lt;element name="itensCriticos" type="{http://www.avacorp.com.br/integracaoprologtestes}ArrayOfItemCritico" minOccurs="0"/>
+ *         &lt;element name="avaliacoes" type="{http://www.avacorp.com.br/integracaoprologtestes}ArrayOfAvaliacao" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -43,11 +43,10 @@ public class VeiculoChecklist {
 
     protected String data;
     protected String placa;
-    protected ArrayOfItemCritico itensCriticos;
-    protected ArrayOfAvaliacao avaliacoes;
-    // Podemos ignorar esses dois. Diego utilizou apenas para fazer o parse dos registros.
     protected String descItemCritico;
     protected String descAvaliacoes;
+    protected ArrayOfItemCritico itensCriticos;
+    protected ArrayOfAvaliacao avaliacoes;
 
     /**
      * Gets the value of the data property.

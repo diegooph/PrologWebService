@@ -1,5 +1,5 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="mensagem" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="sucesso" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="farolDia" type="{http://www.avacorp.com.br/integracaoprolog}ArrayOfFarolDia" minOccurs="0"/>
+ *         &lt;element name="farolDia" type="{http://www.avacorp.com.br/integracaoprologtestes}ArrayOfFarolDia" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
