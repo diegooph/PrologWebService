@@ -1,5 +1,10 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service;
+
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ObjectFactory;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.UsuarioIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.VeiculosAtivos;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;

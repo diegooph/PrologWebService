@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.*;
+
 import javax.xml.bind.annotation.XmlRegistry;
 
 
@@ -16,7 +18,7 @@ import javax.xml.bind.annotation.XmlRegistry;
  * type definitions, element declarations and model 
  * groups.  Factory methods for each of these are 
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -24,14 +26,30 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: br.com.avacorp.integracaoprolog
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
+     * Create an instance of {@link FarolChecklist }
+     *
+     */
+    public FarolChecklist createFarolChecklist() {
+        return new FarolChecklist();
+    }
+
+    /**
+     * Create an instance of {@link Farol }
+     *
+     */
+    public Farol createFarol() {
+        return new Farol();
+    }
+
+    /**
      * Create an instance of {@link IntegrarArquivo }
-     * 
+     *
      */
     public IntegrarArquivo createIntegrarArquivo() {
         return new IntegrarArquivo();
@@ -39,7 +57,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EnviarChecklist }
-     * 
+     *
      */
     public EnviarChecklist createEnviarChecklist() {
         return new EnviarChecklist();
@@ -47,7 +65,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RespostasAvaliacao }
-     * 
+     *
      */
     public RespostasAvaliacao createRespostasAvaliacao() {
         return new RespostasAvaliacao();
@@ -55,7 +73,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BuscarPerguntasAlternativasQuestionario }
-     * 
+     *
      */
     public BuscarPerguntasAlternativasQuestionario createBuscarPerguntasAlternativasQuestionario() {
         return new BuscarPerguntasAlternativasQuestionario();
@@ -63,7 +81,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link AdicionarChecklist }
-     * 
+     *
      */
     public AdicionarChecklist createAdicionarChecklist() {
         return new AdicionarChecklist();
@@ -71,7 +89,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EnviarChecklistResponse }
-     * 
+     *
      */
     public EnviarChecklistResponse createEnviarChecklistResponse() {
         return new EnviarChecklistResponse();
@@ -79,7 +97,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EnviaRespostaAvaliacao }
-     * 
+     *
      */
     public EnviaRespostaAvaliacao createEnviaRespostaAvaliacao() {
         return new EnviaRespostaAvaliacao();
@@ -87,7 +105,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BuscarQuestionariosColaborador }
-     * 
+     *
      */
     public BuscarQuestionariosColaborador createBuscarQuestionariosColaborador() {
         return new BuscarQuestionariosColaborador();
@@ -95,7 +113,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BuscarPerguntasAlternativasQuestionarioResponse }
-     * 
+     *
      */
     public BuscarPerguntasAlternativasQuestionarioResponse createBuscarPerguntasAlternativasQuestionarioResponse() {
         return new BuscarPerguntasAlternativasQuestionarioResponse();
@@ -103,7 +121,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PerguntasAlternativasQuestionario }
-     * 
+     *
      */
     public PerguntasAlternativasQuestionario createPerguntasAlternativasQuestionario() {
         return new PerguntasAlternativasQuestionario();
@@ -111,7 +129,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BuscarQuestionariosColaboradorResponse }
-     * 
+     *
      */
     public BuscarQuestionariosColaboradorResponse createBuscarQuestionariosColaboradorResponse() {
         return new BuscarQuestionariosColaboradorResponse();
@@ -119,7 +137,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BuscaQuestionarioColaborador }
-     * 
+     *
      */
     public BuscaQuestionarioColaborador createBuscaQuestionarioColaborador() {
         return new BuscaQuestionarioColaborador();
@@ -127,7 +145,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link IntegrarArquivoResponse }
-     * 
+     *
      */
     public IntegrarArquivoResponse createIntegrarArquivoResponse() {
         return new IntegrarArquivoResponse();
@@ -135,15 +153,39 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RetornoPadrao }
-     * 
+     *
      */
     public RetornoPadrao createRetornoPadrao() {
         return new RetornoPadrao();
     }
 
     /**
+     * Create an instance of {@link FarolChecklistResponse }
+     *
+     */
+    public FarolChecklistResponse createFarolChecklistResponse() {
+        return new FarolChecklistResponse();
+    }
+
+    /**
+     * Create an instance of {@link FarolChecklist2 }
+     *
+     */
+    public FarolChecklist2 createFarolChecklist2() {
+        return new FarolChecklist2();
+    }
+
+    /**
+     * Create an instance of {@link VeiculoChecklist }
+     *
+     */
+    public VeiculoChecklist createVeiculoChecklist() {
+        return new VeiculoChecklist();
+    }
+
+    /**
      * Create an instance of {@link QuestionarioVeiculos }
-     * 
+     *
      */
     public QuestionarioVeiculos createQuestionarioVeiculos() {
         return new QuestionarioVeiculos();
@@ -151,7 +193,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RespostaAval }
-     * 
+     *
      */
     public RespostaAval createRespostaAval() {
         return new RespostaAval();
@@ -159,7 +201,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Veiculo }
-     * 
+     *
      */
     public Veiculo createVeiculo() {
         return new Veiculo();
@@ -167,7 +209,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ArrayOfResposta }
-     * 
+     *
      */
     public ArrayOfResposta createArrayOfResposta() {
         return new ArrayOfResposta();
@@ -175,23 +217,15 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Resposta }
-     * 
+     *
      */
     public Resposta createResposta() {
         return new Resposta();
     }
 
     /**
-     * Create an instance of {@link ArrayOfVeiculoQuestao }
-     * 
-     */
-    public ArrayOfVeiculoQuestao createArrayOfVeiculoQuestao() {
-        return new ArrayOfVeiculoQuestao();
-    }
-
-    /**
      * Create an instance of {@link ArrayOfQuestionarioVeiculos }
-     * 
+     *
      */
     public ArrayOfQuestionarioVeiculos createArrayOfQuestionarioVeiculos() {
         return new ArrayOfQuestionarioVeiculos();
@@ -199,15 +233,79 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Questionario }
-     * 
+     *
      */
     public Questionario createQuestionario() {
         return new Questionario();
     }
 
     /**
+     * Create an instance of {@link ArrayOfAvaliacao }
+     *
+     */
+    public ArrayOfAvaliacao createArrayOfAvaliacao() {
+        return new ArrayOfAvaliacao();
+    }
+
+    /**
+     * Create an instance of {@link Avaliacao }
+     *
+     */
+    public Avaliacao createAvaliacao() {
+        return new Avaliacao();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfVeiculo }
+     *
+     */
+    public ArrayOfVeiculo createArrayOfVeiculo() {
+        return new ArrayOfVeiculo();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfVeiculoChecklist }
+     *
+     */
+    public ArrayOfVeiculoChecklist createArrayOfVeiculoChecklist() {
+        return new ArrayOfVeiculoChecklist();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfItemCritico }
+     *
+     */
+    public ArrayOfItemCritico createArrayOfItemCritico() {
+        return new ArrayOfItemCritico();
+    }
+
+    /**
+     * Create an instance of {@link FarolDia }
+     *
+     */
+    public FarolDia createFarolDia() {
+        return new FarolDia();
+    }
+
+    /**
+     * Create an instance of {@link ItemCritico }
+     *
+     */
+    public ItemCritico createItemCritico() {
+        return new ItemCritico();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfVeiculoQuestao }
+     *
+     */
+    public ArrayOfVeiculoQuestao createArrayOfVeiculoQuestao() {
+        return new ArrayOfVeiculoQuestao();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfRespostaAval }
-     * 
+     *
      */
     public ArrayOfRespostaAval createArrayOfRespostaAval() {
         return new ArrayOfRespostaAval();
@@ -215,15 +313,23 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Questao }
-     * 
+     *
      */
     public Questao createQuestao() {
         return new Questao();
     }
 
     /**
+     * Create an instance of {@link ArrayOfFarolDia }
+     *
+     */
+    public ArrayOfFarolDia createArrayOfFarolDia() {
+        return new ArrayOfFarolDia();
+    }
+
+    /**
      * Create an instance of {@link VeiculoQuestao }
-     * 
+     *
      */
     public VeiculoQuestao createVeiculoQuestao() {
         return new VeiculoQuestao();
@@ -231,18 +337,10 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ArrayOfQuestao }
-     * 
+     *
      */
     public ArrayOfQuestao createArrayOfQuestao() {
         return new ArrayOfQuestao();
-    }
-
-    /**
-     * Create an instance of {@link ArrayOfVeiculo }
-     * 
-     */
-    public ArrayOfVeiculo createArrayOfVeiculo() {
-        return new ArrayOfVeiculo();
     }
 
 }

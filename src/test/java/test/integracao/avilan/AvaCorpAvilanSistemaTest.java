@@ -24,7 +24,7 @@ public class AvaCorpAvilanSistemaTest {
     private final Sistema sistema = SistemasFactory.createSistema(
             SistemaKey.AVACORP_AVILAN,
             IntegradorProLog.full(),
-            ROLOG_TOKEN);
+            PROLOG_TOKEN);
 
     @Before
     public void setup() {

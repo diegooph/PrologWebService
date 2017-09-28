@@ -1,5 +1,9 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service;
+
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Farol;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.FarolChecklist2;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -21,8 +25,6 @@ import javax.xml.ws.ResponseWrapper;
     ObjectFactory.class
 })
 public interface ChecklistAvaCorpAvilanSoap {
-
-    public BuscaFarolDia getFarol(String codUnidade, String dataInicial, String dataFinal, boolean itensCriticosRetroativos);
 
 
     /**
@@ -69,6 +71,21 @@ public interface ChecklistAvaCorpAvilanSoap {
     public EnviaRespostaAvaliacao enviarChecklist(
             @WebParam(name = "respostas", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
                     RespostasAvaliacao respostas);
+
+    /**
+     * Farol
+     *
+     * @param farol
+     * @return
+     *     returns br.com.avacorp.integracaoprolog.FarolChecklist2
+     */
+    @WebMethod(action = "http://www.avacorp.com.br/integracaoprolog/farolChecklist")
+    @WebResult(name = "farolChecklistResult", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+    @RequestWrapper(localName = "farolChecklist", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.FarolChecklist")
+    @ResponseWrapper(localName = "farolChecklistResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", className = "br.com.avacorp.integracaoprolog.FarolChecklistResponse")
+    public FarolChecklist2 farolChecklist(
+            @WebParam(name = "farol", targetNamespace = "http://www.avacorp.com.br/integracaoprolog")
+                    Farol farol);
 
     /**
      * Integração de arquivos binarios

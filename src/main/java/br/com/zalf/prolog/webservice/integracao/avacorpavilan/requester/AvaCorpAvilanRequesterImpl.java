@@ -1,13 +1,20 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanService;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Farol;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.FarolChecklist2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
 import com.google.common.base.Strings;
@@ -15,7 +22,6 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import javax.xml.ws.BindingProvider;
-import java.util.List;
 
 
 /**
@@ -131,17 +137,23 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public List<FarolDia> getFarolChecklist(@NotNull final String codUnidadeAvilan,
-                                            @NotNull final String dataInicial,
-                                            @NotNull final String dataFinal,
-                                            @NotNull final boolean itensCriticosRetroativos,
-                                            @NotNull final String cpf,
-                                            @NotNull final String dataNascimento) throws Exception {
-        final BuscaFarolDia request = getChecklistSoap(cpf, dataNascimento)
-                .getFarol(codUnidadeAvilan, dataInicial, dataFinal, itensCriticosRetroativos);
+    public ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
+                                             @NotNull final String dataInicial,
+                                             @NotNull final String dataFinal,
+                                             @NotNull final boolean itensCriticosRetroativos,
+                                             @NotNull final String cpf,
+                                             @NotNull final String dataNascimento) throws Exception {
+        final Farol farol = new Farol();
+        // Sapucaia.
+        farol.setFilial(8);
+        farol.setUnidade(1);
+        farol.setDataInicial(dataInicial);
+        farol.setDataFinal(dataFinal);
+        farol.setBuscarRetroativo(itensCriticosRetroativos);
+        final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(farol);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
-            return request.getFarol();
+            return request.getFarolDia();
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())

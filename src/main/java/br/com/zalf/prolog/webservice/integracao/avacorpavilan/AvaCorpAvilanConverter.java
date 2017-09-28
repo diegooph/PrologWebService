@@ -16,6 +16,10 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPne
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.Avaliacao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ItemCritico;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.VeiculoChecklist;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
@@ -300,19 +304,23 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static FarolChecklist convert(List<FarolDia> farolDia) throws ParseException {
+    public static FarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
         checkNotNull(farolDia, "farolDia não pode ser null!");
-        checkArgument(farolDia.size() == 1, "farolDia não pode vir com mais de um elemento " +
+        checkArgument(farolDia.getFarolDia().size() == 1, "farolDia não pode vir com mais de um elemento " +
                 "pois estamos filtrando apenas por um único dia!");
 
         final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
-        final List<VeiculoChecklist> veiculosFarol = farolDia.get(0).getVeiculosChecklist();
+        final List<VeiculoChecklist> veiculosFarol = farolDia
+                .getFarolDia()
+                .get(0)
+                .getVeiculosChecklist()
+                .getVeiculoChecklist();
         for (VeiculoChecklist veiculoChecklist : veiculosFarol) {
             // Cria Veículo.
             final Veiculo veiculo = new Veiculo();
             veiculo.setPlaca(veiculoChecklist.getPlaca());
 
-            final List<Avaliacao> avaliacoes = veiculoChecklist.getAvaliacoes();
+            final List<Avaliacao> avaliacoes = veiculoChecklist.getAvaliacoes().getAvaliacao();
             Checklist checklistSaidaDia = null;
             Checklist checklistRetornoDia = null;
             if (avaliacoes != null && !avaliacoes.isEmpty()) {
@@ -325,7 +333,7 @@ public final class AvaCorpAvilanConverter {
             List<ItemOrdemServico> itensCriticos = null;
             if (veiculoChecklist.getItensCriticos() != null) {
                 itensCriticos = new ArrayList<>();
-                final List<ItemCritico> itensAvilan = veiculoChecklist.getItensCriticos();
+                final List<ItemCritico> itensAvilan = veiculoChecklist.getItensCriticos().getItemCritico();
                 for (ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
@@ -363,7 +371,7 @@ public final class AvaCorpAvilanConverter {
         for (int i = 0; i < avaliacoes.size(); i++) {
             final Avaliacao avaliacao = avaliacoes.get(i);
             final Checklist checklist = new Checklist();
-            checklist.setCodigo(avaliacao.getCodigo());
+            checklist.setCodigo(Long.valueOf(avaliacao.getCodigo()));
             checklist.setTipo(avaliacao.getTipo().equals("Saida") ? Checklist.TIPO_SAIDA : Checklist.TIPO_RETORNO);
             checklist.setData(AvaCorpAvilanUtils.createDatePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();

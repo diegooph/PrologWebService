@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPne
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import org.junit.Before;
@@ -74,6 +75,20 @@ public class AvaCorpAvilanRequesterTest {
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
         assertTrue(!veiculoQuestao.getVeiculoQuestao().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void buscarFarolChecklist() throws Exception {
+        final ArrayOfFarolDia farolDia =
+                requester.getFarolChecklist(
+                        1,
+                        "2017-08-08",
+                        "2017-10-08",
+                        false,
+                        CPF,
+                        DATA_NASCIMENTO);
+        assertNotNull(farolDia);
+        assertTrue(!farolDia.getFarolDia().isEmpty());
     }
 
     @Test(timeout = 7 * 60 * 1000)

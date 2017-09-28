@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -16,7 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.farol.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
@@ -107,12 +106,12 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                                  @NotNull final Date dataInicial,
-                                                  @NotNull final Date dataFinal,
-                                                  final boolean itensCriticosRetroativos) throws Exception {
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Exception {
         final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
-        final List<FarolDia> farolChecklist = requester.getFarolChecklist(
-                codUnidadeAvilan,
+        final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
+                Integer.parseInt(codUnidadeAvilan),
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
                 AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 itensCriticosRetroativos,

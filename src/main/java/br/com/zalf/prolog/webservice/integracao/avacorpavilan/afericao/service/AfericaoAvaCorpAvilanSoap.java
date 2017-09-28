@@ -1,5 +1,9 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service;
+
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ObjectFactory;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
