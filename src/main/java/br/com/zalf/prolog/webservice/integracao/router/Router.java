@@ -122,6 +122,15 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Override
+    public Checklist getByCod(Long codChecklist) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getByCod(codChecklist);
+        } else {
+            return integradorProLog.getByCod(codChecklist);
+        }
+    }
+
     @NotNull
     @Override
     public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

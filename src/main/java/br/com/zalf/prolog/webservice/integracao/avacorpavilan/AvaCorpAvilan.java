@@ -14,8 +14,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
@@ -54,11 +54,44 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo) throws Exception {
+        final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
+                Math.toIntExact(codModelo),
+                placaVeiculo,
+                cpf(),
+                dataNascimento());
+        return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);
+    }
+
+    @Override
     public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         return requester.insertChecklist(
                 AvaCorpAvilanConverter.convert(checklist, cpf(), dataNascimento()),
                 cpf(),
                 dataNascimento());
+    }
+
+    @Override
+    public Checklist getByCod(Long codChecklist) throws Exception {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Exception {
+        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
+        final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
+                Integer.parseInt(codUnidadeAvilan),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                itensCriticosRetroativos,
+                cpf(),
+                dataNascimento());
+        return AvaCorpAvilanConverter.convert(farolChecklist);
     }
 
     @Override
@@ -90,34 +123,6 @@ public final class AvaCorpAvilan extends Sistema {
     public boolean insertAfericao(@NotNull Afericao afericao,
                                   @NotNull Long codUnidade) throws Exception {
         return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), cpf(), dataNascimento());
-    }
-
-    @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo) throws Exception {
-        final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
-                Math.toIntExact(codModelo),
-                placaVeiculo,
-                cpf(),
-                dataNascimento());
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);
-    }
-
-    @Override
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            @NotNull final Date dataInicial,
-                                            @NotNull final Date dataFinal,
-                                            final boolean itensCriticosRetroativos) throws Exception {
-        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
-        final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
-                Integer.parseInt(codUnidadeAvilan),
-                AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                AvaCorpAvilanUtils.createDatePattern(dataFinal),
-                itensCriticosRetroativos,
-                cpf(),
-                dataNascimento());
-        return AvaCorpAvilanConverter.convert(farolChecklist);
     }
 
     private String cpf() throws Exception {

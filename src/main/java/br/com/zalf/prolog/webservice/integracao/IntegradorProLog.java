@@ -149,6 +149,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.insert(checklist);
     }
 
+    @Override
+    public Checklist getByCod(Long codChecklist) throws Exception {
+        return checklistDao.getByCod(codChecklist);
+    }
+
     @NotNull
     @Override
     public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
