@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
@@ -28,12 +30,13 @@ public class ChecklistResource {
 
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
+    public AbstractResponse insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
         checklist.setData(new Date(System.currentTimeMillis()));
-        if (service.insert(checklist, userToken)) {
-            return Response.ok("Checklist inserido com sucesso");
+        final Long codChecklist = service.insert(checklist, userToken);
+        if (codChecklist != null) {
+            return ResponseWithCod.Ok("Checklist inserido com sucesso", codChecklist);
         } else {
-            return Response.error("Erro ao inserir checklist");
+            return Response.error("Checklist inserido com sucesso");
         }
     }
 
@@ -47,7 +50,7 @@ public class ChecklistResource {
 
     @GET
     @Path("{codigo}")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public Checklist getByCod(@PathParam("codigo") Long codigo) {
         return service.getByCod(codigo);
     }

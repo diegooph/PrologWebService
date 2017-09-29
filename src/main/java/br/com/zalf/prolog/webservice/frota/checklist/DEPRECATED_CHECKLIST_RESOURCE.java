@@ -31,7 +31,8 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
 		checklist.setData(new Date(System.currentTimeMillis()));
-		if (service.insert(checklist, userToken)) {
+		final Long codChecklist = service.insert(checklist, userToken);
+		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");
 		} else {
 			return Response.error("Erro ao inserir checklist");

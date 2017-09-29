@@ -30,14 +30,14 @@ public class ChecklistService {
         }
     }
 
-    public boolean insert(Checklist checklist, String userToken) {
+    public Long insert(Checklist checklist, String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .insertChecklist(checklist);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

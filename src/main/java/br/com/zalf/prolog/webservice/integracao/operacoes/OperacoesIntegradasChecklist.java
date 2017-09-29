@@ -24,7 +24,7 @@ interface OperacoesIntegradasChecklist {
             @NotNull final Long codModelo,
             @NotNull final String placaVeiculo) throws Exception;
 
-    boolean insertChecklist(@NotNull final Checklist checklist) throws Exception;
+    Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
 
     @NotNull
     FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

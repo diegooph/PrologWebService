@@ -29,23 +29,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	}
 
-	/**
-	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
-	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
-	 * @return boolean
-	 * @version 1.0
-	 * @since 7 de dez de 2015 13:52:18
-	 * @author Luiz Felipe
-	 */
 	@Override
-	public boolean insert(Checklist checklist) throws SQLException {
+	public Long insert(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		veiculoDao = Injection.provideVeiculoDao();
-		Long codUnidade = null;
-		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
-		//L.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
+		final OrdemServicoDao osDao = new OrdemServicoDaoImpl();
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -63,19 +53,18 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				checklist.setCodigo(rSet.getLong("CODIGO"));
-				codUnidade = rSet.getLong("cod_unidade");
+				final Long codUnidade = rSet.getLong("cod_unidade");
 				insertRespostas(checklist, conn);
 				osDao.insertItemOs(checklist, conn, codUnidade);
 				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
-			}else{
+				conn.commit();
+				return checklist.getCodigo();
+			} else {
 				throw new SQLException("Erro ao inserir o checklist");
 			}
-			conn.commit();
-		}
-		finally {
+		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return true;
 	}
 
 	@Override
@@ -448,16 +437,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return alternativa;
 	}
 
-	/**
-	 * Método responsável por salvar as respostas de um checklist na tabela
-	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um
-	 * map<pergunta, resposta> então precisamos percorrer todo esse map para
-	 * adicionar todas as respostas de um checklist ao BD.
-	 * @return void
-	 * @version 1.0
-	 * @since 7 de dez de 2015 14:01:03
-	 * @author Luiz Felipe
-	 */
 	private void insertRespostas(Checklist checklist, Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		try {

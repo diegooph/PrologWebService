@@ -372,9 +372,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possível realizar a busca
      */
     private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
-        L.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
         PreparedStatement stmt = null;
-        try{
+        try {
             stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
                     "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?)");
             stmt.setString(1, placa);
@@ -383,10 +382,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(4, codAlternativa);
             stmt.setString(5, ItemOrdemServico.Status.PENDENTE.asString());
             int count = stmt.executeUpdate();
-            if(count == 0){
+            if (count == 0) {
                 throw new SQLException("Erro ao inserir o serviço");
             }
-        }finally {
+        } finally {
             closeConnection(null, stmt, null);
         }
     }
@@ -402,9 +401,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possivel realizar a busca
      */
     private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
-        L.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try{
             stmt = conn.prepareStatement("UPDATE checklist_ordem_servico_itens SET qt_apontamentos =\n" +
                     "(SELECT qt_apontamentos FROM\n" +
@@ -434,7 +431,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao incrementar a quantidade de apontamentos");
             }
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(null, stmt, null);
         }
     }
 

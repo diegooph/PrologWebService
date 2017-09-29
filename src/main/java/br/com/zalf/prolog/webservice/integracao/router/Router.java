@@ -114,7 +114,7 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {

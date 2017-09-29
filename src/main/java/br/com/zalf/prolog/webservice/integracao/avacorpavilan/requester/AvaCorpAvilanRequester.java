@@ -25,9 +25,9 @@ public interface AvaCorpAvilanRequester extends Requester {
     ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf,
                                                                       @NotNull final String dataNascimento) throws Exception;
 
-    boolean insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao,
-                            @NotNull final String cpf,
-                            @NotNull final String dataNascimento) throws Exception;
+    Long insertChecklist(@NotNull final RespostasAvaliacao respostasAvaliacao,
+                         @NotNull final String cpf,
+                         @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfVeiculoQuestao getQuestoesVeiculo(final int codigoQuestionario,
                                              @NotNull final String placaVeiculo,

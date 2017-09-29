@@ -156,7 +156,7 @@ public class AvaCorpAvilanRequesterTest {
         respostasAvaliacao.setDtNascimento(DATA_NASCIMENTO);
         respostasAvaliacao.setCpf(CPF);
         respostasAvaliacao.setRespostas(arrayOfRespostaAval);
-        assertTrue(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
+        assertNotNull(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
     }
 
     private IncluirMedida2 createIncluirMedida() {

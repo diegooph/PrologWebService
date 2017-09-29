@@ -59,7 +59,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         return getIntegradorProLog().insertChecklist(checklist);
     }
 

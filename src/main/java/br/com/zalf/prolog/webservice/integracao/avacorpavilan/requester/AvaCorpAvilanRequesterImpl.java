@@ -71,13 +71,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public boolean insertChecklist(@NotNull RespostasAvaliacao respostasAvaliacao,
-                                   @NotNull String cpf,
-                                   @NotNull String dataNascimento) throws Exception {
+    public Long insertChecklist(@NotNull RespostasAvaliacao respostasAvaliacao,
+                                @NotNull String cpf,
+                                @NotNull String dataNascimento) throws Exception {
         final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
 
         if (request != null && request.isSucesso()) {
-            return true;
+            return (long) respostasAvaliacao.getCodigoAvaliacao();
         }
 
         throw new Exception(request != null ? request.getMensagem() : "");

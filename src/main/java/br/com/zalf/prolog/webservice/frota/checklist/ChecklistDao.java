@@ -19,12 +19,15 @@ import java.util.Map;
 public interface ChecklistDao {
 
 	/**
-	 * Insere um checklist no banco de dados
+	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
+	 *
 	 * @param checklist um checklist
-	 * @return boolean com o resultado da operação
+	 * @return código do checklist recém inserido
 	 * @throws SQLException caso não seja possível inserir o checklist no banco de dados
 	 */
-	boolean insert(Checklist checklist) throws SQLException;
+	@NotNull
+	Long insert(Checklist checklist) throws SQLException;
 
 	/**
 	 * Busca um checklist pelo seu código único

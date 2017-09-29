@@ -26,7 +26,6 @@ public interface OrdemServicoDao {
 	List<OrdemServico> getOs(String placa, String status, Long codUnidade,
 							 String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
-	//TODO - adicionar javadoc
 	List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
 													  int limit, long offset, String prioridade) throws SQLException;
 
@@ -42,7 +41,6 @@ public interface OrdemServicoDao {
 	 */
 	void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
 
-	//TODO - adicionar javadoc
 	List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
 													 long offset, String status) throws SQLException;
 
