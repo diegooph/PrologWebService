@@ -242,9 +242,11 @@ public final class AvaCorpAvilanConverter {
         respostasAvaliacao.setDtNascimento(dataNascimento);
         respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
+        respostasAvaliacao.setTipoChecklist(checklist.getTipo() == Checklist.TIPO_SAIDA
+                ? AvacorpAvilanTipoChecklist.SAIDA
+                : AvacorpAvilanTipoChecklist.RETORNO);
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-
             final RespostaAval respostaAval = new RespostaAval();
             respostaAval.setSequenciaQuestao(Math.toIntExact(resposta.getCodigo()));
             // Sempre terá apenas uma alternativa
@@ -312,6 +314,7 @@ public final class AvaCorpAvilanConverter {
                 .get(0)
                 .getVeiculosChecklist()
                 .getVeiculoChecklist();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < veiculosFarol.size(); i++) {
             final VeiculoChecklist veiculoChecklist = veiculosFarol.get(i);
             // Cria Veículo.
@@ -370,7 +373,9 @@ public final class AvaCorpAvilanConverter {
             final Avaliacao avaliacao = avaliacoes.get(i);
             final Checklist checklist = new Checklist();
             checklist.setCodigo((long) avaliacao.getCodigo());
-            checklist.setTipo(avaliacao.getTipo().equals("Saida") ? Checklist.TIPO_SAIDA : Checklist.TIPO_RETORNO);
+            checklist.setTipo(avaliacao.getTipo().equals(AvacorpAvilanTipoChecklist.SAIDA)
+                    ? Checklist.TIPO_SAIDA
+                    : Checklist.TIPO_RETORNO);
             checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();
             colaborador.setNome(avaliacao.getUsuario());
@@ -382,7 +387,7 @@ public final class AvaCorpAvilanConverter {
 
     @Nullable
     private static Checklist getChecklistMaisAtualByTipo(@NotNull final List<Checklist> checklists,
-                                                        final char tipoChecklist) {
+                                                         final char tipoChecklist) {
         Checklist checklist = null;
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < checklists.size(); i++) {

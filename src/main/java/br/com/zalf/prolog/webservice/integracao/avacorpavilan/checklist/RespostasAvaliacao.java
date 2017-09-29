@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -43,6 +45,7 @@ public class RespostasAvaliacao {
     protected String cpf;
     protected String dtNascimento;
     protected int codigoAvaliacao;
+    protected String tipoChecklist;
     protected ArrayOfRespostaAval respostas;
 
     /**
@@ -149,4 +152,11 @@ public class RespostasAvaliacao {
         this.respostas = value;
     }
 
+    public AvacorpAvilanTipoChecklist getTipoChecklist() {
+        return AvacorpAvilanTipoChecklist.fromString(tipoChecklist);
+    }
+
+    public void setTipoChecklist(AvacorpAvilanTipoChecklist tipoChecklist) {
+        this.tipoChecklist = tipoChecklist.asString();
+    }
 }
