@@ -49,7 +49,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         return false;
     }
 
-    private boolean insertValores(ProcessoMovimentacao movimentacoes, Connection conn) throws SQLException {
+    private void insertValores(ProcessoMovimentacao movimentacoes, Connection conn) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -96,9 +96,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     if (mov.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE) &&
                             mov.getDestino().getTipo().equals(OrigemDestinoConstants.ESTOQUE)) {
                         mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual() + 1);
-                        pneuDao.updateVida(conn, mov.getPneu(), movimentacoes.getUnidade().getCodigo());
+                        pneuDao.updateVida(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
                         pneuDao.insertTrocaVidaPneu(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
-                        pneuDao.updateSulcos(mov.getPneu(), movimentacoes.getUnidade().getCodigo());
+                        pneuDao.updateSulcos(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
                     }
 
                     // Atualiza o status do pneu
@@ -109,7 +109,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                             conn);
                 }
             }
-            return true;
         } finally {
             closeConnection(null, stmt, rSet);
         }
