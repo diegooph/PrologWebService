@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlType;
     "veiculo",
     "codigoQuestionario",
     "cpf",
-    "dtNascimento"
+    "dtNascimento",
+    "tipo"
 })
 public class AdicionarChecklist {
 
