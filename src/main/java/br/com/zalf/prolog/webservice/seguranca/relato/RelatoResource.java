@@ -31,16 +31,20 @@ public class RelatoResource {
 
     @GET
     @Path("/{codigo}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
     public Relato getByCod(@PathParam("codigo") Long codigo) {
         return service.getByCod(codigo);
     }
 
     @GET
     @Path("/{status}/colaborador/{cpf}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getByColaborador(@PathParam("status") String status,
                                          @PathParam("cpf") Long cpf,
                                          @QueryParam("limit") int limit,
@@ -54,7 +58,8 @@ public class RelatoResource {
 
     @GET
     @Path("/classificados/{cpf}/{status}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR})
     public List<Relato> getClassificadosByColaborador(
             @PathParam("cpf") Long cpf,
@@ -71,7 +76,8 @@ public class RelatoResource {
     @GET
     @Path("/fechados/{cpf}/{status}")
     @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getFechadosByColaborador(
             @PathParam("cpf") Long cpf,
             @PathParam("status") String status,
@@ -86,7 +92,8 @@ public class RelatoResource {
 
     @GET
     @Path("{status}/exceto/colaborador/{cpf}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR})
     public List<Relato> getAllExcetoColaborador(
             @PathParam("cpf") Long cpf,
             @PathParam("status") String status,
@@ -100,8 +107,10 @@ public class RelatoResource {
 
     @GET
     @Path("/unidade")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getAllByUnidade(
             @QueryParam("codUnidade") Long codUnidade,
             @QueryParam("equipe") String equipe,
@@ -117,8 +126,10 @@ public class RelatoResource {
 
     @GET
     @Path("/{codUnidade}/{status}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR, Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR, Pilares.Seguranca.Relato.FECHAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
     public List<Relato> getAll(@PathParam("codUnidade") Long codUnidade,
                                @PathParam("status") String status,
                                @QueryParam("limit") int limit,
@@ -139,7 +150,8 @@ public class RelatoResource {
 
     @PUT
     @Path("/fechar")
-    @Secured(permissions = {Pilares.Seguranca.Relato.FECHAR, Pilares.Seguranca.Relato.CLASSIFICAR})
+    @Secured(permissions = {Pilares.Seguranca.Relato.FECHAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR})
     public Response fechaRelato(Relato relato){
         if (service.fechaRelato(relato)) {
             return Response.ok("Relato fechado com sucesso");
