@@ -104,7 +104,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("codModelo") Long codModelo,
 			@PathParam("placa") String placa,
 			@HeaderParam("Authorization") String userToken){
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, userToken);
+		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
 	}
 
 	/**

@@ -56,10 +56,12 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo) throws Exception {
+                                                      @NotNull String placaVeiculo,
+                                                      char tipoChecklist) throws Exception {
         final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
                 Math.toIntExact(codModelo),
                 placaVeiculo,
+                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist),
                 cpf(),
                 dataNascimento());
         return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);

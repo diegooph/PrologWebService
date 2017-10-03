@@ -2,6 +2,7 @@ package test.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
@@ -71,6 +72,7 @@ public class AvaCorpAvilanRequesterTest {
                 requester.getQuestoesVeiculo(
                         1,
                         VEICULO_COM_CHECK_VINCULADO,
+                        AvacorpAvilanTipoChecklist.SAIDA,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
@@ -117,6 +119,7 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
                 questionario.getCodigoQuestionario(),
                 veiculo.getPlaca(),
+                AvacorpAvilanTipoChecklist.SAIDA,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(arrayOfVeiculoQuestao);

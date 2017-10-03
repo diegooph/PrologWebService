@@ -22,7 +22,8 @@ interface OperacoesIntegradasChecklist {
     NovoChecklistHolder getNovoChecklistHolder(
             @NotNull final Long codUnidade,
             @NotNull final Long codModelo,
-            @NotNull final String placaVeiculo) throws Exception;
+            @NotNull final String placaVeiculo,
+            final char tipoChecklist) throws Exception;
 
     Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
 

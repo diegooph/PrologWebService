@@ -52,11 +52,15 @@ public class ChecklistService {
         }
     }
 
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, String userToken) {
+    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade,
+                                                      Long codModelo,
+                                                      String placa,
+                                                      char tipoChecklist,
+                                                      String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getNovoChecklistHolder(codUnidade, codModelo, placa);
+                    .getNovoChecklistHolder(codUnidade, codModelo, placa, tipoChecklist);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

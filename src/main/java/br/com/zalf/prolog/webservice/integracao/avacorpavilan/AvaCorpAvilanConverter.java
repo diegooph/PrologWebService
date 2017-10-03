@@ -242,9 +242,6 @@ public final class AvaCorpAvilanConverter {
         respostasAvaliacao.setDtNascimento(dataNascimento);
         respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
-        respostasAvaliacao.setTipoChecklist(checklist.getTipo() == Checklist.TIPO_SAIDA
-                ? AvacorpAvilanTipoChecklist.SAIDA
-                : AvacorpAvilanTipoChecklist.RETORNO);
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
             final RespostaAval respostaAval = new RespostaAval();

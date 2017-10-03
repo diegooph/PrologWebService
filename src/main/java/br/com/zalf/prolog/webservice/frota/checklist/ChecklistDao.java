@@ -75,10 +75,11 @@ public interface ChecklistDao {
 	 * @param codUnidade código da unidade
 	 * @param codModelo código do modelo
 	 * @param placa placa do veículo
+	 * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
 	 * @return retorno um novo checklist
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException;
+	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
 
 	//TODO - adicionar comentário javadoc
 	Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;

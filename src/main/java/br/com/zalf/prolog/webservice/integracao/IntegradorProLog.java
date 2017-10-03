@@ -140,8 +140,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo) throws Exception {
-        return checklistDao.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+                                                      @NotNull String placaVeiculo,
+                                                      char tipoChecklist) throws Exception {
+        return checklistDao.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @Override

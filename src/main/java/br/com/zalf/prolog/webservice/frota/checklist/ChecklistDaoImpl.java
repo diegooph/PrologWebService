@@ -185,14 +185,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return listUrl;
 	}
 
-	/**
-	 * Cria o objeto responsavel por permitir a criação de um novo checklist, fornece as placas ativas de uma unidade e as perguntas do checklist
-	 * @param codUnidade
-	 * @return
-	 * @throws SQLException
-	 */
 	@Override
-	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException {
+	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklis) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
 		veiculoDao = Injection.provideVeiculoDao();

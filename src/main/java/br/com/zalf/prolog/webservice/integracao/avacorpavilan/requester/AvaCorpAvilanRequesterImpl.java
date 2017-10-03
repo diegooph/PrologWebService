@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
@@ -86,6 +87,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     @Override
     public ArrayOfVeiculoQuestao getQuestoesVeiculo(int codigoQuestionario,
                                                     @NotNull String placaVeiculo,
+                                                    @NotNull AvacorpAvilanTipoChecklist tipoChecklist,
                                                     @NotNull String cpf,
                                                     @NotNull String dataNascimento) throws Exception {
         final AdicionarChecklist adicionarChecklist = new AdicionarChecklist();
@@ -93,6 +95,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         adicionarChecklist.setDtNascimento(dataNascimento);
         adicionarChecklist.setVeiculo(placaVeiculo);
         adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
+        adicionarChecklist.setTipoChecklist(tipoChecklist);
 
         final PerguntasAlternativasQuestionario request
                 = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);

@@ -136,14 +136,25 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}")
+    @Path("/novo/{codUnidade}/{codModelo}/{placa}/saida")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public NovoChecklistHolder getNovoChecklistHolder(
+    public NovoChecklistHolder getNovoChecklistSaida(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken){
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, userToken);
+        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+    }
+
+    @GET
+    @Path("/novo/{codUnidade}/{codModelo}/{placa}/retorno")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    public NovoChecklistHolder getNovoChecklistRetorno(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codModelo") Long codModelo,
+            @PathParam("placa") String placa,
+            @HeaderParam("Authorization") String userToken){
+        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
     }
 
     /**

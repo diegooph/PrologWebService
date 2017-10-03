@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -32,5 +33,16 @@ public enum  AvacorpAvilanTipoChecklist {
         }
 
         throw new IllegalArgumentException("Nenhum tipo de checklist encontrado para o valor: " + value);
+    }
+
+    public static AvacorpAvilanTipoChecklist fromTipoProLog(final char tipoProLog) {
+
+        if (tipoProLog == Checklist.TIPO_SAIDA) {
+            return AvacorpAvilanTipoChecklist.SAIDA;
+        } else if (tipoProLog == Checklist.TIPO_RETORNO) {
+            return AvacorpAvilanTipoChecklist.RETORNO;
+        }
+
+        throw new IllegalArgumentException("Nenhum tipo de checklist encontrado para o valor: " + tipoProLog);
     }
 }
