@@ -5,10 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FonteDataHora;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Icone;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
@@ -154,8 +151,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR," +
                     "FONTE_DATA_HORA_INICIO, DATA_HORA_INICIO, FONTE_DATA_HORA_FIM, DATA_HORA_FIM, JUSTIFICATIVA_ESTOURO, " +
-                    " JUSTIFICATIVA_TEMPO_RECOMENDADO) \n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?)");
+                    " JUSTIFICATIVA_TEMPO_RECOMENDADO, LATITUDE_INICIO, LATITUDE_FIM, LONGITUDE_INICIO, LONGITUDE_FIM) \n" +
+                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, intervalo.getColaborador().getUnidade().getCodigo());
             stmt.setLong(2, intervalo.getTipo().getCodigo());
             stmt.setLong(3, intervalo.getColaborador().getCpf());
@@ -175,6 +172,13 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             }
             stmt.setString(8, intervalo.getJustificativaEstouro());
             stmt.setString(9, intervalo.getJustificativaTempoRecomendado());
+
+            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
+            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
+            stmt.setString(10, localizacaoInicio.getLatitude());
+            stmt.setString(11, localizacaoFim.getLatitude());
+            stmt.setString(12, localizacaoInicio.getLongitude());
+            stmt.setString(13, localizacaoFim.getLongitude());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o intervalo");
@@ -191,7 +195,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
-                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ? " +
+                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ?, " +
+                    "LATITUDE_INICIO = ?, LATITUDE_FIM = ?, LONGITUDE_INICIO = ?, LONGITUDE_FIM = ? " +
                     "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
             stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
             stmt.setTimestamp(2, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
@@ -199,8 +204,15 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
             stmt.setString(5, intervalo.getJustificativaEstouro());
             stmt.setString(6, intervalo.getJustificativaTempoRecomendado());
-            stmt.setLong(7, intervalo.getColaborador().getCpf());
-            stmt.setLong(8, intervalo.getCodigo());
+            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
+            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
+            stmt.setString(7, localizacaoInicio.getLatitude());
+            stmt.setString(8, localizacaoFim.getLatitude());
+            stmt.setString(9, localizacaoInicio.getLongitude());
+            stmt.setString(10, localizacaoFim.getLongitude());
+
+            stmt.setLong(11, intervalo.getColaborador().getCpf());
+            stmt.setLong(12, intervalo.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao finalizar o intervalo");
@@ -284,6 +296,10 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             intervalo.setColaborador(colaborador);
             intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
             intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
+            final Localizacao localizacaoInicio = new Localizacao();
+            final Localizacao localizacaoFim = new Localizacao();
+            intervalo.setLocalizacaoInicio(localizacaoInicio);
+            intervalo.setLocalizacaoFim(localizacaoFim);
             return insertIntervalo(intervalo, codUnidade, conn);
         } finally {
             closeConnection(conn, null, null);
@@ -326,12 +342,15 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE INTERVALO SET DATA_HORA_FIM = ?, FONTE_DATA_HORA_FIM = ?, " +
-                    "JUSTIFICATIVA_ESTOURO = ? WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
+                    "JUSTIFICATIVA_ESTOURO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setString(2, intervalo.getFonteDataHoraFim().key());
             stmt.setString(3, intervalo.getJustificativaEstouro());
-            stmt.setLong(4, intervalo.getColaborador().getCpf());
-            stmt.setLong(5, intervalo.getCodigo());
+            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
+            stmt.setString(4, localizacaoFim.getLatitude());
+            stmt.setString(5, localizacaoFim.getLongitude());
+            stmt.setLong(6, intervalo.getColaborador().getCpf());
+            stmt.setLong(7, intervalo.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao finalizar o intervalo");
@@ -349,7 +368,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
-                    "DATA_HORA_INICIO, FONTE_DATA_HORA_INICIO, DATA_HORA_FIM, FONTE_DATA_HORA_FIM) VALUES (?,?,?,?,?,?,?) " +
+                    "DATA_HORA_INICIO, FONTE_DATA_HORA_INICIO, DATA_HORA_FIM, FONTE_DATA_HORA_FIM, " +
+                    "LATITUDE_INICIO, LATITUDE_FIM, LONGITUDE_INICIO, LONGITUDE_FIM) VALUES (?,?,?,?,?,?,?,?,?,?,?) " +
                     "RETURNING CODIGO;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, intervalo.getTipo().getCodigo());
@@ -368,6 +388,12 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 stmt.setNull(6, Types.TIMESTAMP);
                 stmt.setNull(7, Types.VARCHAR);
             }
+            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
+            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
+            stmt.setString(8, localizacaoInicio.getLatitude());
+            stmt.setString(9, localizacaoFim.getLatitude());
+            stmt.setString(10, localizacaoInicio.getLongitude());
+            stmt.setString(11, localizacaoFim.getLongitude());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -384,12 +410,20 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         intervalo.setDataHoraInicio(rSet.getTimestamp("DATA_HORA_INICIO"));
         intervalo.setValido(rSet.getBoolean("VALIDO"));
         intervalo.setTempoDecorrido(Duration.ofSeconds(DateUtils.secondsBetween(intervalo.getDataHoraInicio().getTime(), System.currentTimeMillis())));
-        Colaborador colaborador = new Colaborador();
+        final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
         intervalo.setColaborador(colaborador);
+        final Localizacao localizacaoInicio = new Localizacao();
+        localizacaoInicio.setLatitude(rSet.getString("LATITUDE_INICIO"));
+        localizacaoInicio.setLongitude(rSet.getString("LONGITUDE_INICIO"));
+        final Localizacao localizacaoFim = new Localizacao();
+        localizacaoFim.setLatitude(rSet.getString("LATITUDE_FIM"));
+        localizacaoFim.setLongitude(rSet.getString("LONGITUDE_FIM"));
+        intervalo.setLocalizacaoInicio(localizacaoInicio);
+        intervalo.setLocalizacaoFim(localizacaoFim);
         String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
 //        Setar apenas a fonte do inicio, sendo que não tem como um intervalo em aberto vir com fonte de término
         if (fonteDataHoraInicio != null) {

@@ -20,6 +20,8 @@ public class Intervalo {
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
     private Duration tempoDecorrido;
+    private Localizacao localizacaoInicio;
+    private Localizacao localizacaoFim;
 
     /**
      * Essa justificativa é obrigada a ser fornecida caso o {@link Colaborador} feche o intervalo
@@ -88,6 +90,22 @@ public class Intervalo {
 
     public Date getDataHoraFim() {
         return dataHoraFim;
+    }
+
+    public Localizacao getLocalizacaoInicio() {
+        return localizacaoInicio;
+    }
+
+    public void setLocalizacaoInicio(Localizacao localizacaoInicio) {
+        this.localizacaoInicio = localizacaoInicio;
+    }
+
+    public Localizacao getLocalizacaoFim() {
+        return localizacaoFim;
+    }
+
+    public void setLocalizacaoFim(Localizacao localizacaoFim) {
+        this.localizacaoFim = localizacaoFim;
     }
 
     public void setDataHoraFim(Date dataHoraFim) {
