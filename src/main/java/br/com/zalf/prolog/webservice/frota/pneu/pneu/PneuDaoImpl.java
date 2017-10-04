@@ -526,7 +526,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar os dados do Pneu");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(null, stmt, null);
         }
     }
 

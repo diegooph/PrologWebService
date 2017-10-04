@@ -54,4 +54,8 @@ public class Movimentacao {
     public String getObservacao() {
         return observacao;
     }
+
+    public boolean isFromDestinoToOrigem(@NotNull final String origem, @NotNull final String destino) {
+        return getOrigem().getTipo().equals(origem) && getDestino().getTipo().equals(destino);
+    }
 }

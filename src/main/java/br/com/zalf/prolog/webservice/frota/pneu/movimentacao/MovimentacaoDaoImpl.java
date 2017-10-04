@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.sql.*;
@@ -49,62 +50,50 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         return false;
     }
 
-    private void insertValores(ProcessoMovimentacao movimentacoes, Connection conn) throws SQLException {
+    private void insertValores(ProcessoMovimentacao processoMov, Connection conn) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // antes de fazer qualquer movimentação, remover todos os pneus que sairam do veículo
-            removeOrigensVeiculo(movimentacoes, conn);
-            stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, \n " +
-                    "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo,  vida, " +
-                    "observacao)\n " +
-                    "VALUES (?,?,?,\n " +
-                    "COALESCE ((select altura_sulco_interno from pneu where codigo = ? and cod_unidade = ?),0),\n " +
-                    "COALESCE ((select altura_sulco_central_interno from pneu where codigo = ? and cod_unidade = ?)," +
-                    "0),\n " +
-                    "COALESCE ((select altura_sulco_central_externo from pneu where codigo = ? and cod_unidade = ?)," +
-                    "0),\n " +
-                    "COALESCE ((select altura_sulco_externo from pneu where codigo = ? and cod_unidade = ?),0),?,?) " +
-                    "RETURNING codigo; ");
-            stmt.setLong(1, movimentacoes.getCodigo());
-            stmt.setLong(2, movimentacoes.getUnidade().getCodigo());
-            for (Movimentacao mov : movimentacoes.getMovimentacoes()) {
-                stmt.setString(3, mov.getPneu().getCodigo());
-                stmt.setString(4, mov.getPneu().getCodigo());
-                stmt.setLong(5, movimentacoes.getUnidade().getCodigo());
-                stmt.setString(6, mov.getPneu().getCodigo());
-                stmt.setLong(7, movimentacoes.getUnidade().getCodigo());
-                stmt.setString(8, mov.getPneu().getCodigo());
-                stmt.setLong(9, movimentacoes.getUnidade().getCodigo());
-                stmt.setString(10, mov.getPneu().getCodigo());
-                stmt.setLong(11, movimentacoes.getUnidade().getCodigo());
-                stmt.setDouble(12, mov.getPneu().getVidaAtual());
-                stmt.setString(13, mov.getObservacao());
+            // antes de fazer qualquer movimentação, remover todos os pneus que sairam do veículo.
+            removeOrigensVeiculo(processoMov, conn);
+            final Long codUnidade = processoMov.getUnidade().getCodigo();
+            stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
+                    "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
+                    "observacao) VALUES (?,?,?,?,?,?,?,?,?) RETURNING codigo;");
+            stmt.setLong(1, processoMov.getCodigo());
+            stmt.setLong(2, codUnidade);
+            for (final Movimentacao mov : processoMov.getMovimentacoes()) {
+                final Pneu pneu = mov.getPneu();
+                stmt.setString(3, pneu.getCodigo());
+                stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
+                stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                stmt.setDouble(8, pneu.getVidaAtual());
+                stmt.setString(9, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));
-                    insertOrigem(conn, mov, movimentacoes.getUnidade().getCodigo());
-                    insertDestino(conn, mov, movimentacoes.getUnidade().getCodigo());
-                    fecharServicosPneu(conn, mov, movimentacoes.getUnidade().getCodigo(), movimentacoes
-                            .getColaborador().getCpf());
+                    insertOrigem(conn, mov, codUnidade);
+                    insertDestino(conn, mov);
+                    fecharServicosPneu(conn, mov, codUnidade, processoMov.getColaborador().getCpf());
+
                     if (mov.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                        adicionaPneuVeiculo(conn, mov, movimentacoes.getUnidade().getCodigo());
+                        adicionaPneuVeiculo(conn, mov, codUnidade);
                     }
 
-                    // Pneu voltou recapado, devemos incrementar a vida
-                    if (mov.getOrigem().getTipo().equals(OrigemDestinoConstants.ANALISE) &&
-                            mov.getDestino().getTipo().equals(OrigemDestinoConstants.ESTOQUE)) {
+                    // Pneu voltou recapado, devemos incrementar a vida.
+                    if (mov.isFromDestinoToOrigem(OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.ESTOQUE)) {
                         mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual() + 1);
-                        pneuDao.updateVida(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
-                        pneuDao.insertTrocaVidaPneu(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
-                        pneuDao.updateSulcos(mov.getPneu(), movimentacoes.getUnidade().getCodigo(), conn);
+                        pneuDao.updateVida(mov.getPneu(), codUnidade, conn);
+                        pneuDao.insertTrocaVidaPneu(mov.getPneu(), codUnidade, conn);
                     }
 
-                    // Atualiza o status do pneu
+                    // Atualiza o status do pneu.
                     pneuDao.updateStatus(
                             mov.getPneu(),
-                            movimentacoes.getUnidade().getCodigo(),
+                            codUnidade,
                             mov.getDestino().getTipo(),
                             conn);
                 }
@@ -127,8 +116,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
     private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, String codPneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND COD_PNEU =" +
-                    " ?");
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
+                    "COD_PNEU = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
             stmt.setString(3, codPneu);
@@ -183,7 +172,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private void insertDestino(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void insertDestino(Connection conn, Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO movimentacao_destino(cod_movimentacao, " +
@@ -220,7 +209,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                     "  cpf_mecanico = ?,\n" +
                     "  km_momento_conserto = ? \n" +
                     "WHERE cod_pneu = ? and cod_unidade = ?");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             stmt.setLong(2, cpfColaborador);
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
                 OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
