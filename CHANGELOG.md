@@ -4,6 +4,14 @@ Change Log
 <a name="v0.0.34"></a>
 ## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (release-date) - [unreleased]
 
+### Refactor
+* Melhora método de inser de movimentação
+* Realiza merge do branch que corrige problema de permissões do ProLog
+
+### Bug Fixes
+* Corrige erro ao deletar permissões de um cargo
+* Corrige insert de movimentação da análise para o estoque
+
 <a name="v0.0.33"></a>
 ## Version [v0.0.33](https://github.com/luizfp/PrologWebService/compare/v0.0.32...v0.0.33) (2017-09-27)
 
