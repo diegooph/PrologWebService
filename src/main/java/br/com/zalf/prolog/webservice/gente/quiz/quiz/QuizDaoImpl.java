@@ -38,8 +38,8 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
             stmt.setLong(3, quiz.getColaborador().getCpf());
             stmt.setTimestamp(4, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(5, quiz.getTempoRealizacaoInMillis());
-            stmt.setInt(6, quiz.getQtdRespostasCorretas());
-            stmt.setInt(7, quiz.getQtdRespostasErradas());
+            stmt.setInt(6, quiz.calculaQtdRespostasCorretas());
+            stmt.setInt(7, quiz.calculaQtdRespostasErradas());
             rSet = stmt.executeQuery();
             if(rSet.next()){
                 quiz.setCodigo(rSet.getLong("CODIGO"));

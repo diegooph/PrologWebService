@@ -93,10 +93,31 @@ public class Quiz {
 		this.tempoRealizacaoInMillis = tempoRealizacaoInMillis;
 	}
 
-	public boolean getAprovado() {		return aprovado;
+	public boolean getAprovado() {
+		return aprovado;
 	}
 
 	public void setAprovado(boolean aprovado) {
 		this.aprovado = aprovado;
+	}
+
+	public int calculaQtdRespostasCorretas() {
+		int corretas = 0;
+		for (PerguntaQuiz perguntaQuiz : perguntas) {
+			if (perguntaQuiz.acertouResposta()) {
+				corretas++;
+			}
+		}
+		return corretas;
+	}
+
+	public int calculaQtdRespostasErradas() {
+		int erradas = 0;
+		for (PerguntaQuiz perguntaQuiz : perguntas) {
+			if (!perguntaQuiz.acertouResposta()) {
+				erradas++;
+			}
+		}
+		return erradas;
 	}
 }

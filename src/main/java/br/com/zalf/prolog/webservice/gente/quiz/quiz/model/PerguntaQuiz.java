@@ -36,4 +36,28 @@ public class PerguntaQuiz extends Pergunta {
 	public void setUrlImagem(String urlImagem) {
 		this.urlImagem = urlImagem;
 	}
+
+	public boolean acertouResposta() {
+		if (getTipo().equals(PerguntaQuiz.TIPO_SINGLE_CHOICE)) {
+			for (Alternativa alternativa : alternativas) {
+				final AlternativaEscolhaQuiz alternativaEscolha = (AlternativaEscolhaQuiz) alternativa;
+				if (alternativaEscolha.isCorreta() && alternativaEscolha.isSelecionada()) {
+					return true;
+				}
+			}
+		} else if (getTipo().equals(PerguntaQuiz.TIPO_MULTIPLE_CHOICE)) {
+			boolean acertou = true;
+			for (Alternativa alternativa : alternativas) {
+				final AlternativaEscolhaQuiz alternativaEscolha = (AlternativaEscolhaQuiz) alternativa;
+				if (alternativaEscolha.isCorreta() && !alternativaEscolha.isSelecionada()
+						|| !alternativaEscolha.isCorreta() && alternativaEscolha.isSelecionada()) {
+					acertou = false;
+				}
+			}
+			return acertou;
+		} else if (getTipo().equals(PerguntaQuiz.TIPO_ORDERING)) {
+			throw new IllegalStateException(PerguntaQuiz.TIPO_ORDERING + " não pode ser executado!");
+		}
+		return false;
+	}
 }
