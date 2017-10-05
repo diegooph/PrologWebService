@@ -109,6 +109,9 @@ public final class AvaCorpAvilan extends Sistema {
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
         final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByPlaca(placaVeiculo);
+        if (diagramaVeiculo == null) {
+            throw new IllegalStateException("Diagrama não encontrado para a placa: " + placaVeiculo);
+        }
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(pneus);
 

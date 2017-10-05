@@ -113,7 +113,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             if (rSet.next()) {
                 return createRestricao(rSet);
             } else {
-                throw new SQLException("Erro ao buscar os dados de restrição");
+                throw new SQLException("Dados de restrição não encontrados para a unidade: " + codUnidade);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
