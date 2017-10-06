@@ -37,7 +37,8 @@ public class SolicitacaoFolgaResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.REALIZAR,
+    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
+            Pilares.Gente.SolicitacaoFolga.REALIZAR,
             Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{cpf}")
     public List<SolicitacaoFolga> getByColaborador(@PathParam("cpf") Long cpf) {
@@ -45,7 +46,8 @@ public class SolicitacaoFolgaResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR, Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+    @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
+            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{codUnidade}/{codEquipe}/{cpf}")
     public List<SolicitacaoFolga> getAll(
             @QueryParam("dataIncial") long dataInicial,

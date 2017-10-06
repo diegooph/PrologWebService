@@ -853,9 +853,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ?;");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codCargo);
-        if (stmt.executeUpdate() == 0) {
-            throw new SQLException("Erro ao deletar funções do cargo: " + codCargo + " da unidade: " + codUnidade);
-        }
+        stmt.executeUpdate();
+        // Não precisamos verificar se o delete afetou alguma linha pois o cargo pode não ter nenhuma permissão vinculada.
     }
 
     @Override

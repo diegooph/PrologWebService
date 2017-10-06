@@ -136,7 +136,25 @@ public class EmpresaResource {
     }
 
     @GET
-    @Secured
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Entrega.Produtividade.CONSOLIDADO,
+            Pilares.Entrega.Indicadores.INDICADORES,
+            Pilares.Entrega.Upload.VERIFICACAO_DADOS,
+            Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
+            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/filtros/{cpf}")
     public List<Empresa> getFiltros(
             @PathParam("cpf") Long cpf) {

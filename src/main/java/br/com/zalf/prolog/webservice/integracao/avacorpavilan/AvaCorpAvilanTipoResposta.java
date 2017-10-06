@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * Created by luiz on 21/07/17.
  */
@@ -19,7 +17,7 @@ public enum AvaCorpAvilanTipoResposta {
         return tipoResposta;
     }
 
-    public static AvaCorpAvilanTipoResposta fromInt(@NotNull final int value) {
+    public static AvaCorpAvilanTipoResposta fromInt(final int value) {
 
         final AvaCorpAvilanTipoResposta[] tipos = AvaCorpAvilanTipoResposta.values();
         //noinspection ForLoopReplaceableByForEach

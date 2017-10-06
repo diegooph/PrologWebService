@@ -74,9 +74,9 @@ public interface PneuDao {
      */
     void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
-    boolean insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
-    boolean updateSulcos(Pneu pneu, Long codUnidade) throws SQLException;
+    void updateSulcos(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza dados do veículo
@@ -155,7 +155,7 @@ public interface PneuDao {
      * @return booleal com resultado da operação
      * @throws SQLException em caso de erro
      */
-    boolean updateVida(Connection conn, Pneu pneu, Long codUnidade) throws SQLException;
+    void updateVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa

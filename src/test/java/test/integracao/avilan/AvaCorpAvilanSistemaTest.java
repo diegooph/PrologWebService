@@ -24,7 +24,7 @@ public class AvaCorpAvilanSistemaTest {
     private final Sistema sistema = SistemasFactory.createSistema(
             SistemaKey.AVACORP_AVILAN,
             IntegradorProLog.full(),
-            ROLOG_TOKEN);
+            PROLOG_TOKEN);
 
     @Before
     public void setup() {
@@ -79,7 +79,8 @@ public class AvaCorpAvilanSistemaTest {
                 0L,
                 modeloChecklist.getCodigo(),
                 /* Já que deve existir pelo menos um veículo, pegamos o primeiro da lista */
-                placas.get(0)));
+                placas.get(0),
+                Checklist.TIPO_SAIDA));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)

@@ -148,5 +148,4 @@ public class RespostasAvaliacao {
     public void setRespostas(ArrayOfRespostaAval value) {
         this.respostas = value;
     }
-
 }

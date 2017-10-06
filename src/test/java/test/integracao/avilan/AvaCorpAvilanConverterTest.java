@@ -202,6 +202,7 @@ public class AvaCorpAvilanConverterTest {
                 requester.getQuestoesVeiculo(
                         1,
                         veiculoUtilizado,
+                        AvacorpAvilanTipoChecklist.SAIDA,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculosQuestoes);
@@ -262,6 +263,7 @@ public class AvaCorpAvilanConverterTest {
         final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
                 codigoQuestionarioModelo,
                 veiculoUtilizado,
+                AvacorpAvilanTipoChecklist.SAIDA,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(arrayOfVeiculoQuestao);

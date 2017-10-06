@@ -84,8 +84,17 @@ public class VeiculoResource {
 
     @Android
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
                                           @PathParam("codTipo") String codTipo) {
@@ -95,7 +104,17 @@ public class VeiculoResource {
     @GET
     @Android
     @Site
-    @Secured
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/{codUnidade}/tipo")
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getTipoVeiculosByUnidade(codUnidade);

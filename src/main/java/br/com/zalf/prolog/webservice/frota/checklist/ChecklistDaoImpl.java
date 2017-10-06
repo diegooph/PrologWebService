@@ -8,9 +8,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,23 +29,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	}
 
-	/**
-	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
-	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS
-	 * @return boolean
-	 * @version 1.0
-	 * @since 7 de dez de 2015 13:52:18
-	 * @author Luiz Felipe
-	 */
 	@Override
-	public boolean insert(Checklist checklist) throws SQLException {
+	public Long insert(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		veiculoDao = Injection.provideVeiculoDao();
-		Long codUnidade = null;
-		OrdemServicoDao osDao = new OrdemServicoDaoImpl();
-		//Log.d("ChecklistDaoImpl", "Chamou dao, objeto: " + checklist.toString());
+		final OrdemServicoDao osDao = new OrdemServicoDaoImpl();
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -61,19 +53,18 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				checklist.setCodigo(rSet.getLong("CODIGO"));
-				codUnidade = rSet.getLong("cod_unidade");
+				final Long codUnidade = rSet.getLong("cod_unidade");
 				insertRespostas(checklist, conn);
 				osDao.insertItemOs(checklist, conn, codUnidade);
 				veiculoDao.updateKmByPlaca(checklist.getPlacaVeiculo(), checklist.getKmAtualVeiculo(), conn);
-			}else{
+				conn.commit();
+				return checklist.getCodigo();
+			} else {
 				throw new SQLException("Erro ao inserir o checklist");
 			}
-			conn.commit();
-		}
-		finally {
+		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		return true;
 	}
 
 	@Override
@@ -90,8 +81,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(1, codChecklist);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
-				return checklist;
+				return createChecklist(rSet, false);
 			}
 		} finally {
 			closeConnection(conn, stmt, rSet);
@@ -101,7 +91,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-								  Long codUnidade, String placa, long limit, long offset) throws SQLException {
+								  Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -129,7 +119,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
+				Checklist checklist = createChecklist(rSet, resumido);
 				checklists.add(checklist);
 			}
 		} finally {
@@ -139,7 +129,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException {
+	public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -157,7 +147,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(3, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
-				Checklist checklist = createChecklist(rSet);
+				Checklist checklist = createChecklist(rSet, resumido);
 				checklists.add(checklist);
 			}
 		} finally {
@@ -195,14 +185,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return listUrl;
 	}
 
-	/**
-	 * Cria o objeto responsavel por permitir a criação de um novo checklist, fornece as placas ativas de uma unidade e as perguntas do checklist
-	 * @param codUnidade
-	 * @return
-	 * @throws SQLException
-	 */
 	@Override
-	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException {
+	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklis) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
 		veiculoDao = Injection.provideVeiculoDao();
@@ -263,6 +247,80 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 		System.out.println(modeloPlaca);
 		return modeloPlaca;
+	}
+
+	@Override
+	public FarolChecklist getFarolChecklist(Long codUnidade,
+											Date dataInicial,
+											Date dataFinal,
+											boolean itensCriticosRetroativos) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("select dados_checklist.*, COS.nome AS \"COLABORADOR_SAIDA\", COR.NOME AS \"COLABORADOR_RETORNO\" from\n" +
+					"  (SELECT\n" +
+					"  AD.data,\n" +
+					"  V.PLACA,\n" +
+					"  max(CASE WHEN C.TIPO = 'S' THEN C.codigo END) as cod_checklist_saida,\n" +
+					"  MAX(CASE WHEN C.TIPO = 'S' THEN C.DATA_HORA END) AS DATA_HORA_ULTIMO_CHECKLIST_SAIDA,\n" +
+					"  max(CASE WHEN C.TIPO = 'R' THEN C.codigo END) as cod_checklist_retorno,\n" +
+					"  MAX(CASE WHEN C.TIPO = 'R' THEN C.DATA_HORA END) AS DATA_HORA_ULTIMO_CHECKLIST_RETORNO\n" +
+					"FROM aux_data AD\n" +
+					"  LEFT JOIN VEICULO V ON V.cod_unidade = ?\n" +
+					"  LEFT JOIN CHECKLIST C ON AD.data = C.data_hora::DATE AND C.placa_veiculo = V.placa\n" +
+					"WHERE AD.data BETWEEN ? AND ?\n" +
+					"GROUP BY 1, 2\n" +
+					"ORDER BY 1, 2) as dados_checklist LEFT JOIN CHECKLIST CS ON CS.CODIGO = dados_checklist.cod_checklist_saida\n" +
+					"LEFT JOIN CHECKLIST CR ON CR.CODIGO = dados_checklist.cod_checklist_retorno\n" +
+					"LEFT JOIN COLABORADOR COS ON COS.cpf = CS.cpf_colaborador\n" +
+					"LEFT JOIN COLABORADOR COR ON COR.cpf = CR.cpf_colaborador\n" +
+					"ORDER BY dados_checklist.placa;");
+			stmt.setLong(1, codUnidade);
+			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+			rSet = stmt.executeQuery();
+			List<FarolVeiculoDia> farois = new ArrayList<>();
+			while (rSet.next()) {
+				farois.add(createFarolVeiculoDia(rSet, dataInicial, dataFinal, itensCriticosRetroativos));
+			}
+			return new FarolChecklist(farois);
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+	}
+
+	private FarolVeiculoDia createFarolVeiculoDia(ResultSet rSet,
+												  Date dataInicial,
+												  Date dataFinal,
+												  boolean itensCriticosRetroativos) throws SQLException {
+		Checklist checkSaida = null;
+		Long codChecklistSaida = rSet.getLong("COD_CHECKLIST_SAIDA");
+		if (!rSet.wasNull()) {
+			checkSaida = new Checklist();
+			Colaborador colaboradorSaida = new Colaborador();
+			colaboradorSaida.setNome(rSet.getString("COLABORADOR_SAIDA"));
+			checkSaida.setCodigo(codChecklistSaida);
+			checkSaida.setColaborador(colaboradorSaida);
+			checkSaida.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_SAIDA"));
+		}
+		Checklist checkRetorno = null;
+		Long codChecklistRetorno = rSet.getLong("COD_CHECKLIST_RETORNO");
+		if (!rSet.wasNull()) {
+			checkRetorno = new Checklist();
+			Colaborador colaboradorRetorno = new Colaborador();
+			colaboradorRetorno.setNome(rSet.getString("COLABORADOR_RETORNO"));
+			checkRetorno.setCodigo(codChecklistRetorno);
+			checkRetorno.setColaborador(colaboradorRetorno);
+			checkRetorno.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_RETORNO"));
+		}
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(rSet.getString("PLACA"));
+		List<ItemOrdemServico> itensCriticos = Injection
+				.provideOrdemServicoDao()
+				.getItensOsManutencaoHolder(veiculo.getPlaca(), dataInicial, dataFinal, itensCriticosRetroativos);
+		return new FarolVeiculoDia(veiculo, checkSaida, checkRetorno, itensCriticos);
 	}
 
 	/**
@@ -373,16 +431,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return alternativa;
 	}
 
-	/**
-	 * Método responsável por salvar as respostas de um checklist na tabela
-	 * CHECKLIST_RESPOSTAS. As respostas e perguntas de um checklist vêm em um
-	 * map<pergunta, resposta> então precisamos percorrer todo esse map para
-	 * adicionar todas as respostas de um checklist ao BD.
-	 * @return void
-	 * @version 1.0
-	 * @since 7 de dez de 2015 14:01:03
-	 * @author Luiz Felipe
-	 */
 	private void insertRespostas(Checklist checklist, Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		try {
@@ -422,7 +470,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}
 	}
 
-	private Checklist createChecklist(ResultSet rSet) throws SQLException {
+	private Checklist createChecklist(ResultSet rSet, boolean resumido) throws SQLException {
 		Checklist checklist = new Checklist();
 		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
@@ -432,7 +480,11 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
 		checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-		createPerguntasRespostas(checklist);
+		if(resumido){
+            setQtdOkOrNok(checklist);
+        }else{
+            checklist.setListRespostas(getPerguntasRespostas(checklist));
+        }
 		return checklist;
 	}
 
@@ -443,7 +495,22 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return colaborador;
 	}
 
-	private void createPerguntasRespostas(Checklist checklist) throws SQLException {
+	private void setQtdOkOrNok(Checklist checklist) throws SQLException {
+	    List<PerguntaRespostaChecklist> respostas = getPerguntasRespostas(checklist);
+	    int qtdNok = 0;
+	    for(PerguntaRespostaChecklist resposta : respostas) {
+	        for(AlternativaChecklist alternativa : resposta.getAlternativasResposta()){
+	            if(alternativa.selected) {
+	                qtdNok ++;
+	                break;
+                }
+            }
+        }
+        checklist.setQtdItensNok(qtdNok);
+	    checklist.setQtdItensOk(respostas.size() - qtdNok);
+    }
+
+	private List<PerguntaRespostaChecklist> getPerguntasRespostas(Checklist checklist) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -506,7 +573,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
-		checklist.setListRespostas(perguntas);
+		return perguntas;
 	}
 
 	// remonta as alternativas de uma Pergunta

@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 import javax.ws.rs.DELETE;
 import java.sql.Connection;
@@ -512,6 +513,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return placas;
     }
 
+    @Nullable
     @Override
     public DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
         Connection conn = null;

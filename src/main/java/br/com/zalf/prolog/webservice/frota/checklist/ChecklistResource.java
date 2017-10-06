@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
@@ -28,10 +30,11 @@ public class ChecklistResource {
 
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
+    public AbstractResponse insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
         checklist.setData(new Date(System.currentTimeMillis()));
-        if (service.insert(checklist, userToken)) {
-            return Response.ok("Checklist inserido com sucesso");
+        final Long codChecklist = service.insert(checklist, userToken);
+        if (codChecklist != null) {
+            return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
         } else {
             return Response.error("Erro ao inserir checklist");
         }
@@ -46,15 +49,8 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("/liberacao/{codUnidade}")
-    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
-        return service.getStatusLiberacaoVeiculos(codUnidade);
-    }
-
-    @GET
     @Path("{codigo}")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public Checklist getByCod(@PathParam("codigo") Long codigo) {
         return service.getByCod(codigo);
     }
@@ -66,7 +62,17 @@ public class ChecklistResource {
             @PathParam("cpf") Long cpf,
             @QueryParam("limit") int limit,
             @QueryParam("offset") long offset) {
-        return service.getByColaborador(cpf, limit, offset);
+        return service.getByColaborador(cpf, limit, offset, false);
+    }
+
+    @GET
+    @Path("/colaboradores/{cpf}/resumidos")
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
+    public List<Checklist> getByColaboradorResumidos(
+            @PathParam("cpf") Long cpf,
+            @QueryParam("limit") int limit,
+            @QueryParam("offset") long offset) {
+        return service.getByColaborador(cpf, limit, offset, true);
     }
 
     @GET
@@ -81,7 +87,42 @@ public class ChecklistResource {
             @QueryParam("limit")long limit,
             @QueryParam("offset") long offset) {
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
+                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
+    }
+
+    @GET
+    @Path("{codUnidade}/{equipe}/{placa}/resumidos")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<Checklist> getAllResumido(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("equipe") String equipe,
+            @PathParam("placa") String placa,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
+            @QueryParam("limit")long limit,
+            @QueryParam("offset") long offset) {
+        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
+                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, true);
+    }
+
+    @GET
+    @Path("/farois/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                    @QueryParam("dataInicial") long dataInicial,
+                                    @QueryParam("dataFinal") long dataFinal,
+                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                    @HeaderParam("Authorization") String userToken) {
+        return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
+    }
+
+    @GET
+    @Path("/farois/{codUnidade}/hoje")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                    @HeaderParam("Authorization") String userToken) {
+        return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
     }
 
     @GET
@@ -95,14 +136,25 @@ public class ChecklistResource {
     }
 
     @GET
-    @Path("/novo/{codUnidade}/{codModelo}/{placa}")
+    @Path("/novo/{codUnidade}/{codModelo}/{placa}/saida")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public NovoChecklistHolder getNovoChecklistHolder(
+    public NovoChecklistHolder getNovoChecklistSaida(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken){
-        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, userToken);
+        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
+    }
+
+    @GET
+    @Path("/novo/{codUnidade}/{codModelo}/{placa}/retorno")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    public NovoChecklistHolder getNovoChecklistRetorno(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codModelo") Long codModelo,
+            @PathParam("placa") String placa,
+            @HeaderParam("Authorization") String userToken){
+        return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
     }
 
     /**
@@ -120,6 +172,17 @@ public class ChecklistResource {
         LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
         Date datainicial = java.sql.Date.valueOf(dataInicial);
         return service.getAll(DateUtils.toLocalDate(datainicial),
-                DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
+                DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
+    }
+
+    /**
+     * @deprecated in v0.0.32.
+     */
+    @GET
+    @Path("/liberacao/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    @Deprecated
+    public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
+        return service.getStatusLiberacaoVeiculos(codUnidade);
     }
 }

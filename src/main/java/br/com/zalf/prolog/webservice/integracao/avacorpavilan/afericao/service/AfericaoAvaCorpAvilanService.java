@@ -1,5 +1,7 @@
 
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service;
+
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.*;
@@ -15,18 +17,18 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "Afericao", targetNamespace = "http://www.avacorp.com.br/integracaoprolog", wsdlLocation = "http://189.11.175.146/IntegracaoProlog/Afericao.asmx?WSDL")
+@WebServiceClient(name = "Afericao", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, wsdlLocation = AvaCorpAvilanConstants.BASE_URL + "Afericao.asmx?WSDL")
 public class AfericaoAvaCorpAvilanService extends Service {
 
     private final static URL AFERICAO_WSDL_LOCATION;
     private final static WebServiceException AFERICAO_EXCEPTION;
-    private final static QName AFERICAO_QNAME = new QName("http://www.avacorp.com.br/integracaoprolog", "Afericao");
+    private final static QName AFERICAO_QNAME = new QName(AvaCorpAvilanConstants.NAMESPACE, "Afericao");
 
     static {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://189.11.175.146/IntegracaoProlog/Afericao.asmx?WSDL");
+            url = new URL(AvaCorpAvilanConstants.BASE_URL + "Afericao.asmx?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -65,7 +67,7 @@ public class AfericaoAvaCorpAvilanService extends Service {
      */
     @WebEndpoint(name = "AfericaoSoap")
     public AfericaoAvaCorpAvilanSoap getAfericaoSoap() {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class);
+        return super.getPort(new QName(AvaCorpAvilanConstants.NAMESPACE, "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class);
     }
 
     /**
@@ -77,7 +79,7 @@ public class AfericaoAvaCorpAvilanService extends Service {
      */
     @WebEndpoint(name = "AfericaoSoap")
     public AfericaoAvaCorpAvilanSoap getAfericaoSoap(WebServiceFeature... features) {
-        return super.getPort(new QName("http://www.avacorp.com.br/integracaoprolog", "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class, features);
+        return super.getPort(new QName(AvaCorpAvilanConstants.NAMESPACE, "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class, features);
     }
 
     private static URL __getWsdlLocation() {

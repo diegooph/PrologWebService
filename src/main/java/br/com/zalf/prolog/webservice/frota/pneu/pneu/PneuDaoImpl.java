@@ -128,7 +128,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO pneu_valor_vida(cod_unidade, cod_pneu, cod_modelo_banda, vida, " +
@@ -150,7 +150,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             closeConnection(null, stmt, null);
         }
-        return true;
     }
 
     @Override
@@ -222,7 +221,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateVida(Connection conn, Pneu pneu, Long codUnidade) throws SQLException {
+    public void updateVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = ?, VIDA_TOTAL = ? " +
@@ -242,7 +241,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             closeConnection(null, stmt, null);
         }
-        return true;
     }
 
     @Override
@@ -508,8 +506,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updateSulcos(Pneu pneu, Long codUnidade) throws SQLException {
-        Connection conn = null;
+    public void updateSulcos(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
@@ -529,9 +526,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar os dados do Pneu");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(null, stmt, null);
         }
-        return true;
     }
 
     @Override

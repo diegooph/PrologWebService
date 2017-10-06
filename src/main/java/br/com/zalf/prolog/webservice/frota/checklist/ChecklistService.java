@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -9,6 +10,7 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +30,14 @@ public class ChecklistService {
         }
     }
 
-    public boolean insert(Checklist checklist, String userToken) {
+    public Long insert(Checklist checklist, String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .insertChecklist(checklist);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -50,11 +52,15 @@ public class ChecklistService {
         }
     }
 
-    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, String userToken) {
+    public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade,
+                                                      Long codModelo,
+                                                      String placa,
+                                                      char tipoChecklist,
+                                                      String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getNovoChecklistHolder(codUnidade, codModelo, placa);
+                    .getNovoChecklistHolder(codUnidade, codModelo, placa, tipoChecklist);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -71,31 +77,51 @@ public class ChecklistService {
     }
 
     public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-                                  Long codUnidade, String placa, long limit, long offset) {
+                                  Long codUnidade, String placa, long limit, long offset, boolean resumido) {
         try {
-            return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset);
+            return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<Checklist> getByColaborador(Long cpf, int limit, long offset) {
+    public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) {
         try {
-            return dao.getByColaborador(cpf, limit, offset);
+            return dao.getByColaborador(cpf, limit, offset, resumido);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    public FarolChecklist getFarolChecklist(Long codUnidade,
+                                            long dataInicial,
+                                            long dataFinal,
+                                            boolean itensCriticosRetroativos,
+                                            String userToken) {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getFarolChecklist(codUnidade, new Date(dataInicial), new Date(dataFinal), itensCriticosRetroativos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar farol do checklist");
+        }
+    }
+
+    public FarolChecklist getFarolChecklist(Long codUnidade, boolean itensCriticosRetroativos, String userToken) {
+        final long hoje = System.currentTimeMillis();
+        return getFarolChecklist(codUnidade, hoje, hoje, itensCriticosRetroativos, userToken);
+    }
+
+    @Deprecated
     public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) {
         try {
             return dao.getStatusLiberacaoVeiculos(codUnidade);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }
-
 }

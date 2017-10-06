@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -11,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import com.sun.istack.internal.NotNull;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,15 +59,29 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo,
+                                                      char tipoChecklist) throws Exception {
+        return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
+    }
+
+    @Override
+    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         return getIntegradorProLog().insertChecklist(checklist);
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo) throws Exception {
-        return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+    public Checklist getByCod(Long codChecklist) throws Exception {
+        return getIntegradorProLog().getByCod(codChecklist);
+    }
+
+    @Override
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Exception {
+        return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
     protected IntegradorProLog getIntegradorProLog() {

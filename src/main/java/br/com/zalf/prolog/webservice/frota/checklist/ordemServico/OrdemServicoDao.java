@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,9 +26,11 @@ public interface OrdemServicoDao {
 	List<OrdemServico> getOs(String placa, String status, Long codUnidade,
 							 String tipoVeiculo, Integer limit, Long offset) throws SQLException;
 
-	//TODO - adicionar javadoc
 	List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
 													  int limit, long offset, String prioridade) throws SQLException;
+
+	List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, Date dataInicial, Date dataFinal,
+													  boolean itensCriticosRetroativos) throws SQLException;
 
 	/**
 	 * insere um item com problema na OS
@@ -38,7 +41,6 @@ public interface OrdemServicoDao {
 	 */
 	void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException;
 
-	//TODO - adicionar javadoc
 	List<ManutencaoHolder> getResumoManutencaoHolder(String placa, String codTipo, Long codUnidade, int limit,
 													 long offset, String status) throws SQLException;
 

@@ -2,12 +2,14 @@ package test.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import org.junit.Before;
@@ -70,10 +72,25 @@ public class AvaCorpAvilanRequesterTest {
                 requester.getQuestoesVeiculo(
                         1,
                         VEICULO_COM_CHECK_VINCULADO,
+                        AvacorpAvilanTipoChecklist.SAIDA,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
         assertTrue(!veiculoQuestao.getVeiculoQuestao().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void buscarFarolChecklist() throws Exception {
+        final ArrayOfFarolDia farolDia =
+                requester.getFarolChecklist(
+                        8,
+                        "2017-09-28",
+                        "2017-09-28",
+                        false,
+                        CPF,
+                        DATA_NASCIMENTO);
+        assertNotNull(farolDia);
+        assertTrue(!farolDia.getFarolDia().isEmpty());
     }
 
     @Test(timeout = 7 * 60 * 1000)
@@ -102,6 +119,7 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculoQuestao arrayOfVeiculoQuestao = requester.getQuestoesVeiculo(
                 questionario.getCodigoQuestionario(),
                 veiculo.getPlaca(),
+                AvacorpAvilanTipoChecklist.SAIDA,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(arrayOfVeiculoQuestao);
@@ -141,7 +159,7 @@ public class AvaCorpAvilanRequesterTest {
         respostasAvaliacao.setDtNascimento(DATA_NASCIMENTO);
         respostasAvaliacao.setCpf(CPF);
         respostasAvaliacao.setRespostas(arrayOfRespostaAval);
-        assertTrue(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
+        assertNotNull(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
     }
 
     private IncluirMedida2 createIncluirMedida() {

@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+<a name="v0.0.34"></a>
+## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (2017-10-06)
+
+### Features
+* Integra função de farol do checklist com AvaCorp
+
+### Refactor
+* Melhora método de inser de movimentação
+* Realiza merge do branch que corrige problema de permissões do ProLog
+* Melhora funcionalidade de farol
+
+### Bug Fixes
+* Corrige erro ao deletar permissões de um cargo
+* Corrige insert de movimentação da análise para o estoque
+
 <a name="v0.0.33"></a>
 ## Version [v0.0.33](https://github.com/luizfp/PrologWebService/compare/v0.0.32...v0.0.33) (2017-09-27)
 
@@ -20,6 +35,11 @@ intervalo
 
 ### Refactor
 * Cria métodos necessários para dar suporte a realização de intervalo offline no aplicativo
+
+### Features
+* Cria métodos para tornar funcional a nova tela de farol do checklist
+* Adiciona atributos no checklist para carregar a quantidade de itens OK/NOK
+* Adiciona métodos para buscar os checklists completos ou resumidos
 
 <a name="v0.0.31"></a>
 ## Version [v0.0.31](https://github.com/luizfp/PrologWebService/compare/v0.0.30...v0.0.31) (2017-09-14)
