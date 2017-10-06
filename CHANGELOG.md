@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+<a name="v0.0.34-h1"></a>
+## Version [v0.0.34-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.34...v0.0.34-h1) (2017-10-06)
+
+### Bug Fixes
+* Corrige path da busca do farol do checklist na integração com AvaCorp
+
+
 <a name="v0.0.34"></a>
 ## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (2017-10-06)
 
