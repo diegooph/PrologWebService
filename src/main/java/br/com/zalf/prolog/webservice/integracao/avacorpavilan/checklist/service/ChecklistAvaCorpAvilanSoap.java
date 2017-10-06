@@ -82,20 +82,20 @@ public interface ChecklistAvaCorpAvilanSoap {
      * @return
      *     returns br.com.avacorp.integracaoprologtestes.FarolChecklist2
      */
-    @WebMethod(action = "http://www.avacorp.com.br/integracaoprologtestes/farolChecklist")
-    @WebResult(name = "farolChecklistResult", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
-    @RequestWrapper(localName = "farolChecklist", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes", className = "br.com.avacorp.integracaoprologtestes.FarolChecklist")
-    @ResponseWrapper(localName = "farolChecklistResponse", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes", className = "br.com.avacorp.integracaoprologtestes.FarolChecklistResponse")
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/farolChecklist")
+    @WebResult(name = "farolChecklistResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "farolChecklist", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.FarolChecklist")
+    @ResponseWrapper(localName = "farolChecklistResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.FarolChecklistResponse")
     public FarolChecklist2 farolChecklist(
-            @WebParam(name = "filial", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+            @WebParam(name = "filial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     int filial,
-            @WebParam(name = "unidade", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+            @WebParam(name = "unidade", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     int unidade,
-            @WebParam(name = "dataInicial", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+            @WebParam(name = "dataInicial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String dataInicial,
-            @WebParam(name = "dataFinal", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+            @WebParam(name = "dataFinal", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String dataFinal,
-            @WebParam(name = "buscarRetroativo", targetNamespace = "http://www.avacorp.com.br/integracaoprologtestes")
+            @WebParam(name = "buscarRetroativo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     boolean buscarRetroativo);
 
     /**
