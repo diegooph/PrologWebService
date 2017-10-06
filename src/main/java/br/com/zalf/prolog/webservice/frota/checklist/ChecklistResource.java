@@ -34,9 +34,9 @@ public class ChecklistResource {
         checklist.setData(new Date(System.currentTimeMillis()));
         final Long codChecklist = service.insert(checklist, userToken);
         if (codChecklist != null) {
-            return ResponseWithCod.Ok("Checklist inserido com sucesso", codChecklist);
+            return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
         } else {
-            return Response.error("Checklist inserido com sucesso");
+            return Response.error("Erro ao inserir checklist");
         }
     }
 
