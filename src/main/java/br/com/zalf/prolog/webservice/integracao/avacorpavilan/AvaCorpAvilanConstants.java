@@ -14,16 +14,11 @@ public class AvaCorpAvilanConstants {
 
     }
 
-    public static final String BASE_URL;
-    public static final String NAMESPACE;
+    private static final String BASE_URL_TESTES = "http://189.11.175.146/IntegracaoPrologTestes/";
+    private static final String BASE_URL_PROD = "http://189.11.175.146/IntegracaoProlog/";
+    public static final String BASE_URL = BuildConfig.DEBUG ? BASE_URL_TESTES : BASE_URL_PROD;
 
-    static {
-        final String BASE_URL_TESTES = "http://189.11.175.146/IntegracaoPrologTestes/";
-        final String BASE_URL_PROD = "http://189.11.175.146/IntegracaoProlog/";
-        BASE_URL = BuildConfig.DEBUG ? BASE_URL_PROD : BASE_URL_TESTES;
-
-        final String NAMESPACE_TESTES = "http://www.avacorp.com.br/integracaoprologtestes";
-        final String NAMESPACE_PROD = "http://www.avacorp.com.br/integracaoprolog";
-        NAMESPACE = BuildConfig.DEBUG ? NAMESPACE_TESTES : NAMESPACE_PROD;
-    }
+    private static final String NAMESPACE_TESTES = "http://www.avacorp.com.br/integracaoprologtestes";
+    private static final String NAMESPACE_PROD = "http://www.avacorp.com.br/integracaoprolog";
+    public static final String NAMESPACE = BuildConfig.DEBUG ? NAMESPACE_TESTES : NAMESPACE_PROD;
 }
