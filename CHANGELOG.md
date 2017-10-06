@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.34"></a>
-## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (release-date) - [unreleased]
+## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (2017-10-06)
 
 ### Features
 * Integra função de farol do checklist com AvaCorp
