@@ -134,6 +134,33 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         }
     }
 
+    @Override
+    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, Date dataInicial, Date dataFinal,
+                                                             boolean itensCriticosRetroativos) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try{
+            conn = getConnection();
+            String query = "select * from estratificacao_os e \n" +
+                    "where e.status_item like 'P' and e.prioridade like 'CRITICA' and e.placa_veiculo = ? \n" +
+                    "and e.data_hora::date %s ? \n " +
+                    "ORDER BY E.placa_veiculo, e.prioridade, e.data_hora DESC ";
+            if(itensCriticosRetroativos){
+                query = String.format(query, "<=");
+            } else {
+                query = String.format(query, "=");
+            }
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, placa);
+            stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+            rSet = stmt.executeQuery();
+            return createItensOs(rSet);
+        }finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     /**
      * Método chamado quando é recebido um checklist, verifica as premissas para criar uma nova OS ou add
      * o item com problema a uma OS existente
@@ -345,9 +372,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possível realizar a busca
      */
     private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException{
-        Log.d("Inserindo serviço: ", "Pergunta: " + codPergunta + " codAlternativa: " + codAlternativa + " codOs: " + codOs);
         PreparedStatement stmt = null;
-        try{
+        try {
             stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
                     "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?)");
             stmt.setString(1, placa);
@@ -356,10 +382,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(4, codAlternativa);
             stmt.setString(5, ItemOrdemServico.Status.PENDENTE.asString());
             int count = stmt.executeUpdate();
-            if(count == 0){
+            if (count == 0) {
                 throw new SQLException("Erro ao inserir o serviço");
             }
-        }finally {
+        } finally {
             closeConnection(null, stmt, null);
         }
     }
@@ -375,9 +401,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possivel realizar a busca
      */
     private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException{
-        Log.d("incrementandoQt", "Placa: " + placa + "codOs: " + codOs + "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try{
             stmt = conn.prepareStatement("UPDATE checklist_ordem_servico_itens SET qt_apontamentos =\n" +
                     "(SELECT qt_apontamentos FROM\n" +
@@ -407,7 +431,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao incrementar a quantidade de apontamentos");
             }
         }finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(null, stmt, null);
         }
     }
 

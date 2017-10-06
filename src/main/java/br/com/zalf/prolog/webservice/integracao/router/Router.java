@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -18,6 +19,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -103,16 +105,19 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade, @NotNull Long codModelo, @NotNull String placaVeiculo) throws Exception {
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo,
+                                                      char tipoChecklist) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+            return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo);
+            return integradorProLog.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
         }
     }
 
     @Override
-    public boolean insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {
@@ -120,6 +125,29 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Override
+    public Checklist getByCod(Long codChecklist) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getByCod(codChecklist);
+        } else {
+            return integradorProLog.getByCod(codChecklist);
+        }
+    }
+
+    @NotNull
+    @Override
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
+                                            final boolean itensCriticosRetroativos) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+        } else {
+            return integradorProLog.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+        }
+    }
+
+    @Nullable
     private Sistema getSistema() throws Exception {
         if (sistemaKey == null && !hasTried) {
             sistemaKey = integracaoDao.getSistemaKey(userToken, recursoIntegrado);

@@ -1,13 +1,20 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanService;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoAvaCorpAvilanSoap;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolChecklist2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
 import com.google.common.base.Strings;
@@ -65,13 +72,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public boolean insertChecklist(@NotNull RespostasAvaliacao respostasAvaliacao,
-                                   @NotNull String cpf,
-                                   @NotNull String dataNascimento) throws Exception {
+    public Long insertChecklist(@NotNull RespostasAvaliacao respostasAvaliacao,
+                                @NotNull String cpf,
+                                @NotNull String dataNascimento) throws Exception {
         final EnviaRespostaAvaliacao request = getChecklistSoap(cpf, dataNascimento).enviarChecklist(respostasAvaliacao);
 
         if (request != null && request.isSucesso()) {
-            return true;
+            return (long) respostasAvaliacao.getCodigoAvaliacao();
         }
 
         throw new Exception(request != null ? request.getMensagem() : "");
@@ -80,6 +87,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     @Override
     public ArrayOfVeiculoQuestao getQuestoesVeiculo(int codigoQuestionario,
                                                     @NotNull String placaVeiculo,
+                                                    @NotNull AvacorpAvilanTipoChecklist tipoChecklist,
                                                     @NotNull String cpf,
                                                     @NotNull String dataNascimento) throws Exception {
         final AdicionarChecklist adicionarChecklist = new AdicionarChecklist();
@@ -87,6 +95,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         adicionarChecklist.setDtNascimento(dataNascimento);
         adicionarChecklist.setVeiculo(placaVeiculo);
         adicionarChecklist.setCodigoQuestionario(codigoQuestionario);
+        adicionarChecklist.setTipoChecklist(tipoChecklist);
 
         final PerguntasAlternativasQuestionario request
                 = getChecklistSoap(cpf, dataNascimento).buscarPerguntasAlternativasQuestionario(adicionarChecklist);
@@ -126,6 +135,30 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
                 ? "Erro ao buscar pneus da Avilan para o veículo: " + placaVeiculo
+                : request.getMensagem());
+    }
+
+    @Override
+    public ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
+                                             @NotNull final String dataInicial,
+                                             @NotNull final String dataFinal,
+                                             @NotNull final boolean itensCriticosRetroativos,
+                                             @NotNull final String cpf,
+                                             @NotNull final String dataNascimento) throws Exception {
+
+        final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                codUnidadeAvilan,
+                1,
+                dataInicial,
+                dataFinal,
+                itensCriticosRetroativos);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getFarolDia();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar o farol do checklist para a unidade: " + codUnidadeAvilan + " da Avilan"
                 : request.getMensagem());
     }
 

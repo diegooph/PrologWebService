@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.colaborador.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
@@ -21,7 +21,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -201,7 +204,7 @@ public final class AvaCorpAvilanConverter {
             for (int i = 0; i < questao.getRespostas().getResposta().size(); i++) {
                 final Resposta resposta = questao.getRespostas().getResposta().get(i);
                 if (resposta.getDescricao().trim().equalsIgnoreCase("OK")) {
-                   respostaOk = resposta;
+                    respostaOk = resposta;
                 } else if (resposta.getDescricao().trim().equalsIgnoreCase("NOK")) {
                     respostaNok = resposta;
                 }
@@ -241,7 +244,6 @@ public final class AvaCorpAvilanConverter {
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
         for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
-
             final RespostaAval respostaAval = new RespostaAval();
             respostaAval.setSequenciaQuestao(Math.toIntExact(resposta.getCodigo()));
             // Sempre terá apenas uma alternativa
@@ -295,5 +297,106 @@ public final class AvaCorpAvilanConverter {
         pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
+    }
+
+    @VisibleForTesting
+    public static FarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
+        checkNotNull(farolDia, "farolDia não pode ser null!");
+        checkArgument(farolDia.getFarolDia().size() == 1, "farolDia não pode vir com mais de um elemento " +
+                "pois estamos filtrando apenas por um único dia!");
+
+        final List<FarolVeiculoDia> farolVeiculos = new ArrayList<>();
+        final List<VeiculoChecklist> veiculosFarol = farolDia
+                .getFarolDia()
+                .get(0)
+                .getVeiculosChecklist()
+                .getVeiculoChecklist();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < veiculosFarol.size(); i++) {
+            final VeiculoChecklist veiculoChecklist = veiculosFarol.get(i);
+            // Cria Veículo.
+            final Veiculo veiculo = new Veiculo();
+            veiculo.setPlaca(veiculoChecklist.getPlaca());
+
+            final List<Avaliacao> avaliacoes = veiculoChecklist.getAvaliacoes().getAvaliacao();
+            Checklist checklistSaidaDia = null;
+            Checklist checklistRetornoDia = null;
+            if (avaliacoes != null && !avaliacoes.isEmpty()) {
+                final List<Checklist> checklists = convertToChecklists(avaliacoes);
+                checklistSaidaDia = getChecklistMaisAtualByTipo(checklists, Checklist.TIPO_SAIDA);
+                checklistRetornoDia = getChecklistMaisAtualByTipo(checklists, Checklist.TIPO_RETORNO);
+            }
+
+            // Cria os itens críticos.
+            List<ItemOrdemServico> itensCriticos = null;
+            if (veiculoChecklist.getItensCriticos() != null) {
+                itensCriticos = new ArrayList<>();
+                final List<ItemCritico> itensAvilan = veiculoChecklist.getItensCriticos().getItemCritico();
+                for (ItemCritico itemCritico : itensAvilan) {
+                    final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
+                    itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
+                    itemOrdemServico.setDataApontamento(
+                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
+
+                    // Seta o nome do item com problema.
+                    // Alternativa.
+                    final AlternativaChecklist alternativa = new AlternativaChecklist();
+                    alternativa.setAlternativa(itemCritico.getDescricao());
+                    final List<AlternativaChecklist> alternativas = new ArrayList<>();
+                    alternativas.add(alternativa);
+                    // Pergunta.
+                    final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
+                    pergunta.setPrioridade(PerguntaRespostaChecklist.CRITICA);
+                    pergunta.setAlternativasResposta(alternativas);
+                    itemOrdemServico.setPergunta(pergunta);
+
+                    itensCriticos.add(itemOrdemServico);
+                }
+            }
+
+            farolVeiculos.add(new FarolVeiculoDia(veiculo, checklistSaidaDia, checklistRetornoDia, itensCriticos));
+        }
+
+        return new FarolChecklist(farolVeiculos);
+    }
+
+    @NotNull
+    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
+        checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
+
+        final List<Checklist> checklists = new ArrayList<>();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < avaliacoes.size(); i++) {
+            final Avaliacao avaliacao = avaliacoes.get(i);
+            final Checklist checklist = new Checklist();
+            checklist.setCodigo((long) avaliacao.getCodigo());
+            checklist.setTipo(avaliacao.getTipo().equals(AvacorpAvilanTipoChecklist.SAIDA)
+                    ? Checklist.TIPO_SAIDA
+                    : Checklist.TIPO_RETORNO);
+            checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(avaliacao.getData()));
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setNome(avaliacao.getUsuario());
+            checklist.setColaborador(colaborador);
+            checklists.add(checklist);
+        }
+        return checklists;
+    }
+
+    @Nullable
+    private static Checklist getChecklistMaisAtualByTipo(@NotNull final List<Checklist> checklists,
+                                                         final char tipoChecklist) {
+        Checklist checklist = null;
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < checklists.size(); i++) {
+            final Checklist c = checklists.get(i);
+            if (c.getTipo() == tipoChecklist) {
+                if (checklist == null) {
+                    checklist = c;
+                } else if (c.getData().after(checklist.getData())){
+                    checklist = c;
+                }
+            }
+        }
+        return checklist;
     }
 }

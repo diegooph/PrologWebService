@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -51,6 +53,10 @@ public final class Injection {
 
     public static PneuDao providePneuDao() {
         return new PneuDaoImpl();
+    }
+
+    public static OrdemServicoDao provideOrdemServicoDao() {
+        return new OrdemServicoDaoImpl();
     }
 
     public static EmpresaDao provideEmpresaDao() {

@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +19,15 @@ import java.util.Map;
 public interface ChecklistDao {
 
 	/**
-	 * Insere um checklist no banco de dados
+	 * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+	 * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
+	 *
 	 * @param checklist um checklist
-	 * @return boolean com o resultado da operação
+	 * @return código do checklist recém inserido
 	 * @throws SQLException caso não seja possível inserir o checklist no banco de dados
 	 */
-	boolean insert(Checklist checklist) throws SQLException;
+	@NotNull
+	Long insert(Checklist checklist) throws SQLException;
 
 	/**
 	 * Busca um checklist pelo seu código único
@@ -43,8 +49,8 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-			Long codUnidade, String placa, long limit, long offset) throws SQLException;
-	
+						   Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException;
+
 	/**
 	 * Busca os checklists realizados por um colaborador
 	 * @param cpf um cpf
@@ -53,7 +59,7 @@ public interface ChecklistDao {
 	 * @return lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
 	 */
-	List<Checklist> getByColaborador(Long cpf, int limit, long offset) throws SQLException;
+	List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException;
 
 	/**
 	 * busca a url das imagens das perguntas
@@ -69,13 +75,21 @@ public interface ChecklistDao {
 	 * @param codUnidade código da unidade
 	 * @param codModelo código do modelo
 	 * @param placa placa do veículo
+	 * @param tipoChecklist o tipo do {@link Checklist checklist} sendo realizado
 	 * @return retorno um novo checklist
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa) throws SQLException;
+	NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklist) throws SQLException;
 
 	//TODO - adicionar comentário javadoc
 	Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(Long codUnidade, Long codFuncao) throws SQLException;
+
+
+	@NotNull
+	FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+									 @NotNull final Date dataInicial,
+									 @NotNull final Date dataFinal,
+									 final boolean itensCriticosRetroativos) throws SQLException;
 
 	/**
 	 * busca o status de liberação do veículo
@@ -83,6 +97,6 @@ public interface ChecklistDao {
 	 * @return lista de veiculos com liberação
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
+	@Deprecated
 	List<VeiculoLiberacao> getStatusLiberacaoVeiculos(Long codUnidade) throws SQLException;
-	
 }

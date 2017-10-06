@@ -31,7 +31,8 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
 		checklist.setData(new Date(System.currentTimeMillis()));
-		if (service.insert(checklist, userToken)) {
+		final Long codChecklist = service.insert(checklist, userToken);
+		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");
 		} else {
 			return Response.error("Erro ao inserir checklist");
@@ -67,7 +68,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset) {
-		return service.getByColaborador(cpf, limit, offset);
+		return service.getByColaborador(cpf, limit, offset, false);
 	}
 
 	@GET
@@ -82,7 +83,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
 		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset);
+				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
 	}
 
 	@GET
@@ -103,7 +104,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("codModelo") Long codModelo,
 			@PathParam("placa") String placa,
 			@HeaderParam("Authorization") String userToken){
-		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, userToken);
+		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
 	}
 
 	/**
@@ -121,6 +122,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
 		Date datainicial = java.sql.Date.valueOf(dataInicial);
 		return service.getAll(DateUtils.toLocalDate(datainicial),
-				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset);
+				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
 	}
 }
