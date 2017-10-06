@@ -108,7 +108,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 		// Por conta da integração com o AvaCorp, vamos forçar que os usuários de Santa Cruz do Sul não possam utilizar
 		// esse path e atualizem o app para utilizar os paths: checklists/novo/{codUnidade}/{codModelo}/{placa}/saida
 		// e checklists/novo/{codUnidade}/{codModelo}/{placa}/saida.
-		if (codUnidade == 4) {
+		if (codUnidade.equals(4L)) {
 			throw new IllegalStateException("É preciso atualizar o aplicativo para usar a nova versão do checklist");
 		}
 		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
