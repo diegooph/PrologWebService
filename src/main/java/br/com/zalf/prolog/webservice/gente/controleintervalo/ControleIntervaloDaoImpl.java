@@ -137,7 +137,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
             }
-
+            associaCargosTipoIntervalo(tipoIntervalo, conn);
             // Avisamos o listener que um tipo de intervalo mudou.
             listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
 
@@ -153,6 +153,43 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             closeConnection(conn, stmt, null);
         }
     }
+
+    private void associaCargosTipoIntervalo(TipoIntervalo tipoIntervalo, Connection conn) throws SQLException {
+        deleteCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(), conn);
+        insertCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(),
+                tipoIntervalo.getCargos(), conn);
+    }
+
+    private void deleteCargosTipoIntervalo(Long codUnidade, Long codTipoIntervalo, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM INTERVALO_TIPO_CARGO WHERE COD_UNIDADE = ? AND COD_TIPO_INTERVALO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            stmt.executeUpdate();
+            // Não precisamos verificar se o delete afetou alguma linha pois o intervalo pode não ter nenhum cargo vinculado.
+        }finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
+    private void insertCargosTipoIntervalo(Long codUnidade,
+                                           Long codTipoIntervalo,
+                                           List<Cargo> cargos, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO_CARGO VALUES (?,?,?)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            for(Cargo cargo : cargos) {
+                stmt.setLong(3, cargo.getCodigo());
+                stmt.executeUpdate();
+            }
+        }finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
 
     @Override
     public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
