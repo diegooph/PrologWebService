@@ -2,10 +2,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ObjectFactory;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.PneusVeiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.UsuarioIntegracao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.VeiculosAtivos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -94,5 +91,32 @@ public interface CadastroAvaCorpAvilanSoap {
                     String cpf,
             @WebParam(name = "dataNascimento", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String dataNascimento);
+
+    /**
+     * Busca tipos de veículo
+     *
+     * @return
+     *     returns br.com.avacorp.integracaoprologtestes.TiposVeiculo
+     */
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarTiposVeiculo")
+    @WebResult(name = "buscarTiposVeiculoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarTiposVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarTiposVeiculo")
+    @ResponseWrapper(localName = "buscarTiposVeiculoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarTiposVeiculoResponse")
+    public TiposVeiculo buscarTiposVeiculo();
+
+    /**
+     * Busca veiculos do mesmo tipo
+     *
+     * @param tipoVeiculo
+     * @return
+     *     returns br.com.avacorp.integracaoprologtestes.VeiculoTipo
+     */
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarVeiculosTipo")
+    @WebResult(name = "buscarVeiculosTipoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarVeiculosTipo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarVeiculosTipo")
+    @ResponseWrapper(localName = "buscarVeiculosTipoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarVeiculosTipoResponse")
+    public VeiculoTipo buscarVeiculosTipo(
+            @WebParam(name = "tipoVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String tipoVeiculo);
 
 }

@@ -490,7 +490,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
     @Android
     @Override
-    public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
+    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

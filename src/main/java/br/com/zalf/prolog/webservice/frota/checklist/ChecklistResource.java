@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
@@ -14,8 +13,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -85,9 +82,9 @@ public class ChecklistResource {
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
     }
 
     @GET
@@ -100,9 +97,9 @@ public class ChecklistResource {
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-                DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, true);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, true, userToken);
     }
 
     @GET
@@ -155,24 +152,6 @@ public class ChecklistResource {
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken){
         return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
-    }
-
-    /**
-     * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long)} instead
-     */
-    @GET
-    @Path("/recentes/{codUnidade}/{equipe}")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
-    @Deprecated
-    public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
-            @PathParam("equipe") String equipe,
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
-        Date datainicial = java.sql.Date.valueOf(dataInicial);
-        return service.getAll(DateUtils.toLocalDate(datainicial),
-                DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
     }
 
     /**

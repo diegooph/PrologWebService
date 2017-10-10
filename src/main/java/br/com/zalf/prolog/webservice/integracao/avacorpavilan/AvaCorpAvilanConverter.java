@@ -10,11 +10,14 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfTipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import com.google.common.annotations.VisibleForTesting;
@@ -358,6 +361,63 @@ public final class AvaCorpAvilanConverter {
         }
 
         return new FarolChecklist(farolVeiculos);
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public static List<Checklist> getChecklists(@NotNull final ArrayOfChecklistFiltro checklistsFiltro)
+            throws ParseException {
+        checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
+
+        final List<Checklist> checklists = new ArrayList<>();
+
+        for (final ChecklistFiltro checklistFiltro : checklistsFiltro.getChecklistFiltro()) {
+            final Checklist checklist = new Checklist();
+            checklist.setCodigo((long) checklistFiltro.getCodigoChecklist());
+            checklist.setCodModelo((long) checklistFiltro.getCodigoQuestionario());
+
+            // Colaborador Checklist
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setCpf(Long.parseLong(checklistFiltro.getColaborador().getCpf()));
+            colaborador.setNome(checklistFiltro.getColaborador().getNome());
+
+            checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
+            checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
+            checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
+            checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
+            checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
+            checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
+
+            checklists.add(checklist);
+        }
+
+        return checklists;
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public static List<String> convert(@NotNull final ArrayOfString placasVeiculos) {
+        checkNotNull(placasVeiculos, "placasVeiculos não pode ser null!");
+
+        // Não tem parse necessário nesse caso, basta retornarmos a própria lista de Strings que recebemos.
+        return placasVeiculos.getString();
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public static List<TipoVeiculo> convert(@NotNull final ArrayOfTipoVeiculo tiposVeiculosAvilan) {
+        checkNotNull(tiposVeiculosAvilan, "tiposVeiculosAvilan não pode ser null!");
+
+        final List<TipoVeiculo> tiposVeiculosProLog = new ArrayList<>();
+        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculo tipoVeiculo : tiposVeiculosAvilan.getTipoVeiculo()) {
+            final TipoVeiculo tipoVeiculoProLog = new TipoVeiculo();
+            // TODO: Esse parse não vai funcionar. Talvez seja necessário trocar nosso tipo para String.
+            tipoVeiculoProLog.setCodigo(Long.parseLong(tipoVeiculo.getCodigo()));
+            tipoVeiculoProLog.setNome(tipoVeiculo.getNome());
+            tiposVeiculosProLog.add(tipoVeiculoProLog);
+        }
+
+        return tiposVeiculosProLog;
     }
 
     @NotNull

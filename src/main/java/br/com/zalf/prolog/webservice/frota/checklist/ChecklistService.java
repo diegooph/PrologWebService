@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,11 +75,13 @@ public class ChecklistService {
         }
     }
 
-    public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-                                  Long codUnidade, String placa, long limit, long offset, boolean resumido) {
+    public List<Checklist> getAll(long dataInicial, long dataFinal, String equipe,
+                                  Long codUnidade, String placa, long limit, long offset, boolean resumido, String userToken) {
         try {
-            return dao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
-        } catch (SQLException e) {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getAll(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit, offset, resumido);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

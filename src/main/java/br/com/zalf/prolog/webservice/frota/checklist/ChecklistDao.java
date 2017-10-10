@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +47,7 @@ public interface ChecklistDao {
 	 * @return lista de Checklist
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
 						   Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException;
 
 	/**

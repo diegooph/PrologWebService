@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
@@ -38,6 +39,16 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return getIntegradorProLog().getTiposVeiculosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @Override
@@ -77,6 +88,12 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public Checklist getByCod(Long codChecklist) throws Exception {
         return getIntegradorProLog().getByCod(codChecklist);
+    }
+
+    @Override
+    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  long limit, long offset, boolean resumido) throws Exception {
+        return getIntegradorProLog().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
     }
 
     @Override

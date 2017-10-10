@@ -133,7 +133,7 @@ public interface VeiculoDao {
 	 * @return lista de placas de veículos
 	 * @throws SQLException se acontecer erro no banco
 	 */
-	List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
+	List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
 
 	@Nullable
 	DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;

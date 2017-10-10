@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAferica
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -49,6 +50,16 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getTiposVeiculo(cpf(), dataNascimento()));
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
+    }
+
+    @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
                                                                                     @NotNull Long codFuncao)
             throws Exception {
@@ -80,6 +91,25 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public Checklist getByCod(Long codChecklist) throws Exception {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Checklist> getAll(@NotNull final Date dataInicial,
+                                  @NotNull final Date dataFinal,
+                                  @NotNull final String equipe,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final String placa,
+                                  final long limit,
+                                  final long offset,
+                                  final boolean resumido) throws Exception {
+        return AvaCorpAvilanConverter.getChecklists(requester.getChecklists(
+                Math.toIntExact(codUnidade),
+                "%",
+                placa,
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                cpf(),
+                dataNascimento()));
     }
 
     @Override
