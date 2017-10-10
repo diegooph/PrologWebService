@@ -48,8 +48,13 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return super.getTipoVeiculosByUnidade(codUnidade);
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getTiposVeiculo(cpf(), dataNascimento()));
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
     }
 
     @Override

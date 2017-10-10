@@ -10,11 +10,14 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfTipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import com.google.common.annotations.VisibleForTesting;
@@ -366,6 +369,26 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
 
         // TODO: Realziar parse.
+
+        return null;
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public static List<String> convert(@NotNull final ArrayOfString placasVeiculos) {
+        checkNotNull(placasVeiculos, "placasVeiculos não pode ser null!");
+
+        // TODO: Realizar parse.
+
+        return null;
+    }
+
+    @NotNull
+    @VisibleForTesting
+    public static List<TipoVeiculo> convert(@NotNull final ArrayOfTipoVeiculo tiposVeiculo) {
+        checkNotNull(tiposVeiculo, "tiposVeiculo não pode ser null!");
+
+        // TODO: Realizar parse.
 
         return null;
     }

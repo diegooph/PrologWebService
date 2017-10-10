@@ -97,8 +97,9 @@ public class VeiculoResource {
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipo") String codTipo) {
-        return service.getVeiculosByTipo(codUnidade, codTipo);
+                                          @PathParam("codTipo") String codTipo,
+                                          @HeaderParam("Authorization") String userToken) {
+        return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
     }
 
     @GET

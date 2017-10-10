@@ -39,8 +39,13 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return getIntegradorProLog().getTipoVeiculosByUnidade(codUnidade);
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return getIntegradorProLog().getTiposVeiculosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @Override

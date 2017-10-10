@@ -70,11 +70,20 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getTipoVeiculosByUnidade(codUnidade);
+            return getSistema().getTiposVeiculosByUnidade(codUnidade);
         } else {
-            return integradorProLog.getTipoVeiculosByUnidade(codUnidade);
+            return integradorProLog.getTiposVeiculosByUnidade(codUnidade);
+        }
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
+        } else {
+            return integradorProLog.getPlacasVeiculosByTipo(codUnidade, codTipo);
         }
     }
 

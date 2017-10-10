@@ -14,5 +14,8 @@ interface OperacoesIntegradasVeiculo {
     List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade) throws Exception;
 
     @NotNull
-    List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull final Long codUnidade) throws Exception;
+    List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull final Long codUnidade) throws Exception;
+
+    @NotNull
+    List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception;
 }

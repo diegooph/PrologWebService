@@ -117,8 +117,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
         return veiculoDao.getTipoVeiculosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+        return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @Override
