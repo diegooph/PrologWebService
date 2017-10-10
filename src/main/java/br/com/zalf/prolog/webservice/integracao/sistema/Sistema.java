@@ -25,10 +25,13 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final IntegradorProLog integradorProLog;
     @NotNull
+    private final SistemaKey sistemaKey;
+    @NotNull
     private final String userToken;
 
-    protected Sistema(IntegradorProLog integradorProLog, String userToken) {
+    protected Sistema(IntegradorProLog integradorProLog, SistemaKey sistemaKey, String userToken) {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
+        this.sistemaKey = checkNotNull(sistemaKey, "sistemaKey não pode ser nulo!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
@@ -86,6 +89,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     protected IntegradorProLog getIntegradorProLog() {
         return integradorProLog;
+    }
+
+    protected SistemaKey getSistemaKey() {
+        return sistemaKey;
     }
 
     protected String getUserToken() {

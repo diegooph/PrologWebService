@@ -19,7 +19,7 @@ public interface InformacoesProvidas {
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Exception;
 
     @NotNull
-    DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
+    DiagramaVeiculo getDiagramaVeiculoByCodTipo(@NotNull final Long codTipoVeiculo) throws Exception;
 
     @NotNull
     String getCodUnidadeClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Exception;

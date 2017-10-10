@@ -18,6 +18,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfF
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -35,9 +36,10 @@ public final class AvaCorpAvilan extends Sistema {
     private Colaborador colaborador;
 
     public AvaCorpAvilan(@NotNull final AvaCorpAvilanRequester requester,
+                         @NotNull final SistemaKey sistemaKey,
                          @NotNull final IntegradorProLog integradorProLog,
                          @NotNull final String userToken) {
-        super(integradorProLog, userToken);
+        super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
     }
 
@@ -105,10 +107,16 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(requester.getVeiculoAtivo(placaVeiculo, cpf(), dataNascimento()));
-        final List<Pneu> pneus = AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
+        br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAtivo =
+                requester.getVeiculoAtivo(placaVeiculo, cpf(), dataNascimento());
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAtivo);
+        final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
+                requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
-        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByPlaca(placaVeiculo);
+        final Long codDiagrama = DiagramaVeiculoProviderFactory
+                .getDiagramaVeiculoProvider(getSistemaKey())
+                .getCodDiagramaBy("C2RRR");
+        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByCodTipo(codDiagrama);
         if (diagramaVeiculo == null) {
             throw new IllegalStateException("Diagrama não encontrado para a placa: " + placaVeiculo);
         }

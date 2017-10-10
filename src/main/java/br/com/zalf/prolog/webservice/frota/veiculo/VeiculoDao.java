@@ -138,7 +138,9 @@ public interface VeiculoDao {
 	@Nullable
 	DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
 
-    Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
+	DiagramaVeiculo getDiagramaVeiculoByCod(@NotNull final Long codDiagrama) throws SQLException;
+
+	Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
 
 	/**
 	 * busca um modelo de veículo a partir de sua chave
@@ -193,5 +195,4 @@ public interface VeiculoDao {
 	 * @throws SQLException
 	 */
 	TipoVeiculo getTipoVeiculo (Long codTipo, Long codUnidade) throws SQLException;
-
 }
