@@ -13,7 +13,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -151,33 +150,6 @@ public class ChecklistResource {
             @PathParam("placa") String placa,
             @HeaderParam("Authorization") String userToken){
         return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
-    }
-
-    /**
-     * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long)} instead
-     */
-    @GET
-    @Path("/recentes/{codUnidade}/{equipe}")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
-    @Deprecated
-    public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
-            @PathParam("equipe") String equipe,
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2016);
-        calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        return service.getAll(
-                calendar.getTimeInMillis(),
-                System.currentTimeMillis(),
-                equipe,
-                codUnidade,
-                "%",
-                limit,
-                offset,
-                false);
     }
 
     /**
