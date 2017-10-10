@@ -134,6 +134,16 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Override
+    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  long limit, long offset, boolean resumido) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+        } else {
+            return integradorProLog.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+        }
+    }
+
     @NotNull
     @Override
     public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

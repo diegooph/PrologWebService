@@ -81,6 +81,25 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
+    public List<Checklist> getAll(@NotNull final Date dataInicial,
+                                  @NotNull final Date dataFinal,
+                                  @NotNull final String equipe,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final String placa,
+                                  final long limit,
+                                  final long offset,
+                                  final boolean resumido) throws Exception {
+        return AvaCorpAvilanConverter.getChecklists(requester.getChecklists(
+                Math.toIntExact(codUnidade),
+                "%",
+                placa,
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                cpf(),
+                dataNascimento()));
+    }
+
+    @Override
     public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
                                             @NotNull final Date dataInicial,
                                             @NotNull final Date dataFinal,

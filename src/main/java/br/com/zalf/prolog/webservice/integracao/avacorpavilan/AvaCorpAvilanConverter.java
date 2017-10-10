@@ -361,6 +361,16 @@ public final class AvaCorpAvilanConverter {
     }
 
     @NotNull
+    @VisibleForTesting
+    public static List<Checklist> getChecklists(@NotNull final ArrayOfChecklistFiltro checklistsFiltro) {
+        checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
+
+        // TODO: Realziar parse.
+
+        return null;
+    }
+
+    @NotNull
     private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
         checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
 

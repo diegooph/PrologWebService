@@ -5,10 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfQuestionarioVeiculos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.RespostasAvaliacao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import com.sun.istack.internal.NotNull;
 
@@ -43,6 +40,14 @@ public interface AvaCorpAvilanRequester extends Requester {
     ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
                                 @NotNull final String cpf,
                                 @NotNull final String dataNascimento) throws Exception;
+
+    ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+                                         @NotNull final String tipoVeiculo,
+                                         @NotNull final String placaVeiculo,
+                                         @NotNull final String dataInicial,
+                                         @NotNull final String dataFinal,
+                                         @NotNull final String cpf,
+                                         @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
                                       @NotNull final String dataInicial,

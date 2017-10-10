@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
@@ -12,8 +11,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
-import java.time.Month;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -82,8 +80,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
-		return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)),
-				DateUtils.toLocalDate(new Date(dataFinal)), equipe, codUnidade, placa, limit, offset, false);
+		return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false);
 	}
 
 	@GET
@@ -126,9 +123,18 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit")long limit,
 			@QueryParam("offset") long offset) {
-		LocalDate dataInicial = LocalDate.of(2016, Month.JANUARY, 01);
-		Date datainicial = java.sql.Date.valueOf(dataInicial);
-		return service.getAll(DateUtils.toLocalDate(datainicial),
-				DateUtils.toLocalDate(new Date(System.currentTimeMillis())), equipe, codUnidade,"%", limit, offset, false);
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, 2016);
+		calendar.set(Calendar.MONTH, Calendar.JANUARY);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		return service.getAll(
+				calendar.getTimeInMillis(),
+				System.currentTimeMillis(),
+				equipe,
+				codUnidade,
+				"%",
+				limit,
+				offset,
+				false);
 	}
 }

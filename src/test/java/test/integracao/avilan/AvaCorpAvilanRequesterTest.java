@@ -52,6 +52,20 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklists() throws Exception {
+        final ArrayOfChecklistFiltro checklistFiltro = requester.getChecklists(
+                1,
+                "",
+                "",
+                "2017-09-28",
+                "2017-10-10",
+                "07011527966",
+                "1992-09-25");
+        assertNotNull(checklistFiltro);
+        assertTrue(!checklistFiltro.getChecklistFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarPneusVeiculo() throws Exception {
         final ArrayOfPneu pneus = requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO);
         assertNotNull(pneus);
