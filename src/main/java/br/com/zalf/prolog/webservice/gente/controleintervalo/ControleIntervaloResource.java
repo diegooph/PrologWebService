@@ -57,9 +57,31 @@ public class ControleIntervaloResource {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/{codUnidade}/completos")
+    @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true);
+    }
+
+
+    @POST
+    @Path("/tipos")
+    public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
+        if(service.updateTipoIntervalo(tipoIntervalo)) {
+            return Response.ok("Tipo de intervalo editado com sucesso");
+        } else {
+            return Response.error("Erro ao editar o tipo de intervalo");
+        }
+    }
+
+    @POST
+    @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
+    public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
+                                          @PathParam("codTipoIntervalo") Long codTipoIntervalo) {
+        if(service.inativarTipoIntervalo(codUnidade, codTipoIntervalo)) {
+            return Response.ok("Tipo de intervalo inativado com sucesso");
+        } else {
+            return Response.error("Erro ao inativar o tipo de intervalo");
+        }
     }
 
     @GET
@@ -67,7 +89,7 @@ public class ControleIntervaloResource {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
             Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/{codUnidade}/resumidos")
+    @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, false);
     }

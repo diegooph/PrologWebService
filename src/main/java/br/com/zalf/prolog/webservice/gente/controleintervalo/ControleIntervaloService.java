@@ -77,6 +77,16 @@ public class ControleIntervaloService {
         }
     }
 
+    public boolean inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo) {
+        try {
+            dao.inativarTipoIntervalo(codUnidade, codTipoIntervalo, Injection.provideDadosIntervaloChangedListener());
+            return true;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     @NotNull
     public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
                                                               Long codUnidade,

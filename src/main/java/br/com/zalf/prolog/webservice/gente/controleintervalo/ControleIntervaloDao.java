@@ -26,6 +26,9 @@ public interface ControleIntervaloDao {
     void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
+    void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
+                                @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+
     List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo, long limit, long offset) throws SQLException;
 
     @NotNull

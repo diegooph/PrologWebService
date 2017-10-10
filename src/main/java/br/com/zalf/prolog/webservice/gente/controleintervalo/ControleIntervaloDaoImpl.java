@@ -155,6 +155,39 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
+    public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
+                                      @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO\n" +
+                    "SET STATUS = FALSE WHERE COD_UNIDADE = ? AND CODIGO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao inativar o Tipo de Intervalo de código: " + codTipoIntervalo);
+            }
+
+            // Avisamos o listener que um tipo de intervalo mudou.
+            listener.onTiposIntervaloChanged(conn, codUnidade);
+
+            // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+            conn.commit();
+        } catch (Throwable e) {
+            // Pegamos apenas para fazer o rollback, depois subimos o erro.
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
     public void insertIntervalo(Intervalo intervalo) throws SQLException {
         PreparedStatement stmt = null;
         Connection conn = null;
