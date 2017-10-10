@@ -296,10 +296,6 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             intervalo.setColaborador(colaborador);
             intervalo.setDataHoraInicio(new Date(System.currentTimeMillis()));
             intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
-            final Localizacao localizacaoInicio = new Localizacao();
-            final Localizacao localizacaoFim = new Localizacao();
-            intervalo.setLocalizacaoInicio(localizacaoInicio);
-            intervalo.setLocalizacaoFim(localizacaoFim);
             return insertIntervalo(intervalo, codUnidade, conn);
         } finally {
             closeConnection(conn, null, null);
@@ -416,16 +412,15 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
         intervalo.setColaborador(colaborador);
-        final Localizacao localizacaoInicio = new Localizacao();
-        localizacaoInicio.setLatitude(rSet.getString("LATITUDE_INICIO"));
-        localizacaoInicio.setLongitude(rSet.getString("LONGITUDE_INICIO"));
-        final Localizacao localizacaoFim = new Localizacao();
-        localizacaoFim.setLatitude(rSet.getString("LATITUDE_FIM"));
-        localizacaoFim.setLongitude(rSet.getString("LONGITUDE_FIM"));
-        intervalo.setLocalizacaoInicio(localizacaoInicio);
-        intervalo.setLocalizacaoFim(localizacaoFim);
+        final String latitudeInicio = rSet.getString("LATITUDE_INICIO");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacaoInicio = new Localizacao();
+            localizacaoInicio.setLatitude(latitudeInicio);
+            localizacaoInicio.setLongitude(rSet.getString("LONGITUDE_INICIO"));
+            intervalo.setLocalizacaoInicio(localizacaoInicio);
+        }
         String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
-//        Setar apenas a fonte do inicio, sendo que não tem como um intervalo em aberto vir com fonte de término
+        // Setar apenas a fonte do inicio, sendo que não tem como um intervalo em aberto vir com fonte de término
         if (fonteDataHoraInicio != null) {
             intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
         }
