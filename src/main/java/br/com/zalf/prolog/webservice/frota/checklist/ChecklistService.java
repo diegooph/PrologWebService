@@ -76,10 +76,12 @@ public class ChecklistService {
     }
 
     public List<Checklist> getAll(long dataInicial, long dataFinal, String equipe,
-                                  Long codUnidade, String placa, long limit, long offset, boolean resumido) {
+                                  Long codUnidade, String placa, long limit, long offset, boolean resumido, String userToken) {
         try {
-            return dao.getAll(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit, offset, resumido);
-        } catch (SQLException e) {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getAll(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit, offset, resumido);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -82,8 +82,9 @@ public class ChecklistResource {
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
     }
 
     @GET
@@ -96,8 +97,9 @@ public class ChecklistResource {
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit")long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, true);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, true, userToken);
     }
 
     @GET

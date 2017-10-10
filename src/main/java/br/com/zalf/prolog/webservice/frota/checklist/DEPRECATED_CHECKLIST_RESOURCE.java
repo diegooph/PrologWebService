@@ -79,8 +79,9 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
 			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset) {
-		return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false);
+			@QueryParam("offset") long offset,
+			@HeaderParam("Authorization") String userToken) {
+		return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
 	}
 
 	@GET
@@ -112,7 +113,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	}
 
 	/**
-	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long)} instead
+	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long, String)} instead
 	 */
 	@GET
 	@Path("/recentes/{codUnidade}/{equipe}")
@@ -122,7 +123,8 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade,
 			@QueryParam("limit")long limit,
-			@QueryParam("offset") long offset) {
+			@QueryParam("offset") long offset,
+			@HeaderParam("Authorization") String userToken) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, 2016);
 		calendar.set(Calendar.MONTH, Calendar.JANUARY);
@@ -135,6 +137,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 				"%",
 				limit,
 				offset,
-				false);
+				false,
+				userToken);
 	}
 }
