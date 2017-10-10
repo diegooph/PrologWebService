@@ -22,6 +22,14 @@ public enum  AvacorpAvilanTipoChecklist {
         return tipoChecklist;
     }
 
+    public char asTipoProLog() {
+        if (tipoChecklist.equals(SAIDA.asString())) {
+            return Checklist.TIPO_SAIDA;
+        }
+
+        return Checklist.TIPO_RETORNO;
+    }
+
     public static AvacorpAvilanTipoChecklist fromString(@NotNull final String value) {
 
         final AvacorpAvilanTipoChecklist[] tipos = AvacorpAvilanTipoChecklist.values();

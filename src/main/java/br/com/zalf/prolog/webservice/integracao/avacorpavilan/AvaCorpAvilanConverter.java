@@ -365,12 +365,33 @@ public final class AvaCorpAvilanConverter {
 
     @NotNull
     @VisibleForTesting
-    public static List<Checklist> getChecklists(@NotNull final ArrayOfChecklistFiltro checklistsFiltro) {
+    public static List<Checklist> getChecklists(@NotNull final ArrayOfChecklistFiltro checklistsFiltro)
+            throws ParseException {
         checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
 
-        // TODO: Realziar parse.
+        final List<Checklist> checklists = new ArrayList<>();
 
-        return null;
+        for (final ChecklistFiltro checklistFiltro : checklistsFiltro.getChecklistFiltro()) {
+            final Checklist checklist = new Checklist();
+            checklist.setCodigo((long) checklistFiltro.getCodigoChecklist());
+            checklist.setCodModelo((long) checklistFiltro.getCodigoQuestionario());
+
+            // Colaborador Checklist
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setCpf(Long.parseLong(checklistFiltro.getColaborador().getCpf()));
+            colaborador.setNome(checklistFiltro.getColaborador().getNome());
+
+            checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
+            checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
+            checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
+            checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
+            checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
+            checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
+
+            checklists.add(checklist);
+        }
+
+        return checklists;
     }
 
     @NotNull
@@ -378,19 +399,25 @@ public final class AvaCorpAvilanConverter {
     public static List<String> convert(@NotNull final ArrayOfString placasVeiculos) {
         checkNotNull(placasVeiculos, "placasVeiculos não pode ser null!");
 
-        // TODO: Realizar parse.
-
-        return null;
+        // Não tem parse necessário nesse caso, basta retornarmos a própria lista de Strings que recebemos.
+        return placasVeiculos.getString();
     }
 
     @NotNull
     @VisibleForTesting
-    public static List<TipoVeiculo> convert(@NotNull final ArrayOfTipoVeiculo tiposVeiculo) {
-        checkNotNull(tiposVeiculo, "tiposVeiculo não pode ser null!");
+    public static List<TipoVeiculo> convert(@NotNull final ArrayOfTipoVeiculo tiposVeiculosAvilan) {
+        checkNotNull(tiposVeiculosAvilan, "tiposVeiculosAvilan não pode ser null!");
 
-        // TODO: Realizar parse.
+        final List<TipoVeiculo> tiposVeiculosProLog = new ArrayList<>();
+        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculo tipoVeiculo : tiposVeiculosAvilan.getTipoVeiculo()) {
+            final TipoVeiculo tipoVeiculoProLog = new TipoVeiculo();
+            // TODO: Esse parse não vai funcionar. Talvez seja necessário trocar nosso tipo para String.
+            tipoVeiculoProLog.setCodigo(Long.parseLong(tipoVeiculo.getCodigo()));
+            tipoVeiculoProLog.setNome(tipoVeiculo.getNome());
+            tiposVeiculosProLog.add(tipoVeiculoProLog);
+        }
 
-        return null;
+        return tiposVeiculosProLog;
     }
 
     @NotNull

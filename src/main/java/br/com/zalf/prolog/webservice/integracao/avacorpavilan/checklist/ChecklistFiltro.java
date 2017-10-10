@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -244,8 +246,8 @@ public class ChecklistFiltro {
      *     {@link String }
      *     
      */
-    public String getTipo() {
-        return tipo;
+    public AvacorpAvilanTipoChecklist getTipo() {
+        return AvacorpAvilanTipoChecklist.fromString(tipo);
     }
 
     /**
