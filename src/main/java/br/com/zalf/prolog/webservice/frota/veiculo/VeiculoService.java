@@ -24,16 +24,18 @@ public class VeiculoService {
                     .getVeiculosAtivosByUnidade(codUnidade);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
         }
     }
 
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) {
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
         try {
-            return dao.getTipoVeiculosByUnidade(codUnidade);
-        } catch (SQLException e) {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getTipoVeiculosByUnidade(codUnidade);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
         }
     }
 

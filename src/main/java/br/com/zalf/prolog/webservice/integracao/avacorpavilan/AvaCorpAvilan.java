@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAferica
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -44,6 +45,11 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
         return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(cpf(), dataNascimento()));
+    }
+
+    @Override
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return super.getTipoVeiculosByUnidade(codUnidade);
     }
 
     @Override

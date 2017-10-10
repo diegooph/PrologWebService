@@ -61,6 +61,20 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
+    public ArrayOfTipoVeiculo getTiposVeiculo(@NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
+        final TiposVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarTiposVeiculo();
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getTiposVeiculo();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar tipos de veículo"
+                : request.getMensagem());
+    }
+
+    @Override
     public ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull String cpf,
                                                                              @NotNull String dataNascimento) throws Exception {
         final BuscaQuestionarioColaborador request = getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);

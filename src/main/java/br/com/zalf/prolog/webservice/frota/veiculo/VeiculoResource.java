@@ -116,8 +116,9 @@ public class VeiculoResource {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/{codUnidade}/tipo")
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(codUnidade);
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
+                                                      @PathParam("codUnidade") Long codUnidade) {
+        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
     }
 
     @GET

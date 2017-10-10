@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
@@ -20,6 +20,9 @@ public interface AvaCorpAvilanRequester extends Requester {
                             @NotNull final String cpf,
                             @NotNull final String dataNascimento) throws Exception;
 
+    ArrayOfTipoVeiculo getTiposVeiculo(@NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception;
+
     ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull final String cpf,
                                                                       @NotNull final String dataNascimento) throws Exception;
 
@@ -34,8 +37,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                              @NotNull final String dataNascimento) throws Exception;
 
     boolean insertAfericao(@NotNull final IncluirMedida2 medidas,
-                           @NotNull String cpf,
-                           @NotNull String dataNascimento) throws Exception;
+                           @NotNull final String cpf,
+                           @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
                                 @NotNull final String cpf,

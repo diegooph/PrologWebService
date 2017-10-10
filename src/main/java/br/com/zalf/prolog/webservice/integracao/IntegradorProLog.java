@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAferica
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
@@ -113,6 +114,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return veiculoDao.getTipoVeiculosByUnidade(codUnidade);
     }
 
     @Override

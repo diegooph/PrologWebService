@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfTipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -49,6 +50,13 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculo veiculos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
         assertNotNull(veiculos);
         assertTrue(!veiculos.getVeiculo().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarTiposVeiculo() throws Exception {
+        final ArrayOfTipoVeiculo tiposVeiculo = requester.getTiposVeiculo(CPF, DATA_NASCIMENTO);
+        assertNotNull(tiposVeiculo);
+        assertTrue(!tiposVeiculo.getTipoVeiculo().isEmpty());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
