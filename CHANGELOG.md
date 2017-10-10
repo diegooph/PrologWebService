@@ -4,12 +4,18 @@ Change Log
 <a name="v0.0.35"></a>
 ## Version [v0.0.35](https://github.com/luizfp/PrologAndroid/compare/v0.0.34-h1...v0.0.35) (release-date) - [unreleased]
 
+### Features
+* Implementa upadate de um tipo de intervalo
+* Implementa inativate de um tipo de intervalo
+
+### Refactor
+* Altera path de alguns métodos de update/inativade tipo de intervalo
+
 <a name="v0.0.34-h1"></a>
 ## Version [v0.0.34-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.34...v0.0.34-h1) (2017-10-06)
 
 ### Bug Fixes
 * Corrige path da busca do farol do checklist na integração com AvaCorp
-
 
 <a name="v0.0.34"></a>
 ## Version [v0.0.34](https://github.com/luizfp/PrologWebService/compare/v0.0.33...v0.0.34) (2017-10-06)
