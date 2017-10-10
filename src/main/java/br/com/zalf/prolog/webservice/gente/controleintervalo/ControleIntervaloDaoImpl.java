@@ -99,6 +99,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                     intervaloEmAberto.setFonteDataHoraFim(intervalo.getFonteDataHoraFim());
                     intervaloEmAberto.setJustificativaEstouro(intervalo.getJustificativaEstouro());
                     intervaloEmAberto.setJustificativaTempoRecomendado(intervalo.getJustificativaTempoRecomendado());
+                    intervaloEmAberto.setLocalizacaoFim(intervalo.getLocalizacaoFim());
                     updateIntervalo(intervaloEmAberto);
                 } else {
                     insertIntervalo(intervalo);
@@ -174,11 +175,21 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             stmt.setString(9, intervalo.getJustificativaTempoRecomendado());
 
             final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
+            if (localizacaoInicio != null) {
+                stmt.setString(10, localizacaoInicio.getLatitude());
+                stmt.setString(12, localizacaoInicio.getLongitude());
+            } else {
+                stmt.setNull(10, Types.VARCHAR);
+                stmt.setNull(12, Types.VARCHAR);
+            }
             final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            stmt.setString(10, localizacaoInicio.getLatitude());
-            stmt.setString(11, localizacaoFim.getLatitude());
-            stmt.setString(12, localizacaoInicio.getLongitude());
-            stmt.setString(13, localizacaoFim.getLongitude());
+            if (localizacaoFim != null) {
+                stmt.setString(11, localizacaoFim.getLatitude());
+                stmt.setString(13, localizacaoFim.getLongitude());
+            } else {
+                stmt.setNull(11, Types.VARCHAR);
+                stmt.setNull(13, Types.VARCHAR);
+            }
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o intervalo");
