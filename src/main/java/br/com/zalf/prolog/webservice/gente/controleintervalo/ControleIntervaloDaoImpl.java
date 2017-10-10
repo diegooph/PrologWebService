@@ -123,8 +123,16 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            // TODO: Query para atualizar um tipo de intervalo.
-            stmt = conn.prepareStatement("");
+            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO\n" +
+                    "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
+                    "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?");
+            stmt.setString(1, tipoIntervalo.getNome());
+            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
+            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
+            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
+            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
+            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
+            stmt.setLong(7, tipoIntervalo.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o Tipo de Intervalo de código: " + tipoIntervalo.getCodigo());
