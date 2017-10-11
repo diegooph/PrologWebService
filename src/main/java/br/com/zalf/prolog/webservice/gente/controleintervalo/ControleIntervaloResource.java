@@ -62,8 +62,13 @@ public class ControleIntervaloResource {
         return service.getTiposIntervalos(codUnidade, true);
     }
 
-
     @POST
+    @Path("/tipos")
+    public AbstractResponse insertTipoIntervalo(TipoIntervalo tipoIntervalo) {
+        return service.insertTipoIntervalo(tipoIntervalo);
+    }
+
+    @PUT
     @Path("/tipos")
     public Response updateTipoInvervalo(TipoIntervalo tipoIntervalo) {
         if(service.updateTipoIntervalo(tipoIntervalo)) {
@@ -73,7 +78,7 @@ public class ControleIntervaloResource {
         }
     }
 
-    @POST
+    @PUT
     @Path("/tipos/inativar/{codUnidade}/{codTipoIntervalo}")
     public Response inativarTipoIntervalo(@PathParam("codUnidade") Long codUnidade,
                                           @PathParam("codTipoIntervalo") Long codTipoIntervalo) {

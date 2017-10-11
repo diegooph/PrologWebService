@@ -116,6 +116,46 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
     }
 
     @Override
+    public Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                             @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO(NOME, ICONE, TEMPO_RECOMENDADO_MINUTOS, " +
+                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, ATIVO) VALUES (?,?,?,?,?,?,TRUE) RETURNING CODIGO");
+            stmt.setString(1, tipoIntervalo.getNome());
+            stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
+            stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
+            stmt.setLong(4, tipoIntervalo.getTempoLimiteEstouro().toMinutes());
+            stmt.setTime(5, tipoIntervalo.getHorarioSugerido());
+            stmt.setLong(6, tipoIntervalo.getUnidade().getCodigo());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                tipoIntervalo.setCodigo(rSet.getLong("CODIGO"));
+                associaCargosTipoIntervalo(tipoIntervalo, conn);
+                // Avisamos o listener que um tipo de intervalo FOI INCLUIDO.
+                listener.onTiposIntervaloChanged(conn, tipoIntervalo.getUnidade().getCodigo());
+                // Se nem um erro aconteceu ao informar o listener, podemos commitar a alteração.
+                conn.commit();
+                return tipoIntervalo.getCodigo();
+            } else {
+                throw new SQLException("Erro ao inserir o Tipo de Intervalo de nome: " + tipoIntervalo.getNome());
+            }
+        } catch (Throwable e) {
+            // Pegamos apenas para fazer o rollback, depois subimos o erro.
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
                                     @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;

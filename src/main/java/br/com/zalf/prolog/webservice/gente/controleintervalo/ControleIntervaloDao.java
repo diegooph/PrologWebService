@@ -23,6 +23,9 @@ public interface ControleIntervaloDao {
 
     void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException;
 
+    Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                             @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
+
     void updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
                              @NotNull final DadosIntervaloChangedListener listener) throws Throwable;
 
