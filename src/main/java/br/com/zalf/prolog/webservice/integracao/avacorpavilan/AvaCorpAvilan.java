@@ -205,6 +205,37 @@ public final class AvaCorpAvilan extends Sistema {
         return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), cpf(), dataNascimento());
     }
 
+    @Override
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws Exception {
+
+        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
+
+        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
+        // vazio.
+        if (codTipoVeiculo.equals("%")) {
+            codTipoVeiculo = "";
+        } else {
+            final AvaCorpAvilanDao avaCorpAvilanDao = new AvaCorpAvilanDaoImpl();
+            codTipoVeiculo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipoVeiculo));
+        }
+
+        //noinspection unchecked
+        return (List<Afericao>) requester.getAfericoes(
+                Integer.parseInt(codUnidadeAvilan),
+                codTipoVeiculo,
+                placaVeiculo.equals("%") ? "" : placaVeiculo,
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
+                cpf(),
+                dataNascimento());
+    }
+
     private String cpf() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());

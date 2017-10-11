@@ -70,16 +70,19 @@ public class AfericaoService {
         }
     }
 
-    public List<Afericao> getAfericoes(String codUnidade,
+    public List<Afericao> getAfericoes(Long codUnidade,
                                        String codTipoVeiculo,
                                        String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
                                        long limit,
-                                       long offset) {
+                                       long offset,
+                                       final String userToken) {
         try {
-            return dao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
-        } catch (SQLException e) {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar aferições. Unidade: "
                     + codUnidade + " || Tipo: "

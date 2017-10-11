@@ -73,6 +73,18 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws Exception {
+        return getIntegradorProLog()
+                .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+    }
+
+    @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,

@@ -62,7 +62,7 @@ public interface AfericaoDao {
      */
     List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException;
 
-    List<Afericao> getAfericoes(String codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
+    List<Afericao> getAfericoes(Long codUnidade, String codTipoVeiculo, String placaVeiculo, long dataInicial,
                                 long dataFinal, long limit, long offset) throws SQLException;
 
     /**

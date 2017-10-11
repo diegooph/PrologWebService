@@ -241,7 +241,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public List<Afericao> getAfericoes(String codUnidade,
+    public List<Afericao> getAfericoes(Long codUnidade,
                                        String codTipoVeiculo,
                                        String placaVeiculo,
                                        long dataInicial,
@@ -259,13 +259,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "FROM AFERICAO A "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
-                    + "WHERE V.COD_UNIDADE::TEXT LIKE ? "
+                    + "WHERE V.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
                     + "AND A.DATA_HORA BETWEEN ? AND ? "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
-            stmt.setString(1, codUnidade);
+            stmt.setLong(1, codUnidade);
             stmt.setString(2, codTipoVeiculo);
             stmt.setString(3, placaVeiculo);
             stmt.setDate(4, new java.sql.Date(dataInicial));

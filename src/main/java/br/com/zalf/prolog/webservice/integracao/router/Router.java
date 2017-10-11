@@ -115,6 +115,17 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws Exception {
+        return null;
+    }
+
+    @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade, @NotNull Long codFuncao) throws Exception {
         if (getSistema() != null) {
             return getSistema().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);

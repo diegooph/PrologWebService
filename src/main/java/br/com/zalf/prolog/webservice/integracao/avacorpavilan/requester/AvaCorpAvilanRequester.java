@@ -44,6 +44,14 @@ public interface AvaCorpAvilanRequester extends Requester {
                            @NotNull final String cpf,
                            @NotNull final String dataNascimento) throws Exception;
 
+    Object getAfericoes(@NotNull final int codUnidadeAvilan,
+                        @NotNull final String codTipoVeiculo,
+                        @NotNull final String placaVeiculo,
+                        @NotNull final String dataInicial,
+                        @NotNull final String dataFinal,
+                        @NotNull final String cpf,
+                        @NotNull final String dataNascimento) throws Exception;
+
     ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
                                 @NotNull final String cpf,
                                 @NotNull final String dataNascimento) throws Exception;
@@ -53,7 +61,7 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
-                                         @NotNull final String tipoVeiculo,
+                                         @NotNull final String codTipoVeiculo,
                                          @NotNull final String placaVeiculo,
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal,

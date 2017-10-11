@@ -151,9 +151,21 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfPneu getPneusVeiculo(@NotNull String placaVeiculo,
-                                       @NotNull String cpf,
-                                       @NotNull String dataNascimento) throws Exception {
+    public Object getAfericoes(final int codUnidadeAvilan,
+                               @NotNull final String codTipoVeiculo,
+                               @NotNull final String placaVeiculo,
+                               @NotNull final String dataInicial,
+                               @NotNull final String dataFinal,
+                               @NotNull final String cpf,
+                               @NotNull final String dataNascimento) throws Exception {
+
+        throw new UnsupportedOperationException("Falta implementar!");
+    }
+
+    @Override
+    public ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
+                                       @NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception {
         final PneusVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarPneusVeiculo(placaVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
@@ -184,7 +196,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
     @Override
     public ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
-                                                @NotNull final String tipoVeiculo,
+                                                @NotNull final String codTipoVeiculo,
                                                 @NotNull final String placaVeiculo,
                                                 @NotNull final String dataInicial,
                                                 @NotNull final String dataFinal,
@@ -197,7 +209,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
-                tipoVeiculo);
+                codTipoVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getChecklists();

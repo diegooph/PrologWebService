@@ -73,14 +73,23 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
-            @PathParam("codUnidade") String codUnidade,
+            @PathParam("codUnidade") Long codUnidade,
             @PathParam("codTipoVeiculo") String codTipoVeiculo,
             @PathParam("placaVeiculo") String placaVeiculo,
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit") long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAfericoes(
+                codUnidade,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset,
+                userToken);
     }
 
     @GET
