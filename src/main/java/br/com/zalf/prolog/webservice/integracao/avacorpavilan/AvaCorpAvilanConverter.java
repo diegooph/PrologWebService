@@ -365,13 +365,13 @@ public final class AvaCorpAvilanConverter {
 
     @NotNull
     @VisibleForTesting
-    public static List<Checklist> getChecklists(@NotNull final ArrayOfChecklistFiltro checklistsFiltro)
+    public static List<Checklist> getChecklists(@NotNull final List<ChecklistFiltro> checklistsFiltro)
             throws ParseException {
         checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
 
         final List<Checklist> checklists = new ArrayList<>();
 
-        for (final ChecklistFiltro checklistFiltro : checklistsFiltro.getChecklistFiltro()) {
+        for (final ChecklistFiltro checklistFiltro : checklistsFiltro) {
             final Checklist checklist = new Checklist();
             checklist.setCodigo((long) checklistFiltro.getCodigoChecklist());
             checklist.setCodModelo((long) checklistFiltro.getCodigoQuestionario());

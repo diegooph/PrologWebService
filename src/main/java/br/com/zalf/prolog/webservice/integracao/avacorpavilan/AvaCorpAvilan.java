@@ -19,6 +19,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
@@ -32,6 +33,7 @@ import com.sun.istack.internal.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
@@ -125,14 +127,23 @@ public final class AvaCorpAvilan extends Sistema {
                                   final long offset,
                                   final boolean resumido) throws Exception {
         final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
-        return AvaCorpAvilanConverter.getChecklists(requester.getChecklists(
+        List<ChecklistFiltro> checklists = requester.getChecklists(
                 Integer.parseInt(codUnidadeAvilan),
                 "",
                 placa.equals("%") ? "" : placa,
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
                 AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 cpf(),
-                dataNascimento()));
+                dataNascimento()).getChecklistFiltro();
+
+        // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
+        checklists = checklists
+                .stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        return AvaCorpAvilanConverter.getChecklists(checklists);
     }
 
     @Override
