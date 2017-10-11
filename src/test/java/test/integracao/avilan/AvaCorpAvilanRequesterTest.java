@@ -70,13 +70,13 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarChecklists() throws Exception {
         final ArrayOfChecklistFiltro checklistFiltro = requester.getChecklists(
-                1,
+                11,
                 "",
                 "",
                 "2017-09-28",
-                "2017-10-10",
-                "07011527966",
-                "1992-09-25");
+                "2017-10-11",
+                CPF,
+                DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
         assertTrue(!checklistFiltro.getChecklistFiltro().isEmpty());
     }

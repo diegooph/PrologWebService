@@ -124,10 +124,11 @@ public final class AvaCorpAvilan extends Sistema {
                                   final long limit,
                                   final long offset,
                                   final boolean resumido) throws Exception {
+        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
         return AvaCorpAvilanConverter.getChecklists(requester.getChecklists(
-                Math.toIntExact(codUnidade),
-                "%",
-                placa,
+                Integer.parseInt(codUnidadeAvilan),
+                "",
+                placa.equals("%") ? "" : placa,
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
                 AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 cpf(),
