@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -14,17 +14,15 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created on 10/11/17
- *
- * @author Luiz Felipe (https://github.com/luizfp)
+ * @deprecated in v0.0.35 use {@link AfericaoResource} instead.
  */
-@Path("/afericoes")
+@Path("/afericao")
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class AfericaoResource {
+public class DEPRECATED_AFERICAO_RESOURCE {
 
-    private final AfericaoService service = new AfericaoService();
+    private AfericaoService service = new AfericaoService();
 
     @POST
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
@@ -51,7 +49,7 @@ public class AfericaoResource {
 
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    @Path("/cronogramas/{codUnidade}")
+    @Path("/listaAfericao/{codUnidade}")
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
                                                     @HeaderParam("Authorization") String userToken) {
         return service.getCronogramaAfericao(codUnidade, userToken);
@@ -66,11 +64,9 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Path("/getAll")
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
             @QueryParam("codUnidades") List<String> codUnidades,
             @QueryParam("placas") List<String> placas,
@@ -80,22 +76,16 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{codAfericao}")
     public Afericao getByCod(@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade) {
         return service.getByCod(codAfericao, codUnidade);
     }
 
     @GET
-    @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getRestricaoByCodUnidade(codUnidade);
