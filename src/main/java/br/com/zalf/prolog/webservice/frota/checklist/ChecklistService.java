@@ -66,10 +66,12 @@ public class ChecklistService {
         }
     }
 
-    public Checklist getByCod(Long codigo) {
+    public Checklist getByCod(Long codigo, String userToken) {
         try {
-            return dao.getByCod(codigo);
-        } catch (SQLException e) {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getChecklistByCodigo(codigo);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

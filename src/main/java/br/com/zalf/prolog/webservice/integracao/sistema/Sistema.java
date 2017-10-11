@@ -86,8 +86,8 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
-        return getIntegradorProLog().getByCod(codChecklist);
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
+        return getIntegradorProLog().getChecklistByCodigo(codChecklist);
     }
 
     @Override

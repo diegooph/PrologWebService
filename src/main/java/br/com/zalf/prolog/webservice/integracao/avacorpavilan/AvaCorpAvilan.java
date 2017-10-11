@@ -113,8 +113,11 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
-        throw new UnsupportedOperationException();
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getChecklistByCodigo(
+                Math.toIntExact(codChecklist),
+                cpf(),
+                dataNascimento()));
     }
 
     @Override

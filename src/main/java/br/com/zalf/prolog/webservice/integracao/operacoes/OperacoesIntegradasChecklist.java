@@ -28,7 +28,7 @@ interface OperacoesIntegradasChecklist {
     Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
 
     @NotNull
-    Checklist getByCod(@NotNull final Long codChecklist) throws Exception;
+    Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;
 
     @NotNull
     List<Checklist> getAll(@NotNull final Date dataInicial,

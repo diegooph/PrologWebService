@@ -1,5 +1,6 @@
 package test.integracao.avilan;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -65,6 +66,17 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfString placas = requester.getPlacasVeiculoByTipo("", CPF, DATA_NASCIMENTO);
         assertNotNull(placas);
         assertTrue(!placas.getString().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklistByCodigo() throws Exception {
+        final ChecklistFiltro checklistFiltro = requester.getChecklistByCodigo(
+                34360,
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(checklistFiltro);
+        assertNotNull(checklistFiltro.getAvaliacao());
+        System.out.println(GsonUtils.getGson().toJson(checklistFiltro));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)

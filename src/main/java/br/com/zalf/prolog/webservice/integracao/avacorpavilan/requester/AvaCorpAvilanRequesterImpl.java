@@ -166,6 +166,22 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
+    public ChecklistFiltro getChecklistByCodigo(final int codigoAvaliacao,
+                                                @NotNull final String cpf,
+                                                @NotNull final String dataNascimento) throws Exception {
+
+        final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getChecklists().getChecklistFiltro().get(0);
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar checklist com o código: " + codigoAvaliacao + " da Avilan"
+                : request.getMensagem());
+    }
+
+    @Override
     public ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
                                                 @NotNull final String tipoVeiculo,
                                                 @NotNull final String placaVeiculo,

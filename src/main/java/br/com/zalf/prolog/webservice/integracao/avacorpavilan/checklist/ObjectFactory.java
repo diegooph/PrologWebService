@@ -214,11 +214,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RespostaFiltro }
+     *
+     */
+    public RespostaFiltro createRespostaFiltro() {
+        return new RespostaFiltro();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfResposta }
      *
      */
     public ArrayOfResposta createArrayOfResposta() {
         return new ArrayOfResposta();
+    }
+
+    /**
+     * Create an instance of {@link AlternativaFiltro }
+     *
+     */
+    public AlternativaFiltro createAlternativaFiltro() {
+        return new AlternativaFiltro();
     }
 
     /**
@@ -243,6 +259,14 @@ public class ObjectFactory {
      */
     public ArrayOfQuestionarioVeiculos createArrayOfQuestionarioVeiculos() {
         return new ArrayOfQuestionarioVeiculos();
+    }
+
+    /**
+     * Create an instance of {@link AvaliacaoFiltro }
+     *
+     */
+    public AvaliacaoFiltro createAvaliacaoFiltro() {
+        return new AvaliacaoFiltro();
     }
 
     /**
@@ -310,6 +334,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ArrayOfAlternativaFiltro }
+     *
+     */
+    public ArrayOfAlternativaFiltro createArrayOfAlternativaFiltro() {
+        return new ArrayOfAlternativaFiltro();
+    }
+
+    /**
+     * Create an instance of {@link QuestaoFiltro }
+     *
+     */
+    public QuestaoFiltro createQuestaoFiltro() {
+        return new QuestaoFiltro();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfQuestaoFiltro }
+     *
+     */
+    public ArrayOfQuestaoFiltro createArrayOfQuestaoFiltro() {
+        return new ArrayOfQuestaoFiltro();
+    }
+
+    /**
      * Create an instance of {@link FarolDia }
      *
      */
@@ -372,5 +420,4 @@ public class ObjectFactory {
     public ArrayOfQuestao createArrayOfQuestao() {
         return new ArrayOfQuestao();
     }
-
 }

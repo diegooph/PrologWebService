@@ -145,11 +145,11 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getByCod(codChecklist);
+            return getSistema().getChecklistByCodigo(codChecklist);
         } else {
-            return integradorProLog.getByCod(codChecklist);
+            return integradorProLog.getChecklistByCodigo(codChecklist);
         }
     }
 

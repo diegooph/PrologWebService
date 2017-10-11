@@ -48,8 +48,8 @@ public class ChecklistResource {
     @GET
     @Path("{codigo}")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-    public Checklist getByCod(@PathParam("codigo") Long codigo) {
-        return service.getByCod(codigo);
+    public Checklist getByCod(@PathParam("codigo") Long codigo, @HeaderParam("Authorization") String userToken) {
+        return service.getByCod(codigo, userToken);
     }
 
     @GET

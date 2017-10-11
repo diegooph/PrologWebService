@@ -162,7 +162,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
         return checklistDao.getByCod(codChecklist);
     }
 

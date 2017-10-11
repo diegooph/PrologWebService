@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="quantidadeRespostasNaoOk" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="tempoRealizacao" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="avaliacao" type="{http://www.avacorp.com.br/integracaoprologtestes}AvaliacaoFiltro" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -47,7 +48,8 @@ import javax.xml.bind.annotation.XmlType;
     "quantidadeRespostasOk",
     "quantidadeRespostasNaoOk",
     "tempoRealizacao",
-    "tipo"
+    "tipo",
+    "avaliacao"
 })
 public class ChecklistFiltro {
 
@@ -61,6 +63,7 @@ public class ChecklistFiltro {
     protected int quantidadeRespostasNaoOk;
     protected String tempoRealizacao;
     protected String tipo;
+    protected AvaliacaoFiltro avaliacao;
 
     /**
      * Gets the value of the codigoQuestionario property.
@@ -260,6 +263,30 @@ public class ChecklistFiltro {
      */
     public void setTipo(String value) {
         this.tipo = value;
+    }
+
+    /**
+     * Gets the value of the avaliacao property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link AvaliacaoFiltro }
+     *     
+     */
+    public AvaliacaoFiltro getAvaliacao() {
+        return avaliacao;
+    }
+
+    /**
+     * Sets the value of the avaliacao property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link AvaliacaoFiltro }
+     *     
+     */
+    public void setAvaliacao(AvaliacaoFiltro value) {
+        this.avaliacao = value;
     }
 
 }
