@@ -173,6 +173,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
+            // Na busca por código de um checklist sempre virá apenas um único elemento.
             return request.getChecklists().getChecklistFiltro().get(0);
         }
 
