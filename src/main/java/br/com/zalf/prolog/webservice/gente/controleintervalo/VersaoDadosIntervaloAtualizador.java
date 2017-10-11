@@ -109,13 +109,27 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
     }
 
     private void incrementaVersaoDadosUnidade(Connection connection, Long codUnidade) throws Throwable {
+        if(!updateVersaoDadosUnidade(connection, codUnidade)){
+            if(!insertVersaoDadosUnidade(connection, codUnidade)){
+                throw new SQLException("Erro ao incrementar versão dos dados para a unidade: " + codUnidade);
+            }
+        }
+    }
+
+    private boolean updateVersaoDadosUnidade(Connection connection, Long codUnidade) throws Throwable {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE INTERVALO_UNIDADE " +
                 "SET VERSAO_DADOS = VERSAO_DADOS + 1 WHERE COD_UNIDADE = ?;");
         stmt.setLong(1, codUnidade);
-        int count = stmt.executeUpdate();
-        if (count == 0) {
-            throw new SQLException("Erro ao incrementar versão dos dados para a unidade: " + codUnidade);
-        }
+        // retorna false caso nenhuma linha tenha sido afetada, ou seja, unidade não possui dados na tabela
+        return stmt.executeUpdate() == 0;
+    }
+
+    private boolean insertVersaoDadosUnidade(Connection connection, Long codUnidade) throws Throwable {
+        final PreparedStatement stmt = connection.prepareStatement("INSERT INTO INTERVALO_UNIDADE(COD_UNIDADE, VERSAO_DADOS)" +
+                " VALUES (?,1)");
+        stmt.setLong(1, codUnidade);
+        // retorna false caso nenhuma linha tenha sido afetada, ou seja, unidade não possui dados na tabela
+        return stmt.executeUpdate() == 0;
     }
 
     private boolean permissaoMarcacaoIntervaloRemovidaOuAdicionada(Visao visaoAtual, Visao visaoNova) throws Throwable {
