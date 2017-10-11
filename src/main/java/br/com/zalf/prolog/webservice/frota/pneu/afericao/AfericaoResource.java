@@ -66,17 +66,21 @@ public class AfericaoResource {
     }
 
     @GET
+    @Path("/{codUnidade}/{codTipoVeiculo}/{placaVeiculo}")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
-            @QueryParam("codUnidades") List<String> codUnidades,
-            @QueryParam("placas") List<String> placas,
+            @PathParam("codUnidade") String codUnidade,
+            @PathParam("codTipoVeiculo") String codTipoVeiculo,
+            @PathParam("placaVeiculo") String placaVeiculo,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit") long limit,
             @QueryParam("offset") long offset) {
-        return service.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
+        return service.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
 
     @GET
