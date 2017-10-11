@@ -23,7 +23,7 @@ public interface AvaCorpAvilanRequester extends Requester {
     ArrayOfTipoVeiculo getTiposVeiculo(@NotNull final String cpf,
                                        @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfString getPlacasVeiculoByTipo(@NotNull final String tipoVeiculo,
+    ArrayOfString getPlacasVeiculoByTipo(@NotNull final String codTipoVeiculo,
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 

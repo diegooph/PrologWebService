@@ -13,10 +13,16 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.integracao.DiagramaVeiculoProviderFactory;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -51,11 +57,27 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getTiposVeiculo(cpf(), dataNascimento()));
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = requester
+                .getTiposVeiculo(cpf(), dataNascimento())
+                .getTipoVeiculo();
+
+        // Sincroniza os tipos buscados com o nosso banco de dados.
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
+                new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl()).sync(tiposVeiculosAvilan);
+
+        return AvaCorpAvilanConverter.convert(tiposVeiculosAvilanProLog);
     }
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
+        // vazio.
+        if (codTipo.equals("%")) {
+            codTipo = "";
+        } else {
+            final AvaCorpAvilanDao avaCorpAvilanDao = new AvaCorpAvilanDaoImpl();
+            codTipo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+        }
         return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
     }
 

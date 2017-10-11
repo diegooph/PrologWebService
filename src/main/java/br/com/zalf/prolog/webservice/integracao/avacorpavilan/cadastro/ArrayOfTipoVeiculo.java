@@ -35,7 +35,7 @@ import java.util.List;
 public class ArrayOfTipoVeiculo {
 
     @XmlElement(name = "TipoVeiculo", nillable = true)
-    protected List<TipoVeiculo> tipoVeiculo;
+    protected List<TipoVeiculoAvilan> tipoVeiculo;
 
     /**
      * Gets the value of the tipoVeiculo property.
@@ -55,13 +55,13 @@ public class ArrayOfTipoVeiculo {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link TipoVeiculo }
+     * {@link TipoVeiculoAvilan }
      * 
      * 
      */
-    public List<TipoVeiculo> getTipoVeiculo() {
+    public List<TipoVeiculoAvilan> getTipoVeiculo() {
         if (tipoVeiculo == null) {
-            tipoVeiculo = new ArrayList<TipoVeiculo>();
+            tipoVeiculo = new ArrayList<TipoVeiculoAvilan>();
         }
         return this.tipoVeiculo;
     }

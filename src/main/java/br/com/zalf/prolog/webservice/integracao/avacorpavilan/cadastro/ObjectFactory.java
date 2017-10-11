@@ -214,11 +214,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TipoVeiculo }
+     * Create an instance of {@link TipoVeiculoAvilan }
      *
      */
-    public TipoVeiculo createTipoVeiculo() {
-        return new TipoVeiculo();
+    public TipoVeiculoAvilan createTipoVeiculo() {
+        return new TipoVeiculoAvilan();
     }
 
 }

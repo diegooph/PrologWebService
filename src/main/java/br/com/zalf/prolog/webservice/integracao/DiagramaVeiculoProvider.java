@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
+package br.com.zalf.prolog.webservice.integracao;
 
 import javax.annotation.Nonnull;
 

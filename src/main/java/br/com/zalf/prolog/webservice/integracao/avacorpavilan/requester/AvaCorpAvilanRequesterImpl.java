@@ -75,15 +75,15 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfString getPlacasVeiculoByTipo(String tipoVeiculo, String cpf, String dataNascimento) throws Exception {
-        final VeiculoTipo request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosTipo(tipoVeiculo);
+    public ArrayOfString getPlacasVeiculoByTipo(String codTipoVeiculo, String cpf, String dataNascimento) throws Exception {
+        final VeiculoTipo request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosTipo(codTipoVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getVeiculos();
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar placas dos veículos para o tipo: " + tipoVeiculo
+                ? "Erro ao buscar placas dos veículos para o tipo: " + codTipoVeiculo
                 : request.getMensagem());
     }
 

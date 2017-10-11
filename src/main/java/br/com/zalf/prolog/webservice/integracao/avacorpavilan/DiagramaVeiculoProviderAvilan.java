@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.integracao.DiagramaVeiculoProvider;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -7,7 +9,7 @@ import javax.annotation.Nonnull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DiagramaVeiculoProviderAvila implements DiagramaVeiculoProvider {
+public class DiagramaVeiculoProviderAvilan implements DiagramaVeiculoProvider {
 
     @Override
     public Long getCodDiagramaBy(@Nonnull String tipoVeiculo) {
@@ -31,7 +33,7 @@ public class DiagramaVeiculoProviderAvila implements DiagramaVeiculoProvider {
             case "C2RCR":
                 return 5L;
             default:
-                throw new IllegalStateException("Nenhum diagrama condizente à este tipo: "+tipoVeiculo);
+                throw new IllegalStateException("Nenhum diagrama condizente à este tipo: " + tipoVeiculo);
         }
     }
 }
