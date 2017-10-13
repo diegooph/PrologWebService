@@ -24,16 +24,18 @@ public class VeiculoService {
                     .getVeiculosAtivosByUnidade(codUnidade);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
         }
     }
 
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(Long codUnidade) {
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(String userToken, Long codUnidade) {
         try {
-            return dao.getTipoVeiculosByUnidade(codUnidade);
-        } catch (SQLException e) {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getTiposVeiculosByUnidade(codUnidade);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar os tipos de veículo da unidade: " + codUnidade);
         }
     }
 
@@ -127,12 +129,14 @@ public class VeiculoService {
         }
     }
 
-    public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) {
+    public List<String> getVeiculosByTipo(Long codUnidade, String codTipo, String userToken) {
         try {
-            return dao.getVeiculosByTipo(codUnidade, codTipo);
-        } catch (SQLException e) {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getPlacasVeiculosByTipo(codUnidade, codTipo);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar placas dos veículos para o tipo: " + codTipo + " e unidade: " + codUnidade);
         }
     }
 

@@ -3,6 +3,9 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -67,9 +70,28 @@ public class ControleIntervaloService {
         }
     }
 
+    public AbstractResponse insertTipoIntervalo(@NotNull TipoIntervalo tipoIntervalo) {
+        try {
+            return ResponseWithCod.ok("Intervalo inserido com sucesso", dao.insertTipoIntervalo(tipoIntervalo,
+                    Injection.provideDadosIntervaloChangedListener()));
+        } catch (Throwable e){
+            return Response.error("Erro ao inserir o tipo de intervalo");
+        }
+    }
+
     public boolean updateTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
         try {
             dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
+            return true;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo) {
+        try {
+            dao.inativarTipoIntervalo(codUnidade, codTipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
             e.printStackTrace();

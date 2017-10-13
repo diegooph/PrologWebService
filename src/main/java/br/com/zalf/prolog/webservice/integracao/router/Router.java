@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -69,6 +70,24 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getTiposVeiculosByUnidade(codUnidade);
+        } else {
+            return integradorProLog.getTiposVeiculosByUnidade(codUnidade);
+        }
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
+        } else {
+            return integradorProLog.getPlacasVeiculosByTipo(codUnidade, codTipo);
+        }
+    }
+
+    @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
             return getSistema().getCronogramaAfericao(codUnidade);
@@ -93,6 +112,17 @@ public abstract class Router implements OperacoesIntegradas {
         } else {
             return integradorProLog.insertAfericao(afericao, codUnidade);
         }
+    }
+
+    @Override
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws Exception {
+        return null;
     }
 
     @Override
@@ -126,11 +156,21 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getByCod(codChecklist);
+            return getSistema().getChecklistByCodigo(codChecklist);
         } else {
-            return integradorProLog.getByCod(codChecklist);
+            return integradorProLog.getChecklistByCodigo(codChecklist);
+        }
+    }
+
+    @Override
+    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  long limit, long offset, boolean resumido) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+        } else {
+            return integradorProLog.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
         }
     }
 

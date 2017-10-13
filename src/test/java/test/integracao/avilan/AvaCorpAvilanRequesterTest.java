@@ -1,5 +1,6 @@
 package test.integracao.avilan;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -7,6 +8,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfTipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -49,6 +52,45 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculo veiculos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
         assertNotNull(veiculos);
         assertTrue(!veiculos.getVeiculo().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarTiposVeiculo() throws Exception {
+        final ArrayOfTipoVeiculo tiposVeiculo = requester.getTiposVeiculo(CPF, DATA_NASCIMENTO);
+        assertNotNull(tiposVeiculo);
+        assertTrue(!tiposVeiculo.getTipoVeiculo().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarPlacasVeiculosByTipo() throws Exception {
+        final ArrayOfString placas = requester.getPlacasVeiculoByTipo("", CPF, DATA_NASCIMENTO);
+        assertNotNull(placas);
+        assertTrue(!placas.getString().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklistByCodigo() throws Exception {
+        final ChecklistFiltro checklistFiltro = requester.getChecklistByCodigo(
+                34360,
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(checklistFiltro);
+        assertNotNull(checklistFiltro.getAvaliacao());
+        System.out.println(GsonUtils.getGson().toJson(checklistFiltro));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklists() throws Exception {
+        final ArrayOfChecklistFiltro checklistFiltro = requester.getChecklists(
+                11,
+                "",
+                "",
+                "2017-09-28",
+                "2017-10-11",
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(checklistFiltro);
+        assertTrue(!checklistFiltro.getChecklistFiltro().isEmpty());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)

@@ -1,19 +1,24 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
+
 /**
  * Created on 9/28/17
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@SuppressWarnings("ConstantConditions")
 public class AvaCorpAvilanConstants {
 
     private AvaCorpAvilanConstants() {
 
     }
 
-//    public static final String BASE_URL = "http://189.11.175.146/IntegracaoPrologTestes/";
-    public static final String BASE_URL = "http://189.11.175.146/IntegracaoProlog/";
+    private static final String BASE_URL_TESTES = "http://189.11.175.146/IntegracaoPrologTestes/";
+    private static final String BASE_URL_PROD = "http://189.11.175.146/IntegracaoProlog/";
+    public static final String BASE_URL = BuildConfig.DEBUG ? BASE_URL_TESTES : BASE_URL_PROD;
 
-//    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprologtestes";
-    public static final String NAMESPACE = "http://www.avacorp.com.br/integracaoprolog";
+    private static final String NAMESPACE_TESTES = "http://www.avacorp.com.br/integracaoprologtestes";
+    private static final String NAMESPACE_PROD = "http://www.avacorp.com.br/integracaoprolog";
+    public static final String NAMESPACE = BuildConfig.DEBUG ? NAMESPACE_TESTES : NAMESPACE_PROD;
 }

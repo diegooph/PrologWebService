@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
@@ -25,16 +26,29 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final IntegradorProLog integradorProLog;
     @NotNull
+    private final SistemaKey sistemaKey;
+    @NotNull
     private final String userToken;
 
-    protected Sistema(IntegradorProLog integradorProLog, String userToken) {
+    protected Sistema(IntegradorProLog integradorProLog, SistemaKey sistemaKey, String userToken) {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
+        this.sistemaKey = checkNotNull(sistemaKey, "sistemaKey não pode ser nulo!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+        return getIntegradorProLog().getTiposVeiculosByUnidade(codUnidade);
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @Override
@@ -59,6 +73,18 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws Exception {
+        return getIntegradorProLog()
+                .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
+    }
+
+    @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
                                                       @NotNull String placaVeiculo,
@@ -72,8 +98,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public Checklist getByCod(Long codChecklist) throws Exception {
-        return getIntegradorProLog().getByCod(codChecklist);
+    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
+        return getIntegradorProLog().getChecklistByCodigo(codChecklist);
+    }
+
+    @Override
+    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  long limit, long offset, boolean resumido) throws Exception {
+        return getIntegradorProLog().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
     }
 
     @Override
@@ -86,6 +118,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     protected IntegradorProLog getIntegradorProLog() {
         return integradorProLog;
+    }
+
+    protected SistemaKey getSistemaKey() {
+        return sistemaKey;
     }
 
     protected String getUserToken() {

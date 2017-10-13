@@ -21,7 +21,7 @@ public final class SistemasFactory {
 
         switch (sistemaKey) {
             case AVACORP_AVILAN:
-                return new AvaCorpAvilan(new AvaCorpAvilanRequesterImpl(), integradorProLog, userToken);
+                return new AvaCorpAvilan(new AvaCorpAvilanRequesterImpl(), sistemaKey, integradorProLog, userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());
         }

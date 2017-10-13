@@ -61,6 +61,33 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
+    public ArrayOfTipoVeiculo getTiposVeiculo(@NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
+        final TiposVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarTiposVeiculo();
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getTiposVeiculo();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar tipos de veículo"
+                : request.getMensagem());
+    }
+
+    @Override
+    public ArrayOfString getPlacasVeiculoByTipo(String codTipoVeiculo, String cpf, String dataNascimento) throws Exception {
+        final VeiculoTipo request = getCadastroSoap(cpf, dataNascimento).buscarVeiculosTipo(codTipoVeiculo);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getVeiculos();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar placas dos veículos para o tipo: " + codTipoVeiculo
+                : request.getMensagem());
+    }
+
+    @Override
     public ArrayOfQuestionarioVeiculos getSelecaoModeloChecklistPlacaVeiculo(@NotNull String cpf,
                                                                              @NotNull String dataNascimento) throws Exception {
         final BuscaQuestionarioColaborador request = getChecklistSoap(cpf, dataNascimento).buscarQuestionariosColaborador(cpf);
@@ -124,9 +151,21 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfPneu getPneusVeiculo(@NotNull String placaVeiculo,
-                                       @NotNull String cpf,
-                                       @NotNull String dataNascimento) throws Exception {
+    public Object getAfericoes(final int codUnidadeAvilan,
+                               @NotNull final String codTipoVeiculo,
+                               @NotNull final String placaVeiculo,
+                               @NotNull final String dataInicial,
+                               @NotNull final String dataFinal,
+                               @NotNull final String cpf,
+                               @NotNull final String dataNascimento) throws Exception {
+
+        throw new UnsupportedOperationException("Falta implementar!");
+    }
+
+    @Override
+    public ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
+                                       @NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception {
         final PneusVeiculo request = getCadastroSoap(cpf, dataNascimento).buscarPneusVeiculo(placaVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
@@ -139,7 +178,50 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
+    public ChecklistFiltro getChecklistByCodigo(final int codigoAvaliacao,
+                                                @NotNull final String cpf,
+                                                @NotNull final String dataNascimento) throws Exception {
+
+        final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            // Na busca por código de um checklist sempre virá apenas um único elemento.
+            return request.getChecklists().getChecklistFiltro().get(0);
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar checklist com o código: " + codigoAvaliacao + " da Avilan"
+                : request.getMensagem());
+    }
+
+    @Override
+    public ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+                                                @NotNull final String codTipoVeiculo,
+                                                @NotNull final String placaVeiculo,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal,
+                                                @NotNull final String cpf,
+                                                @NotNull final String dataNascimento) throws Exception {
+
+        final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                codUnidadeAvilan,
+                1,
+                dataInicial,
+                dataFinal,
+                placaVeiculo,
+                codTipoVeiculo);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getChecklists();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar o checklists para a unidade: " + codUnidadeAvilan + " da Avilan"
+                : request.getMensagem());
+    }
+
+    @Override
+    public ArrayOfFarolDia getFarolChecklist(final int codUnidadeAvilan,
                                              @NotNull final String dataInicial,
                                              @NotNull final String dataFinal,
                                              @NotNull final boolean itensCriticosRetroativos,

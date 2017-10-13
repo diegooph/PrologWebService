@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -13,13 +13,18 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/afericao")
+/**
+ * Created on 10/11/17
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
+ */
+@Path("/afericoes")
 @DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AfericaoResource {
 
-    private AfericaoService service = new AfericaoService();
+    private final AfericaoService service = new AfericaoService();
 
     @POST
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
@@ -46,7 +51,7 @@ public class AfericaoResource {
 
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    @Path("/listaAfericao/{codUnidade}")
+    @Path("/cronogramas/{codUnidade}")
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
                                                     @HeaderParam("Authorization") String userToken) {
         return service.getCronogramaAfericao(codUnidade, userToken);
@@ -61,28 +66,49 @@ public class AfericaoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/getAll")
+    @Path("/{codUnidade}/{codTipoVeiculo}/{placaVeiculo}")
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
-            @QueryParam("codUnidades") List<String> codUnidades,
-            @QueryParam("placas") List<String> placas,
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codTipoVeiculo") String codTipoVeiculo,
+            @PathParam("placaVeiculo") String placaVeiculo,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal,
             @QueryParam("limit") long limit,
-            @QueryParam("offset") long offset) {
-        return service.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getAfericoes(
+                codUnidade,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset,
+                userToken);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{codAfericao}")
     public Afericao getByCod(@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade) {
         return service.getByCod(codAfericao, codUnidade);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(permissions = {
+            Pilares.Frota.Afericao.VISUALIZAR,
+            Pilares.Frota.Afericao.REALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getRestricaoByCodUnidade(codUnidade);

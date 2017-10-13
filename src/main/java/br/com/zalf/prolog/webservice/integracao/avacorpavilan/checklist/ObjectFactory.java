@@ -23,18 +23,18 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: br.com.avacorp.integracaoprolog
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: br.com.avacorp.integracaoprologtestes
      *
      */
     public ObjectFactory() {
     }
 
     /**
-     * Create an instance of {@link IntegrarArquivo }
+     * Create an instance of {@link FarolChecklist }
      *
      */
-    public IntegrarArquivo createIntegrarArquivo() {
-        return new IntegrarArquivo();
+    public FarolChecklist createFarolChecklist() {
+        return new FarolChecklist();
     }
 
     /**
@@ -54,6 +54,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link BuscarChecklistFiltroResponse }
+     *
+     */
+    public BuscarChecklistFiltroResponse createBuscarChecklistFiltroResponse() {
+        return new BuscarChecklistFiltroResponse();
+    }
+
+    /**
+     * Create an instance of {@link ChecklistsFiltro }
+     *
+     */
+    public ChecklistsFiltro createChecklistsFiltro() {
+        return new ChecklistsFiltro();
+    }
+
+    /**
+     * Create an instance of {@link BuscarAvaliacaoFiltro }
+     *
+     */
+    public BuscarAvaliacaoFiltro createBuscarAvaliacaoFiltro() {
+        return new BuscarAvaliacaoFiltro();
+    }
+
+    /**
      * Create an instance of {@link BuscarPerguntasAlternativasQuestionario }
      *
      */
@@ -67,6 +91,14 @@ public class ObjectFactory {
      */
     public AdicionarChecklist createAdicionarChecklist() {
         return new AdicionarChecklist();
+    }
+
+    /**
+     * Create an instance of {@link BuscarChecklistFiltro }
+     *
+     */
+    public BuscarChecklistFiltro createBuscarChecklistFiltro() {
+        return new BuscarChecklistFiltro();
     }
 
     /**
@@ -126,19 +158,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IntegrarArquivoResponse }
+     * Create an instance of {@link BuscarAvaliacaoFiltroResponse }
      *
      */
-    public IntegrarArquivoResponse createIntegrarArquivoResponse() {
-        return new IntegrarArquivoResponse();
-    }
-
-    /**
-     * Create an instance of {@link RetornoPadrao }
-     *
-     */
-    public RetornoPadrao createRetornoPadrao() {
-        return new RetornoPadrao();
+    public BuscarAvaliacaoFiltroResponse createBuscarAvaliacaoFiltroResponse() {
+        return new BuscarAvaliacaoFiltroResponse();
     }
 
     /**
@@ -190,11 +214,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RespostaFiltro }
+     *
+     */
+    public RespostaFiltro createRespostaFiltro() {
+        return new RespostaFiltro();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfResposta }
      *
      */
     public ArrayOfResposta createArrayOfResposta() {
         return new ArrayOfResposta();
+    }
+
+    /**
+     * Create an instance of {@link AlternativaFiltro }
+     *
+     */
+    public AlternativaFiltro createAlternativaFiltro() {
+        return new AlternativaFiltro();
+    }
+
+    /**
+     * Create an instance of {@link ColaboradorAvilan }
+     *
+     */
+    public ColaboradorAvilan createColaborador() {
+        return new ColaboradorAvilan();
     }
 
     /**
@@ -214,6 +262,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link AvaliacaoFiltro }
+     *
+     */
+    public AvaliacaoFiltro createAvaliacaoFiltro() {
+        return new AvaliacaoFiltro();
+    }
+
+    /**
      * Create an instance of {@link Questionario }
      *
      */
@@ -227,6 +283,22 @@ public class ObjectFactory {
      */
     public ArrayOfAvaliacao createArrayOfAvaliacao() {
         return new ArrayOfAvaliacao();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfChecklistFiltro }
+     *
+     */
+    public ArrayOfChecklistFiltro createArrayOfChecklistFiltro() {
+        return new ArrayOfChecklistFiltro();
+    }
+
+    /**
+     * Create an instance of {@link ChecklistFiltro }
+     *
+     */
+    public ChecklistFiltro createChecklistFiltro() {
+        return new ChecklistFiltro();
     }
 
     /**
@@ -259,6 +331,30 @@ public class ObjectFactory {
      */
     public ArrayOfItemCritico createArrayOfItemCritico() {
         return new ArrayOfItemCritico();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfAlternativaFiltro }
+     *
+     */
+    public ArrayOfAlternativaFiltro createArrayOfAlternativaFiltro() {
+        return new ArrayOfAlternativaFiltro();
+    }
+
+    /**
+     * Create an instance of {@link QuestaoFiltro }
+     *
+     */
+    public QuestaoFiltro createQuestaoFiltro() {
+        return new QuestaoFiltro();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfQuestaoFiltro }
+     *
+     */
+    public ArrayOfQuestaoFiltro createArrayOfQuestaoFiltro() {
+        return new ArrayOfQuestaoFiltro();
     }
 
     /**
@@ -324,5 +420,4 @@ public class ObjectFactory {
     public ArrayOfQuestao createArrayOfQuestao() {
         return new ArrayOfQuestao();
     }
-
 }

@@ -97,8 +97,9 @@ public class VeiculoResource {
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
-                                          @PathParam("codTipo") String codTipo) {
-        return service.getVeiculosByTipo(codUnidade, codTipo);
+                                          @PathParam("codTipo") String codTipo,
+                                          @HeaderParam("Authorization") String userToken) {
+        return service.getVeiculosByTipo(codUnidade, codTipo, userToken);
     }
 
     @GET
@@ -116,8 +117,9 @@ public class VeiculoResource {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/{codUnidade}/tipo")
-    public List<TipoVeiculo> getTipoVeiculosByUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTipoVeiculosByUnidade(codUnidade);
+    public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
+                                                      @PathParam("codUnidade") Long codUnidade) {
+        return service.getTipoVeiculosByUnidade(userToken, codUnidade);
     }
 
     @GET
