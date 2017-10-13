@@ -58,8 +58,9 @@ public class ChecklistResource {
     public List<Checklist> getByColaborador(
             @PathParam("cpf") Long cpf,
             @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset) {
-        return service.getByColaborador(cpf, limit, offset, false);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getByColaborador(cpf, limit, offset, false, userToken);
     }
 
     @GET
@@ -68,8 +69,9 @@ public class ChecklistResource {
     public List<Checklist> getByColaboradorResumidos(
             @PathParam("cpf") Long cpf,
             @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset) {
-        return service.getByColaborador(cpf, limit, offset, true);
+            @QueryParam("offset") long offset,
+            @HeaderParam("Authorization") String userToken) {
+        return service.getByColaborador(cpf, limit, offset, true, userToken);
     }
 
     @GET

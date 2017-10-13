@@ -29,9 +29,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -117,6 +115,41 @@ public final class AvaCorpAvilan extends Sistema {
                 Math.toIntExact(codChecklist),
                 cpf(),
                 dataNascimento()));
+    }
+
+    @Override
+    public List<Checklist> getChecklistsByColaborador(Long cpf, int limit, long offset, boolean resumido) throws Exception {
+        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade());
+
+        final Date dataInicial = new Date(System.currentTimeMillis());
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dataInicial);
+        calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+
+        final List<ChecklistFiltro> checklists = requester.getChecklists(
+                Integer.parseInt(codUnidadeAvilan),
+                "",
+                "",
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(new Date(System.currentTimeMillis())),
+                cpf(),
+                dataNascimento()).getChecklistFiltro();
+
+        List<ChecklistFiltro> checksColaborador = new ArrayList<>();
+        for (ChecklistFiltro checklist : checklists) {
+            if (checklist.getColaborador().getCpf().equals(cpf())) {
+                checksColaborador.add(checklist);
+            }
+        }
+
+        // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
+        checksColaborador = checksColaborador
+                .stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        return AvaCorpAvilanConverter.getChecklists(checksColaborador);
     }
 
     @Override

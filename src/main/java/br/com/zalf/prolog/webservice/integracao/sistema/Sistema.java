@@ -103,6 +103,11 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
+    public List<Checklist> getChecklistsByColaborador(Long cpf, int limit, long offset, boolean resumido) throws Exception {
+        return getIntegradorProLog().getChecklistsByColaborador(cpf, limit, offset, resumido);
+    }
+
+    @Override
     public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
                                   long limit, long offset, boolean resumido) throws Exception {
         return getIntegradorProLog().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
