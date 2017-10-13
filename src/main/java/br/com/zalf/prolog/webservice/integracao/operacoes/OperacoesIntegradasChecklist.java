@@ -31,6 +31,12 @@ interface OperacoesIntegradasChecklist {
     Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;
 
     @NotNull
+    List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
+                                               final int limit,
+                                               final long offset,
+                                               final boolean resumido) throws Exception;
+
+    @NotNull
     List<Checklist> getAll(@NotNull final Date dataInicial,
                            @NotNull final Date dataFinal,
                            @NotNull final String equipe,

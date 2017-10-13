@@ -89,12 +89,14 @@ public class ChecklistService {
         }
     }
 
-    public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) {
+    public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido, String userToken) {
         try {
-            return dao.getByColaborador(cpf, limit, offset, resumido);
-        } catch (SQLException e) {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getChecklistsByColaborador(cpf, limit, offset, resumido);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
         }
     }
 

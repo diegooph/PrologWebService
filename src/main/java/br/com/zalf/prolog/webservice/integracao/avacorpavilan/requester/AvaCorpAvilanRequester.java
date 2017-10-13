@@ -60,6 +60,14 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 
+    ArrayOfChecklistFiltro getChecklistsByColaborador(final int codUnidadeAvilan,
+                                                      @NotNull final String codTipoVeiculo,
+                                                      @NotNull final String placaVeiculo,
+                                                      @NotNull final String dataInicial,
+                                                      @NotNull final String dataFinal,
+                                                      @NotNull final String cpf,
+                                                      @NotNull final String dataNascimento) throws Exception;
+
     ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
                                          @NotNull final String codTipoVeiculo,
                                          @NotNull final String placaVeiculo,

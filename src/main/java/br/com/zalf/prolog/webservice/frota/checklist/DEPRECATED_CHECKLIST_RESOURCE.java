@@ -65,8 +65,9 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	public List<Checklist> getByColaborador(
 			@PathParam("cpf") Long cpf,
 			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset) {
-		return service.getByColaborador(cpf, limit, offset, false);
+			@QueryParam("offset") long offset,
+			@HeaderParam("Authorization") String userToken) {
+		return service.getByColaborador(cpf, limit, offset, false, userToken);
 	}
 
 	@GET
