@@ -2,14 +2,19 @@ Change Log
 ==========
 
 <a name="v0.0.35"></a>
-## Version [v0.0.35](https://github.com/luizfp/PrologAndroid/compare/v0.0.34-h1...v0.0.35) (release-date) - [unreleased]
+## Version [v0.0.35](https://github.com/luizfp/PrologAndroid/compare/v0.0.34-h1...v0.0.35) (2017-10-13)
 
 ### Features
 * Implementa upadate de um tipo de intervalo
 * Implementa inativate de um tipo de intervalo
+* Integra busca dos checklists com Avilan
+* Salva localização do usuário, se houver, no momento da marcação de intervalo
 
 ### Refactor
 * Altera path de alguns métodos de update/inativade tipo de intervalo
+
+#### Deprecated
+* Resource da Aferição com path `afericao`. Novo resource agora possui path `afericoes`
 
 <a name="v0.0.34-h1"></a>
 ## Version [v0.0.34-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.34...v0.0.34-h1) (2017-10-06)
