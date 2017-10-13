@@ -13,7 +13,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
-import br.com.zalf.prolog.webservice.integracao.DiagramaVeiculoProviderFactory;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
@@ -180,10 +179,10 @@ public final class AvaCorpAvilan extends Sistema {
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
                 requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
-        final Long codDiagrama = DiagramaVeiculoProviderFactory
-                .getDiagramaVeiculoProvider(getSistemaKey())
-                .getCodDiagramaBy("C2RRR");
-        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByCodTipo(codDiagrama);
+//        final Long codDiagrama = DiagramaVeiculoProviderFactory
+//                .getDiagramaVeiculoProvider(getSistemaKey())
+//                .getCodDiagramaBy("C2RRR");
+        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByPlaca(veiculo.getPlaca());
         if (diagramaVeiculo == null) {
             throw new IllegalStateException("Diagrama não encontrado para a placa: " + placaVeiculo);
         }
