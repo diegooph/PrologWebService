@@ -325,7 +325,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
                     " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ?, " +
-                    "LATITUDE_INICIO = ?, LATITUDE_FIM = ?, LONGITUDE_INICIO = ?, LONGITUDE_FIM = ? " +
+                    "LATITUDE_INICIO = ?, LONGITUDE_INICIO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? " +
                     "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
             stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
             stmt.setTimestamp(2, DateUtils.toTimestamp(intervalo.getDataHoraInicio()));
@@ -333,12 +333,23 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             stmt.setTimestamp(4, DateUtils.toTimestamp(intervalo.getDataHoraFim()));
             stmt.setString(5, intervalo.getJustificativaEstouro());
             stmt.setString(6, intervalo.getJustificativaTempoRecomendado());
+
             final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
+            if (localizacaoInicio != null) {
+                stmt.setString(7, localizacaoInicio.getLatitude());
+                stmt.setString(8, localizacaoInicio.getLongitude());
+            } else {
+                stmt.setNull(7, Types.VARCHAR);
+                stmt.setNull(8, Types.VARCHAR);
+            }
             final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            stmt.setString(7, localizacaoInicio.getLatitude());
-            stmt.setString(8, localizacaoFim.getLatitude());
-            stmt.setString(9, localizacaoInicio.getLongitude());
-            stmt.setString(10, localizacaoFim.getLongitude());
+            if (localizacaoFim != null) {
+                stmt.setString(9, localizacaoFim.getLatitude());
+                stmt.setString(10, localizacaoFim.getLongitude());
+            } else {
+                stmt.setNull(9, Types.VARCHAR);
+                stmt.setNull(10, Types.VARCHAR);
+            }
 
             stmt.setLong(11, intervalo.getColaborador().getCpf());
             stmt.setLong(12, intervalo.getCodigo());
