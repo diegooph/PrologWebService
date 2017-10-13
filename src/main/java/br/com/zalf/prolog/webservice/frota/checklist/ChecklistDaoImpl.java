@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.*;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
@@ -90,7 +89,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public List<Checklist> getAll(LocalDate dataInicial, LocalDate dataFinal, String equipe,
+	public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
 								  Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;

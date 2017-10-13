@@ -490,7 +490,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
     @Android
     @Override
-    public List<String> getVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
+    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -526,6 +526,29 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     "JOIN veiculo_diagrama vd on vd.codigo = vt.cod_diagrama\n" +
                     "WHERE v.placa = ?");
             stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createDiagramaVeiculo(rSet, conn);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public DiagramaVeiculo getDiagramaVeiculoByCod(Long codDiagrama) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT *\n" +
+                    "FROM veiculo_diagrama AS vd\n" +
+                    "  JOIN veiculo_tipo AS vt\n" +
+                    "    ON vd.codigo = vt.cod_diagrama\n" +
+                    "WHERE vd.codigo = ?");
+            stmt.setLong(1, codDiagrama);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createDiagramaVeiculo(rSet, conn);

@@ -28,7 +28,17 @@ interface OperacoesIntegradasChecklist {
     Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
 
     @NotNull
-    Checklist getByCod(@NotNull final Long codChecklist) throws Exception;
+    Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;
+
+    @NotNull
+    List<Checklist> getAll(@NotNull final Date dataInicial,
+                           @NotNull final Date dataFinal,
+                           @NotNull final String equipe,
+                           @NotNull final Long codUnidade,
+                           @NotNull final String placa,
+                           final long limit,
+                           final long offset,
+                           final boolean resumido) throws Exception;
 
     @NotNull
     FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

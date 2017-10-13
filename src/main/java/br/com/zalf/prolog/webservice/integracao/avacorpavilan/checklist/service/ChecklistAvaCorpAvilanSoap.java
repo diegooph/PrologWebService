@@ -28,7 +28,7 @@ public interface ChecklistAvaCorpAvilanSoap {
 
     /**
      * Adicionar nova avaliação e retorna as questões
-     * 
+     *
      * @param questionario
      * @return
      *     returns br.com.avacorp.integracaoprolog.PerguntasAlternativasQuestionario
@@ -43,7 +43,7 @@ public interface ChecklistAvaCorpAvilanSoap {
 
     /**
      * Questionarios para um veiculo
-     * 
+     *
      * @param cpf
      * @return
      *     returns br.com.avacorp.integracaoprolog.BuscaQuestionarioColaborador
@@ -58,7 +58,7 @@ public interface ChecklistAvaCorpAvilanSoap {
 
     /**
      * Processa as respostas de uma avaliação
-     * 
+     *
      * @param respostas
      * @return
      *     returns br.com.avacorp.integracaoprolog.EnviaRespostaAvaliacao
@@ -99,45 +99,47 @@ public interface ChecklistAvaCorpAvilanSoap {
                     boolean buscarRetroativo);
 
     /**
-     * Integração de arquivos binarios
-     * 
-     * @param extensao
-     * @param numerosequencia
-     * @param conteudo
-     * @param numerosequenciaitem
-     * @param cnpjcpfcodigo
-     * @param serie
-     * @param dtemissao
-     * @param diferenciadornumero
-     * @param nomearquivo
-     * @param tipodocumento
+     * Buscar checklists
+     *
+     * @param veiculo
+     * @param tipoVeiculo
+     * @param filial
+     * @param unidade
+     * @param dataInicial
+     * @param dataFinal
      * @return
-     *     returns br.com.avacorp.integracaoprolog.RetornoPadrao
+     *     returns br.com.avacorp.integracaoprologtestes.ChecklistsFiltro
      */
-    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/integrarArquivo")
-    @WebResult(name = "integrarArquivoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-    @RequestWrapper(localName = "integrarArquivo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.IntegrarArquivo")
-    @ResponseWrapper(localName = "integrarArquivoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprolog.IntegrarArquivoResponse")
-    public RetornoPadrao integrarArquivo(
-            @WebParam(name = "tipodocumento", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    int tipodocumento,
-            @WebParam(name = "diferenciadornumero", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    int diferenciadornumero,
-            @WebParam(name = "serie", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    int serie,
-            @WebParam(name = "numerosequencia", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    int numerosequencia,
-            @WebParam(name = "numerosequenciaitem", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    int numerosequenciaitem,
-            @WebParam(name = "cnpjcpfcodigo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String cnpjcpfcodigo,
-            @WebParam(name = "dtemissao", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String dtemissao,
-            @WebParam(name = "nomearquivo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String nomearquivo,
-            @WebParam(name = "extensao", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String extensao,
-            @WebParam(name = "conteudo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String conteudo);
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarChecklistFiltro")
+    @WebResult(name = "buscarChecklistFiltroResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarChecklistFiltro", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarChecklistFiltro")
+    @ResponseWrapper(localName = "buscarChecklistFiltroResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarChecklistFiltroResponse")
+    public ChecklistsFiltro buscarChecklistFiltro(
+            @WebParam(name = "filial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int filial,
+            @WebParam(name = "unidade", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int unidade,
+            @WebParam(name = "dataInicial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String dataInicial,
+            @WebParam(name = "dataFinal", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String dataFinal,
+            @WebParam(name = "veiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String veiculo,
+            @WebParam(name = "tipoVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String tipoVeiculo);
 
+    /**
+     * Buscar avaliações
+     *
+     * @param codigoAvaliacao
+     * @return
+     *     returns br.com.avacorp.integracaoprologtestes.ChecklistsFiltro
+     */
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarAvaliacaoFiltro")
+    @WebResult(name = "buscarAvaliacaoFiltroResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarAvaliacaoFiltro", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAvaliacaoFiltro")
+    @ResponseWrapper(localName = "buscarAvaliacaoFiltroResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAvaliacaoFiltroResponse")
+    public ChecklistsFiltro buscarAvaliacaoFiltro(
+            @WebParam(name = "codigoAvaliacao", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int codigoAvaliacao);
 }

@@ -24,7 +24,6 @@ import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
-
     public AfericaoDaoImpl() {
 
     }
@@ -212,16 +211,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return placa;
     }
 
-    /**
-     * Busca uma lista com informações reduzidas sobre as aferições, usado para exibir uma lista resumida dos dados (data, nome, tempo, placa)
-     *
-     * @param codUnidades lista com os codigos das unidades a serem buscadas as aferições
-     * @param placas
-     * @param limit
-     * @param offset
-     * @return
-     * @throws SQLException
-     */
     @Override
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException {
         //LIKE ANY (ARRAY[?])
@@ -241,7 +230,48 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
             stmt.setLong(3, limit);
             stmt.setLong(4, offset);
-            System.out.println(stmt.toString());
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                afericoes.add(createAfericaoResumida(rSet));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return afericoes;
+    }
+
+    @Override
+    public List<Afericao> getAfericoes(Long codUnidade,
+                                       String codTipoVeiculo,
+                                       String placaVeiculo,
+                                       long dataInicial,
+                                       long dataFinal,
+                                       long limit,
+                                       long offset) throws SQLException {
+        List<Afericao> afericoes = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA, "
+                    + "A.PLACA_VEICULO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+                    + "FROM AFERICAO A "
+                    + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+                    + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
+                    + "WHERE V.COD_UNIDADE = ? "
+                    + "AND V.COD_TIPO::TEXT LIKE ? "
+                    + "AND V.PLACA LIKE ? "
+                    + "AND A.DATA_HORA BETWEEN ? AND ? "
+                    + "ORDER BY A.DATA_HORA DESC "
+                    + "LIMIT ? OFFSET ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codTipoVeiculo);
+            stmt.setString(3, placaVeiculo);
+            stmt.setDate(4, new java.sql.Date(dataInicial));
+            stmt.setDate(5, new java.sql.Date(dataFinal));
+            stmt.setLong(6, limit);
+            stmt.setLong(7, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 afericoes.add(createAfericaoResumida(rSet));
@@ -258,7 +288,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         Afericao afericao = new Afericao();
-        Veiculo veiculo = new Veiculo();
+        Veiculo veiculo;
         VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         List<Pneu> pneus = new ArrayList<>();
         PneuDao pneuDao = Injection.providePneuDao();
@@ -305,10 +335,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
-
-        PreparedStatement stmt = null;
+        PreparedStatement stmt;
         PneuDao pneuDao = Injection.providePneuDao();
-
         stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
                 + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
@@ -335,27 +363,21 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    /**
-     * Cria uma lista com os serviços necessários que sejam cadastrados para o pneu verificado
-     *
-     * @param pneu
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
     private List<String> getServicosACadastrar(Pneu pneu, Long codUnidade, Restricao restricao) throws SQLException {
 
         List<String> servicos = new ArrayList<>();
 
-        // verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão
+        // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
         if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)) {
             servicos.add(Servico.TIPO_INSPECAO);
         }
-        // caso não tenha sido problema, verifica se está apto a ser inspeção
+
+        // Caso não tenha sido problema, verifica se está apto a ser inspeção.
         else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaInspecao()))) {
             servicos.add(Servico.TIPO_INSPECAO);
         }
-        // caso não entre em inspeção, verifica se é uma calibragem
+
+        // Caso não entre em inspeção, verifica se é uma calibragem.
         else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem())) ||
                 pneu.getPressaoAtual() >= (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
             servicos.add(Servico.TIPO_CALIBRAGEM);
@@ -374,21 +396,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return servicos;
     }
 
-    /**
-     * retorna uma lista com os serviços ja cadastrados para uma placa, resutados distintos, apenas serviços em aberto aparecerão
-     *
-     * @param codPneu
-     * @param codUnidade
-     * @return
-     * @throws SQLException
-     */
     private List<String> getServicosCadastradosByPneu(String codPneu, Long codUnidade) throws SQLException {
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<String> listServico = new ArrayList<>();
-
+        final List<String> listServico = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT TIPO_SERVICO, COUNT(TIPO_SERVICO) "
@@ -441,7 +453,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
 
         for (String servicoPendente : servicosPendentes) {
-            //se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga calibragem para uma inspeção
+            // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga
+            // calibragem para uma inspeção.
             if (servicoPendente.equals(Servico.TIPO_INSPECAO) && servicosCadastrados.contains(Servico.TIPO_CALIBRAGEM)) {
                 calibragemToInspecao(pneu, codUnidade, conn);
             } else {
@@ -486,12 +499,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     /**
-     * Método usado para trocar um serviço cadastrado como calibragem para inspeção
+     * Método usado para trocar um serviço cadastrado como calibragem para inspeção.
      *
-     * @param pneu
-     * @param codUnidade
-     * @param conn
-     * @throws SQLException
      */
     private void calibragemToInspecao(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
 
@@ -525,5 +534,3 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericao;
     }
 }
-
-
