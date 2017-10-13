@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+<a name="v0.0.35-h1"></a>
+## Version [v0.0.35-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.35...v0.0.35-h1) (2017-10-13)
+
+### Bug Fixes
+* Integra busca dos checklists por colaborador com Avilan
+
 <a name="v0.0.35"></a>
 ## Version [v0.0.35](https://github.com/luizfp/PrologAndroid/compare/v0.0.34-h1...v0.0.35) (2017-10-13)
 
