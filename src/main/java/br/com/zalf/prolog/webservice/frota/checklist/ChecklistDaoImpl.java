@@ -244,7 +244,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		System.out.println(modeloPlaca);
 		return modeloPlaca;
 	}
 
