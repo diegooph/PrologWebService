@@ -48,7 +48,7 @@ public interface ChecklistDao {
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
 	List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
-						   Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException;
+						   Long codUnidade, String placa, int limit, long offset, boolean resumido) throws SQLException;
 
 	/**
 	 * Busca os checklists realizados por um colaborador

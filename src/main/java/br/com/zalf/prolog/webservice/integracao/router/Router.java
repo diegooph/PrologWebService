@@ -174,12 +174,14 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
-                                  long limit, long offset, boolean resumido) throws Exception {
+    public List<Checklist> getTodosChecklists(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  int limit, long offset, boolean resumido) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+            return getSistema()
+                    .getTodosChecklists(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
         } else {
-            return integradorProLog.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+            return integradorProLog
+                    .getTodosChecklists(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
         }
     }
 

@@ -108,9 +108,9 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
-                                  long limit, long offset, boolean resumido) throws Exception {
-        return getIntegradorProLog().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+    public List<Checklist> getTodosChecklists(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                              int limit, long offset, boolean resumido) throws Exception {
+        return getIntegradorProLog().getTodosChecklists(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
     }
 
     @Override

@@ -191,8 +191,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
-                                  long limit, long offset, boolean resumido) throws Exception {
+    public List<Checklist> getTodosChecklists(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
+                                  int limit, long offset, boolean resumido) throws Exception {
         return checklistDao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
     }
 

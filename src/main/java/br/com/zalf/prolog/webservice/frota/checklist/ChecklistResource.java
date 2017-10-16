@@ -83,7 +83,7 @@ public class ChecklistResource {
             @PathParam("placa") String placa,
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
-            @QueryParam("limit")long limit,
+            @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) {
         return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
@@ -98,7 +98,7 @@ public class ChecklistResource {
             @PathParam("placa") String placa,
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
-            @QueryParam("limit")long limit,
+            @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) {
         return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, true, userToken);

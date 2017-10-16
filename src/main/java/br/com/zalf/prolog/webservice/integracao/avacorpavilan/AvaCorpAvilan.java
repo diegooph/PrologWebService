@@ -142,28 +142,23 @@ public final class AvaCorpAvilan extends Sistema {
             }
         }
 
-        // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
-        checksColaborador = checksColaborador
-                .stream()
-                .skip(offset)
-                .limit(limit)
-                .collect(Collectors.toList());
-
-        return AvaCorpAvilanConverter.getChecklists(checksColaborador);
+        return paginateAndConvert(checksColaborador, limit, offset, resumido);
     }
 
     @Override
-    public List<Checklist> getAll(@NotNull final Date dataInicial,
-                                  @NotNull final Date dataFinal,
-                                  @NotNull final String equipe,
-                                  @NotNull final Long codUnidade,
-                                  @NotNull final String placa,
-                                  final long limit,
-                                  final long offset,
-                                  final boolean resumido) throws Exception {
+    public List<Checklist> getTodosChecklists(@NotNull final Date dataInicial,
+                                              @NotNull final Date dataFinal,
+                                              @NotNull final String equipe,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final String placa,
+                                              final int limit,
+                                              final long offset,
+                                              final boolean resumido) throws Exception {
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
+        final String cpf = cpf();
+        final String dataNascimento = dataNascimento();
         List<ChecklistFiltro> checklists = requester.getChecklists(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
@@ -171,17 +166,34 @@ public final class AvaCorpAvilan extends Sistema {
                 placa.equals("%") ? "" : placa,
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
                 AvaCorpAvilanUtils.createDatePattern(dataFinal),
-                cpf(),
-                dataNascimento()).getChecklistFiltro();
+                cpf,
+                dataNascimento).getChecklistFiltro();
+
+        return paginateAndConvert(checklists, limit, offset, resumido);
+    }
+
+    private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
+                                               final int limit,
+                                               final long offset,
+                                               final boolean resumido) {
 
         // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
-        checklists = checklists
+        return checklists
                 .stream()
                 .skip(offset)
                 .limit(limit)
+                .map(checklistFiltro -> {
+                    try {
+                        if (resumido) {
+                            return AvaCorpAvilanConverter.convert(checklistFiltro);
+                        } else {
+                            return getChecklistByCodigo((long) checklistFiltro.getCodigoChecklist());
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
-
-        return AvaCorpAvilanConverter.getChecklists(checklists);
     }
 
     @Override

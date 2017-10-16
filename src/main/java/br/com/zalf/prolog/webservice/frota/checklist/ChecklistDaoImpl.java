@@ -90,7 +90,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
-								  Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException {
+								  Long codUnidade, String placa, int limit, long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -114,7 +114,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setString(3, equipe);
 			stmt.setLong(4, codUnidade);
 			stmt.setString(5, placa);
-			stmt.setLong(6, limit);
+			stmt.setInt(6, limit);
 			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {

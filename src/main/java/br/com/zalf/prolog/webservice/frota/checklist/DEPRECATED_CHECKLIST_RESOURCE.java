@@ -79,7 +79,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("placa") String placa,
 			@QueryParam("dataInicial") long dataInicial,
 			@QueryParam("dataFinal") long dataFinal,
-			@QueryParam("limit")long limit,
+			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@HeaderParam("Authorization") String userToken) {
 		return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
@@ -114,7 +114,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	}
 
 	/**
-	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, long, long, String)} instead
+	 * @deprecated in v0.0.10 use {@link #getAll(Long, String, String, long, long, int, long, String)} instead
 	 */
 	@GET
 	@Path("/recentes/{codUnidade}/{equipe}")
@@ -123,7 +123,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
 			@PathParam("equipe") String equipe,
 			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit")long limit,
+			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@HeaderParam("Authorization") String userToken) {
 		final Calendar calendar = Calendar.getInstance();
