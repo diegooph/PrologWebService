@@ -26,6 +26,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         // Sincroniza os tipos buscados com o nosso banco de dados.
         final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
-                new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl()).sync(tiposVeiculosAvilan);
+                new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
 
         return AvaCorpAvilanConverter.convert(tiposVeiculosAvilanProLog);
     }
@@ -71,7 +72,7 @@ public final class AvaCorpAvilan extends Sistema {
         if (codTipo.equals("%")) {
             codTipo = "";
         } else {
-            final AvaCorpAvilanDao avaCorpAvilanDao = new AvaCorpAvilanDaoImpl();
+            final AvaCorpAvilanDao avaCorpAvilanDao = getAvaCorpAvilanDao();
             codTipo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
         }
         return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
@@ -121,10 +122,10 @@ public final class AvaCorpAvilan extends Sistema {
         calendar.setTime(dataInicial);
         calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
 
-        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
-        final List<ChecklistFiltro> checklists = requester.getChecklists(
+        final List<ChecklistFiltro> checklists = requester.getChecklistsByColaborador(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
@@ -160,7 +161,7 @@ public final class AvaCorpAvilan extends Sistema {
                                   final long limit,
                                   final long offset,
                                   final boolean resumido) throws Exception {
-        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
         List<ChecklistFiltro> checklists = requester.getChecklists(
@@ -188,7 +189,7 @@ public final class AvaCorpAvilan extends Sistema {
                                             @NotNull final Date dataInicial,
                                             @NotNull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
-        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
         final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
@@ -211,18 +212,17 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAtivo =
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan =
                 requester.getVeiculoAtivo(placaVeiculo, cpf(), dataNascimento());
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAtivo);
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
                 requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
-//        final Long codDiagrama = DiagramaVeiculoProviderFactory
-//                .getDiagramaVeiculoProvider(getSistemaKey())
-//                .getCodDiagramaBy("C2RRR");
-        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByPlaca(veiculo.getPlaca());
+        final Short codDiagrama = getAvaCorpAvilanDao()
+                .getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(veiculoAvilan.getTipo().getCodigo());
+        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (diagramaVeiculo == null) {
-            throw new IllegalStateException("Diagrama não encontrado para a placa: " + placaVeiculo);
+            throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(pneus);
@@ -255,11 +255,11 @@ public final class AvaCorpAvilan extends Sistema {
         if (codTipoVeiculo.equals("%")) {
             codTipoVeiculo = "";
         } else {
-            final AvaCorpAvilanDao avaCorpAvilanDao = new AvaCorpAvilanDaoImpl();
+            final AvaCorpAvilanDao avaCorpAvilanDao = getAvaCorpAvilanDao();
             codTipoVeiculo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipoVeiculo));
         }
 
-        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
         //noinspection unchecked
@@ -272,6 +272,11 @@ public final class AvaCorpAvilan extends Sistema {
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 cpf(),
                 dataNascimento());
+    }
+
+    @Nonnull
+    private AvaCorpAvilanDaoImpl getAvaCorpAvilanDao() {
+        return new AvaCorpAvilanDaoImpl();
     }
 
     private String cpf() throws Exception {

@@ -537,7 +537,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByCod(Long codDiagrama) throws SQLException {
+    public DiagramaVeiculo getDiagramaVeiculoByCod(Short codDiagrama) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -548,7 +548,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     "  JOIN veiculo_tipo AS vt\n" +
                     "    ON vd.codigo = vt.cod_diagrama\n" +
                     "WHERE vd.codigo = ?");
-            stmt.setLong(1, codDiagrama);
+            stmt.setShort(1, codDiagrama);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createDiagramaVeiculo(rSet, conn);

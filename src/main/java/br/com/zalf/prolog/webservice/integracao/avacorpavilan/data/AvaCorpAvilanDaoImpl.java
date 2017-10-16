@@ -27,7 +27,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         final List<TipoVeiculoAvilanProLog> tiposVeiculos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM AVILAN.TIPO_VEICULO;");
+            stmt = conn.prepareStatement("SELECT * FROM AVILAN.VEICULO_TIPO;");
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 tiposVeiculos.add(createTipoAvilanProLog(rSet));
@@ -46,7 +46,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO AVILAN.TIPO_VEICULO (CODIGO, DESCRICAO) VALUES (?, ?) " +
+            stmt = conn.prepareStatement("INSERT INTO AVILAN.VEICULO_TIPO (CODIGO, DESCRICAO) VALUES (?, ?) " +
                     "RETURNING COD_PROLOG");
             stmt.setString(1, tipoVeiculoAvilan.getCodigo());
             stmt.setString(2, tipoVeiculoAvilan.getNome());
@@ -69,7 +69,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO FROM AVILAN.TIPO_VEICULO WHERE COD_PROLOG = ?;");
+            stmt = conn.prepareStatement("SELECT CODIGO FROM AVILAN.VEICULO_TIPO WHERE COD_PROLOG = ?;");
             stmt.setLong(1, codigo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -106,6 +106,31 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         }
     }
 
+    @Nonnull
+    @Override
+    public Short getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(@Nonnull String codTipoVeiculoAvilan)
+            throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO_VEICULO_DIAGRAMA_PROLOG " +
+                    "FROM AVILAN.VEICULO_TIPO_VEICULO_DIAGRAMA " +
+                    "WHERE COD_VEICULO_TIPO = ?;");
+            stmt.setString(1, codTipoVeiculoAvilan);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getShort("CODIGO_VEICULO_DIAGRAMA_PROLOG");
+            }
+
+            throw new IllegalArgumentException("Nenhum diagrama encontrado com o tipo: " + codTipoVeiculoAvilan);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Nonnull
     private TipoVeiculoAvilanProLog createTipoAvilanProLog(ResultSet rSet) throws SQLException {
         final TipoVeiculoAvilanProLog tipoVeiculo = new TipoVeiculoAvilanProLog();
         tipoVeiculo.setCodigoAvilan(rSet.getString("CODIGO"));
@@ -114,6 +139,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         return tipoVeiculo;
     }
 
+    @Nonnull
     private FilialUnidadeAvilanProLog createFilialUnidadeAvilanProLog(ResultSet rSet) throws SQLException {
         final FilialUnidadeAvilanProLog filialUnidade = new FilialUnidadeAvilanProLog();
         filialUnidade.setCodFilialAvilan(rSet.getInt("COD_FILIAL_AVILAN"));

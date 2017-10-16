@@ -30,5 +30,12 @@ public interface AvaCorpAvilanDao {
     @Nonnull
     String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(@NotNull final Long codigo) throws SQLException;
 
-    FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
+    @Nonnull
+    FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(@NotNull final Long codUnidadeProLog)
+            throws SQLException;
+
+
+    @Nonnull
+    Short getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
+            throws SQLException;
 }

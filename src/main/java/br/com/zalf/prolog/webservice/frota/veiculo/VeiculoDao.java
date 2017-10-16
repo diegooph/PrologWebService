@@ -138,7 +138,7 @@ public interface VeiculoDao {
 	@Nullable
 	DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
 
-	DiagramaVeiculo getDiagramaVeiculoByCod(@NotNull final Long codDiagrama) throws SQLException;
+	DiagramaVeiculo getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException;
 
 	Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
 

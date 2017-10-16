@@ -90,7 +90,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByCodDiagrama(Long codDiagrama) throws Exception {
+    public DiagramaVeiculo getDiagramaVeiculoByCodDiagrama(Short codDiagrama) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
