@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 
+import javax.annotation.Nonnull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpAvilanDao {
 
+    @Nonnull
     @Override
     public List<TipoVeiculoAvilanProLog> getTiposVeiculosAvilanProLog() throws SQLException {
         PreparedStatement stmt = null;
@@ -36,6 +38,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         return tiposVeiculos;
     }
 
+    @Nonnull
     @Override
     public Long insertTipoVeiculoAvilan(TipoVeiculoAvilan tipoVeiculoAvilan) throws SQLException {
         PreparedStatement stmt = null;
@@ -58,8 +61,9 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         }
     }
 
+    @Nonnull
     @Override
-    public String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long codigo) throws Exception {
+    public String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long codigo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -78,11 +82,43 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         }
     }
 
+    @Nonnull
+    @Override
+    public FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(Long codUnidadeProLog) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT F.CODIGO AS COD_FILIAL_AVILAN, F.COD_UNIDADE_PROLOG AS " +
+                    "COD_UNIDADE_PROLOG, U.CODIGO AS COD_UNIDADE_AVILAN FROM AVILAN.FILIAL F JOIN AVILAN.UNIDADE U " +
+                    "ON F.CODIGO = U.COD_FILIAL WHERE F.COD_UNIDADE_PROLOG = ?;");
+            stmt.setLong(1, codUnidadeProLog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createFilialUnidadeAvilanProLog(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar filial/unidade da Avilan com o código de unidade do ProLog: "
+                        + codUnidadeProLog);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     private TipoVeiculoAvilanProLog createTipoAvilanProLog(ResultSet rSet) throws SQLException {
         final TipoVeiculoAvilanProLog tipoVeiculo = new TipoVeiculoAvilanProLog();
         tipoVeiculo.setCodigoAvilan(rSet.getString("CODIGO"));
         tipoVeiculo.setDescricao(rSet.getString("DESCRICAO"));
         tipoVeiculo.setCodProLog(rSet.getLong("COD_PROLOG"));
         return tipoVeiculo;
+    }
+
+    private FilialUnidadeAvilanProLog createFilialUnidadeAvilanProLog(ResultSet rSet) throws SQLException {
+        final FilialUnidadeAvilanProLog filialUnidade = new FilialUnidadeAvilanProLog();
+        filialUnidade.setCodFilialAvilan(rSet.getInt("COD_FILIAL_AVILAN"));
+        filialUnidade.setCodUnidadeAvilan(rSet.getInt("COD_UNIDADE_AVILAN"));
+        filialUnidade.setCodUnidadeProLog(rSet.getLong("COD_UNIDADE_PROLOG"));
+        return filialUnidade;
     }
 }

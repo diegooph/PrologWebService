@@ -44,7 +44,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                            @NotNull final String cpf,
                            @NotNull final String dataNascimento) throws Exception;
 
-    Object getAfericoes(@NotNull final int codUnidadeAvilan,
+    Object getAfericoes(final int codFilialAvilan,
+                        final int codUnidadeAvilan,
                         @NotNull final String codTipoVeiculo,
                         @NotNull final String placaVeiculo,
                         @NotNull final String dataInicial,
@@ -60,7 +61,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfChecklistFiltro getChecklistsByColaborador(final int codUnidadeAvilan,
+    ArrayOfChecklistFiltro getChecklistsByColaborador(final int codFilialAvilan,
+                                                      final int codUnidadeAvilan,
                                                       @NotNull final String codTipoVeiculo,
                                                       @NotNull final String placaVeiculo,
                                                       @NotNull final String dataInicial,
@@ -68,7 +70,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                                       @NotNull final String cpf,
                                                       @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+    ArrayOfChecklistFiltro getChecklists(final int codFilialAvilan,
+                                         final int codUnidadeAvilan,
                                          @NotNull final String codTipoVeiculo,
                                          @NotNull final String placaVeiculo,
                                          @NotNull final String dataInicial,
@@ -76,7 +79,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
+    ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
+                                      final int codUnidadeAvilan,
                                       @NotNull final String dataInicial,
                                       @NotNull final String dataFinal,
                                       @NotNull final boolean itensCriticosRetroativos,

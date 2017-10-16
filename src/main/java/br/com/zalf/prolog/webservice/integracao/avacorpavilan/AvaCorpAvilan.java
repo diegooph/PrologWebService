@@ -19,10 +19,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeicu
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistFiltro;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -119,15 +116,17 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<Checklist> getChecklistsByColaborador(Long cpf, int limit, long offset, boolean resumido) throws Exception {
-        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade());
-
         final Date dataInicial = new Date(System.currentTimeMillis());
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(dataInicial);
         calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
 
+        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
+
         final List<ChecklistFiltro> checklists = requester.getChecklists(
-                Integer.parseInt(codUnidadeAvilan),
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
                 "",
                 "",
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
@@ -161,9 +160,12 @@ public final class AvaCorpAvilan extends Sistema {
                                   final long limit,
                                   final long offset,
                                   final boolean resumido) throws Exception {
-        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
+        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
+
         List<ChecklistFiltro> checklists = requester.getChecklists(
-                Integer.parseInt(codUnidadeAvilan),
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
                 "",
                 placa.equals("%") ? "" : placa,
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
@@ -186,9 +188,12 @@ public final class AvaCorpAvilan extends Sistema {
                                             @NotNull final Date dataInicial,
                                             @NotNull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
-        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
+        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
+
         final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
-                Integer.parseInt(codUnidadeAvilan),
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
                 AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 itensCriticosRetroativos,
@@ -245,9 +250,6 @@ public final class AvaCorpAvilan extends Sistema {
                                        long dataFinal,
                                        long limit,
                                        long offset) throws Exception {
-
-        final String codUnidadeAvilan = getIntegradorProLog().getCodUnidadeClienteByCodUnidadeProLog(codUnidade);
-
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         if (codTipoVeiculo.equals("%")) {
@@ -257,9 +259,13 @@ public final class AvaCorpAvilan extends Sistema {
             codTipoVeiculo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipoVeiculo));
         }
 
+        final FilialUnidadeAvilanProLog filialUnidade = new AvaCorpAvilanDaoImpl()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
+
         //noinspection unchecked
         return (List<Afericao>) requester.getAfericoes(
-                Integer.parseInt(codUnidadeAvilan),
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
                 placaVeiculo.equals("%") ? "" : placaVeiculo,
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),

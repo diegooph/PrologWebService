@@ -151,7 +151,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public Object getAfericoes(final int codUnidadeAvilan,
+    public Object getAfericoes(final int codFilialAvilan,
+                               final int codUnidadeAvilan,
                                @NotNull final String codTipoVeiculo,
                                @NotNull final String placaVeiculo,
                                @NotNull final String dataInicial,
@@ -195,7 +196,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfChecklistFiltro getChecklistsByColaborador(final int codUnidadeAvilan,
+    public ArrayOfChecklistFiltro getChecklistsByColaborador(final int codFilialAvilan,
+                                                             final int codUnidadeAvilan,
                                                              @NotNull final String codTipoVeiculo,
                                                              @NotNull final String placaVeiculo,
                                                              @NotNull final String dataInicial,
@@ -203,8 +205,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                              @NotNull final String cpf,
                                                              @NotNull final String dataNascimento) throws Exception {
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
@@ -220,7 +222,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+    public ArrayOfChecklistFiltro getChecklists(final int codFilialAvilan,
+                                                final int codUnidadeAvilan,
                                                 @NotNull final String codTipoVeiculo,
                                                 @NotNull final String placaVeiculo,
                                                 @NotNull final String dataInicial,
@@ -229,8 +232,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                 @NotNull final String dataNascimento) throws Exception {
 
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
@@ -246,7 +249,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfFarolDia getFarolChecklist(final int codUnidadeAvilan,
+    public ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
+                                             final int codUnidadeAvilan,
                                              @NotNull final String dataInicial,
                                              @NotNull final String dataFinal,
                                              @NotNull final boolean itensCriticosRetroativos,
@@ -254,8 +258,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                              @NotNull final String dataNascimento) throws Exception {
 
         final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 itensCriticosRetroativos);

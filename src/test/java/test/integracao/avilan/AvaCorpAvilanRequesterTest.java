@@ -83,6 +83,7 @@ public class AvaCorpAvilanRequesterTest {
     public void testBuscarChecklists() throws Exception {
         final ArrayOfChecklistFiltro checklistFiltro = requester.getChecklists(
                 11,
+                1,
                 "",
                 "",
                 "2017-09-28",
@@ -126,6 +127,7 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfFarolDia farolDia =
                 requester.getFarolChecklist(
                         8,
+                        1,
                         "2017-09-28",
                         "2017-09-28",
                         false,

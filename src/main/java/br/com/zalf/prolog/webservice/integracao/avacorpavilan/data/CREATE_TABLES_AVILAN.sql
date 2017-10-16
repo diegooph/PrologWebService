@@ -1,4 +1,4 @@
--- A Avilan terá seu próprio esquema no banco de dados ProLog.
+-- A Avilan terá seu próprio esquema no banco de dados do ProLog.
 CREATE SCHEMA AVILAN;
 
 CREATE TABLE IF NOT EXISTS AVILAN.TIPO_VEICULO (
@@ -13,6 +13,7 @@ COMMENT ON TABLE AVILAN.TIPO_VEICULO IS 'Essa tabela mapeia os tipos de veículo
  porém, no ERP da Avilan é uma String.Para cada tipo de veículo que a Avilan possua, será criado um código
  númerico equivalente.'
 
+
 CREATE TABLE IF NOT EXISTS AVILAN.FILIAL (
   CODIGO SMALLINT NOT NULL,
   COD_UNIDADE_PROLOG BIGINT NOT NULL,
@@ -20,14 +21,15 @@ CREATE TABLE IF NOT EXISTS AVILAN.FILIAL (
   CONSTRAINT FK_FILIAL_AVILAN_UNIDADE_PROLOG FOREIGN KEY (COD_UNIDADE_PROLOG) REFERENCES PUBLIC.UNIDADE(CODIGO),
   CONSTRAINT UNIQUE_FILIAL UNIQUE (CODIGO, COD_UNIDADE_PROLOG)
 );
-
 COMMENT ON TABLE AVILAN.FILIAL IS 'Representa uma filial no banco de dados da Avilan. Uma filial pode ter várias
  unidades (AVILAN.UNIDADE) associadas a ela. Filial é o equivalente a uma unidade no ProLog. Por exemplo: Santa
  Maria é uma filial no ERP da Avilan mas uma  unidade no ProLog.';
+
+
 CREATE TABLE IF NOT EXISTS AVILAN.UNIDADE (
   CODIGO SMALLINT NOT NULL,
   COD_FILIAL SMALLINT NOT NULL,
-  CONSTRAINT PK_UNIDADE PRIMARY KEY (CODIGO),
+  CONSTRAINT PK_UNIDADE PRIMARY KEY (CODIGO, COD_FILIAL),
   CONSTRAINT FK_UNIDADE_FILIAL FOREIGN KEY (COD_FILIAL) REFERENCES AVILAN.FILIAL(CODIGO),
   CONSTRAINT UNIQUE_UNIDADE UNIQUE (CODIGO, COD_FILIAL)
 );
