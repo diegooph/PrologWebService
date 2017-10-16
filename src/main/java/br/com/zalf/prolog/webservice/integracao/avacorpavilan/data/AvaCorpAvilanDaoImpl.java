@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 import javax.annotation.Nonnull;
 import java.sql.Connection;
@@ -128,6 +130,35 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @Nonnull
+    @Override
+    public BiMap<String, Integer> getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(
+            @Nonnull String codTipoVeiculoAvilan) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        final BiMap<String, Integer> posicoesPneu = new ImmutableBiMap.Builder<String, Integer>().build();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT PNEU_POSICAO_AVILAN, PNEU_POSICAO_PROLOG FROM " +
+                    "AVILAN.PNEU_POSICAO WHERE COD_VEICULO_TIPO = ?;");
+            stmt.setString(1, codTipoVeiculoAvilan);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                do {
+                    posicoesPneu.put(
+                            rSet.getString("POSICAO_PNEU_AVILAN"),
+                            rSet.getInt("POSICAO_PNEU_PROLOG"));
+                } while (rSet.next());
+            } else {
+                throw new RuntimeException("Nenhuma posição mapeada para o tipo de veículo: " + codTipoVeiculoAvilan);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return posicoesPneu;
     }
 
     @Nonnull

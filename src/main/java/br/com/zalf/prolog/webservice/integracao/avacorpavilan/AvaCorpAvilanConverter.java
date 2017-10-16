@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
@@ -26,6 +27,7 @@ import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -265,7 +267,9 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
+    public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                     @Nonnull final ArrayOfPneu arrayOfPneu) {
+        checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
 
@@ -280,7 +284,7 @@ public final class AvaCorpAvilanConverter {
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(p.getNumeroFogo());
-            pneu.setPosicao(AvilanPosicaoPneuMapper.mapToProLog(p.getPosicao()));
+            pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
             // que é utilizado no ProLog

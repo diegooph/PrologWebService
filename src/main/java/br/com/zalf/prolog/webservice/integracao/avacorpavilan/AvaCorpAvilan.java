@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -226,16 +227,20 @@ public final class AvaCorpAvilan extends Sistema {
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
         final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan =
                 requester.getVeiculoAtivo(placaVeiculo, cpf(), dataNascimento());
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
+
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
+        final String codTipoVeiculo = veiculoAvilan.getTipo().getCodigo();
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
+                new PosicaoPneuMapper(dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculo)),
                 requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
-        final Short codDiagrama = getAvaCorpAvilanDao()
-                .getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(veiculoAvilan.getTipo().getCodigo());
+        final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculo);
         final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (diagramaVeiculo == null) {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
+
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
         veiculo.setDiagrama(diagramaVeiculo);
         veiculo.setListPneus(pneus);
 

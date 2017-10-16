@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
  * Classe responsável por mapear as posições utilizadas nos pneus pela Avilan para o equivalente no ProLog.
  */
 @VisibleForTesting
+@Deprecated
 public class AvilanPosicaoPneuMapper {
     private static final ImmutableMap<String, Integer> MAP_POSICOES;
 
