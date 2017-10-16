@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS AVILAN.FILIAL (
   CONSTRAINT FK_FILIAL_AVILAN_UNIDADE_PROLOG FOREIGN KEY (COD_UNIDADE_PROLOG) REFERENCES PUBLIC.UNIDADE(CODIGO),
   CONSTRAINT UNIQUE_FILIAL UNIQUE (CODIGO, COD_UNIDADE_PROLOG)
 );
+
 COMMENT ON TABLE AVILAN.FILIAL IS 'Representa uma filial no banco de dados da Avilan. Uma filial pode ter várias
  unidades (AVILAN.UNIDADE) associadas a ela. Filial é o equivalente a uma unidade no ProLog. Por exemplo: Santa
  Maria é uma filial no ERP da Avilan mas uma  unidade no ProLog.';
-
 CREATE TABLE IF NOT EXISTS AVILAN.UNIDADE (
   CODIGO SMALLINT NOT NULL,
   COD_FILIAL SMALLINT NOT NULL,
