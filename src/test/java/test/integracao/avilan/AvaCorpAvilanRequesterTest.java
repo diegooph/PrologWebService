@@ -4,22 +4,25 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvilanPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfTipoVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -204,6 +207,87 @@ public class AvaCorpAvilanRequesterTest {
         respostasAvaliacao.setCpf(CPF);
         respostasAvaliacao.setRespostas(arrayOfRespostaAval);
         assertNotNull(requester.insertChecklist(respostasAvaliacao, CPF, DATA_NASCIMENTO));
+    }
+
+    @Test
+    public void testeSicronizadorTipoVeiculo() throws Exception{
+        new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl())
+                .sync(requester.getTiposVeiculo(CPF, DATA_NASCIMENTO).getTipoVeiculo());
+    }
+
+    @Test
+    public void testeRotinaMapeamentoPneuAvilanProlog() throws Exception {
+        final ArrayOfTipoVeiculo tiposVeiculo = requester.getTiposVeiculo(CPF, DATA_NASCIMENTO);
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+
+        final Map<TipoVeiculoAvilan, String> tiposPlacas = new HashMap<>();
+
+        System.out.println("TOTAL DE TIPOS ENCONTRADOS: "+tiposVeiculo.getTipoVeiculo().size());
+        System.out.println("TOTAL DE VEICULOS ATIVOS: "+veiculosAtivos.getVeiculo().size());
+
+        for (TipoVeiculoAvilan veiculoAvilan : tiposVeiculo.getTipoVeiculo()) {
+            int maxNumPneu = 0;
+            final ArrayOfString placasVeiculoByTipo = requester.getPlacasVeiculoByTipo(veiculoAvilan.getCodigo(), CPF, DATA_NASCIMENTO);
+            final int placasAtivasAssociadas = getplacasAtivasAssociadas(placasVeiculoByTipo, veiculosAtivos);
+            System.out.println("Tipo Veiculo Avila: "+veiculoAvilan.getNome() +" Placas associadas: "+placasAtivasAssociadas);
+
+            for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
+                for (String placa : placasVeiculoByTipo.getString()) {
+                    if (placa.equals(veiculo.getPlaca())) {
+                        if (veiculo.getQuantidadePneu() > maxNumPneu) {
+                            // para cada tipo de veículo o Map registrará a placa com maior quantidade de pneus
+                            tiposPlacas.put(veiculoAvilan, veiculo.getPlaca());
+                            maxNumPneu = veiculo.getQuantidadePneu();
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println(GsonUtils.getGson().toJson(tiposPlacas));
+
+        for (String placa : tiposPlacas.values()) {
+            final ArrayOfPneu pneusVeiculo = requester.getPneusVeiculo(placa, CPF, DATA_NASCIMENTO);
+            for (Pneu pneu : pneusVeiculo.getPneu()) {
+                final TipoVeiculoAvilan tipoVeiculoAvilan = tiposPlacas.entrySet()
+                        .stream()
+                        .filter(value -> value.getValue().equals(placa))
+                        .findFirst()
+                        .map(Map.Entry::getKey).orElse(null);
+                final String posicaoAvilan = pneu.getPosicao();
+                final int posicaoProlog = AvilanPosicaoPneuMapper.mapToProLog(posicaoAvilan);
+                if (tipoVeiculoAvilan != null) {
+                    insertIntoPneuPosicaoAvilanProlog(tipoVeiculoAvilan.getCodigo(), posicaoAvilan, posicaoProlog);
+                } else {
+                    System.out.println("Tipo é null para placa: " + placa);
+                }
+            }
+        }
+    }
+
+    private int getplacasAtivasAssociadas(
+            ArrayOfString placasVeiculoByTipo,
+            ArrayOfVeiculo veiculosAtivos) {
+
+        int contagem = 0;
+
+        for (String placa : placasVeiculoByTipo.getString()) {
+            for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
+                if (placa.equals(veiculo.getPlaca()))
+                    contagem++;
+            }
+        }
+        return contagem;
+    }
+
+    private void insertIntoPneuPosicaoAvilanProlog(
+            String codTipoVeiculoAvilan,
+            String posicaoAvilan,
+            int posicaoProlog) {
+
+            System.out.println("INSERT INTO AVILAN.PNEU_POSICAO_AVILAN_PROLOG(POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG, COD_VEICULO_TIPO) " +
+                    "VALUES('"+posicaoAvilan+"', "+posicaoProlog+", '"+codTipoVeiculoAvilan+"');");
+
     }
 
     private IncluirMedida2 createIncluirMedida() {
