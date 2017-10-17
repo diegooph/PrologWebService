@@ -86,7 +86,7 @@ public class EmpresaResource {
 
     @GET
     @Secured
-    @Path("/unidades/{codUnidade}/funcoes")
+    @Path("/unidades/{codUnidade}/cargos")
     public List<Cargo> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
         return service.getFuncoesByCodUnidade(codUnidade);
     }
