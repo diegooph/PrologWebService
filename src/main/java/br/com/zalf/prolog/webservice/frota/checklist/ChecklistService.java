@@ -77,13 +77,34 @@ public class ChecklistService {
         }
     }
 
-    public List<Checklist> getAll(long dataInicial, long dataFinal, String equipe,
-                                  Long codUnidade, String placa, int limit, long offset, boolean resumido, String userToken) {
+//    public List<Checklist> getAll(long dataInicial, long dataFinal, String equipe,
+//                                  Long codUnidade, String placa, int limit, long offset, boolean resumido, String userToken) {
+//        try {
+//            return RouterChecklists
+//                    .create(dao, userToken)
+//                    .getTodosChecklists(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit,
+//                            offset, resumido);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+    public List<Checklist> getAll(Long codUnidade,
+                                  Long codEquipe,
+                                  Long codTipoVeiculo,
+                                  String placaVeiculo,
+                                  long dataInicial,
+                                  long dataFinal,
+                                  int limit,
+                                  long offset,
+                                  boolean resumido,
+                                  String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getTodosChecklists(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit,
-                            offset, resumido);
+                    .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                            limit, offset, resumido);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

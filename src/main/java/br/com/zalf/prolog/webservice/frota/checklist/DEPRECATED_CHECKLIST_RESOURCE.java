@@ -82,7 +82,17 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@HeaderParam("Authorization") String userToken) {
-		return service.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, false, userToken);
+		return service.getAll(
+				codUnidade,
+				null,
+				null,
+				placa.equals("%") ? null : placa,
+				dataInicial,
+				dataFinal,
+				limit,
+				offset,
+				false,
+				userToken);
 	}
 
 	@GET
@@ -131,14 +141,15 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 		calendar.set(Calendar.MONTH, Calendar.JANUARY);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		return service.getAll(
+				codUnidade,
+				null,
+				null,
+				null,
 				calendar.getTimeInMillis(),
 				System.currentTimeMillis(),
-				equipe,
-				codUnidade,
-				"%",
 				limit,
 				offset,
-				false,
+				true,
 				userToken);
 	}
 }

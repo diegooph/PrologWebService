@@ -4,8 +4,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
-import com.sun.istack.internal.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,39 +17,40 @@ import java.util.Map;
 interface OperacoesIntegradasChecklist {
 
     Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codFuncao) throws Exception;
+            @Nonnull final Long codUnidade,
+            @Nonnull final Long codFuncao) throws Exception;
 
     NovoChecklistHolder getNovoChecklistHolder(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codModelo,
-            @NotNull final String placaVeiculo,
+            @Nonnull final Long codUnidade,
+            @Nonnull final Long codModelo,
+            @Nonnull final String placaVeiculo,
             final char tipoChecklist) throws Exception;
 
-    Long insertChecklist(@NotNull final Checklist checklist) throws Exception;
+    Long insertChecklist(@Nonnull final Checklist checklist) throws Exception;
 
-    @NotNull
-    Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception;
+    @Nonnull
+    Checklist getChecklistByCodigo(@Nonnull final Long codChecklist) throws Exception;
 
-    @NotNull
-    List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
+    @Nonnull
+    List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
                                                final int limit,
                                                final long offset,
                                                final boolean resumido) throws Exception;
 
-    @NotNull
-    List<Checklist> getTodosChecklists(@NotNull final Date dataInicial,
-                                       @NotNull final Date dataFinal,
-                                       @NotNull final String equipe,
-                                       @NotNull final Long codUnidade,
-                                       @NotNull final String placa,
+    @Nonnull
+    List<Checklist> getTodosChecklists(@Nonnull final Long codUnidade,
+                                       @Nullable final Long codEquipe,
+                                       @Nullable final Long codTipoVeiculo,
+                                       @Nullable final String placaVeiculo,
+                                       final long dataInicial,
+                                       final long dataFinal,
                                        final int limit,
                                        final long offset,
                                        final boolean resumido) throws Exception;
 
-    @NotNull
-    FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                     @NotNull final Date dataInicial,
-                                     @NotNull final Date dataFinal,
+    @Nonnull
+    FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
+                                     @Nonnull final Date dataInicial,
+                                     @Nonnull final Date dataFinal,
                                      final boolean itensCriticosRetroativos) throws Exception;
 }
