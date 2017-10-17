@@ -42,6 +42,8 @@ public class AvilanPosicaoPneuMapper {
                 .put("EST_1", 900)
                 .put("EST_2", 901)
                 .put("EST_3", 902)
+                .put("EST_4", 903)
+                .put("EST_5", 904)
                 /* CARRETA 3 EIXOS */
                 .put("A_EE", 211)
                 .put("A_EI", 212)
