@@ -265,6 +265,25 @@ public class AvaCorpAvilanRequesterTest {
         }
     }
 
+    @Test
+    public void testeRequestPlacasEspecificas() throws Exception {
+        testePlaca("ISR2076");
+        testePlaca("ISR2081");
+    }
+
+    private void testePlaca(String placa) throws Exception {
+        final ArrayOfPneu pneus = requester.getPneusVeiculo(placa, CPF, DATA_NASCIMENTO);
+
+        System.out.println("TESTE PARA PLACA: "+placa);
+
+        System.out.println(GsonUtils.getGson().toJson(pneus) + "\n\n");
+        for (Pneu pneu : pneus.getPneu()) {
+            final String posicaoAvilan = pneu.getPosicao();
+            final int posicaoProlog = AvilanPosicaoPneuMapper.mapToProLog(pneu.getPosicao());
+            System.out.println(posicaoAvilan+ " " +posicaoProlog);
+        }
+    }
+
     private int getplacasAtivasAssociadas(
             ArrayOfString placasVeiculoByTipo,
             ArrayOfVeiculo veiculosAtivos) {
