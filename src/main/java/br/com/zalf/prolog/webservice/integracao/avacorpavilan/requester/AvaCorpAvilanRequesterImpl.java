@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericoesFiltro;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
@@ -148,6 +145,23 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
 
         throw new Exception(request != null ? request.getMensagem() : "");
+    }
+
+    @Override
+    public AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
+                                              @NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
+        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento)
+                .buscarAfericoesFiltroEspecifico(codigoAfericao);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            // Na busca por código de um checklist sempre virá apenas um único elemento.
+            return request.getAfericoes().getAfericaoFiltro().get(0);
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar aferição com o código: " + codigoAfericao + " da Avilan"
+                : request.getMensagem());
     }
 
     @Override

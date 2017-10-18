@@ -144,6 +144,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.insert(afericao, codUnidade);
     }
 
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        return afericaoDao.getByCod(codUnidade, codAfericao);
+    }
+
     @Override
     public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
                                        @Nonnull String codTipoVeiculo,

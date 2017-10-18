@@ -114,6 +114,16 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getAfericaoByCodigo(codUnidade, codAfericao);
+        } else {
+            return integradorProLog.getAfericaoByCodigo(codUnidade, codAfericao);
+        }
+    }
+
     @Override
     public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
                                        @Nonnull String codTipoVeiculo,

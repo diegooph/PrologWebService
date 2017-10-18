@@ -73,6 +73,12 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().insertAfericao(afericao, codUnidade);
     }
 
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
+    }
+
     @Override
     public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
                                        @Nonnull String codTipoVeiculo,

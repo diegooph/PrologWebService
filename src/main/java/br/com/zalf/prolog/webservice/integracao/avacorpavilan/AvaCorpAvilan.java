@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -239,6 +240,24 @@ public final class AvaCorpAvilan extends Sistema {
         return requester.insertAfericao(AvaCorpAvilanConverter.convert(afericao), cpf(), dataNascimento());
     }
 
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+
+        final AfericaoFiltro afericaoFiltro = requester.getAfericaoByCodigo(
+                Math.toIntExact(codAfericao),
+                cpf(),
+                dataNascimento());
+
+        final AvaCorpAvilanDao dao = getAvaCorpAvilanDao();
+        final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
+                dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(
+                        // TODO: Trocar por objeto tipo que será enviado dentro do objeto AfericaoFiltro.
+                        requester.getVeiculoAtivo(afericaoFiltro.getPlaca(), cpf(), dataNascimento()).getTipo().getCodigo()));
+
+        return AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro);
+    }
+
     @Override
     public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
                                        @Nonnull String codTipoVeiculo,
@@ -274,6 +293,7 @@ public final class AvaCorpAvilan extends Sistema {
         return new AvaCorpAvilanDaoImpl();
     }
 
+    @Nonnull
     private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
                                                final int limit,
                                                final long offset,
@@ -298,6 +318,7 @@ public final class AvaCorpAvilan extends Sistema {
                 .collect(Collectors.toList());
     }
 
+    @Nonnull
     private String cpf() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
@@ -307,6 +328,7 @@ public final class AvaCorpAvilan extends Sistema {
         return String.format("%011d",  colaborador.getCpf());
     }
 
+    @Nonnull
     private String dataNascimento() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
@@ -315,6 +337,7 @@ public final class AvaCorpAvilan extends Sistema {
         return AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento());
     }
 
+    @Nonnull
     private Long codUnidade() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
