@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
@@ -44,6 +45,10 @@ public interface AvaCorpAvilanRequester extends Requester {
     boolean insertAfericao(@NotNull final IncluirMedida2 medidas,
                            @NotNull final String cpf,
                            @NotNull final String dataNascimento) throws Exception;
+
+    AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
+                                       @NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfAfericaoFiltro getAfericoes(final int codFilialAvilan,
                                        final int codUnidadeAvilan,

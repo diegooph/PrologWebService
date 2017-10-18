@@ -283,7 +283,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public Afericao getByCod(Long codAfericao, Long codUnidade) throws SQLException {
+    public Afericao getByCod(Long codUnidade, Long codAfericao) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;

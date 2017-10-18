@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAferica
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import com.sun.istack.internal.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -18,6 +19,9 @@ interface OperacoesIntegradasAfericao {
     NovaAfericao getNovaAfericao(@NotNull final String placaVeiculo) throws Exception;
 
     boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Exception;
+
+    @Nonnull
+    Afericao getAfericaoByCodigo(@Nonnull final Long codUnidade, @Nonnull final Long codAfericao) throws Exception;
 
     @NotNull
     List<Afericao> getAfericoes(@NotNull final Long codUnidade,

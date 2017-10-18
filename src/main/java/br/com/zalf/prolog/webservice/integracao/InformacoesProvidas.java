@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.sun.istack.internal.NotNull;
 
+import java.util.Optional;
+
 /**
  * Contém os métodos que estão disponíveis para um {@link Sistema} utilizar através do {@link IntegradorProLog} caso
  * precise de informações extras para funcionar.
@@ -19,10 +21,10 @@ public interface InformacoesProvidas {
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Exception;
 
     @NotNull
-    DiagramaVeiculo getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception;
+    Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception;
 
     @NotNull
-    DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
+    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placaVeiculo) throws Exception;
 
     @NotNull
     String getCodUnidadeClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Exception;

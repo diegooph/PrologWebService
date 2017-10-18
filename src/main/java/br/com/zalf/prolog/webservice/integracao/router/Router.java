@@ -114,6 +114,16 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getAfericaoByCodigo(codUnidade, codAfericao);
+        } else {
+            return integradorProLog.getAfericaoByCodigo(codUnidade, codAfericao);
+        }
+    }
+
     @Override
     public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
                                        @Nonnull String codTipoVeiculo,
@@ -122,7 +132,13 @@ public abstract class Router implements OperacoesIntegradas {
                                        long dataFinal,
                                        long limit,
                                        long offset) throws Exception {
-        return null;
+        if (getSistema() != null) {
+            return getSistema().getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                    limit, offset);
+        } else {
+            return integradorProLog.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                    limit, offset);
+        }
     }
 
     @Override

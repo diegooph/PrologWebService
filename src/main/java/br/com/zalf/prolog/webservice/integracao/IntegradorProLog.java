@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * O {@link IntegradorProLog} possui todos os métodos dos quais o sistema ProLog possui integração, seja ela com
@@ -85,7 +86,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByCodDiagrama(Short codDiagrama) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(Short codDiagrama) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -93,7 +94,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -142,6 +143,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public boolean insertAfericao(@Nonnull Afericao afericao, @Nonnull Long codUnidade) throws Exception {
         return afericaoDao.insert(afericao, codUnidade);
+    }
+
+    @Nonnull
+    @Override
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        return afericaoDao.getByCod(codUnidade, codAfericao);
     }
 
     @Override
