@@ -2,6 +2,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericoesFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ObjectFactory;
@@ -41,5 +42,48 @@ public interface AfericaoAvaCorpAvilanSoap {
     public IncluirRegistroVeiculo incluirMedida(
             @WebParam(name = "medida", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     IncluirMedida2 medida);
+
+    /**
+     *
+     * @param veiculo
+     * @param tipoVeiculo
+     * @param filial
+     * @param unidade
+     * @param dataInicial
+     * @param dataFinal
+     * @return
+     *     returns br.com.avacorp.integracaoprologtestes.AfericoesFiltro
+     */
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarAfericoesFiltro")
+    @WebResult(name = "buscarAfericoesFiltroResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarAfericoesFiltro", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAfericoesFiltro")
+    @ResponseWrapper(localName = "buscarAfericoesFiltroResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAfericoesFiltroResponse")
+    public AfericoesFiltro buscarAfericoesFiltro(
+            @WebParam(name = "filial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int filial,
+            @WebParam(name = "unidade", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int unidade,
+            @WebParam(name = "dataInicial", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String dataInicial,
+            @WebParam(name = "dataFinal", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String dataFinal,
+            @WebParam(name = "veiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String veiculo,
+            @WebParam(name = "tipoVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String tipoVeiculo);
+
+    /**
+     *
+     * @param codigo
+     * @return
+     *     returns br.com.avacorp.integracaoprologtestes.AfericoesFiltro
+     */
+    @WebMethod(action = AvaCorpAvilanConstants.NAMESPACE + "/buscarAfericoesFiltroEspecifico")
+    @WebResult(name = "buscarAfericoesFiltroEspecificoResult", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+    @RequestWrapper(localName = "buscarAfericoesFiltroEspecifico", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAfericoesFiltroEspecifico")
+    @ResponseWrapper(localName = "buscarAfericoesFiltroEspecificoResponse", targetNamespace = AvaCorpAvilanConstants.NAMESPACE, className = "br.com.avacorp.integracaoprologtestes.BuscarAfericoesFiltroEspecificoResponse")
+    public AfericoesFiltro buscarAfericoesFiltroEspecifico(
+            @WebParam(name = "codigo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int codigo);
 
 }
