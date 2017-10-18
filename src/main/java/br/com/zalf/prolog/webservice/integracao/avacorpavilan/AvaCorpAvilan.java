@@ -250,11 +250,9 @@ public final class AvaCorpAvilan extends Sistema {
                 dataNascimento());
 
         final AvaCorpAvilanDao dao = getAvaCorpAvilanDao();
-        final String codTipoVeiculoAvilan = requester.getVeiculoAtivo(afericaoFiltro.getPlaca(), cpf(), dataNascimento()).getTipo().getCodigo();
+        final String codTipoVeiculoAvilan = afericaoFiltro.getTipo().getCodigo();
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
-                dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(
-                        // TODO: Trocar por objeto tipo que será enviado dentro do objeto AfericaoFiltro.
-                        codTipoVeiculoAvilan));
+                dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan));
 
         final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro);
 

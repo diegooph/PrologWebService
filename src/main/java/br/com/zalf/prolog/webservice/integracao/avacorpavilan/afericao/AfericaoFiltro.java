@@ -1,6 +1,8 @@
 
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -45,7 +47,7 @@ public class AfericaoFiltro {
     protected String dataRealizacao;
     protected String placa;
     protected int odometro;
-    protected String tipo;
+    protected TipoVeiculoAvilan tipo;
     protected ArrayOfPneuFiltro pneus;
 
     /**
@@ -133,10 +135,10 @@ public class AfericaoFiltro {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link TipoVeiculoAvilan }
      *     
      */
-    public String getTipo() {
+    public TipoVeiculoAvilan getTipo() {
         return tipo;
     }
 
@@ -145,10 +147,10 @@ public class AfericaoFiltro {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link TipoVeiculoAvilan }
      *     
      */
-    public void setTipo(String value) {
+    public void setTipo(TipoVeiculoAvilan value) {
         this.tipo = value;
     }
 

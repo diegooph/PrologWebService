@@ -43,7 +43,7 @@ public class Veiculo {
     protected String placa;
     protected int marcador;
     protected String modelo;
-    protected TipoVeiculoAtivo tipoVeiculo;
+    protected TipoVeiculoAvilan tipoVeiculo;
     protected int quantidadePneu;
     protected String dtUltimaAfericao;
 
@@ -111,11 +111,11 @@ public class Veiculo {
         this.modelo = value;
     }
 
-    public TipoVeiculoAtivo getTipo() {
+    public TipoVeiculoAvilan getTipo() {
         return tipoVeiculo;
     }
 
-    public void setTipo(TipoVeiculoAtivo tipo) {
+    public void setTipo(TipoVeiculoAvilan tipo) {
         this.tipoVeiculo = tipo;
     }
 
