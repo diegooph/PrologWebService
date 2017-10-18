@@ -1,6 +1,7 @@
 package test.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -266,22 +267,44 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test
-    public void testeRequestPlacasEspecificas() throws Exception {
-        testePlaca("ISR2076");
-        testePlaca("ISR2081");
+    public void testeMapeamentoPlacasEspecificas() throws Exception {
+//        final TipoVeiculoAtivo tipoVeiculo = new TipoVeiculoAtivo();
+//        tipoVeiculo.setCodigo();
+//        tipoVeiculo.setNome("CT");
+//        testePlaca("ISR2076", "CT");
+//        testePlaca("ISR2081", "CT");
     }
 
-    private void testePlaca(String placa) throws Exception {
+    @Test
+    public void testeMapeamentoTodasAsPlacas() throws Exception {
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
+            if (veiculo.getQuantidadePneu() > 0) {
+                testePlaca(veiculo.getPlaca(), veiculo.getTipo());
+            }
+        }
+    }
+
+    private void testePlaca(String placa, TipoVeiculoAtivo tipoVeiculo) throws Exception {
         final ArrayOfPneu pneus = requester.getPneusVeiculo(placa, CPF, DATA_NASCIMENTO);
+        if (pneus.getPneu().size() <= 0)
+            return;
 
-        System.out.println("TESTE PARA PLACA: "+placa);
+        System.out.println("TESTE PARA PLACA: "+placa+" TIPO: "+tipoVeiculo.getNome()+"\n");
+        PosicaoPneuMapper pneuMapper = new PosicaoPneuMapper(
+                new AvaCorpAvilanDaoImpl().getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(tipoVeiculo.getCodigo()));
 
-        System.out.println(GsonUtils.getGson().toJson(pneus) + "\n\n");
+//        System.out.println(GsonUtils.getGson().toJson(pneus) + "\n\n");
         for (Pneu pneu : pneus.getPneu()) {
             final String posicaoAvilan = pneu.getPosicao();
-            final int posicaoProlog = AvilanPosicaoPneuMapper.mapToProLog(pneu.getPosicao());
-            System.out.println(posicaoAvilan+ " " +posicaoProlog);
+            try {
+                final int posicaoProlog = pneuMapper.mapToProLog(posicaoAvilan);
+                System.out.println(posicaoAvilan+ " " +posicaoProlog);
+            } catch (Exception e) {
+                System.out.println(posicaoAvilan+ " Não possui mapeamente no Prolog");
+            }
         }
+        System.out.println("\n\n");
     }
 
     private int getplacasAtivasAssociadas(
