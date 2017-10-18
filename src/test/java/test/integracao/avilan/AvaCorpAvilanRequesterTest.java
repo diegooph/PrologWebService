@@ -5,10 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoM
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvilanPosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
@@ -52,14 +49,25 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarAfericao() throws Exception {
+        final AfericaoFiltro afericaoFiltro = requester.getAfericaoByCodigo(
+                328,
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(afericaoFiltro);
+        assertNotNull(afericaoFiltro.getPneus());
+        assertTrue(!afericaoFiltro.getPneus().getPneuFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarAfericoes() throws Exception {
         final ArrayOfAfericaoFiltro afericoes = requester.getAfericoes(
-                11,
+                8,
                 1,
                 "",
                 "",
-                "2017-09-28",
-                "2017-10-11",
+                "2017-09-25",
+                "2017-10-01",
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(afericoes);
