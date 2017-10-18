@@ -292,7 +292,7 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test
     public void testeMapeamentoPlacasEspecificas() throws Exception {
-        final TipoVeiculoAtivo tipoVeiculo = new TipoVeiculoAtivo();
+        final TipoVeiculoAvilan tipoVeiculo = new TipoVeiculoAvilan();
         tipoVeiculo.setCodigo("CT");
         tipoVeiculo.setNome("Caminhão Truck");
 
@@ -310,7 +310,7 @@ public class AvaCorpAvilanRequesterTest {
         }
     }
 
-    private void testePlaca(String placa, TipoVeiculoAtivo tipoVeiculo) throws Exception {
+    private void testePlaca(String placa, TipoVeiculoAvilan tipoVeiculo) throws Exception {
         final ArrayOfPneu pneus = requester.getPneusVeiculo(placa, CPF, DATA_NASCIMENTO);
         if (pneus.getPneu().size() <= 0)
             return;
