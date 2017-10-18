@@ -122,7 +122,13 @@ public abstract class Router implements OperacoesIntegradas {
                                        long dataFinal,
                                        long limit,
                                        long offset) throws Exception {
-        return null;
+        if (getSistema() != null) {
+            return getSistema().getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                    limit, offset);
+        } else {
+            return integradorProLog.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                    limit, offset);
+        }
     }
 
     @Override
