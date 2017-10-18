@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS AVILAN.UNIDADE (
   CONSTRAINT FK_UNIDADE_FILIAL FOREIGN KEY (COD_FILIAL) REFERENCES AVILAN.FILIAL(CODIGO),
   CONSTRAINT UNIQUE_UNIDADE UNIQUE (CODIGO, COD_FILIAL)
 );
+COMMENT ON TABLE AVILAN.UNIDADE IS 'Representa uma unidade no banco de dados da Avilan. Uma unidade pertence a uma filial.';
 
 --=====================================================================================================================
 --=====================================================================================================================
@@ -67,10 +68,12 @@ CREATE TABLE IF NOT EXISTS AVILAN.PNEU_POSICAO (
   DESCRICAO_POSICAO VARCHAR(255),
   CONSTRAINT PK_PNEU_POSICAO PRIMARY KEY (POSICAO_PNEU)
 );
+COMMENT ON TABLE AVILAN.PNEU_POSICAO IS 'Salva as posições que a Avilan usa para os pneus e a descrição de cada posição.';
 
 --=====================================================================================================================
 --=====================================================================================================================
 
+-- Criação da tabela para armazenar o mapeamento das posições
 CREATE TABLE IF NOT EXISTS AVILAN.PNEU_POSICAO_AVILAN_PROLOG (
   POSICAO_PNEU_AVILAN VARCHAR(10) NOT NULL,
   POSICAO_PNEU_PROLOG SMALLINT NOT NULL,
@@ -83,6 +86,8 @@ CREATE TABLE IF NOT EXISTS AVILAN.PNEU_POSICAO_AVILAN_PROLOG (
   CONSTRAINT FK_PNEU_POSICAO_AVILAN_PROLOG_VEICULO_TIPO_AVILAN FOREIGN KEY (COD_VEICULO_TIPO)
   REFERENCES AVILAN.VEICULO_TIPO(CODIGO)
 );
+COMMENT ON TABLE AVILAN.PNEU_POSICAO_AVILAN_PROLOG IS
+'Mapeia uma posição de pneu na Avilan para uma do ProLog levando em conta o tipo do veículo.';
 
 --=====================================================================================================================
 --=====================================================================================================================
