@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericoesFiltro;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
@@ -11,8 +13,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolChecklist2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
@@ -151,16 +151,30 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public Object getAfericoes(final int codFilialAvilan,
-                               final int codUnidadeAvilan,
-                               @NotNull final String codTipoVeiculo,
-                               @NotNull final String placaVeiculo,
-                               @NotNull final String dataInicial,
-                               @NotNull final String dataFinal,
-                               @NotNull final String cpf,
-                               @NotNull final String dataNascimento) throws Exception {
+    public ArrayOfAfericaoFiltro getAfericoes(final int codFilialAvilan,
+                                              final int codUnidadeAvilan,
+                                              @NotNull final String codTipoVeiculo,
+                                              @NotNull final String placaVeiculo,
+                                              @NotNull final String dataInicial,
+                                              @NotNull final String dataFinal,
+                                              @NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
 
-        throw new UnsupportedOperationException("Falta implementar!");
+        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento).buscarAfericoesFiltro(
+                codFilialAvilan,
+                codUnidadeAvilan,
+                dataInicial,
+                dataFinal,
+                placaVeiculo,
+                codTipoVeiculo);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getAfericoes();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar as aferições para a unidade: " + codUnidadeAvilan + " da Avilan"
+                : request.getMensagem());
     }
 
     @Override
@@ -217,7 +231,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar o checklists para o colaborador: " + cpf + " da Avilan"
+                ? "Erro ao buscar os checklists para o colaborador: " + cpf + " da Avilan"
                 : request.getMensagem());
     }
 
@@ -244,7 +258,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar o checklists para a unidade: " + codUnidadeAvilan + " da Avilan"
+                ? "Erro ao buscar os checklists para a unidade: " + codUnidadeAvilan + " da Avilan"
                 : request.getMensagem());
     }
 

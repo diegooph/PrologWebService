@@ -176,30 +176,6 @@ public final class AvaCorpAvilan extends Sistema {
         return paginateAndConvert(checklists, limit, offset, resumido);
     }
 
-    private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
-                                               final int limit,
-                                               final long offset,
-                                               final boolean resumido) {
-
-        // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
-        return checklists
-                .stream()
-                .skip(offset)
-                .limit(limit)
-                .map(checklistFiltro -> {
-                    try {
-                        if (resumido) {
-                            return AvaCorpAvilanConverter.convert(checklistFiltro);
-                        } else {
-                            return getChecklistByCodigo((long) checklistFiltro.getCodigoChecklist());
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
-    }
-
     @Nonnull
     @Override
     public FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
@@ -273,18 +249,16 @@ public final class AvaCorpAvilan extends Sistema {
                                        long offset) throws Exception {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
         if (codTipoVeiculo.equals("%")) {
             codTipoVeiculo = "";
         } else {
-            final AvaCorpAvilanDao avaCorpAvilanDao = getAvaCorpAvilanDao();
-            codTipoVeiculo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipoVeiculo));
+            codTipoVeiculo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipoVeiculo));
         }
 
-        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
-                .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
+        final FilialUnidadeAvilanProLog filialUnidade = dao.getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
-        //noinspection unchecked
-        return (List<Afericao>) requester.getAfericoes(
+        return AvaCorpAvilanConverter.convert(requester.getAfericoes(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
@@ -292,12 +266,36 @@ public final class AvaCorpAvilan extends Sistema {
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 cpf(),
-                dataNascimento());
+                dataNascimento()));
     }
 
     @Nonnull
     private AvaCorpAvilanDaoImpl getAvaCorpAvilanDao() {
         return new AvaCorpAvilanDaoImpl();
+    }
+
+    private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
+                                               final int limit,
+                                               final long offset,
+                                               final boolean resumido) {
+
+        // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
+        return checklists
+                .stream()
+                .skip(offset)
+                .limit(limit)
+                .map(checklistFiltro -> {
+                    try {
+                        if (resumido) {
+                            return AvaCorpAvilanConverter.convert(checklistFiltro);
+                        } else {
+                            return getChecklistByCodigo((long) checklistFiltro.getCodigoChecklist());
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     private String cpf() throws Exception {
