@@ -30,6 +30,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TipoVeiculoAtivo }
+     *
+     */
+    public TipoVeiculoAtivo createTipoVeiculoAtivo() {
+        return new TipoVeiculoAtivo();
+    }
+
+    /**
      * Create an instance of {@link BuscarVeiculosTipo }
      *
      */
