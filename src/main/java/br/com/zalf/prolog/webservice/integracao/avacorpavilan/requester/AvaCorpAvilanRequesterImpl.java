@@ -19,6 +19,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import javax.xml.ws.BindingProvider;
+import java.util.List;
 
 
 /**
@@ -48,7 +49,11 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             final ArrayOfVeiculo veiculos = request.getListaVeiculos();
-            // Irá retornar sempre um único veículo. Lista com tamanho 1.
+            if (veiculos.getVeiculo().size() != 1) {
+                throw new IllegalStateException("Busca de um veículo retornou mais de um resultado para a placa: "
+                        + placaVeiculo);
+            }
+
             return veiculos.getVeiculo().get(0);
         }
 
@@ -155,8 +160,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 .buscarAfericoesFiltroEspecifico(codigoAfericao);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
-            // Na busca por código de um checklist sempre virá apenas um único elemento.
-            return request.getAfericoes().getAfericaoFiltro().get(0);
+            final List<AfericaoFiltro> afericoesFiltro = request.getAfericoes().getAfericaoFiltro();
+            if (afericoesFiltro.size() != 1) {
+                throw new IllegalStateException("Busca de uma aferição retornou mais de um resultado para o código: "
+                        + codigoAfericao);
+            }
+
+            return afericoesFiltro.get(0);
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
@@ -214,8 +224,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
-            // Na busca por código de um checklist sempre virá apenas um único elemento.
-            return request.getChecklists().getChecklistFiltro().get(0);
+            final List<ChecklistFiltro> checklists = request.getChecklists().getChecklistFiltro();
+            if (checklists.size() != 1) {
+                throw new IllegalStateException("Busca de um checklist retornou mais de um resultado para o código: "
+                        + codigoAvaliacao);
+            }
+
+            return checklists.get(0);
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
