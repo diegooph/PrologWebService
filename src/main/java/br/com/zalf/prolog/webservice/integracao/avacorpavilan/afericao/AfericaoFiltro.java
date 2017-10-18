@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "dataRealizacao",
     "placa",
     "odometro",
-    "tipo",
+    "tipoVeiculo",
     "pneus"
 })
 public class AfericaoFiltro {
@@ -47,7 +47,7 @@ public class AfericaoFiltro {
     protected String dataRealizacao;
     protected String placa;
     protected int odometro;
-    protected TipoVeiculoAvilan tipo;
+    protected TipoVeiculoAvilan tipoVeiculo;
     protected ArrayOfPneuFiltro pneus;
 
     /**
@@ -139,7 +139,7 @@ public class AfericaoFiltro {
      *     
      */
     public TipoVeiculoAvilan getTipo() {
-        return tipo;
+        return tipoVeiculo;
     }
 
     /**
@@ -151,7 +151,7 @@ public class AfericaoFiltro {
      *     
      */
     public void setTipo(TipoVeiculoAvilan value) {
-        this.tipo = value;
+        this.tipoVeiculo = value;
     }
 
     /**
