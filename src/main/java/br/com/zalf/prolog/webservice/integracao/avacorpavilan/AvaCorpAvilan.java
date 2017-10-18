@@ -216,13 +216,13 @@ public final class AvaCorpAvilan extends Sistema {
                 requester.getPneusVeiculo(placaVeiculo, cpf(), dataNascimento()));
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade());
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculo);
-        final DiagramaVeiculo diagramaVeiculo = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
-        if (diagramaVeiculo == null) {
+        final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
+        if (!optional.isPresent()) {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
 
         final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
-        veiculo.setDiagrama(diagramaVeiculo);
+        veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
         // Cria NovaAfericao.
@@ -250,12 +250,21 @@ public final class AvaCorpAvilan extends Sistema {
                 dataNascimento());
 
         final AvaCorpAvilanDao dao = getAvaCorpAvilanDao();
+        final String codTipoVeiculoAvilan = requester.getVeiculoAtivo(afericaoFiltro.getPlaca(), cpf(), dataNascimento()).getTipo().getCodigo();
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
                 dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(
                         // TODO: Trocar por objeto tipo que será enviado dentro do objeto AfericaoFiltro.
-                        requester.getVeiculoAtivo(afericaoFiltro.getPlaca(), cpf(), dataNascimento()).getTipo().getCodigo()));
+                        codTipoVeiculoAvilan));
 
-        return AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro);
+        final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro);
+
+        final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan);
+        final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
+        if (!optional.isPresent()) {
+            throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
+        }
+        afericao.getVeiculo().setDiagrama(optional.get());
+        return afericao;
     }
 
     @Override

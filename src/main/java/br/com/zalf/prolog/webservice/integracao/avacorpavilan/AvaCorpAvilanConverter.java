@@ -495,6 +495,7 @@ public final class AvaCorpAvilanConverter {
             sulcos.setCentralInterno(pneuFiltro.getTrianguloTerceiroSulco());
             sulcos.setInterno(pneuFiltro.getTrianguloQuartoSulco());
             pneu.setSulcosAtuais(sulcos);
+            pneus.add(pneu);
         }
 
         afericao.getVeiculo().setListPneus(pneus);

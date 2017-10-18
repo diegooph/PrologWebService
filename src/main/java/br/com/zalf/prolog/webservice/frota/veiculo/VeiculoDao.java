@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -135,10 +135,9 @@ public interface VeiculoDao {
 	 */
 	List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
 
-	@Nullable
-	DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
+	Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
 
-	DiagramaVeiculo getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException;
+	Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException;
 
 	Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException;
 
