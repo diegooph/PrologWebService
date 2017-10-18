@@ -13,9 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -369,19 +367,6 @@ public final class AvaCorpAvilanConverter {
 
     @NotNull
     @VisibleForTesting
-    public static List<Checklist> getChecklists(@NotNull final List<ChecklistFiltro> checklistsFiltro)
-            throws ParseException {
-        checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
-
-        final List<Checklist> checklists = new ArrayList<>();
-        for (final ChecklistFiltro checklistFiltro : checklistsFiltro) {
-            checklists.add(convert(checklistFiltro));
-        }
-        return checklists;
-    }
-
-    @NotNull
-    @VisibleForTesting
     public static List<String> convert(@NotNull final ArrayOfString placasVeiculos) {
         checkNotNull(placasVeiculos, "placasVeiculos não pode ser null!");
 
@@ -476,7 +461,69 @@ public final class AvaCorpAvilanConverter {
         return checklist;
     }
 
-    @NotNull
+    @Nonnull
+    @VisibleForTesting
+    public static List<Afericao> convert(@NotNull final ArrayOfAfericaoFiltro afericoesFiltro) throws ParseException {
+        checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
+
+        final List<Afericao> afericoes = new ArrayList<>();
+        for (AfericaoFiltro afericaoFiltro : afericoesFiltro.getAfericaoFiltro()) {
+            afericoes.add(convertAfericaoSemPneus(afericaoFiltro));
+        }
+        return afericoes;
+    }
+
+    @Nonnull
+    @VisibleForTesting
+    public static Afericao convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                   @NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+        checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
+        checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
+
+        final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro);
+
+        // Pneus - Medidas.
+        final List<Pneu> pneus = new ArrayList<>();
+        for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
+            final Pneu pneu = new Pneu();
+            pneu.setCodigo(pneuFiltro.getNumeroFogo());
+            pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
+            pneu.setPressaoAtual(pneuFiltro.getPressao());
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setExterno(pneuFiltro.getTrianguloPrimeiroSulco());
+            sulcos.setCentralExterno(pneuFiltro.getTrianguloSegundoSulco());
+            sulcos.setCentralInterno(pneuFiltro.getTrianguloTerceiroSulco());
+            sulcos.setInterno(pneuFiltro.getTrianguloQuartoSulco());
+            pneu.setSulcosAtuais(sulcos);
+        }
+
+        afericao.getVeiculo().setListPneus(pneus);
+
+        return afericao;
+    }
+
+    @Nonnull
+    private static Afericao convertAfericaoSemPneus(@NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+        checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
+        final Afericao afericao = new Afericao();
+        afericao.setCodigo((long) afericaoFiltro.getCodigoAfericao());
+        // Avilan não salva hora de realização da aferição, apenas data.
+        afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()));
+        afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
+
+        // Avilan não salva colaborador que realizou a aferição.
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setNome("Colaborador não informado");
+        colaborador.setCpf(0);
+        afericao.setColaborador(colaborador);
+
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(afericaoFiltro.getPlaca());
+        afericao.setVeiculo(veiculo);
+        return afericao;
+    }
+
+    @Nonnull
     private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
         checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
 

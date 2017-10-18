@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoM
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvilanPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
@@ -49,6 +50,21 @@ public class AvaCorpAvilanRequesterTest {
     public void testIncluirMedidaAfericao() throws Exception {
         requester.getVeiculoAtivo("MLK7250", CPF, DATA_NASCIMENTO);
         assertTrue(requester.insertAfericao(createIncluirMedida(), CPF, DATA_NASCIMENTO));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarAfericoes() throws Exception {
+        final ArrayOfAfericaoFiltro afericoes = requester.getAfericoes(
+                11,
+                1,
+                "",
+                "",
+                "2017-09-28",
+                "2017-10-11",
+                CPF,
+                DATA_NASCIMENTO);
+        assertNotNull(afericoes);
+        assertTrue(!afericoes.getAfericaoFiltro().isEmpty());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)

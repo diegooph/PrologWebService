@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.HashBiMap;
 
 import javax.annotation.Nonnull;
 import java.sql.Connection;
@@ -117,13 +117,13 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         Connection conn = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CODIGO_VEICULO_DIAGRAMA_PROLOG " +
+            stmt = conn.prepareStatement("SELECT COD_VEICULO_DIAGRAMA_PROLOG " +
                     "FROM AVILAN.VEICULO_TIPO_VEICULO_DIAGRAMA " +
                     "WHERE COD_VEICULO_TIPO = ?;");
             stmt.setString(1, codTipoVeiculoAvilan);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getShort("CODIGO_VEICULO_DIAGRAMA_PROLOG");
+                return rSet.getShort("COD_VEICULO_DIAGRAMA_PROLOG");
             }
 
             throw new IllegalArgumentException("Nenhum diagrama encontrado com o tipo: " + codTipoVeiculoAvilan);
@@ -139,11 +139,11 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
-        final BiMap<String, Integer> posicoesPneu = new ImmutableBiMap.Builder<String, Integer>().build();
+        final BiMap<String, Integer> posicoesPneu = HashBiMap.create();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT PNEU_POSICAO_AVILAN, PNEU_POSICAO_PROLOG FROM " +
-                    "AVILAN.PNEU_POSICAO WHERE COD_VEICULO_TIPO = ?;");
+            stmt = conn.prepareStatement("SELECT POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG FROM " +
+                    "AVILAN.PNEU_POSICAO_AVILAN_PROLOG WHERE COD_VEICULO_TIPO = ?;");
             stmt.setString(1, codTipoVeiculoAvilan);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
