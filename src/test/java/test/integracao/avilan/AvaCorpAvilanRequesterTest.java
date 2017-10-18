@@ -284,11 +284,12 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test
     public void testeMapeamentoPlacasEspecificas() throws Exception {
-//        final TipoVeiculoAtivo tipoVeiculo = new TipoVeiculoAtivo();
-//        tipoVeiculo.setCodigo();
-//        tipoVeiculo.setNome("CT");
-//        testePlaca("ISR2076", "CT");
-//        testePlaca("ISR2081", "CT");
+        final TipoVeiculoAtivo tipoVeiculo = new TipoVeiculoAtivo();
+        tipoVeiculo.setCodigo("CT");
+        tipoVeiculo.setNome("Caminhão Truck");
+
+        testePlaca("ISR2076", tipoVeiculo);
+        testePlaca("ISR2081", tipoVeiculo);
     }
 
     @Test
