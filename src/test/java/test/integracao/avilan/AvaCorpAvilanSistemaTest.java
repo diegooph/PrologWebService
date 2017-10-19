@@ -46,6 +46,11 @@ public class AvaCorpAvilanSistemaTest {
         assertNotNull(sistema.getNovaAfericao(VEICULO_COM_PNEUS));
     }
 
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarAfericaoByCodigo() throws Exception {
+        assertNotNull(sistema.getAfericaoByCodigo(4L, 328L));
+    }
+
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS, expected = Exception.class)
     public void testInsertAfericao() throws Exception {
         sistema.insertAfericao(new Afericao(), 0L);

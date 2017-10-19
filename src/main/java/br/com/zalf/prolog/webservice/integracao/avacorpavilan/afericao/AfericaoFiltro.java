@@ -2,6 +2,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ColaboradorAvilan;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
     "placa",
     "odometro",
     "tipoVeiculo",
-    "pneus"
+    "pneus",
+    "colaborador"
 })
 public class AfericaoFiltro {
 
@@ -49,6 +51,7 @@ public class AfericaoFiltro {
     protected int odometro;
     protected TipoVeiculoAvilan tipoVeiculo;
     protected ArrayOfPneuFiltro pneus;
+    protected ColaboradorAvilan colaborador;
 
     /**
      * Gets the value of the codigoAfericao property.
@@ -178,4 +181,11 @@ public class AfericaoFiltro {
         this.pneus = value;
     }
 
+    public ColaboradorAvilan getColaborador() {
+        return colaborador;
+    }
+
+    public void setColaborador(ColaboradorAvilan colaborador) {
+        this.colaborador = colaborador;
+    }
 }

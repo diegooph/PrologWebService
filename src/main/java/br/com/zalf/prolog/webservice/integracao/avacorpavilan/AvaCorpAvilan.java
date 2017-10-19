@@ -331,8 +331,7 @@ public final class AvaCorpAvilan extends Sistema {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
         }
 
-        // Preenche com 0 a esquerda caso CPF tenha menos do que 11 caracteres.
-        return String.format("%011d",  colaborador.getCpf());
+        return colaborador.getCpfAsString();
     }
 
     @Nonnull

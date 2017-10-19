@@ -70,6 +70,11 @@ public class Colaborador {
 		return cpf;
 	}
 
+	public String getCpfAsString() {
+		// Preenche com 0 a esquerda caso CPF tenha menos do que 11 caracteres.
+		return String.format("%011d", cpf);
+	}
+
 	public void setCpf(long cpf) {
 		this.cpf = cpf;
 	}
