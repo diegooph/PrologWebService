@@ -50,6 +50,11 @@ public class AvaCorpAvilanUtils {
     }
 
     @NotNull
+    public static String createDateTimePattern(@NotNull final Date date) throws ParseException {
+        return AVILAN_DATE_TIME_FORMAT.format(date);
+    }
+
+    @NotNull
     public static Date createDateTimePattern(@NotNull final String dateTimeString) throws ParseException {
         return AVILAN_DATE_TIME_FORMAT.parse(dateTimeString);
     }

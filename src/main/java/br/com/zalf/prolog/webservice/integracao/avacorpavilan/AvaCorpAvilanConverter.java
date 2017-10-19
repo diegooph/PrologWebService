@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDateTimePattern;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -115,7 +115,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static IncluirMedida2 convert(@NotNull final Afericao afericao) {
+    public static IncluirMedida2 convert(@NotNull final Afericao afericao) throws ParseException {
         checkNotNull(afericao, "afericao não pode ser null!");
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
@@ -125,7 +125,7 @@ public final class AvaCorpAvilanConverter {
         incluirMedida2.setVeiculo(afericao.getVeiculo().getPlaca());
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
-        incluirMedida2.setDataMedida(createDatePattern(afericao.getDataHora()));
+        incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo()
 
