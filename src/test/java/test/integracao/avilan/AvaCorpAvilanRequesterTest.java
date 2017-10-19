@@ -83,6 +83,13 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarVeiculoAtivo() throws Exception {
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo = requester.getVeiculoAtivo("LRN9162", CPF, DATA_NASCIMENTO);
+        assertNotNull(veiculo);
+        System.out.println(GsonUtils.getGson().toJson(veiculo));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarTiposVeiculo() throws Exception {
         final ArrayOfTipoVeiculo tiposVeiculo = requester.getTiposVeiculo(CPF, DATA_NASCIMENTO);
         assertNotNull(tiposVeiculo);
@@ -124,7 +131,7 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarPneusVeiculo() throws Exception {
-        final ArrayOfPneu pneus = requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO);
+        final ArrayOfPneu pneus = requester.getPneusVeiculo("LRN9162", CPF, DATA_NASCIMENTO);
         assertNotNull(pneus);
         assertTrue(!pneus.getPneu().isEmpty());
     }
