@@ -142,7 +142,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 			stmt.setBoolean(3, true);
 			rSet = stmt.executeQuery();
 			if(rSet.next()){
-				System.out.println("Entrou no rSet.next: " + rSet.getLong("CODIGO"));
 				modeloChecklist.setCodigo(rSet.getLong("CODIGO"));
 				insertModeloTipoVeiculo(conn, modeloChecklist);
 				insertModeloFuncao(conn, modeloChecklist);
@@ -150,7 +149,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 				insertModeloAlternativas(conn, modeloChecklist);
 			}
 			conn.commit();
-			System.out.println("comitado!");
 		}catch(SQLException e){
 			e.printStackTrace();
 			conn.rollback();

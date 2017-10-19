@@ -121,7 +121,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                 "SET VERSAO_DADOS = VERSAO_DADOS + 1 WHERE COD_UNIDADE = ?;");
         stmt.setLong(1, codUnidade);
         // retorna false caso nenhuma linha tenha sido afetada, ou seja, unidade não possui dados na tabela
-        return stmt.executeUpdate() == 0;
+        return stmt.executeUpdate() > 0;
     }
 
     private boolean insertVersaoDadosUnidade(Connection connection, Long codUnidade) throws Throwable {
@@ -129,7 +129,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                 " VALUES (?,1)");
         stmt.setLong(1, codUnidade);
         // retorna false caso nenhuma linha tenha sido afetada, ou seja, unidade não possui dados na tabela
-        return stmt.executeUpdate() == 0;
+        return stmt.executeUpdate() > 0;
     }
 
     private boolean permissaoMarcacaoIntervaloRemovidaOuAdicionada(Visao visaoAtual, Visao visaoNova) throws Throwable {

@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
     "placa",
     "marcador",
     "modelo",
-    "tipo",
+    "tipoVeiculo",
     "quantidadePneu",
     "dtUltimaAfericao"
 })
@@ -43,7 +43,7 @@ public class Veiculo {
     protected String placa;
     protected int marcador;
     protected String modelo;
-    protected TipoVeiculoAvilan tipo;
+    protected TipoVeiculoAvilan tipoVeiculo;
     protected int quantidadePneu;
     protected String dtUltimaAfericao;
 
@@ -112,11 +112,11 @@ public class Veiculo {
     }
 
     public TipoVeiculoAvilan getTipo() {
-        return tipo;
+        return tipoVeiculo;
     }
 
     public void setTipo(TipoVeiculoAvilan tipo) {
-        this.tipo = tipo;
+        this.tipoVeiculo = tipo;
     }
 
     /**

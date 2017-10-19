@@ -7,6 +7,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import com.sun.istack.internal.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -37,18 +39,21 @@ public interface ChecklistDao {
 	Checklist getByCod(long codChecklist) throws SQLException;
 
 	/**
-	 * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro)
-	 * @param dataInicial uma data
-	 * @param dataFinal uma data
-	 * @param equipe string contendo o nome da equipe ou '%' para o caso de buscar os checklists de todas
-	 * @param codUnidade código da unidade
-	 * @param limit quantidade de checks buscados no banco
-	 * @param offset a partir de qual check será  abusca
-	 * @return lista de Checklist
-	 * @throws SQLException caso não seja possível realizar a busca
+	 * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+	 *
+	 * @return uma {@link List<Checklist> lista de checklists}.
+	 * @throws SQLException caso não seja possível realizar a busca.
 	 */
-	List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
-						   Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException;
+	@Nonnull
+	List<Checklist> getAll(@Nonnull final Long codUnidade,
+						   @Nullable final Long codEquipe,
+						   @Nullable final Long codTipoVeiculo,
+						   @Nullable final String placaVeiculo,
+						   long dataInicial,
+						   long dataFinal,
+						   int limit,
+						   long offset,
+						   boolean resumido) throws SQLException;
 
 	/**
 	 * Busca os checklists realizados por um colaborador

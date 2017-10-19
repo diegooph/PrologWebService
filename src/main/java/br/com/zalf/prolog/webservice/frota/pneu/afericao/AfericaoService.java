@@ -46,16 +46,18 @@ public class AfericaoService {
                     .getNovaAfericao(placa);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
-    public Afericao getByCod(Long codAfericao, Long codUnidade) {
+    public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) {
         try {
-            return dao.getByCod(codAfericao, codUnidade);
-        } catch (SQLException e) {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getAfericaoByCodigo(codUnidade, codAfericao);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

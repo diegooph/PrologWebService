@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+<a name="v2.0.36"></a>
+## Version [v2.0.36](https://github.com/luizfp/PrologAndroid/compare/v0.0.35-h1...v2.0.36) (2017-10-13)
+
+### Features
+* Integra busca das aferições com Avilan
+* Cria tabela PUBLIC.PNEU_POSICAO para salvar a posição dos pneus que o ProLog usa com suas descrições
+
+### Refactors
+* Altera maneira de buscar o diagrama do veículo para os veículos vindos da Avilan. Agora o veículo não precisa
+mais estar cadastrado no ProLog para o diagrama estar disponível
+* Altera path para buscar os cargos
+* Remove do retorno da busca de cargos a permissão de cada cargo
+* Altera métodos de busca dos checklists e aferições já realizadas
+
+### Bug Fixes
+* Corrige update/insert da versão dos dados do intervalo
+* Corrige problema para aferir os bitrucks da Avilan
+
 <a name="v0.0.35-h1"></a>
 ## Version [v0.0.35-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.35...v0.0.35-h1) (2017-10-13)
 

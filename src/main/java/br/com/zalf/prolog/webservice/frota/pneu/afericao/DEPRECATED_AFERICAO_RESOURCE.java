@@ -79,8 +79,10 @@ public class DEPRECATED_AFERICAO_RESOURCE {
     @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{codAfericao}")
-    public Afericao getByCod(@PathParam("codAfericao") Long codAfericao, @PathParam("codUnidade") Long codUnidade) {
-        return service.getByCod(codAfericao, codUnidade);
+    public Afericao getByCod(@PathParam("codUnidade") Long codUnidade,
+                             @PathParam("codAfericao") Long codAfericao,
+                             @HeaderParam("Authorization") String userToken) {
+        return service.getByCod(codUnidade, codAfericao, userToken);
     }
 
     @GET

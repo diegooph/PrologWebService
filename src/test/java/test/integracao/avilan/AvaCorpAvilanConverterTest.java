@@ -9,11 +9,14 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaCheck
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import com.google.common.collect.MoreCollectors;
@@ -79,7 +82,12 @@ public class AvaCorpAvilanConverterTest {
         assertNotNull(pneusAvilan);
         assertTrue(!pneusAvilan.getPneu().isEmpty());
 
-        final List<Pneu> pneusProLog = AvaCorpAvilanConverter.convert(pneusAvilan);
+        final AvaCorpAvilanDao dao = new AvaCorpAvilanDaoImpl();
+        final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(dao
+                .getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan("COD_TIPO_AQUI"));
+        final List<Pneu> pneusProLog = AvaCorpAvilanConverter.convert(
+                posicaoPneuMapper,
+                pneusAvilan);
         assertTrue(pneusAvilan.getPneu().size() == pneusProLog.size());
 
         for (int i = 0; i < pneusProLog.size(); i++) {
@@ -114,8 +122,13 @@ public class AvaCorpAvilanConverterTest {
         afericao.setKmMomentoAfericao(kmVeiculo);
         afericao.setTempoRealizacaoAfericaoInMillis(tempoRealizacaoMillis);
 
+        final AvaCorpAvilanDao dao = new AvaCorpAvilanDaoImpl();
+        final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(dao
+                .getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan("COD_TIPO_AQUI"));
         final List<Pneu> pneus =
-                AvaCorpAvilanConverter.convert(requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO));
+                AvaCorpAvilanConverter.convert(
+                        posicaoPneuMapper,
+                        requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO));
         assertNotNull(pneus);
         assertFalse(pneus.isEmpty());
 

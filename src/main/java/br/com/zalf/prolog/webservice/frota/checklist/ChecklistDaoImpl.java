@@ -14,6 +14,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDa
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -88,9 +90,17 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		return null;
 	}
 
+	@Nonnull
 	@Override
-	public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe,
-								  Long codUnidade, String placa, long limit, long offset, boolean resumido) throws SQLException {
+	public List<Checklist> getAll(@Nonnull Long codUnidade,
+								  @Nullable Long codEquipe,
+								  @Nullable Long codTipoVeiculo,
+								  @Nullable String placaVeiculo,
+								  long dataInicial,
+								  long dataFinal,
+								  int limit,
+								  long offset,
+								  boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -99,23 +109,47 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.cod_checklist_modelo, C.KM_VEICULO, "
 					+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
-					+ "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
+					+ "C.TIPO, CO.NOME FROM CHECKLIST C "
+					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
+					+ "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
 					+ "WHERE C.DATA_HORA::DATE >= ? "
 					+ "AND C.DATA_HORA::DATE <= ? "
-					+ "AND E.NOME LIKE ? "
 					+ "AND C.COD_UNIDADE = ? "
-					+ "AND C.PLACA_VEICULO LIKE ?"
+					+ "AND (? = 1 OR E.CODIGO = ?) "
+					+ "AND (? = 1 OR V.COD_TIPO = ?) "
+					+ "AND (? = 1 OR C.PLACA_VEICULO = ?)"
 					+ "ORDER BY DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 
-			stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
-			stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
-			stmt.setString(3, equipe);
-			stmt.setLong(4, codUnidade);
-			stmt.setString(5, placa);
-			stmt.setLong(6, limit);
-			stmt.setLong(7, offset);
+			stmt.setDate(1, new java.sql.Date(dataInicial));
+			stmt.setDate(2, new java.sql.Date(dataFinal));
+			stmt.setLong(3, codUnidade);
+			if (codEquipe == null) {
+				stmt.setInt(4, 1);
+				stmt.setInt(5, 1);
+			} else {
+				stmt.setInt(4, 0);
+				stmt.setLong(5, codEquipe);
+			}
+
+			if (codTipoVeiculo == null) {
+				stmt.setInt(6, 1);
+				stmt.setInt(7, 1);
+			} else {
+				stmt.setInt(6, 0);
+				stmt.setLong(7, codTipoVeiculo);
+			}
+
+			if (placaVeiculo == null) {
+				stmt.setInt(8, 1);
+				stmt.setString(9, "");
+			} else {
+				stmt.setInt(8, 0);
+				stmt.setString(9, placaVeiculo);
+			}
+			stmt.setInt(10, limit);
+			stmt.setLong(11, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet, resumido);
@@ -244,7 +278,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		}finally{
 			closeConnection(conn, stmt, rSet);
 		}
-		System.out.println(modeloPlaca);
 		return modeloPlaca;
 	}
 
