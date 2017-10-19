@@ -101,15 +101,27 @@ public class TreinamentoResource {
     @Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS, Pilares.Gente.Treinamentos.ALTERAR,
             Pilares.Gente.Treinamentos.CRIAR})
     @Path("/{codUnidade}/{codFuncao}")
-    public List<Treinamento> getAll(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codFuncao") String codFuncao,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal,
-            @QueryParam("limit") long limit,
-            @QueryParam("offset") long offset) {
+    public List<Treinamento> getAll(@PathParam("codUnidade") Long codUnidade,
+                                    @PathParam("codFuncao") String codFuncao,
+                                    @QueryParam("dataInicial") long dataInicial,
+                                    @QueryParam("dataFinal") long dataFinal,
+                                    @QueryParam("limit") long limit,
+                                    @QueryParam("offset") long offset) {
         return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
                 DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codFuncao, codUnidade, limit, offset);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS, Pilares.Gente.Treinamentos.ALTERAR,
+            Pilares.Gente.Treinamentos.CRIAR})
+    @Path("/{codUnidade}")
+    public List<Treinamento> getAll(@PathParam("codUnidade") Long codUnidade,
+                                    @QueryParam("dataInicial") long dataInicial,
+                                    @QueryParam("dataFinal") long dataFinal,
+                                    @QueryParam("limit") long limit,
+                                    @QueryParam("offset") long offset) {
+        return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
+                DateUtils.toLocalDate(new java.sql.Date(dataFinal)), null, codUnidade, limit, offset);
     }
 
     @PUT
