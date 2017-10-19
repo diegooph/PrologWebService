@@ -18,6 +18,7 @@ import java.util.Locale;
 @VisibleForTesting
 public class AvaCorpAvilanUtils {
 
+    public static final int AVILAN_DATE_PATTERN_STRING_SIZE = 10;
     private static final SimpleDateFormat AVILAN_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat AVILAN_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

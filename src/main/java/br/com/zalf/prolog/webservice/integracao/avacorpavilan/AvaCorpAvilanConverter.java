@@ -120,7 +120,8 @@ public final class AvaCorpAvilanConverter {
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
 
-        // seta valores
+        // Seta valores.
+        incluirMedida2.setCpfColaborador(String.valueOf(afericao.getColaborador().getCpfAsString()));
         incluirMedida2.setVeiculo(afericao.getVeiculo().getPlaca());
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
@@ -508,14 +509,29 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
         final Afericao afericao = new Afericao();
         afericao.setCodigo((long) afericaoFiltro.getCodigoAfericao());
-        // Avilan não salva hora de realização da aferição, apenas data.
-        afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()));
         afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
 
-        // Avilan não salva colaborador que realizou a aferição.
+        if (afericaoFiltro.getDataRealizacao().length() > AvaCorpAvilanUtils.AVILAN_DATE_PATTERN_STRING_SIZE) {
+            // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da
+            // String for menor ou igual ao pattern de data, então essa é uma aferição antiga que tem apenas a data
+            // setada.
+            afericao.setDataHora(AvaCorpAvilanUtils.createDateTimePattern(afericaoFiltro.getDataRealizacao()));
+        } else {
+            afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()));
+        }
+
         final Colaborador colaborador = new Colaborador();
-        colaborador.setNome("Colaborador não informado");
-        colaborador.setCpf(0);
+        if (afericaoFiltro.getColaborador() == null
+                || Strings.isNullOrEmpty(afericaoFiltro.getColaborador().getNome())
+                || Strings.isNullOrEmpty(afericaoFiltro.getColaborador().getCpf())) {
+            // Antes da integração, não era salvo no ERP da Avilan quem fez a aferição. Aferições antigas não terão
+            // colaborador vinculado.
+            colaborador.setNome("Colaborador não informado");
+            colaborador.setCpf(0);
+        } else {
+            colaborador.setNome(afericaoFiltro.getColaborador().getNome());
+            colaborador.setCpf(Long.parseLong(afericaoFiltro.getColaborador().getCpf()));
+        }
         afericao.setColaborador(colaborador);
 
         final Veiculo veiculo = new Veiculo();
