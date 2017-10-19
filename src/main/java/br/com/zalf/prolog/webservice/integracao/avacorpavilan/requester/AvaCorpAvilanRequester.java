@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -44,13 +46,18 @@ public interface AvaCorpAvilanRequester extends Requester {
                            @NotNull final String cpf,
                            @NotNull final String dataNascimento) throws Exception;
 
-    Object getAfericoes(@NotNull final int codUnidadeAvilan,
-                        @NotNull final String codTipoVeiculo,
-                        @NotNull final String placaVeiculo,
-                        @NotNull final String dataInicial,
-                        @NotNull final String dataFinal,
-                        @NotNull final String cpf,
-                        @NotNull final String dataNascimento) throws Exception;
+    AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
+                                       @NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception;
+
+    ArrayOfAfericaoFiltro getAfericoes(final int codFilialAvilan,
+                                       final int codUnidadeAvilan,
+                                       @NotNull final String codTipoVeiculo,
+                                       @NotNull final String placaVeiculo,
+                                       @NotNull final String dataInicial,
+                                       @NotNull final String dataFinal,
+                                       @NotNull final String cpf,
+                                       @NotNull final String dataNascimento) throws Exception;
 
     ArrayOfPneu getPneusVeiculo(@NotNull final String placaVeiculo,
                                 @NotNull final String cpf,
@@ -60,7 +67,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfChecklistFiltro getChecklistsByColaborador(final int codUnidadeAvilan,
+    ArrayOfChecklistFiltro getChecklistsByColaborador(final int codFilialAvilan,
+                                                      final int codUnidadeAvilan,
                                                       @NotNull final String codTipoVeiculo,
                                                       @NotNull final String placaVeiculo,
                                                       @NotNull final String dataInicial,
@@ -68,7 +76,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                                       @NotNull final String cpf,
                                                       @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+    ArrayOfChecklistFiltro getChecklists(final int codFilialAvilan,
+                                         final int codUnidadeAvilan,
                                          @NotNull final String codTipoVeiculo,
                                          @NotNull final String placaVeiculo,
                                          @NotNull final String dataInicial,
@@ -76,7 +85,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                          @NotNull final String cpf,
                                          @NotNull final String dataNascimento) throws Exception;
 
-    ArrayOfFarolDia getFarolChecklist(@NotNull final int codUnidadeAvilan,
+    ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
+                                      final int codUnidadeAvilan,
                                       @NotNull final String dataInicial,
                                       @NotNull final String dataFinal,
                                       @NotNull final boolean itensCriticosRetroativos,

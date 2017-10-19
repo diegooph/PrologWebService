@@ -11,8 +11,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
-import com.sun.istack.internal.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +24,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by luiz on 7/17/17.
  */
 public abstract class Sistema implements OperacoesIntegradas {
-    @NotNull
+    @Nonnull
     private final IntegradorProLog integradorProLog;
-    @NotNull
+    @Nonnull
     private final SistemaKey sistemaKey;
-    @NotNull
+    @Nonnull
     private final String userToken;
 
     protected Sistema(IntegradorProLog integradorProLog, SistemaKey sistemaKey, String userToken) {
@@ -37,28 +38,28 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@Nonnull Long codUnidade) throws Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade);
     }
 
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@Nonnull Long codUnidade) throws Exception {
         return getIntegradorProLog().getTiposVeiculosByUnidade(codUnidade);
     }
 
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
         return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao) throws Exception {
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@Nonnull Long codUnidade,
+                                                                                    @Nonnull Long codFuncao) throws Exception {
         return getIntegradorProLog().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
     }
 
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         return getIntegradorProLog().getCronogramaAfericao(codUnidade);
     }
 
@@ -68,14 +69,20 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+    public boolean insertAfericao(@Nonnull Afericao afericao, @Nonnull Long codUnidade) throws Exception {
         return getIntegradorProLog().insertAfericao(afericao, codUnidade);
     }
 
+    @Nonnull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
+    }
+
+    @Override
+    public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
+                                       @Nonnull String codTipoVeiculo,
+                                       @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
                                        long limit,
@@ -85,38 +92,50 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
+    public NovoChecklistHolder getNovoChecklistHolder(@Nonnull Long codUnidade,
+                                                      @Nonnull Long codModelo,
+                                                      @Nonnull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
         return getIntegradorProLog().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@Nonnull Checklist checklist) throws Exception {
         return getIntegradorProLog().insertChecklist(checklist);
     }
 
+    @Nonnull
     @Override
-    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(@Nonnull Long codChecklist) throws Exception {
         return getIntegradorProLog().getChecklistByCodigo(codChecklist);
     }
 
+    @Nonnull
     @Override
-    public List<Checklist> getChecklistsByColaborador(Long cpf, int limit, long offset, boolean resumido) throws Exception {
+    public List<Checklist> getChecklistsByColaborador(@Nonnull Long cpf, int limit, long offset, boolean resumido) throws Exception {
         return getIntegradorProLog().getChecklistsByColaborador(cpf, limit, offset, resumido);
     }
 
+    @Nonnull
     @Override
-    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
-                                  long limit, long offset, boolean resumido) throws Exception {
-        return getIntegradorProLog().getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+    public List<Checklist> getTodosChecklists(@Nonnull final Long codUnidade,
+                                              @Nullable final Long codEquipe,
+                                              @Nullable final Long codTipoVeiculo,
+                                              @Nullable final String placaVeiculo,
+                                              final long dataInicial,
+                                              final long dataFinal,
+                                              final int limit,
+                                              final long offset,
+                                              final boolean resumido) throws Exception {
+        return getIntegradorProLog().getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo,
+                dataInicial, dataFinal, limit, offset, resumido);
     }
 
+    @Nonnull
     @Override
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            @NotNull final Date dataInicial,
-                                            @NotNull final Date dataFinal,
+    public FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
+                                            @Nonnull final Date dataInicial,
+                                            @Nonnull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }

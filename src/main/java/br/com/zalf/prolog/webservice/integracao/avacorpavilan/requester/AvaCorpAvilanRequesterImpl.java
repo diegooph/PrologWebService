@@ -1,8 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirRegistroVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
@@ -11,8 +10,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.FarolChecklist2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
@@ -22,6 +19,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import javax.xml.ws.BindingProvider;
+import java.util.List;
 
 
 /**
@@ -51,7 +49,11 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             final ArrayOfVeiculo veiculos = request.getListaVeiculos();
-            // Irá retornar sempre um único veículo. Lista com tamanho 1.
+            if (veiculos.getVeiculo().size() != 1) {
+                throw new IllegalStateException("Busca de um veículo retornou mais de um resultado para a placa: "
+                        + placaVeiculo);
+            }
+
             return veiculos.getVeiculo().get(0);
         }
 
@@ -151,15 +153,52 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public Object getAfericoes(final int codUnidadeAvilan,
-                               @NotNull final String codTipoVeiculo,
-                               @NotNull final String placaVeiculo,
-                               @NotNull final String dataInicial,
-                               @NotNull final String dataFinal,
-                               @NotNull final String cpf,
-                               @NotNull final String dataNascimento) throws Exception {
+    public AfericaoFiltro getAfericaoByCodigo(final int codigoAfericao,
+                                              @NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
+        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento)
+                .buscarAfericoesFiltroEspecifico(codigoAfericao);
 
-        throw new UnsupportedOperationException("Falta implementar!");
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            final List<AfericaoFiltro> afericoesFiltro = request.getAfericoes().getAfericaoFiltro();
+            if (afericoesFiltro.size() != 1) {
+                throw new IllegalStateException("Busca de uma aferição retornou mais de um resultado para o código: "
+                        + codigoAfericao);
+            }
+
+            return afericoesFiltro.get(0);
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar aferição com o código: " + codigoAfericao + " da Avilan"
+                : request.getMensagem());
+    }
+
+    @Override
+    public ArrayOfAfericaoFiltro getAfericoes(final int codFilialAvilan,
+                                              final int codUnidadeAvilan,
+                                              @NotNull final String codTipoVeiculo,
+                                              @NotNull final String placaVeiculo,
+                                              @NotNull final String dataInicial,
+                                              @NotNull final String dataFinal,
+                                              @NotNull final String cpf,
+                                              @NotNull final String dataNascimento) throws Exception {
+
+        final AfericoesFiltro request = getAfericaoSoap(cpf, dataNascimento).buscarAfericoesFiltro(
+                codFilialAvilan,
+                codUnidadeAvilan,
+                dataInicial,
+                dataFinal,
+                placaVeiculo,
+                codTipoVeiculo);
+
+        if (!error(request.isSucesso(), request.getMensagem())) {
+            return request.getAfericoes();
+        }
+
+        throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
+                ? "Erro ao buscar as aferições para a unidade: " + codUnidadeAvilan + " da Avilan"
+                : request.getMensagem());
     }
 
     @Override
@@ -185,8 +224,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarAvaliacaoFiltro(codigoAvaliacao);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
-            // Na busca por código de um checklist sempre virá apenas um único elemento.
-            return request.getChecklists().getChecklistFiltro().get(0);
+            final List<ChecklistFiltro> checklists = request.getChecklists().getChecklistFiltro();
+            if (checklists.size() != 1) {
+                throw new IllegalStateException("Busca de um checklist retornou mais de um resultado para o código: "
+                        + codigoAvaliacao);
+            }
+
+            return checklists.get(0);
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
@@ -195,7 +239,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public ArrayOfChecklistFiltro getChecklistsByColaborador(final int codUnidadeAvilan,
+    public ArrayOfChecklistFiltro getChecklistsByColaborador(final int codFilialAvilan,
+                                                             final int codUnidadeAvilan,
                                                              @NotNull final String codTipoVeiculo,
                                                              @NotNull final String placaVeiculo,
                                                              @NotNull final String dataInicial,
@@ -203,8 +248,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                              @NotNull final String cpf,
                                                              @NotNull final String dataNascimento) throws Exception {
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
@@ -215,12 +260,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar o checklists para o colaborador: " + cpf + " da Avilan"
+                ? "Erro ao buscar os checklists para o colaborador: " + cpf + " da Avilan"
                 : request.getMensagem());
     }
 
     @Override
-    public ArrayOfChecklistFiltro getChecklists(final int codUnidadeAvilan,
+    public ArrayOfChecklistFiltro getChecklists(final int codFilialAvilan,
+                                                final int codUnidadeAvilan,
                                                 @NotNull final String codTipoVeiculo,
                                                 @NotNull final String placaVeiculo,
                                                 @NotNull final String dataInicial,
@@ -229,8 +275,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                                 @NotNull final String dataNascimento) throws Exception {
 
         final ChecklistsFiltro request = getChecklistSoap(cpf, dataNascimento).buscarChecklistFiltro(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
@@ -241,12 +287,13 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
 
         throw new Exception(Strings.isNullOrEmpty(request.getMensagem())
-                ? "Erro ao buscar o checklists para a unidade: " + codUnidadeAvilan + " da Avilan"
+                ? "Erro ao buscar os checklists para a unidade: " + codUnidadeAvilan + " da Avilan"
                 : request.getMensagem());
     }
 
     @Override
-    public ArrayOfFarolDia getFarolChecklist(final int codUnidadeAvilan,
+    public ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
+                                             final int codUnidadeAvilan,
                                              @NotNull final String dataInicial,
                                              @NotNull final String dataFinal,
                                              @NotNull final boolean itensCriticosRetroativos,
@@ -254,8 +301,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                              @NotNull final String dataNascimento) throws Exception {
 
         final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                codFilialAvilan,
                 codUnidadeAvilan,
-                1,
                 dataInicial,
                 dataFinal,
                 itensCriticosRetroativos);

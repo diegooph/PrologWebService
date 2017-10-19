@@ -12,16 +12,27 @@ public class Afericao {
 
     private Long codigo;
     private Date dataHora;
+
+    /**
+     * O {@link Veiculo veiculo} no qual a aferição foi realizada.
+     */
     private Veiculo veiculo;
     private Colaborador colaborador;
-    private long kmMomentoAfericao;
+
     /**
-     * Armazena o tempo que o colaborador levou para realizar a aferição, em milisegundos
+     * Na busca de uma aferição já realizada, para saber o KM do veículo no momento da aferição, devemos consultar este
+     * atributo, ao inves do {@link Veiculo#kmAtual kmAtual} do veículo.
+     */
+    private long kmMomentoAfericao;
+
+    /**
+     * Armazena o tempo que o colaborador levou para realizar a aferição, em milisegundos.
      */
     private long tempoRealizacaoAfericaoInMillis;
 
 
     public Afericao() {
+
     }
 
     public Colaborador getColaborador() {
@@ -64,6 +75,14 @@ public class Afericao {
         this.kmMomentoAfericao = kmMomentoAfericao;
     }
 
+    public long getTempoRealizacaoAfericaoInMillis() {
+        return tempoRealizacaoAfericaoInMillis;
+    }
+
+    public void setTempoRealizacaoAfericaoInMillis(long tempoRealizacaoAfericaoInMillis) {
+        this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
+    }
+
     @Override
     public String toString() {
         return "Afericao{" +
@@ -74,13 +93,5 @@ public class Afericao {
                 ", kmMomentoAfericao=" + kmMomentoAfericao +
                 ", tempoRealizacaoAfericaoInMillis=" + tempoRealizacaoAfericaoInMillis +
                 '}';
-    }
-
-    public long getTempoRealizacaoAfericaoInMillis() {
-        return tempoRealizacaoAfericaoInMillis;
-    }
-
-    public void setTempoRealizacaoAfericaoInMillis(long tempoRealizacaoAfericaoInMillis) {
-        this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
     }
 }
