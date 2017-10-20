@@ -20,12 +20,13 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * O {@link IntegradorProLog} possui todos os métodos dos quais o sistema ProLog possui integração, seja ela com
@@ -34,15 +35,10 @@ import java.util.Map;
  * Toda classe {@link Sistema} possui um {@link IntegradorProLog}.
  */
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
-    @Nullable
     private VeiculoDao veiculoDao;
-    @Nullable
     private ChecklistDao checklistDao;
-    @Nullable
     private AfericaoDao afericaoDao;
-    @Nullable
     private ColaboradorDao colaboradorDao;
-    @Nullable
     private IntegracaoDao integracaoDao;
 
     private IntegradorProLog(VeiculoDao veiculoDao,
@@ -73,7 +69,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     //
     @Override
-    public Colaborador getColaboradorByToken(@NotNull String userToken) throws Exception {
+    public Colaborador getColaboradorByToken(@Nonnull String userToken) throws Exception {
         if (colaboradorDao == null) {
             colaboradorDao = Injection.provideColaboradorDao();
         }
@@ -81,7 +77,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public Restricao getRestricaoByCodUnidade(@NotNull Long codUnidade) throws Exception {
+    public Restricao getRestricaoByCodUnidade(@Nonnull Long codUnidade) throws Exception {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
@@ -90,7 +86,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByCodDiagrama(Long codDiagrama) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(Short codDiagrama) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -98,7 +94,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -120,12 +116,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     //
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@Nonnull Long codUnidade) throws Exception {
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
     }
 
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@Nonnull Long codUnidade) throws Exception {
         return veiculoDao.getTipoVeiculosByUnidade(codUnidade);
     }
 
@@ -135,7 +131,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         return afericaoDao.getCronogramaAfericao(codUnidade);
     }
 
@@ -145,14 +141,20 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
+    public boolean insertAfericao(@Nonnull Afericao afericao, @Nonnull Long codUnidade) throws Exception {
         return afericaoDao.insert(afericao, codUnidade);
     }
 
+    @Nonnull
     @Override
-    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
-                                       @NotNull String codTipoVeiculo,
-                                       @NotNull String placaVeiculo,
+    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+        return afericaoDao.getByCod(codUnidade, codAfericao);
+    }
+
+    @Override
+    public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
+                                       @Nonnull String codTipoVeiculo,
+                                       @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
                                        long limit,
@@ -161,46 +163,57 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
-                                                                                    @NotNull Long codFuncao)
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@Nonnull Long codUnidade,
+                                                                                    @Nonnull Long codFuncao)
             throws Exception {
         return checklistDao.getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
     }
 
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
-                                                      @NotNull Long codModelo,
-                                                      @NotNull String placaVeiculo,
+    public NovoChecklistHolder getNovoChecklistHolder(@Nonnull Long codUnidade,
+                                                      @Nonnull Long codModelo,
+                                                      @Nonnull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
         return checklistDao.getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
     }
 
     @Override
-    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
+    public Long insertChecklist(@Nonnull Checklist checklist) throws Exception {
         return checklistDao.insert(checklist);
     }
 
+    @Nonnull
     @Override
-    public Checklist getChecklistByCodigo(Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(@Nonnull Long codChecklist) throws Exception {
         return checklistDao.getByCod(codChecklist);
     }
 
+    @Nonnull
     @Override
-    public List<Checklist> getChecklistsByColaborador(Long cpf, int limit, long offset, boolean resumido) throws Exception {
+    public List<Checklist> getChecklistsByColaborador(@Nonnull Long cpf, int limit, long offset, boolean resumido) throws Exception {
         return checklistDao.getByColaborador(cpf, limit, offset, resumido);
     }
 
+    @Nonnull
     @Override
-    public List<Checklist> getAll(Date dataInicial, Date dataFinal, String equipe, Long codUnidade, String placa,
-                                  long limit, long offset, boolean resumido) throws Exception {
-        return checklistDao.getAll(dataInicial, dataFinal, equipe, codUnidade, placa, limit, offset, resumido);
+    public List<Checklist> getTodosChecklists(@Nonnull final Long codUnidade,
+                                              @Nullable final Long codEquipe,
+                                              @Nullable final Long codTipoVeiculo,
+                                              @Nullable final String placaVeiculo,
+                                              final long dataInicial,
+                                              final long dataFinal,
+                                              final int limit,
+                                              final long offset,
+                                              final boolean resumido) throws Exception {
+        return checklistDao.getAll(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                limit, offset, resumido);
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            @NotNull final Date dataInicial,
-                                            @NotNull final Date dataFinal,
+    public FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
+                                            @Nonnull final Date dataInicial,
+                                            @Nonnull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }

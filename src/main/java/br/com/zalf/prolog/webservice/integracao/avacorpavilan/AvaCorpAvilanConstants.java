@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.BuildConfig;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @SuppressWarnings("ConstantConditions")
-public class AvaCorpAvilanConstants {
+public final class AvaCorpAvilanConstants {
 
     private AvaCorpAvilanConstants() {
 

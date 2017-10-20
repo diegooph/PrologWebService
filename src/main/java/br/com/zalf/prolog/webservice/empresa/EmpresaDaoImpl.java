@@ -305,9 +305,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Cargo cargo = createFuncao(rSet);
-                cargo.setPermissoes(getPilaresCargo(codUnidade, cargo.getCodigo()));
-                listCargo.add(cargo);
+                listCargo.add(createFuncao(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);

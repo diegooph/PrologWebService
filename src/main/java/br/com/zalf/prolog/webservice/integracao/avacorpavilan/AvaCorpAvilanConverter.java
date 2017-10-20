@@ -12,9 +12,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfMedidaPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -26,6 +25,7 @@ import com.google.common.collect.MoreCollectors;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDatePattern;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDateTimePattern;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -115,16 +115,17 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static IncluirMedida2 convert(@NotNull final Afericao afericao) {
+    public static IncluirMedida2 convert(@NotNull final Afericao afericao) throws ParseException {
         checkNotNull(afericao, "afericao não pode ser null!");
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
 
-        // seta valores
+        // Seta valores.
+        incluirMedida2.setCpfColaborador(String.valueOf(afericao.getColaborador().getCpfAsString()));
         incluirMedida2.setVeiculo(afericao.getVeiculo().getPlaca());
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
-        incluirMedida2.setDataMedida(createDatePattern(afericao.getDataHora()));
+        incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo()
 
@@ -265,7 +266,9 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Pneu> convert(ArrayOfPneu arrayOfPneu) {
+    public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                     @Nonnull final ArrayOfPneu arrayOfPneu) {
+        checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
         final List<Pneu> pneus = new ArrayList<>();
 
@@ -280,7 +283,7 @@ public final class AvaCorpAvilanConverter {
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(p.getNumeroFogo());
-            pneu.setPosicao(AvilanPosicaoPneuMapper.mapToProLog(p.getPosicao()));
+            pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
             // que é utilizado no ProLog
@@ -361,19 +364,6 @@ public final class AvaCorpAvilanConverter {
         }
 
         return new FarolChecklist(farolVeiculos);
-    }
-
-    @NotNull
-    @VisibleForTesting
-    public static List<Checklist> getChecklists(@NotNull final List<ChecklistFiltro> checklistsFiltro)
-            throws ParseException {
-        checkNotNull(checklistsFiltro, "checklistsFiltro não pode ser null!");
-
-        final List<Checklist> checklists = new ArrayList<>();
-        for (final ChecklistFiltro checklistFiltro : checklistsFiltro) {
-            checklists.add(convert(checklistFiltro));
-        }
-        return checklists;
     }
 
     @NotNull
@@ -472,7 +462,85 @@ public final class AvaCorpAvilanConverter {
         return checklist;
     }
 
-    @NotNull
+    @Nonnull
+    @VisibleForTesting
+    public static List<Afericao> convert(@NotNull final ArrayOfAfericaoFiltro afericoesFiltro) throws ParseException {
+        checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
+
+        final List<Afericao> afericoes = new ArrayList<>();
+        for (AfericaoFiltro afericaoFiltro : afericoesFiltro.getAfericaoFiltro()) {
+            afericoes.add(convertAfericaoSemPneus(afericaoFiltro));
+        }
+        return afericoes;
+    }
+
+    @Nonnull
+    @VisibleForTesting
+    public static Afericao convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                   @NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+        checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
+        checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
+
+        final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro);
+
+        // Pneus - Medidas.
+        final List<Pneu> pneus = new ArrayList<>();
+        for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
+            final Pneu pneu = new Pneu();
+            pneu.setCodigo(pneuFiltro.getNumeroFogo());
+            pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
+            pneu.setPressaoAtual(pneuFiltro.getPressao());
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setExterno(pneuFiltro.getTrianguloPrimeiroSulco());
+            sulcos.setCentralExterno(pneuFiltro.getTrianguloSegundoSulco());
+            sulcos.setCentralInterno(pneuFiltro.getTrianguloTerceiroSulco());
+            sulcos.setInterno(pneuFiltro.getTrianguloQuartoSulco());
+            pneu.setSulcosAtuais(sulcos);
+            pneus.add(pneu);
+        }
+
+        afericao.getVeiculo().setListPneus(pneus);
+
+        return afericao;
+    }
+
+    @Nonnull
+    private static Afericao convertAfericaoSemPneus(@NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+        checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
+        final Afericao afericao = new Afericao();
+        afericao.setCodigo((long) afericaoFiltro.getCodigoAfericao());
+        afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
+
+        if (afericaoFiltro.getDataRealizacao().length() > AvaCorpAvilanUtils.AVILAN_DATE_PATTERN_STRING_SIZE) {
+            // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da
+            // String for menor ou igual ao pattern de data, então essa é uma aferição antiga que tem apenas a data
+            // setada.
+            afericao.setDataHora(AvaCorpAvilanUtils.createDateTimePattern(afericaoFiltro.getDataRealizacao()));
+        } else {
+            afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()));
+        }
+
+        final Colaborador colaborador = new Colaborador();
+        if (afericaoFiltro.getColaborador() == null
+                || Strings.isNullOrEmpty(afericaoFiltro.getColaborador().getNome())
+                || Strings.isNullOrEmpty(afericaoFiltro.getColaborador().getCpf())) {
+            // Antes da integração, não era salvo no ERP da Avilan quem fez a aferição. Aferições antigas não terão
+            // colaborador vinculado.
+            colaborador.setNome("Colaborador não informado");
+            colaborador.setCpf(0);
+        } else {
+            colaborador.setNome(afericaoFiltro.getColaborador().getNome());
+            colaborador.setCpf(Long.parseLong(afericaoFiltro.getColaborador().getCpf()));
+        }
+        afericao.setColaborador(colaborador);
+
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(afericaoFiltro.getPlaca());
+        afericao.setVeiculo(veiculo);
+        return afericao;
+    }
+
+    @Nonnull
     private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
         checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
 

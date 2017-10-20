@@ -31,13 +31,21 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO\n" +
                     "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO\n" +
                     "WHERE T.COD_UNIDADE = ? AND T.DATA_HORA_CADASTRO >= ? AND T.DATA_HORA_CADASTRO <= ?\n" +
-                    "AND F.CODIGO::TEXT LIKE ?\n" +
+                    "AND (? = 1 OR F.CODIGO::TEXT LIKE ?)\n" +
                     "ORDER BY t.data_liberacao\n" +
                     "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
             stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-            stmt.setString(4, String.valueOf(codFuncao));
+
+            if (codFuncao == null) {
+                stmt.setInt(4, 1);
+                stmt.setString(5, "");
+            } else {
+                stmt.setInt(4, 0);
+                stmt.setString(5, String.valueOf(codFuncao));
+            }
+
             stmt.setLong(5, limit);
             stmt.setLong(6, offset);
             rSet = stmt.executeQuery();

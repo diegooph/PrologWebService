@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlType;
     "carreta2",
     "carreta3",
     "dataMedida",
-    "medidas"
+    "medidas",
+    "cpfColaborador"
 })
 public class IncluirMedida2 {
 
@@ -55,6 +56,7 @@ public class IncluirMedida2 {
     protected String carreta3;
     protected String dataMedida;
     protected ArrayOfMedidaPneu medidas;
+    protected String cpfColaborador;
 
     /**
      * Gets the value of the veiculo property.
@@ -230,6 +232,30 @@ public class IncluirMedida2 {
      */
     public void setMedidas(ArrayOfMedidaPneu value) {
         this.medidas = value;
+    }
+
+    /**
+     * Gets the value of the cpfColaborador property.
+     *
+     * @return
+     *     possible object is
+     *     {@link String }
+     *
+     */
+    public String getCpfColaborador() {
+        return cpfColaborador;
+    }
+
+    /**
+     * Sets the value of the cpfColaborador property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *
+     */
+    public void setCpfColaborador(String value) {
+        this.cpfColaborador = value;
     }
 
 }

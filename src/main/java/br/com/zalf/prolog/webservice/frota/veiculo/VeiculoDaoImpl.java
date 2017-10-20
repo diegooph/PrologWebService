@@ -10,17 +10,13 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
 import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 import javax.ws.rs.DELETE;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -513,9 +509,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return placas;
     }
 
-    @Nullable
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -533,11 +528,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public DiagramaVeiculo getDiagramaVeiculoByCod(Long codDiagrama) throws SQLException {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(Short codDiagrama) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -548,7 +543,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     "  JOIN veiculo_tipo AS vt\n" +
                     "    ON vd.codigo = vt.cod_diagrama\n" +
                     "WHERE vd.codigo = ?");
-            stmt.setLong(1, codDiagrama);
+            stmt.setShort(1, codDiagrama);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createDiagramaVeiculo(rSet, conn);
@@ -556,7 +551,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -570,7 +565,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                diagramas.add(createDiagramaVeiculo(rSet, conn));
+                createDiagramaVeiculo(rSet, conn).ifPresent(diagramas::add);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -578,12 +573,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return diagramas;
     }
 
-    private DiagramaVeiculo createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
-        return new DiagramaVeiculo(
+    private Optional<DiagramaVeiculo> createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
+        return Optional.of(new DiagramaVeiculo(
                 rSet.getShort("CODIGO"),
                 rSet.getString("NOME"),
                 getEixosDiagrama(rSet.getInt("CODIGO"), conn),
-                rSet.getString("URL_IMAGEM"));
+                rSet.getString("URL_IMAGEM")));
     }
 
     private Set<EixoVeiculo> getEixosDiagrama(int codDiagrama, Connection conn) throws SQLException {
@@ -632,7 +627,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("MODELO"));
         veiculo.setModelo(modelo);
-        veiculo.setDiagrama(getDiagramaVeiculoByPlaca(veiculo.getPlaca()));
+        getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
         return veiculo;
     }
 

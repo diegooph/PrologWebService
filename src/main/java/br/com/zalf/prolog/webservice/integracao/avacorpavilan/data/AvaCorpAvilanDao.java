@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
+import com.google.common.collect.BiMap;
 import com.sun.istack.internal.NotNull;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
  */
 public interface AvaCorpAvilanDao {
 
-    @NotNull
+    @Nonnull
     List<TipoVeiculoAvilanProLog> getTiposVeiculosAvilanProLog() throws SQLException;
 
     /**
@@ -23,8 +25,28 @@ public interface AvaCorpAvilanDao {
      * @return o código que será utilizado pelo ProLog equivalente ao tipo recém inserido.
      * @throws SQLException caso aconteça algo de errado no insert.
      */
-    @NotNull
+    @Nonnull
     Long insertTipoVeiculoAvilan(@NotNull final TipoVeiculoAvilan tipoVeiculoAvilan) throws SQLException;
 
-    String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(@NotNull final Long codigo) throws Exception;
+    @Nonnull
+    String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(@NotNull final Long codigo) throws SQLException;
+
+    @Nonnull
+    FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(@NotNull final Long codUnidadeProLog)
+            throws SQLException;
+
+    @Nonnull
+    Short getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
+            throws SQLException;
+
+    /**
+     * O {@link BiMap BiMap} retornado contém como chave a posição do pneu utlizada pela Avilan e como valor a posição
+     * equivalente no ProLog. Com o BiMap temos garantia que os valores também não se repetem, pois não podem haver
+     * posições diferentes na Avilan mapeadas para a mesma posição no ProLog.
+     *
+     * @return um {@link BiMap BiMap}.
+     */
+    @Nonnull
+    BiMap<String, Integer> getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
+        throws SQLException;
 }

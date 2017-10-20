@@ -68,12 +68,12 @@ public interface AfericaoDao {
     /**
      * retorna uma aferição através do código dela
      *
-     * @param codAfericao código da aferição
      * @param codUnidade  código da unidade
+     * @param codAfericao código da aferição
      * @return a aferição
      * @throws SQLException se ocorrer erro no banco
      */
-    Afericao getByCod(Long codAfericao, Long codUnidade) throws SQLException;
+    Afericao getByCod(Long codUnidade, Long codAfericao) throws SQLException;
 
     /**
      * Atualiza uma aferição
