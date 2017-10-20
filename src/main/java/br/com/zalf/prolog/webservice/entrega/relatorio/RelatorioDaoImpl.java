@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
@@ -7,6 +10,9 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -264,5 +270,43 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             closeConnection(conn,stmt,rSet);
         }
         return dados;
+    }
+
+    public void getEstratificacaoMapasCsv(Long codUnidade, Date dataInicial, Date dataFinal, OutputStream out) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoMapasStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    public Report getEstratificacaoMapasReport(Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoMapasStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private PreparedStatement getEstratificacaoMapasStatement(Connection conn, Long codUnidade, Date dataInicial,
+                                                              Date dataFinal) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_mapa_estratificado(?,?,?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
     }
 }
