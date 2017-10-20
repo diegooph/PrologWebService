@@ -4,6 +4,9 @@ Change Log
 <a name="v2.0.37"></a>
 ## Version [v2.0.37](https://github.com/luizfp/PrologAndroid/compare/v2.0.36...v2.0.37) (2017-10-19)
 
+### Features
+* Implementa relatório para estratificar os mapas
+
 ### Refactors
 * Altera insert de aferição na integração com Avilan para enviar CPF do colaborador que realizou a aferição e data/hora
 em que foi realizada, não apenas data
