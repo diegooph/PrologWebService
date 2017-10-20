@@ -2664,4 +2664,48 @@ WHERE M.COD_UNIDADE = f_cod_unidade AND M.data BETWEEN f_data_inicial AND f_data
 ORDER BY M.MAPA
 $func$ LANGUAGE SQL;
 
+-- Função usada no relatório que estratifica as respostas dos checklists, apenas respostas NOK
+CREATE OR REPLACE FUNCTION func_relatorio_checklist_extrato_respostas(f_cod_unidade BIGINT, f_data_inicial DATE,
+                                                             f_data_final  DATE)
+  RETURNS TABLE(
+    "CODIGO CHECKLIST" BIGINT,
+    "DATA"             VARCHAR,
+    "PLACA"            VARCHAR,
+    "KM"               BIGINT,
+    "NOME"             VARCHAR,
+    "PERGUNTA"         VARCHAR,
+    "ALTERNATIVA"      VARCHAR,
+    "RESPOSTA"         VARCHAR,
+    "PRIORIDADE"       VARCHAR,
+    "PRAZO"            INT
+  ) AS
+$func$
+SELECT
+  c.codigo,
+  to_char(c.data_hora, 'DD/MM/YYYY HH:MI'),
+  c.placa_veiculo,
+  c.km_veiculo AS km,
+  co.nome      AS realizador,
+  cp.pergunta,
+  cap.alternativa,
+  cr.resposta,
+  cp.prioridade,
+  ppc.prazo
+FROM (((checklist c
+  JOIN veiculo v ON (((v.placa) :: TEXT = (c.placa_veiculo) :: TEXT)))
+  JOIN checklist_perguntas cp
+    ON ((((cp.cod_unidade = c.cod_unidade) AND (cp.cod_checklist_modelo = c.cod_checklist_modelo))))
+  JOIN prioridade_pergunta_checklist ppc ON (((ppc.prioridade) :: TEXT = (cp.prioridade) :: TEXT)))
+  JOIN checklist_alternativa_pergunta cap
+    ON (((((cap.cod_unidade = cp.cod_unidade) AND (cap.cod_checklist_modelo = cp.cod_checklist_modelo)) AND
+          (cap.cod_pergunta = cp.codigo))))
+  JOIN checklist_respostas cr ON ((((((c.cod_unidade = cr.cod_unidade) AND
+                                      (cr.cod_checklist_modelo = c.cod_checklist_modelo)) AND
+                                     (cr.cod_checklist = c.codigo)) AND (cr.cod_pergunta = cp.codigo)) AND
+                                   (cr.cod_alternativa = cap.codigo))))
+  JOIN colaborador co ON ((co.cpf = c.cpf_colaborador))
+WHERE C.cod_unidade = f_cod_unidade AND c.data_hora :: DATE BETWEEN f_data_inicial AND f_data_final AND cr.resposta <> 'OK'
+ORDER BY c.data_hora DESC, c.codigo ASC
+$func$ LANGUAGE SQL;
+
 --
