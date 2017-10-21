@@ -10,7 +10,10 @@ Change Log
 ### Refactors
 * Altera insert de aferição na integração com Avilan para enviar CPF do colaborador que realizou a aferição e data/hora
 em que foi realizada, não apenas data
-* Altera busca das aferições na integração com Avilan para conter colaborador que realizou e hora realização 
+* Altera busca das aferições na integração com Avilan para conter colaborador que realizou e hora realização
+
+### Bug Fixes
+* Corrige métodos de update e busca das metas, salvando em km
 
 <a name="v2.0.36"></a>
 ## Version [v2.0.36](https://github.com/luizfp/PrologAndroid/compare/v0.0.35-h1...v2.0.36) (2017-10-19)
