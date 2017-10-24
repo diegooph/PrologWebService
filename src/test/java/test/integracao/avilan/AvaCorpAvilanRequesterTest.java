@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
@@ -127,6 +128,48 @@ public class AvaCorpAvilanRequesterTest {
                 DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
         assertTrue(!checklistFiltro.getChecklistFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklistsPorColaborador() throws Exception {
+        final String dataInicial = "2017-09-28";
+        final String dataFinal = "2017-10-11";
+
+        final ArrayOfChecklistFiltro checklists = requester.getChecklistsByColaborador(
+                8,
+                1,
+                "",
+                "",
+                dataInicial,
+                dataFinal,
+                CPF,
+                DATA_NASCIMENTO);
+
+        checklists.getChecklistFiltro().forEach(
+                checklistFiltro -> assertEquals(checklistFiltro.getColaborador().getCpf(), CPF));
+
+        System.out.println(GsonUtils.getGson().toJson(checklists));
+        assertNotNull(checklists);
+        assertTrue(!checklists.getChecklistFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarTodosChecklists() throws Exception {
+        final String dataInicial = "2017-09-28";
+        final String dataFinal = "2017-10-11";
+
+        final ArrayOfChecklistFiltro checklists = requester.getChecklists(
+                11,
+                1,
+                "",
+                "",
+                dataInicial,
+                dataFinal,
+                CPF,
+                DATA_NASCIMENTO);
+        System.out.println(GsonUtils.getGson().toJson(checklists));
+        assertNotNull(checklists);
+        assertTrue(!checklists.getChecklistFiltro().isEmpty());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
