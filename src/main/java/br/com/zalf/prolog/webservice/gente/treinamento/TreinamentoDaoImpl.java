@@ -29,11 +29,11 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT T.* " +
-                    "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO " +
-                    "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO " +
+                    "FROM TREINAMENTO T " +
+                    "LEFT JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO " +
                     "WHERE T.COD_UNIDADE = ? " +
                     "AND (? = 1 OR T.DATA_LIBERACAO::DATE <= ?) " +
-                    "AND (? = 1 OR F.CODIGO::TEXT LIKE ?) " +
+                    "AND (? = 1 OR RT.COD_FUNCAO::TEXT LIKE ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= ?) " +
                     "ORDER BY T.DATA_HORA_CADASTRO " +
