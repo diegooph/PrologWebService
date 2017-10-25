@@ -22,7 +22,7 @@ public class TreinamentoService {
             return dao.getVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos vistos pelo colaborador " + cpf);
         }
     }
 
@@ -32,7 +32,7 @@ public class TreinamentoService {
             return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, apenasLiberados, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos");
         }
     }
 
@@ -41,7 +41,7 @@ public class TreinamentoService {
             return dao.getNaoVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos não vistos pelo colaborador " + cpf);
         }
     }
 
