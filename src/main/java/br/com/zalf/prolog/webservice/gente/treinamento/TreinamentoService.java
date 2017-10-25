@@ -27,9 +27,11 @@ public class TreinamentoService {
     }
 
     public List<Treinamento> getAll(Long dataInicial, Long dataFinal, String codFuncao,
-                                    Long codUnidade, boolean apenasLiberados, long limit, long offset) {
+                                    Long codUnidade, Boolean comCargosLiberados,
+                                    boolean apenasLiberados, long limit, long offset) {
         try {
-            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, apenasLiberados, limit, offset);
+            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, comCargosLiberados,
+                    apenasLiberados, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar treinamentos");

@@ -19,7 +19,8 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                                     Long dataFinal,
                                     String codFuncao,
                                     Long codUnidade,
-                                    boolean apenasLiberados,
+                                    Boolean comCargosLiberados,
+                                    boolean apenasTreinamentosLiberados,
                                     long limit,
                                     long offset) throws SQLException {
         final List<Treinamento> treinamentos = new ArrayList<>();
@@ -40,7 +41,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
 
-            if (apenasLiberados) {
+            if (apenasTreinamentosLiberados) {
                 stmt.setInt(2, 0);
                 stmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
             } else {
@@ -73,7 +74,10 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Treinamento t = createTreinamento(rSet);
-                t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                // Por default mandamos os cargos com acesso ao treinamento, por isso se for null isso vai ser incluido.
+                if (comCargosLiberados == null || comCargosLiberados) {
+                    t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                }
                 treinamentos.add(t);
             }
         } finally {

@@ -18,7 +18,8 @@ public interface TreinamentoDao {
      * @param dataFinal   data final
      * @param codFuncao   código da função
      * @param codUnidade  código da unidade
-     * @param apenasLiberados  apenas os liberados
+     * @param comCargosLiberados  com cargos liberados
+     * @param apenasTreinamentosLiberados  apenas os treinamentos liberados
      * @param limit       limit de busca no banco
      * @param offset      offset de busca no banco
      * @return uma lista de treinamentos
@@ -28,7 +29,8 @@ public interface TreinamentoDao {
                              Long dataFinal,
                              String codFuncao,
                              Long codUnidade,
-                             boolean apenasLiberados,
+                             Boolean comCargosLiberados,
+                             boolean apenasTreinamentosLiberados,
                              long limit,
                              long offset) throws SQLException;
 
