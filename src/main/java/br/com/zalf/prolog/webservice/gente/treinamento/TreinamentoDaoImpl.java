@@ -209,6 +209,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         treinamento.setDescricao(rSet.getString("DESCRICAO"));
         treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
         treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
+        treinamento.setDataHoraCadastro(rSet.getDate("DATA_HORA_CADASTRO"));
         treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo()));
         return treinamento;
