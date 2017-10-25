@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColabora
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,10 +26,10 @@ public class TreinamentoService {
         }
     }
 
-    public List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-                                    Long codUnidade, long limit, long offset) {
+    public List<Treinamento> getAll(Long dataInicial, Long dataFinal, String codFuncao,
+                                    Long codUnidade, boolean apenasLiberados, long limit, long offset) {
         try {
-            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, limit, offset);
+            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, apenasLiberados, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();

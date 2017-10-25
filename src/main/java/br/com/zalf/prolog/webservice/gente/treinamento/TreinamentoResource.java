@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -98,17 +97,19 @@ public class TreinamentoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS, Pilares.Gente.Treinamentos.ALTERAR,
+    @Secured(permissions = {
+            Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS,
+            Pilares.Gente.Treinamentos.ALTERAR,
             Pilares.Gente.Treinamentos.CRIAR})
     @Path("/{codUnidade}")
     public List<Treinamento> getAll(@PathParam("codUnidade") Long codUnidade,
                                     @QueryParam("codCargo") String codCargo,
-                                    @QueryParam("dataInicial") long dataInicial,
-                                    @QueryParam("dataFinal") long dataFinal,
+                                    @QueryParam("dataInicial") Long dataInicial,
+                                    @QueryParam("dataFinal") Long dataFinal,
+                                    @QueryParam("apenasLiberados") boolean apenasLiberados,
                                     @QueryParam("limit") long limit,
                                     @QueryParam("offset") long offset) {
-        return service.getAll(DateUtils.toLocalDate(new java.sql.Date(dataInicial)),
-                DateUtils.toLocalDate(new java.sql.Date(dataFinal)), codCargo, codUnidade, limit, offset);
+        return service.getAll(dataInicial, dataFinal, codCargo, codUnidade, apenasLiberados, limit, offset);
     }
 
     @PUT
