@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -19,13 +18,21 @@ public interface TreinamentoDao {
      * @param dataFinal   data final
      * @param codFuncao   código da função
      * @param codUnidade  código da unidade
+     * @param comCargosLiberados  com cargos liberados
+     * @param apenasTreinamentosLiberados  apenas os treinamentos liberados
      * @param limit       limit de busca no banco
      * @param offset      offset de busca no banco
      * @return uma lista de treinamentos
      * @throws SQLException caso operação falhar
      */
-    List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-                             Long codUnidade, long limit, long offset) throws SQLException;
+    List<Treinamento> getAll(Long dataInicial,
+                             Long dataFinal,
+                             String codFuncao,
+                             Long codUnidade,
+                             Boolean comCargosLiberados,
+                             boolean apenasTreinamentosLiberados,
+                             long limit,
+                             long offset) throws SQLException;
 
     /**
      * Busca os treinamentos ainda não visualizados por um colaborador específico

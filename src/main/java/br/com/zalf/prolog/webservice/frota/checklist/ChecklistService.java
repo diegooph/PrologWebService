@@ -111,11 +111,12 @@ public class ChecklistService {
         }
     }
 
-    public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido, String userToken) {
+    public List<Checklist> getByColaborador(Long cpf, Long dataInicial, Long dataFinal, int limit, long offset,
+                                            boolean resumido, String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getChecklistsByColaborador(cpf, limit, offset, resumido);
+                    .getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);

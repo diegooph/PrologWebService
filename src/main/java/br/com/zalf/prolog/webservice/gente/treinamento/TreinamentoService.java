@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColabora
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,17 +22,19 @@ public class TreinamentoService {
             return dao.getVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos vistos pelo colaborador " + cpf);
         }
     }
 
-    public List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-                                    Long codUnidade, long limit, long offset) {
+    public List<Treinamento> getAll(Long dataInicial, Long dataFinal, String codFuncao,
+                                    Long codUnidade, Boolean comCargosLiberados,
+                                    boolean apenasLiberados, long limit, long offset) {
         try {
-            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, limit, offset);
+            return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, comCargosLiberados,
+                    apenasLiberados, limit, offset);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos");
         }
     }
 
@@ -42,7 +43,7 @@ public class TreinamentoService {
             return dao.getNaoVistosColaborador(cpf);
         } catch (SQLException e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            throw new RuntimeException("Erro ao buscar treinamentos não vistos pelo colaborador " + cpf);
         }
     }
 

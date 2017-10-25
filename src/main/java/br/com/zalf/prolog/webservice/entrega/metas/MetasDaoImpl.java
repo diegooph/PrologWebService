@@ -10,8 +10,6 @@ import java.time.temporal.ChronoUnit;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
 
-    private static final String BUSCA_METAS_BY_UNIDADE = "SELECT * FROM UNIDADE_METAS WHERE COD_UNIDADE = ?";
-
     @Override
     public Metas getByCodUnidade(Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -19,7 +17,7 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BUSCA_METAS_BY_UNIDADE);
+            stmt = conn.prepareStatement("SELECT * FROM UNIDADE_METAS WHERE COD_UNIDADE = ?");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -57,7 +55,7 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
             stmt.setDouble(1, metas.metaDevHl);
             stmt.setDouble(2, metas.metaDevPdv);
             stmt.setDouble(3, metas.metaDevNf);
-            stmt.setDouble(4, metas.metaTracking);
+            stmt.setDouble(4, metas.metaTracking/1000);
             stmt.setInt(5, metas.metaRaioTracking);
             stmt.setDouble(6, metas.metaTempoLargadaMapas);
             stmt.setDouble(7, metas.metaTempoRotaMapas);
@@ -85,7 +83,7 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
         Metas meta = new Metas();
         meta.metaDevHl = rSet.getDouble("META_DEV_HL");
         meta.metaDevPdv = rSet.getDouble("META_DEV_PDV");
-        meta.metaTracking = rSet.getDouble("META_TRACKING");
+        meta.metaTracking = rSet.getDouble("META_TRACKING")*1000;
         meta.metaRaioTracking = rSet.getInt("META_RAIO_TRACKING");
         meta.metaTempoLargadaMapas = rSet.getDouble("META_TEMPO_LARGADA_MAPAS");
         meta.metaTempoRotaMapas = rSet.getDouble("META_TEMPO_ROTA_MAPAS");

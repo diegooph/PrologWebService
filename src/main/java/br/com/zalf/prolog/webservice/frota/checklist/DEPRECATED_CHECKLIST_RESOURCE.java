@@ -67,7 +67,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("limit") int limit,
 			@QueryParam("offset") long offset,
 			@HeaderParam("Authorization") String userToken) {
-		return service.getByColaborador(cpf, limit, offset, false, userToken);
+		return service.getByColaborador(cpf, null, null, limit, offset, false, userToken);
 	}
 
 	@GET

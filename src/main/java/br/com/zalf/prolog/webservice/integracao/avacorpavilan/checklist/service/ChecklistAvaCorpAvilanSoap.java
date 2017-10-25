@@ -125,6 +125,8 @@ public interface ChecklistAvaCorpAvilanSoap {
                     String dataFinal,
             @WebParam(name = "veiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String veiculo,
+            @WebParam(name = "colaborador", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    String colaborador,
             @WebParam(name = "tipoVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String tipoVeiculo);
 

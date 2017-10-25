@@ -56,10 +56,12 @@ public class ChecklistResource {
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public List<Checklist> getByColaboradorResumidos(
             @PathParam("cpf") Long cpf,
+            @QueryParam("dataInicial") Long dataInicial,
+            @QueryParam("dataFinal") Long dataFinal,
             @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) {
-        return service.getByColaborador(cpf, limit, offset, true, userToken);
+        return service.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, true, userToken);
     }
 
     @GET
@@ -177,7 +179,7 @@ public class ChecklistResource {
      *
      * No Android não é mais utilizado esse método, utiliza-se o com path base diferente (checklist). Porém, ele ainda
      * é utilizado na Web para buscar os checklists. Após a troca para utilizar
-     * {@link #getByColaboradorResumidos(Long, int, long, String)}, este método pode ser removido.
+     * {@link #getByColaboradorResumidos(Long, Long, Long, int, long, String)}, este método pode ser removido.
      */
     @GET
     @Path("/colaborador/{cpf}")
@@ -187,7 +189,7 @@ public class ChecklistResource {
                                                          @QueryParam("limit") int limit,
                                                          @QueryParam("offset") long offset,
                                                          @HeaderParam("Authorization") String userToken) {
-        return service.getByColaborador(cpf, limit, offset, false, userToken);
+        return service.getByColaborador(cpf, null, null, limit, offset, false, userToken);
     }
 
     /**

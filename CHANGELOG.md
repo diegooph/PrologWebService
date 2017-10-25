@@ -1,13 +1,31 @@
 Change Log
 ==========
 
+<a name="v2.0.38"></a>
+## Version [v2.0.38](https://github.com/luizfp/PrologAndroid/compare/v2.0.37...v2.0.38) (2017-10-25)
+
+### Features
+* Implementa relatório para estratificar os mapas
+* Implementa function para listar as respsotas NOK dos checklists
+
+### Refactors
+* Refatora busca dos treinamentos de uma unidade
+* Realiza busca dos checklists de um colaborador informando CPF na requisição na integração com Avilan
+* Permite busca dos checklists de um colaborador ser filtrada por data
+* Renomeia parâmetro no objeto `Treinamento` de `funcoesLiberadas` para `cargosLiberados`
+
+### Bug Fixes
+* Corrige métodos de update e busca das metas, salvando em km
+* Adiciona permissão de visualizar todos os prontuários na busca dos filtros
+* Corrige busca de todos os relatos de uma unidade
+
 <a name="v2.0.37"></a>
 ## Version [v2.0.37](https://github.com/luizfp/PrologAndroid/compare/v2.0.36...v2.0.37) (2017-10-19)
 
 ### Refactors
 * Altera insert de aferição na integração com Avilan para enviar CPF do colaborador que realizou a aferição e data/hora
 em que foi realizada, não apenas data
-* Altera busca das aferições na integração com Avilan para conter colaborador que realizou e hora realização 
+* Altera busca das aferições na integração com Avilan para conter colaborador que realizou e hora realização
 
 <a name="v2.0.36"></a>
 ## Version [v2.0.36](https://github.com/luizfp/PrologAndroid/compare/v0.0.35-h1...v2.0.36) (2017-10-19)

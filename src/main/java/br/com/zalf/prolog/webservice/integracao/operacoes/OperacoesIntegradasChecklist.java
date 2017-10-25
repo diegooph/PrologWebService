@@ -33,6 +33,8 @@ interface OperacoesIntegradasChecklist {
 
     @Nonnull
     List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
+                                               @Nullable final Long dataInicial,
+                                               @Nullable final Long dataFinal,
                                                final int limit,
                                                final long offset,
                                                final boolean resumido) throws Exception;

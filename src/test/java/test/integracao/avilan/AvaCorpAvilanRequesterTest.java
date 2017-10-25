@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
@@ -83,6 +84,13 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarVeiculoAtivo() throws Exception {
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo = requester.getVeiculoAtivo("LRN9162", CPF, DATA_NASCIMENTO);
+        assertNotNull(veiculo);
+        System.out.println(GsonUtils.getGson().toJson(veiculo));
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarTiposVeiculo() throws Exception {
         final ArrayOfTipoVeiculo tiposVeiculo = requester.getTiposVeiculo(CPF, DATA_NASCIMENTO);
         assertNotNull(tiposVeiculo);
@@ -123,8 +131,50 @@ public class AvaCorpAvilanRequesterTest {
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarChecklistsPorColaborador() throws Exception {
+        final String dataInicial = "2017-09-28";
+        final String dataFinal = "2017-10-11";
+
+        final ArrayOfChecklistFiltro checklists = requester.getChecklistsByColaborador(
+                8,
+                1,
+                "",
+                "",
+                dataInicial,
+                dataFinal,
+                CPF,
+                DATA_NASCIMENTO);
+
+        checklists.getChecklistFiltro().forEach(
+                checklistFiltro -> assertEquals(checklistFiltro.getColaborador().getCpf(), CPF));
+
+        System.out.println(GsonUtils.getGson().toJson(checklists));
+        assertNotNull(checklists);
+        assertTrue(!checklists.getChecklistFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testBuscarTodosChecklists() throws Exception {
+        final String dataInicial = "2017-09-28";
+        final String dataFinal = "2017-10-11";
+
+        final ArrayOfChecklistFiltro checklists = requester.getChecklists(
+                11,
+                1,
+                "",
+                "",
+                dataInicial,
+                dataFinal,
+                CPF,
+                DATA_NASCIMENTO);
+        System.out.println(GsonUtils.getGson().toJson(checklists));
+        assertNotNull(checklists);
+        assertTrue(!checklists.getChecklistFiltro().isEmpty());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarPneusVeiculo() throws Exception {
-        final ArrayOfPneu pneus = requester.getPneusVeiculo(VEICULO_COM_PNEUS, CPF, DATA_NASCIMENTO);
+        final ArrayOfPneu pneus = requester.getPneusVeiculo("LRN9162", CPF, DATA_NASCIMENTO);
         assertNotNull(pneus);
         assertTrue(!pneus.getPneu().isEmpty());
     }

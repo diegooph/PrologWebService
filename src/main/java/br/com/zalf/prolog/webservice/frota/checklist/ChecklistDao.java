@@ -56,14 +56,13 @@ public interface ChecklistDao {
 						   boolean resumido) throws SQLException;
 
 	/**
-	 * Busca os checklists realizados por um colaborador
-	 * @param cpf um cpf
-	 * @param limit quantidade de checks buscados no banco
-	 * @param offset a partir de qual check será  abusca
-	 * @return lista de Checklist
-	 * @throws SQLException caso não seja possível realizar a busca no banco de dados
+	 * Busca os checklists realizados por um colaborador.
+	 *
+	 * @return uma {@link List<Checklist> lista de checklists}.
+	 * @throws SQLException caso não seja possível realizar a busca.
 	 */
-	List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException;
+	List<Checklist> getByColaborador(Long cpf, @Nullable Long dataInicial, @Nullable Long dataFinal, int limit, long offset,
+									 boolean resumido) throws SQLException;
 
 	/**
 	 * busca a url das imagens das perguntas

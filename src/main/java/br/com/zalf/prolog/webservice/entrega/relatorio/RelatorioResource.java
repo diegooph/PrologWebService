@@ -1,13 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
 /**
@@ -90,5 +92,24 @@ public class RelatorioResource {
                                               @PathParam("indicador") String indicador){
         return service.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
     }
+
+    @GET
+    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Path("/mapas/estratificados/{codUnidade}/csv")
+    public StreamingOutput getEstratificacaoMapasCsv(@PathParam("codUnidade") Long codUnidade,
+                                                     @QueryParam("dataInicial") Long dataInicial,
+                                                     @QueryParam("dataFinal") Long dataFinal) {
+        return outputStream -> service.getEstratificacaoMapasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Path("/mapas/estratificados/{codUnidade}/report")
+    public Report getEstratificacaoMapasReport(@PathParam("codUnidade") Long codUnidade,
+                                               @QueryParam("dataInicial") Long dataInicial,
+                                               @QueryParam("dataFinal") Long dataFinal) {
+        return service.getEstratificacaoMapasReport(codUnidade, dataInicial, dataFinal);
+    }
+
 
 }

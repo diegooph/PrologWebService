@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
+    private static final String TODOS_COLABORADORES = "";
+
     @Override
     public ArrayOfVeiculo getVeiculosAtivos(@NotNull String cpf,
                                             @NotNull String dataNascimento) throws Exception {
@@ -253,6 +255,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
+                cpf,
                 codTipoVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
@@ -280,6 +283,7 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
+                TODOS_COLABORADORES,
                 codTipoVeiculo);
 
         if (!error(request.isSucesso(), request.getMensagem())) {

@@ -2393,6 +2393,7 @@ FROM
 ORDER BY EXTRACT(DAY FROM I.DATA_HORA_INICIO), C.NOME, I.DATA_HORA_INICIO
 $func$ LANGUAGE SQL;
 
+-- Função para gerar o relatório com os acessos à produtividade
 CREATE OR REPLACE FUNCTION func_relatorio_acessos_produtividade_estratificado (f_cod_unidade BIGINT, f_data_inicial DATE,
   f_data_final DATE, f_cpf TEXT)
   RETURNS TABLE (
@@ -2410,6 +2411,299 @@ FROM acessos_produtividade AP JOIN COLABORADOR C ON C.CPF = AP.cpf_colaborador
 WHERE AP.cpf_colaborador :: TEXT LIKE f_cpf AND AP.data_hora_consulta :: DATE BETWEEN f_data_inicial AND f_data_final AND
       AP.cod_unidade = f_cod_unidade
 ORDER BY AP.data_hora_consulta
+$func$ LANGUAGE SQL;
+
+-- Função para gerar o relatório de estratificação da tabela mapa
+CREATE OR REPLACE FUNCTION func_relatorio_mapa_estratificado(f_cod_unidade BIGINT, f_data_inicial DATE, f_data_final DATE)
+  RETURNS TABLE (
+  "data" VARCHAR,
+  "placa" VARCHAR,
+  "mapa" INT,
+  "matric motorista" INT,
+  "nome motorista" TEXT,
+  "matric ajudante 1" INT,
+  "nome ajudante 1" TEXT,
+  "matric ajudante 2" INT,
+  "nome ajudante 2" TEXT,
+  entregas INT,
+  cxcarreg REAL,
+  cxentreg REAL,
+  transp INT,
+  entrega VARCHAR,
+  cargaatual TEXT,
+  frota TEXT,
+  custospot REAL,
+  regiao INT,
+  veiculo INT,
+  veiculoindisp REAL,
+  placaindisp REAL,
+  frotaindisp REAL,
+  tipoindisp INT,
+  ocupacao REAL,
+  cxrota REAL,
+  cxas REAL,
+  veicbm REAL,
+  rshow INT,
+  entrvol VARCHAR,
+  hrsai timestamp,
+  hrentr timestamp,
+  kmsai INT,
+  kmentr INT,
+  custovariavel REAL,
+  lucro REAL,
+  lucrounit REAL,
+  valorfrete REAL,
+  tipoimposto VARCHAR,
+  percimposto REAL,
+  valorimposto REAL,
+  valorfaturado REAL,
+  valorunitcxentregue REAL,
+  valorpgcxentregsemimp REAL,
+  valorpgcxentregcomimp REAL,
+  tempoprevistoroad TIME,
+  kmprevistoroad REAL,
+  valorunitpontomot REAL,
+  valorunitpontoajd REAL,
+  valorequipeentrmot REAL,
+  valorequipeentrajd REAL,
+  custovariavelcedbz REAL,
+  lucrounitcedbz REAL,
+  lucrovariavelcxentregueffcedbz REAL,
+  tempointerno TIME,
+  valordropdown REAL,
+  veiccaddd VARCHAR,
+  kmlaco REAL,
+  kmdeslocamento REAL,
+  tempolaco TIME,
+  tempodeslocamento TIME,
+  sitmulticdd REAL,
+  unborigem INT,
+  valorctedifere VARCHAR,
+  qtnfcarregadas INT,
+  qtnfentregues INT,
+  inddevcx REAL,
+  inddevnf REAL,
+  fator REAL,
+  recarga VARCHAR,
+  hrmatinal TIME,
+  hrjornadaliq TIME,
+  hrmetajornada TIME,
+  vlbateujornmot REAL,
+  vlnaobateujornmot REAL,
+  vlrecargamot REAL,
+  vlbateujornaju REAL,
+  vlnaobateujornaju REAL,
+  vlrecargaaju REAL,
+  vltotalmapa REAL,
+  qthlcarregados REAL,
+  qthlentregues REAL,
+  indicedevhl REAL,
+  regiao2 VARCHAR,
+  qtnfcarreggeral INT,
+  qtnfentreggeral INT,
+  capacidadeveiculokg REAL,
+  pesocargakg REAL,
+  capacveiculocx INT,
+  entregascompletas INT,
+  entregasparciais INT,
+  entregasnaorealizadas INT,
+  codfilial INT,
+  nomefilial VARCHAR,
+  codsupervtrs INT,
+  nomesupervtrs VARCHAR,
+  codspot INT,
+  nomespot TEXT,
+  equipcarregados INT,
+  equipdevolvidos INT,
+  equiprecolhidos INT,
+  cxentregtracking REAL,
+  hrcarreg TIMESTAMP,
+  hrpcfisica TIMESTAMP,
+  hrpcfinanceira TIMESTAMP,
+  stmapa VARCHAR,
+  totalApontamentosTracking BIGINT,
+  apontamentosOK BIGINT,
+  apontamentosNOK BIGINT,
+  aderencia DOUBLE PRECISION
+  ) AS
+$func$
+SELECT
+  to_char(m.data, 'DD/MM/YYYY'),
+  placa,
+  mapa,
+  matricmotorista,
+  coalesce(MOTORISTA.nome, '-') AS NOME_MOTORISTA,
+  matricajud1,
+  coalesce(AJUDANTE1.nome, '-') AS NOME_AJUDANTE1,
+  matricajud2,
+  coalesce(AJUDANTE2.nome, '-') AS NOME_AJUDANTE2,
+  entregas,
+  cxcarreg,
+  cxentreg,
+  transp,
+  entrega,
+  cargaatual,
+  frota,
+  custospot,
+  regiao,
+  veiculo,
+  veiculoindisp,
+  placaindisp,
+  frotaindisp,
+  tipoindisp,
+  ocupacao,
+  cxrota,
+  cxas,
+  veicbm,
+  rshow,
+  entrvol,
+  hrsai,
+  hrentr,
+  kmsai,
+  kmentr,
+  custovariavel,
+  lucro,
+  lucrounit,
+  valorfrete,
+  tipoimposto,
+  percimposto,
+  valorimposto,
+  valorfaturado,
+  valorunitcxentregue,
+  valorpgcxentregsemimp,
+  valorpgcxentregcomimp,
+  tempoprevistoroad,
+  kmprevistoroad,
+  valorunitpontomot,
+  valorunitpontoajd,
+  valorequipeentrmot,
+  valorequipeentrajd,
+  custovariavelcedbz,
+  lucrounitcedbz,
+  lucrovariavelcxentregueffcedbz,
+  tempointerno,
+  valordropdown,
+  veiccaddd,
+  kmlaco,
+  kmdeslocamento,
+  tempolaco,
+  tempodeslocamento,
+  sitmulticdd,
+  unborigem,
+  valorctedifere,
+  qtnfcarregadas,
+  qtnfentregues,
+  inddevcx,
+  inddevnf,
+  fator,
+  recarga,
+  hrmatinal,
+  hrjornadaliq,
+  hrmetajornada,
+  vlbateujornmot,
+  vlnaobateujornmot,
+  vlrecargamot,
+  vlbateujornaju,
+  vlnaobateujornaju,
+  vlrecargaaju,
+  vltotalmapa,
+  qthlcarregados,
+  qthlentregues,
+  indicedevhl,
+  regiao2,
+  qtnfcarreggeral,
+  qtnfentreggeral,
+  capacidadeveiculokg,
+  pesocargakg,
+  capacveiculocx,
+  entregascompletas,
+  entregasparciais,
+  entregasnaorealizadas,
+  codfilial,
+  nomefilial,
+  codsupervtrs,
+  nomesupervtrs,
+  codspot,
+  nomespot,
+  equipcarregados,
+  equipdevolvidos,
+  equiprecolhidos,
+  cxentregtracking,
+  hrcarreg,
+  hrpcfisica,
+  hrpcfinanceira,
+  stmapa,
+  TRACKING.TOTAL_APONTAMENTOS,
+  TRACKING.APONTAMENTOS_OK,
+  TRACKING.TOTAL_APONTAMENTOS - TRACKING.APONTAMENTOS_OK                                AS apontamentos_nok,
+  TRUNC((TRACKING.APONTAMENTOS_OK :: FLOAT / TRACKING.TOTAL_APONTAMENTOS) * 100)
+FROM MAPA M
+  JOIN unidade_funcao_produtividade UFP ON UFP.cod_unidade = M.cod_unidade
+  LEFT JOIN colaborador MOTORISTA
+    ON MOTORISTA.cod_unidade = M.cod_unidade AND MOTORISTA.cod_funcao = UFP.cod_funcao_motorista
+       AND MOTORISTA.matricula_ambev = M.matricmotorista
+  LEFT JOIN colaborador AJUDANTE1
+    ON AJUDANTE1.cod_unidade = M.cod_unidade AND AJUDANTE1.cod_funcao = UFP.cod_funcao_ajudante
+       AND AJUDANTE1.matricula_ambev = M.matricajud1
+  LEFT JOIN colaborador AJUDANTE2
+    ON AJUDANTE2.cod_unidade = M.cod_unidade AND AJUDANTE2.cod_funcao = UFP.cod_funcao_ajudante
+       AND AJUDANTE2.matricula_ambev = M.matricajud2
+  LEFT JOIN (SELECT
+               T.MAPA                         AS TRACKING_MAPA,
+               T.código_transportadora           TRACKING_UNIDADE,
+               COUNT(T.disp_apont_cadastrado) AS TOTAL_APONTAMENTOS,
+               SUM(CASE WHEN T.disp_apont_cadastrado <= UM.meta_raio_tracking
+                 THEN 1
+                   ELSE 0 END)                AS APONTAMENTOS_OK
+             FROM TRACKING T
+               JOIN UNIDADE_METAS UM ON UM.COD_UNIDADE = T.código_transportadora
+             GROUP BY 1, 2) AS TRACKING ON TRACKING_MAPA = M.MAPA AND TRACKING_UNIDADE = M.cod_unidade
+WHERE M.COD_UNIDADE = f_cod_unidade AND M.data BETWEEN f_data_inicial AND f_data_final
+ORDER BY M.MAPA
+$func$ LANGUAGE SQL;
+
+-- Função usada no relatório que estratifica as respostas dos checklists, apenas respostas NOK
+CREATE OR REPLACE FUNCTION func_relatorio_checklist_extrato_respostas(f_cod_unidade BIGINT, f_data_inicial DATE,
+                                                             f_data_final  DATE)
+  RETURNS TABLE(
+    "CODIGO CHECKLIST" BIGINT,
+    "DATA"             VARCHAR,
+    "PLACA"            VARCHAR,
+    "KM"               BIGINT,
+    "NOME"             VARCHAR,
+    "PERGUNTA"         VARCHAR,
+    "ALTERNATIVA"      VARCHAR,
+    "RESPOSTA"         VARCHAR,
+    "PRIORIDADE"       VARCHAR,
+    "PRAZO"            INT
+  ) AS
+$func$
+SELECT
+  c.codigo,
+  to_char(c.data_hora, 'DD/MM/YYYY HH:MI'),
+  c.placa_veiculo,
+  c.km_veiculo AS km,
+  co.nome      AS realizador,
+  cp.pergunta,
+  cap.alternativa,
+  cr.resposta,
+  cp.prioridade,
+  ppc.prazo
+FROM (((checklist c
+  JOIN veiculo v ON (((v.placa) :: TEXT = (c.placa_veiculo) :: TEXT)))
+  JOIN checklist_perguntas cp
+    ON ((((cp.cod_unidade = c.cod_unidade) AND (cp.cod_checklist_modelo = c.cod_checklist_modelo))))
+  JOIN prioridade_pergunta_checklist ppc ON (((ppc.prioridade) :: TEXT = (cp.prioridade) :: TEXT)))
+  JOIN checklist_alternativa_pergunta cap
+    ON (((((cap.cod_unidade = cp.cod_unidade) AND (cap.cod_checklist_modelo = cp.cod_checklist_modelo)) AND
+          (cap.cod_pergunta = cp.codigo))))
+  JOIN checklist_respostas cr ON ((((((c.cod_unidade = cr.cod_unidade) AND
+                                      (cr.cod_checklist_modelo = c.cod_checklist_modelo)) AND
+                                     (cr.cod_checklist = c.codigo)) AND (cr.cod_pergunta = cp.codigo)) AND
+                                   (cr.cod_alternativa = cap.codigo))))
+  JOIN colaborador co ON ((co.cpf = c.cpf_colaborador))
+WHERE C.cod_unidade = f_cod_unidade AND c.data_hora :: DATE BETWEEN f_data_inicial AND f_data_final AND cr.resposta <> 'OK'
+ORDER BY c.data_hora DESC, c.codigo ASC
 $func$ LANGUAGE SQL;
 
 --

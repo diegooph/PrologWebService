@@ -1,17 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,31 +15,69 @@ import java.util.List;
 public class TreinamentoDaoImpl extends DatabaseConnection implements TreinamentoDao {
 
     @Override
-    public List<Treinamento> getAll(LocalDate dataInicial, LocalDate dataFinal, String codFuncao,
-                                    Long codUnidade, long limit, long offset) throws SQLException {
-        List<Treinamento> treinamentos = new ArrayList<>();
+    public List<Treinamento> getAll(Long dataInicial,
+                                    Long dataFinal,
+                                    String codFuncao,
+                                    Long codUnidade,
+                                    Boolean comCargosLiberados,
+                                    boolean apenasTreinamentosLiberados,
+                                    long limit,
+                                    long offset) throws SQLException {
+        final List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT T.*\n" +
-                    "FROM TREINAMENTO T JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO\n" +
-                    "JOIN FUNCAO F ON F.CODIGO = RT.COD_FUNCAO\n" +
-                    "WHERE T.COD_UNIDADE = ? AND T.DATA_HORA_CADASTRO >= ? AND T.DATA_HORA_CADASTRO <= ?\n" +
-                    "AND F.CODIGO::TEXT LIKE ?\n" +
-                    "ORDER BY t.data_liberacao\n" +
+            stmt = conn.prepareStatement("SELECT DISTINCT T.* " +
+                    "FROM TREINAMENTO T " +
+                    "LEFT JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO " +
+                    "WHERE T.COD_UNIDADE = ? " +
+                    "AND (? = 1 OR T.DATA_LIBERACAO::DATE <= ?) " +
+                    "AND (? = 1 OR RT.COD_FUNCAO::TEXT LIKE ?) " +
+                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= ?) " +
+                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= ?) " +
+                    "ORDER BY T.DATA_HORA_CADASTRO " +
                     "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
-            stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-            stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-            stmt.setString(4, String.valueOf(codFuncao));
-            stmt.setLong(5, limit);
-            stmt.setLong(6, offset);
+
+            if (apenasTreinamentosLiberados) {
+                stmt.setInt(2, 0);
+                stmt.setDate(3, new java.sql.Date(System.currentTimeMillis()));
+            } else {
+                stmt.setInt(2, 1);
+                stmt.setNull(3, Types.DATE);
+            }
+
+            if (codFuncao == null) {
+                stmt.setInt(4, 1);
+                stmt.setString(5, "");
+            } else {
+                stmt.setInt(4, 0);
+                stmt.setString(5, String.valueOf(codFuncao));
+            }
+
+            if (dataInicial == null || dataFinal == null) {
+                stmt.setInt(6, 1);
+                stmt.setNull(7, Types.DATE);
+                stmt.setInt(8, 1);
+                stmt.setNull(9, Types.DATE);
+            } else {
+                stmt.setInt(6, 0);
+                stmt.setDate(7, new java.sql.Date(dataInicial));
+                stmt.setInt(8, 0);
+                stmt.setDate(9, new java.sql.Date(dataFinal));
+            }
+
+            stmt.setLong(10, limit);
+            stmt.setLong(11, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Treinamento t = createTreinamento(rSet);
-                t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                final Treinamento t = createTreinamento(rSet);
+                // Por default mandamos os cargos com acesso ao treinamento, por isso se for null isso vai ser incluido.
+                if (comCargosLiberados == null || comCargosLiberados) {
+                    t.setCargosLiberados(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                }
                 treinamentos.add(t);
             }
         } finally {
@@ -201,7 +235,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             if (rSet.next()) {
                 Long codTreinamento = rSet.getLong("CODIGO");
                 treinamento.setCodigo(codTreinamento);
-                insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), codTreinamento, conn);
+                insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), codTreinamento, conn);
                 insertUrlImagensTreinamento(treinamento.getUrlsImagensArquivo(), codTreinamento, conn);
                 conn.commit();
                 return codTreinamento;
@@ -226,7 +260,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             // As funções liberadas para ver um treinamento podem ou não ter mudado. Assumimos que tenham mudado e
             // deletamos e reinserimos as funções novamente
             deleteFuncoesLiberadasTreinamento(treinamento.getCodigo(), conn);
-            insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo(), conn);
+            insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), treinamento.getCodigo(), conn);
 
             stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());

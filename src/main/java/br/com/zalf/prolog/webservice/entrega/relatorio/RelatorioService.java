@@ -1,9 +1,13 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,6 +62,23 @@ public class RelatorioService {
         try{
             return dao.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
         }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getEstratificacaoMapasCsv(Long codUnidade, Long dataInicial, Long dataFinal, OutputStream out) {
+        try {
+            dao.getEstratificacaoMapasCsv(codUnidade, new Date(dataInicial), new Date(dataFinal), out);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getEstratificacaoMapasReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            return dao.getEstratificacaoMapasReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
