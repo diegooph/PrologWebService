@@ -154,7 +154,8 @@ public class EmpresaResource {
             Pilares.Entrega.Indicadores.INDICADORES,
             Pilares.Entrega.Upload.VERIFICACAO_DADOS,
             Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
-            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
+            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO,
+            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
     @Path("/filtros/{cpf}")
     public List<Empresa> getFiltros(
             @PathParam("cpf") Long cpf) {
