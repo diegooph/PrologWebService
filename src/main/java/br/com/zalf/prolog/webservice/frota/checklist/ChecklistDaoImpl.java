@@ -16,11 +16,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
@@ -181,9 +179,9 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			stmt.setLong(1, cpf);
 			if (dataInicial == null || dataFinal == null) {
 				stmt.setInt(2, 1);
-				stmt.setInt(3, 1);
+				stmt.setNull(3, Types.DATE);
 				stmt.setInt(4, 1);
-				stmt.setInt(5, 1);
+				stmt.setNull(5, Types.DATE);
 			} else {
 				stmt.setInt(2, 0);
 				stmt.setDate(3, new java.sql.Date(dataInicial));
