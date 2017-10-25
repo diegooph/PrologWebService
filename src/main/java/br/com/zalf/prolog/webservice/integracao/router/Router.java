@@ -184,11 +184,16 @@ public abstract class Router implements OperacoesIntegradas {
 
     @Nonnull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@Nonnull Long cpf, int limit, long offset, boolean resumido) throws Exception {
+    public List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
+                                                      @Nullable final Long dataInicial,
+                                                      @Nullable final Long dataFinal,
+                                                      final int limit,
+                                                      final long offset,
+                                                      final boolean resumido) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getChecklistsByColaborador(cpf, limit, offset, resumido);
+            return getSistema().getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
         } else {
-            return integradorProLog.getChecklistsByColaborador(cpf, limit, offset, resumido);
+            return integradorProLog.getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
         }
     }
 

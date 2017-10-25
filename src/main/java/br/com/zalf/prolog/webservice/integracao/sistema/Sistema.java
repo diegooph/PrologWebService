@@ -112,8 +112,12 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @Nonnull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@Nonnull Long cpf, int limit, long offset, boolean resumido) throws Exception {
-        return getIntegradorProLog().getChecklistsByColaborador(cpf, limit, offset, resumido);
+    public List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
+                                                      @Nullable final Long dataInicial,
+                                                      @Nullable final Long dataFinal,
+                                                      final int limit,
+                                                      final long offset, boolean resumido) throws Exception {
+        return getIntegradorProLog().getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
     @Nonnull

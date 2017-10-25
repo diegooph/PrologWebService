@@ -119,22 +119,33 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Nonnull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@Nonnull Long cpf, int limit, long offset, boolean resumido) throws Exception {
-        final Date dataInicial = new Date(System.currentTimeMillis());
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dataInicial);
-        calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+    public List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
+                                                      @Nullable Long dataInicialLong,
+                                                      @Nullable Long dataFinalLong,
+                                                      final int limit,
+                                                      final long offset, boolean resumido) throws Exception {
+        Date dataInicial;
+        Date dataFinal;
+        if (dataInicialLong == null || dataFinalLong == null) {
+            dataInicial = new Date(System.currentTimeMillis());
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(dataInicial);
+            calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+            dataFinal = new Date(System.currentTimeMillis());
+        } else {
+            dataInicial = new Date(dataInicialLong);
+            dataFinal = new Date(dataFinalLong);
+        }
 
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
-
         final List<ChecklistFiltro> checklists = requester.getChecklistsByColaborador(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
                 "",
                 AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                AvaCorpAvilanUtils.createDatePattern(new Date(System.currentTimeMillis())),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 cpf(),
                 dataNascimento()).getChecklistFiltro();
 

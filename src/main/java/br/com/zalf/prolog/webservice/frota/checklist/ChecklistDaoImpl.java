@@ -162,7 +162,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public List<Checklist> getByColaborador(Long cpf, int limit, long offset, boolean resumido) throws SQLException {
+	public List<Checklist> getByColaborador(Long cpf, @Nullable Long dataInicial, @Nullable Long dataFinal, int limit,
+											long offset, boolean resumido) throws SQLException {
 		List<Checklist> checklists = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -173,11 +174,24 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.KM_VEICULO, C.TIPO , C.TEMPO_REALIZACAO, CO.NOME FROM CHECKLIST C "
 					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "WHERE C.CPF_COLABORADOR = ? "
+					+ "AND (? = 1 OR C.DATA_HORA::DATE >= ?) "
+					+ "AND (? = 1 OR C.DATA_HORA::DATE <= ?) "
 					+ "ORDER BY C.DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 			stmt.setLong(1, cpf);
-			stmt.setInt(2, limit);
-			stmt.setLong(3, offset);
+			if (dataInicial == null || dataFinal == null) {
+				stmt.setInt(2, 1);
+				stmt.setInt(3, 1);
+				stmt.setInt(4, 1);
+				stmt.setInt(5, 1);
+			} else {
+				stmt.setInt(2, 0);
+				stmt.setDate(3, new java.sql.Date(dataInicial));
+				stmt.setInt(4, 0);
+				stmt.setDate(5, new java.sql.Date(dataFinal));
+			}
+			stmt.setInt(6, limit);
+			stmt.setLong(7, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet, resumido);
@@ -191,12 +205,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
 	@Override
 	public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException {
-
 		List<String> listUrl = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement("SELECT DISTINCT CP.URL_IMAGEM FROM CHECKLIST_MODELO_FUNCAO CMF "
