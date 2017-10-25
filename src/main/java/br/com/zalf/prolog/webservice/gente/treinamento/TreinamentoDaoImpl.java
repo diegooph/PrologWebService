@@ -76,7 +76,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 final Treinamento t = createTreinamento(rSet);
                 // Por default mandamos os cargos com acesso ao treinamento, por isso se for null isso vai ser incluido.
                 if (comCargosLiberados == null || comCargosLiberados) {
-                    t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
+                    t.setCargosLiberados(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
                 }
                 treinamentos.add(t);
             }
@@ -235,7 +235,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             if (rSet.next()) {
                 Long codTreinamento = rSet.getLong("CODIGO");
                 treinamento.setCodigo(codTreinamento);
-                insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), codTreinamento, conn);
+                insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), codTreinamento, conn);
                 insertUrlImagensTreinamento(treinamento.getUrlsImagensArquivo(), codTreinamento, conn);
                 conn.commit();
                 return codTreinamento;
@@ -260,7 +260,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             // As funções liberadas para ver um treinamento podem ou não ter mudado. Assumimos que tenham mudado e
             // deletamos e reinserimos as funções novamente
             deleteFuncoesLiberadasTreinamento(treinamento.getCodigo(), conn);
-            insertFuncoesLiberadasTreinamento(treinamento.getFuncoesLiberadas(), treinamento.getCodigo(), conn);
+            insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), treinamento.getCodigo(), conn);
 
             stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());

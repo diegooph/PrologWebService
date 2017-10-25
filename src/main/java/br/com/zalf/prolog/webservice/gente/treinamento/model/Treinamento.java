@@ -25,14 +25,14 @@ public class Treinamento {
 	private List<String> urlsImagensArquivo;
 	private Date dataLiberacao;
 	private Date dataHoraCadastro;
-	private List<Cargo> funcoesLiberadas;
+	private List<Cargo> cargosLiberados;
 
 	public Treinamento() {
 		
 	}
 
 	public Treinamento(Long codigo, Long codUnidade, String titulo, String descricao, String urlArquivo,
-			Date dataLiberacao, List<Cargo> funcoesLiberadas) {
+			Date dataLiberacao, List<Cargo> cargosLiberados) {
 		super();
 		this.codigo = codigo;
 		this.codUnidade = codUnidade;
@@ -40,7 +40,7 @@ public class Treinamento {
 		this.descricao = descricao;
 		this.urlArquivo = urlArquivo;
 		this.dataLiberacao = dataLiberacao;
-		this.funcoesLiberadas = funcoesLiberadas;
+		this.cargosLiberados = cargosLiberados;
 	}
 
 	public Date getDataHoraCadastro() {
@@ -107,12 +107,12 @@ public class Treinamento {
 		this.dataLiberacao = dataLiberacao;
 	}
 
-	public List<Cargo> getFuncoesLiberadas() {
-		return funcoesLiberadas;
+	public List<Cargo> getCargosLiberados() {
+		return cargosLiberados;
 	}
 
-	public void setFuncoesLiberadas(List<Cargo> funcoesLiberadas) {
-		this.funcoesLiberadas = funcoesLiberadas;
+	public void setCargosLiberados(List<Cargo> cargosLiberados) {
+		this.cargosLiberados = cargosLiberados;
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class Treinamento {
 				", urlArquivo='" + urlArquivo + '\'' +
 				", dataLiberacao=" + dataLiberacao +
 				", dataHoraCadastro=" + dataHoraCadastro +
-				", funcoesLiberadas=" + funcoesLiberadas +
+				", cargosLiberados=" + cargosLiberados +
 				'}';
 	}
 }
