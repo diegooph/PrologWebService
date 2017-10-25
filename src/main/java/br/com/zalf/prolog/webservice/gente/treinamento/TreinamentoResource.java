@@ -107,10 +107,11 @@ public class TreinamentoResource {
                                     @QueryParam("dataInicial") Long dataInicial,
                                     @QueryParam("dataFinal") Long dataFinal,
                                     @QueryParam("comCargosLiberados") Boolean comCargosLiberados,
-                                    @QueryParam("apenasTreinamentosLiberados") boolean apenasLiberados,
+                                    @QueryParam("apenasTreinamentosLiberados") boolean apenasTreinametosLiberados,
                                     @QueryParam("limit") long limit,
                                     @QueryParam("offset") long offset) {
-        return service.getAll(dataInicial, dataFinal, codCargo, codUnidade, apenasLiberados, limit, offset);
+        return service.getAll(dataInicial, dataFinal, codCargo, codUnidade, comCargosLiberados,
+                apenasTreinametosLiberados, limit, offset);
     }
 
     @PUT
