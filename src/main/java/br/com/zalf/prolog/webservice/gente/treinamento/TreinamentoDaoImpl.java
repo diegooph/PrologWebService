@@ -49,30 +49,30 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             }
 
             if (codFuncao == null) {
-                stmt.setInt(3, 1);
-                stmt.setString(4, "");
+                stmt.setInt(4, 1);
+                stmt.setString(5, "");
             } else {
-                stmt.setInt(3, 0);
-                stmt.setString(4, String.valueOf(codFuncao));
+                stmt.setInt(4, 0);
+                stmt.setString(5, String.valueOf(codFuncao));
             }
 
             if (dataInicial == null || dataFinal == null) {
-                stmt.setInt(5, 1);
-                stmt.setNull(6, Types.DATE);
-                stmt.setInt(7, 1);
-                stmt.setNull(8, Types.DATE);
+                stmt.setInt(6, 1);
+                stmt.setNull(7, Types.DATE);
+                stmt.setInt(8, 1);
+                stmt.setNull(9, Types.DATE);
             } else {
-                stmt.setInt(5, 0);
-                stmt.setDate(6, new java.sql.Date(dataInicial));
-                stmt.setInt(7, 0);
-                stmt.setDate(8, new java.sql.Date(dataFinal));
+                stmt.setInt(6, 0);
+                stmt.setDate(7, new java.sql.Date(dataInicial));
+                stmt.setInt(8, 0);
+                stmt.setDate(9, new java.sql.Date(dataFinal));
             }
 
             stmt.setLong(10, limit);
             stmt.setLong(11, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Treinamento t = createTreinamento(rSet);
+                final Treinamento t = createTreinamento(rSet);
                 t.setFuncoesLiberadas(getFuncoesLiberadasByTreinamento(conn, t.getCodigo()));
                 treinamentos.add(t);
             }
