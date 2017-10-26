@@ -84,4 +84,18 @@ public class TipoVeiculoAvilan {
         this.codigo = value;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof TipoVeiculoAvilan))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        final TipoVeiculoAvilan tipoVeiculoAvilan = (TipoVeiculoAvilan) obj;
+        return !(codigo == null || tipoVeiculoAvilan.codigo == null) && codigo.equals(tipoVeiculoAvilan.codigo);
+    }
 }
