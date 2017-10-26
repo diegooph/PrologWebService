@@ -62,15 +62,30 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@Nonnull Long codUnidade) throws Exception {
-        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = requester
-                .getTiposVeiculo(cpf(), dataNascimento())
-                .getTipoVeiculo();
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(cpf(), dataNascimento());
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
 
         // Sincroniza os tipos buscados com o nosso banco de dados.
-        final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosProLog =
                 new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
 
-        return AvaCorpAvilanConverter.convert(tiposVeiculosAvilanProLog);
+        final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
+
+        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
+            for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tiposPrologFiltrados.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        return AvaCorpAvilanConverter.convert(tiposPrologFiltrados);
     }
 
     @Override
