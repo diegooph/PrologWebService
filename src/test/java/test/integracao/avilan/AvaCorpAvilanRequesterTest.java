@@ -395,6 +395,18 @@ public class AvaCorpAvilanRequesterTest {
                 new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl()).sync(tiposVeiculosAvilan);
 
         System.out.println("Tipos Veiculos Prolog sem filtro: "+tiposVeiculosAvilanProLog.size());
+
+        final List<TipoVeiculoAvilanProLog> tipoFiltrado = new ArrayList<>();
+
+        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosAvilanProLog) {
+            for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tipoFiltrado.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        System.out.println("Tipos Veiculos Prolog com filtro: "+tipoFiltrado.size());
     }
 
     private void testePlaca(String placa, TipoVeiculoAvilan tipoVeiculo) throws Exception {
