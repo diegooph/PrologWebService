@@ -150,7 +150,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
-        final List<ChecklistFiltro> checklists = requester.getChecklistsByColaborador(
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklistsByColaborador(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
@@ -161,13 +161,14 @@ public final class AvaCorpAvilan extends Sistema {
                 dataNascimento()).getChecklistFiltro();
 
         final List<ChecklistFiltro> checksColaborador = new ArrayList<>();
-        for (ChecklistFiltro checklist : checklists) {
+        for (ChecklistFiltro checklist : checklistsFiltro) {
             if (checklist.getColaborador().getCpf().equals(cpf())) {
                 checksColaborador.add(checklist);
             }
         }
 
-        return paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
+        final List<Checklist> checklists = paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
     }
 
     @Nonnull
@@ -186,7 +187,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final String cpf = cpf();
         final String dataNascimento = dataNascimento();
-        final List<ChecklistFiltro> checklists = requester.getChecklists(
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklists(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo != null ? dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTipoVeiculo) : "",
@@ -196,7 +197,8 @@ public final class AvaCorpAvilan extends Sistema {
                 cpf,
                 dataNascimento).getChecklistFiltro();
 
-        return paginateAndConvertChecklists(checklists, limit, offset, resumido);
+        final List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
     }
 
     @Nonnull
@@ -223,7 +225,8 @@ public final class AvaCorpAvilan extends Sistema {
     public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(cpf(), dataNascimento());
-        return AvaCorpAvilanConverter.convert(arrayOfVeiculo, restricao);
+        final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
+        return AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
     }
 
     @Override
