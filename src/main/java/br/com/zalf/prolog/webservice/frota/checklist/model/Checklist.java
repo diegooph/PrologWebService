@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
+import javax.annotation.Nonnull;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +32,17 @@ public class Checklist {
 	
 	public Checklist() {
 		
+	}
+
+	@Nonnull
+	public static List<Checklist> sortByDate(@Nonnull final List<Checklist> checklists, final boolean ascending) {
+		if (ascending) {
+			checklists.sort(Comparator.comparing(Checklist::getData));
+		} else {
+			checklists.sort(Comparator.comparing(Checklist::getData).reversed());
+		}
+
+		return checklists;
 	}
 
 	public Long getCodModelo() {
