@@ -8,13 +8,13 @@ import java.util.Date;
  * Informações do colaborador.
  */
 public class Colaborador {
-	private long cpf;
+	private Long cpf;
 	private Date dataNascimento;
 	private Cargo funcao;
 	private Setor setor;
 	private String nome;
-	private int matriculaAmbev;
-	private int matriculaTrans;
+	private Integer matriculaAmbev;
+	private Integer matriculaTrans;
 	private Date dataAdmissao;
 	private Date dataDemissao;
 	private boolean ativo;
@@ -23,12 +23,12 @@ public class Colaborador {
 	private Regional regional;
 	private Equipe equipe;
 	private Visao visao;
-	private long codPermissao;
+	private Integer codPermissao;
 
 	@Deprecated
-	private long codEmpresa;
+	private Long codEmpresa;
 	@Deprecated
-	private long codUnidade;
+	private Long codUnidade;
 
 	public Colaborador() {
 
@@ -66,7 +66,7 @@ public class Colaborador {
 		this.visao = visao;
 	}
 
-	public long getCpf() {
+	public Long getCpf() {
 		return cpf;
 	}
 
@@ -75,7 +75,7 @@ public class Colaborador {
 		return String.format("%011d", cpf);
 	}
 
-	public void setCpf(long cpf) {
+	public void setCpf(Long cpf) {
 		this.cpf = cpf;
 	}
 
@@ -87,14 +87,6 @@ public class Colaborador {
 		this.dataNascimento = dataNascimento;
 	}
 
-	public long getCodUnidade() {
-		return unidade.getCodigo();
-	}
-
-	public void setCodUnidade(long codUnidade) {
-		this.codUnidade = codUnidade;
-	}
-
 	public String getNome() {
 		return nome;
 	}
@@ -103,7 +95,7 @@ public class Colaborador {
 		this.nome = nome;
 	}
 
-	public int getMatriculaAmbev() {
+	public Integer getMatriculaAmbev() {
 		return matriculaAmbev;
 	}
 
@@ -111,7 +103,7 @@ public class Colaborador {
 		this.matriculaAmbev = matriculaAmbev;
 	}
 
-	public int getMatriculaTrans() {
+	public Integer getMatriculaTrans() {
 		return matriculaTrans;
 	}
 
@@ -143,20 +135,12 @@ public class Colaborador {
 		this.ativo = ativo;
 	}
 
-	public long getCodPermissao() {
+	public Integer getCodPermissao() {
 		return codPermissao;
 	}
 
-	public void setCodPermissao(long codPermissao) {
+	public void setCodPermissao(Integer codPermissao) {
 		this.codPermissao = codPermissao;
-	}
-
-	public long getCodEmpresa() {
-		return codEmpresa;
-	}
-
-	public void setCodEmpresa(long codEmpresa) {
-		this.codEmpresa = codEmpresa;
 	}
 
 	public Unidade getUnidade() {
@@ -181,6 +165,26 @@ public class Colaborador {
 
 	public void setRegional(Regional regional) {
 		this.regional = regional;
+	}
+
+	@Deprecated
+	public Long getCodEmpresa() {
+		return codEmpresa;
+	}
+
+	@Deprecated
+	public void setCodEmpresa(Long codEmpresa) {
+		this.codEmpresa = codEmpresa;
+	}
+
+	@Deprecated
+	public long getCodUnidade() {
+		return unidade.getCodigo();
+	}
+
+	@Deprecated
+	public void setCodUnidade(long codUnidade) {
+		this.codUnidade = codUnidade;
 	}
 
 	@Override

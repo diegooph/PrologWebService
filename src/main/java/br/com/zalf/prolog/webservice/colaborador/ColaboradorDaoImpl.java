@@ -36,7 +36,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
                     + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
             stmt.setLong(1, colaborador.getCpf());
-            if (colaborador.getMatriculaAmbev() == 0) {
+            if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
             } else {
                 stmt.setInt(2, colaborador.getMatriculaAmbev());
@@ -545,7 +545,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
-        c.setCodPermissao(rSet.getLong("PERMISSAO"));
+        c.setCodPermissao(rSet.getInt("PERMISSAO"));
         c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         return c;
     }

@@ -527,7 +527,7 @@ public final class AvaCorpAvilanConverter {
             // Antes da integração, não era salvo no ERP da Avilan quem fez a aferição. Aferições antigas não terão
             // colaborador vinculado.
             colaborador.setNome("Colaborador não informado");
-            colaborador.setCpf(0);
+            colaborador.setCpf(0L);
         } else {
             colaborador.setNome(afericaoFiltro.getColaborador().getNome());
             colaborador.setCpf(Long.parseLong(afericaoFiltro.getColaborador().getCpf()));

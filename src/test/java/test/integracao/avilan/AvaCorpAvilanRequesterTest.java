@@ -204,15 +204,16 @@ public class AvaCorpAvilanRequesterTest {
     public void buscarFarolChecklist() throws Exception {
         final ArrayOfFarolDia farolDia =
                 requester.getFarolChecklist(
-                        8,
+                        11,
                         1,
-                        "2017-09-28",
-                        "2017-09-28",
+                        "2017-10-25",
+                        "2017-10-25",
                         false,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(farolDia);
         assertTrue(!farolDia.getFarolDia().isEmpty());
+        System.out.println(GsonUtils.getGson().toJson(farolDia));
     }
 
     @Test(timeout = 7 * 60 * 1000)
