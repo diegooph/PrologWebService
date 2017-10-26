@@ -36,6 +36,12 @@ import java.util.stream.Collectors;
  * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
  */
 public final class AvaCorpAvilan extends Sistema {
+
+    /**
+     * Caso venha %, significa que queremos todos os tipos,
+     * para buscar de todos os tipos na integração, mandamos vazio.
+     */
+    private static final String FILTRO_TODOS = "%";
     @Nonnull
     private final AvaCorpAvilanRequester requester;
     @Nullable
@@ -69,15 +75,19 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
-        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
-        // vazio.
-        if (codTipo.equals("%")) {
-            codTipo = "";
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(cpf(), dataNascimento());
+        final List<String> placas = new ArrayList<>();
+        if (codTipo.equals(FILTRO_TODOS)) {
+            veiculosAtivos.getVeiculo().forEach(veiculo -> placas.add(veiculo.getPlaca()));
         } else {
-            final AvaCorpAvilanDao avaCorpAvilanDao = getAvaCorpAvilanDao();
-            codTipo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+            final String codTipoAvila = getAvaCorpAvilanDao().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+            veiculosAtivos.getVeiculo().forEach(veiculo -> {
+                if (veiculo.getTipo().getCodigo().equals(codTipoAvila)) {
+                    placas.add(veiculo.getPlaca());
+                }
+            });
         }
-        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
+        return placas;
     }
 
     @Override
