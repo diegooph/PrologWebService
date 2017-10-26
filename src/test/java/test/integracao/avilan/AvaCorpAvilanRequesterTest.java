@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import org.junit.Before;
@@ -32,11 +33,11 @@ public class AvaCorpAvilanRequesterTest {
     @Before
     public void setup() {
         // Printa no console todos os logs das requisições HTTP. Headers, Body...
-        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -373,6 +374,27 @@ public class AvaCorpAvilanRequesterTest {
         System.out.println("Placas by tipo size: "+placas.size());
         assertNotEquals(null, placas);
         assertTrue(!placas.isEmpty());
+    }
+
+    @Test
+    public void testeBuscarTiposVeiculosComPlacasAssociadas() throws Exception {
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
+
+        System.out.println("Veiculos Ativos da Avilan: "+veiculosAtivos.getVeiculo().size());
+        System.out.println("Tipos Veiculos Ativos da Avilan: "+tiposVeiculosAvilan.size());
+
+        // Sincroniza os tipos buscados com o nosso banco de dados.
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
+                new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl()).sync(tiposVeiculosAvilan);
+
+        System.out.println("Tipos Veiculos Prolog sem filtro: "+tiposVeiculosAvilanProLog.size());
     }
 
     private void testePlaca(String placa, TipoVeiculoAvilan tipoVeiculo) throws Exception {
