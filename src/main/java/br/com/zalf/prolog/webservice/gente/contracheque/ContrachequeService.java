@@ -59,7 +59,7 @@ public class ContrachequeService {
         }
         ItemImportContracheque item = new ItemImportContracheque();
         if(!linha.get(0).trim().replaceAll( "[^\\d]", "").isEmpty()) {
-            item.setCpf(Long.parseLong(linha.get(0)));
+            item.setCpf(Long.parseLong(linha.get(0).trim().replaceAll( "[^\\d]", "")));
         }
         if(!linha.get(1).trim().isEmpty()) {
             item.setCodigo(linha.get(1));
