@@ -85,7 +85,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                                        @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws Exception {
         return getIntegradorProLog()
                 .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);

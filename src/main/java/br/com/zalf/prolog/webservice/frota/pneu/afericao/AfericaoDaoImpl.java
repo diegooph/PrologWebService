@@ -212,7 +212,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException {
+    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException {
         //LIKE ANY (ARRAY[?])
         List<Afericao> afericoes = new ArrayList<>();
         Connection conn = null;
@@ -228,7 +228,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "LIMIT ? OFFSET ?");
             stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
             stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
-            stmt.setLong(3, limit);
+            stmt.setInt(3, limit);
             stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -246,7 +246,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                        String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws SQLException {
         List<Afericao> afericoes = new ArrayList<>();
         Connection conn = null;
@@ -270,7 +270,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(3, placaVeiculo);
             stmt.setDate(4, new java.sql.Date(dataInicial));
             stmt.setDate(5, new java.sql.Date(dataFinal));
-            stmt.setLong(6, limit);
+            stmt.setInt(6, limit);
             stmt.setLong(7, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {

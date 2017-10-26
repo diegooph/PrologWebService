@@ -464,15 +464,17 @@ public final class AvaCorpAvilanConverter {
 
     @Nonnull
     @VisibleForTesting
-    public static List<Afericao> convert(@NotNull final ArrayOfAfericaoFiltro afericoesFiltro) throws ParseException {
+    public static List<Afericao> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro) throws ParseException {
         checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
 
         final List<Afericao> afericoes = new ArrayList<>();
-        for (AfericaoFiltro afericaoFiltro : afericoesFiltro.getAfericaoFiltro()) {
+        for (AfericaoFiltro afericaoFiltro : afericoesFiltro) {
             afericoes.add(convertAfericaoSemPneus(afericaoFiltro));
         }
         return afericoes;
     }
+
+
 
     @Nonnull
     @VisibleForTesting

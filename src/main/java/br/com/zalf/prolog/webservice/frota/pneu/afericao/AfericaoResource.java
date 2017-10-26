@@ -78,7 +78,7 @@ public class AfericaoResource {
             @PathParam("placaVeiculo") String placaVeiculo,
             @QueryParam("dataInicial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
-            @QueryParam("limit") long limit,
+            @QueryParam("limit") int limit,
             @QueryParam("offset") long offset,
             @HeaderParam("Authorization") String userToken) {
         return service.getAfericoes(

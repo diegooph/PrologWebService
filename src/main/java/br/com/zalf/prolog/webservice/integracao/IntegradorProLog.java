@@ -157,7 +157,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                        @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws Exception {
         return afericaoDao.getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }

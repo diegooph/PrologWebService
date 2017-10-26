@@ -70,7 +70,7 @@ public class DEPRECATED_AFERICAO_RESOURCE {
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
             @QueryParam("codUnidades") List<String> codUnidades,
             @QueryParam("placas") List<String> placas,
-            @QueryParam("limit") long limit,
+            @QueryParam("limit") int limit,
             @QueryParam("offset") long offset) {
         return service.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
     }

@@ -77,7 +77,7 @@ public class AfericaoService {
                                        String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset,
                                        final String userToken) {
         try {
@@ -93,7 +93,7 @@ public class AfericaoService {
         }
     }
 
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit,
+    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit,
                                                           long offset) {
         try {
             return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);

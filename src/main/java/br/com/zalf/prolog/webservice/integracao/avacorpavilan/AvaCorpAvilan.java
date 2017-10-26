@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -156,7 +157,7 @@ public final class AvaCorpAvilan extends Sistema {
             }
         }
 
-        return paginateAndConvert(checksColaborador, limit, offset, resumido);
+        return paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
     }
 
     @Nonnull
@@ -185,7 +186,7 @@ public final class AvaCorpAvilan extends Sistema {
                 cpf,
                 dataNascimento).getChecklistFiltro();
 
-        return paginateAndConvert(checklists, limit, offset, resumido);
+        return paginateAndConvertChecklists(checklists, limit, offset, resumido);
     }
 
     @Nonnull
@@ -282,7 +283,7 @@ public final class AvaCorpAvilan extends Sistema {
                                        @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws Exception {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
@@ -295,7 +296,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final FilialUnidadeAvilanProLog filialUnidade = dao.getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
-        return AvaCorpAvilanConverter.convert(requester.getAfericoes(
+        final ArrayOfAfericaoFiltro afericoes = requester.getAfericoes(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
@@ -303,7 +304,9 @@ public final class AvaCorpAvilan extends Sistema {
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 cpf(),
-                dataNascimento()));
+                dataNascimento());
+
+        return AvaCorpAvilanConverter.convertAfericoes(paginate(afericoes.getAfericaoFiltro(), limit, offset));
     }
 
     @Nonnull
@@ -312,10 +315,10 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Nonnull
-    private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
-                                               final int limit,
-                                               final long offset,
-                                               final boolean resumido) {
+    private List<Checklist> paginateAndConvertChecklists(@Nonnull final List<ChecklistFiltro> checklists,
+                                                         final int limit,
+                                                         final long offset,
+                                                         final boolean resumido) {
 
         // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
         return checklists
@@ -333,6 +336,17 @@ public final class AvaCorpAvilan extends Sistema {
                         throw new RuntimeException(e);
                     }
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Nonnull
+    private <T> List<T> paginate(@Nonnull final List<T> data,
+                                 final int limit,
+                                 final long offset) {
+        return data
+                .stream()
+                .skip(offset)
+                .limit(limit)
                 .collect(Collectors.toList());
     }
 
