@@ -18,14 +18,9 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpA
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
 
 /**
@@ -359,6 +354,25 @@ public class AvaCorpAvilanRequesterTest {
                 testePlaca(veiculo.getPlaca(), veiculo.getTipo());
             }
         }
+    }
+
+    @Test
+    public void testeBuscarTodasAsPlacasPorUnidade() throws Exception {
+        final Long codTruck = 5L;
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+        final String codTipoAvilan = new AvaCorpAvilanDaoImpl().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTruck);
+        final List<String> placas = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (veiculo.getTipo().getCodigo().equals(codTipoAvilan)) {
+                System.out.println("Veiculo:" +veiculo.getPlaca()+ " Tipo: "+veiculo.getTipo().getCodigo());
+                placas.add(veiculo.getPlaca());
+            }
+        });
+        System.out.println("Placas ativas: "+veiculosAtivos.getVeiculo().size());
+        System.out.println("Placas by tipo size: "+placas.size());
+        assertNotEquals(null, placas);
+        assertTrue(!placas.isEmpty());
     }
 
     private void testePlaca(String placa, TipoVeiculoAvilan tipoVeiculo) throws Exception {
