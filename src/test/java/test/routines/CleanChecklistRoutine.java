@@ -94,7 +94,6 @@ public class CleanChecklistRoutine {
             final String query = "SELECT * FROM checklist";
             try {
                 conn = getConnection();
-                //TODO - executar query aqui
                 stmt = conn.prepareStatement(query);
                 rSet = stmt.executeQuery();
                 while (rSet.next()) {
