@@ -331,10 +331,12 @@ public final class AvaCorpAvilan extends Sistema {
                 placaVeiculo.equals("%") ? "" : placaVeiculo,
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
+                limit,
+                Math.toIntExact(offset),
                 cpf(),
                 dataNascimento());
 
-        return AvaCorpAvilanConverter.convertAfericoes(paginate(afericoes.getAfericaoFiltro(), limit, offset));
+        return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro());
     }
 
     @Nonnull
@@ -368,17 +370,6 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Nonnull
-    private <T> List<T> paginate(@Nonnull final List<T> data,
-                                 final int limit,
-                                 final long offset) {
-        return data
-                .stream()
-                .skip(offset)
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
-
-    @Nonnull
     private String cpf() throws Exception {
         if (colaborador == null) {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
@@ -403,5 +394,16 @@ public final class AvaCorpAvilan extends Sistema {
         }
 
         return colaborador.getUnidade().getCodigo();
+    }
+
+    @Nonnull
+    private <T> List<T> paginate(@Nonnull final List<T> data,
+                                 final int limit,
+                                 final long offset) {
+        return data
+                .stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }

@@ -33,11 +33,11 @@ public class AvaCorpAvilanRequesterTest {
     @Before
     public void setup() {
         // Printa no console todos os logs das requisições HTTP. Headers, Body...
-//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
-//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -65,7 +65,9 @@ public class AvaCorpAvilanRequesterTest {
                 "",
                 "",
                 "2017-09-25",
-                "2017-10-01",
+                "2017-10-25",
+                1,
+                0,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(afericoes);

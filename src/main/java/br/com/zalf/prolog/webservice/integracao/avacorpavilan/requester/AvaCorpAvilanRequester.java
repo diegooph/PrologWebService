@@ -56,6 +56,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                        @NotNull final String placaVeiculo,
                                        @NotNull final String dataInicial,
                                        @NotNull final String dataFinal,
+                                       final int limit,
+                                       final int offset,
                                        @NotNull final String cpf,
                                        @NotNull final String dataNascimento) throws Exception;
 
