@@ -200,22 +200,20 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             stmt.setDouble(6, modeloQuiz.getPorcentagemAprovacao());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Long codModeloQuiz = rSet.getLong("CODIGO");
+                final Long codModeloQuiz = rSet.getLong("CODIGO");
                 modeloQuiz.setCodigo(codModeloQuiz);
-                // insere as perguntas e alternativas do modelo
+                // Insere as perguntas e alternativas do modelo.
                 if (modeloQuiz.getPerguntas() != null) {
                     insertPerguntasModeloQuiz(modeloQuiz.getPerguntas(), codModeloQuiz, codUnidade, conn);
                 }
-                // insere os cargos que podem acessar esse modelo de quiz
+                // Insere os cargos que podem acessar esse modelo de quiz.
                 if (modeloQuiz.getFuncoesLiberadas() != null) {
                     insertCargosModeloQuiz(modeloQuiz.getFuncoesLiberadas(), codModeloQuiz, codUnidade, conn);
                 }
-                // insere o treinamento
-                TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
+                // Insere o treinamento.
                 if (modeloQuiz.getMaterialApoio() != null) {
-                    Long codTreinamento = treinamentoDao.insert(modeloQuiz.getMaterialApoio());
-                    // associa o treinamento ao modleo de quiz
-                    insertQuizModeloTreinamento(codTreinamento, codModeloQuiz, codUnidade, conn);
+                    // Associa o treinamento ao modleo de quiz.
+                    insertQuizModeloTreinamento(modeloQuiz.getMaterialApoio().getCodigo(), codModeloQuiz, codUnidade, conn);
                 }
                 conn.commit();
                 return codModeloQuiz;
