@@ -4,6 +4,9 @@ Change Log
 <a name="v2.0.39"></a>
 ## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (release-date) - [unreleased]
 
+### Bug Fixes
+* Corrige formatação da meta de raio do tracking
+
 <a name="v2.0.38"></a>
 ## Version [v2.0.38](https://github.com/luizfp/PrologAndroid/compare/v2.0.37...v2.0.38) (2017-10-25)
 
