@@ -18,7 +18,7 @@ public interface Permissao {
      */
     long REGIONAL = 2;
     /**
-     * GERAL = visualização de tfadfsaodas as regionais, unidades e equipes da empresa ao qual o colaborador esta cadastrado
+     * GERAL = visualização de todas as regionais, unidades e equipes da empresa ao qual o colaborador esta cadastrado
      */
     long GERAL = 3;
 
