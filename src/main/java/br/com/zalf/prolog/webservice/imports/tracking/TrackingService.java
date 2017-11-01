@@ -27,6 +27,7 @@ public class TrackingService {
 			e.printStackTrace();
 			return Response.error("Erro relacionado ao processamento do arquivo");
 		}catch (ParseException e) {
+			e.printStackTrace();
 			return Response.error("Erro nos dados da planilha");
 		}
 	}
