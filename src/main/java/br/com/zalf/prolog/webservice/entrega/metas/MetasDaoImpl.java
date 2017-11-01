@@ -55,8 +55,8 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
             stmt.setDouble(1, metas.metaDevHl);
             stmt.setDouble(2, metas.metaDevPdv);
             stmt.setDouble(3, metas.metaDevNf);
-            stmt.setDouble(4, metas.metaTracking/1000);
-            stmt.setInt(5, metas.metaRaioTracking);
+            stmt.setDouble(4, metas.metaTracking);
+            stmt.setInt(5, metas.metaRaioTracking/1000);
             stmt.setDouble(6, metas.metaTempoLargadaMapas);
             stmt.setDouble(7, metas.metaTempoRotaMapas);
             stmt.setDouble(8, metas.metaTempoInternoMapas);
@@ -83,8 +83,8 @@ public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
         Metas meta = new Metas();
         meta.metaDevHl = rSet.getDouble("META_DEV_HL");
         meta.metaDevPdv = rSet.getDouble("META_DEV_PDV");
-        meta.metaTracking = rSet.getDouble("META_TRACKING")*1000;
-        meta.metaRaioTracking = rSet.getInt("META_RAIO_TRACKING");
+        meta.metaTracking = rSet.getDouble("META_TRACKING");
+        meta.metaRaioTracking = rSet.getInt("META_RAIO_TRACKING")*1000;
         meta.metaTempoLargadaMapas = rSet.getDouble("META_TEMPO_LARGADA_MAPAS");
         meta.metaTempoRotaMapas = rSet.getDouble("META_TEMPO_ROTA_MAPAS");
         meta.metaTempoInternoMapas = rSet.getDouble("META_TEMPO_INTERNO_MAPAS");
