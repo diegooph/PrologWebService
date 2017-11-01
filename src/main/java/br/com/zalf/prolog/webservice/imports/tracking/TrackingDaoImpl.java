@@ -32,6 +32,9 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 			//List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
 			for (int i = 1; i < tabela.size(); i++) {
 				TrackingImport tracking = createTracking(tabela.get(i));
+				if(tracking == null){
+					continue;
+				}
 				Log.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa +"/"+ tracking.codCliente);
 					if (updateTracking(tracking, codUnidade, conn)) {
 						// Linha já existe e será atualizada
@@ -225,6 +228,9 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 	}
 
 	private TrackingImport createTracking (CSVRecord linha) throws ParseException{
+		if (linha.get(1).isEmpty()) {
+			return null;
+		}
 		TrackingImport tracking = new TrackingImport();
 		if(!String.valueOf(linha.get(0)).trim().isEmpty()){
 			//tracking.classe = Integer.parseInt(linha.get(0));
