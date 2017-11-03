@@ -11,6 +11,10 @@
 			<param-name>javax.ws.rs.Application</param-name>
 			<param-value>br.com.zalf.prolog.webservice.ProLogApplication</param-value>
 		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+			<param-value>br.com.zalf.prolog.webservice.ProLogApplicationEventListener</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Jersey REST Service</servlet-name>

@@ -70,7 +70,11 @@ public interface AfericaoAvaCorpAvilanSoap {
             @WebParam(name = "veiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
                     String veiculo,
             @WebParam(name = "tipoVeiculo", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
-                    String tipoVeiculo);
+                    String tipoVeiculo,
+            @WebParam(name = "limit", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int limit,
+            @WebParam(name = "offset", targetNamespace = AvaCorpAvilanConstants.NAMESPACE)
+                    int offset);
 
     /**
      *

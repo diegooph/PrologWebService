@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -28,17 +28,19 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "filial",
-    "unidade",
-    "dataInicial",
-    "dataFinal",
-    "veiculo",
-    "tipoVeiculo"
+        "filial",
+        "unidade",
+        "dataInicial",
+        "dataFinal",
+        "veiculo",
+        "tipoVeiculo",
+        "limit",
+        "offset"
 })
 @XmlRootElement(name = "buscarAfericoesFiltro")
 public class BuscarAfericoesFiltro {
@@ -49,10 +51,12 @@ public class BuscarAfericoesFiltro {
     protected String dataFinal;
     protected String veiculo;
     protected String tipoVeiculo;
+    protected int limit;
+    protected int offset;
 
     /**
      * Gets the value of the filial property.
-     * 
+     *
      */
     public int getFilial() {
         return filial;
@@ -60,7 +64,7 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the filial property.
-     * 
+     *
      */
     public void setFilial(int value) {
         this.filial = value;
@@ -68,7 +72,7 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Gets the value of the unidade property.
-     * 
+     *
      */
     public int getUnidade() {
         return unidade;
@@ -76,7 +80,7 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the unidade property.
-     * 
+     *
      */
     public void setUnidade(int value) {
         this.unidade = value;
@@ -84,11 +88,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Gets the value of the dataInicial property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getDataInicial() {
         return dataInicial;
@@ -96,11 +100,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the dataInicial property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setDataInicial(String value) {
         this.dataInicial = value;
@@ -108,11 +112,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Gets the value of the dataFinal property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getDataFinal() {
         return dataFinal;
@@ -120,11 +124,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the dataFinal property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setDataFinal(String value) {
         this.dataFinal = value;
@@ -132,11 +136,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Gets the value of the veiculo property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getVeiculo() {
         return veiculo;
@@ -144,11 +148,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the veiculo property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setVeiculo(String value) {
         this.veiculo = value;
@@ -156,11 +160,11 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Gets the value of the tipoVeiculo property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getTipoVeiculo() {
         return tipoVeiculo;
@@ -168,14 +172,29 @@ public class BuscarAfericoesFiltro {
 
     /**
      * Sets the value of the tipoVeiculo property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setTipoVeiculo(String value) {
         this.tipoVeiculo = value;
     }
 
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 }
