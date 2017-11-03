@@ -513,7 +513,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	private Checklist createChecklist(ResultSet rSet, boolean resumido) throws SQLException {
-		Checklist checklist = new Checklist();
+		final Checklist checklist = new Checklist();
 		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
 		checklist.setColaborador(createColaborador(rSet.getLong("CPF_COLABORADOR"), rSet.getString("NOME")));
@@ -522,11 +522,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
 		checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-		if(resumido){
-            setQtdOkOrNok(checklist);
-        }else{
-            checklist.setListRespostas(getPerguntasRespostas(checklist));
-        }
+		setQtdOkOrNok(checklist);
+		if (!resumido) {
+			checklist.setListRespostas(getPerguntasRespostas(checklist));
+		}
 		return checklist;
 	}
 
