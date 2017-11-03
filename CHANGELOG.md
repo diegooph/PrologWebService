@@ -4,8 +4,13 @@ Change Log
 <a name="v2.0.39"></a>
 ## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (release-date) - [unreleased]
 
+### Features
+* Implementa relatório que estratifica as respostas NOK dos checklists
+
 ### Bug Fixes
 * Corrige formatação da meta de raio do tracking
+* Adiciona permissão de relatórios indicadores no getFiltros
+* Corrige problema de import do trackng com csv possuindo linhas vazias
 
 <a name="v2.0.38"></a>
 ## Version [v2.0.38](https://github.com/luizfp/PrologAndroid/compare/v2.0.37...v2.0.38) (2017-10-25)

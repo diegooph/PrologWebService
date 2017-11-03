@@ -190,8 +190,8 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculoQuestao veiculoQuestao =
                 requester.getQuestoesVeiculo(
                         1,
-                        VEICULO_COM_CHECK_VINCULADO,
-                        AvacorpAvilanTipoChecklist.SAIDA,
+                        "MKR2412",
+                        AvacorpAvilanTipoChecklist.RETORNO,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);

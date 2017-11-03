@@ -109,4 +109,24 @@ class ChecklistRelatorioService {
             return null;
         }
     }
+
+    @NotNull
+    public Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
+                                            @NotNull Long dataInicial, @NotNull Long dataFinal) {
+        try {
+            return dao.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                       @NotNull Long dataInicial, @NotNull Long dataFinal) {
+        try {
+            dao.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
+        }catch (SQLException | IOException e){
+            e.printStackTrace();
+        }
+    }
 }

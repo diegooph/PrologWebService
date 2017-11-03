@@ -1,6 +1,6 @@
 package test.routines;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created on 27/10/17.
@@ -15,7 +15,7 @@ public class ChecklistClean {
     private Long codUnidade;
     private Long codModelo;
     private Long codigo;
-    private LocalDateTime data;
+    private Date data;
     private Long cpfColaborador;
     private String placaVeiculo;
     private char tipo;
@@ -57,11 +57,11 @@ public class ChecklistClean {
         this.codigo = codigo;
     }
 
-    public LocalDateTime getData() {
+    public Date getData() {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(Date data) {
         this.data = data;
     }
 
@@ -123,5 +123,20 @@ public class ChecklistClean {
                 && !(cpfColaborador == null || checklistClean.cpfColaborador == null) && cpfColaborador.equals(checklistClean.cpfColaborador)
                 && !(placaVeiculo == null || checklistClean.placaVeiculo == null) && placaVeiculo.equals(checklistClean.placaVeiculo)
                 && tipo == checklistClean.tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Checklist{" +
+                "codUnidade=" + codUnidade +
+                ", codModelo=" + codModelo +
+                ", codigo=" + codigo +
+                ", CpfColaborador=" + cpfColaborador +
+                ", data=" + data +
+                ", placaVeiculo='" + placaVeiculo + '\'' +
+                ", tipo=" + tipo +
+                ", kmAtualVeiculo=" + kmAtualVeiculo +
+                ", tempoRealizacaoCheckInMillis=" + tempoRealizacaoCheckInMillis +
+                '}';
     }
 }

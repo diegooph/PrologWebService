@@ -12,6 +12,13 @@
 	</properties>
 	<dependencies>
 
+		<!-- Sentry - Crash Reporting Tool-->
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

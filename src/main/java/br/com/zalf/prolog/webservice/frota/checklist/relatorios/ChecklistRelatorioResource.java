@@ -86,4 +86,22 @@ public class ChecklistRelatorioResource {
                                            @PathParam("placa") String placa) {
         return service.getResumoChecklistReport(codUnidade, dataInicial, dataFinal, placa);
     }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/report")
+    public Report getEstratificacaoRespostasNokReport(@PathParam("codUnidade") Long codUnidade,
+                                                      @PathParam("placa") String placa,
+                                                      @QueryParam("dataInicial") Long dataInicial,
+                                                      @QueryParam("dataFinal") Long dataFinal) {
+        return service.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/csv")
+    public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("codUnidade") Long codUnidade,
+                                                            @PathParam("placa") String placa,
+                                                            @QueryParam("dataInicial") Long dataInicial,
+                                                            @QueryParam("dataFinal") Long dataFinal) {
+        return outputStream -> service.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, dataInicial, dataFinal);
+    }
 }
