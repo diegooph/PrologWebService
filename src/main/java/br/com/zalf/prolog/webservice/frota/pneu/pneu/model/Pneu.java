@@ -28,14 +28,17 @@ public class Pneu {
     @Nullable
     private List<Problema> problemas;
     // Caso o pneu esteja com problema de NUMERO_INCORRETO (pneu instalado
-    // é diferente do que esta no sistemas), enviar o codigo do pneu correto (que está
-    // instalado atualmente)
+    // é diferente do que esta no sistema), enviar o codigo do pneu correto (que está
+    // instalado atualmente).
     private String codPneuProblema;
     private String codigo;
     private Marca marca;
     private ModeloPneu modelo;
     private BigDecimal valor;
-    // pneu só tem banda após ser recapado pela primeira vez, ou seja, vida > 1
+
+    /**
+     * Pneu só tem banda após ser recapado pela primeira vez, ou seja, vida > 1.
+     */
     private Banda banda;
     private Dimensao dimensao;
     private double pressaoCorreta;
@@ -45,6 +48,12 @@ public class Pneu {
     private int vidaAtual;
     private int vidasTotal;
     private String status;
+
+    /**
+     * O código DOT gravado na lateral do pneu indica sua conformidade com os padrões de segurança e fornece dados
+     * sobre a fabricação do pneu.
+     */
+    private String dot;
 
     /**
      * Usaremos um int com 3 digitos para mapear a posição de um pneu.
@@ -203,16 +212,25 @@ public class Pneu {
         return DoubleMath.roundToInt(pressaoAtual, RoundingMode.HALF_DOWN);
     }
 
+    public String getDot() {
+        return dot;
+    }
+
+    public void setDot(String dot) {
+        this.dot = dot;
+    }
+
     public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {
         return "Pneu{" +
                 "problemas=" + problemas +
-                ", codPneuProblema=" + codPneuProblema +
-                ", codigo=" + codigo +
+                ", codPneuProblema='" + codPneuProblema + '\'' +
+                ", codigo='" + codigo + '\'' +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
+                ", valor=" + valor +
                 ", banda=" + banda +
                 ", dimensao=" + dimensao +
                 ", pressaoCorreta=" + pressaoCorreta +
@@ -222,6 +240,7 @@ public class Pneu {
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
                 ", status='" + status + '\'' +
+                ", dot='" + dot + '\'' +
                 ", posicao=" + posicao +
                 '}';
     }
