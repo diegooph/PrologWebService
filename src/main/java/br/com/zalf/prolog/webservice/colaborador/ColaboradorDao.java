@@ -40,22 +40,24 @@ public interface ColaboradorDao {
 	void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable;
 
 	/**
-	 * Busca um colaborador pelo seu CPF.
+	 * Busca um colaborador por seu CPF.
 	 *
-	 * @param cpf chave a ser buscada no banco de dados
-	 * @return um colaborador
-	 * @throws SQLException caso não seja possível buscar os dados
+	 * @param cpf CPF do {@link Colaborador} que queremos buscar.
+	 * @param apenasAtivos indica se queremos buscar considerando apenas os colaboradores ativos.
+	 * @return um {@link Colaborador}.
+	 * @throws SQLException caso aconteça algum erro na consulta ao banco.
 	 */
-	Colaborador getByCpf(Long cpf) throws SQLException;
+	Colaborador getByCpf(Long cpf, boolean apenasAtivos) throws SQLException;
 
 	/**
 	 * Busca todos os colaboradores de uma unidade.
 	 *
-	 * @param codUnidade código da unidade
-	 * @return uma lista de colaboradores
-	 * @throws SQLException caso não seja possível buscar os dados
+	 * @param codUnidade código da unidade.
+	 * @param apenasAtivos indica se queremos buscar apenas os colaboradores que estão ativos.
+	 * @return uma lista de colaboradores.
+	 * @throws SQLException caso não seja possível buscar os dados.
 	 */
-	List<Colaborador> getAll(Long codUnidade) throws SQLException;
+	List<Colaborador> getAll(Long codUnidade, Boolean apenasAtivos) throws SQLException;
 
 	/**
 	 * Busca apenas os motoristas e ajudantes de uma unidade

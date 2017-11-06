@@ -48,9 +48,9 @@ public class ColaboradorResource {
 	@GET
 	@Secured
 	@Path("/getByCod/{cpf}")
-	public Colaborador getByCod(@PathParam("cpf") Long cpf) {
+	public Colaborador getByCpf(@PathParam("cpf") Long cpf) {
 		Log.d(TAG, cpf.toString());
-		return service.getByCod(cpf);
+		return service.getByCpf(cpf);
 	}
 
 	@POST
@@ -63,8 +63,9 @@ public class ColaboradorResource {
 	@GET
 	@Path("/{codUnidade}/")
 	@Secured(permissions = Pilares.Gente.Colaborador.VISUALIZAR)
-	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade) {
-		return service.getAll(codUnidade);
+	public List<Colaborador> getAll(@PathParam("codUnidade") Long codUnidade,
+									@QueryParam("apenasAtivos") Boolean apenasAtivos) {
+		return service.getAll(codUnidade, apenasAtivos);
 	}
 
 	@GET

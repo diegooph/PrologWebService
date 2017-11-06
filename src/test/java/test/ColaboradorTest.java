@@ -15,7 +15,7 @@ public class ColaboradorTest extends TestCase {
 
 	@Test
 	public void testGetAll() {
-		List<Colaborador> colaboradores = service.getAll(COD_UNIDADE);
+		List<Colaborador> colaboradores = service.getAll(COD_UNIDADE, false);
 		assertNotNull(colaboradores);
 		// Valida se encontrou algo
 		assertTrue(colaboradores.size() > 0);

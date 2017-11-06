@@ -57,18 +57,18 @@ public class ColaboradorService {
 		}
 	}
 
-	public Colaborador getByCod(Long cpf) {
+	public Colaborador getByCpf(Long cpf) {
 		try {
-			return dao.getByCpf(cpf);
+			return dao.getByCpf(cpf, false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	public List<Colaborador> getAll(Long codUnidade) {
+	public List<Colaborador> getAll(Long codUnidade, Boolean apenasAtivos) {
 		try {
-			return dao.getAll(codUnidade);
+			return dao.getAll(codUnidade, apenasAtivos);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
@@ -87,7 +87,7 @@ public class ColaboradorService {
 	public LoginHolder getLoginHolder(LoginRequest loginRequest) {
 		final LoginHolder loginHolder = new LoginHolder();
 		try {
-			loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf()));
+			loginHolder.setColaborador(dao.getByCpf(loginRequest.getCpf(), true));
 			final Colaborador colaborador = loginHolder.getColaborador();
 
 			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
@@ -128,7 +128,7 @@ public class ColaboradorService {
 	public LoginHolder getLoginHolder(Long cpf) {
 		final LoginHolder loginHolder = new LoginHolder();
 		try {
-			loginHolder.setColaborador(dao.getByCpf(cpf));
+			loginHolder.setColaborador(dao.getByCpf(cpf, true));
 			final Colaborador colaborador = loginHolder.getColaborador();
 
 			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
