@@ -2,15 +2,10 @@ package test.routines;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import com.google.common.collect.ImmutableList;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.Duration;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 27/10/17.
@@ -18,22 +13,9 @@ import java.util.stream.Collectors;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class CleanChecklistRoutine {
-    private static final int DIFERENCA_MINIMA_ENTRE_CHECKS_SEGUNDOS = 30;
+    private static final int DIFERENCA_MINIMA_ENTRE_CHECKS_SEGUNDOS = 50;
 
-    /**
-     * A Key do Map deve ser a cobinação dos atributos:
-     * <p>
-     * codUnidade
-     * codModelo
-     * cpfColaborador
-     * placaVeiculo
-     * tipo
-     * kmAtualVeiculo
-     */
-    private Map<String, List<ChecklistClean>> groupCheLists;
-
-    public CleanChecklistRoutine() {
-        this.groupCheLists = new HashMap<>();
+    public CleanChecklistRoutine(){
     }
 
     /**
@@ -42,56 +24,53 @@ public class CleanChecklistRoutine {
      * @throws Exception se algum erro ocorrer
      */
     public void rotinaParaLimparChecklistsRepetidos() throws Exception {
-
-        populateChecklistGroup();
+        generateDuplicates();
     }
 
-    private void populateChecklistGroup() throws SQLException {
+    private void generateDuplicates() throws SQLException {
         final DataBase4TestConnection dataBase = new DataBase4TestConnection();
         final List<ChecklistClean> allChecklists = dataBase.getAllChecklists();
+        System.out.println("AllChecklists count: "+allChecklists.size() +"\n");
+        final List<ChecklistClean> duplicates = new ArrayList<>();
 
-        Map<String, List<ChecklistClean>> collect = allChecklists
-                .stream()
-                .collect(Collectors.groupingBy(ChecklistClean::generateKey));
-
-        // Printa elementos.
-        collect.forEach((s, checklistCleans) -> System.out.println(s));
-
-        // Ordena os checklists por data.
-        collect.forEach((s, checklistCleans) -> checklistCleans.sort(Comparator.comparing(ChecklistClean::getData)));
-
-        final Map<String, List<ChecklistClean>> finalMap = new HashMap<>();
-        collect.forEach((s, checklistCleans) -> {
-            for (ChecklistClean c1 : checklistCleans) {
-                for (int i = checklistCleans.indexOf(c1); i < checklistCleans.size(); i++) {
-                    ChecklistClean c2 = checklistCleans.get(i);
-                    // Garante que não comparamos um check com ele mesmo. Evitando 0 como resultado nos segundos.
-                    if (!c1.getCodigo().equals(c2.getCodigo())) {
-                        final long seconds = Math.abs(Duration.between(c1.getData(), c2.getData()).getSeconds());
+        for (int i = 0; i < allChecklists.size()-1; i++) {
+            for (int j = i + 1; j < allChecklists.size(); j++) {
+                final ChecklistClean check1 = allChecklists.get(i);
+                final ChecklistClean check2 = allChecklists.get(j);
+                // compara atributos genericos
+                if (check1.equals(check2)) {
+                    // verifica se os códigos são diferentes
+                    if (!check1.getCodigo().equals(check2.getCodigo())) {
+                        final Timestamp data1 = DateUtils.toTimestamp(check1.getData());
+                        final Timestamp data2 = DateUtils.toTimestamp(check2.getData());
+                        final long seconds = DateUtils.secondsBetween(data1.getTime(), data2.getTime());
                         if (seconds < DIFERENCA_MINIMA_ENTRE_CHECKS_SEGUNDOS) {
-                            finalMap.put(c1.getCodigo() + "<->" + c2.getCodigo(), ImmutableList.of(c1, c2));
+                            System.out.println(check1.toString());
+                            System.out.println(check2.toString());
+                            System.out.println("\n\n");
+                            duplicates.add(check2);
                         }
                     }
                 }
             }
-        });
+        }
 
-        System.out.println("\n=========================================\n");
-
-        // Printa elementos.
-        finalMap.forEach((s, checklistCleans) -> System.out.println(s + " -> " + checklistCleans.size()));
+        for (ChecklistClean duplicate : duplicates) {
+            System.out.println(duplicate.toString());
+        }
+        System.out.println("Duplicates size: "+duplicates.size());
     }
 
     private class DataBase4TestConnection extends DatabaseConnection {
 
-        public List<ChecklistClean> getAllChecklists() throws SQLException {
+        List<ChecklistClean> getAllChecklists() throws SQLException {
 
             final List<ChecklistClean> checklists = new ArrayList<>();
 
             Connection conn = null;
             PreparedStatement stmt = null;
             ResultSet rSet = null;
-            final String query = "SELECT * FROM checklist";
+            final String query = "SELECT * FROM checklist ORDER BY data_hora";
             try {
                 conn = getConnection();
                 stmt = conn.prepareStatement(query);
@@ -111,10 +90,10 @@ public class CleanChecklistRoutine {
             checklistClean.setCodUnidade(rSet.getLong("COD_UNIDADE"));
             checklistClean.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
             checklistClean.setCodigo(rSet.getLong("CODIGO"));
-            checklistClean.setData(DateUtils.toLocalDateTime(rSet.getDate("DATA_HORA")));
+            checklistClean.setData(rSet.getTimestamp("DATA_HORA"));
             checklistClean.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
             checklistClean.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
-            checklistClean.setTipo(rSet.getString("PLACA_VEICULO").charAt(0));
+            checklistClean.setTipo(rSet.getString("TIPO").charAt(0));
             checklistClean.setTempoRealizacaoCheckInMillis(rSet.getLong("TEMPO_REALIZACAO"));
             checklistClean.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
             return checklistClean;

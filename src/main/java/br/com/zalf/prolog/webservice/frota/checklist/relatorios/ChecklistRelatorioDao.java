@@ -54,4 +54,11 @@ public interface ChecklistRelatorioDao {
                                     @NotNull Date dataInicial,
                                     @NotNull Date dataFinal,
                                     @NotNull String placa) throws SQLException;
+
+    void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                                   @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException, IOException;
+
+    @NotNull
+    Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
+                                                        @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException;
 }
