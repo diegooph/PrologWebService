@@ -136,7 +136,6 @@ public final class Pilares {
             private Treinamentos() {}
 
             public static final int VISUALIZAR_PROPRIOS = 30;
-            public static final int VISUALIZAR_TODOS = 343;
             public static final int CRIAR = 323;
             public static final int ALTERAR = 318;
         }
