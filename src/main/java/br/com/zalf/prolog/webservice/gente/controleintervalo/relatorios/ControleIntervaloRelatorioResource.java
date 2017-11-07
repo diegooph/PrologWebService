@@ -41,7 +41,7 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Produces("application/csv")
-    @Path("/realizados/{codUnidade}/csv")
+    @Path("/realizados/mapas/{codUnidade}/csv")
     public StreamingOutput getIntervalosMapasCsv(@PathParam("codUnidade") Long codUnidade,
                                             @QueryParam("dataInicial") Long dataInicial,
                                             @QueryParam("dataFinal") Long dataFinal) {
@@ -50,7 +50,7 @@ public class ControleIntervaloRelatorioResource {
 
     @GET
     @Secured
-    @Path("/realizados/{codUnidade}/report")
+    @Path("/realizados/mapas/{codUnidade}/report")
     public Report getIntervalosMapasReport(@PathParam("codUnidade") Long codUnidade,
                                       @QueryParam("dataInicial") Long dataInicial,
                                       @QueryParam("dataFinal") Long dataFinal) {
