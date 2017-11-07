@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -18,7 +20,32 @@ public class ControleIntervalosRelatorioService {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public Report getIntervalosReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+        try {
+            return dao.getIntervalosReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            dao.getIntervalosMapasCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getIntervalosMapasReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            return dao.getIntervalosMapasReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

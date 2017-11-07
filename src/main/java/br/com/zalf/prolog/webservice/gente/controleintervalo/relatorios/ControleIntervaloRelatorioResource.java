@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -25,6 +26,35 @@ public class ControleIntervaloRelatorioResource {
                                             @QueryParam("dataFinal") Long dataFinal,
                                             @PathParam("cpf") String cpf) {
         return outputStream -> service.getIntervalosCsv(outputStream, codUnidade, dataInicial, dataFinal, cpf);
+    }
+
+    @GET
+    @Secured
+    @Path("/realizados/{codUnidade}/{cpf}/report")
+    public Report getIntervalosReport(@PathParam("codUnidade") Long codUnidade,
+                                   @QueryParam("dataInicial") Long dataInicial,
+                                   @QueryParam("dataFinal") Long dataFinal,
+                                   @PathParam("cpf") String cpf) {
+        return service.getIntervalosReport(codUnidade, dataInicial, dataFinal, cpf);
+    }
+
+    @GET
+    @Secured
+    @Produces("application/csv")
+    @Path("/realizados/{codUnidade}/csv")
+    public StreamingOutput getIntervalosMapasCsv(@PathParam("codUnidade") Long codUnidade,
+                                            @QueryParam("dataInicial") Long dataInicial,
+                                            @QueryParam("dataFinal") Long dataFinal) {
+        return outputStream -> service.getIntervalosMapasCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/realizados/{codUnidade}/report")
+    public Report getIntervalosMapasReport(@PathParam("codUnidade") Long codUnidade,
+                                      @QueryParam("dataInicial") Long dataInicial,
+                                      @QueryParam("dataFinal") Long dataFinal) {
+        return service.getIntervalosMapasReport(codUnidade, dataInicial, dataFinal);
     }
 
 }
