@@ -34,6 +34,8 @@ public interface TreinamentoDao {
                              long limit,
                              long offset) throws SQLException;
 
+    Treinamento getByCod(Long codUnidade, Long codTreinamento) throws SQLException;
+
     /**
      * Busca os treinamentos ainda não visualizados por um colaborador específico
      *
