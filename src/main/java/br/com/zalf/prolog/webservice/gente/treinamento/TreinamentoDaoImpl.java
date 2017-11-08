@@ -87,6 +87,34 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
+    public Treinamento getByCod(Long codUnidade, Long codTreinamento) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT T.* " +
+                    "FROM TREINAMENTO T " +
+                    "LEFT JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO " +
+                    "WHERE T.COD_UNIDADE = ? AND T.CODIGO = ?");
+
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(1, codTreinamento);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Treinamento treinamento = createTreinamento(rSet);
+                treinamento.setCargosLiberados(getFuncoesLiberadasByTreinamento(conn, treinamento.getCodigo()));
+                return treinamento;
+            } else {
+                throw new IllegalArgumentException("Nenhum treinamento encontrado para a unidade: " + codUnidade
+                        + " com o código: " + codTreinamento);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException {
         List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;

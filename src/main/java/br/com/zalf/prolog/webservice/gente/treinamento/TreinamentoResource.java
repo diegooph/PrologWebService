@@ -52,6 +52,16 @@ public class TreinamentoResource {
         }
     }
 
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Treinamentos.ALTERAR,
+            Pilares.Gente.Treinamentos.CRIAR})
+    @Path("/{codUnidade}/{codTreinamento}")
+    public Treinamento getTreinamentoByCod(@PathParam("codUnidade") Long codUnidade,
+                                           @PathParam("codUnidade") Long codTreinamento) {
+        return service.getByCod(codUnidade, codTreinamento);
+    }
+
     @PUT
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     @Path("/{codigo}")
