@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TreinamentoService {
 
-    private TreinamentoDao dao = new TreinamentoDaoImpl();
+    private final TreinamentoDao dao = new TreinamentoDaoImpl();
 
     public List<Treinamento> getVistosByColaborador(Long cpf) {
         try {
@@ -35,6 +35,15 @@ public class TreinamentoService {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao buscar treinamentos");
+        }
+    }
+
+    public Treinamento getByCod(Long codUnidade, Long codTreinamento) {
+        try {
+            return dao.getByCod(codUnidade, codTreinamento);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar treinamento com código: " + codTreinamento);
         }
     }
 
