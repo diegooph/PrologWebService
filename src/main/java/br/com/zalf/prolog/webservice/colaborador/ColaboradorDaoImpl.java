@@ -180,7 +180,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
                     + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
                     + "WHERE CPF = ? "
-                    + " AND (? = 1 OR C.STATUS_ATIVO = ?)");
+                    + " AND C.STATUS_ATIVO = ?");
             stmt.setLong(1, cpf);
             stmt.setBoolean(2, apenasAtivos);
             rSet = stmt.executeQuery();
