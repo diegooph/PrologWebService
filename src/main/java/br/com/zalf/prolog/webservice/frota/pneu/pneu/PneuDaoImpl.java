@@ -325,7 +325,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         final Pneu pneu = new Pneu();
 
         pneu.setCodigo(rSet.getString("CODIGO"));
-        pneu.setCodigo(rSet.getString("DOT"));
+        pneu.setDot(rSet.getString("DOT"));
 
         final Marca marcaPneu = new Marca();
         marcaPneu.setCodigo(rSet.getLong("COD_MARCA"));
