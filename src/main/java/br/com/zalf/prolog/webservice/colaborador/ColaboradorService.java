@@ -66,7 +66,7 @@ public class ColaboradorService {
 		}
 	}
 
-	public List<Colaborador> getAll(Long codUnidade, Boolean apenasAtivos) {
+	public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) {
 		try {
 			return dao.getAll(codUnidade, apenasAtivos);
 		} catch (SQLException e) {

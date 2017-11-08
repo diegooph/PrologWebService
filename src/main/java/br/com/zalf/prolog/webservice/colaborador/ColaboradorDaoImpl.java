@@ -180,9 +180,17 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
                     + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
                     + "WHERE CPF = ? "
-                    + " AND C.STATUS_ATIVO = ?");
+                    + " AND (? = 1 OR C.STATUS_ATIVO = ?)");
+
             stmt.setLong(1, cpf);
-            stmt.setBoolean(2, apenasAtivos);
+            if (apenasAtivos) {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, true);
+            } else {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, false);
+            }
+
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Colaborador c = createColaborador(rSet);
@@ -232,10 +240,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     /**
-     * Busca todos os colaboradores de uma {@link Unidade}. Ativos e inativos.
+     * Busca todos os colaboradores de uma {@link Unidade}.
      */
     @Override
-    public List<Colaborador> getAll(Long codUnidade, Boolean apenasAtivos) throws SQLException {
+    public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException {
         List<Colaborador> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -277,12 +285,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "ORDER BY 8");
             stmt.setLong(1, codUnidade);
 
-            if (apenasAtivos == null) {
+            if (apenasAtivos) {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, true);
+            } else {
                 stmt.setInt(2, 1);
                 stmt.setBoolean(3, false);
-            } else {
-                stmt.setInt(2, 0);
-                stmt.setBoolean(3, apenasAtivos);
             }
 
             rSet = stmt.executeQuery();
