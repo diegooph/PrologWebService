@@ -58,7 +58,7 @@ public class TreinamentoResource {
             Pilares.Gente.Treinamentos.CRIAR})
     @Path("/{codUnidade}/{codTreinamento}")
     public Treinamento getTreinamentoByCod(@PathParam("codUnidade") Long codUnidade,
-                                           @PathParam("codUnidade") Long codTreinamento) {
+                                           @PathParam("codTreinamento") Long codTreinamento) {
         return service.getByCod(codUnidade, codTreinamento);
     }
 
