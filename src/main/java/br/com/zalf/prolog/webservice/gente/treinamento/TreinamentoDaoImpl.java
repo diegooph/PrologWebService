@@ -99,7 +99,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "WHERE T.COD_UNIDADE = ? AND T.CODIGO = ?");
 
             stmt.setLong(1, codUnidade);
-            stmt.setLong(1, codTreinamento);
+            stmt.setLong(2, codTreinamento);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Treinamento treinamento = createTreinamento(rSet);
