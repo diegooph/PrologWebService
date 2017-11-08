@@ -9,12 +9,14 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+@DebugLog
 @Path("/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
@@ -39,6 +41,18 @@ public class ColaboradorResource {
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
 	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
 		if (service.update(cpfAntigo, colaborador)) {
+			return Response.ok("Colaborador atualizado com sucesso");
+		} else {
+			return Response.error("Erro ao atualizar o colaborador");
+		}
+	}
+
+	@PUT
+	@Path("/{cpf}/status")
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
+	public Response updateStatus(@PathParam("cpf") Long cpf, Colaborador colaborador) {
+		if (service.updateStatus(cpf, colaborador)) {
 			return Response.ok("Colaborador atualizado com sucesso");
 		} else {
 			return Response.error("Erro ao atualizar o colaborador");
