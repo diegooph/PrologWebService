@@ -31,7 +31,7 @@ public class PneuService {
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
+    public boolean update(Pneu pneu, Long codUnidade, String codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {

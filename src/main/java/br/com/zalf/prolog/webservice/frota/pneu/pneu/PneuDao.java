@@ -51,7 +51,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean update(Pneu pneu, Long codUnidade, Long codOriginal) throws SQLException;
+    boolean update(Pneu pneu, Long codUnidade, String codOriginal) throws SQLException;
 
     /**
      * atualiza a calibragem do pneu

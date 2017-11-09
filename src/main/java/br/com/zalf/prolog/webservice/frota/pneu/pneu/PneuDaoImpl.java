@@ -178,7 +178,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) throws SQLException {
+    public boolean update(Pneu pneu, Long codUnidade, String codOriginal) throws SQLException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -203,7 +203,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setInt(11, pneu.getVidasTotal());
             stmt.setLong(12, pneu.getBanda().getModelo().getCodigo());
             stmt.setString(13, pneu.getDot());
-            stmt.setLong(14, codOriginal);
+            stmt.setString(14, codOriginal);
             stmt.setLong(15, codUnidade);
             stmt.setInt(16, pneu.getVidaAtual());
             stmt.setString(17, pneu.getStatus());
