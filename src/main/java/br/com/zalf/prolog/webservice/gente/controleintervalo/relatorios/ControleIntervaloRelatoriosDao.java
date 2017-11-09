@@ -93,5 +93,30 @@ public interface ControleIntervaloRelatoriosDao {
     Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException;
 
+    /**
+     * Relatório que estratifica a aderência por colaborador
+     * @param out OutputStream
+     * @param codUnidade código da unidade
+     * @param dataInicial data inicial
+     * @param dataFinal data final
+     * @throws SQLException
+     * @throws IOException
+     */
+    @NotNull
+    void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+            throws SQLException, IOException;
+
+    /**
+     * Relatório que estratifica a aderência por colaborador
+     * @param codUnidade código da unidade
+     * @param dataInicial data inicial
+     * @param dataFinal data final
+     * @return um Report
+     * @throws SQLException
+     * @throws IOException
+     */
+    @NotNull
+    Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+            throws SQLException, IOException;
 
 }
