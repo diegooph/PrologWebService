@@ -112,7 +112,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setLong(15, pneu.getBanda().getModelo().getCodigo());
             }
-            stmt.setString(16, pneu.getDot());
+            stmt.setString(16, pneu.getDot().trim());
             int count = stmt.executeUpdate();
             insertTrocaVidaPneu(pneu, codUnidade, conn);
             if (count == 0) {
