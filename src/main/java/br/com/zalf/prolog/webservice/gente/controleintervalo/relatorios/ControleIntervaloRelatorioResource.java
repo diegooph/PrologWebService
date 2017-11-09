@@ -57,4 +57,22 @@ public class ControleIntervaloRelatorioResource {
         return service.getIntervalosMapasReport(codUnidade, dataInicial, dataFinal);
     }
 
+    @GET
+    @Secured
+    @Produces("application/csv")
+    @Path("/aderencias/diarias/{codUnidade}/csv")
+    public StreamingOutput getAderenciaIntervalosDiariaCsv(@PathParam("codUnidade") Long codUnidade,
+                                                 @QueryParam("dataInicial") Long dataInicial,
+                                                 @QueryParam("dataFinal") Long dataFinal) {
+        return outputStream -> service.getAderenciaIntervalosDiariaCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/aderencias/diarias/{codUnidade}/report")
+    public Report getAderenciaIntervalosDiariaReport(@PathParam("codUnidade") Long codUnidade,
+                                           @QueryParam("dataInicial") Long dataInicial,
+                                           @QueryParam("dataFinal") Long dataFinal) {
+        return service.getAderenciaIntervalosDiariaReport(codUnidade, dataInicial, dataFinal);
+    }
 }

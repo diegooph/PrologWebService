@@ -103,4 +103,45 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
         return stmt;
     }
+
+    @Override
+    public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
+            throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAderenciaIntervalosDiariaStmt(codUnidade, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
+            throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAderenciaIntervalosDiariaStmt(codUnidade, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
+    }
 }

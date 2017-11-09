@@ -129,6 +129,25 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
+    public void updateStatus(Long cpf, Colaborador colaborador) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE COLABORADOR SET STATUS_ATIVO = ? WHERE CPF = ?;");
+            stmt.setBoolean(1, colaborador.isAtivo());
+            stmt.setLong(2, cpf);
+
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar o status do colaborador com CPF: " + cpf);
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
     public void delete(Long cpf, DadosIntervaloChangedListener listener) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -282,7 +301,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
                     "WHERE C.COD_UNIDADE = ? " +
                     " AND (? = 1 OR C.STATUS_ATIVO = ?)" +
-                    "ORDER BY 8");
+                    "ORDER BY 7, 8");
             stmt.setLong(1, codUnidade);
 
             if (apenasAtivos) {

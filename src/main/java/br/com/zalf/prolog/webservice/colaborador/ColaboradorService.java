@@ -47,6 +47,16 @@ public class ColaboradorService {
 		}
 	}
 
+	public boolean updateStatus(Long cpf, Colaborador colaborador) {
+		try {
+			dao.updateStatus(cpf, colaborador);
+			return true;
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public boolean delete(Long cpf) {
 		try {
 			dao.delete(cpf, Injection.provideDadosIntervaloChangedListener());

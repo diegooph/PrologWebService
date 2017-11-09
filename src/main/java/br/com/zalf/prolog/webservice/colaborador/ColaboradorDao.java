@@ -29,6 +29,8 @@ public interface ColaboradorDao {
 	 */
 	void update(Long cpfAntigo, Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable;
 
+	void updateStatus(Long cpf, Colaborador colaborador) throws SQLException;
+
 	/**
 	 * Para manter histórico no banco de dados, não é feita exclusão de colaborador,
 	 * setamos o status para inativo.
@@ -91,6 +93,7 @@ public interface ColaboradorDao {
 															   @NotNull final Long codUnidade) throws SQLException;
 
 	Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException;
+
 
 	/**
 	 * Verifica se um colaborador tem acesso a uma funcionalidade específica do ProLog. A verificação acontece

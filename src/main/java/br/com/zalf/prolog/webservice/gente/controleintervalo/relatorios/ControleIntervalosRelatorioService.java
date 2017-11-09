@@ -48,4 +48,21 @@ public class ControleIntervalosRelatorioService {
         }
     }
 
+    public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            dao.getAderenciaIntervalosDiariaCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            return dao.getAderenciaIntervalosDiariaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
