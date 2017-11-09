@@ -32,7 +32,7 @@ public class PneuResource {
     }
 
     @PUT
-//	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
     @Path("/{codUnidade}/{codPneuOriginal}")
     public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal) {
         if (service.update(pneu, codUnidade, codOriginal)) {
