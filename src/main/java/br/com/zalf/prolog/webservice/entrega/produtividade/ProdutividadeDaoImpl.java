@@ -70,35 +70,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}
 	}
 
-	public double getTotalItens(List<ItemProdutividade> itens){
-	    double total = 0;
-        for(ItemProdutividade item : itens){
-            total += item.getValor();
-        }
-        return total;
-    }
-
-	public double getValorTotalRecargas(List<ItemProdutividade> itens){
-		double total = 0;
-		for(ItemProdutividade item : itens){
-			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
-				total += item.getValor();
-			}
-		}
-		return total;
-	}
-
-	public int getQtRecargas(List<ItemProdutividade> itens){
-		int quantidade = 0;
-		for(ItemProdutividade item : itens){
-			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
-				quantidade ++;
-			}
-		}
-		return quantidade;
-	}
-
-
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			long dataInicial, long dataFinal) throws SQLException{
 		Connection conn = null;
@@ -110,12 +81,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		Colaborador c = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT cpf, matricula_ambev, nome_colaborador AS nome, data_nascimento, funcao, count(mapa) as mapas, sum(cxentreg) as caixas,\n" +
-					"sum(valor) as valor\n" +
-					"FROM VIEW_PRODUTIVIDADE_EXTRATO\n" +
-					"WHERE data between ? and ? and cod_unidade = ? and nome_equipe like ? and cod_funcao::text like ? \n" +
-					"GROUP BY 1,2,3,4,5\n" +
-					"order by funcao, valor desc, nome;");
+			stmt = conn.prepareStatement("select * from func_get_produtividade_colaborador(?,?,?,?,?)");
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, codUnidade);
