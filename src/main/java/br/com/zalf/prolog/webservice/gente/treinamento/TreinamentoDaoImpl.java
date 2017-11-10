@@ -302,7 +302,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), treinamento.getCodigo(), conn);
 
             stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ?, " +
-                    "data_fechamento ? WHERE codigo = ?");
+                    "data_fechamento = ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
             stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
