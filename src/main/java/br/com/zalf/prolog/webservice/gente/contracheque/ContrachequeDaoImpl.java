@@ -67,9 +67,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                     int qtRecargas;
 
                     List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
-                    valorRecargas = produtividadeDao.getValorTotalRecargas(itensProdutividade);
-                    qtRecargas = produtividadeDao.getQtRecargas(itensProdutividade);
-                    produtividade = produtividadeDao.getTotalItens(itensProdutividade) - valorRecargas;
+                    valorRecargas = getValorTotalRecargas(itensProdutividade);
+                    qtRecargas = getQtRecargas(itensProdutividade);
+                    produtividade = getTotalItens(itensProdutividade) - valorRecargas;
 
 //                    a partir daqui temos todos os valores para realizar o calculo do premio
                     double premio;
@@ -361,4 +361,34 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
         return item;
     }
+
+    public double getTotalItens(List<ItemProdutividade> itens){
+        double total = 0;
+        for(ItemProdutividade item : itens){
+            total += item.getValor();
+        }
+        return total;
+    }
+
+    public double getValorTotalRecargas(List<ItemProdutividade> itens){
+        double total = 0;
+        for(ItemProdutividade item : itens){
+            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+                total += item.getValor();
+            }
+        }
+        return total;
+    }
+
+    public int getQtRecargas(List<ItemProdutividade> itens){
+        int quantidade = 0;
+        for(ItemProdutividade item : itens){
+            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+                quantidade ++;
+            }
+        }
+        return quantidade;
+    }
+
+
 }

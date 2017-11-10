@@ -8,6 +8,11 @@ Change Log
 * Implementa relatório que estratifica as respostas NOK dos checklists
 * Implementa 3 novos relatórios para a parte de intervalos
 
+### Refactor
+* Torna o período de calculo da produtividade dinâmico para cada unidade
+* Altera para function o método que busca o consolidado das produtividades
+* Transfere métodos auxiliares da ProdutividadeDaoImpl para a ContrachequeDaoImpl
+
 ### Bug Fixes
 * Corrige formatação da meta de raio do tracking
 * Adiciona permissão de relatórios indicadores no getFiltros
