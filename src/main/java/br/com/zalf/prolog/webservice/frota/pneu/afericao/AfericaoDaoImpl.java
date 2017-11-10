@@ -24,6 +24,10 @@ import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
+    private static final char TIPO_AMBOS = 'A';
+    private static final char TIPO_PRESSAO = 'P';
+    private static final char TIPO_SULCO = 'S';
+
     public AfericaoDaoImpl() {
 
     }
@@ -157,21 +161,27 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             //caolesce - trabalha semenlhante ao IF, verifica se o valor é null
             conn = getConnection();
-            stmt = conn.prepareStatement("	SELECT V.PLACA,\n" +
-                    "  M.NOME,\n" +
-                    "  coalesce(INTERVALO.INTERVALO, -1)::INTEGER as INTERVALO,\n" +
-                    "  coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
+            stmt = conn.prepareStatement("SELECT V.placa,\n" +
+                    "    M.nome,\n" +
+                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO,\n" +
+                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO,\n" +
+                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
                     "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
-                    "LEFT JOIN (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? -  MAX(DATA_HORA)) AS INTERVALO\n" +
-                    "          FROM AFERICAO \n" +
-                    "          GROUP BY PLACA_VEICULO) AS INTERVALO ON PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
-                    "        (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "        WHERE tipo_afericao = 'P' OR tipo_afericao = 'A'\n" +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
+                    "LEFT JOIN\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM current_date - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "        WHERE tipo_afericao = 'S' OR tipo_afericao = 'A'\n" +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
+                    "LEFT JOIN\n" +
+                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
                     "        FROM veiculo_pneu vp\n" +
                     "        WHERE cod_unidade = ?\n" +
                     "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
-                    "ORDER BY M.NOME, INTERVALO DESC;");
+                    "ORDER BY M.NOME DESC;");
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codUnidade);
@@ -196,7 +206,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             holder.setPlacaStatus(listPlacasMesmoModelo);
             listModelo.add(holder);
             cronogramaAfericao.setPlacas(listModelo);
-            cronogramaAfericao.setMeta(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericao());
+            cronogramaAfericao.setMetaAfericaoPressao(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoPressao());
+            cronogramaAfericao.setMetaAfericaoSulco(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoSulco());
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -206,7 +217,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {
         PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
         placa.placa = rSet.getString("PLACA");
-        placa.intervaloUltimaAfericao = rSet.getInt("INTERVALO");
+        placa.intervaloUltimaAfericaoSulco = rSet.getInt("INTERVALO_SULCO");
+        placa.intervaloUltimaAfericaoPressao = rSet.getInt("INTERVALO_PRESSAO");
         placa.quantidadePneus = rSet.getInt("PNEUS_APLICADOS");
         return placa;
     }
@@ -449,7 +461,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
         restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
         restricao.setToleranciaInspecao(rSet.getDouble("TOLERANCIA_INSPECAO"));
-        restricao.setPeriodoDiasAfericao(rSet.getInt("PERIODO_AFERICAO"));
+        restricao.setPeriodoDiasAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
+        restricao.setPeriodoDiasAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
         return restricao;
     }
 

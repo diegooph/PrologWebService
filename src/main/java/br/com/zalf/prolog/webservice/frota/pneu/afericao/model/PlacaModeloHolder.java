@@ -38,17 +38,23 @@ public class PlacaModeloHolder {
                 '}';
     }
 
-
     public static class PlacaStatus {
 
         /**
-         * se o valor de {@link #intervaloUltimaAfericao} for igual a essa constante, então essa
-         * placa nunca teve nenhuma aferição realizada
+         * se o valor de {@link #intervaloUltimaAfericaoSulco} for igual a essa constante, então essa
+         * placa nunca teve o sulco aferido
          */
-        public static final int INTERVALO_INVALIDO = -1;
+        public static final int INTERVALO_INVALIDO_SULCO = -1;
+
+        /**
+         * se o valor de {@link #intervaloUltimaAfericaoPressao} for igual a essa constante, então essa
+         * placa nunca teve o sulco aferido
+         */
+        public static final int INTERVALO_INVALIDO_PRESSAO = -1;
 
         public String placa;
-        public int intervaloUltimaAfericao;
+        public int intervaloUltimaAfericaoSulco;
+        public int intervaloUltimaAfericaoPressao;
 
         /**
          * Indica quantos pneus estão vinculados a esse veículo
@@ -62,7 +68,8 @@ public class PlacaModeloHolder {
         public String toString() {
             return "PlacaStatus{" +
                     "placa='" + placa + '\'' +
-                    ", intervaloUltimaAfericao=" + intervaloUltimaAfericao +
+                    ", intervaloUltimaAfericaoSulco=" + intervaloUltimaAfericaoSulco +
+                    ", intervaloUltimaAfericaoPressao=" + intervaloUltimaAfericaoPressao +
                     '}';
         }
     }

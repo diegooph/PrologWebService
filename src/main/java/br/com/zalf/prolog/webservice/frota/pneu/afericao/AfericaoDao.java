@@ -47,7 +47,14 @@ public interface AfericaoDao {
      */
     Restricao getRestricoesByPlaca(String placa) throws SQLException;
 
-    //TODO - comentar o javadoc
+    /**
+     * retorna a lista de placas da unidade e também a meta de
+     * dias em que cada placa deve ser aferido
+     *
+     * @param codUnidade    código da unidade
+     * @return              um {@link CronogramaAfericao} contendo as placas para ser aferidas
+     * @throws SQLException para qualquer erro do banco
+     */
     CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException;
 
     /**
@@ -78,9 +85,9 @@ public interface AfericaoDao {
     /**
      * Atualiza uma aferição
      *
-     * @param afericao
-     * @return
-     * @throws SQLException
+     * @param afericao      objeto {@link Afericao} para ser atualizado
+     * @return              verdadeiro se operação for sucesso, falso caso contrário
+     * @throws SQLException se ocorrer erro no banco
      */
     boolean update(Afericao afericao) throws SQLException;
 }

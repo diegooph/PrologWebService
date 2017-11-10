@@ -78,7 +78,8 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(restricao, "restricao não pode ser null!");
 
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
-        cronogramaAfericao.setMeta(restricao.getPeriodoDiasAfericao());
+        cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
+        cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
         final List<PlacaModeloHolder> modelos = new ArrayList<>();
 
         Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
@@ -99,9 +100,11 @@ public final class AvaCorpAvilanConverter {
                 placaStatus.quantidadePneus = v.getQuantidadePneu();
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaStatus.intervaloUltimaAfericao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+                    placaStatus.intervaloUltimaAfericaoPressao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_PRESSAO;
+                    placaStatus.intervaloUltimaAfericaoSulco = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_SULCO;
                 } else {
-                    placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                    placaStatus.intervaloUltimaAfericaoSulco = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                    placaStatus.intervaloUltimaAfericaoPressao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
                 }
                 placas.add(placaStatus);
             }

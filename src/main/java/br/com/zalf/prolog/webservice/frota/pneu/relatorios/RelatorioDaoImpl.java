@@ -201,7 +201,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		try{
 			conn = getConnection();
 			totalVeiculos = veiculoDao.getTotalVeiculosByUnidade(codUnidade, conn);
-			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
+			meta = totalVeiculos/restricao.getPeriodoDiasAfericaoPressao();
 			stmt = conn.prepareStatement("SELECT EXTRACT(DAY from A.DATA_HORA) AS DIA, COUNT(EXTRACT(DAY from A.DATA_HORA)) AS REALIZADAS "
 					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
 					+ "WHERE A.DATA_HORA >=? AND A.DATA_HORA <= ? AND "
@@ -530,11 +530,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"            SUM(CALCULO.DIAS_ENTRE_AFERICOES) /\n" +
 				"            SUM(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES IS NOT NULL THEN 1 ELSE 0 END)\n" +
 				"  END)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
-				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
-				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
+				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
+				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
 				"  FROM\n" +
 				"-- QUERY PARA CONTAR A QUANTIDADES DE AFERIÇÕES DENTRO DO PRAZO REALIZADAS, POR PLACA E RESPEITANDO UM PERÍODO SELECIONADO\n" +
-				"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao AS PERIODO_AFERICAO,\n" +
+				"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao_pressao AS PERIODO_AFERICAO,\n" +
 				"            CASE WHEN A.placa_veiculo = lag(A.PLACA_VEICULO) over (ORDER BY placa_veiculo, data_hora) THEN\n" +
 				"            EXTRACT( DAYS FROM  A.DATA_HORA - lag(A.data_hora) over (ORDER BY placa_veiculo, data_hora))\n" +
 				"            END AS DIAS_ENTRE_AFERICOES\n" +
