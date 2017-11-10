@@ -404,6 +404,7 @@ public final class AvaCorpAvilanConverter {
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(Long.parseLong(checklistFiltro.getColaborador().getCpf()));
         colaborador.setNome(checklistFiltro.getColaborador().getNome());
+        checklist.setColaborador(colaborador);
 
         checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());

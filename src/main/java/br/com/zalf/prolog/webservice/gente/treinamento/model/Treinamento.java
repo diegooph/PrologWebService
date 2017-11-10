@@ -25,6 +25,7 @@ public class Treinamento {
 	private List<String> urlsImagensArquivo;
 	private Date dataLiberacao;
 	private Date dataHoraCadastro;
+	private Date dataFechamento;
 	private List<Cargo> cargosLiberados;
 
 	public Treinamento() {
@@ -115,6 +116,14 @@ public class Treinamento {
 		this.cargosLiberados = cargosLiberados;
 	}
 
+	public Date getDataFechamento() {
+		return dataFechamento;
+	}
+
+	public void setDataFechamento(Date dataFechamento) {
+		this.dataFechamento = dataFechamento;
+	}
+
 	@Override
 	public String toString() {
 		return "Treinamento{" +
@@ -123,8 +132,10 @@ public class Treinamento {
 				", titulo='" + titulo + '\'' +
 				", descricao='" + descricao + '\'' +
 				", urlArquivo='" + urlArquivo + '\'' +
+				", urlsImagensArquivo=" + urlsImagensArquivo +
 				", dataLiberacao=" + dataLiberacao +
 				", dataHoraCadastro=" + dataHoraCadastro +
+				", dataFechamento=" + dataFechamento +
 				", cargosLiberados=" + cargosLiberados +
 				'}';
 	}
