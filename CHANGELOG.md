@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Implementa relatório que estratifica as respostas NOK dos checklists
+* Implementa 3 novos relatórios para a parte de intervalos
 
 ### Bug Fixes
 * Corrige formatação da meta de raio do tracking
