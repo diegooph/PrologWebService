@@ -1,5 +1,7 @@
 package test.integracao.avilan;
 
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
@@ -16,10 +18,12 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilan
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
@@ -33,11 +37,11 @@ public class AvaCorpAvilanRequesterTest {
     @Before
     public void setup() {
         // Printa no console todos os logs das requisições HTTP. Headers, Body...
-        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -180,9 +184,65 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarQuestionariosColaborador() throws Exception {
         final ArrayOfQuestionarioVeiculos questionarios =
-                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
+                requester.getSelecaoModeloChecklistPlacaVeiculo("02953556036", "1990-12-17");
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testColaboradorPodeFazerChecklist() throws Exception {
+        final Long codUnidadeSapucaia = 2L;
+        final Long codUnidadeSantaMaria = 3L;
+        final Long codUnidadeSantaCruz = 4L;
+        final Long codMotoristaRota = 22L;
+        final ColaboradorService service = new ColaboradorService();
+
+        // Sapucaia.
+        System.out.println("Colaboradores Sapucaia:");
+        final List<Colaborador> colaboradoresSapucaia = service
+                .getAll(codUnidadeSapucaia, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSapucaia);
+
+        // Santa Maria.
+        System.out.println("\nColaboradores Santa Maria:");
+        final List<Colaborador> colaboradoresSantaMaria = service
+                .getAll(codUnidadeSantaMaria, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSantaMaria);
+
+        // Santa Cruz.
+        System.out.println("\nColaboradores Santa Cruz:");
+        final List<Colaborador> colaboradoresSantaCruz = service
+                .getAll(codUnidadeSantaCruz, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSantaCruz);
+
+    }
+
+    private void verificaColaboradores401(List<Colaborador> colaboradores) {
+        for (final Colaborador colaborador : colaboradores) {
+            try {
+
+                final ArrayOfQuestionarioVeiculos questionarios = requester.getSelecaoModeloChecklistPlacaVeiculo(
+                        colaborador.getCpfAsString(),
+                        AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento()));
+                assertNotNull(questionarios);
+                assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+            } catch (Throwable e) {
+                System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString());
+            }
+        }
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -453,8 +513,8 @@ public class AvaCorpAvilanRequesterTest {
             String posicaoAvilan,
             int posicaoProlog) {
 
-            System.out.println("INSERT INTO AVILAN.PNEU_POSICAO_AVILAN_PROLOG(POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG, COD_VEICULO_TIPO) " +
-                    "VALUES('"+posicaoAvilan+"', "+posicaoProlog+", '"+codTipoVeiculoAvilan+"');");
+        System.out.println("INSERT INTO AVILAN.PNEU_POSICAO_AVILAN_PROLOG(POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG, COD_VEICULO_TIPO) " +
+                "VALUES('"+posicaoAvilan+"', "+posicaoProlog+", '"+codTipoVeiculoAvilan+"');");
 
     }
 
