@@ -184,13 +184,15 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarQuestionariosColaborador() throws Exception {
         final ArrayOfQuestionarioVeiculos questionarios =
-                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
+                requester.getSelecaoModeloChecklistPlacaVeiculo("02953556036", "1990-12-17");
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
-    public void testColaboradorCadastradoUnidade() throws Exception {
+    public void testColaboradorPodeFazerChecklist() throws Exception {
         final Long codUnidadeSapucaia = 2L;
         final Long codUnidadeSantaMaria = 3L;
         final Long codUnidadeSantaCruz = 4L;
@@ -235,13 +237,10 @@ public class AvaCorpAvilanRequesterTest {
                         AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento()));
                 assertNotNull(questionarios);
                 assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
-            } catch (Exception e) {
-                if (e instanceof ClientTransportException) {
-                    final ClientTransportException transportException = (ClientTransportException) e;
-                    if (transportException.getMessage().contains("401")) {
-                        System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString() + " recebeu 401");
-                    }
-                }
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+            } catch (Throwable e) {
+                System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString());
             }
         }
     }
