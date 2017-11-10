@@ -27,10 +27,10 @@ import com.sun.istack.internal.Nullable;
 
 import javax.annotation.Nonnull;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDateTimePattern;
@@ -410,6 +410,7 @@ public final class AvaCorpAvilanConverter {
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
+        checklist.setTempoRealizacaoCheckInMillis(parseTempoRealizacaoChecklist(checklistFiltro.getTempoRealizacao()));
         checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
         checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
 
@@ -505,6 +506,21 @@ public final class AvaCorpAvilanConverter {
         afericao.getVeiculo().setListPneus(pneus);
 
         return afericao;
+    }
+
+    private static long parseTempoRealizacaoChecklist(@Nonnull final String tempoRealizacaoChecklist) {
+        checkNotNull(tempoRealizacaoChecklist, "tempoRealizacaoChecklist não pode ser null!");
+
+        final String[] s = tempoRealizacaoChecklist.split(":");
+        final int horas = Integer.parseInt(s[0]);
+        final int minutos = Integer.parseInt(s[1]);
+        final int segundos = Integer.parseInt(s[2]);
+
+        // Se durou mais que uma hora, tem algo de errado com essa duração, enviamos zero para não ser mostrado no
+        // aplicativo ou web.
+        return horas > 0 ? 0 : TimeUnit.HOURS.toMillis(horas)
+                + TimeUnit.MINUTES.toMillis(minutos)
+                + TimeUnit.SECONDS.toMillis(segundos);
     }
 
     @Nonnull
