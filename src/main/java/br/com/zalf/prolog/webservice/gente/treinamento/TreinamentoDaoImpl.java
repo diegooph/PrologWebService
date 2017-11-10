@@ -149,7 +149,8 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         String treinamentosVistosQuery =
-                "SELECT DISTINCT T.CODIGO, T.titulo, T.descricao, T.url_arquivo, T.data_liberacao, T.cod_unidade " +
+                "SELECT DISTINCT T.CODIGO, T.titulo, T.descricao, T.url_arquivo, T.data_liberacao, T.data_fechamento, " +
+                        "T.cod_unidade " +
                         "FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON \n" +
                         "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?";
         try {
@@ -231,12 +232,13 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
-        Treinamento treinamento = new Treinamento();
+        final Treinamento treinamento = new Treinamento();
         treinamento.setCodigo(rSet.getLong("CODIGO"));
         treinamento.setTitulo(rSet.getString("TITULO"));
         treinamento.setDescricao(rSet.getString("DESCRICAO"));
         treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
         treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
+        treinamento.setDataLiberacao(rSet.getDate("DATA_FECHAMENTO"));
         treinamento.setDataHoraCadastro(rSet.getDate("DATA_HORA_CADASTRO"));
         treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo()));
@@ -252,17 +254,18 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO TREINAMENTO (TITULO, DESCRICAO, URL_ARQUIVO, "
-                    + "DATA_LIBERACAO, COD_UNIDADE, data_hora_cadastro) "
-                    + "VALUES (?,?,?,?,?,?) RETURNING codigo");
+                    + "DATA_LIBERACAO, DATA_FECHAMENTO, COD_UNIDADE, DATA_HORA_CADASTRO) "
+                    + "VALUES (?,?,?,?,?,?) RETURNING CODIGO");
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
             stmt.setString(3, treinamento.getUrlArquivo());
             stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
-            stmt.setLong(5, treinamento.getCodUnidade());
-            stmt.setTimestamp(6, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setDate(5, DateUtils.toSqlDate(treinamento.getDataFechamento()));
+            stmt.setLong(6, treinamento.getCodUnidade());
+            stmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Long codTreinamento = rSet.getLong("CODIGO");
+                final Long codTreinamento = rSet.getLong("CODIGO");
                 treinamento.setCodigo(codTreinamento);
                 insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), codTreinamento, conn);
                 insertUrlImagensTreinamento(treinamento.getUrlsImagensArquivo(), codTreinamento, conn);
@@ -287,15 +290,17 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             conn.setAutoCommit(false);
 
             // As funções liberadas para ver um treinamento podem ou não ter mudado. Assumimos que tenham mudado e
-            // deletamos e reinserimos as funções novamente
+            // deletamos e reinserimos as funções novamente.
             deleteFuncoesLiberadasTreinamento(treinamento.getCodigo(), conn);
             insertFuncoesLiberadasTreinamento(treinamento.getCargosLiberados(), treinamento.getCodigo(), conn);
 
-            stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ? WHERE codigo = ?");
+            stmt = conn.prepareStatement("UPDATE treinamento SET titulo = ?, descricao = ?, data_liberacao = ?, " +
+                    "data_fechamento ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
             stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
-            stmt.setLong(4, treinamento.getCodigo());
+            stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataFechamento()));
+            stmt.setLong(5, treinamento.getCodigo());
             if (stmt.executeUpdate() > 0) {
                 conn.commit();
                 return true;
@@ -303,7 +308,6 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 throw new SQLException("Erro ao atualizar treinamento = " + treinamento.getCodigo());
             }
         } catch (SQLException ex) {
-            // Rollback feito, podemos subir a exceção
             conn.rollback();
             throw ex;
         } finally {
