@@ -1,16 +1,15 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,10 +26,9 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VIEW_PRODUTIVIDADE_EXTRATO \n" +
-					"WHERE data between ? and ? and cpf = ? ORDER BY data asc");
-			stmt.setDate(1, DateUtils.getDataInicialPeriodoProdutividade(ano, mes));
-			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			stmt = conn.prepareStatement("select * from func_get_produtividade_colaborador(?,?,?)");
+			stmt.setInt(1, mes);
+			stmt.setInt(2, ano);
 			stmt.setLong(3, cpf);
 			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
