@@ -115,6 +115,34 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
+    public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Treinamento treinamento = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM treinamento WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setLong(1, codTreinamento);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                treinamento = new Treinamento();
+                treinamento.setCodigo(rSet.getLong("CODIGO"));
+                treinamento.setDataHoraCadastro(rSet.getTimestamp("DATA_HORA_CADASTRO"));
+                treinamento.setDescricao(rSet.getString("DESCRICAO"));
+                treinamento.setTitulo(rSet.getString("TITULO"));
+                treinamento.setDataLiberacao(rSet.getTimestamp("DATA_LIBERACAO"));
+                treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
+                treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(codTreinamento));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return treinamento;
+    }
+
+    @Override
     public List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException {
         List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;
@@ -222,27 +250,6 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    private Cargo createFuncao(ResultSet rSet) throws SQLException {
-        Cargo cargo = new Cargo();
-        cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
-        cargo.setNome(rSet.getString("NOME_FUNCAO"));
-        return cargo;
-    }
-
-    private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
-        final Treinamento treinamento = new Treinamento();
-        treinamento.setCodigo(rSet.getLong("CODIGO"));
-        treinamento.setTitulo(rSet.getString("TITULO"));
-        treinamento.setDescricao(rSet.getString("DESCRICAO"));
-        treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
-        treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
-        treinamento.setDataLiberacao(rSet.getDate("DATA_FECHAMENTO"));
-        treinamento.setDataHoraCadastro(rSet.getDate("DATA_HORA_CADASTRO"));
-        treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-        treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo()));
-        return treinamento;
     }
 
     @Override
@@ -376,31 +383,29 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         }
     }
 
-    public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException {
+    @Override
+    public boolean deleteTreinamento(Long codTreinamento) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        Treinamento treinamento = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM treinamento WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            conn.setAutoCommit(false);
+            deleteFuncoesLiberadasTreinamento(codTreinamento, conn);
+            deleteVisualizacoesTreinamento(conn, codTreinamento);
+            deleteUrlPaginasTreinamento(conn, codTreinamento);
+            stmt = conn.prepareStatement("DELETE FROM TREINAMENTO WHERE CODIGO = ?");
             stmt.setLong(1, codTreinamento);
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                treinamento = new Treinamento();
-                treinamento.setCodigo(rSet.getLong("CODIGO"));
-                treinamento.setDataHoraCadastro(rSet.getTimestamp("DATA_HORA_CADASTRO"));
-                treinamento.setDescricao(rSet.getString("DESCRICAO"));
-                treinamento.setTitulo(rSet.getString("TITULO"));
-                treinamento.setDataLiberacao(rSet.getTimestamp("DATA_LIBERACAO"));
-                treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
-                treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(codTreinamento));
+            if (stmt.executeUpdate() > 0) {
+                conn.commit();
+                return true;
             }
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(conn, stmt, null);
         }
-        return treinamento;
+        return false;
     }
 
     private List<String> getUrlImagensTreinamento(Long codTreinamento) throws SQLException {
@@ -422,6 +427,27 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             closeConnection(conn, stmt, rSet);
         }
         return urls;
+    }
+
+    private Cargo createFuncao(ResultSet rSet) throws SQLException {
+        Cargo cargo = new Cargo();
+        cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
+        cargo.setNome(rSet.getString("NOME_FUNCAO"));
+        return cargo;
+    }
+
+    private Treinamento createTreinamento(ResultSet rSet) throws SQLException {
+        final Treinamento treinamento = new Treinamento();
+        treinamento.setCodigo(rSet.getLong("CODIGO"));
+        treinamento.setTitulo(rSet.getString("TITULO"));
+        treinamento.setDescricao(rSet.getString("DESCRICAO"));
+        treinamento.setUrlArquivo(rSet.getString("URL_ARQUIVO"));
+        treinamento.setDataLiberacao(rSet.getDate("DATA_LIBERACAO"));
+        treinamento.setDataFechamento(rSet.getDate("DATA_FECHAMENTO"));
+        treinamento.setDataHoraCadastro(rSet.getDate("DATA_HORA_CADASTRO"));
+        treinamento.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+        treinamento.setUrlsImagensArquivo(getUrlImagensTreinamento(treinamento.getCodigo()));
+        return treinamento;
     }
 
     private List<Cargo> getFuncoesLiberadasByTreinamento(Connection conn, Long codTreinamento) throws SQLException {
@@ -449,30 +475,6 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             closeConnection(conn, stmt, rSet);
         }
         return funcoes;
-    }
-
-    public boolean deleteTreinamento(Long codTreinamento) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            deleteFuncoesLiberadasTreinamento(codTreinamento, conn);
-            deleteVisualizacoesTreinamento(conn, codTreinamento);
-            deleteUrlPaginasTreinamento(conn, codTreinamento);
-            stmt = conn.prepareStatement("DELETE FROM TREINAMENTO WHERE CODIGO = ?");
-            stmt.setLong(1, codTreinamento);
-            if (stmt.executeUpdate() > 0) {
-                conn.commit();
-                return true;
-            }
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return false;
     }
 
     private void deleteVisualizacoesTreinamento(Connection conn, Long codTreinamento) throws SQLException {
