@@ -208,44 +208,51 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setPlacas(listModelo);
             cronogramaAfericao.setMetaAfericaoPressao(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoSulco());
-            cronogramaAfericao.setQtdPlacasPressaoOk(calcularqtdPlacasPressaoOK(holder, cronogramaAfericao.getMetaAfericaoPressao()));
-            cronogramaAfericao.setQtdPlacasSulcoOk(calcularqtdPlacasSulcoOK(holder, cronogramaAfericao.getMetaAfericaoSulco()));
-            cronogramaAfericao.setQtdPlacasTudoOk(calcularqtdPlacasTudoOK(
-                    holder,
-                    cronogramaAfericao.getMetaAfericaoPressao(),
-                    cronogramaAfericao.getMetaAfericaoSulco()));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+        cronogramaAfericao.setQtdPlacasSulcoOk(calcularQtdPlacasSulcoOK(cronogramaAfericao.getPlacas(),
+                cronogramaAfericao.getMetaAfericaoSulco()));
+        cronogramaAfericao.setQtdPlacasPressaoOk(calcularQtdPlacasPressaoOK(cronogramaAfericao.getPlacas(),
+                cronogramaAfericao.getMetaAfericaoPressao()));
+        cronogramaAfericao.setQtdPlacasTudoOk(calcularQtdPlacasTudoOK(cronogramaAfericao.getPlacas(),
+                cronogramaAfericao.getMetaAfericaoSulco(),
+                cronogramaAfericao.getMetaAfericaoPressao()));
         return cronogramaAfericao;
     }
 
-    private int calcularqtdPlacasPressaoOK(PlacaModeloHolder holder, int metaAfericaoPressao) {
+    private int calcularQtdPlacasSulcoOK(List<PlacaModeloHolder> placaModelo, int metaAfericaoSulco) {
         int contagem = 0;
-        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
-            if (isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
-                contagem++;
+        for (PlacaModeloHolder holder : placaModelo) {
+            for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)) {
+                    contagem++;
+                }
             }
         }
         return contagem;
     }
 
-    private int calcularqtdPlacasSulcoOK(PlacaModeloHolder holder, int metaAfericaoSulco) {
+    private int calcularQtdPlacasPressaoOK(List<PlacaModeloHolder> placaModelo, int metaAfericaoPressao) {
         int contagem = 0;
-        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
-            if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)) {
-                contagem++;
+        for (PlacaModeloHolder holder : placaModelo) {
+            for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+                if (isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                    contagem++;
+                }
             }
         }
         return contagem;
     }
 
-    private int calcularqtdPlacasTudoOK(PlacaModeloHolder holder, int metaAfericaoPressao, int metaAfericaoSulco) {
+    private int calcularQtdPlacasTudoOK(List<PlacaModeloHolder> placaModelo, int metaAfericaoSulco, int metaAfericaoPressao) {
         int contagem = 0;
-        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
-            if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)
-                    && isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
-                contagem++;
+        for (PlacaModeloHolder holder : placaModelo) {
+            for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)
+                        && isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                    contagem++;
+                }
             }
         }
         return contagem;
