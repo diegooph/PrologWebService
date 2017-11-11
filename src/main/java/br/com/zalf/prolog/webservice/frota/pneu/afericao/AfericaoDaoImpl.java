@@ -221,7 +221,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private void calcularTotalVeiculos(CronogramaAfericao cronogramaAfericao) {
         int totalVeiculos = 0;
         for (PlacaModeloHolder holder : cronogramaAfericao.getPlacas()) {
-            holder.setTotalVieculosModelo(holder.getPlacaStatus().size());
+            holder.setTotalVeiculosModelo(holder.getPlacaStatus().size());
             totalVeiculos += holder.getPlacaStatus().size();
         }
         cronogramaAfericao.setTotalVeiculos(totalVeiculos);
