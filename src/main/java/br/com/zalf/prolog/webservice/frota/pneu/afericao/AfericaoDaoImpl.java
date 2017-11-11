@@ -7,9 +7,9 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -208,10 +208,57 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setPlacas(listModelo);
             cronogramaAfericao.setMetaAfericaoPressao(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoSulco());
+            cronogramaAfericao.setQtdPlacasPressaoOk(calcularqtdPlacasPressaoOK(holder, cronogramaAfericao.getMetaAfericaoPressao()));
+            cronogramaAfericao.setQtdPlacasSulcoOk(calcularqtdPlacasSulcoOK(holder, cronogramaAfericao.getMetaAfericaoSulco()));
+            cronogramaAfericao.setQtdPlacasTudoOk(calcularqtdPlacasTudoOK(
+                    holder,
+                    cronogramaAfericao.getMetaAfericaoPressao(),
+                    cronogramaAfericao.getMetaAfericaoSulco()));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
         return cronogramaAfericao;
+    }
+
+    private int calcularqtdPlacasPressaoOK(PlacaModeloHolder holder, int metaAfericaoPressao) {
+        int contagem = 0;
+        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+            if (isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                contagem++;
+            }
+        }
+        return contagem;
+    }
+
+    private int calcularqtdPlacasSulcoOK(PlacaModeloHolder holder, int metaAfericaoSulco) {
+        int contagem = 0;
+        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+            if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)) {
+                contagem++;
+            }
+        }
+        return contagem;
+    }
+
+    private int calcularqtdPlacasTudoOK(PlacaModeloHolder holder, int metaAfericaoPressao, int metaAfericaoSulco) {
+        int contagem = 0;
+        for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+            if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)
+                    && isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                contagem++;
+            }
+        }
+        return contagem;
+    }
+
+    private boolean isAfericaoPressaoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoPressao) {
+        return placaStatus.intervaloUltimaAfericaoPressao <= metaAfericaoPressao
+                && placaStatus.intervaloUltimaAfericaoPressao != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_PRESSAO;
+    }
+
+    private boolean isAfericaoSulcoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoSulco) {
+        return placaStatus.intervaloUltimaAfericaoSulco <= metaAfericaoSulco
+                && placaStatus.intervaloUltimaAfericaoSulco != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_SULCO;
     }
 
     private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {
