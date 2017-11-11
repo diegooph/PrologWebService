@@ -106,7 +106,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM, ER.TOLERANCIA_CALIBRAGEM, ER.TOLERANCIA_INSPECAO, "
-                    + "ER.PERIODO_AFERICAO "
+                    + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM UNIDADE U JOIN "
                     + "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
                     + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
@@ -131,7 +131,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT ER.SULCO_MINIMO_DESCARTE, ER.SULCO_MINIMO_RECAPAGEM,ER.TOLERANCIA_INSPECAO, ER.TOLERANCIA_CALIBRAGEM, "
-                    + "ER.PERIODO_AFERICAO "
+                    + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
                     + "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
                     + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
@@ -172,7 +172,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "        WHERE tipo_afericao = 'P' OR tipo_afericao = 'A'\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM current_date - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = 'S' OR tipo_afericao = 'A'\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
@@ -183,8 +183,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
                     "ORDER BY M.NOME DESC;");
             stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(2, codUnidade);
+            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
             stmt.setLong(3, codUnidade);
+            stmt.setLong(4, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (listPlacasMesmoModelo.size() == 0) {//primeiro resultado do resultset
