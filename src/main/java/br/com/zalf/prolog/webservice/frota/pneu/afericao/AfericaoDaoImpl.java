@@ -211,14 +211,70 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        cronogramaAfericao.setQtdPlacasSulcoOk(calcularQtdPlacasSulcoOK(cronogramaAfericao.getPlacas(),
-                cronogramaAfericao.getMetaAfericaoSulco()));
-        cronogramaAfericao.setQtdPlacasPressaoOk(calcularQtdPlacasPressaoOK(cronogramaAfericao.getPlacas(),
-                cronogramaAfericao.getMetaAfericaoPressao()));
-        cronogramaAfericao.setQtdPlacasTudoOk(calcularQtdPlacasTudoOK(cronogramaAfericao.getPlacas(),
-                cronogramaAfericao.getMetaAfericaoSulco(),
-                cronogramaAfericao.getMetaAfericaoPressao()));
+
+        calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
+        calcularTotalVeiculos(cronogramaAfericao);
         return cronogramaAfericao;
+    }
+
+    private void calcularTotalVeiculos(CronogramaAfericao cronogramaAfericao) {
+        int totalVeiculos = 0;
+        for (PlacaModeloHolder holder : cronogramaAfericao.getPlacas()) {
+            holder.setTotalVieculosModelo(holder.getPlacaStatus().size());
+            totalVeiculos += holder.getPlacaStatus().size();
+        }
+        cronogramaAfericao.setTotalVeiculos(totalVeiculos);
+    }
+
+    private void calcularQuatidadeSulcosPressaoOk(CronogramaAfericao cronogramaAfericao) {
+//        cronogramaAfericao.setTotalSulcosOk(calcularQtdPlacasSulcoOK(cronogramaAfericao.getPlacas(),
+//                cronogramaAfericao.getMetaAfericaoSulco()));
+//        cronogramaAfericao.setTotalPressaoOk(calcularQtdPlacasPressaoOK(cronogramaAfericao.getPlacas(),
+//                cronogramaAfericao.getMetaAfericaoPressao()));
+//        cronogramaAfericao.setTotalSulcoPressaoOk(calcularQtdPlacasTudoOK(cronogramaAfericao.getPlacas(),
+//                cronogramaAfericao.getMetaAfericaoSulco(),
+//                cronogramaAfericao.getMetaAfericaoPressao()));
+
+        int qtdSulcosOk = 0;
+        int qtdPressaoOk = 0;
+        int qtdSulcosPressaook = 0;
+
+        int qtdModeloSulcosOk = 0;
+        int qtdModeloPressaoOk = 0;
+        int qtdModeloSulcosPressaoOk = 0;
+
+        final int metaAfericaoSulco = cronogramaAfericao.getMetaAfericaoSulco();
+        final int metaAfericaoPressao = cronogramaAfericao.getMetaAfericaoPressao();
+
+        final List<PlacaModeloHolder> placaModelo = cronogramaAfericao.getPlacas();
+        for (PlacaModeloHolder holder : placaModelo) {
+            for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
+                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)) {
+                    qtdSulcosOk++;
+                    qtdModeloSulcosOk++;
+                }
+                if (isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                    qtdPressaoOk++;
+                    qtdModeloPressaoOk++;
+                }
+                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)
+                        && isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                    qtdSulcosPressaook++;
+                    qtdModeloSulcosPressaoOk++;
+                }
+            }
+            // devemos setar em cada modelo a quantidade de Sulco/Pressao
+            holder.setQtdModeloSulcoOk(qtdModeloSulcosOk);
+            holder.setQtdModeloPressaoOk(qtdModeloPressaoOk);
+            holder.setQtdModeloSulcoPressaoOk(qtdModeloSulcosPressaoOk);
+            qtdModeloSulcosOk = 0;
+            qtdModeloPressaoOk = 0;
+            qtdModeloSulcosPressaoOk = 0;
+        }
+        // devemos setar a quatidade total de sulcos/pressões no cronograma
+        cronogramaAfericao.setTotalSulcosOk(qtdSulcosOk);
+        cronogramaAfericao.setTotalPressaoOk(qtdPressaoOk);
+        cronogramaAfericao.setTotalSulcoPressaoOk(qtdSulcosPressaook);
     }
 
     private int calcularQtdPlacasSulcoOK(List<PlacaModeloHolder> placaModelo, int metaAfericaoSulco) {
@@ -260,12 +316,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private boolean isAfericaoPressaoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoPressao) {
         return placaStatus.intervaloUltimaAfericaoPressao <= metaAfericaoPressao
-                && placaStatus.intervaloUltimaAfericaoPressao != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_PRESSAO;
+                && placaStatus.intervaloUltimaAfericaoPressao != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
     }
 
     private boolean isAfericaoSulcoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoSulco) {
         return placaStatus.intervaloUltimaAfericaoSulco <= metaAfericaoSulco
-                && placaStatus.intervaloUltimaAfericaoSulco != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_SULCO;
+                && placaStatus.intervaloUltimaAfericaoSulco != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
     }
 
     private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {

@@ -100,8 +100,8 @@ public final class AvaCorpAvilanConverter {
                 placaStatus.quantidadePneus = v.getQuantidadePneu();
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaStatus.intervaloUltimaAfericaoPressao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_PRESSAO;
-                    placaStatus.intervaloUltimaAfericaoSulco = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO_SULCO;
+                    placaStatus.intervaloUltimaAfericaoPressao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+                    placaStatus.intervaloUltimaAfericaoSulco = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
                 } else {
                     placaStatus.intervaloUltimaAfericaoSulco = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
                     placaStatus.intervaloUltimaAfericaoPressao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());

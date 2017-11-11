@@ -10,6 +10,12 @@ public class PlacaModeloHolder {
 
     private String modelo;
     private List<PlacaStatus> placaStatus;
+    private int qtdModeloSulcoOk;
+    private int qtdModeloPressaoOk;
+    private int qtdModeloSulcoPressaoOk;
+    private int totalVieculosModelo;
+
+    public PlacaModeloHolder() {}
 
     public String getModelo() {
         return modelo;
@@ -27,7 +33,36 @@ public class PlacaModeloHolder {
         this.placaStatus = placaStatus;
     }
 
-    public PlacaModeloHolder() {
+    public int getQtdModeloSulcoOk() {
+        return qtdModeloSulcoOk;
+    }
+
+    public void setQtdModeloSulcoOk(int qtdModeloSulcoOk) {
+        this.qtdModeloSulcoOk = qtdModeloSulcoOk;
+    }
+
+    public int getQtdModeloPressaoOk() {
+        return qtdModeloPressaoOk;
+    }
+
+    public void setQtdModeloPressaoOk(int qtdModeloPressaoOk) {
+        this.qtdModeloPressaoOk = qtdModeloPressaoOk;
+    }
+
+    public int getQtdModeloSulcoPressaoOk() {
+        return qtdModeloSulcoPressaoOk;
+    }
+
+    public void setQtdModeloSulcoPressaoOk(int qtdModeloSulcoPressaoOk) {
+        this.qtdModeloSulcoPressaoOk = qtdModeloSulcoPressaoOk;
+    }
+
+    public int getTotalVieculosModelo() {
+        return totalVieculosModelo;
+    }
+
+    public void setTotalVieculosModelo(int totalVieculosModelo) {
+        this.totalVieculosModelo = totalVieculosModelo;
     }
 
     @Override
@@ -35,34 +70,39 @@ public class PlacaModeloHolder {
         return "PlacaModeloHolder{" +
                 "modelo='" + modelo + '\'' +
                 ", placaStatus=" + placaStatus +
+                ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
+                ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
+                ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
+                ", totalVieculosModelo=" + totalVieculosModelo +
                 '}';
     }
 
     public static class PlacaStatus {
 
         /**
-         * se o valor de {@link #intervaloUltimaAfericaoSulco} for igual a essa constante, então essa
-         * placa nunca teve o sulco aferido
+         * se o valor de {@link #intervaloUltimaAfericaoSulco} ou {@link #intervaloUltimaAfericaoPressao}
+         * for igual a essa constante, então essa placa nunca teve o sulco aferido.
          */
-        public static final int INTERVALO_INVALIDO_SULCO = -1;
-
-        /**
-         * se o valor de {@link #intervaloUltimaAfericaoPressao} for igual a essa constante, então essa
-         * placa nunca teve o sulco aferido
-         */
-        public static final int INTERVALO_INVALIDO_PRESSAO = -1;
+        public static final int INTERVALO_INVALIDO = -1;
 
         public String placa;
+
+        /**
+         * Número inteiro que representa a quantidade de dias desde a última aferição de Sulco.
+         */
         public int intervaloUltimaAfericaoSulco;
+
+        /**
+         * Número inteiro que representa a quantidade de dias desde a última aferição da Pressão.
+         */
         public int intervaloUltimaAfericaoPressao;
 
         /**
-         * Indica quantos pneus estão vinculados a esse veículo
+         * Indica quantos pneus estão vinculados a esse veículo.
          */
         public int quantidadePneus;
 
-        public PlacaStatus() {
-        }
+        public PlacaStatus() {}
 
         @Override
         public String toString() {

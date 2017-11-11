@@ -10,9 +10,10 @@ public class CronogramaAfericao {
     List<PlacaModeloHolder> placas;
     private int metaAfericaoSulco;
     private int metaAfericaoPressao;
-    private int qtdPlacasSulcoOk;
-    private int qtdPlacasPressaoOk;
-    private int qtdPlacasTudoOk;
+    private int totalSulcosOk;
+    private int totalPressaoOk;
+    private int totalSulcoPressaoOk;
+    private int totalVeiculos;
 
     public CronogramaAfericao() {}
 
@@ -40,28 +41,36 @@ public class CronogramaAfericao {
         this.metaAfericaoPressao = metaAfericaoPressao;
     }
 
-    public int getQtdPlacasSulcoOk() {
-        return qtdPlacasSulcoOk;
+    public int getTotalSulcosOk() {
+        return totalSulcosOk;
     }
 
-    public void setQtdPlacasSulcoOk(int qtdPlacasSulcoOk) {
-        this.qtdPlacasSulcoOk = qtdPlacasSulcoOk;
+    public void setTotalSulcosOk(int totalSulcosOk) {
+        this.totalSulcosOk = totalSulcosOk;
     }
 
-    public int getQtdPlacasPressaoOk() {
-        return qtdPlacasPressaoOk;
+    public int getTotalPressaoOk() {
+        return totalPressaoOk;
     }
 
-    public void setQtdPlacasPressaoOk(int qtdPlacasPressaoOk) {
-        this.qtdPlacasPressaoOk = qtdPlacasPressaoOk;
+    public void setTotalPressaoOk(int totalPressaoOk) {
+        this.totalPressaoOk = totalPressaoOk;
     }
 
-    public int getQtdPlacasTudoOk() {
-        return qtdPlacasTudoOk;
+    public int getTotalSulcoPressaoOk() {
+        return totalSulcoPressaoOk;
     }
 
-    public void setQtdPlacasTudoOk(int qtdPlacasTudoOk) {
-        this.qtdPlacasTudoOk = qtdPlacasTudoOk;
+    public void setTotalSulcoPressaoOk(int totalSulcoPressaoOk) {
+        this.totalSulcoPressaoOk = totalSulcoPressaoOk;
+    }
+
+    public int getTotalVeiculos() {
+        return totalVeiculos;
+    }
+
+    public void setTotalVeiculos(int totalVeiculos) {
+        this.totalVeiculos = totalVeiculos;
     }
 
     @Override
@@ -70,9 +79,10 @@ public class CronogramaAfericao {
                 "placas=" + placas +
                 ", metaAfericaoSulco=" + metaAfericaoSulco +
                 ", metaAfericaoPressao=" + metaAfericaoPressao +
-                ", qtdPlacasSulcoOk=" + qtdPlacasSulcoOk +
-                ", qtdPlacasPressaoOk=" + qtdPlacasPressaoOk +
-                ", qtdPlacasTudoOk=" + qtdPlacasTudoOk +
+                ", totalSulcosOk=" + totalSulcosOk +
+                ", totalPressaoOk=" + totalPressaoOk +
+                ", totalSulcoPressaoOk=" + totalSulcoPressaoOk +
+                ", totalVeiculos=" + totalVeiculos +
                 '}';
     }
 }
