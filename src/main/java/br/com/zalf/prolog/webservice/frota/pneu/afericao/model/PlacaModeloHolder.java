@@ -13,7 +13,7 @@ public class PlacaModeloHolder {
     private int qtdModeloSulcoOk;
     private int qtdModeloPressaoOk;
     private int qtdModeloSulcoPressaoOk;
-    private int totalVieculosModelo;
+    private int totalVeiculosModelo;
 
     public PlacaModeloHolder() {}
 
@@ -57,12 +57,12 @@ public class PlacaModeloHolder {
         this.qtdModeloSulcoPressaoOk = qtdModeloSulcoPressaoOk;
     }
 
-    public int getTotalVieculosModelo() {
-        return totalVieculosModelo;
+    public int getTotalVeiculosModelo() {
+        return totalVeiculosModelo;
     }
 
-    public void setTotalVieculosModelo(int totalVieculosModelo) {
-        this.totalVieculosModelo = totalVieculosModelo;
+    public void setTotalVeiculosModelo(int totalVieculosModelo) {
+        this.totalVeiculosModelo = totalVieculosModelo;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class PlacaModeloHolder {
                 ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
                 ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
                 ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
-                ", totalVieculosModelo=" + totalVieculosModelo +
+                ", totalVeiculosModelo=" + totalVeiculosModelo +
                 '}';
     }
 
