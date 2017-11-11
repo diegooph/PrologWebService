@@ -8,7 +8,6 @@ import java.util.List;
 public class CronogramaAfericao {
 
     List<PlacaModeloHolder> placas;
-    private TipoAfericao tipoAfericao;
     private int metaAfericaoSulco;
     private int metaAfericaoPressao;
     private int qtdPlacasSulcoOk;
@@ -23,14 +22,6 @@ public class CronogramaAfericao {
 
     public void setPlacas(List<PlacaModeloHolder> placas) {
         this.placas = placas;
-    }
-
-    public TipoAfericao getTipoAfericao() {
-        return tipoAfericao;
-    }
-
-    public void setTipoAfericao(TipoAfericao tipoAfericao) {
-        this.tipoAfericao = tipoAfericao;
     }
 
     public int getMetaAfericaoSulco() {
@@ -77,7 +68,6 @@ public class CronogramaAfericao {
     public String toString() {
         return "CronogramaAfericao{" +
                 "placas=" + placas +
-                ", tipoAfericao=" + tipoAfericao +
                 ", metaAfericaoSulco=" + metaAfericaoSulco +
                 ", metaAfericaoPressao=" + metaAfericaoPressao +
                 ", qtdPlacasSulcoOk=" + qtdPlacasSulcoOk +
