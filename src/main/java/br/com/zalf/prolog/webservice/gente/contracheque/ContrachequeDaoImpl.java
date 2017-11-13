@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeService;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
@@ -16,7 +17,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -165,9 +165,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException{
         IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
         ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+        PeriodoProdutividade periodoProdutividade;
+        ProdutividadeService produtividadeService = new ProdutividadeService();
+        periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
         List<IndicadorAcumulado> indicadores =
-                indicadorDao.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
-                        DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
+                indicadorDao.getAcumuladoIndicadoresIndividual(periodoProdutividade.getDataInicio().getTime(),
+                        periodoProdutividade.getDataTermino().getTime(), cpf);
 
         for(IndicadorAcumulado indicadorAcumulado : indicadores) {
             if(indicadorAcumulado.getTipo().equals(indicador)){
