@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AfericaoService {
 
     private final AfericaoDao dao = Injection.provideAfericaoDao();
+    private static final String TAG = AfericaoService.class.getSimpleName();
 
     public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
         afericao.setDataHora(new Date(System.currentTimeMillis()));
@@ -25,7 +27,7 @@ public class AfericaoService {
                     .create(dao, userToken)
                     .insertAfericao(afericao, codUnidade);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir a aferição", e);
             return false;
         }
     }
@@ -34,7 +36,7 @@ public class AfericaoService {
         try {
             return dao.update(afericao);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar o KM de uma aferição", e);
             return false;
         }
     }
@@ -45,7 +47,7 @@ public class AfericaoService {
                     .create(dao, userToken)
                     .getNovaAfericao(placa);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar uma nova aferição", e);
             throw new RuntimeException(e);
         }
     }
@@ -56,7 +58,7 @@ public class AfericaoService {
                     .create(dao, userToken)
                     .getAfericaoByCodigo(codUnidade, codAfericao);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar uma aferição específica", e);
             throw new RuntimeException(e);
         }
     }
@@ -67,7 +69,7 @@ public class AfericaoService {
                     .create(dao, userToken)
                     .getCronogramaAfericao(codUnidade);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o cronograma de aferições", e);
             return null;
         }
     }
@@ -85,7 +87,7 @@ public class AfericaoService {
                     .create(dao, userToken)
                     .getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar as aferições", e);
             throw new RuntimeException("Erro ao buscar aferições. Unidade: "
                     + codUnidade + " || Tipo: "
                     + codTipoVeiculo + " || Placa: "
@@ -98,7 +100,7 @@ public class AfericaoService {
         try {
             return dao.getAfericoesByCodUnidadeByPlaca(codUnidades, placas, limit, offset);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar as aferições de uma placa", e);
             return null;
         }
     }
@@ -107,7 +109,7 @@ public class AfericaoService {
         try {
             return dao.getRestricaoByCodUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar as restrições", e);
             return null;
         }
     }

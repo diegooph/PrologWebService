@@ -110,6 +110,4 @@ public class RelatorioResource {
                                                @QueryParam("dataFinal") Long dataFinal) {
         return service.getEstratificacaoMapasReport(codUnidade, dataInicial, dataFinal);
     }
-
-
 }

@@ -21,15 +21,15 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/{codUnidade}/csv")
     @Produces("application/csv")
-    public StreamingOutput getCheckilistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
+    public StreamingOutput getChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                           @QueryParam("dataInicial") long dataInicial,
                                                           @QueryParam("dataFinal") long dataFinal) {
-        return outputStream -> service.getCheckilistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        return outputStream -> service.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/{codUnidade}/report")
-    public Report getCheckilistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
+    public Report getChecklistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
                                                     @QueryParam("dataInicial") long dataInicial,
                                                     @QueryParam("dataFinal") long dataFinal) {
         return service.getChecklistsRealizadosDiaReport(codUnidade, dataInicial, dataFinal);

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -14,16 +15,18 @@ import java.sql.SQLException;
 
 
 class ChecklistRelatorioService {
-    private ChecklistRelatorioDao dao = new ChecklistRelatorioDaoImpl();
 
-    void getCheckilistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
+    private ChecklistRelatorioDao dao = new ChecklistRelatorioDaoImpl();
+    private static final String TAG = ChecklistRelatorioService.class.getSimpleName();
+
+    void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
                                         @NotNull Long codUnidade,
                                         @NotNull long dataInicial,
                                         @NotNull long dataFinal) {
         try {
             dao.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (CSV)", e);
         }
     }
 
@@ -34,7 +37,7 @@ class ChecklistRelatorioService {
         try {
             return dao.getChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (REPORT)", e);
             return null;
         }
     }
@@ -46,7 +49,7 @@ class ChecklistRelatorioService {
         try {
             dao.getExtratoChecklistsRealizadosDiaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
         }
     }
 
@@ -57,7 +60,7 @@ class ChecklistRelatorioService {
         try {
             return dao.getExtratoChecklistsRealizadosDiaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
             return null;
         }
     }
@@ -69,7 +72,7 @@ class ChecklistRelatorioService {
         try {
             dao.getTempoRealizacaoChecklistMotoristaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (CSV)", e);
         }
     }
 
@@ -80,7 +83,7 @@ class ChecklistRelatorioService {
         try {
             return dao.getTempoRealizacaoChecklistMotoristaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (REPORT)", e);
             return null;
         }
     }
@@ -93,7 +96,7 @@ class ChecklistRelatorioService {
         try {
             dao.getResumoChecklistCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (CSV)", e);
         }
     }
 
@@ -105,7 +108,7 @@ class ChecklistRelatorioService {
         try {
             return dao.getResumoChecklistReport(codUnidade, new Date(dataInicial), new Date(dataFinal), placa);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (REPORT)", e);
             return null;
         }
     }
@@ -116,7 +119,7 @@ class ChecklistRelatorioService {
         try {
             return dao.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
         }catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (REPORT)", e);
             return null;
         }
     }
@@ -126,7 +129,7 @@ class ChecklistRelatorioService {
         try {
             dao.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
         }catch (SQLException | IOException e){
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (CSV)", e);
         }
     }
 }

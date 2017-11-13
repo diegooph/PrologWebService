@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
@@ -26,13 +27,14 @@ import java.util.List;
 public class ColaboradorService {
 
 	private final ColaboradorDao dao = Injection.provideColaboradorDao();
+	private static final String TAG = ColaboradorService.class.getSimpleName();
 
 	public boolean insert(Colaborador colaborador) {
 		try {
 			dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
 			return true;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			Log.e(TAG, "Erro ao inserir o colaborador" , e);
 			return false;
 		}
 	}
@@ -42,7 +44,7 @@ public class ColaboradorService {
 			dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
 			return true;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
 			return false;
 		}
 	}
@@ -52,7 +54,7 @@ public class ColaboradorService {
 			dao.updateStatus(cpf, colaborador);
 			return true;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao atualizar o status do colaborador %d", cpf), e);
 			return false;
 		}
 	}
@@ -62,7 +64,7 @@ public class ColaboradorService {
 			dao.delete(cpf, Injection.provideDadosIntervaloChangedListener());
 			return true;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao deletar o colaborador %d", cpf), e);
 			return false;
 		}
 	}
@@ -71,7 +73,7 @@ public class ColaboradorService {
 		try {
 			return dao.getByCpf(cpf, false);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar o colaborador %d", cpf), e);
 			return null;
 		}
 	}
@@ -80,7 +82,7 @@ public class ColaboradorService {
 		try {
 			return dao.getAll(codUnidade, apenasAtivos);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
 			return Collections.emptyList();
 		}
 	}
@@ -89,7 +91,7 @@ public class ColaboradorService {
 		try {
 			return dao.getMotoristasAndAjudantes(codUnidade);
 		}catch (SQLException e){
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar todos os ajudantes e motoristas da unidade %d", codUnidade), e);
 			return null;
 		}
 	}
@@ -117,7 +119,7 @@ public class ColaboradorService {
 			loginHolder.setIntervaloOfflineSupport(intervaloOfflineSupport);
 
 		} catch (SQLException | AmazonCredentialsException e) {
-			e.printStackTrace();
+			Log.e(TAG, "Erro ao buscar o loginHolder", e);
 			throw new RuntimeException("Erro ao criar LoginHolder");
 		}
 
@@ -129,7 +131,8 @@ public class ColaboradorService {
 		try {
 			return dao.getColaboradoresComAcessoFuncaoByUnidade(codFuncaoProLog, codUnidade);
 		}catch (SQLException e){
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar colaboradores com acesso a uma determinada " +
+					"função(%d) de uma determinada unidade(%d)", codFuncaoProLog, codUnidade), e);
 			throw new RuntimeException("Erro ao buscar colaboradores com acesso a unidade");
 		}
 	}
@@ -159,7 +162,7 @@ public class ColaboradorService {
 				loginHolder.setTiposIntervalos(tiposIntervalo);
 			}
 		} catch (SQLException | AmazonCredentialsException e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao criar LoginHolder para o cpf %d", cpf), e);
 			throw new RuntimeException("Erro ao criar LoginHolder");
 		}
 		return loginHolder;
