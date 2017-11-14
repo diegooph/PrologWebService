@@ -205,7 +205,7 @@ public class Pneu {
     }
 
     public void setValor(BigDecimal valor) {
-        this.valor = valor;
+        this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public int getPressaoAtualAsInt() {
