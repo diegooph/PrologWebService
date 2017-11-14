@@ -178,7 +178,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         ResultSet rSet = null;
         String treinamentosVistosQuery =
                 "SELECT DISTINCT T.CODIGO, T.titulo, T.descricao, T.url_arquivo, T.data_liberacao, T.data_fechamento, " +
-                        "T.cod_unidade " +
+                        "T.cod_unidade, T.data_hora_cadastro " +
                         "FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON \n" +
                         "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?";
         try {
@@ -187,7 +187,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Treinamento treinamento = createTreinamento(rSet);
+                final Treinamento treinamento = createTreinamento(rSet);
                 treinamentos.add(treinamento);
             }
         } finally {
