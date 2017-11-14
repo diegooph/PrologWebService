@@ -6,7 +6,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public enum TipoAfericao {
-    PRESSAO,
     SULCO,
-    AMBOS
+    PRESSAO,
+    SULCO_PRESSAO
 }
