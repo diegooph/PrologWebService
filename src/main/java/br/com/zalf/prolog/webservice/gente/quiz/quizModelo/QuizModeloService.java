@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,12 +15,15 @@ import java.util.List;
 public class QuizModeloService {
 
     private QuizModeloDao dao = new QuizModeloDaoImpl();
+    private static final String TAG = QuizModeloService.class.getSimpleName();
 
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador) {
         try {
             return dao.getModelosQuizDisponiveis(codUnidade, codFuncaoColaborador);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os modelos de quiz. \n" +
+                    "codUnidade: %d \n" +
+                    "codFuncaoColaborador: %d", codUnidade, codFuncaoColaborador), e);
             return null;
         }
     }
@@ -28,7 +32,8 @@ public class QuizModeloService {
         try {
             return dao.getModelosQuizByCodUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os modelos de quiz da unidade. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return null;
         }
     }
@@ -37,7 +42,9 @@ public class QuizModeloService {
         try {
             return dao.getModeloQuiz(codUnidade, codModeloQuiz);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o modelo de quiz. \n" +
+                    "codUnidade: %d \n" +
+                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), e);
             return null;
         }
     }
@@ -51,7 +58,8 @@ public class QuizModeloService {
                 return Response.error("Erro ao inserir o modelo de Quiz");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao inserir o modelo de quiz. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return Response.error("Erro ao inserir o modelo de Quiz");
         }
     }
@@ -60,7 +68,8 @@ public class QuizModeloService {
         try {
             return dao.updateModeloQuiz(modeloQuiz, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao atualizar o modelo de quiz. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return false;
         }
     }
@@ -69,7 +78,9 @@ public class QuizModeloService {
         try {
             return dao.updateCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao atualizar os cargos do modelo de quiz. \n" +
+                    "codUnidade: %d \n" +
+                    "codModeloQuiz: %d", codUnidade, codModeloQuiz), e);
             return false;
         }
     }
