@@ -21,10 +21,6 @@ import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
-    private static final char TIPO_AMBOS = 'A';
-    private static final char TIPO_PRESSAO = 'P';
-    private static final char TIPO_SULCO = 'S';
-
     public AfericaoDaoImpl() {
 
     }
@@ -39,13 +35,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, TEMPO_REALIZACAO) "
-                    + "VALUES (?, ?, ?, ?, ?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
+                    + "TEMPO_REALIZACAO, TIPO_AFERICAO) "
+                    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
             stmt.setTimestamp(1, DateUtils.toTimestamp(afericao.getDataHora()));
             stmt.setString(2, afericao.getVeiculo().getPlaca());
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
             stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setString(6, afericao.getTipoAfericao().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 afericao.setCodigo(rSet.getLong("CODIGO"));
@@ -64,6 +62,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return true;
     }
 
+    @Override
     public boolean update(Afericao afericao) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -147,7 +146,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException {
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -262,7 +260,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
-        Afericao afericao = new Afericao();
+        Afericao afericao = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final List<Pneu> pneus = new ArrayList<>();
         final PneuDao pneuDao = Injection.providePneuDao();

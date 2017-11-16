@@ -22,6 +22,11 @@ public enum TipoAfericao {
         this.stringRepresentation = stringRepresentation;
     }
 
+    @Nonnull
+    public String asString() {
+        return stringRepresentation;
+    }
+
     public static TipoAfericao fromString(@Nonnull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 
