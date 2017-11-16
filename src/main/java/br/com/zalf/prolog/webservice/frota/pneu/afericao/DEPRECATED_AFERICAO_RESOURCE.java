@@ -67,6 +67,7 @@ public class DEPRECATED_AFERICAO_RESOURCE {
     @Secured(permissions = {Pilares.Frota.Afericao.VISUALIZAR, Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/getAll")
+    @Deprecated
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(
             @QueryParam("codUnidades") List<String> codUnidades,
             @QueryParam("placas") List<String> placas,

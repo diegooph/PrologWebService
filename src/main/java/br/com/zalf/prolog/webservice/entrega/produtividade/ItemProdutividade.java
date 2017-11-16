@@ -33,7 +33,7 @@ public class ItemProdutividade {
 
         public String asString(){return s;}
 
-        public static CargaAtual fromString(String text) throws IllegalArgumentException{
+        public static CargaAtual fromString(String text) {
             if (text != null) {
                 for (CargaAtual b : CargaAtual.values()) {
                     if (text.equalsIgnoreCase(b.s)) {
