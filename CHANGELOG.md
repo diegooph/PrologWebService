@@ -12,6 +12,7 @@ Change Log
 * Torna o período de calculo da produtividade dinâmico para cada unidade
 * Altera para function o método que busca o consolidado das produtividades
 * Transfere métodos auxiliares da ProdutividadeDaoImpl para a ContrachequeDaoImpl
+* Altera os logs dos services visando tornar funcional o Sentry
 
 ### Bug Fixes
 * Corrige formatação da meta de raio do tracking
