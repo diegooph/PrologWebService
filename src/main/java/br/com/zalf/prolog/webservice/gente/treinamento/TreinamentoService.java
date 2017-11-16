@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
@@ -7,7 +8,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColabora
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,12 +16,14 @@ import java.util.List;
 public class TreinamentoService {
 
     private final TreinamentoDao dao = new TreinamentoDaoImpl();
+    private static final String TAG = TreinamentoService.class.getSimpleName();
 
     public List<Treinamento> getVistosByColaborador(Long cpf) {
         try {
             return dao.getVistosColaborador(cpf);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os treinamentos vistos do colaborador. \n" +
+                    "cpf: %d", cpf), e);
             throw new RuntimeException("Erro ao buscar treinamentos vistos pelo colaborador " + cpf);
         }
     }
@@ -33,7 +35,15 @@ public class TreinamentoService {
             return dao.getAll(dataInicial, dataFinal, codFuncao, codUnidade, comCargosLiberados,
                     apenasLiberados, limit, offset);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os treinamentos. \n" +
+                    "codUnidade: %d \n" +
+                    "codFuncao: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s \n" +
+                    "comCargosLiberador: %b \n" +
+                    "apenasLiberador: %b \n" +
+                    "limit: %d \n" +
+                    "offset: %d", codUnidade, codFuncao, dataInicial, dataFinal, comCargosLiberados, apenasLiberados, limit, offset), e);
             throw new RuntimeException("Erro ao buscar treinamentos");
         }
     }
@@ -42,7 +52,9 @@ public class TreinamentoService {
         try {
             return dao.getByCod(codUnidade, codTreinamento);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o treinamento. \n" +
+                    "codUnidade: %d \n" +
+                    "codTreinamento: %d", codUnidade, codTreinamento), e);
             throw new RuntimeException("Erro ao buscar treinamento com código: " + codTreinamento);
         }
     }
@@ -51,7 +63,8 @@ public class TreinamentoService {
         try {
             return dao.getNaoVistosColaborador(cpf);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os treinamentos não vistos do colaborador. \n" +
+                    "cpf: %d", cpf), e);
             throw new RuntimeException("Erro ao buscar treinamentos não vistos pelo colaborador " + cpf);
         }
     }
@@ -60,7 +73,9 @@ public class TreinamentoService {
         try {
             return dao.marcarTreinamentoComoVisto(codTreinamento, cpf);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao marcar o treinamento como visto. \n" +
+                    "cpf: %d \n" +
+                    "codTreinamento: %d", cpf, codTreinamento), e);
             return false;
         }
     }
@@ -71,7 +86,7 @@ public class TreinamentoService {
             UploadTreinamentoHelper helper = new UploadTreinamentoHelper(transformer);
             return dao.insert(helper.upload(treinamento, file));
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir o treinamento.", e);
             return null;
         }
     }
@@ -80,7 +95,9 @@ public class TreinamentoService {
         try {
             return dao.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscas os treinamentos vistos por colaborador. \n" +
+                    "codUnidade: %d \n" +
+                    "codTreinamento: %d", codUnidade, codTreinamento), e);
             return null;
         }
     }
@@ -89,7 +106,7 @@ public class TreinamentoService {
         try {
             return dao.updateTreinamento(treinamento);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar o treinamento", e);
             return false;
         }
     }
@@ -98,7 +115,8 @@ public class TreinamentoService {
         try {
             return dao.updateUrlImagensTreinamento(urls, codTreinamento);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao atualizar as url das imagens do treinamento. \n" +
+                    "codTreinamento: %d", codTreinamento), e);
             return false;
         }
     }
@@ -107,7 +125,8 @@ public class TreinamentoService {
         try {
             return dao.deleteTreinamento(codTreinamento);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String .format("Erro ao deletar o treinamento. \n" +
+                    "codTreinamento: %d", codTreinamento), e);
             return false;
         }
     }

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioService;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 
 import java.sql.SQLException;
@@ -12,12 +14,13 @@ import java.util.List;
 public class RelatoService {
 
     private RelatoDao dao = new RelatoDaoImpl();
+    private static final String TAG = RelatorioService.class.getSimpleName();
 
     public boolean insert(Relato relato) {
         try {
             return dao.insert(relato);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir o relato", e);
             return false;
         }
     }
@@ -26,7 +29,8 @@ public class RelatoService {
         try {
             return dao.delete(codRelato);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao deletar o relato. \n" +
+                    "codRelato: %d", codRelato), e);
             return false;
         }
     }
@@ -35,7 +39,8 @@ public class RelatoService {
         try {
             return dao.getByCod(codigo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o relato. \n" +
+                    "codigo: %d", codigo), e);
             return null;
         }
     }
@@ -44,7 +49,14 @@ public class RelatoService {
         try {
             return dao.getAll(codUnidade, limit, offset, latitude, longitude, isOrderByDate, status);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os relatos. \n" +
+                    "codUnidade: %d \n" +
+                    "status: %s \n" +
+                    "limit: %d \n" +
+                    "offset: %d \n" +
+                    "latitude: %f \n" +
+                    "longitude: %f \n" +
+                    "isOrderByDate: %b", codUnidade, status, limit, offset, latitude, longitude, isOrderByDate), e);
             throw new RuntimeException("Erro ao buscar os relatos para unidade: " + codUnidade + " e status: " + status);
         }
     }
@@ -53,7 +65,14 @@ public class RelatoService {
         try {
             return dao.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, campoFiltro);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os relatos. \n" +
+                    "cpf: %d \n" +
+                    "status: %s \n" +
+                    "limit: %d \n" +
+                    "offset: %d \n" +
+                    "latitude: %f \n" +
+                    "longitude: %f \n" +
+                    "isOrderByDate: %b", cpf, status, limit, offset, latitude, longitude, isOrderByDate), e);
             throw new RuntimeException("Erro ao buscar os relatos realizados pelo colaborador: " + cpf + " e status: " + status);
         }
     }
@@ -62,7 +81,7 @@ public class RelatoService {
         try {
             return dao.classificaRelato(relato);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao classificar o relato", e);
             return false;
         }
     }
@@ -71,7 +90,7 @@ public class RelatoService {
         try {
             return dao.fechaRelato(relato);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao fechar o relato", e);
             return false;
         }
     }
