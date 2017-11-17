@@ -42,7 +42,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 	private static final String SULCOS_PNEUS_BY_FAIXAS = "SELECT MP.NOME AS MARCA, MP.CODIGO AS COD_MARCA, P.CODIGO, P.PRESSAO_ATUAL, P.VIDA_ATUAL, P.DOT, "
 			+ "P.VIDA_TOTAL, MOP.NOME AS MODELO, MOP.CODIGO AS COD_MODELO, MOP.QT_SULCOS AS QT_SULCOS_MODELO, PD.CODIGO AS COD_DIMENSAO, PD.ALTURA, PD.LARGURA, PD.ARO, P.PRESSAO_RECOMENDADA, "
 			+ "P.altura_sulcos_novos,P.altura_sulco_CENTRAL_INTERNO, P.altura_sulco_CENTRAL_EXTERNO, P.altura_sulco_INTERNO, P.altura_sulco_EXTERNO, p.status, "
-			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, MAB.QT_SULCOS AS QT_SULCOS_BANDA\n "
+			+ "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, MAB.QT_SULCOS AS QT_SULCOS_BANDA, PVV.valor AS VALOR_BANDA\n "
 			+ "FROM PNEU P "
 			+ "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO "
 			+ "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA "
@@ -51,6 +51,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
 			+ "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
 			+ "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
+			+ "LEFT JOIN pneu_valor_vida PVV ON PVV.cod_unidade = P.cod_unidade AND PVV.cod_pneu = P.codigo AND PVV.vida = P.vida_atual "
 			+ "WHERE P.ALTURA_SULCO_CENTRAL >= ? AND P.ALTURA_SULCO_CENTRAL < ? AND E.CODIGO = ? AND P.COD_UNIDADE::TEXT LIKE ? "
 			+ "ORDER BY P.ALTURA_SULCO_CENTRAL_INTERNO DESC "
 			+ "LIMIT ? OFFSET ?";

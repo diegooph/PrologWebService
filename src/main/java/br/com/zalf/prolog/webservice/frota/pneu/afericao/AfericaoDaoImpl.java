@@ -302,7 +302,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "MO.QT_SULCOS AS QT_SULCOS_MODELO, DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, "
                     + "P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL, P.DOT, "
                     + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.qt_sulcos as QT_SULCOS_BANDA, "
-                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA "
+                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, PVV.valor AS VALOR_BANDA "
                     + "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
                     + "JOIN pneu_ordem po on av.posicao = po.posicao_prolog "
                     + "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
@@ -312,6 +312,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
                     + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
                     + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa "
+                    + "LEFT JOIN pneu_valor_vida PVV ON PVV.cod_unidade = P.cod_unidade AND PVV.cod_pneu = P.codigo AND PVV.vida = P.vida_atual "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
                     + "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? "
                     + "ORDER BY po.ordem_exibicao ASC");
