@@ -211,14 +211,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
             stmt.setDouble(10, pneu.getSulcosAtuais().getExterno());
             stmt.setInt(11, pneu.getVidasTotal());
-            stmt.setLong(12, pneu.getBanda().getModelo().getCodigo());
+            if (pneu.getBanda() != null) {
+                stmt.setLong(12, pneu.getBanda().getModelo().getCodigo());
+                updateTrocaVidaPneu(pneu, codUnidade, conn);
+            } else {
+                stmt.setNull(12, Types.BIGINT);
+            }
             stmt.setString(13, pneu.getDot());
             stmt.setBigDecimal(14, pneu.getValor());
             stmt.setString(15, codOriginal);
             stmt.setLong(16, codUnidade);
             stmt.setInt(17, pneu.getVidaAtual());
             stmt.setString(18, pneu.getStatus());
-            updateTrocaVidaPneu(pneu, codUnidade, conn);
+
             final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar as informações do pneu: " + pneu.getCodigo());
