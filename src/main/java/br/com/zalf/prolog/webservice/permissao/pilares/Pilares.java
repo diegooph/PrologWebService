@@ -93,6 +93,7 @@ public final class Pilares {
             public static final int CLASSIFICAR = 23;
             public static final int FECHAR = 24;
             public static final int VISUALIZAR = 25;
+            public static final int RELATORIOS = 26;
         }
     }
 
