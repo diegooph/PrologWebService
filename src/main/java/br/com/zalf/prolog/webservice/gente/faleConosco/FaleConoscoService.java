@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.gente.faleConosco;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,12 +15,14 @@ import java.util.List;
 public class FaleConoscoService {
 
 	private FaleConoscoDao dao = new FaleConoscoDaoImpl();
+	private static final String TAG = FaleConoscoService.class.getSimpleName();
 
 	public AbstractResponse insert(FaleConosco faleConosco, Long codUnidade) {
 		try {
 			return ResponseWithCod.ok("Fale conosco inserido com sucesso.", dao.insert(faleConosco, codUnidade));
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao inserir o fale conosco. \n" +
+					"codUnidade: %d", codUnidade), e);
 			return Response.error("Erro ao inserir fale conosco.");
 		}
 	}
@@ -27,7 +31,8 @@ public class FaleConoscoService {
 		try{
 			return dao.insertFeedback(faleConosco, codUnidade);
 		}catch (SQLException e){
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao inserir o feedback no fale conosco. \n" +
+					"codUnidade: %d", codUnidade), e);
 			return false;
 		}
 	}
@@ -38,7 +43,17 @@ public class FaleConoscoService {
 		try{
 			return dao.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
 		}catch (Exception e){
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar os fale conosco. \n" +
+					"codUnidade: %d \n" +
+					"equipe: %s \n" +
+					"cpf: %s \n" +
+					"status: %s \n" +
+					"categoria: %s \n" +
+					"limit: %d \n" +
+					"offset: %d \n" +
+					"dataInicial: %s \n" +
+					"dataFinal: %s", codUnidade, equipe, cpf, status, categoria, limit, offset, new Date(dataInicial).toString(),
+					new Date(dataFinal).toString()));
 			return null;
 		}
 	}
@@ -47,7 +62,9 @@ public class FaleConoscoService {
 		try {
 			return dao.getByColaborador(cpf, status);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(TAG, String.format("Erro ao buscar os fale conosco do colaborador. \n" +
+					"cpf: %d \n" +
+					"status: %s", cpf, status), e);
 			return null;
 		}
 	}

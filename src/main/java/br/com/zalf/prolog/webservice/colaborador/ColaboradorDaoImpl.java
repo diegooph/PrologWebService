@@ -36,7 +36,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
                     + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
             stmt.setLong(1, colaborador.getCpf());
-            if (colaborador.getMatriculaAmbev() == 0) {
+            if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
             } else {
                 stmt.setInt(2, colaborador.getMatriculaAmbev());
@@ -122,7 +122,26 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (conn != null) {
                 conn.rollback();
             }
-          throw e;
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public void updateStatus(Long cpf, Colaborador colaborador) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE COLABORADOR SET STATUS_ATIVO = ? WHERE CPF = ?;");
+            stmt.setBoolean(1, colaborador.isAtivo());
+            stmt.setLong(2, cpf);
+
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar o status do colaborador com CPF: " + cpf);
+            }
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -158,15 +177,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         }
     }
 
-    /**
-     * Busca um colaborador por código
-     *
-     * @param cpf chave a ser buscada no banco de dados
-     * @return um colaborador
-     * @throws SQLException
-     */
     @Override
-    public Colaborador getByCpf(Long cpf) throws SQLException {
+    public Colaborador getByCpf(Long cpf, boolean apenasAtivos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -186,11 +198,21 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA"
                     + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
                     + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-                    + "WHERE CPF = ? AND C.STATUS_ATIVO = TRUE");
+                    + "WHERE CPF = ? "
+                    + " AND (? = 1 OR C.STATUS_ATIVO = ?)");
+
             stmt.setLong(1, cpf);
+            if (apenasAtivos) {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, true);
+            } else {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, false);
+            }
+
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Colaborador c = createColaborador(rSet);
+                final Colaborador c = createColaborador(rSet);
                 c.setVisao(getVisaoByCpf(c.getCpf()));
                 return c;
             }
@@ -226,7 +248,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setString(1, token);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Colaborador c = createColaborador(rSet);
+                final Colaborador c = createColaborador(rSet);
                 c.setVisao(getVisaoByCpf(c.getCpf()));
                 return c;
             }
@@ -237,10 +259,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     /**
-     * Busca todos os colaboradores de uma unidade
+     * Busca todos os colaboradores de uma {@link Unidade}.
      */
     @Override
-    public List<Colaborador> getAll(Long codUnidade) throws SQLException {
+    public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException {
         List<Colaborador> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -277,13 +299,22 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA\n" +
                     "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL\n" +
                     "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
-                    "WHERE C.COD_UNIDADE = ?\n" +
+                    "WHERE C.COD_UNIDADE = ? " +
+                    " AND (? = 1 OR C.STATUS_ATIVO = ?)" +
                     "ORDER BY 8");
             stmt.setLong(1, codUnidade);
+
+            if (apenasAtivos) {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, true);
+            } else {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, false);
+            }
+
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Colaborador c = createColaborador(rSet);
-                list.add(c);
+                list.add(createColaborador(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -337,7 +368,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Colaborador c = createColaborador(rSet);
+                final Colaborador c = createColaborador(rSet);
                 list.add(c);
             }
         } finally {
@@ -370,7 +401,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     @NotNull
     @Override
     public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(final int codFuncaoProLog,
-                                                                       @NotNull final Long codUnidade)
+                                                                      @NotNull final Long codUnidade)
             throws SQLException {
 
         Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
@@ -503,36 +534,36 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     private Colaborador createColaborador(ResultSet rSet) throws SQLException {
-        Colaborador c = new Colaborador();
+        final Colaborador c = new Colaborador();
         c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 
-        Cargo cargo = new Cargo();
+        final Cargo cargo = new Cargo();
         cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
         cargo.setNome(rSet.getString("NOME_FUNCAO"));
         c.setFuncao(cargo);
 
-        Empresa empresa = new Empresa();
+        final Empresa empresa = new Empresa();
         empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
         empresa.setNome(rSet.getString("NOME_EMPRESA"));
         empresa.setLogoThumbnailUrl(rSet.getString("LOGO_THUMBNAIL_URL"));
         c.setEmpresa(empresa);
 
-        Regional regional = new Regional();
+        final Regional regional = new Regional();
         regional.setCodigo(rSet.getLong("COD_REGIONAL"));
         regional.setNome(rSet.getString("NOME_REGIONAL"));
         c.setRegional(regional);
 
-        Unidade unidade = new Unidade();
+        final Unidade unidade = new Unidade();
         unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
         unidade.setNome(rSet.getString("NOME_UNIDADE"));
         c.setUnidade(unidade);
 
-        Equipe equipe = new Equipe();
+        final Equipe equipe = new Equipe();
         equipe.setCodigo(rSet.getLong("COD_EQUIPE"));
         equipe.setNome(rSet.getString("NOME_EQUIPE"));
         c.setEquipe(equipe);
 
-        Setor setor = new Setor();
+        final Setor setor = new Setor();
         setor.setCodigo(rSet.getLong("COD_SETOR"));
         setor.setNome(rSet.getString("NOME_SETOR"));
         c.setSetor(setor);
@@ -545,7 +576,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
-        c.setCodPermissao(rSet.getLong("PERMISSAO"));
+        c.setCodPermissao(rSet.getInt("PERMISSAO"));
         c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         return c;
     }

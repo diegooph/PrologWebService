@@ -27,7 +27,9 @@ public class ControleIntervaloService {
         try {
             return dao.getTiposIntervalosByUnidade(codUnidade, withCargos);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os tipos de intervalos. \n" +
+                    "codUnidade: %d \n" +
+                    "withCargos: %b", codUnidade, withCargos), e);
             return null;
         }
     }
@@ -36,7 +38,8 @@ public class ControleIntervaloService {
         try {
             return dao.getIntervaloAberto(cpf, tipoInvervalo);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
+                    "cpf: %d", cpf), e);
             throw e;
         }
     }
@@ -56,7 +59,8 @@ public class ControleIntervaloService {
             dao.insertOrUpdateIntervalo(intervalo);
             return ResponseIntervalo.ok("Intervalo inserido com sucesso", estadoVersaoIntervalo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao inserir ou atualizar um intervalo. \n" +
+                    "versaoDadosIntervalo: %d", versaoDadosIntervalo), e);
             return ResponseIntervalo.error("Erro ao inserir intervalo", estadoVersaoIntervalo);
         }
     }
@@ -65,7 +69,11 @@ public class ControleIntervaloService {
         try {
             return dao.getIntervalosColaborador(cpf, codTipo, limit, offset);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
+                    "cpf: %s \n" +
+                    "codTipo: %s \n" +
+                    "limit: %d \n" +
+                    "offset: %d", cpf, codTipo, limit, offset), e);
             return null;
         }
     }
@@ -75,6 +83,7 @@ public class ControleIntervaloService {
             return ResponseWithCod.ok("Intervalo inserido com sucesso", dao.insertTipoIntervalo(tipoIntervalo,
                     Injection.provideDadosIntervaloChangedListener()));
         } catch (Throwable e){
+            Log.e(TAG, "Erro ao inserir o tipo de intervalo", e);
             return Response.error("Erro ao inserir o tipo de intervalo");
         }
     }
@@ -84,7 +93,7 @@ public class ControleIntervaloService {
             dao.updateTipoIntervalo(tipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar o tipo de intervalo", e);
             return false;
         }
     }
@@ -94,7 +103,9 @@ public class ControleIntervaloService {
             dao.inativarTipoIntervalo(codUnidade, codTipoIntervalo, Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao inativar o tipo de intervalo. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d", codUnidade, codTipoIntervalo), e);
             return false;
         }
     }
@@ -133,11 +144,9 @@ public class ControleIntervaloService {
                                 new IllegalStateException("Versão dos dados do app (" + versaoDadosApp + ") não pode ser " +
                                         "maior do que a versão dos dados no banco(" + versaoDadosBanco.get() + ")!"));
                     }
-
                     estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
                 }
             }
-
             // Criamos o objeto.
             intervaloOfflineSupport = new IntervaloOfflineSupport(estadoVersaoIntervalo);
             intervaloOfflineSupport.setColaboradores(colaboradores);
@@ -145,7 +154,9 @@ public class ControleIntervaloService {
             intervaloOfflineSupport.setEstadoVersaoIntervalo(estadoVersaoIntervalo);
             versaoDadosBanco.ifPresent(intervaloOfflineSupport::setVersaoDadosIntervalo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o IntervaloOfflineSupport. \n" +
+                    "codUnidade: %d \n" +
+                    "versaoDadosApp: %d \n", codUnidade, versaoDadosApp), e);
             throw new RuntimeException("Erro ao criar IntervaoOfflineSupport");
         }
 
@@ -157,7 +168,10 @@ public class ControleIntervaloService {
         try {
             return dao.iniciaIntervalo(codUnidade, cpf, codTipo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao iniciar o intervalo. \n" +
+                    "codUnidade: %d \n" +
+                    "cpf: %d \n" +
+                    "codTipo: %d", codUnidade, cpf, codTipo), e);
             return null;
         }
     }
@@ -167,7 +181,8 @@ public class ControleIntervaloService {
         try {
             return dao.insereFinalizacaoIntervalo(intervalo, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao inserir uma finalização de intevalo. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return false;
         }
     }

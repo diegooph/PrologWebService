@@ -27,10 +27,10 @@ import com.sun.istack.internal.Nullable;
 
 import javax.annotation.Nonnull;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDateTimePattern;
@@ -404,11 +404,13 @@ public final class AvaCorpAvilanConverter {
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(Long.parseLong(checklistFiltro.getColaborador().getCpf()));
         colaborador.setNome(checklistFiltro.getColaborador().getNome());
+        checklist.setColaborador(colaborador);
 
         checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
+        checklist.setTempoRealizacaoCheckInMillis(parseTempoRealizacaoChecklist(checklistFiltro.getTempoRealizacao()));
         checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
         checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
 
@@ -464,15 +466,17 @@ public final class AvaCorpAvilanConverter {
 
     @Nonnull
     @VisibleForTesting
-    public static List<Afericao> convert(@NotNull final ArrayOfAfericaoFiltro afericoesFiltro) throws ParseException {
+    public static List<Afericao> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro) throws ParseException {
         checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
 
         final List<Afericao> afericoes = new ArrayList<>();
-        for (AfericaoFiltro afericaoFiltro : afericoesFiltro.getAfericaoFiltro()) {
+        for (AfericaoFiltro afericaoFiltro : afericoesFiltro) {
             afericoes.add(convertAfericaoSemPneus(afericaoFiltro));
         }
         return afericoes;
     }
+
+
 
     @Nonnull
     @VisibleForTesting
@@ -504,6 +508,21 @@ public final class AvaCorpAvilanConverter {
         return afericao;
     }
 
+    private static long parseTempoRealizacaoChecklist(@Nonnull final String tempoRealizacaoChecklist) {
+        checkNotNull(tempoRealizacaoChecklist, "tempoRealizacaoChecklist não pode ser null!");
+
+        final String[] s = tempoRealizacaoChecklist.split(":");
+        final int horas = Integer.parseInt(s[0]);
+        final int minutos = Integer.parseInt(s[1]);
+        final int segundos = Integer.parseInt(s[2]);
+
+        // Se durou mais que uma hora, tem algo de errado com essa duração, enviamos zero para não ser mostrado no
+        // aplicativo ou web.
+        return horas > 0 ? 0 : TimeUnit.HOURS.toMillis(horas)
+                + TimeUnit.MINUTES.toMillis(minutos)
+                + TimeUnit.SECONDS.toMillis(segundos);
+    }
+
     @Nonnull
     private static Afericao convertAfericaoSemPneus(@NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
         checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
@@ -527,7 +546,7 @@ public final class AvaCorpAvilanConverter {
             // Antes da integração, não era salvo no ERP da Avilan quem fez a aferição. Aferições antigas não terão
             // colaborador vinculado.
             colaborador.setNome("Colaborador não informado");
-            colaborador.setCpf(0);
+            colaborador.setCpf(0L);
         } else {
             colaborador.setNome(afericaoFiltro.getColaborador().getNome());
             colaborador.setCpf(Long.parseLong(afericaoFiltro.getColaborador().getCpf()));

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 
 import javax.ws.rs.core.NoContentException;
@@ -22,12 +23,13 @@ import java.util.List;
 public class EmpresaService {
 
     private final EmpresaDao dao = Injection.provideEmpresaDao();
+    private static final String TAG = EmpresaService.class.getSimpleName();
 
     public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
         try {
             return dao.insertEquipe(codUnidade, equipe);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir a equipe", e);
             return Response.error("Erro ao inserir a equipe");
         }
     }
@@ -36,7 +38,9 @@ public class EmpresaService {
         try {
             return dao.getEquipe(codUnidade, codEquipe);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar a equipe. \n" +
+                    "Código: %d \n" +
+                    "Unidade: %d", codEquipe, codUnidade), e);
             return null;
         }
     }
@@ -45,7 +49,9 @@ public class EmpresaService {
         try {
             return dao.updateEquipe(codUnidade, codEquipe, equipe);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao atualizar a equipe. \n" +
+                    "Código: %d \n" +
+                    "Unidade: %d", codEquipe, codUnidade), e);
             return false;
         }
     }
@@ -54,7 +60,7 @@ public class EmpresaService {
         try {
             return dao.insertSetor(codUnidade, setor);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao inserir o setor na unidade %d", codUnidade), e);
             return Response.error("Erro ao inserir o setor");
         }
     }
@@ -63,7 +69,7 @@ public class EmpresaService {
         try {
             return dao.updateSetor(codUnidade, codSetor, setor);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao atualizar o setor %d da unidade %d", codSetor, codUnidade), e);
             return false;
         }
     }
@@ -72,7 +78,7 @@ public class EmpresaService {
         try {
             return dao.getSetor(codUnidade, codSetor);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o setor %d da unidade %d", codSetor, codUnidade), e);
             return null;
         }
     }
@@ -81,7 +87,7 @@ public class EmpresaService {
         try {
             return dao.getEquipesByCodUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar as equipes da unidade %d", codUnidade), e);
             return null;
         }
     }
@@ -90,7 +96,7 @@ public class EmpresaService {
         try {
             return dao.getFuncoesByCodUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os cargos da unidade %d", codUnidade), e);
             return null;
         }
     }
@@ -99,7 +105,7 @@ public class EmpresaService {
         try {
             return dao.getVisaoCargo(codUnidade, codCargo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar a visão do cargo %d da unidade %d", codCargo, codUnidade), e);
             return null;
         }
     }
@@ -108,7 +114,7 @@ public class EmpresaService {
         try {
             return dao.getVisaoUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
             return null;
         }
     }
@@ -117,7 +123,7 @@ public class EmpresaService {
         try {
             return dao.getSetorByCodUnidade(codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os setores da unidade %d", codUnidade), e);
             return null;
         }
     }
@@ -126,10 +132,10 @@ public class EmpresaService {
         try {
             return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d da unidade %d", ano, mes, codUnidade), e);
             return new ArrayList<>();
         } catch (NoContentException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d  da unidade %d", ano, mes, codUnidade), e);
             return new ArrayList<>();
         }
     }
@@ -138,7 +144,7 @@ public class EmpresaService {
         try {
             return dao.getFiltros(cpf);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os filtrod do cpf %d", cpf), e);
             return null;
         }
     }
@@ -148,7 +154,7 @@ public class EmpresaService {
             dao.alterarVisaoCargo(visao, codUnidade, codCargo, Injection.provideDadosIntervaloChangedListener());
             return true;
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao alterar a visão do cargo %d da unidade %d", codCargo, codUnidade), e);
             return false;
         }
     }
@@ -157,19 +163,17 @@ public class EmpresaService {
         try {
             return dao.getCodEquipeByCodUnidadeByNome(codUnidade, nomeEquipe);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o código da equipe %s da unidade %d", nomeEquipe, codUnidade), e);
             return null;
         }
     }
-
-
 
     @Deprecated
     public boolean createEquipe(Request<Equipe> request) {
         try {
             return dao.createEquipe(request);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir uma equipe", e);
             return false;
         }
     }
@@ -179,7 +183,7 @@ public class EmpresaService {
         try {
             return dao.updateEquipe(request);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar uma equipe", e);
             return false;
         }
     }
@@ -187,12 +191,13 @@ public class EmpresaService {
     public AbstractResponse insertFuncao(Cargo cargo, Long codUnidade) {
         try {
             Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
-            if(codFuncaoInserida != null){
+            if (codFuncaoInserida != null) {
                 return ResponseWithCod.ok("Cargo inserido com sucesso", codFuncaoInserida);
-            }else{
+            } else {
                 return Response.error("Erro ao inserir o cargo");
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao inserir o cargo na unidade %d", codUnidade), e);
             return Response.error("Erro ao inserir o cargo");
         }
     }

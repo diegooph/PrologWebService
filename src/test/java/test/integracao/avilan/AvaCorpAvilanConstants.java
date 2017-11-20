@@ -4,6 +4,11 @@ package test.integracao.avilan;
  * Created by luiz on 01/08/17.
  */
 public final class AvaCorpAvilanConstants {
+    /*
+    650.042.130-20
+[5:25]
+16/07/1976
+     */
     static final String CPF = "83273603020";
     // yyyy-MM-dd
     static final String DATA_NASCIMENTO = "1987-10-16";

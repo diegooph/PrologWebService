@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
@@ -17,10 +18,6 @@ import java.util.List;
  * Created by web on 09/05/17.
  */
 public class UploadTreinamentoHelper {
-    private static final String AWS_ACCESS_KEY_ID = "AKIAI6KFIYRHPVSFDFUA";
-    private static final String AWS_SECRET_KEY = "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";
-    private static final String BUCKET_NAME_PDF = "treinamentos-prolog/pdf";
-    private static final String BUCKET_NAME_IMAGES = "treinamentos-prolog/images";
     private static final String TAG = UploadTreinamentoHelper.class.getSimpleName();
     private PDFTransformer transformer;
 
@@ -31,22 +28,26 @@ public class UploadTreinamentoHelper {
     public Treinamento upload(Treinamento treinamento, InputStream inputStream) throws IOException,
             S3FileSender.S3FileSenderException {
 
-        final S3FileSender fileSender = new S3FileSender(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);
+        final S3FileSender fileSender = new S3FileSender(
+                AmazonConstants.AWS_ACCESS_KEY_ID,
+                AmazonConstants.AWS_SECRET_KEY);
         final String pdfName = TreinamentoHelper.createPDFFileName(treinamento);
         // Pasta temporária da JVM
         final File tmpDir = Files.createTempDir();
 
         // Envia arquivo
         File pdfFile = createFile(tmpDir, inputStream, pdfName);
-        fileSender.sendFile(BUCKET_NAME_PDF, pdfName, pdfFile);
-        treinamento.setUrlArquivo(fileSender.generateFileUrl(BUCKET_NAME_PDF, pdfName));
+        fileSender.sendFile(AmazonConstants.BUCKET_NAME_PDF_TREINAMENTOS, pdfName, pdfFile);
+        treinamento.setUrlArquivo(fileSender.generateFileUrl(AmazonConstants.BUCKET_NAME_PDF_TREINAMENTOS, pdfName));
 
         // Envia Imagens
         final List<String> urls = new ArrayList<>();
         final List<File> imagens = transformer.createImagesJPEG(tmpDir, pdfFile, pdfName);
         for (File imagem : imagens) {
-            fileSender.sendFile(BUCKET_NAME_IMAGES, imagem.getName(), imagem);
-            final String imageUrl = fileSender.generateFileUrl(BUCKET_NAME_IMAGES, imagem.getName());
+            fileSender.sendFile(AmazonConstants.BUCKET_NAME_IMAGES_TREINAMENTOS, imagem.getName(), imagem);
+            final String imageUrl = fileSender.generateFileUrl(
+                    AmazonConstants.BUCKET_NAME_IMAGES_TREINAMENTOS,
+                    imagem.getName());
             urls.add(imageUrl);
             Log.d(TAG, "Imagem enviada: " + imageUrl);
         }

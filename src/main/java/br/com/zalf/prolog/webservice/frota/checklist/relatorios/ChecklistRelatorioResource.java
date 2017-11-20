@@ -21,15 +21,15 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/{codUnidade}/csv")
     @Produces("application/csv")
-    public StreamingOutput getCheckilistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
+    public StreamingOutput getChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                           @QueryParam("dataInicial") long dataInicial,
                                                           @QueryParam("dataFinal") long dataFinal) {
-        return outputStream -> service.getCheckilistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        return outputStream -> service.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/{codUnidade}/report")
-    public Report getCheckilistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
+    public Report getChecklistsRealizadosDiaReport(@PathParam("codUnidade") Long codUnidade,
                                                     @QueryParam("dataInicial") long dataInicial,
                                                     @QueryParam("dataFinal") long dataFinal) {
         return service.getChecklistsRealizadosDiaReport(codUnidade, dataInicial, dataFinal);
@@ -85,5 +85,23 @@ public class ChecklistRelatorioResource {
                                            @QueryParam("dataFinal") Long dataFinal,
                                            @PathParam("placa") String placa) {
         return service.getResumoChecklistReport(codUnidade, dataInicial, dataFinal, placa);
+    }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/report")
+    public Report getEstratificacaoRespostasNokReport(@PathParam("codUnidade") Long codUnidade,
+                                                      @PathParam("placa") String placa,
+                                                      @QueryParam("dataInicial") Long dataInicial,
+                                                      @QueryParam("dataFinal") Long dataFinal) {
+        return service.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/csv")
+    public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("codUnidade") Long codUnidade,
+                                                            @PathParam("placa") String placa,
+                                                            @QueryParam("dataInicial") Long dataInicial,
+                                                            @QueryParam("dataFinal") Long dataFinal) {
+        return outputStream -> service.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, dataInicial, dataFinal);
     }
 }

@@ -2663,8 +2663,8 @@ ORDER BY M.MAPA
 $func$ LANGUAGE SQL;
 
 -- Função usada no relatório que estratifica as respostas dos checklists, apenas respostas NOK
-CREATE OR REPLACE FUNCTION func_relatorio_checklist_extrato_respostas(f_cod_unidade BIGINT, f_data_inicial DATE,
-                                                             f_data_final  DATE)
+CREATE OR REPLACE FUNCTION func_relatorio_checklist_extrato_respostas_nok(f_cod_unidade BIGINT, f_data_inicial DATE,
+                                                             f_data_final  DATE, f_placa_veiculo VARCHAR)
   RETURNS TABLE(
     "CODIGO CHECKLIST" BIGINT,
     "DATA"             VARCHAR,
@@ -2703,6 +2703,7 @@ FROM (((checklist c
                                    (cr.cod_alternativa = cap.codigo))))
   JOIN colaborador co ON ((co.cpf = c.cpf_colaborador))
 WHERE C.cod_unidade = f_cod_unidade AND c.data_hora :: DATE BETWEEN f_data_inicial AND f_data_final AND cr.resposta <> 'OK'
+  and c.placa_veiculo like f_placa_veiculo
 ORDER BY c.data_hora DESC, c.codigo ASC
 $func$ LANGUAGE SQL;
 

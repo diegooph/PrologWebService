@@ -37,4 +37,6 @@ public interface ProdutividadeDao {
 																	 String codFuncao,
 																	 long dataInicial,
 																	 long dataFinal) throws SQLException;
+
+	PeriodoProdutividade getPeriodoProdutividade(int ano, int mes, Long codUnidade, Long cpf) throws SQLException;
 }

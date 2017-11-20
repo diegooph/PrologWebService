@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 
@@ -16,13 +17,20 @@ import java.util.List;
 public class RelatorioService {
 
     private RelatorioDaoImpl dao = new RelatorioDaoImpl();
+    private static final String TAG = RelatorioService.class.getSimpleName();
 
     public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
                                                             String codRegional, String codUnidade, String equipe){
         try{
             return dao.getAcumuladoIndicadores(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o acumulado dos indicadores. \n" +
+                            "Empresa: %s \n" +
+                            "Regional: %s \n" +
+                            "Unidade: %s\n" +
+                            "Equipe: %s \n" +
+                            "Período: %d a %d",
+                    codEmpresa, codRegional, codUnidade, equipe, dataInicial, dataFinal), e);
             return null;
         }
     }
@@ -32,7 +40,15 @@ public class RelatorioService {
         try{
             return dao.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa, codUnidade, equipe, cpf, indicador);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o extrato do indicador.\n" +
+                            "Empresa: %s \n" +
+                            "Regional: %s \n" +
+                            "Unidade: %s \n" +
+                            "Equipe: %s \n" +
+                            "cpf: %s \n" +
+                            "Indicador: %s \n" +
+                            "Período: %d a %d",
+                    codEmpresa, codRegional, codUnidade, equipe, cpf, indicador, dataInicial, dataFinal), e);
             return null;
         }
     }
@@ -42,7 +58,13 @@ public class RelatorioService {
         try {
             return dao.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, limit, offset);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o consolidadeo do dia. \n" +
+                            "Empresa: %s \n" +
+                            "Regional: %s \n" +
+                            "Unidade: %s \n" +
+                            "Equipe: %s \n" +
+                            "Período: %d a %d",
+                    codEmpresa, codRegional, codUnidade, equipe, dataInicial, dataFinal), e);
             return null;
         }
     }
@@ -52,7 +74,13 @@ public class RelatorioService {
         try{
             return dao.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os mapas estratificados. \n" +
+                            "Empresa: %s \n" +
+                            "Regional: %s \n" +
+                            "Unidade: %s \n" +
+                            "Equipe %s \n" +
+                            "Data: %d",
+                    codEmpresa, codRegional, codUnidade, equipe, data), e);
             return null;
         }
     }
@@ -62,7 +90,14 @@ public class RelatorioService {
         try{
             return dao.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
         }catch (SQLException e){
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar os dados para montagem do gráfico. \n" +
+                            "Empresa: %s \n" +
+                            "Regional: %s \n" +
+                            "Unidade: %s \n" +
+                            "Equipe: %s \n" +
+                            "Indicador: %s \n" +
+                            "Período: %d a %d",
+                    codEmpresa, codRegional, codUnidade, equipe, indicador ,dataInicial, dataFinal), e);
             return null;
         }
     }
@@ -71,7 +106,9 @@ public class RelatorioService {
         try {
             dao.getEstratificacaoMapasCsv(codUnidade, new Date(dataInicial), new Date(dataFinal), out);
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os mapas (CSV). \n" +
+                    "Unidade: %d \n" +
+                    " Período: %d a %d", codUnidade, dataInicial, dataFinal), e);
         }
     }
 
@@ -79,7 +116,9 @@ public class RelatorioService {
         try {
             return dao.getEstratificacaoMapasReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os mapas (REPORT). \n" +
+                    "Unidade: %d \n" +
+                    "Período: %d a %d", codUnidade, dataInicial, dataFinal), e);
             return null;
         }
     }

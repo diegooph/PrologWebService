@@ -243,4 +243,48 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             closeConnection(conn, stmt, rSet);
         }
     }
+
+
+    @NotNull
+    private PreparedStatement getEstratificacaoRespostasNokChecklistStatement(Connection conn, Long codUnidade, String placa, Date dataInicial,
+                                                                              Date dataFinal) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_checklist_extrato_respostas_nok(?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, dataInicial);
+        stmt.setDate(3, dataFinal);
+        stmt.setString(4, placa);
+        return stmt;
+    }
+
+    @Override
+    public void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
+                                                          @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoRespostasNokChecklistStatement(conn, codUnidade, placa, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
+                                                               @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoRespostasNokChecklistStatement(conn, codUnidade, placa, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 }

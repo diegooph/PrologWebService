@@ -1,16 +1,12 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,12 +23,14 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM VIEW_PRODUTIVIDADE_EXTRATO \n" +
-					"WHERE data between ? and ? and cpf = ? ORDER BY data asc");
-			stmt.setDate(1, DateUtils.getDataInicialPeriodoProdutividade(ano, mes));
-			stmt.setDate(2, DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)));
+			stmt = conn.prepareStatement("select * from func_get_produtividade_colaborador(?,?,?)");
+            /**
+             * O motivo de subtrairmos 1 do mês é devido aos colaboradores estarem acostumados a buscar pelo fim do período
+             * da produtividade, exemplo: Selecionado no app Novembro 2017, o normal é aparecer de 21/10 a 20/11.
+             */
+			stmt.setInt(1, mes);
+			stmt.setInt(2, ano);
 			stmt.setLong(3, cpf);
-			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
 				ItemProdutividade item = new ItemProdutividade();
@@ -72,35 +70,6 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		}
 	}
 
-	public double getTotalItens(List<ItemProdutividade> itens){
-	    double total = 0;
-        for(ItemProdutividade item : itens){
-            total += item.getValor();
-        }
-        return total;
-    }
-
-	public double getValorTotalRecargas(List<ItemProdutividade> itens){
-		double total = 0;
-		for(ItemProdutividade item : itens){
-			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
-				total += item.getValor();
-			}
-		}
-		return total;
-	}
-
-	public int getQtRecargas(List<ItemProdutividade> itens){
-		int quantidade = 0;
-		for(ItemProdutividade item : itens){
-			if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
-				quantidade ++;
-			}
-		}
-		return quantidade;
-	}
-
-
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			long dataInicial, long dataFinal) throws SQLException{
 		Connection conn = null;
@@ -112,12 +81,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		Colaborador c = null;
 		try{
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT cpf, matricula_ambev, nome_colaborador AS nome, data_nascimento, funcao, count(mapa) as mapas, sum(cxentreg) as caixas,\n" +
-					"sum(valor) as valor\n" +
-					"FROM VIEW_PRODUTIVIDADE_EXTRATO\n" +
-					"WHERE data between ? and ? and cod_unidade = ? and nome_equipe like ? and cod_funcao::text like ? \n" +
-					"GROUP BY 1,2,3,4,5\n" +
-					"order by funcao, valor desc, nome;");
+			stmt = conn.prepareStatement("select * from func_get_produtividade_consolidado_colaboradores(?,?,?,?,?)");
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, codUnidade);
@@ -165,4 +129,47 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		c.setValor(rSet.getDouble("valor"));
 		return c;
 	}
+
+	@Override
+	public PeriodoProdutividade getPeriodoProdutividade(int ano, int mes, Long codUnidade, Long cpf) throws SQLException {
+	    Connection conn = null;
+	    PreparedStatement stmt = null;
+	    ResultSet rSet = null;
+	    try {
+	        conn = getConnection();
+	        stmt = conn.prepareStatement("select * from func_get_data_inicio_produtividade(?, ?, ?, ?) as inicio FULL OUTER JOIN\n" +
+                    "func_get_data_fim_produtividade(?, ?, ?, ?) as fim on 1 = 1;");
+	        stmt.setInt(1, ano);
+	        stmt.setInt(2, mes);
+	        if(cpf == null) {
+	            stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, cpf);
+            }
+            if(codUnidade == null) {
+                stmt.setNull(4, Types.BIGINT);
+            } else {
+                stmt.setLong(4, codUnidade);
+            }
+            stmt.setInt(5, ano);
+            stmt.setInt(6, mes);
+            if(cpf == null) {
+                stmt.setNull(7, Types.BIGINT);
+            } else {
+                stmt.setLong(7, cpf);
+            }
+            if(codUnidade == null) {
+                stmt.setNull(8, Types.BIGINT);
+            } else {
+                stmt.setLong(8, codUnidade);
+            }
+	        rSet = stmt.executeQuery();
+	        if(rSet.next()){
+             return new PeriodoProdutividade(rSet.getDate("inicio"), rSet.getDate("fim"));
+            }
+        } finally {
+	        closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
 }

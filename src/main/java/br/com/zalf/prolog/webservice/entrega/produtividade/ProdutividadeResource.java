@@ -35,6 +35,16 @@ public class ProdutividadeResource{
 																			@QueryParam("dataFinal") long dataFinal) {
 		return service.getConsolidadoProdutividade(codUnidade, equipe, codFuncao, dataInicial, dataFinal);
 	}
+
+	@GET
+	@Secured
+	@Path("/periodos/{ano}/{mes}")
+	public PeriodoProdutividade getPeriodoProdutividade(@PathParam("ano") int ano,
+														@PathParam("mes") int mes,
+														@QueryParam("codUnidade") Long codUnidade,
+														@QueryParam("cpf") Long cpf) {
+		return service.getPeriodoProdutividade(ano, mes, codUnidade, cpf);
+	}
 }
 
 

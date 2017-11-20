@@ -130,7 +130,7 @@ public abstract class Router implements OperacoesIntegradas {
                                        @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws Exception {
         if (getSistema() != null) {
             return getSistema().getAfericoes(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,

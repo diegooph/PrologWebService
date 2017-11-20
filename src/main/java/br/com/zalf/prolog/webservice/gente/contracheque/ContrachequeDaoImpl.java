@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
+import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeService;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
@@ -16,7 +17,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,9 +67,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                     int qtRecargas;
 
                     List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
-                    valorRecargas = produtividadeDao.getValorTotalRecargas(itensProdutividade);
-                    qtRecargas = produtividadeDao.getQtRecargas(itensProdutividade);
-                    produtividade = produtividadeDao.getTotalItens(itensProdutividade) - valorRecargas;
+                    valorRecargas = getValorTotalRecargas(itensProdutividade);
+                    qtRecargas = getQtRecargas(itensProdutividade);
+                    produtividade = getTotalItens(itensProdutividade) - valorRecargas;
 
 //                    a partir daqui temos todos os valores para realizar o calculo do premio
                     double premio;
@@ -165,9 +165,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException{
         IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
         ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+        PeriodoProdutividade periodoProdutividade;
+        ProdutividadeService produtividadeService = new ProdutividadeService();
+        periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
         List<IndicadorAcumulado> indicadores =
-                indicadorDao.getAcumuladoIndicadoresIndividual(DateUtils.getDataInicialPeriodoProdutividade(ano, mes).getTime(),
-                        DateUtils.toSqlDate(LocalDate.of(ano, mes, 20)).getTime(), cpf);
+                indicadorDao.getAcumuladoIndicadoresIndividual(periodoProdutividade.getDataInicio().getTime(),
+                        periodoProdutividade.getDataTermino().getTime(), cpf);
 
         for(IndicadorAcumulado indicadorAcumulado : indicadores) {
             if(indicadorAcumulado.getTipo().equals(indicador)){
@@ -361,4 +364,34 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
         return item;
     }
+
+    public double getTotalItens(List<ItemProdutividade> itens){
+        double total = 0;
+        for(ItemProdutividade item : itens){
+            total += item.getValor();
+        }
+        return total;
+    }
+
+    public double getValorTotalRecargas(List<ItemProdutividade> itens){
+        double total = 0;
+        for(ItemProdutividade item : itens){
+            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+                total += item.getValor();
+            }
+        }
+        return total;
+    }
+
+    public int getQtRecargas(List<ItemProdutividade> itens){
+        int quantidade = 0;
+        for(ItemProdutividade item : itens){
+            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+                quantidade ++;
+            }
+        }
+        return quantidade;
+    }
+
+
 }

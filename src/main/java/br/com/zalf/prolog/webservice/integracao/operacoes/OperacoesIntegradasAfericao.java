@@ -29,6 +29,6 @@ interface OperacoesIntegradasAfericao {
                                 @NotNull final String placaVeiculo,
                                 final long dataInicial,
                                 final long dataFinal,
-                                final long limit,
+                                final int limit,
                                 final long offset) throws Exception;
 }

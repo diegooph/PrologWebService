@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 public class ProdutividadeRelatorioService {
 
     private ProdutividadeRelatorioDao dao = new ProdutividadeRelatorioDaoImpl();
+    private static final String TAG = ProdutividadeRelatorioService.class.getSimpleName();
 
     public void getConsolidadoProdutividadeCsv(@NotNull OutputStream outputStream,
                                                @NotNull Long codUnidade,
@@ -22,7 +24,7 @@ public class ProdutividadeRelatorioService {
         try {
             dao.getConsolidadoProdutividadeCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório da produtividade consolidada (CSV)", e);
         }
     }
 
@@ -32,7 +34,7 @@ public class ProdutividadeRelatorioService {
         try {
             return dao.getConsolidadoProdutividadeReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório da produtividade consolidada (REPORT)", e);
             return null;
         }
     }
@@ -45,7 +47,7 @@ public class ProdutividadeRelatorioService {
         try {
             dao.getExtratoIndividualProdutividadeCsv(outputStream, cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório extrato individual da produtividade (CSV)", e);
         }
     }
 
@@ -56,7 +58,7 @@ public class ProdutividadeRelatorioService {
         try {
             return dao.getExtratoIndividualProdutividadeReport(cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório extrato individual da produtividade (REPORT)", e);
             return null;
         }
     }
@@ -69,7 +71,7 @@ public class ProdutividadeRelatorioService {
         try {
             dao.getAcessosProdutividadeCsv(outputStream, cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório de acessos a produtividade (CSV)", e);
             throw new RuntimeException("Erro ao buscar os dados");
         }
 
@@ -82,7 +84,7 @@ public class ProdutividadeRelatorioService {
         try {
             return dao.getAcessosProdutividadeReport(cpf, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o relatório de acessos a produtividade (REPORT)", e);
             return null;
         }
     }

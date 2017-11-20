@@ -183,6 +183,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                                               @NotNull final String placaVeiculo,
                                               @NotNull final String dataInicial,
                                               @NotNull final String dataFinal,
+                                              final int limit,
+                                              final int offset,
                                               @NotNull final String cpf,
                                               @NotNull final String dataNascimento) throws Exception {
 
@@ -192,7 +194,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 dataInicial,
                 dataFinal,
                 placaVeiculo,
-                codTipoVeiculo);
+                codTipoVeiculo,
+                limit,
+                offset);
 
         if (!error(request.isSucesso(), request.getMensagem())) {
             return request.getAfericoes();

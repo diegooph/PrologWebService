@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
@@ -18,24 +19,23 @@ import java.util.List;
  * Classe PneuService responsavel por comunicar-se com a interface DAO
  */
 public class PneuService {
-
+    private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
-
 
     public boolean insert(Pneu pneu, Long codUnidade) {
         try {
             return dao.insert(pneu, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
             return false;
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
+    public boolean update(Pneu pneu, Long codUnidade, String codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar pneu com código: " + codOriginal + " da unidade: " + codUnidade, e);
             return false;
         }
     }
@@ -44,7 +44,7 @@ public class PneuService {
         try {
             return dao.insertModeloPneu(modelo, codEmpresa, codMarca);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
             return false;
         }
     }
@@ -53,8 +53,8 @@ public class PneuService {
         try {
             return dao.getPneuByCodUnidadeByStatus(codUnidade, status);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, e);
+            return null;
         }
     }
 
@@ -62,8 +62,8 @@ public class PneuService {
         try {
             return dao.getMarcaModeloPneuByCodEmpresa(codEmpresa);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            Log.e(TAG, "Erro ao buscar as marcas de pneu da empresa: " + codEmpresa, e);
+            return null;
         }
     }
 
@@ -71,8 +71,8 @@ public class PneuService {
         try {
             return dao.getDimensoes();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            Log.e(TAG, "Erro ao buscar dimensões de pneus", e);
+            return null;
         }
     }
 
@@ -80,7 +80,7 @@ public class PneuService {
         try {
             return dao.vinculaPneuVeiculo(placaVeiculo, pneus);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao vincular pneus ao veículo: " + placaVeiculo, e);
             return false;
         }
     }
@@ -89,7 +89,7 @@ public class PneuService {
         try {
             return dao.getMarcaModeloBanda(codEmpresa);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar marcas de banda da empresa: " + codEmpresa, e);
             return null;
         }
     }
@@ -98,6 +98,7 @@ public class PneuService {
         try {
             return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertMarcaBanda(marca, codEmpresa));
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao inserir marca de banda para empresa: " + codEmpresa, e);
             return Response.error("Erro ao inserir a marca da banda");
         }
     }
@@ -107,6 +108,7 @@ public class PneuService {
             return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloBanda(modelo, codMarcaBanda,
                     codEmpresa));
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao inserir modelo de banda para marca: " + codMarcaBanda + " Empresa: " + codEmpresa, e);
             return Response.error("Erro ao inserir o modelo da banda");
         }
     }
@@ -115,7 +117,7 @@ public class PneuService {
         try {
             return dao.updateMarcaBanda(marca, codEmpresa);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar marca de banda da empresa: " + codEmpresa, e);
             return false;
         }
     }
@@ -124,7 +126,7 @@ public class PneuService {
         try {
             return dao.updateModeloBanda(modelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao atualizar modelo de banda", e);
             return false;
         }
     }
@@ -133,7 +135,7 @@ public class PneuService {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
             return null;
         }
     }
@@ -142,7 +144,7 @@ public class PneuService {
         try {
             return dao.getModeloPneu(codModelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar modelo de pneu com código: " + codModelo, e);
             return null;
         }
     }

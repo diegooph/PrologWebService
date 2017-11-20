@@ -7,12 +7,14 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+@DebugLog
 @Path("/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -32,9 +34,9 @@ public class PneuResource {
     }
 
     @PUT
-//	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
+	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") Long codOriginal) {
+    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String codOriginal) {
         if (service.update(pneu, codUnidade, codOriginal)) {
             return Response.ok("Pneu atualizado com sucesso.");
         } else {

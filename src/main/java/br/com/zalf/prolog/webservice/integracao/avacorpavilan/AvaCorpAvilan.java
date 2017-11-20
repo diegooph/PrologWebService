@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
@@ -35,6 +36,12 @@ import java.util.stream.Collectors;
  * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
  */
 public final class AvaCorpAvilan extends Sistema {
+
+    /**
+     * Caso venha %, significa que queremos todos os tipos,
+     * para buscar de todos os tipos na integração, mandamos vazio.
+     */
+    private static final String FILTRO_TODOS = "%";
     @Nonnull
     private final AvaCorpAvilanRequester requester;
     @Nullable
@@ -55,28 +62,47 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@Nonnull Long codUnidade) throws Exception {
-        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = requester
-                .getTiposVeiculo(cpf(), dataNascimento())
-                .getTipoVeiculo();
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(cpf(), dataNascimento());
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
 
         // Sincroniza os tipos buscados com o nosso banco de dados.
-        final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosProLog =
                 new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
 
-        return AvaCorpAvilanConverter.convert(tiposVeiculosAvilanProLog);
+        final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
+
+        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
+            for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tiposPrologFiltrados.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        return AvaCorpAvilanConverter.convert(tiposPrologFiltrados);
     }
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
-        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
-        // vazio.
-        if (codTipo.equals("%")) {
-            codTipo = "";
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(cpf(), dataNascimento());
+        final List<String> placas = new ArrayList<>();
+        if (codTipo.equals(FILTRO_TODOS)) {
+            veiculosAtivos.getVeiculo().forEach(veiculo -> placas.add(veiculo.getPlaca()));
         } else {
-            final AvaCorpAvilanDao avaCorpAvilanDao = getAvaCorpAvilanDao();
-            codTipo = avaCorpAvilanDao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+            final String codTipoAvila = getAvaCorpAvilanDao().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+            veiculosAtivos.getVeiculo().forEach(veiculo -> {
+                if (veiculo.getTipo().getCodigo().equals(codTipoAvila)) {
+                    placas.add(veiculo.getPlaca());
+                }
+            });
         }
-        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(codTipo, cpf(), dataNascimento()));
+        return placas;
     }
 
     @Override
@@ -139,7 +165,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
-        final List<ChecklistFiltro> checklists = requester.getChecklistsByColaborador(
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklistsByColaborador(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
@@ -150,13 +176,14 @@ public final class AvaCorpAvilan extends Sistema {
                 dataNascimento()).getChecklistFiltro();
 
         final List<ChecklistFiltro> checksColaborador = new ArrayList<>();
-        for (ChecklistFiltro checklist : checklists) {
+        for (ChecklistFiltro checklist : checklistsFiltro) {
             if (checklist.getColaborador().getCpf().equals(cpf())) {
                 checksColaborador.add(checklist);
             }
         }
 
-        return paginateAndConvert(checksColaborador, limit, offset, resumido);
+        final List<Checklist> checklists = paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
     }
 
     @Nonnull
@@ -175,7 +202,7 @@ public final class AvaCorpAvilan extends Sistema {
 
         final String cpf = cpf();
         final String dataNascimento = dataNascimento();
-        final List<ChecklistFiltro> checklists = requester.getChecklists(
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklists(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo != null ? dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTipoVeiculo) : "",
@@ -185,7 +212,8 @@ public final class AvaCorpAvilan extends Sistema {
                 cpf,
                 dataNascimento).getChecklistFiltro();
 
-        return paginateAndConvert(checklists, limit, offset, resumido);
+        final List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
     }
 
     @Nonnull
@@ -212,7 +240,8 @@ public final class AvaCorpAvilan extends Sistema {
     public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(cpf(), dataNascimento());
-        return AvaCorpAvilanConverter.convert(arrayOfVeiculo, restricao);
+        final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
+        return AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
     }
 
     @Override
@@ -282,7 +311,7 @@ public final class AvaCorpAvilan extends Sistema {
                                        @Nonnull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws Exception {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
@@ -295,15 +324,19 @@ public final class AvaCorpAvilan extends Sistema {
 
         final FilialUnidadeAvilanProLog filialUnidade = dao.getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade());
 
-        return AvaCorpAvilanConverter.convert(requester.getAfericoes(
+        final ArrayOfAfericaoFiltro afericoes = requester.getAfericoes(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
                 placaVeiculo.equals("%") ? "" : placaVeiculo,
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
+                limit,
+                Math.toIntExact(offset),
                 cpf(),
-                dataNascimento()));
+                dataNascimento());
+
+        return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro());
     }
 
     @Nonnull
@@ -312,10 +345,10 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @Nonnull
-    private List<Checklist> paginateAndConvert(@Nonnull final List<ChecklistFiltro> checklists,
-                                               final int limit,
-                                               final long offset,
-                                               final boolean resumido) {
+    private List<Checklist> paginateAndConvertChecklists(@Nonnull final List<ChecklistFiltro> checklists,
+                                                         final int limit,
+                                                         final long offset,
+                                                         final boolean resumido) {
 
         // Realizamos a paginação antes de transformar, respeitando limit e offset recebidos.
         return checklists
@@ -361,5 +394,16 @@ public final class AvaCorpAvilan extends Sistema {
         }
 
         return colaborador.getUnidade().getCodigo();
+    }
+
+    @Nonnull
+    private <T> List<T> paginate(@Nonnull final List<T> data,
+                                 final int limit,
+                                 final long offset) {
+        return data
+                .stream()
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }

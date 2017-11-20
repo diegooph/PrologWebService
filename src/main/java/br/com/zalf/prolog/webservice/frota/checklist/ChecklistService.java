@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
@@ -19,12 +20,13 @@ import java.util.Map;
 public class ChecklistService {
 
     private final ChecklistDao dao = Injection.provideChecklistDao();
+    private static final String TAG = ChecklistService.class.getSimpleName();
 
     public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) {
         try {
             return dao.getUrlImagensPerguntas(codUnidade, codFuncao);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar as URL das perguntas", e);
             return null;
         }
     }
@@ -35,7 +37,7 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .insertChecklist(checklist);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir um checklist", e);
             return null;
         }
     }
@@ -46,7 +48,7 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar os dados de filtro modelo e placa dos veículos", e);
             return null;
         }
     }
@@ -61,7 +63,7 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .getNovoChecklistHolder(codUnidade, codModelo, placa, tipoChecklist);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o modelo de checklist", e);
             return null;
         }
     }
@@ -72,23 +74,10 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .getChecklistByCodigo(codigo);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o um checklist específico", e);
             return null;
         }
     }
-
-//    public List<Checklist> getAll(long dataInicial, long dataFinal, String equipe,
-//                                  Long codUnidade, String placa, int limit, long offset, boolean resumido, String userToken) {
-//        try {
-//            return RouterChecklists
-//                    .create(dao, userToken)
-//                    .getTodosChecklists(new Date(dataInicial), new Date(dataFinal), equipe, codUnidade, placa, limit,
-//                            offset, resumido);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
     public List<Checklist> getAll(Long codUnidade,
                                   Long codEquipe,
@@ -106,7 +95,7 @@ public class ChecklistService {
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
                             limit, offset, resumido);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar os checklists", e);
             return null;
         }
     }
@@ -118,7 +107,7 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", e);
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
         }
     }
@@ -133,7 +122,7 @@ public class ChecklistService {
                     .create(dao, userToken)
                     .getFarolChecklist(codUnidade, new Date(dataInicial), new Date(dataFinal), itensCriticosRetroativos);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists", e);
             throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }
@@ -148,7 +137,7 @@ public class ChecklistService {
         try {
             return dao.getStatusLiberacaoVeiculos(codUnidade);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o farol de realização dos checklists (@Deprecated)", e);
             throw new RuntimeException("Erro ao buscar farol do checklist");
         }
     }

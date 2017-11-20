@@ -1,5 +1,7 @@
 package test.integracao.avilan;
 
+import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
@@ -13,19 +15,17 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import com.sun.xml.internal.ws.client.ClientTransportException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static test.integracao.avilan.AvaCorpAvilanConstants.*;
 
 /**
@@ -37,11 +37,11 @@ public class AvaCorpAvilanRequesterTest {
     @Before
     public void setup() {
         // Printa no console todos os logs das requisições HTTP. Headers, Body...
-        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
-        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -69,7 +69,9 @@ public class AvaCorpAvilanRequesterTest {
                 "",
                 "",
                 "2017-09-25",
-                "2017-10-01",
+                "2017-10-25",
+                1,
+                0,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(afericoes);
@@ -182,9 +184,65 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarQuestionariosColaborador() throws Exception {
         final ArrayOfQuestionarioVeiculos questionarios =
-                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
+                requester.getSelecaoModeloChecklistPlacaVeiculo("02953556036", "1990-12-17");
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+        assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+    }
+
+    @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
+    public void testColaboradorPodeFazerChecklist() throws Exception {
+        final Long codUnidadeSapucaia = 2L;
+        final Long codUnidadeSantaMaria = 3L;
+        final Long codUnidadeSantaCruz = 4L;
+        final Long codMotoristaRota = 22L;
+        final ColaboradorService service = new ColaboradorService();
+
+        // Sapucaia.
+        System.out.println("Colaboradores Sapucaia:");
+        final List<Colaborador> colaboradoresSapucaia = service
+                .getAll(codUnidadeSapucaia, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSapucaia);
+
+        // Santa Maria.
+        System.out.println("\nColaboradores Santa Maria:");
+        final List<Colaborador> colaboradoresSantaMaria = service
+                .getAll(codUnidadeSantaMaria, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSantaMaria);
+
+        // Santa Cruz.
+        System.out.println("\nColaboradores Santa Cruz:");
+        final List<Colaborador> colaboradoresSantaCruz = service
+                .getAll(codUnidadeSantaCruz, true)
+                .stream()
+                .filter(colaborador -> colaborador.getFuncao().getCodigo().equals(codMotoristaRota))
+                .collect(Collectors.toList());
+        verificaColaboradores401(colaboradoresSantaCruz);
+
+    }
+
+    private void verificaColaboradores401(List<Colaborador> colaboradores) {
+        for (final Colaborador colaborador : colaboradores) {
+            try {
+
+                final ArrayOfQuestionarioVeiculos questionarios = requester.getSelecaoModeloChecklistPlacaVeiculo(
+                        colaborador.getCpfAsString(),
+                        AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento()));
+                assertNotNull(questionarios);
+                assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
+                assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+            } catch (Throwable e) {
+                System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString());
+            }
+        }
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -192,8 +250,8 @@ public class AvaCorpAvilanRequesterTest {
         final ArrayOfVeiculoQuestao veiculoQuestao =
                 requester.getQuestoesVeiculo(
                         1,
-                        VEICULO_COM_CHECK_VINCULADO,
-                        AvacorpAvilanTipoChecklist.SAIDA,
+                        "MKR2412",
+                        AvacorpAvilanTipoChecklist.RETORNO,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
@@ -204,15 +262,16 @@ public class AvaCorpAvilanRequesterTest {
     public void buscarFarolChecklist() throws Exception {
         final ArrayOfFarolDia farolDia =
                 requester.getFarolChecklist(
-                        8,
+                        11,
                         1,
-                        "2017-09-28",
-                        "2017-09-28",
+                        "2017-10-25",
+                        "2017-10-25",
                         false,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(farolDia);
         assertTrue(!farolDia.getFarolDia().isEmpty());
+        System.out.println(GsonUtils.getGson().toJson(farolDia));
     }
 
     @Test(timeout = 7 * 60 * 1000)
@@ -360,6 +419,58 @@ public class AvaCorpAvilanRequesterTest {
         }
     }
 
+    @Test
+    public void testeBuscarTodasAsPlacasPorUnidade() throws Exception {
+        final Long codTruck = 5L;
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+        final String codTipoAvilan = new AvaCorpAvilanDaoImpl().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTruck);
+        final List<String> placas = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (veiculo.getTipo().getCodigo().equals(codTipoAvilan)) {
+                System.out.println("Veiculo:" +veiculo.getPlaca()+ " Tipo: "+veiculo.getTipo().getCodigo());
+                placas.add(veiculo.getPlaca());
+            }
+        });
+        System.out.println("Placas ativas: "+veiculosAtivos.getVeiculo().size());
+        System.out.println("Placas by tipo size: "+placas.size());
+        assertNotEquals(null, placas);
+        assertTrue(!placas.isEmpty());
+    }
+
+    @Test
+    public void testeBuscarTiposVeiculosComPlacasAssociadas() throws Exception {
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
+
+        System.out.println("Veiculos Ativos da Avilan: "+veiculosAtivos.getVeiculo().size());
+        System.out.println("Tipos Veiculos Ativos da Avilan: "+tiposVeiculosAvilan.size());
+
+        // Sincroniza os tipos buscados com o nosso banco de dados.
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosAvilanProLog =
+                new AvaCorpAvilanSincronizadorTiposVeiculos(new AvaCorpAvilanDaoImpl()).sync(tiposVeiculosAvilan);
+
+        System.out.println("Tipos Veiculos Prolog sem filtro: "+tiposVeiculosAvilanProLog.size());
+
+        final List<TipoVeiculoAvilanProLog> tipoFiltrado = new ArrayList<>();
+
+        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosAvilanProLog) {
+            for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tipoFiltrado.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        System.out.println("Tipos Veiculos Prolog com filtro: "+tipoFiltrado.size());
+    }
+
     private void testePlaca(String placa, TipoVeiculoAvilan tipoVeiculo) throws Exception {
         final ArrayOfPneu pneus = requester.getPneusVeiculo(placa, CPF, DATA_NASCIMENTO);
         if (pneus.getPneu().size() <= 0)
@@ -402,8 +513,8 @@ public class AvaCorpAvilanRequesterTest {
             String posicaoAvilan,
             int posicaoProlog) {
 
-            System.out.println("INSERT INTO AVILAN.PNEU_POSICAO_AVILAN_PROLOG(POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG, COD_VEICULO_TIPO) " +
-                    "VALUES('"+posicaoAvilan+"', "+posicaoProlog+", '"+codTipoVeiculoAvilan+"');");
+        System.out.println("INSERT INTO AVILAN.PNEU_POSICAO_AVILAN_PROLOG(POSICAO_PNEU_AVILAN, POSICAO_PNEU_PROLOG, COD_VEICULO_TIPO) " +
+                "VALUES('"+posicaoAvilan+"', "+posicaoProlog+", '"+codTipoVeiculoAvilan+"');");
 
     }
 

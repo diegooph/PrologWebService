@@ -212,7 +212,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, long limit, long offset) throws SQLException {
+    public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit, long offset) throws SQLException {
         //LIKE ANY (ARRAY[?])
         List<Afericao> afericoes = new ArrayList<>();
         Connection conn = null;
@@ -228,7 +228,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "LIMIT ? OFFSET ?");
             stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
             stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
-            stmt.setLong(3, limit);
+            stmt.setInt(3, limit);
             stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -246,7 +246,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                        String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
-                                       long limit,
+                                       int limit,
                                        long offset) throws SQLException {
         List<Afericao> afericoes = new ArrayList<>();
         Connection conn = null;
@@ -270,7 +270,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(3, placaVeiculo);
             stmt.setDate(4, new java.sql.Date(dataInicial));
             stmt.setDate(5, new java.sql.Date(dataFinal));
-            stmt.setLong(6, limit);
+            stmt.setInt(6, limit);
             stmt.setLong(7, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -294,22 +294,28 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, " +
-                    "AV.ALTURA_SULCO_CENTRAL_INTERNO, AV.ALTURA_SULCO_CENTRAL_EXTERNO, AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_INTERNO, \n" +
-                    "AV.PSI::INT AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MO.QT_SULCOS AS QT_SULCOS_MODELO, \n" +
-                    "DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL,\n" +
-                    "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.qt_sulcos as QT_SULCOS_BANDA, MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n" +
-                    "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO\n" +
-                    "JOIN pneu_ordem po on av.posicao = po.posicao_prolog\n" +
-                    "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE\n" +
-                    "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA\n" +
-                    "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO\n" +
-                    "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n" +
-                    "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n" +
-                    "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n" +
-                    "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR\n" +
-                    "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ?\n" +
-                    "ORDER BY po.ordem_exibicao ASC");
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO as COD_AFERICAO, A.DATA_HORA, "
+                    + "A.PLACA_VEICULO, A.KM_VEICULO, A.TEMPO_REALIZACAO, C.CPF, C.NOME, AV.COD_AFERICAO, "
+                    + "AV.ALTURA_SULCO_CENTRAL_INTERNO, AV.ALTURA_SULCO_CENTRAL_EXTERNO, AV.ALTURA_SULCO_EXTERNO, "
+                    + "AV.ALTURA_SULCO_INTERNO, AV.PSI::INT AS PRESSAO_ATUAL, AV.POSICAO, P.CODIGO, "
+                    + "MP.CODIGO AS COD_MARCA, MP.NOME AS MARCA, MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, "
+                    + "MO.QT_SULCOS AS QT_SULCOS_MODELO, DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, "
+                    + "P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL, P.DOT, "
+                    + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.qt_sulcos as QT_SULCOS_BANDA, "
+                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, PVV.valor AS VALOR_BANDA "
+                    + "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
+                    + "JOIN pneu_ordem po on av.posicao = po.posicao_prolog "
+                    + "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
+                    + "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO "
+                    + "JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA "
+                    + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
+                    + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
+                    + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
+                    + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa "
+                    + "LEFT JOIN pneu_valor_vida PVV ON PVV.cod_unidade = P.cod_unidade AND PVV.cod_pneu = P.codigo AND PVV.vida = P.vida_atual "
+                    + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
+                    + "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? "
+                    + "ORDER BY po.ordem_exibicao ASC");
             stmt.setLong(1, codAfericao);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();

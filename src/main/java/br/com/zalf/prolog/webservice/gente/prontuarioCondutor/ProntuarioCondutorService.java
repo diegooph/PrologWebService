@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 
 import java.io.IOException;
@@ -14,12 +15,14 @@ import java.util.List;
 public class ProntuarioCondutorService {
 
     ProntuarioCondutorDao dao = new ProntuarioCondutorDaoImpl();
+    private static final String TAG = ProntuarioCondutorService.class.getSimpleName();
 
     public ProntuarioCondutor getProntuario(Long cpf) {
         try {
             return dao.getProntuario(cpf);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o prontuário do colaborador. \n" +
+                    "cpf: %d", cpf), e);
             return null;
         }
     }
@@ -28,7 +31,8 @@ public class ProntuarioCondutorService {
         try {
             return dao.getPontuacaoProntuario(cpf);
         }catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar a pontuação do prontuário do colaborador. \n" +
+                    "cpf: %d", cpf), e);
             return null;
         }
     }
@@ -37,7 +41,9 @@ public class ProntuarioCondutorService {
         try {
             return dao.getResumoProntuarios(codUnidade, codEquipe);
         }catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Erro ao buscar o resumo dos prontuários. \n" +
+                    "codUnidade: %d \n" +
+                    "codEquipe: %s", codUnidade, codEquipe), e);
             return null;
         }
     }
@@ -50,13 +56,13 @@ public class ProntuarioCondutorService {
                 return Response.error("Erro ao inserir os prontuários");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro relacionado ao banco de dados ao inserir ou atualizar o prontuário", e);
             return Response.error("Erro relacionado ao banco de dados ao inserir o arquivo");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro relacionado ao processamento do arquivo ao inserir ou atualizar o prontuário", e);
             return Response.error("Erro relacionado ao processamento do arquivo");
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro nos dados da planilha ao inserir ou atualizar o prontuário", e);
             return Response.error("Erro nos dados da planilha");
         }
     }
