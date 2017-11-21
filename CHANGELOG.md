@@ -4,6 +4,9 @@ Change Log
 <a name="v2.0.40"></a>
 ## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (release-date) - [unreleased]
 
+### Refactor
+* Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
+
 <a name="v2.0.39"></a>
 ## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (2017-11-20)
 

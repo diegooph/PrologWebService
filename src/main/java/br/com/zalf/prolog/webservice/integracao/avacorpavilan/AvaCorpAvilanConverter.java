@@ -127,18 +127,22 @@ public final class AvaCorpAvilanConverter {
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
         incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
-        // seja aferida, então a placa dela será setada em .setVeiculo()
+        // seja aferida, então a placa dela será setada em .setVeiculo().
 
-        ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
-            final MedidaPneu medidaPneu = new MedidaPneu();
-            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-            medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
-            medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
-            medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
-            medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
-            medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
-            medidas.getMedidaPneu().add(medidaPneu);
+        final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
+        for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
+            // Envia medidas apenas de pneus que não sejam estepes. Atualmente estepes não tem aferição permitida no
+            // ProLog.
+            if (!pneu.isEstepe()) {
+                final MedidaPneu medidaPneu = new MedidaPneu();
+                medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
+                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
+                medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
+                medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
+                medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
+                medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
+                medidas.getMedidaPneu().add(medidaPneu);
+            }
         }
         incluirMedida2.setMedidas(medidas);
 
