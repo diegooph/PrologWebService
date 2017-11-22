@@ -95,9 +95,10 @@ public final class AvaCorpAvilan extends Sistema {
         if (codTipo.equals(FILTRO_TODOS)) {
             veiculosAtivos.getVeiculo().forEach(veiculo -> placas.add(veiculo.getPlaca()));
         } else {
-            final String codTipoAvila = getAvaCorpAvilanDao().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+            final String codTipoAvilan =
+                    getAvaCorpAvilanDao().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
             veiculosAtivos.getVeiculo().forEach(veiculo -> {
-                if (veiculo.getTipo().getCodigo().equals(codTipoAvila)) {
+                if (veiculo.getTipo().getCodigo().equals(codTipoAvilan)) {
                     placas.add(veiculo.getPlaca());
                 }
             });
