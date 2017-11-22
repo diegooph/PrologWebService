@@ -93,20 +93,10 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
-        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
-        final List<String> placas = new ArrayList<>();
-        if (codTipo.equals(FILTRO_TODOS)) {
-            veiculosAtivos.getVeiculo().forEach(veiculo -> placas.add(veiculo.getPlaca()));
-        } else {
-            final String codTipoAvilan =
-                    getAvaCorpAvilanDao().getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
-            veiculosAtivos.getVeiculo().forEach(veiculo -> {
-                if (veiculo.getTipo().getCodigo().equals(codTipoAvilan)) {
-                    placas.add(veiculo.getPlaca());
-                }
-            });
-        }
-        return placas;
+        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(
+                codTipo,
+                getCpf(),
+                getDataNascimento()));
     }
 
     @Override
