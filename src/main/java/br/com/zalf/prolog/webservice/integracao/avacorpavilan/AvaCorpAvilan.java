@@ -65,6 +65,7 @@ public final class AvaCorpAvilan extends Sistema {
         final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
 
+        // Adiciona os tipos diferentes na listagem de tipos de veículo da Avilan.
         veiculosAtivos.getVeiculo().forEach(veiculo -> {
             if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
                 tiposVeiculosAvilan.add(veiculo.getTipo());
@@ -77,6 +78,8 @@ public final class AvaCorpAvilan extends Sistema {
 
         final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
 
+        // O veículo pode ter sido salvo no banco do ProLog e posteriormente desativado na Avilan esse método separa
+        // em uma lista apenas os veiculos que estejam ativos no ProLog e na Avilan.
         for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
             for (TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
                 if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
