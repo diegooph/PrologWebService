@@ -127,18 +127,22 @@ public final class AvaCorpAvilanConverter {
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
         incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
-        // seja aferida, então a placa dela será setada em .setVeiculo()
+        // seja aferida, então a placa dela será setada em .setVeiculo().
 
-        ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
-            final MedidaPneu medidaPneu = new MedidaPneu();
-            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-            medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
-            medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
-            medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
-            medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
-            medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
-            medidas.getMedidaPneu().add(medidaPneu);
+        final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
+        for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
+            // Envia medidas apenas de pneus que não sejam estepes. Atualmente estepes não tem aferição permitida no
+            // ProLog.
+            if (!pneu.isEstepe()) {
+                final MedidaPneu medidaPneu = new MedidaPneu();
+                medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
+                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
+                medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
+                medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
+                medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
+                medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
+                medidas.getMedidaPneu().add(medidaPneu);
+            }
         }
         incluirMedida2.setMedidas(medidas);
 
@@ -410,7 +414,6 @@ public final class AvaCorpAvilanConverter {
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
-        checklist.setTempoRealizacaoCheckInMillis(parseTempoRealizacaoChecklist(checklistFiltro.getTempoRealizacao()));
         checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
         checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
 
@@ -508,6 +511,10 @@ public final class AvaCorpAvilanConverter {
         return afericao;
     }
 
+    /**
+     * Não será mais considerado o tempo de realização do checklist na integração com a Avilan.
+     */
+    @Deprecated
     private static long parseTempoRealizacaoChecklist(@Nonnull final String tempoRealizacaoChecklist) {
         checkNotNull(tempoRealizacaoChecklist, "tempoRealizacaoChecklist não pode ser null!");
 

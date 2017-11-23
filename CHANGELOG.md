@@ -1,23 +1,46 @@
 Change Log
 ==========
 
+<a name="v2.0.40"></a>
+## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (release-date) - [unreleased]
+
+### Refactor
+* Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
+
 <a name="v2.0.39"></a>
-## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (release-date) - [unreleased]
+## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (2017-11-20)
 
 ### Features
 * Implementa relatório que estratifica as respostas NOK dos checklists
 * Implementa 3 novos relatórios para a parte de intervalos
+* Insere DOT no pneu
+* Cria busca de treinamento por seu código
+* Cria update do status do colaborador
+* Adiciona data de fechamento ao treinamento
+* Cria relatório sobre os relatos
 
 ### Refactor
 * Torna o período de calculo da produtividade dinâmico para cada unidade
 * Altera para function o método que busca o consolidado das produtividades
 * Transfere métodos auxiliares da ProdutividadeDaoImpl para a ContrachequeDaoImpl
 * Altera os logs dos services visando tornar funcional o Sentry
+* Faz paginação na busca das aferições na integração com Avilan
+* Exclui veículos da Avilan do cronograma desde que não sejam aferíveis
+* Ordena busca dos checklists na integração com Avilan por data
+* Envia limit e offset na busca das aferições na integração com a Avilan
+* Retorna quantidade de itens OK e NOK no checklist
+* Retorna colaboradores inativos na busca por colaborador
+* Torna período da produtividade dinâmico por unidade
+* Insere atributo valor na tabela pneu
 
 ### Bug Fixes
 * Corrige formatação da meta de raio do tracking
 * Adiciona permissão de relatórios indicadores no getFiltros
-* Corrige problema de import do trackng com csv possuindo linhas vazias
+* Corrige problema de import do tracking com csv possuindo linhas vazias
+* Previne exception ao enviar CPF com traços ou pontos no upload do contracheque
+* Corrige queries de busca dos relatos
+* Corrige insert do modelo de quiz
+* Corrige update de um Pneu
 
 <a name="v2.0.38"></a>
 ## Version [v2.0.38](https://github.com/luizfp/PrologAndroid/compare/v2.0.37...v2.0.38) (2017-10-25)
