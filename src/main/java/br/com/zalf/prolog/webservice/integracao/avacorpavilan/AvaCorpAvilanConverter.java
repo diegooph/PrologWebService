@@ -414,7 +414,6 @@ public final class AvaCorpAvilanConverter {
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
-        checklist.setTempoRealizacaoCheckInMillis(parseTempoRealizacaoChecklist(checklistFiltro.getTempoRealizacao()));
         checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
         checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
 
@@ -512,6 +511,10 @@ public final class AvaCorpAvilanConverter {
         return afericao;
     }
 
+    /**
+     * Não será mais considerado o tempo de realização do checklist na integração com a Avilan.
+     */
+    @Deprecated
     private static long parseTempoRealizacaoChecklist(@Nonnull final String tempoRealizacaoChecklist) {
         checkNotNull(tempoRealizacaoChecklist, "tempoRealizacaoChecklist não pode ser null!");
 
