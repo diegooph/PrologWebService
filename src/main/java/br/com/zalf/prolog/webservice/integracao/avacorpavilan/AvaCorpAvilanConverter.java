@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ModeloPlacasAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -81,7 +81,7 @@ public final class AvaCorpAvilanConverter {
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
         cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
-        final List<PlacaModeloHolder> modelos = new ArrayList<>();
+        final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
 
         Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
                 arrayOfVeiculo
@@ -90,30 +90,30 @@ public final class AvaCorpAvilanConverter {
                         .collect(Collectors.groupingBy(v -> v.getModelo()));
 
         modelosVeiculos.forEach((modeloVeiculo, veiculos) -> {
-            final PlacaModeloHolder modeloHolder = new PlacaModeloHolder();
-            modeloHolder.setModelo(modeloVeiculo);
-            final List<PlacaModeloHolder.PlacaStatus> placas = new ArrayList<>();
+            final ModeloPlacasAfericao modeloHolder = new ModeloPlacasAfericao();
+            modeloHolder.setNomeModelo(modeloVeiculo);
+            final List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < veiculos.size(); i++) {
                 final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo v = veiculos.get(i);
-                final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
-                placaStatus.placa = v.getPlaca();
-                placaStatus.quantidadePneus = v.getQuantidadePneu();
+                final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
+                placaAfericao.setPlaca(v.getPlaca());
+                placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaStatus.intervaloUltimaAfericaoPressao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
-                    placaStatus.intervaloUltimaAfericaoSulco = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
                 } else {
-                    placaStatus.intervaloUltimaAfericaoSulco = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
-                    placaStatus.intervaloUltimaAfericaoPressao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
                 }
-                placas.add(placaStatus);
+                placas.add(placaAfericao);
             }
-            modeloHolder.setPlacaStatus(placas);
+            modeloHolder.setPlacasAfericao(placas);
             modelos.add(modeloHolder);
         });
 
-        cronogramaAfericao.setPlacas(modelos);
+        cronogramaAfericao.setModelosPlacasAfericao(modelos);
 
         return cronogramaAfericao;
     }

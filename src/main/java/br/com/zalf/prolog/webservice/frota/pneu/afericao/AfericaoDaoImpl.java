@@ -21,6 +21,8 @@ import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
+    private static final String TAG = AfericaoDaoImpl.class.getSimpleName();
+
     public AfericaoDaoImpl() {
 
     }
@@ -149,12 +151,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
-        PlacaModeloHolder holder = new PlacaModeloHolder(); //possui a lista de placaStatus
-        List<PlacaModeloHolder> listModelo = new ArrayList<>(); // possui a lista de modelos
-        List<PlacaModeloHolder.PlacaStatus> listPlacasMesmoModelo = new ArrayList<>(); //lista das placas de um mesmo modelo
+        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+        ModeloPlacasAfericao modelo = new ModeloPlacasAfericao();
+        final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
+        List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
         try {
-            //caolesce - trabalha semenlhante ao IF, verifica se o valor é null
+            // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.placa,\n" +
                     "    M.nome,\n" +
@@ -164,11 +166,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
                     "LEFT JOIN\n" +
                     "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = 'P' OR tipo_afericao = 'A'\n" +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
                     "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = 'S' OR tipo_afericao = 'A'\n" +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
                     "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
@@ -177,39 +179,50 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
                     "ORDER BY M.NOME DESC;");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(3, codUnidade);
-            stmt.setLong(4, codUnidade);
+
+            // Seta para calcular informações de pressão.
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(2, TipoAfericao.PRESSAO.asString());
+            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+
+            // Seta para calcular informações de sulco.
+            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(5, TipoAfericao.SULCO.asString());
+            stmt.setString(6, TipoAfericao.SULCO_PRESSAO.asString());
+
+            stmt.setLong(7, codUnidade);
+            stmt.setLong(8, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                if (listPlacasMesmoModelo.size() == 0) {//primeiro resultado do resultset
-                    holder.setModelo(rSet.getString("NOME"));
-                    listPlacasMesmoModelo.add(createPlacaStatus(rSet));
+                if (placas.size() == 0) {
+                    // Primeiro resultado do resultset.
+                    modelo.setNomeModelo(rSet.getString("NOME"));
                 } else {
-                    if (holder.getModelo().equals(rSet.getString("NOME"))) {// caso o resultado seja do mesmo modelo do anterior
-                        listPlacasMesmoModelo.add(createPlacaStatus(rSet));
-                    } else { // modelo diferente
-                        holder.setPlacaStatus(listPlacasMesmoModelo);
-                        listModelo.add(holder);
-                        listPlacasMesmoModelo = new ArrayList<>();
-                        holder = new PlacaModeloHolder();
-                        holder.setModelo(rSet.getString("NOME"));
-                        listPlacasMesmoModelo.add(createPlacaStatus(rSet));
+                    if (!modelo.getNomeModelo().equals(rSet.getString("NOME"))) {
+                        // Modelo diferente.
+                        modelo.setPlacasAfericao(placas);
+                        modelos.add(modelo);
+                        placas = new ArrayList<>();
+                        modelo = new ModeloPlacasAfericao();
+                        modelo.setNomeModelo(rSet.getString("NOME"));
                     }
                 }
+                placas.add(createPlacaAfericao(rSet));
             }
-            holder.setPlacaStatus(listPlacasMesmoModelo);
-            listModelo.add(holder);
-            cronogramaAfericao.setPlacas(listModelo);
-            cronogramaAfericao.setMetaAfericaoPressao(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoPressao());
-            cronogramaAfericao.setMetaAfericaoSulco(getRestricaoByCodUnidade(codUnidade).getPeriodoDiasAfericaoSulco());
+            modelo.setPlacasAfericao(placas);
+            modelos.add(modelo);
+
+            // Finaliza criação do Cronograma.
+            final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+            cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
+            cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
+            cronogramaAfericao.setModelosPlacasAfericao(modelos);
+            calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
+            calcularTotalVeiculos(cronogramaAfericao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
 
-        calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
-        calcularTotalVeiculos(cronogramaAfericao);
         return cronogramaAfericao;
     }
 
@@ -347,9 +360,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private void calcularTotalVeiculos(CronogramaAfericao cronogramaAfericao) {
         int totalVeiculos = 0;
-        for (PlacaModeloHolder holder : cronogramaAfericao.getPlacas()) {
-            holder.setTotalVeiculosModelo(holder.getPlacaStatus().size());
-            totalVeiculos += holder.getPlacaStatus().size();
+        for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
+            modelo.setTotalVeiculosModelo(modelo.getPlacasAfericao().size());
+            totalVeiculos += modelo.getPlacasAfericao().size();
         }
         cronogramaAfericao.setTotalVeiculos(totalVeiculos);
     }
@@ -366,24 +379,24 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final int metaAfericaoSulco = cronogramaAfericao.getMetaAfericaoSulco();
         final int metaAfericaoPressao = cronogramaAfericao.getMetaAfericaoPressao();
 
-        final List<PlacaModeloHolder> placaModelo = cronogramaAfericao.getPlacas();
-        for (PlacaModeloHolder holder : placaModelo) {
-            for (PlacaModeloHolder.PlacaStatus placaStatus : holder.getPlacaStatus()) {
-                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)) {
+        final List<ModeloPlacasAfericao> placaModelo = cronogramaAfericao.getModelosPlacasAfericao();
+        for (ModeloPlacasAfericao holder : placaModelo) {
+            for (ModeloPlacasAfericao.PlacaAfericao placaAfericao : holder.getPlacasAfericao()) {
+                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)) {
                     qtdSulcosOk++;
                     qtdModeloSulcosOk++;
                 }
-                if (isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                if (isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
                     qtdPressaoOk++;
                     qtdModeloPressaoOk++;
                 }
-                if (isAfericaoSulcoOk(placaStatus, metaAfericaoSulco)
-                        && isAfericaoPressaoOk(placaStatus, metaAfericaoPressao)) {
+                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)
+                        && isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
                     qtdSulcosPressaook++;
                     qtdModeloSulcosPressaoOk++;
                 }
             }
-            // devemos setar em cada modelo a quantidade de Sulco/Pressao
+            // Devemos setar em cada modelo a quantidade de Sulco/Pressao.
             holder.setQtdModeloSulcoOk(qtdModeloSulcosOk);
             holder.setQtdModeloPressaoOk(qtdModeloPressaoOk);
             holder.setQtdModeloSulcoPressaoOk(qtdModeloSulcosPressaoOk);
@@ -391,28 +404,28 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             qtdModeloPressaoOk = 0;
             qtdModeloSulcosPressaoOk = 0;
         }
-        // devemos setar a quatidade total de sulcos/pressões no cronograma
+        // Devemos setar a quatidade total de sulcos/pressões no cronograma.
         cronogramaAfericao.setTotalSulcosOk(qtdSulcosOk);
         cronogramaAfericao.setTotalPressaoOk(qtdPressaoOk);
         cronogramaAfericao.setTotalSulcoPressaoOk(qtdSulcosPressaook);
     }
 
-    private boolean isAfericaoPressaoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoPressao) {
-        return placaStatus.intervaloUltimaAfericaoPressao <= metaAfericaoPressao
-                && placaStatus.intervaloUltimaAfericaoPressao != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+    private boolean isAfericaoPressaoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoPressao) {
+        return placaAfericao.getIntervaloUltimaAfericaoPressao() <= metaAfericaoPressao
+                && placaAfericao.getIntervaloUltimaAfericaoPressao() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    private boolean isAfericaoSulcoOk(PlacaModeloHolder.PlacaStatus placaStatus, int metaAfericaoSulco) {
-        return placaStatus.intervaloUltimaAfericaoSulco <= metaAfericaoSulco
-                && placaStatus.intervaloUltimaAfericaoSulco != PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+    private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoSulco) {
+        return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericaoSulco
+                && placaAfericao.getIntervaloUltimaAfericaoSulco() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    private PlacaModeloHolder.PlacaStatus createPlacaStatus(ResultSet rSet) throws SQLException {
-        PlacaModeloHolder.PlacaStatus placa = new PlacaModeloHolder.PlacaStatus();
-        placa.placa = rSet.getString("PLACA");
-        placa.intervaloUltimaAfericaoSulco = rSet.getInt("INTERVALO_SULCO");
-        placa.intervaloUltimaAfericaoPressao = rSet.getInt("INTERVALO_PRESSAO");
-        placa.quantidadePneus = rSet.getInt("PNEUS_APLICADOS");
+    private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(ResultSet rSet) throws SQLException {
+        final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
+        placa.setPlaca(rSet.getString("PLACA"));
+        placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
+        placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
+        placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
         return placa;
     }
 

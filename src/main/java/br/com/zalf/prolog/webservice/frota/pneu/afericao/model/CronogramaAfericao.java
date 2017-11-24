@@ -6,8 +6,7 @@ import java.util.List;
  * Created by jean on 04/04/16.
  */
 public class CronogramaAfericao {
-
-    List<PlacaModeloHolder> placas;
+    private List<ModeloPlacasAfericao> modelosPlacasAfericao;
     private int metaAfericaoSulco;
     private int metaAfericaoPressao;
     private int totalSulcosOk;
@@ -17,12 +16,12 @@ public class CronogramaAfericao {
 
     public CronogramaAfericao() {}
 
-    public List<PlacaModeloHolder> getPlacas() {
-        return placas;
+    public List<ModeloPlacasAfericao> getModelosPlacasAfericao() {
+        return modelosPlacasAfericao;
     }
 
-    public void setPlacas(List<PlacaModeloHolder> placas) {
-        this.placas = placas;
+    public void setModelosPlacasAfericao(List<ModeloPlacasAfericao> modelosPlacasAfericao) {
+        this.modelosPlacasAfericao = modelosPlacasAfericao;
     }
 
     public int getMetaAfericaoSulco() {
@@ -76,7 +75,7 @@ public class CronogramaAfericao {
     @Override
     public String toString() {
         return "CronogramaAfericao{" +
-                "placas=" + placas +
+                "modelosPlacasAfericao=" + modelosPlacasAfericao +
                 ", metaAfericaoSulco=" + metaAfericaoSulco +
                 ", metaAfericaoPressao=" + metaAfericaoPressao +
                 ", totalSulcosOk=" + totalSulcosOk +
