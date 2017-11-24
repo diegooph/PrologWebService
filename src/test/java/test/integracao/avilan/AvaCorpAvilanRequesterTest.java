@@ -18,7 +18,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilan
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
-import com.sun.xml.internal.ws.client.ClientTransportException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -240,7 +239,8 @@ public class AvaCorpAvilanRequesterTest {
                 assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
                 assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
             } catch (Throwable e) {
-                System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString());
+                System.out.println("******* NOME: " + colaborador.getNome() + " -- CPF: " + colaborador.getCpfAsString()
+                        + " -- DATA: " + colaborador.getDataNascimento().toString());
             }
         }
     }

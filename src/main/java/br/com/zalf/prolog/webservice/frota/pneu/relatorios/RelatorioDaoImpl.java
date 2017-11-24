@@ -437,31 +437,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
 			throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("  SELECT\n" +
-				"    VAP.\"COD PNEU\",\n" +
-				"    VAP.\"MARCA\",\n" +
-				"    VAP.\"MODELO\",\n" +
-				"    VAP.\"MEDIDAS\",\n" +
-				"    VAP.\"QTD DE AFERIÇÕES\",\n" +
-				"    VAP.\"DTA 1a AFERIÇÃO\",\n" +
-				"    VAP.\"DTA ÚLTIMA AFERIÇÃO\",\n" +
-				"    VAP.\"DIAS ATIVO\",\n" +
-				"    VAP.\"MÉDIA KM POR DIA\",\n" +
-				"    VAP.\"MAIOR MEDIÇÃO VIDA\",\n" +
-				"    VAP.\"MENOR SULCO ATUAL\",\n" +
-				"    VAP.\"MILIMETROS GASTOS\",\n" +
-				"    VAP.\"KMS POR MILIMETRO\",\n" +
-				"    VAP.\"KMS A PERCORRER\",\n" +
-				"    VAP.\"DIAS RESTANTES\",\n" +
-				"    to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') as \"PREVISÃO DE TROCA\"\n" +
-				"FROM\n" +
-				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ? \n" +
-				"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
+		PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsa_troca(?,?,?);");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-		stmt.setString(4, Pneu.EM_USO);
 		return stmt;
 	}
 
