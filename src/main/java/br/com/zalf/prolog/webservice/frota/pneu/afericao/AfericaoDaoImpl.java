@@ -379,9 +379,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final int metaAfericaoSulco = cronogramaAfericao.getMetaAfericaoSulco();
         final int metaAfericaoPressao = cronogramaAfericao.getMetaAfericaoPressao();
 
-        final List<ModeloPlacasAfericao> placaModelo = cronogramaAfericao.getModelosPlacasAfericao();
-        for (ModeloPlacasAfericao holder : placaModelo) {
-            for (ModeloPlacasAfericao.PlacaAfericao placaAfericao : holder.getPlacasAfericao()) {
+        final List<ModeloPlacasAfericao> modelos = cronogramaAfericao.getModelosPlacasAfericao();
+        for (final ModeloPlacasAfericao modelo : modelos) {
+            for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
                 if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)) {
                     qtdSulcosOk++;
                     qtdModeloSulcosOk++;
@@ -397,9 +397,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 }
             }
             // Devemos setar em cada modelo a quantidade de Sulco/Pressao.
-            holder.setQtdModeloSulcoOk(qtdModeloSulcosOk);
-            holder.setQtdModeloPressaoOk(qtdModeloPressaoOk);
-            holder.setQtdModeloSulcoPressaoOk(qtdModeloSulcosPressaoOk);
+            modelo.setQtdModeloSulcoOk(qtdModeloSulcosOk);
+            modelo.setQtdModeloPressaoOk(qtdModeloPressaoOk);
+            modelo.setQtdModeloSulcoPressaoOk(qtdModeloSulcosPressaoOk);
             qtdModeloSulcosOk = 0;
             qtdModeloPressaoOk = 0;
             qtdModeloSulcosPressaoOk = 0;
@@ -469,8 +469,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD.
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
-            Restricao restricao = getRestricaoByCodUnidade(codUnidade);
-            List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
+            final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
+            final List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
             if (listServicosACadastrar.size() > 0) {
                 // Verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços.
                 insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);
@@ -479,8 +479,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     private List<String> getServicosACadastrar(Pneu pneu, Long codUnidade, Restricao restricao) throws SQLException {
-
-        List<String> servicos = new ArrayList<>();
+        final List<String> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
         if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)) {
