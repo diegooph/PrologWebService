@@ -427,19 +427,39 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(1, afericao.getCodigo());
             stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
-            stmt.setDouble(4, pneu.getPressaoAtual());
-            stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
-            stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+
+            switch (afericao.getTipoAfericao()) {
+                case SULCO_PRESSAO:
+                    stmt.setDouble(4, pneu.getPressaoAtual());
+                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+                    break;
+                case SULCO:
+                    stmt.setNull(4, Types.REAL);
+                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
+                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
+                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
+                    stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
+                    break;
+                case PRESSAO:
+                    stmt.setDouble(4, pneu.getPressaoAtual());
+                    stmt.setNull(5, Types.REAL);
+                    stmt.setNull(6, Types.REAL);
+                    stmt.setNull(7, Types.REAL);
+                    stmt.setNull(8, Types.REAL);
+                    break;
+            }
             stmt.setInt(9, pneu.getPosicao());
             stmt.setInt(10, pneu.getVidaAtual());
-            //Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD
+            // Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD.
             pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
             Restricao restricao = getRestricaoByCodUnidade(codUnidade);
             List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
-            if (listServicosACadastrar.size() > 0) {// verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços
+            if (listServicosACadastrar.size() > 0) {
+                // Verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços.
                 insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);
             }
         }
