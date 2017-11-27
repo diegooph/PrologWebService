@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
@@ -561,8 +562,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     private void insertOrUpdateServico(Pneu pneu, long codAfericao, Long codUnidade, Connection conn, List<String> servicosPendentes) throws SQLException {
-
-        List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
+        final List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
 
         for (String servicoPendente : servicosPendentes) {
             // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente, convertemos a antiga
@@ -572,7 +572,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             } else {
                 if (servicosCadastrados.contains(servicoPendente)) {
                     incrementaQtApontamentos(pneu, codUnidade, servicoPendente, conn);
-                } else if(! servicosCadastrados.contains(Servico.TIPO_INSPECAO) && servicoPendente.endsWith(Servico.TIPO_CALIBRAGEM)) {
+
+                    // Não podemos criar um serviço de calibragem caso já exista um de inspeção aberto.
+                    // Já que calibragens (se existirem) são convertidas para inspeções quando um serviço de inspeção
+                    // precisa ser aberto se deixassemos esse caso passar, geraria um erro bizarro onde acabariamos
+                    // com duas inspeções abertas para o mesmo pneu. :s
+                } else if(!(servicosCadastrados.contains(Servico.TIPO_INSPECAO) && servicoPendente.equals(Servico.TIPO_CALIBRAGEM))) {
                     insertServico(pneu, codAfericao, servicoPendente, codUnidade, conn);
                 }
             }
@@ -596,9 +601,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     private void incrementaQtApontamentos(Pneu pneu, Long codUnidade, String tipoServico, Connection conn) throws SQLException {
-
-        PreparedStatement stmt = null;
-        stmt = conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
+        Log.d(TAG, "Atualizando quantidade de apontamos do pneu: " + pneu.getCodigo() + " da unidade: " + codUnidade);
+        PreparedStatement stmt =
+                conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
         stmt.setString(1, pneu.getCodigo());
