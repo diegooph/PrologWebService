@@ -160,19 +160,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getTempoRealizacaoChecklistMotorista(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT co.nome as \"NOME\",\n" +
-                "f.nome as \"FUNÇÃO\",\n" +
-                " sum ( case when c.tipo = 'S' then 1 else 0 end ) as \"CHECKS SAÍDA\",\n" +
-                " sum ( case when c.tipo = 'R' then 1 else 0 end ) as \"CHECKS RETORNO\",\n" +
-                " count(c.tipo) as \"TOTAL CHECKS\",\n" +
-                "round(avg(c.tempo_realizacao)/60000) as \"MD MINUTOS REALIZAÇÃO\"\n" +
-                "FROM checklist c\n" +
-                " JOIN colaborador co on co.cpf = c.cpf_colaborador\n" +
-                " JOIN funcao f on f.codigo = co.cod_funcao and f.cod_empresa = \n" +
-                "co.cod_empresa\n" +
-                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ?\n" +
-                " GROUP BY co.nome, f.nome\n" +
-                "ORDER BY co.nome");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MEDIA_TEMPO_REALIZACAO_CHECKLIST(?,?,?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);

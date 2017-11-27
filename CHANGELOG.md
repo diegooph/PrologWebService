@@ -8,6 +8,7 @@ Change Log
 * Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
 * Altera para function o método que busca a previsão de troca
 * Altera para function o método que busca a aderência ao checklist
+* Altera para function o método que gera o tempo médio de realização dos checklists por colaborador
 
 ### Bug Fixes
 * Corrige NPE ao inserir colaborador sem matrícula transportadora
