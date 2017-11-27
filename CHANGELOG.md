@@ -12,6 +12,7 @@ Change Log
 ### Bug Fixes
 * Corrige NPE ao inserir colaborador sem matrícula transportadora
 * Corrige permissões do método de busca da produtividade
+* Corrige período da busca por aferições
 
 <a name="v2.0.39"></a>
 ## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (2017-11-20)

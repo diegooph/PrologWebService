@@ -262,7 +262,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
-                    + "AND A.DATA_HORA BETWEEN ? AND ? "
+                    + "AND A.DATA_HORA::DATE BETWEEN ? AND ? "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
