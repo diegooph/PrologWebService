@@ -159,17 +159,17 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.placa,\n" +
-                    "    M.nome,\n" +
+                    " M.nome,\n" +
                     "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO,\n" +
                     "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO,\n" +
                     "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
                     "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM ? - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
@@ -178,20 +178,17 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "        WHERE cod_unidade = ?\n" +
                     "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
-                    "ORDER BY M.NOME DESC;");
+                    "ORDER BY M.NOME DESC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
 
             // Seta para calcular informações de pressão.
-            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            stmt.setString(2, TipoAfericao.PRESSAO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(1, TipoAfericao.PRESSAO.asString());
+            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
 
             // Seta para calcular informações de sulco.
-            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            stmt.setString(5, TipoAfericao.SULCO.asString());
-            stmt.setString(6, TipoAfericao.SULCO_PRESSAO.asString());
-
-            stmt.setLong(7, codUnidade);
-            stmt.setLong(8, codUnidade);
+            stmt.setString(3, TipoAfericao.SULCO.asString());
+            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (placas.size() == 0) {
