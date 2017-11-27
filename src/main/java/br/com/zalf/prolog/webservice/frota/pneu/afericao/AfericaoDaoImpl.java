@@ -245,7 +245,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
-                    + "AND A.DATA_HORA BETWEEN ? AND ? "
+                    + "AND A.DATA_HORA::DATE BETWEEN ? AND ? "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
             stmt.setLong(1, codUnidade);
@@ -572,7 +572,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             } else {
                 if (servicosCadastrados.contains(servicoPendente)) {
                     incrementaQtApontamentos(pneu, codUnidade, servicoPendente, conn);
-                } else {
+                } else if(! servicosCadastrados.contains(Servico.TIPO_INSPECAO) && servicoPendente.endsWith(Servico.TIPO_CALIBRAGEM)) {
                     insertServico(pneu, codAfericao, servicoPendente, codUnidade, conn);
                 }
             }
