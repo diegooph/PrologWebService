@@ -6,6 +6,11 @@ Change Log
 
 ### Refactor
 * Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
+* Altera para function o método que busca a previsão de troca
+
+### Bug Fixes
+* Corrige NPE ao inserir colaborador sem matrícula transportadora
+* Corrige permissões do método de busca da produtividade
 
 <a name="v2.0.39"></a>
 ## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (2017-11-20)
