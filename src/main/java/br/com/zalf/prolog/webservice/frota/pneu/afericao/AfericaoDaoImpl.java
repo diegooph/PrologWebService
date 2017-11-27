@@ -19,6 +19,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
@@ -472,12 +473,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
             final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
-            final List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
+            final List<String> listServicosACadastrar = getServicosACadastrar(pneu, restricao, afericao.getTipoAfericao());
             insertOrUpdateServicos(pneu, afericao.getCodigo(), codUnidade, listServicosACadastrar, conn);
         }
     }
 
-    private List<String> getServicosACadastrar(Pneu pneu, Long codUnidade, Restricao restricao) throws SQLException {
+    private List<String> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoAfericao tipoAfericao) throws SQLException {
         final List<String> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
@@ -506,6 +507,24 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
             }
         }
+
+        if (!servicos.isEmpty()) {
+            // Serviços devem ser abertos levando-se em conta o tipo da aferição:
+            // Uma aferição de SULCO_PRESSAO pode abrir qualquer tipo de serviço.
+            // Uma aferição de SULCO pode abrir apenas serviço de movimentação.
+            // Uma aferição de PRESSAO pode abrir serviço de calibragem e de inspeção.
+            // Para facilitar o código e não poluir a criação dos serviços, é mais simples deixar criar qualquer tipo
+            // de serviço e apenas remover depois de acordo com o tipo da aferição.
+            switch (tipoAfericao) {
+                case SULCO:
+                    servicos.removeIf(s -> !s.equals(Servico.TIPO_MOVIMENTACAO));
+                    break;
+                case PRESSAO:
+                    servicos.removeIf(s -> s.equals(Servico.TIPO_MOVIMENTACAO));
+                    break;
+            }
+        }
+
         return servicos;
     }
 
