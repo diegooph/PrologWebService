@@ -123,28 +123,11 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT c.data_hora::date as \"DATA\",\n" +
-                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\",\n" +
-                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\",\n" +
-                "count(c.data_hora::date) as \"TOTAL CHECKS\",\n" +
-                "dia_mapas.total_mapas_dia as \"TOTAL MAPAS\",\n" +
-                "trunc((count(c.data_hora::date)::float/dia_mapas.total_mapas_dia)*100) as \"ADERÊNCIA(%)\"\n" +
-                "FROM checklist c\n" +
-                "LEFT JOIN (SELECT m.data as data_mapa, count(m.mapa) as total_mapas_dia\n" +
-                "FROM mapa m\n" +
-                "JOIN veiculo v on v.placa = m.placa\n" +
-                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ?\n" +
-                "GROUP BY m.data\n" +
-                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date\n" +
-                "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ?\n" +
-                "GROUP BY c.data_hora::date, dia_mapas.total_mapas_dia\n" +
-                "ORDER BY c.data_hora::date;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
-        stmt.setLong(4, codUnidade);
-        stmt.setDate(5, dataInicial);
-        stmt.setDate(6, dataFinal);
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "func_relatorio_aderencia_checklist_diaria('2017-11-01', '2017-11-20', 7);");
+        stmt.setDate(1, dataInicial);
+        stmt.setDate(2, dataFinal);
+        stmt.setLong(3, codUnidade);
         return stmt;
     }
 
