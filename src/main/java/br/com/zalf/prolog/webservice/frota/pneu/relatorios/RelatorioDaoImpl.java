@@ -437,10 +437,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
 			throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsa_troca(?,?,?);");
-		stmt.setLong(1, codUnidade);
-		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+		PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsao_troca(?,?,?,?);");
+        stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setLong(3, codUnidade);
+		stmt.setString(4, Pneu.EM_USO);
 		return stmt;
 	}
 

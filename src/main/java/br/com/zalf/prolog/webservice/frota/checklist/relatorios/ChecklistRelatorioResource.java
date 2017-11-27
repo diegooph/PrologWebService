@@ -88,7 +88,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/report")
+    @Path("/estratificacoes/{codUnidade}/{placa}/report")
     public Report getEstratificacaoRespostasNokReport(@PathParam("codUnidade") Long codUnidade,
                                                       @PathParam("placa") String placa,
                                                       @QueryParam("dataInicial") Long dataInicial,
@@ -97,7 +97,7 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/csv")
+    @Path("/estratificacoes/{codUnidade}/{placa}/csv")
     public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("codUnidade") Long codUnidade,
                                                             @PathParam("placa") String placa,
                                                             @QueryParam("dataInicial") Long dataInicial,
