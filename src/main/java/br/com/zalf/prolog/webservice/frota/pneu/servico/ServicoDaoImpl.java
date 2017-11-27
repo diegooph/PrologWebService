@@ -327,7 +327,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			if (count == 0) {
 				throw new SQLException("Erro ao inserir o item consertado");
 			}
-			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
+			pneuDao.updatePressao(servico.getPneu(), codUnidade, conn);
 		}finally {
 			closeConnection(null, stmt, null);
 		}
@@ -359,7 +359,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 			if (count == 0) {
 				throw new SQLException("Erro ao inserir o item consertado");
 			}
-			pneuDao.updateCalibragem(servico.getPneu(), codUnidade, conn);
+			pneuDao.updatePressao(servico.getPneu(), codUnidade, conn);
 		}finally {
 			closeConnection(null, stmt, null);
 		}

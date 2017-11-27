@@ -439,8 +439,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
 
+            // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
             switch (afericao.getTipoAfericao()) {
                 case SULCO_PRESSAO:
+                    pneuDao.updateMedicoes(pneu, codUnidade, conn);
                     stmt.setDouble(4, pneu.getPressaoAtual());
                     stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
                     stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
@@ -448,6 +450,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
                     break;
                 case SULCO:
+                    pneuDao.updateSulcos(pneu, codUnidade, conn);
                     stmt.setNull(4, Types.REAL);
                     stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
                     stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
@@ -455,6 +458,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     stmt.setDouble(8, pneu.getSulcosAtuais().getInterno());
                     break;
                 case PRESSAO:
+                    pneuDao.updatePressao(pneu, codUnidade, conn);
                     stmt.setDouble(4, pneu.getPressaoAtual());
                     stmt.setNull(5, Types.REAL);
                     stmt.setNull(6, Types.REAL);
@@ -464,15 +468,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
             stmt.setInt(9, pneu.getPosicao());
             stmt.setInt(10, pneu.getVidaAtual());
-            // Atualiza as informações de Sulco atual e calibragem atual na tabela Pneu do BD.
-            pneuDao.updateMedicoes(pneu, codUnidade, conn);
             stmt.executeUpdate();
+
+            // Insere/atualiza os serviços que os pneus aferidos possam ter gerado.
             final Restricao restricao = getRestricaoByCodUnidade(codUnidade);
             final List<String> listServicosACadastrar = getServicosACadastrar(pneu, codUnidade, restricao);
-            if (listServicosACadastrar.size() > 0) {
-                // Verifica se o pneu tem alguma anomalia e deve ser inserido na base de serviços.
-                insertOrUpdateServico(pneu, afericao.getCodigo(), codUnidade, conn, listServicosACadastrar);
-            }
+            insertOrUpdateServicos(pneu, afericao.getCodigo(), codUnidade, listServicosACadastrar, conn);
         }
     }
 
@@ -561,7 +562,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return restricao;
     }
 
-    private void insertOrUpdateServico(Pneu pneu, long codAfericao, Long codUnidade, Connection conn, List<String> servicosPendentes) throws SQLException {
+    private void insertOrUpdateServicos(Pneu pneu, long codAfericao, Long codUnidade, List<String> servicosPendentes,
+                                        Connection conn) throws SQLException {
+        // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
+        if (servicosPendentes.isEmpty())
+            return;
+
         final List<String> servicosCadastrados = getServicosCadastradosByPneu(pneu.getCodigo(), codUnidade);
 
         for (String servicoPendente : servicosPendentes) {
@@ -604,8 +610,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Log.d(TAG, "Atualizando quantidade de apontamos do pneu: " + pneu.getCodigo() + " da unidade: " + codUnidade);
         PreparedStatement stmt =
                 conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
-                + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
-                + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
+                        + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
+                        + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL");
         stmt.setString(1, pneu.getCodigo());
         stmt.setLong(2, codUnidade);
         stmt.setString(3, tipoServico);

@@ -61,7 +61,7 @@ public interface PneuDao {
      * @param conn       conexão
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateCalibragem(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    boolean updatePressao(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza status do pneu
