@@ -128,7 +128,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                 "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\",\n" +
                 "count(c.data_hora::date) as \"TOTAL CHECKS\",\n" +
                 "dia_mapas.total_mapas_dia as \"TOTAL MAPAS\",\n" +
-                "trunc((count(c.data_hora::date)::float/dia_mapas.total_mapas_dia)*100) as \"aderencia(%)\"\n" +
+                "trunc((count(c.data_hora::date)::float/dia_mapas.total_mapas_dia)*100) as \"ADERÊNCIA(%)\"\n" +
                 "FROM checklist c\n" +
                 "LEFT JOIN (SELECT m.data as data_mapa, count(m.mapa) as total_mapas_dia\n" +
                 "FROM mapa m\n" +
@@ -152,7 +152,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     private PreparedStatement getExtratoCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT c.data_hora::date as \"DATA\",\n" +
-                "c.placa_veiculo,\n" +
+                "c.placa_veiculo AS \"PLACA\",\n" +
                 "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\",\n" +
                 "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\"\n" +
                 "FROM checklist c\n" +
@@ -177,8 +177,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getTempoRealizacaoChecklistMotorista(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT co.nome as nome,\n" +
-                "f.nome as funcao,\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT co.nome as \"NOME\",\n" +
+                "f.nome as \"FUNÇÃO\",\n" +
                 " sum ( case when c.tipo = 'S' then 1 else 0 end ) as \"CHECKS SAÍDA\",\n" +
                 " sum ( case when c.tipo = 'R' then 1 else 0 end ) as \"CHECKS RETORNO\",\n" +
                 " count(c.tipo) as \"TOTAL CHECKS\",\n" +
