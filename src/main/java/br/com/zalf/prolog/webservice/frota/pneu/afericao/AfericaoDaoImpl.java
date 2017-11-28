@@ -497,14 +497,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             servicos.add(Servico.TIPO_CALIBRAGEM);
         }
 
-        // Nessa parte verifica os sulcos, verificando primeiro se esta na ultima vida.
-        if (pneu.getVidaAtual() == pneu.getVidasTotal()) {//verifica se o pneu esta na ultima vida, o que reduz o limite de mm
-            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoDescarte()) {// sulco atual é inferior ao minimo para descarte
-                servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
+        // Verifica se precisamos abrir serviço de movimentação.
+        if (pneu.getVidaAtual() == pneu.getVidasTotal()) {
+            // Se o pneu esta na ultima vida, então ele irá para descarte, por isso devemos considerar o sulco mínimo
+            // para esse caso.
+            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoDescarte()) {
+                servicos.add(Servico.TIPO_MOVIMENTACAO);
             }
         } else {
-            if (pneu.getSulcosAtuais().getCentralInterno() <= restricao.getSulcoMinimoRecape()) {// sulco atual é inferior ao minimo para recapar
-                servicos.add(Servico.TIPO_MOVIMENTACAO);                // insere a movimentação na lista de serviços pendentes
+            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoRecape()) {
+                servicos.add(Servico.TIPO_MOVIMENTACAO);
             }
         }
 
