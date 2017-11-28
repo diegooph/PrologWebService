@@ -180,7 +180,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "        WHERE cod_unidade = ?\n" +
                     "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
-                    "ORDER BY M.NOME DESC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
+                    "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
 
             // Seta para calcular informações de pressão.
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
