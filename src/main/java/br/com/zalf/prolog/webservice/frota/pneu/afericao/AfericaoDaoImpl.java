@@ -302,7 +302,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "MO.QT_SULCOS AS QT_SULCOS_MODELO, DP.ALTURA, DP.LARGURA, DP.ARO, DP.CODIGO AS COD_DIMENSAO, "
                     + "P.PRESSAO_RECOMENDADA, P.ALTURA_SULCOS_NOVOS, P.STATUS, P.VIDA_ATUAL, P.VIDA_TOTAL, P.DOT, "
                     + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.qt_sulcos as QT_SULCOS_BANDA, "
-                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, PVV.valor AS VALOR_BANDA "
+                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA, PVV.valor AS VALOR_BANDA, P.VALOR "
                     + "FROM AFERICAO A JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO "
                     + "JOIN pneu_ordem po on av.posicao = po.posicao_prolog "
                     + "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE "
