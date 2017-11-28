@@ -122,6 +122,12 @@ public final class AvaCorpAvilanConverter {
     public static IncluirMedida2 convert(@NotNull final Afericao afericao) throws ParseException {
         checkNotNull(afericao, "afericao não pode ser null!");
 
+        if (afericao.getTipoAfericao() != TipoAfericao.SULCO_PRESSAO) {
+            throw new IllegalStateException("Só é possível realizar aferições que sejam de Sulco e Pressão na " +
+                    "integração com a Avilan. Tipo recebido: " + afericao.getTipoAfericao() +
+                    " Veículo: " + afericao.getVeiculo().getPlaca());
+        }
+
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
 
         // Seta valores.
