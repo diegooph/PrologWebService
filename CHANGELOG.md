@@ -2,13 +2,14 @@ Change Log
 ==========
 
 <a name="v2.0.40"></a>
-## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (release-date) - [unreleased]
+## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (2017-11-29)
 
 ### Refactor
 * Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
 * Altera para function o método que busca a previsão de troca
 * Altera para function o método que busca a aderência ao checklist
 * Altera para function o método que gera o tempo médio de realização dos checklists por colaborador
+* Altera processo de aferição para lidar com os três diferentes tipos de aferição: Sulco, Pressão e Sulco e Pressão
 
 ### Bug Fixes
 * Corrige NPE ao inserir colaborador sem matrícula transportadora
