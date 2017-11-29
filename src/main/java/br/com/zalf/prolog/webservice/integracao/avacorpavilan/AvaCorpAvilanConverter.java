@@ -8,7 +8,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.PlacaModeloHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ModeloPlacasAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -78,8 +79,9 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(restricao, "restricao não pode ser null!");
 
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
-        cronogramaAfericao.setMeta(restricao.getPeriodoDiasAfericao());
-        final List<PlacaModeloHolder> modelos = new ArrayList<>();
+        cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
+        cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
+        final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
 
         Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
                 arrayOfVeiculo
@@ -88,28 +90,30 @@ public final class AvaCorpAvilanConverter {
                         .collect(Collectors.groupingBy(v -> v.getModelo()));
 
         modelosVeiculos.forEach((modeloVeiculo, veiculos) -> {
-            final PlacaModeloHolder modeloHolder = new PlacaModeloHolder();
-            modeloHolder.setModelo(modeloVeiculo);
-            final List<PlacaModeloHolder.PlacaStatus> placas = new ArrayList<>();
+            final ModeloPlacasAfericao modeloHolder = new ModeloPlacasAfericao();
+            modeloHolder.setNomeModelo(modeloVeiculo);
+            final List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < veiculos.size(); i++) {
                 final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo v = veiculos.get(i);
-                final PlacaModeloHolder.PlacaStatus placaStatus = new PlacaModeloHolder.PlacaStatus();
-                placaStatus.placa = v.getPlaca();
-                placaStatus.quantidadePneus = v.getQuantidadePneu();
+                final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
+                placaAfericao.setPlaca(v.getPlaca());
+                placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaStatus.intervaloUltimaAfericao = PlacaModeloHolder.PlacaStatus.INTERVALO_INVALIDO;
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
                 } else {
-                    placaStatus.intervaloUltimaAfericao = AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao());
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
                 }
-                placas.add(placaStatus);
+                placas.add(placaAfericao);
             }
-            modeloHolder.setPlacaStatus(placas);
+            modeloHolder.setPlacasAfericao(placas);
             modelos.add(modeloHolder);
         });
 
-        cronogramaAfericao.setPlacas(modelos);
+        cronogramaAfericao.setModelosPlacasAfericao(modelos);
 
         return cronogramaAfericao;
     }
@@ -117,6 +121,12 @@ public final class AvaCorpAvilanConverter {
     @VisibleForTesting
     public static IncluirMedida2 convert(@NotNull final Afericao afericao) throws ParseException {
         checkNotNull(afericao, "afericao não pode ser null!");
+
+        if (afericao.getTipoAfericao() != TipoAfericao.SULCO_PRESSAO) {
+            throw new IllegalStateException("Só é possível realizar aferições que sejam de Sulco e Pressão na " +
+                    "integração com a Avilan. Tipo recebido: " + afericao.getTipoAfericao() +
+                    " Veículo: " + afericao.getVeiculo().getPlaca());
+        }
 
         final IncluirMedida2 incluirMedida2 = new IncluirMedida2();
 
@@ -127,18 +137,22 @@ public final class AvaCorpAvilanConverter {
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
         incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
-        // seja aferida, então a placa dela será setada em .setVeiculo()
+        // seja aferida, então a placa dela será setada em .setVeiculo().
 
-        ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
-            final MedidaPneu medidaPneu = new MedidaPneu();
-            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-            medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
-            medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
-            medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
-            medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
-            medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
-            medidas.getMedidaPneu().add(medidaPneu);
+        final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
+        for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
+            // Envia medidas apenas de pneus que não sejam estepes. Atualmente estepes não tem aferição permitida no
+            // ProLog.
+            if (!pneu.isEstepe()) {
+                final MedidaPneu medidaPneu = new MedidaPneu();
+                medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
+                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
+                medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
+                medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
+                medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
+                medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
+                medidas.getMedidaPneu().add(medidaPneu);
+            }
         }
         incluirMedida2.setMedidas(medidas);
 
@@ -410,7 +424,6 @@ public final class AvaCorpAvilanConverter {
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
-        checklist.setTempoRealizacaoCheckInMillis(parseTempoRealizacaoChecklist(checklistFiltro.getTempoRealizacao()));
         checklist.setQtdItensOk(checklistFiltro.getQuantidadeRespostasOk());
         checklist.setQtdItensNok(checklistFiltro.getQuantidadeRespostasNaoOk());
 
@@ -508,6 +521,10 @@ public final class AvaCorpAvilanConverter {
         return afericao;
     }
 
+    /**
+     * Não será mais considerado o tempo de realização do checklist na integração com a Avilan.
+     */
+    @Deprecated
     private static long parseTempoRealizacaoChecklist(@Nonnull final String tempoRealizacaoChecklist) {
         checkNotNull(tempoRealizacaoChecklist, "tempoRealizacaoChecklist não pode ser null!");
 
@@ -529,6 +546,9 @@ public final class AvaCorpAvilanConverter {
         final Afericao afericao = new Afericao();
         afericao.setCodigo((long) afericaoFiltro.getCodigoAfericao());
         afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
+
+        // Na integração todas as aferições devem ser de sulco e pressão, já que o Latromi não tem essa diferenciação.
+        afericao.setTipoAfericao(TipoAfericao.SULCO_PRESSAO);
 
         if (afericaoFiltro.getDataRealizacao().length() > AvaCorpAvilanUtils.AVILAN_DATE_PATTERN_STRING_SIZE) {
             // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da

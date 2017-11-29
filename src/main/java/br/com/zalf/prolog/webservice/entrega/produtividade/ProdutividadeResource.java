@@ -16,7 +16,7 @@ public class ProdutividadeResource{
 	private ProdutividadeService service = new ProdutividadeService();
 
 	@GET
-	@Secured(permissions = Pilares.Entrega.Produtividade.INDIVIDUAL)
+	@Secured(permissions = {Pilares.Entrega.Produtividade.INDIVIDUAL, Pilares.Entrega.Relatorios.PRODUTIVIDADE})
 	@Path("/colaboradores/{cpf}/{ano}/{mes}")
 	public List<ItemProdutividade> getProdutividadeColaborador(@PathParam("cpf") Long cpf,
 															   @PathParam("ano") int ano,

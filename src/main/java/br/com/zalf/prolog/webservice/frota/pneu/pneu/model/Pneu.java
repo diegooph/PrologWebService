@@ -220,6 +220,10 @@ public class Pneu {
         this.dot = dot;
     }
 
+    public double getValorMenorSulcoAtual() {
+        return sulcosAtuais.getMenorSulco();
+    }
+
     public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override

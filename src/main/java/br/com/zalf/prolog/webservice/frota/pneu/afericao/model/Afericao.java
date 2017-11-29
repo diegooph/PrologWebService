@@ -30,6 +30,7 @@ public class Afericao {
      */
     private long tempoRealizacaoAfericaoInMillis;
 
+    private TipoAfericao tipoAfericao;
 
     public Afericao() {
 
@@ -83,6 +84,14 @@ public class Afericao {
         this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
     }
 
+    public TipoAfericao getTipoAfericao() {
+        return tipoAfericao;
+    }
+
+    public void setTipoAfericao(TipoAfericao tipoAfericao) {
+        this.tipoAfericao = tipoAfericao;
+    }
+
     @Override
     public String toString() {
         return "Afericao{" +
@@ -92,6 +101,7 @@ public class Afericao {
                 ", colaborador=" + colaborador +
                 ", kmMomentoAfericao=" + kmMomentoAfericao +
                 ", tempoRealizacaoAfericaoInMillis=" + tempoRealizacaoAfericaoInMillis +
+                ", tipoAfericao=" + tipoAfericao +
                 '}';
     }
 }

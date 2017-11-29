@@ -41,7 +41,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             } else {
                 stmt.setInt(2, colaborador.getMatriculaAmbev());
             }
-            stmt.setInt(3, colaborador.getMatriculaTrans());
+            if (colaborador.getMatriculaTrans() == null || colaborador.getMatriculaTrans().equals(0)) {
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt.setInt(3, colaborador.getMatriculaTrans());
+            }
             stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
             stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
             stmt.setNull(6, Types.DATE);

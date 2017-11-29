@@ -202,7 +202,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		try{
 			conn = getConnection();
 			totalVeiculos = veiculoDao.getTotalVeiculosByUnidade(codUnidade, conn);
-			meta = totalVeiculos/restricao.getPeriodoDiasAfericao();
+			meta = totalVeiculos/restricao.getPeriodoDiasAfericaoPressao();
 			stmt = conn.prepareStatement("SELECT EXTRACT(DAY from A.DATA_HORA) AS DIA, COUNT(EXTRACT(DAY from A.DATA_HORA)) AS REALIZADAS "
 					+ "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
 					+ "WHERE A.DATA_HORA >=? AND A.DATA_HORA <= ? AND "
@@ -437,30 +437,10 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
 			throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("  SELECT\n" +
-				"    VAP.\"COD PNEU\",\n" +
-				"    VAP.\"MARCA\",\n" +
-				"    VAP.\"MODELO\",\n" +
-				"    VAP.\"MEDIDAS\",\n" +
-				"    VAP.\"QTD DE AFERIÇÕES\",\n" +
-				"    VAP.\"DTA 1a AFERIÇÃO\",\n" +
-				"    VAP.\"DTA ÚLTIMA AFERIÇÃO\",\n" +
-				"    VAP.\"DIAS ATIVO\",\n" +
-				"    VAP.\"MÉDIA KM POR DIA\",\n" +
-				"    VAP.\"MAIOR MEDIÇÃO VIDA\",\n" +
-				"    VAP.\"MENOR SULCO ATUAL\",\n" +
-				"    VAP.\"MILIMETROS GASTOS\",\n" +
-				"    VAP.\"KMS POR MILIMETRO\",\n" +
-				"    VAP.\"KMS A PERCORRER\",\n" +
-				"    VAP.\"DIAS RESTANTES\",\n" +
-				"    to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') as \"PREVISÃO DE TROCA\"\n" +
-				"FROM\n" +
-				"    VIEW_ANALISE_PNEUS VAP\n" +
-				"WHERE VAP.cod_unidade = ? AND VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ? \n" +
-				"  ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC");
-		stmt.setLong(1, codUnidade);
-		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+		PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsao_troca(?,?,?,?);");
+        stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setLong(3, codUnidade);
 		stmt.setString(4, Pneu.EM_USO);
 		return stmt;
 	}
@@ -531,11 +511,11 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 				"            SUM(CALCULO.DIAS_ENTRE_AFERICOES) /\n" +
 				"            SUM(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES IS NOT NULL THEN 1 ELSE 0 END)\n" +
 				"  END)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
-				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
-				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
+				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
+				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
 				"  FROM\n" +
 				"-- QUERY PARA CONTAR A QUANTIDADES DE AFERIÇÕES DENTRO DO PRAZO REALIZADAS, POR PLACA E RESPEITANDO UM PERÍODO SELECIONADO\n" +
-				"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao AS PERIODO_AFERICAO,\n" +
+				"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao_pressao AS PERIODO_AFERICAO,\n" +
 				"            CASE WHEN A.placa_veiculo = lag(A.PLACA_VEICULO) over (ORDER BY placa_veiculo, data_hora) THEN\n" +
 				"            EXTRACT( DAYS FROM  A.DATA_HORA - lag(A.data_hora) over (ORDER BY placa_veiculo, data_hora))\n" +
 				"            END AS DIAS_ENTRE_AFERICOES\n" +

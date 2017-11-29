@@ -6,35 +6,82 @@ import java.util.List;
  * Created by jean on 04/04/16.
  */
 public class CronogramaAfericao {
+    private List<ModeloPlacasAfericao> modelosPlacasAfericao;
+    private int metaAfericaoSulco;
+    private int metaAfericaoPressao;
+    private int totalSulcosOk;
+    private int totalPressaoOk;
+    private int totalSulcoPressaoOk;
+    private int totalVeiculos;
 
-    List<PlacaModeloHolder> placas;
-    private int meta;
+    public CronogramaAfericao() {}
 
-    public CronogramaAfericao() {
-
+    public List<ModeloPlacasAfericao> getModelosPlacasAfericao() {
+        return modelosPlacasAfericao;
     }
 
-    public List<PlacaModeloHolder> getPlacas() {
-        return placas;
+    public void setModelosPlacasAfericao(List<ModeloPlacasAfericao> modelosPlacasAfericao) {
+        this.modelosPlacasAfericao = modelosPlacasAfericao;
     }
 
-    public void setPlacas(List<PlacaModeloHolder> placas) {
-        this.placas = placas;
+    public int getMetaAfericaoSulco() {
+        return metaAfericaoSulco;
     }
 
-    public int getMeta() {
-        return meta;
+    public void setMetaAfericaoSulco(int metaAfericaoSulco) {
+        this.metaAfericaoSulco = metaAfericaoSulco;
     }
 
-    public void setMeta(int meta) {
-        this.meta = meta;
+    public int getMetaAfericaoPressao() {
+        return metaAfericaoPressao;
+    }
+
+    public void setMetaAfericaoPressao(int metaAfericaoPressao) {
+        this.metaAfericaoPressao = metaAfericaoPressao;
+    }
+
+    public int getTotalSulcosOk() {
+        return totalSulcosOk;
+    }
+
+    public void setTotalSulcosOk(int totalSulcosOk) {
+        this.totalSulcosOk = totalSulcosOk;
+    }
+
+    public int getTotalPressaoOk() {
+        return totalPressaoOk;
+    }
+
+    public void setTotalPressaoOk(int totalPressaoOk) {
+        this.totalPressaoOk = totalPressaoOk;
+    }
+
+    public int getTotalSulcoPressaoOk() {
+        return totalSulcoPressaoOk;
+    }
+
+    public void setTotalSulcoPressaoOk(int totalSulcoPressaoOk) {
+        this.totalSulcoPressaoOk = totalSulcoPressaoOk;
+    }
+
+    public int getTotalVeiculos() {
+        return totalVeiculos;
+    }
+
+    public void setTotalVeiculos(int totalVeiculos) {
+        this.totalVeiculos = totalVeiculos;
     }
 
     @Override
     public String toString() {
         return "CronogramaAfericao{" +
-                "placas=" + placas +
-                ", meta=" + meta +
+                "modelosPlacasAfericao=" + modelosPlacasAfericao +
+                ", metaAfericaoSulco=" + metaAfericaoSulco +
+                ", metaAfericaoPressao=" + metaAfericaoPressao +
+                ", totalSulcosOk=" + totalSulcosOk +
+                ", totalPressaoOk=" + totalPressaoOk +
+                ", totalSulcoPressaoOk=" + totalSulcoPressaoOk +
+                ", totalVeiculos=" + totalVeiculos +
                 '}';
     }
 }
