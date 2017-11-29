@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import com.google.common.math.DoubleMath;
+
 /**
  * Created by jean on 04/04/16.
  */
@@ -43,6 +45,10 @@ public class Sulcos {
 
     public void setExterno(Double externo) {
         this.externo = externo;
+    }
+
+    public double getMenorSulco() {
+        return Math.min(Math.min(Math.min(externo, centralExterno), centralInterno), interno);
     }
 
     @Override

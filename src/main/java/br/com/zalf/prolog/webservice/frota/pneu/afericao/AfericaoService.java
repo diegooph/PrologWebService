@@ -95,6 +95,7 @@ public class AfericaoService {
         }
     }
 
+    @Deprecated
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades, List<String> placas, int limit,
                                                           long offset) {
         try {

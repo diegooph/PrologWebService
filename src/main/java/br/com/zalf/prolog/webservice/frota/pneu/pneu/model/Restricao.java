@@ -9,25 +9,40 @@ public class Restricao {
     private double toleranciaInspecao;
     private double sulcoMinimoRecape;
     private double sulcoMinimoDescarte;
-    private int periodoDiasAfericao;
+    private int periodoDiasAfericaoPressao;
+    private int periodoDiasAfericaoSulco;
 
     public Restricao() {
     }
 
-    public Restricao(double toleranciaCalibragem, double toleranciaInspecao, double sulcoMinimoRecape, double sulcoMinimoDescarte, int periodoDiasAfericao) {
+    public Restricao(double toleranciaCalibragem,
+                     double toleranciaInspecao,
+                     double sulcoMinimoRecape,
+                     double sulcoMinimoDescarte,
+                     int periodoDiasAfericaoPressao,
+                     int periodoDiasAfericaoSulco) {
         this.toleranciaCalibragem = toleranciaCalibragem;
         this.toleranciaInspecao = toleranciaInspecao;
         this.sulcoMinimoRecape = sulcoMinimoRecape;
         this.sulcoMinimoDescarte = sulcoMinimoDescarte;
-        this.periodoDiasAfericao = periodoDiasAfericao;
+        this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
+        this.periodoDiasAfericaoSulco = periodoDiasAfericaoSulco;
     }
 
-    public int getPeriodoDiasAfericao() {
-        return periodoDiasAfericao;
+    public int getPeriodoDiasAfericaoPressao() {
+        return periodoDiasAfericaoPressao;
     }
 
-    public void setPeriodoDiasAfericao(int periodoDiasAfericao) {
-        this.periodoDiasAfericao = periodoDiasAfericao;
+    public void setPeriodoDiasAfericaoPressao(int periodoDiasAfericaoPressao) {
+        this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
+    }
+
+    public int getPeriodoDiasAfericaoSulco() {
+        return periodoDiasAfericaoSulco;
+    }
+
+    public void setPeriodoDiasAfericaoSulco(int periodoDiasAfericaoSulco) {
+        this.periodoDiasAfericaoSulco = periodoDiasAfericaoSulco;
     }
 
     public double getToleranciaInspecao() {
@@ -69,7 +84,8 @@ public class Restricao {
                 ", toleranciaInspecao=" + toleranciaInspecao +
                 ", sulcoMinimoRecape=" + sulcoMinimoRecape +
                 ", sulcoMinimoDescarte=" + sulcoMinimoDescarte +
-                ", periodoDiasAfericao=" + periodoDiasAfericao +
+                ", periodoDiasAfericaoPressao=" + periodoDiasAfericaoPressao +
+                ", periodoDiasAfericaoSulco=" + periodoDiasAfericaoSulco +
                 '}';
     }
 }
