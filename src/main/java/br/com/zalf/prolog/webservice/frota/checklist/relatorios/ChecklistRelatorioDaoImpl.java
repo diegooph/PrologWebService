@@ -124,7 +124,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     private PreparedStatement getCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "func_relatorio_aderencia_checklist_diaria('2017-11-01', '2017-11-20', 7);");
+                "func_relatorio_aderencia_checklist_diaria(?, ?, ?);");
         stmt.setDate(1, dataInicial);
         stmt.setDate(2, dataFinal);
         stmt.setLong(3, codUnidade);
