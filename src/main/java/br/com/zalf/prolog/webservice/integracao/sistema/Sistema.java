@@ -59,6 +59,11 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
+    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws Exception {
+        return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
     public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         return getIntegradorProLog().getCronogramaAfericao(codUnidade);
     }

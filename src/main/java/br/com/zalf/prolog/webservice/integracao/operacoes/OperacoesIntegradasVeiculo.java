@@ -18,4 +18,7 @@ interface OperacoesIntegradasVeiculo {
 
     @NotNull
     List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception;
+
+    @NotNull
+    Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception;
 }

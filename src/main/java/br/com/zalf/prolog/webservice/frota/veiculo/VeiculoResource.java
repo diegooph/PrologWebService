@@ -186,15 +186,17 @@ public class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/com-pneus/{placa}")
-    public Veiculo getVeiculoByPlacaComPneus(@PathParam("placa") String placa) {
-        return service.getVeiculoByPlaca(placa, true);
+    public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
+                                             @PathParam("placa") String placa) {
+        return service.getVeiculoByPlaca(userToken, placa, true);
     }
 
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
-    public Veiculo getVeiculoByPlacaSemPneus(@PathParam("placa") String placa) {
-        return service.getVeiculoByPlaca(placa, false);
+    public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") String userToken,
+                                             @PathParam("placa") String placa) {
+        return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
     @PUT
