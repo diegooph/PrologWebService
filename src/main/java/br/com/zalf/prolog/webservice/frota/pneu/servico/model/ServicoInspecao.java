@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 /**
  * Created by jean on 10/06/16.
  */
-public class ServicoInspecao extends Servico {
+public final class ServicoInspecao extends ServicoCalibragem {
 
     private Alternativa alternativaSelecionada;
 

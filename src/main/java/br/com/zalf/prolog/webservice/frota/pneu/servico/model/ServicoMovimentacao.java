@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 /**
  * Created by jean on 04/04/16.
  */
-public class ServicoMovimentacao extends Servico {
+public final class ServicoMovimentacao extends Servico {
 
     private Pneu pneuNovo;
     private String destinoPneu;
