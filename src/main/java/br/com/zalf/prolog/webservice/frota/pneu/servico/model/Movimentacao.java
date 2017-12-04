@@ -13,11 +13,11 @@ public class Movimentacao extends Servico {
 
     public Movimentacao(Pneu pneuNovo) {
         this.pneuNovo = pneuNovo;
-        setTipo(Servico.TIPO_MOVIMENTACAO);
+        setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
     public Movimentacao() {
-        setTipo(Servico.TIPO_MOVIMENTACAO);
+        setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
     public Pneu getPneuNovo() {

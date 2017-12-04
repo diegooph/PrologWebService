@@ -1,45 +1,33 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+
+import java.util.Date;
 
 /**
  * Created by jean on 04/04/16.
  */
 public class Servico {
-    public static final String TIPO_CALIBRAGEM = "calibragem";
-    public static final String TIPO_MOVIMENTACAO = "movimentacao";
-    public static final String TIPO_INSPECAO = "inspecao";
-    public static final String TIPO_AMBOS = "ambos";
-    private Long codAfericao;
-    private String tipo;
-    private Pneu pneu;
-    private Long cpfMecanico;
-    private int qtApontamentos;
-    private long kmVeiculo;
-    private String placa;
-
     /**
-     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos
+     * O código da {@link Afericao} que originou esse serviço.
      */
-    private long tempoRealizacaoServicoInMillis;
+    public Long codAfericao;
+    public TipoServico tipoServico;
+    public Date dataHoraAbertura;
+    public Date dataHoraFechamento;
+    public Pneu pneuComProblema;
+    public Long cpfResponsavelFechamento;
+    public int qtdApontamentos;
+    public long kmVeiculoMomentoFechamento;
+    public String placaVeiculo;
+    /**
+     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
+     */
+    public long tempoRealizacaoServicoInMillis;
 
     public Servico() {
-    }
 
-    public Long getCpfMecanico() {
-        return cpfMecanico;
-    }
-
-    public void setCpfMecanico(Long cpfMecanico) {
-        this.cpfMecanico = cpfMecanico;
-    }
-
-    public long getKmVeiculo() {
-        return kmVeiculo;
-    }
-
-    public void setKmVeiculo(long kmVeiculo) {
-        this.kmVeiculo = kmVeiculo;
     }
 
     public Long getCodAfericao() {
@@ -50,40 +38,68 @@ public class Servico {
         this.codAfericao = codAfericao;
     }
 
-    public String getTipo() {
-        return tipo;
+    public TipoServico getTipoServico() {
+        return tipoServico;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipoServico(TipoServico tipoServico) {
+        this.tipoServico = tipoServico;
     }
 
-    public Pneu getPneu() {
-        return pneu;
+    public Date getDataHoraAbertura() {
+        return dataHoraAbertura;
     }
 
-    public void setPneu(Pneu pneu) {
-        this.pneu = pneu;
+    public void setDataHoraAbertura(Date dataHoraAbertura) {
+        this.dataHoraAbertura = dataHoraAbertura;
     }
 
-    public int getQtApontamentos() {
-        return qtApontamentos;
+    public Date getDataHoraFechamento() {
+        return dataHoraFechamento;
     }
 
-    public void setQtApontamentos(int qtApontamentos) {
-        this.qtApontamentos = qtApontamentos;
+    public void setDataHoraFechamento(Date dataHoraFechamento) {
+        this.dataHoraFechamento = dataHoraFechamento;
     }
 
-    @Override
-    public String toString() {
-        return "Servico{" +
-                "codAfericao=" + codAfericao +
-                ", tipo='" + tipo + '\'' +
-                ", pneu=" + pneu +
-                ", cpfMecanico=" + cpfMecanico +
-                ", qtApontamentos=" + qtApontamentos +
-                ", kmVeiculo=" + kmVeiculo +
-                '}';
+    public Pneu getPneuComProblema() {
+        return pneuComProblema;
+    }
+
+    public void setPneuComProblema(Pneu pneuComProblema) {
+        this.pneuComProblema = pneuComProblema;
+    }
+
+    public Long getCpfResponsavelFechamento() {
+        return cpfResponsavelFechamento;
+    }
+
+    public void setCpfResponsavelFechamento(Long cpfResponsavelFechamento) {
+        this.cpfResponsavelFechamento = cpfResponsavelFechamento;
+    }
+
+    public int getQtdApontamentos() {
+        return qtdApontamentos;
+    }
+
+    public void setQtdApontamentos(int qtdApontamentos) {
+        this.qtdApontamentos = qtdApontamentos;
+    }
+
+    public long getKmVeiculoMomentoFechamento() {
+        return kmVeiculoMomentoFechamento;
+    }
+
+    public void setKmVeiculoMomentoFechamento(long kmVeiculoMomentoFechamento) {
+        this.kmVeiculoMomentoFechamento = kmVeiculoMomentoFechamento;
+    }
+
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
+
+    public void setPlacaVeiculo(String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
     }
 
     public long getTempoRealizacaoServicoInMillis() {
@@ -92,13 +108,5 @@ public class Servico {
 
     public void setTempoRealizacaoServicoInMillis(long tempoRealizacaoServicoInMillis) {
         this.tempoRealizacaoServicoInMillis = tempoRealizacaoServicoInMillis;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
     }
 }

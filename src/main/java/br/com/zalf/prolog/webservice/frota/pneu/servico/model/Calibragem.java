@@ -6,6 +6,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 public class Calibragem extends Servico{
 
     public Calibragem() {
-        setTipo(Servico.TIPO_CALIBRAGEM);
+        setTipoServico(TipoServico.CALIBRAGEM);
     }
 }

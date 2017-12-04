@@ -10,12 +10,12 @@ public class Inspecao extends Servico {
     private Alternativa alternativaSelecionada;
 
     public Inspecao() {
-        setTipo(Servico.TIPO_INSPECAO);
+        setTipoServico(TipoServico.INSPECAO);
     }
 
     public Inspecao(Alternativa alternativaSelecionada) {
         this.alternativaSelecionada = alternativaSelecionada;
-        setTipo(Servico.TIPO_INSPECAO);
+        setTipoServico(TipoServico.INSPECAO);
     }
 
     public Alternativa getAlternativaSelecionada() {
