@@ -224,6 +224,24 @@ public class Pneu {
         return sulcosAtuais.getMenorSulco();
     }
 
+    /**
+     * Se o pneu estiver na primeira vida, então a sua quantidade de sulcos é o atributo
+     * {@link ModeloPneu#quantidadeSulcos}, senão, é o {@link ModeloBanda#quantidadeSulcos}.
+     *
+     * @return a quantidade de sulcos desse pneu.
+     */
+    private int getQuantidadeSulcos() {
+        if (vidaAtual == 1) {
+            return modelo.getQuantidadeSulcos();
+        } else {
+            return banda.getModelo().getQuantidadeSulcos();
+        }
+    }
+
+    public boolean temQtdImparSulcos() {
+        return getQuantidadeSulcos() % 2 != 0;
+    }
+
     public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override

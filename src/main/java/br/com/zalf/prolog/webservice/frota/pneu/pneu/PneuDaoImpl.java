@@ -90,6 +90,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
+            // Se um pneu tem número ímpar de sulcos, o valor do sulco central deve ser duplicado nos dois campos de
+            // de sulco central.
+            if (pneu.temQtdImparSulcos()) {
+                if (!pneu.getSulcosAtuais().getCentralInterno().equals(pneu.getSulcosAtuais().getCentralExterno())) {
+                    throw new IllegalStateException("Um pneu com número ímpar de sulcos deve ter seus sulcos centrais iguais");
+                }
+            }
+
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO pneu(codigo, cod_modelo, cod_dimensao, pressao_recomendada, " +
@@ -102,7 +110,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
             stmt.setDouble(4, pneu.getPressaoCorreta());
-            // pressão atual
+            // Pressão atual.
             stmt.setDouble(5, 0L);
             stmt.setDouble(6, pneu.getSulcosPneuNovo().getCentralInterno());
             stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
