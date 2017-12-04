@@ -186,14 +186,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    insertCalibragem((Calibragem) servico, codUnidade, pneuDao, conn);
+                    insertCalibragem((ServicoCalibragem) servico, codUnidade, pneuDao, conn);
                     break;
                 case INSPECAO:
-                    insertInspecao((Inspecao) servico, codUnidade, pneuDao, conn);
+                    insertInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
                     MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
-                    movimentacaoDao.insert(convertServicoToProcessoMovimentacao((Movimentacao) servico, codUnidade));
+                    movimentacaoDao.insert(convertServicoToProcessoMovimentacao((ServicoMovimentacao) servico, codUnidade));
                     break;
             }
             // atualiza KM do veículo
@@ -208,7 +208,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         }
     }
 
-    private ProcessoMovimentacao convertServicoToProcessoMovimentacao(Movimentacao servico, Long codUnidade){
+    private ProcessoMovimentacao convertServicoToProcessoMovimentacao(ServicoMovimentacao servico, Long codUnidade){
         List<br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao> movimentacoes = new ArrayList<>();
         Colaborador colaborador = new Colaborador();
         colaborador.setCpf(servico.getCpfResponsavelFechamento());
@@ -236,7 +236,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private boolean containInspecao(List<Servico> listServicos) {
 
         for (Servico servico : listServicos) {
-            if (servico instanceof Inspecao) {
+            if (servico instanceof ServicoInspecao) {
                 return true;
             }
         }
@@ -246,7 +246,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private boolean containMovimentacao(List<Servico> listServicos) {
 
         for (Servico servico : listServicos) {
-            if (servico instanceof Movimentacao) {
+            if (servico instanceof ServicoMovimentacao) {
                 return true;
             }
         }
@@ -276,8 +276,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return listAlternativas;
     }
 
-    private Calibragem createCalibragem(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        Calibragem calibragem = new Calibragem();
+    private ServicoCalibragem createCalibragem(PneuDao pneuDao, ResultSet rSet) throws SQLException {
+        ServicoCalibragem calibragem = new ServicoCalibragem();
         calibragem.setPneuComProblema(pneuDao.createPneu(rSet));
         calibragem.setCodAfericao(rSet.getLong("COD_AFERICAO"));
         calibragem.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
@@ -285,8 +285,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return calibragem;
     }
 
-    private Inspecao createInspecao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        Inspecao inspecao = new Inspecao();
+    private ServicoInspecao createInspecao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
+        ServicoInspecao inspecao = new ServicoInspecao();
         inspecao.setPneuComProblema(pneuDao.createPneu(rSet));
         inspecao.setCodAfericao(rSet.getLong("COD_AFERICAO"));
         inspecao.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
@@ -294,8 +294,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return inspecao;
     }
 
-    private Movimentacao createMovimentacao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        Movimentacao movimentacao = new Movimentacao();
+    private ServicoMovimentacao createMovimentacao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
+        ServicoMovimentacao movimentacao = new ServicoMovimentacao();
         movimentacao.setPneuComProblema(pneuDao.createPneu(rSet));
         movimentacao.setCodAfericao(rSet.getLong("COD_AFERICAO"));
         movimentacao.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
@@ -303,7 +303,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return movimentacao;
     }
 
-	private void insertCalibragem(Calibragem servico, Long codUnidade, PneuDao pneuDao,Connection conn) throws SQLException{
+	private void insertCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
@@ -333,7 +333,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 
 	}
 
-	private void insertInspecao(Inspecao servico, Long codUnidade, PneuDao pneuDao,Connection conn) throws SQLException{
+	private void insertInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException{
 		PreparedStatement stmt = null;
 		try{
 			stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "

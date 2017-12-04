@@ -5,18 +5,18 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 /**
  * Created by jean on 04/04/16.
  */
-public class Movimentacao extends Servico {
+public class ServicoMovimentacao extends Servico {
 
     private Pneu pneuNovo;
     private String destinoPneu;
 
 
-    public Movimentacao(Pneu pneuNovo) {
+    public ServicoMovimentacao(Pneu pneuNovo) {
         this.pneuNovo = pneuNovo;
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
-    public Movimentacao() {
+    public ServicoMovimentacao() {
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
@@ -38,7 +38,7 @@ public class Movimentacao extends Servico {
 
     @Override
     public String toString() {
-        return "Movimentacao{" +
+        return "ServicoMovimentacao{" +
                 "pneuNovo=" + pneuNovo +
                 ", destinoPneu='" + destinoPneu + '\'' +
                 '}';
