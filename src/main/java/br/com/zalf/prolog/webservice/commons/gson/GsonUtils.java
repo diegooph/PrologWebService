@@ -14,10 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoCalibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoInspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
@@ -90,6 +87,7 @@ public final class GsonUtils {
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
 		builder.registerTypeAdapterFactory(adapterModelo);
+		builder.registerTypeAdapterFactory(QuantidadeServicosFechados.provideTypeAdapterFactory());
 
 		sGson = builder.create();
 	}
