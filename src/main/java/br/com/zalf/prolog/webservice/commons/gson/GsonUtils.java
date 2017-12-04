@@ -49,12 +49,6 @@ public final class GsonUtils {
 			builder.setPrettyPrinting();
 		}
 
-		RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
-				.of(Servico.class)
-				.registerSubtype(ServicoCalibragem.class)
-				.registerSubtype(ServicoMovimentacao.class)
-				.registerSubtype(ServicoInspecao.class);
-
 		RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
 				.of(Origem.class, "tipo")
 				.registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
@@ -80,8 +74,8 @@ public final class GsonUtils {
 				.registerSubtype(AlternativaEscolhaQuiz.class)
 				.registerSubtype(AlternativaOrdenamentoQuiz.class)
 				.registerSubtype(AlternativaChecklist.class)
-				/* Como Modelo não é abstrato e nós iremos instancia-lo, o mesmo foi adicionado como subtipo de si
-				* próprio. */
+				/* Como Alternativa não é abstrato e nós iremos instancia-la, a mesma foi adicionada como subtipo de si
+				* própria. */
 				.registerSubtype(Alternativa.class);
 
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
@@ -90,7 +84,7 @@ public final class GsonUtils {
                 .registerSubtype(ResponseWithCod.class)
 				.registerSubtype(ResponseIntervalo.class);
 
-		builder.registerTypeAdapterFactory(adapterServico);
+		builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
 		builder.registerTypeAdapterFactory(adapterAlternativa);
 		builder.registerTypeAdapterFactory(adapterResponse);
 		builder.registerTypeAdapterFactory(adapterOrigem);

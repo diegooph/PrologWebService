@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 
@@ -8,7 +9,7 @@ import java.util.Date;
 /**
  * Created by jean on 04/04/16.
  */
-public class Servico {
+public abstract class Servico {
     /**
      * O código da {@link Afericao} que originou esse serviço.
      */
@@ -28,6 +29,14 @@ public class Servico {
 
     public Servico() {
 
+    }
+
+    public static RuntimeTypeAdapterFactory<Servico> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(Servico.class, "tipoServico")
+                .registerSubtype(ServicoCalibragem.class, TipoServico.CALIBRAGEM.asString())
+                .registerSubtype(ServicoMovimentacao.class, TipoServico.MOVIMENTACAO.asString())
+                .registerSubtype(ServicoInspecao.class, TipoServico.INSPECAO.asString());
     }
 
     public Long getCodAfericao() {
