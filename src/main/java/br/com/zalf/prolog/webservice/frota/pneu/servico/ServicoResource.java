@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicosFechadosHolder;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -53,5 +54,15 @@ public class ServicoResource {
 			@PathParam("placaVeiculo") String placa,
 			@PathParam("tipoServico") String tipoServico) {
 		return service.getServicosAbertosByPlaca(placa, tipoServico);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/fechados/{codUnidade}")
+	public ServicosFechadosHolder getServicosFechadosByPlaca(@PathParam("codUnidade") Long codUnidade,
+															 @QueryParam("dataInicial") long dataInicial,
+															 @QueryParam("dataFinal") long dataFinal,
+															 @QueryParam("agrupamento") String agrupamento) {
+		return service.getServicosFechados(codUnidade, dataInicial, dataFinal, agrupamento);
 	}
 }

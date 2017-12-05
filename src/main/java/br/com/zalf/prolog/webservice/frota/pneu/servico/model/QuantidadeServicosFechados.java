@@ -10,18 +10,44 @@ import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public abstract class QuantidadeServicosFechados {
-    static final String AGRUPAMENTO_POR_PNEU = "POR_PNEU";
-    static final String AGRUPAMENTO_POR_VEICULO = "POR_VEICULO";
-    public int qtdServicosFechadosCalibragem;
-    public int qtdServicosFechadosInspecao;
-    public int qtdServicosFechadosMovimentacao;
+    private int qtdServicosFechadosCalibragem;
+    private int qtdServicosFechadosInspecao;
+    private int qtdServicosFechadosMovimentacao;
     @Exclude
-    public String agrupamento;
+    private AgrupamentoServicosFechados agrupamento;
 
     public static RuntimeTypeAdapterFactory<QuantidadeServicosFechados> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(QuantidadeServicosFechados.class, "agrupamento")
-                .registerSubtype(QuantidadeServicosFechadosPneu.class, AGRUPAMENTO_POR_PNEU)
-                .registerSubtype(QuantidadeServicosFechadosVeiculo.class, AGRUPAMENTO_POR_VEICULO);
+                .registerSubtype(QuantidadeServicosFechadosPneu.class, AgrupamentoServicosFechados.POR_PNEU.asString())
+                .registerSubtype(QuantidadeServicosFechadosVeiculo.class, AgrupamentoServicosFechados.POR_VEICULO.asString());
+    }
+
+    public int getQtdServicosFechadosCalibragem() {
+        return qtdServicosFechadosCalibragem;
+    }
+
+    public void setQtdServicosFechadosCalibragem(int qtdServicosFechadosCalibragem) {
+        this.qtdServicosFechadosCalibragem = qtdServicosFechadosCalibragem;
+    }
+
+    public int getQtdServicosFechadosInspecao() {
+        return qtdServicosFechadosInspecao;
+    }
+
+    public void setQtdServicosFechadosInspecao(int qtdServicosFechadosInspecao) {
+        this.qtdServicosFechadosInspecao = qtdServicosFechadosInspecao;
+    }
+
+    public int getQtdServicosFechadosMovimentacao() {
+        return qtdServicosFechadosMovimentacao;
+    }
+
+    public void setQtdServicosFechadosMovimentacao(int qtdServicosFechadosMovimentacao) {
+        this.qtdServicosFechadosMovimentacao = qtdServicosFechadosMovimentacao;
+    }
+
+    void setAgrupamento(AgrupamentoServicosFechados agrupamento) {
+        this.agrupamento = agrupamento;
     }
 }

@@ -6,9 +6,17 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class QuantidadeServicosFechadosPneu extends QuantidadeServicosFechados {
-    public String codigoPneu;
+    private String codigoPneu;
 
     public QuantidadeServicosFechadosPneu() {
-        agrupamento = AGRUPAMENTO_POR_PNEU;
+        setAgrupamento(AgrupamentoServicosFechados.POR_PNEU);
+    }
+
+    public String getCodigoPneu() {
+        return codigoPneu;
+    }
+
+    public void setCodigoPneu(String codigoPneu) {
+        this.codigoPneu = codigoPneu;
     }
 }

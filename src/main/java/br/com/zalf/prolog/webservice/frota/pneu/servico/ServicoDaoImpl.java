@@ -208,6 +208,86 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         }
     }
 
+    @Override
+    public ServicosFechadosHolder getServicosFechadosByPlaca(Long codUnidade, long dataInicial, long dataFinal)
+            throws SQLException {
+        ResultSet rSet = null;
+        try {
+            rSet = getServicosFechadosResultSet(codUnidade, dataInicial, dataFinal);
+            final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
+            final List<QuantidadeServicosFechados> quantidadeServicosFechados = new ArrayList<>();
+            while (rSet.next()) {
+                quantidadeServicosFechados.add(createQtdServicosFechadosVeiculo(rSet));
+            }
+            servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
+            return servicosFechadosHolder;
+        } finally {
+            closeConnection(null, null, rSet);
+        }
+    }
+
+    @Override
+    public ServicosFechadosHolder getServicosFechadosByPneu(Long codUnidade, long dataInicial, long dataFinal)
+            throws SQLException {
+        ResultSet rSet = null;
+        try {
+            rSet = getServicosFechadosResultSet(codUnidade, dataInicial, dataFinal);
+            final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
+            final List<QuantidadeServicosFechados> quantidadeServicosFechados = new ArrayList<>();
+            while (rSet.next()) {
+                quantidadeServicosFechados.add(createQtdServicosFechadosPneu(rSet));
+            }
+            servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
+            return servicosFechadosHolder;
+        } finally {
+            closeConnection(null, null, rSet);
+        }
+    }
+
+    private ResultSet getServicosFechadosResultSet(Long codUnidade, long dataInicial, long dataFinal)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT" +
+                    "  A.PLACA_VEICULO, AM.COD_PNEU," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'calibragem' THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'inspecao' THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'movimentacao' THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
+                    "FROM AFERICAO_MANUTENCAO AM" +
+                    "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
+                    "WHERE AM.COD_UNIDADE = ?" +
+                    "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL" +
+                    "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?" +
+                    "GROUP BY A.PLACA_VEICULO, AM.COD_PNEU;");
+            stmt.setLong(1, codUnidade);
+            stmt.setDate(2, new java.sql.Date(dataInicial));
+            stmt.setDate(3, new java.sql.Date(dataFinal));
+            return stmt.executeQuery();
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    private QuantidadeServicosFechadosVeiculo createQtdServicosFechadosVeiculo(ResultSet resultSet) throws SQLException {
+        final QuantidadeServicosFechadosVeiculo qtdServicosFechados = new QuantidadeServicosFechadosVeiculo();
+        qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        return qtdServicosFechados;
+    }
+
+    private QuantidadeServicosFechadosPneu createQtdServicosFechadosPneu(ResultSet resultSet) throws SQLException {
+        final QuantidadeServicosFechadosPneu qtdServicosFechados = new QuantidadeServicosFechadosPneu();
+        qtdServicosFechados.setCodigoPneu(resultSet.getString("COD_PNEU"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        return qtdServicosFechados;
+    }
+
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(ServicoMovimentacao servico, Long codUnidade){
         List<br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao> movimentacoes = new ArrayList<>();
         Colaborador colaborador = new Colaborador();

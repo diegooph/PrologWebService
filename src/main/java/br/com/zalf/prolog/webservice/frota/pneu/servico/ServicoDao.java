@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestino
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicosFechadosHolder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +26,7 @@ public interface ServicoDao {
 	 * @return serviços da placa
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
-	ServicoHolder getServicosByPlaca (String placa, Long codUnidade) throws SQLException;
+	ServicoHolder getServicosByPlaca(String placa, Long codUnidade) throws SQLException;
 
 	/**
 	 * busca os serviços abertos de uma placa
@@ -45,4 +46,12 @@ public interface ServicoDao {
 	 */
 	void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
 
+	ServicosFechadosHolder getServicosFechadosByPlaca(final Long codUnidade,
+													  final long dataInicial,
+													  final long dataFinal) throws SQLException;
+
+
+	ServicosFechadosHolder getServicosFechadosByPneu(final Long codUnidade,
+													 final long dataInicial,
+													 final long dataFinal) throws SQLException;
 }
