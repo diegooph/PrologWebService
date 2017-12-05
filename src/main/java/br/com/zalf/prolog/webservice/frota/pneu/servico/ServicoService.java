@@ -58,17 +58,32 @@ public class ServicoService {
         }
     }
 
-    public ServicosFechadosHolder getServicosFechados(Long codUnidade,
-                                                      long dataInicial,
-                                                      long dataFinal,
-                                                      String agrupamento) {
+    public ServicosFechadosHolder getQuantidadeServicosFechados(Long codUnidade,
+                                                                long dataInicial,
+                                                                long dataFinal,
+                                                                String agrupamento) {
         final AgrupamentoServicosFechados tipoAgrupamento = AgrupamentoServicosFechados.fromString(agrupamento);
         try {
             if (tipoAgrupamento.equals(AgrupamentoServicosFechados.POR_VEICULO)) {
-                return dao.getServicosFechadosByPlaca(codUnidade, dataInicial, dataFinal);
+                return dao.getQuantidadeServicosFechadosByPlaca(codUnidade, dataInicial, dataFinal);
             } else {
-                return dao.getServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);
+                return dao.getQuantidadeServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);
             }
+        } catch (SQLException e) {
+            final String message = String.format("Erro ao buscar os serviços fechados. \n," +
+                    "Unidade: %d \n" +
+                    "Data Inicial: %d \n" +
+                    "Data Final: %d", codUnidade, dataInicial, dataFinal);
+            Log.e(TAG, message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
+    public List<Servico> getServicosFechados(Long codUnidade,
+                                             long dataInicial,
+                                             long dataFinal) {
+        try {
+            return dao.getServicosFechados(codUnidade, dataInicial, dataFinal);
         } catch (SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +

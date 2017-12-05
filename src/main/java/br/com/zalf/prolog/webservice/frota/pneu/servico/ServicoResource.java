@@ -58,11 +58,20 @@ public class ServicoResource {
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/fechados/{codUnidade}/totais")
+	public ServicosFechadosHolder getQuantidadeServicosFechados(@PathParam("codUnidade") Long codUnidade,
+																@QueryParam("dataInicial") long dataInicial,
+																@QueryParam("dataFinal") long dataFinal,
+																@QueryParam("agrupamento") String agrupamento) {
+		return service.getQuantidadeServicosFechados(codUnidade, dataInicial, dataFinal, agrupamento);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}")
-	public ServicosFechadosHolder getServicosFechadosByPlaca(@PathParam("codUnidade") Long codUnidade,
-															 @QueryParam("dataInicial") long dataInicial,
-															 @QueryParam("dataFinal") long dataFinal,
-															 @QueryParam("agrupamento") String agrupamento) {
-		return service.getServicosFechados(codUnidade, dataInicial, dataFinal, agrupamento);
+	public List<Servico> getServicosFechados(@PathParam("codUnidade") Long codUnidade,
+											 @QueryParam("dataInicial") long dataInicial,
+											 @QueryParam("dataFinal") long dataFinal) {
+		return service.getServicosFechados(codUnidade, dataInicial, dataFinal);
 	}
 }
