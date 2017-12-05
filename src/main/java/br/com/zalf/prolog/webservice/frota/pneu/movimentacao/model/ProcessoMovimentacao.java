@@ -12,10 +12,10 @@ import java.util.List;
  * Created by luiz on 03/04/17.
  */
 public class ProcessoMovimentacao {
-    @NotNull
-    private Unidade unidade;
     @Nullable
     private Long codigo;
+    @NotNull
+    private Unidade unidade;
     @NotNull
     private final List<Movimentacao> movimentacoes;
     @NotNull
@@ -25,12 +25,14 @@ public class ProcessoMovimentacao {
     @Nullable
     private final String observacao;
 
-    public ProcessoMovimentacao(@Nullable Long codigo,
-                                @NotNull List<Movimentacao> movimentacoes,
-                                @NotNull Colaborador colaborador,
-                                @NotNull Date data,
-                                @Nullable String observacao) {
+    public ProcessoMovimentacao(Long codigo,
+                                Unidade unidade,
+                                List<Movimentacao> movimentacoes,
+                                Colaborador colaborador,
+                                Date data,
+                                String observacao) {
         this.codigo = codigo;
+        this.unidade = unidade;
         this.movimentacoes = movimentacoes;
         this.colaborador = colaborador;
         this.data = data;

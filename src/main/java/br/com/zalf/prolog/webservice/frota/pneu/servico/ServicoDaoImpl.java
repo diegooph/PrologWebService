@@ -24,10 +24,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -167,7 +164,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            PneuDao pneuDao = Injection.providePneuDao();
+            final PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
                     insertCalibragem((ServicoCalibragem) servico, codUnidade, pneuDao, conn);
@@ -176,12 +173,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     insertInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
-                    MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
+                    final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
                     movimentacaoDao.insert(convertServicoToProcessoMovimentacao((ServicoMovimentacao) servico, codUnidade));
+                    // TODO: É preciso que o insert de um processo retorne o código do processo.
+                    insertMovimentacao((ServicoMovimentacao) servico, conn);
                     break;
             }
             // Atualiza KM do veículo.
-            VeiculoDao veiculoDao = new VeiculoDaoImpl();
+            final VeiculoDao veiculoDao = new VeiculoDaoImpl();
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
         } catch (SQLException e) {
@@ -433,38 +432,46 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(ServicoMovimentacao servico, Long codUnidade) {
-        List<Movimentacao> movimentacoes = new ArrayList<>();
-        Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(servico.getCpfResponsavelFechamento());
-        Unidade unidade = new Unidade();
-        unidade.setCodigo(codUnidade);
-        Veiculo veiculo = new Veiculo();
+        final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(servico.getPlacaVeiculo());
         veiculo.setKmAtual(servico.getKmVeiculoMomentoFechamento());
-        OrigemEstoque origemEstoque = new OrigemEstoque();
-        DestinoVeiculo destinoVeiculo = new DestinoVeiculo(veiculo, servico.getPneuComProblema().getPosicao());
-        Movimentacao movimentacaoPneuInserido = new Movimentacao(
-                null,
-                servico.getPneuNovo(),
-                origemEstoque, destinoVeiculo,
-                null);
-        OrigemVeiculo origemVeiculo = new OrigemVeiculo(veiculo, servico.getPneuComProblema().getPosicao());
-        DestinoEstoque destinoEstoque = new DestinoEstoque();
-        Movimentacao movimentacaoPneuRemovido = new Movimentacao(
+
+        // O pneu com problema saiu do veículo e deve ser adicionado em estoque.
+        final OrigemVeiculo origemVeiculo = new OrigemVeiculo(veiculo, servico.getPneuComProblema().getPosicao());
+        final DestinoEstoque destinoEstoque = new DestinoEstoque();
+        final Movimentacao movimentacaoPneuRemovido = new Movimentacao(
                 null,
                 servico.getPneuComProblema(),
-                origemVeiculo, destinoEstoque,
+                origemVeiculo,
+                destinoEstoque,
                 null);
+
+        // O pneu inserido foi selecionado do estoque e deve ser movido para o veículo na mesma posição onde o pneu com
+        // problema se encontra atualmente.
+        final OrigemEstoque origemEstoque = new OrigemEstoque();
+        final DestinoVeiculo destinoVeiculo = new DestinoVeiculo(veiculo, servico.getPneuComProblema().getPosicao());
+        final Movimentacao movimentacaoPneuInserido = new Movimentacao(
+                null,
+                servico.getPneuNovo(),
+                origemEstoque,
+                destinoVeiculo,
+                null);
+
+        // Cria o processo da movimentação.
+        final List<Movimentacao> movimentacoes = new ArrayList<>();
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(servico.getCpfResponsavelFechamento());
+        final Unidade unidade = new Unidade();
+        unidade.setCodigo(codUnidade);
         movimentacoes.add(movimentacaoPneuRemovido);
         movimentacoes.add(movimentacaoPneuInserido);
-        final ProcessoMovimentacao processoMovimentacao = new ProcessoMovimentacao(
+        return new ProcessoMovimentacao(
                 null,
+                unidade,
                 movimentacoes,
                 colaborador,
                 null,
                 "Fechamento de serviço");
-        processoMovimentacao.setUnidade(unidade);
-        return processoMovimentacao;
     }
 
     private boolean containInspecao(List<Servico> listServicos) {
@@ -489,7 +496,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Alternativa> listAlternativas = new ArrayList<>();
+        final List<Alternativa> listAlternativas = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
@@ -502,7 +509,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                 listAlternativas.add(alternativa);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return listAlternativas;
     }
@@ -519,7 +526,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     + "DATA_HORA_RESOLUCAO IS NULL AND "
                     + "COD_PNEU = ? "
                     + "AND TIPO_SERVICO = ?");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             stmt.setLong(2, servico.getCpfResponsavelFechamento());
             stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
             stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -550,7 +557,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     + "COD_PNEU = ? AND "
                     + "DATA_HORA_RESOLUCAO IS NULL "
                     + "AND TIPO_SERVICO = ?");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             stmt.setLong(2, servico.getCpfResponsavelFechamento());
             stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
             stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -567,5 +574,33 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             closeConnection(null, stmt, null);
         }
 
+    }
+
+    private void insertMovimentacao(ServicoMovimentacao servico, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+                    + "DATA_HORA_RESOLUCAO = ?, "
+                    + "CPF_MECANICO = ?, "
+                    + "KM_MOMENTO_CONSERTO = ?, "
+                    + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                    + "WHERE COD_AFERICAO = ? AND "
+                    + "COD_PNEU = ? AND "
+                    + "DATA_HORA_RESOLUCAO IS NULL "
+                    + "AND TIPO_SERVICO = ?");
+            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            stmt.setLong(2, servico.getCpfResponsavelFechamento());
+            stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
+            stmt.setLong(4, servico.getCodProcessoMovimentacao());
+            stmt.setLong(6, servico.getCodAfericao());
+            stmt.setString(7, servico.getPneuComProblema().getCodigo());
+            stmt.setString(8, servico.getTipoServico().asString());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao inserir o item consertado");
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
     }
 }
