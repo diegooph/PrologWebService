@@ -24,55 +24,56 @@ final class ServicoConverter {
     static List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
-            servicos.add(createServico(rSet, pneuDao));
+            servicos.add(createServico(rSet, pneuDao, false));
         }
         return servicos;
     }
 
-    static Servico createServico(final ResultSet resultSet, final PneuDao pneuDao) throws SQLException {
+    static Servico createServico(final ResultSet resultSet,
+                                 final PneuDao pneuDao,
+                                 final boolean incluirAtributosEspecificos) throws SQLException {
         final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
         Servico servico;
         switch (tipo) {
             case CALIBRAGEM:
-                servico = createCalibragem(pneuDao, resultSet);
+                // O serviço de calibragem não possui nenhum atributo específico.
+                servico = new ServicoCalibragem();
                 break;
             case MOVIMENTACAO:
-                servico = createMovimentacao(resultSet);
+                servico = new ServicoMovimentacao();
+                if (incluirAtributosEspecificos) {
+                    setAtributosMovimentacao((ServicoMovimentacao) servico, resultSet);
+                }
                 break;
             case INSPECAO:
-                servico = createInspecao(pneuDao, resultSet);
+                servico = new ServicoInspecao();
+                if (incluirAtributosEspecificos) {
+                    setAtributosInspecao((ServicoInspecao) servico, resultSet);
+                }
                 break;
             default:
-                throw new IllegalStateException("Tipo desconhecido: " + tipo);
+                throw new IllegalStateException("Tipo de serviço desconhecido: " + tipo);
         }
-        setCommonAttributes(servico, resultSet, pneuDao);
+        setAtributosComunsServico(servico, resultSet, pneuDao);
         return servico;
     }
 
-    private static ServicoCalibragem createCalibragem(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        // TODO: remover esse método se não for preciso setar nada.
-        return new ServicoCalibragem();
-    }
 
-    private static ServicoInspecao createInspecao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        final ServicoInspecao inspecao = new ServicoInspecao();
+    private static void setAtributosInspecao(final ServicoInspecao inspecao, final ResultSet rSet) throws SQLException {
         final Alternativa alternativa = new Alternativa();
         alternativa.setCodigo(rSet.getLong("COD_ALTERNATIVA_SELECIONADA"));
         alternativa.setAlternativa(rSet.getString("DESCRICAO_ALTERNATIVA_SELECIONADA"));
         inspecao.setAlternativaSelecionada(alternativa);
-        return inspecao;
     }
 
-    private static ServicoMovimentacao createMovimentacao(ResultSet rSet) throws SQLException {
-        final ServicoMovimentacao movimentacao = new ServicoMovimentacao();
+    private static void setAtributosMovimentacao(final ServicoMovimentacao movimentacao, final ResultSet rSet) throws SQLException {
         // TODO: qual a melhor forma de recuperar o pneu novo aqui? Uma chamada a PneuDao não vai dar certo pq o pneu
         // será buscado com os novos valores. Teriamos que salvar em banco no momento de finalizar uma movimentação
         // todos
 //        movimentacao.setPneuNovo(pneuDao.getPneuByCod());
-        return movimentacao;
     }
 
-    private static void setCommonAttributes(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
+    private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
             throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO"));
         servico.setCpfResponsavelFechamento(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));

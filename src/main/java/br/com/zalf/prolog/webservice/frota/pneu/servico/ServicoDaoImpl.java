@@ -203,17 +203,17 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
-                    + "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP"
+                    + "A.CODIGO AS COD_AFERICAO, AM.TIPO_SERVICO, AM.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP"
                     + ".NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
                     + "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MP.QT_SULCOS AS QT_SULCOS_MODELO, DP.*, P.*, "
                     + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, "
                     + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
-                    + "FROM AFERICAO_MANUTENCAO ITS "
-                    + "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
+                    + "FROM AFERICAO_MANUTENCAO AM "
+                    + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
                     + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
                     + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
                     + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
-                    + "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
+                    + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
                     + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND "
                     + "A.PLACA_VEICULO = VP.PLACA "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
@@ -225,7 +225,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codServico);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServico(rSet, pneuDao);
+            return ServicoConverter.createServico(rSet, pneuDao, true);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
