@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MovimentacaoDaoImpl extends DatabaseConnection {
 
-    public boolean insert(ProcessoMovimentacao movimentacao) throws SQLException, OrigemDestinoInvalidaException {
+    public Long insert(ProcessoMovimentacao movimentacao) throws SQLException, OrigemDestinoInvalidaException {
         validaMovimentacoes(movimentacao.getMovimentacoes());
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -36,10 +36,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setString(4, movimentacao.getObservacao());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                movimentacao.setCodigo(rSet.getLong("CODIGO"));
+                final Long codigoProcesso = rSet.getLong("CODIGO");
+                movimentacao.setCodigo(codigoProcesso);
                 insertValores(movimentacao, conn);
                 conn.commit();
-                return true;
+                return codigoProcesso;
+            } else {
+                throw new SQLException("Erro ao inserir processo de movimentação");
             }
         } catch (SQLException e) {
             conn.rollback();
@@ -47,7 +50,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return false;
     }
 
     private void insertValores(ProcessoMovimentacao processoMov, Connection conn) throws SQLException {

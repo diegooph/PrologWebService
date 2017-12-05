@@ -174,9 +174,12 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     break;
                 case MOVIMENTACAO:
                     final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
-                    movimentacaoDao.insert(convertServicoToProcessoMovimentacao((ServicoMovimentacao) servico, codUnidade));
-                    // TODO: É preciso que o insert de um processo retorne o código do processo.
-                    insertMovimentacao((ServicoMovimentacao) servico, conn);
+                    final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
+                    final ProcessoMovimentacao processoMovimentacao =
+                            convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
+                    final Long codigoProcesso = movimentacaoDao.insert(processoMovimentacao);
+                    movimentacao.setCodProcessoMovimentacao(codigoProcesso);
+                    insertMovimentacao(movimentacao, conn);
                     break;
             }
             // Atualiza KM do veículo.
