@@ -267,6 +267,90 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         }
     }
 
+    @Override
+    public List<Servico> getServicosFechadosPneu(Long codUnidade, String codPneu, long dataInicial, long dataFinal)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final PneuDao pneuDao = Injection.providePneuDao();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
+                    + "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP" +
+                    ".NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
+                    + "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MP.QT_SULCOS AS QT_SULCOS_MODELO, DP.*, P.*, "
+                    + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, " +
+                    "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
+                    + "FROM AFERICAO_MANUTENCAO ITS "
+                    + "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
+                    + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
+                    + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
+                    + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
+                    + "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
+                    + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND A" +
+                    ".PLACA_VEICULO = VP.PLACA "
+                    + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+                    + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+                    + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+                    + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
+                    + "WHERE AM.COD_UNIDADE = ? "
+                    + "WHERE AM.COD_PNEU = ? "
+                    + "AND ITS.DATA_HORA_RESOLUCAO IS NOT NULL "
+                    + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codPneu);
+            stmt.setLong(3, dataInicial);
+            stmt.setLong(4, dataFinal);
+            rSet = stmt.executeQuery();
+            return createServicos(rSet, pneuDao);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public List<Servico> getServicosFechadosVeiculo(Long codUnidade, String placaVeiculo, long dataInicial, long dataFinal)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final PneuDao pneuDao = Injection.providePneuDao();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
+                    + "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP" +
+                    ".NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
+                    + "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MP.QT_SULCOS AS QT_SULCOS_MODELO, DP.*, P.*, "
+                    + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, " +
+                    "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
+                    + "FROM AFERICAO_MANUTENCAO ITS "
+                    + "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
+                    + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
+                    + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
+                    + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
+                    + "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
+                    + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND A" +
+                    ".PLACA_VEICULO = VP.PLACA "
+                    + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+                    + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
+                    + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n "
+                    + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
+                    + "WHERE AM.COD_UNIDADE = ? "
+                    + "WHERE A.PLACA_VEICULO = ? "
+                    + "AND ITS.DATA_HORA_RESOLUCAO IS NOT NULL "
+                    + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placaVeiculo);
+            stmt.setLong(3, dataInicial);
+            stmt.setLong(4, dataFinal);
+            rSet = stmt.executeQuery();
+            return createServicos(rSet, pneuDao);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     private List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
@@ -294,9 +378,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT" +
                     "  A.PLACA_VEICULO, AM.COD_PNEU," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'calibragem' THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'inspecao' THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = 'movimentacao' THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.CALIBRAGEM.asString() + " THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.INSPECAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.MOVIMENTACAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
                     "FROM AFERICAO_MANUTENCAO AM" +
                     "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
                     "WHERE AM.COD_UNIDADE = ?" +
@@ -331,7 +415,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(ServicoMovimentacao servico, Long codUnidade) {
-        List<br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao> movimentacoes = new ArrayList<>();
+        List<Movimentacao> movimentacoes = new ArrayList<>();
         Colaborador colaborador = new Colaborador();
         colaborador.setCpf(servico.getCpfResponsavelFechamento());
         Unidade unidade = new Unidade();

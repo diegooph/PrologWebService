@@ -74,4 +74,24 @@ public class ServicoResource {
 											 @QueryParam("dataFinal") long dataFinal) {
 		return service.getServicosFechados(codUnidade, dataInicial, dataFinal);
 	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/fechados/{codUnidade}/pneus/{codPneu}")
+	public List<Servico> getServicosFechadosPneu(@PathParam("codUnidade") Long codUnidade,
+												 @PathParam("codPneu") String codPneu,
+												 @QueryParam("dataInicial") long dataInicial,
+												 @QueryParam("dataFinal") long dataFinal) {
+		return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/fechados/{codUnidade}/veiculos/{placaVeiculo}")
+	public List<Servico> getServicosFechadosVeiculo(@PathParam("codUnidade") Long codUnidade,
+													@PathParam("placaVeiculo") String placaVeiculo,
+													@QueryParam("dataInicial") long dataInicial,
+													@QueryParam("dataFinal") long dataFinal) {
+		return service.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
+	}
 }

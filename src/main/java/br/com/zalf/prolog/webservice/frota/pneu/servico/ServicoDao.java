@@ -47,8 +47,8 @@ public interface ServicoDao {
 	void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
 
 	ServicosFechadosHolder getQuantidadeServicosFechadosByPlaca(final Long codUnidade,
-                                                                final long dataInicial,
-                                                                final long dataFinal) throws SQLException;
+																final long dataInicial,
+																final long dataFinal) throws SQLException;
 
 
 	ServicosFechadosHolder getQuantidadeServicosFechadosByPneu(final Long codUnidade,
@@ -58,4 +58,20 @@ public interface ServicoDao {
 	List<Servico> getServicosFechados(final Long codUnidade,
 									  final long dataInicial,
 									  final long dataFinal) throws SQLException;
+
+	/**
+	 * Retorna os serviços fechados referentes ao pneu com código {@code codPneu}.
+	 */
+	List<Servico> getServicosFechadosPneu(final Long codUnidade,
+										  final String codPneu,
+										  final long dataInicial,
+										  final long dataFinal) throws SQLException;
+
+	/**
+	 * Retorna os serviços fechados referentes ao veículo com placa {@code placaVeiculo}.
+	 */
+	List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
+											 final String placaVeiculo,
+											 final long dataInicial,
+											 final long dataFinal) throws SQLException;
 }

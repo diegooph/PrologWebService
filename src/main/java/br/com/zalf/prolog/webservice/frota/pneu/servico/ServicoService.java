@@ -93,4 +93,38 @@ public class ServicoService {
             throw new RuntimeException(message);
         }
     }
+
+    public List<Servico> getServicosFechadosPneu(final Long codUnidade,
+                                                 final String codPneu,
+                                                 final long dataInicial,
+                                                 final long dataFinal) {
+        try {
+            return dao.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            final String message = String.format("Erro ao buscar os serviços fechados. \n," +
+                    "Unidade: %d \n" +
+                    "Pneu: %s \n" +
+                    "Data Inicial: %d \n" +
+                    "Data Final: %d", codUnidade, codPneu, dataInicial, dataFinal);
+            Log.e(TAG, message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
+    public List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
+                                                    final String placaVeiculo,
+                                                    final long dataInicial,
+                                                    final long dataFinal) {
+        try {
+            return dao.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            final String message = String.format("Erro ao buscar os serviços fechados. \n," +
+                    "Unidade: %d \n" +
+                    "Veículo: %s \n" +
+                    "Data Inicial: %d \n" +
+                    "Data Final: %d", codUnidade, placaVeiculo, dataInicial, dataFinal);
+            Log.e(TAG, message, e);
+            throw new RuntimeException(message);
+        }
+    }
 }
