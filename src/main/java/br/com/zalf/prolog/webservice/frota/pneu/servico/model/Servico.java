@@ -10,6 +10,7 @@ import java.util.Date;
  * Created by jean on 04/04/16.
  */
 public abstract class Servico {
+    private Long codigo;
     /**
      * O código da {@link Afericao} que originou esse serviço.
      */
@@ -37,6 +38,14 @@ public abstract class Servico {
                 .registerSubtype(ServicoCalibragem.class, TipoServico.CALIBRAGEM.asString())
                 .registerSubtype(ServicoMovimentacao.class, TipoServico.MOVIMENTACAO.asString())
                 .registerSubtype(ServicoInspecao.class, TipoServico.INSPECAO.asString());
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public Long getCodAfericao() {

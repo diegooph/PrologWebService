@@ -155,7 +155,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setString(1, placa);
             stmt.setString(2, tipoServico);
             rSet = stmt.executeQuery();
-            return createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -223,7 +223,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codServico);
             rSet = stmt.executeQuery();
-            return createServico(rSet, pneuDao);
+            return ServicoConverter.createServico(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -298,7 +298,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(2, dataInicial);
             stmt.setLong(3, dataFinal);
             rSet = stmt.executeQuery();
-            return createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -340,7 +340,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(3, dataInicial);
             stmt.setLong(4, dataFinal);
             rSet = stmt.executeQuery();
-            return createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -382,31 +382,9 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(3, dataInicial);
             stmt.setLong(4, dataFinal);
             rSet = stmt.executeQuery();
-            return createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    private List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
-        final List<Servico> servicos = new ArrayList<>();
-        while (rSet.next()) {
-            servicos.add(createServico(rSet, pneuDao));
-        }
-        return servicos;
-    }
-
-    private Servico createServico(ResultSet rSet, PneuDao pneuDao) throws SQLException {
-        final TipoServico tipo = TipoServico.fromString(rSet.getString("TIPO_SERVICO"));
-        switch (tipo) {
-            case CALIBRAGEM:
-                return createCalibragem(pneuDao, rSet);
-            case MOVIMENTACAO:
-                return createMovimentacao(pneuDao, rSet);
-            case INSPECAO:
-                return createInspecao(pneuDao, rSet);
-            default:
-                throw new IllegalStateException("Tipo desconhecido: " + tipo);
         }
     }
 
@@ -527,33 +505,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             closeConnection(conn, stmt, null);
         }
         return listAlternativas;
-    }
-
-    private ServicoCalibragem createCalibragem(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        ServicoCalibragem calibragem = new ServicoCalibragem();
-        calibragem.setPneuComProblema(pneuDao.createPneu(rSet));
-        calibragem.setCodAfericao(rSet.getLong("COD_AFERICAO"));
-        calibragem.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
-        calibragem.setQtdApontamentos(rSet.getInt("QT_APONTAMENTOS"));
-        return calibragem;
-    }
-
-    private ServicoInspecao createInspecao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        ServicoInspecao inspecao = new ServicoInspecao();
-        inspecao.setPneuComProblema(pneuDao.createPneu(rSet));
-        inspecao.setCodAfericao(rSet.getLong("COD_AFERICAO"));
-        inspecao.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
-        inspecao.setQtdApontamentos(rSet.getInt("QT_APONTAMENTOS"));
-        return inspecao;
-    }
-
-    private ServicoMovimentacao createMovimentacao(PneuDao pneuDao, ResultSet rSet) throws SQLException {
-        ServicoMovimentacao movimentacao = new ServicoMovimentacao();
-        movimentacao.setPneuComProblema(pneuDao.createPneu(rSet));
-        movimentacao.setCodAfericao(rSet.getLong("COD_AFERICAO"));
-        movimentacao.setTipoServico(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
-        movimentacao.setQtdApontamentos(rSet.getInt("QT_APONTAMENTOS"));
-        return movimentacao;
     }
 
     private void insertCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException {
