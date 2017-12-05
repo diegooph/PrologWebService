@@ -193,6 +193,43 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
+    public Servico getServicoByCod(Long codUnidade, Long codServico) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final PneuDao pneuDao = Injection.providePneuDao();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
+                    + "A.CODIGO AS COD_AFERICAO, ITS.TIPO_SERVICO, ITS.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP"
+                    + ".NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
+                    + "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MP.QT_SULCOS AS QT_SULCOS_MODELO, DP.*, P.*, "
+                    + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, "
+                    + "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
+                    + "FROM AFERICAO_MANUTENCAO ITS "
+                    + "JOIN PNEU P ON ITS.COD_PNEU = P.CODIGO "
+                    + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
+                    + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
+                    + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
+                    + "JOIN AFERICAO A ON A.CODIGO = ITS.COD_AFERICAO "
+                    + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND "
+                    + "A.PLACA_VEICULO = VP.PLACA "
+                    + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+                    + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
+                    + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
+                    + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa "
+                    + "WHERE AM.COD_UNIDADE = ? AND "
+                    + "WHERE AM.CODIGO = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codServico);
+            rSet = stmt.executeQuery();
+            return createServico(rSet, pneuDao);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public ServicosFechadosHolder getQuantidadeServicosFechadosByPlaca(Long codUnidade, long dataInicial, long dataFinal)
             throws SQLException {
         ResultSet rSet = null;
@@ -354,20 +391,23 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
-            final TipoServico tipo = TipoServico.fromString(rSet.getString("TIPO_SERVICO"));
-            switch (tipo) {
-                case CALIBRAGEM:
-                    servicos.add(createCalibragem(pneuDao, rSet));
-                    break;
-                case MOVIMENTACAO:
-                    servicos.add(createMovimentacao(pneuDao, rSet));
-                    break;
-                case INSPECAO:
-                    servicos.add(createInspecao(pneuDao, rSet));
-                    break;
-            }
+            servicos.add(createServico(rSet, pneuDao));
         }
         return servicos;
+    }
+
+    private Servico createServico(ResultSet rSet, PneuDao pneuDao) throws SQLException {
+        final TipoServico tipo = TipoServico.fromString(rSet.getString("TIPO_SERVICO"));
+        switch (tipo) {
+            case CALIBRAGEM:
+                return createCalibragem(pneuDao, rSet);
+            case MOVIMENTACAO:
+                return createMovimentacao(pneuDao, rSet);
+            case INSPECAO:
+                return createInspecao(pneuDao, rSet);
+            default:
+                throw new IllegalStateException("Tipo desconhecido: " + tipo);
+        }
     }
 
     private ResultSet getServicosFechadosResultSet(Long codUnidade, long dataInicial, long dataFinal)

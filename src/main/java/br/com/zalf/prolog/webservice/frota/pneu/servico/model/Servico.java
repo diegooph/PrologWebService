@@ -13,19 +13,19 @@ public abstract class Servico {
     /**
      * O código da {@link Afericao} que originou esse serviço.
      */
-    public Long codAfericao;
-    public TipoServico tipoServico;
-    public Date dataHoraAbertura;
-    public Date dataHoraFechamento;
-    public Pneu pneuComProblema;
-    public Long cpfResponsavelFechamento;
-    public int qtdApontamentos;
-    public long kmVeiculoMomentoFechamento;
-    public String placaVeiculo;
+    private Long codAfericao;
+    private TipoServico tipoServico;
+    private Date dataHoraAbertura;
+    private Date dataHoraFechamento;
+    private Pneu pneuComProblema;
+    private Long cpfResponsavelFechamento;
+    private int qtdApontamentos;
+    private long kmVeiculoMomentoFechamento;
+    private String placaVeiculo;
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
      */
-    public long tempoRealizacaoServicoInMillis;
+    private long tempoRealizacaoServicoInMillis;
 
     public Servico() {
 

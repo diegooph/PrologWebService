@@ -33,6 +33,14 @@ public class ServicoResource {
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codUnidade}/{codServico}")
+	public Servico getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade,
+										  @PathParam("codUnidade") Long codServico) {
+		return service.getServicoByCod(codUnidade, codServico);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codUnidade}")
 	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade) {
 		return service.getConsolidadoListaVeiculos(codUnidade);

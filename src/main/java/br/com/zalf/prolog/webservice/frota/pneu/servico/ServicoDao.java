@@ -46,6 +46,8 @@ public interface ServicoDao {
 	 */
 	void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
 
+	Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
+
 	ServicosFechadosHolder getQuantidadeServicosFechadosByPlaca(final Long codUnidade,
 																final long dataInicial,
 																final long dataFinal) throws SQLException;

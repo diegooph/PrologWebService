@@ -58,6 +58,18 @@ public class ServicoService {
         }
     }
 
+    public Servico getServicoByCod(final Long codUnidade, final Long codServico) {
+        try {
+            return dao.getServicoByCod(codUnidade, codServico);
+        } catch (SQLException e) {
+            final String message = String.format("Erro ao buscar os serviço. \n," +
+                    "Unidade: %d \n" +
+                    "Código serviço: %d", codUnidade, codServico);
+            Log.e(TAG, message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
     public ServicosFechadosHolder getQuantidadeServicosFechados(Long codUnidade,
                                                                 long dataInicial,
                                                                 long dataFinal,
