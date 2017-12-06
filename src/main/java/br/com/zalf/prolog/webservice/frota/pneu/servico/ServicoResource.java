@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicosVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicosFechadosHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -45,7 +42,7 @@ public class ServicoResource {
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/abertos/{codUnidade}/veiculos")
-	public QuantidadeServicosVeiculo getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
+	public ServicosAbertosHolder getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
 		return service.getQuantidadeServicosAbertosVeiculo(codUnidade);
 	}
 

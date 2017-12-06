@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ServicoDao {
 
-	QuantidadeServicosVeiculo getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
+	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
 	/**
 	 * busca os serviços referentes a uma placa especifica

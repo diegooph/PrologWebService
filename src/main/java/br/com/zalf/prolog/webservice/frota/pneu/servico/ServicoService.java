@@ -15,7 +15,7 @@ public class ServicoService {
     private static final String TAG = ServicoService.class.getSimpleName();
     private ServicoDao dao = new ServicoDaoImpl();
 
-    public QuantidadeServicosVeiculo getQuantidadeServicosAbertosVeiculo(Long codUnidade) {
+    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) {
         try {
             return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
         } catch (SQLException e) {

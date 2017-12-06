@@ -33,74 +33,36 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private static final String TAG = ServicoDaoImpl.class.getSimpleName();
 
     @Override
-    public QuantidadeServicosVeiculo getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//        ResultSet rSet = null;
-//        final PlacaServicoHolder placaServicoHolder = new PlacaServicoHolder();
-//        final List<PlacaServicoHolder.PlacaServico> listaServicos = new ArrayList<>();
-//        try {
-//            conn = getConnection();
-//            stmt = conn.prepareStatement("SELECT V.PLACA, MOV.TOTAL_MOVIMENTACAO, CAL.TOTAL_CALIBRAGEM, INSP" +
-//                    ".TOTAL_INSPECAO\n" +
-//                    "FROM VEICULO V  JOIN\n" +
-//                    "    (SELECT VP.PLACA AS PLACA_TOT, COUNT(VP.PLACA) AS TOTAL_SERVICOS\n" +
-//                    "    FROM AFERICAO A\n" +
-//                    "    JOIN AFERICAO_MANUTENCAO AM ON AM.cod_afericao = A.codigo\n" +
-//                    "    JOIN veiculo_pneu VP ON VP.placa = A.placa_veiculo AND AM.cod_pneu = VP.cod_pneu AND AM" +
-//                    ".cod_unidade = VP.cod_unidade\n" +
-//                    "    WHERE AM.TIPO_SERVICO LIKE '%' AND AM.DATA_HORA_RESOLUCAO IS NULL\n" +
-//                    "    GROUP BY VP.PLACA) AS TOT ON PLACA_TOT = V.PLACA\n" +
-//                    "FULL OUTER JOIN\n" +
-//                    "    (SELECT VP.PLACA AS PLACA_MOV, COUNT(AM.TIPO_SERVICO) AS TOTAL_MOVIMENTACAO\n" +
-//                    "    FROM AFERICAO A\n" +
-//                    "    JOIN AFERICAO_MANUTENCAO AM ON AM.cod_afericao = A.codigo\n" +
-//                    "    JOIN VEICULO_PNEU VP ON A.placa_veiculo = VP.placa AND VP.cod_pneu = AM.cod_pneu AND AM" +
-//                    ".cod_unidade = VP.cod_unidade\n" +
-//                    "    WHERE AM.TIPO_SERVICO = ? AND AM.DATA_HORA_RESOLUCAO IS NULL\n" +
-//                    "    GROUP BY 1,AM.TIPO_SERVICO) AS MOV ON PLACA_MOV = V.PLACA\n" +
-//                    "FULL OUTER JOIN\n" +
-//                    "    (SELECT VP.PLACA AS PLACA_CAL, COUNT(AM.TIPO_SERVICO) AS TOTAL_CALIBRAGEM\n" +
-//                    "    FROM AFERICAO A\n" +
-//                    "    JOIN AFERICAO_MANUTENCAO AM ON AM.cod_afericao = A.codigo\n" +
-//                    "    JOIN VEICULO_PNEU VP ON A.placa_veiculo = VP.placa AND VP.cod_pneu = AM.cod_pneu AND AM" +
-//                    ".cod_unidade = VP.cod_unidade\n" +
-//                    "    WHERE AM.TIPO_SERVICO = ?  AND AM.DATA_HORA_RESOLUCAO IS NULL\n" +
-//                    "    GROUP BY 1,AM.TIPO_SERVICO) AS CAL ON PLACA_CAL = V.PLACA\n" +
-//                    "FULL OUTER JOIN\n" +
-//                    "    (SELECT VP.PLACA AS PLACA_INSP, COUNT(AM.TIPO_SERVICO) AS TOTAL_INSPECAO\n" +
-//                    "    FROM AFERICAO A\n" +
-//                    "    JOIN AFERICAO_MANUTENCAO AM ON AM.cod_afericao = A.codigo\n" +
-//                    "    JOIN VEICULO_PNEU VP ON A.placa_veiculo = VP.placa AND VP.cod_pneu = AM.cod_pneu AND AM" +
-//                    ".cod_unidade = VP.cod_unidade\n" +
-//                    "    WHERE AM.TIPO_SERVICO = ? AND AM.DATA_HORA_RESOLUCAO IS NULL\n" +
-//                    "    GROUP BY 1,AM.TIPO_SERVICO) AS INSP ON PLACA_INSP = V.PLACA\n" +
-//                    "WHERE V.COD_UNIDADE = ?");
-//            stmt.setString(1, TipoServico.MOVIMENTACAO.asString());
-//            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-//            stmt.setString(3, TipoServico.INSPECAO.asString());
-//            stmt.setLong(4, codUnidade);
-//            rSet = stmt.executeQuery();
-//            while (rSet.next()) {
-//                final PlacaServicoHolder.PlacaServico item = new PlacaServicoHolder.PlacaServico();
-//                item.placa = rSet.getString("PLACA");
-//                item.qtCalibragem = rSet.getInt("TOTAL_CALIBRAGEM");
-//                item.qtMovimentacao = rSet.getInt("TOTAL_MOVIMENTACAO");
-//                item.qtInspecao = rSet.getInt("TOTAL_INSPECAO");
-//
-//                listaServicos.add(item);
-//                placaServicoHolder.setQtCalibragemTotal(placaServicoHolder.getQtCalibragemTotal() + item.qtCalibragem);
-//                placaServicoHolder.setQtMovimentacaoTotal(placaServicoHolder.getQtMovimentacaoTotal() + item
-//                        .qtMovimentacao);
-//                placaServicoHolder.setQtInspecaoTotal(placaServicoHolder.getQtInspecaoTotal() + item.qtInspecao);
-//            }
-//        } finally {
-//            closeConnection(conn, stmt, rSet);
-//        }
-//        placaServicoHolder.setListPlacas(listaServicos);
-//        return placaServicoHolder;
-
-        return null;
+    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT" +
+                    "  A.PLACA_VEICULO, AM.COD_PNEU," +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
+                    "FROM AFERICAO_MANUTENCAO AM " +
+                    "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                    "WHERE AM.COD_UNIDADE = ?" +
+                    "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setString(1, TipoServico.MOVIMENTACAO.asString());
+            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
+            stmt.setString(3, TipoServico.INSPECAO.asString());
+            stmt.setLong(4, codUnidade);
+            rSet = stmt.executeQuery();
+            final ServicosAbertosHolder holder = new ServicosAbertosHolder();
+            final List<QuantidadeServicos> servicos = new ArrayList<>();
+            while (rSet.next()) {
+                servicos.add(ServicoConverter.createQtdServicosVeiculo(rSet));
+            }
+            holder.setServicosAbertos(servicos);
+            return holder;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     @Override
@@ -114,7 +76,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             holder.setListAlternativaInspecao(getListAlternativasInspecao());
         }
         if (containMovimentacao(holder.getListServicos())) {
-            Log.d(TAG, "contem movimentacao");
+            Log.d(TAG, "Contém movimentação");
             holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
         }
         final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
@@ -266,7 +228,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
             final List<QuantidadeServicos> quantidadeServicosFechados = new ArrayList<>();
             while (rSet.next()) {
-                quantidadeServicosFechados.add(createQtdServicosFechadosVeiculo(rSet));
+                quantidadeServicosFechados.add(ServicoConverter.createQtdServicosVeiculo(rSet));
             }
             servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
             return servicosFechadosHolder;
@@ -288,7 +250,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
             final List<QuantidadeServicos> quantidadeServicosFechados = new ArrayList<>();
             while (rSet.next()) {
-                quantidadeServicosFechados.add(createQtdServicosFechadosPneu(rSet));
+                quantidadeServicosFechados.add(ServicoConverter.createQtdServicosPneu(rSet));
             }
             servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
             return servicosFechadosHolder;
@@ -499,24 +461,6 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         stmt.setDate(5, new java.sql.Date(dataInicial));
         stmt.setDate(6, new java.sql.Date(dataFinal));
         return stmt;
-    }
-
-    private QuantidadeServicosVeiculo createQtdServicosFechadosVeiculo(ResultSet resultSet) throws SQLException {
-        final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
-        qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        return qtdServicosFechados;
-    }
-
-    private QuantidadeServicosPneu createQtdServicosFechadosPneu(ResultSet resultSet) throws SQLException {
-        final QuantidadeServicosPneu qtdServicosFechados = new QuantidadeServicosPneu();
-        qtdServicosFechados.setCodigoPneu(resultSet.getString("COD_PNEU"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        return qtdServicosFechados;
     }
 
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(ServicoMovimentacao servico, Long codUnidade) {
