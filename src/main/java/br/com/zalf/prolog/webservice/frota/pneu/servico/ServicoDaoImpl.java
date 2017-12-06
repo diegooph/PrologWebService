@@ -188,8 +188,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
             conn.rollback();
+            throw e;
         } finally {
             closeConnection(conn, null, null);
         }
