@@ -85,6 +85,6 @@ final class ServicoConverter {
         servico.setCodAfericao(resultSet.getLong("COD_AFERICAO"));
         servico.setTipoServico(TipoServico.fromString(resultSet.getString("TIPO_SERVICO")));
         servico.setQtdApontamentos(resultSet.getInt("QT_APONTAMENTOS"));
-        servico.setTempoRealizacaoServicoInMillis(resultSet.getLong("TEMPO_REALIZACAO"));
+        servico.setTempoRealizacaoServicoInMillis(resultSet.getLong("TEMPO_REALIZACAO_MILLIS"));
     }
 }
