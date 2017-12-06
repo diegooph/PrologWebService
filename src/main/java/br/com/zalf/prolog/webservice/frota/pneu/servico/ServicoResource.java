@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -100,5 +101,13 @@ public class ServicoResource {
 													@QueryParam("dataInicial") @Required long dataInicial,
 													@QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/{codServico}/veiculos/{placaVeiculo}")
+	public Veiculo getVeiculoAberturaServico(@PathParam("codServico") @Required Long codServico,
+											 @PathParam("placaVeiculo") @Required String placaVeiculo) {
+		return service.getVeiculoAberturaServico(codServico, placaVeiculo);
 	}
 }

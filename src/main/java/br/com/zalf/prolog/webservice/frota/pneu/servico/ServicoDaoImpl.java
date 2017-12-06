@@ -439,6 +439,47 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         }
     }
 
+    @NotNull
+    @Override
+    public Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "  A.PLACA_VEICULO, " +
+                    "  A.KM_VEICULO, " +
+                    "  AV.COD_PNEU, " +
+                    "  AV.ALTURA_SULCO_EXTERNO, " +
+                    "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
+                    "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
+                    "  AV.ALTURA_SULCO_INTERNO, " +
+                    "  AV.PSI, " +
+                    "  AV.POSICAO, " +
+                    "  AV.VIDA_MOMENTO_AFERICAO " +
+                    "FROM AFERICAO_MANUTENCAO AM " +
+                    "  JOIN AFERICAO A " +
+                    "    ON AM.COD_AFERICAO = A.CODIGO " +
+                    "  JOIN AFERICAO_VALORES AV " +
+                    "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
+                    "       AND A.CODIGO = AV.COD_AFERICAO " +
+                    "WHERE AM.CODIGO = ? " +
+                    "      AND A.PLACA_VEICULO = ?;");
+            stmt.setLong(1, codServico);
+            stmt.setString(2, placaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return ServicoConverter.createVeiculoAberturaServico(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar veículo do serviço");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     private PreparedStatement getServicosFechadosStatement(Long codUnidade,
                                                            long dataInicial,
                                                            long dataFinal,

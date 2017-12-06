@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -142,6 +144,19 @@ public class ServicoService {
                     "Veículo: %s \n" +
                     "Data Inicial: %d \n" +
                     "Data Final: %d", codUnidade, placaVeiculo, dataInicial, dataFinal);
+            Log.e(TAG, message, e);
+            throw new RuntimeException(message);
+        }
+    }
+
+    @NotNull
+    public Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo) {
+        try {
+            return dao.getVeiculoAberturaServico(codServico, placaVeiculo);
+        } catch (SQLException e) {
+            final String message = String.format("Erro ao buscar o veículo para um serviço. \n" +
+                    "Serviço: %d \n" +
+                    "Veículo: %s \n", codServico, placaVeiculo);
             Log.e(TAG, message, e);
             throw new RuntimeException(message);
         }

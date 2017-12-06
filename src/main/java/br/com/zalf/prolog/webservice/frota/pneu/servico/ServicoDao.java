@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,4 +64,13 @@ public interface ServicoDao {
 											 final String placaVeiculo,
 											 final long dataInicial,
 											 final long dataFinal) throws SQLException;
+
+
+	/**
+	 * Remonta um veículo como ele estava na época da abertura do {@link Servico}. Com todos os seus pneus
+	 * ({@link Pneu}) na posição onde estavam na época e com os valores de sulco e pressão setados.
+	 */
+	@NotNull
+	Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
+			throws SQLException;
 }

@@ -2,7 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,6 +77,35 @@ final class ServicoConverter {
         qtdServicosFechados.setQtdServicosFechadosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
         qtdServicosFechados.setQtdServicosFechadosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
         return qtdServicosFechados;
+    }
+
+    static Veiculo createVeiculoAberturaServico(ResultSet resultSet) throws SQLException {
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
+        veiculo.setKmAtual(resultSet.getInt("KM_VEICULO"));
+
+        final List<Pneu> pneus = new ArrayList<>();
+        // Aqui precisa ser um do-while porque já é feito um resultSet.next() antes de chamar
+        // esse método. Se fizessemos apenas um while, perderíamos o primeiro elemento.
+        do {
+            final Pneu pneu = new Pneu();
+            pneu.setCodigo(resultSet.getString("COD_PNEU"));
+            pneu.setPosicao(resultSet.getInt("POSICAO"));
+            pneu.setVidaAtual(resultSet.getInt("VIDA_MOMENTO_AFERICAO"));
+            pneu.setPressaoAtual(resultSet.getDouble("PSI"));
+
+            // Sulcos.
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setExterno(resultSet.getDouble("ALTURA_SULCO_EXTERNO"));
+            sulcos.setCentralExterno(resultSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+            sulcos.setCentralInterno(resultSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+            sulcos.setInterno(resultSet.getDouble("ALTURA_SULCO_INTERNO"));
+            pneu.setSulcosAtuais(sulcos);
+            pneus.add(pneu);
+        } while (resultSet.next());
+        veiculo.setListPneus(pneus);
+
+        return veiculo;
     }
 
     private static void setAtributosInspecao(final ServicoInspecao inspecao, final ResultSet rSet) throws SQLException {
