@@ -117,7 +117,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setString(1, placa);
             stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            if (rSet.next()) {
+                return ServicoConverter.createServicos(rSet, pneuDao);
+            } else {
+                throw new SQLException("Erro ao buscar serviços em aberto para placa: " + placa);
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -209,7 +213,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codServico);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServico(rSet, pneuDao, true);
+            if (rSet.next()) {
+                return ServicoConverter.createServico(rSet, pneuDao, true);
+            } else {
+                throw new SQLException("Erro ao buscar serviço com código: " + codServico);
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -255,7 +263,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
             return servicosFechadosHolder;
         } finally {
-            closeConnection(null, null, rSet);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
@@ -311,7 +319,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(2, dataInicial);
             stmt.setLong(3, dataFinal);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            if (rSet.next()) {
+                return ServicoConverter.createServicos(rSet, pneuDao);
+            } else {
+                throw new SQLException("Erro ao buscar seviços fechados");
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -372,7 +384,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(3, dataInicial);
             stmt.setLong(4, dataFinal);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            if (rSet.next()) {
+                return ServicoConverter.createServicos(rSet, pneuDao);
+            } else {
+                throw new SQLException("Erro ao buscar serviços fechados para pneu: " + codPneu);
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -433,7 +449,11 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(3, dataInicial);
             stmt.setLong(4, dataFinal);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            if (rSet.next()) {
+                return ServicoConverter.createServicos(rSet, pneuDao);
+            } else {
+                throw new SQLException("Erro ao buscar serviços fechados para placa: " + placaVeiculo);
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
