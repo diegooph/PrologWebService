@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
@@ -61,6 +63,10 @@ public final class Injection {
 
     public static EmpresaDao provideEmpresaDao() {
         return new EmpresaDaoImpl();
+    }
+
+    public static IndicadorDao provideIndicadorDao() {
+        return new IndicadorDaoImpl();
     }
 
     // ================================================

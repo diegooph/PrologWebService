@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 
@@ -11,8 +12,8 @@ import java.util.List;
  */
 public class IndicadorService {
 
-    private IndicadorDaoImpl dao = new IndicadorDaoImpl();
     private static final String TAG = IndicadorService.class.getSimpleName();
+    private final IndicadorDao dao = Injection.provideIndicadorDao();
 
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial, Long dataFinal, Long cpf){
         try{

@@ -1,14 +1,16 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
-import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -114,12 +116,12 @@ public class RelatorioDaoImpl extends DatabaseConnection {
      * @throws SQLException caso não seja possível realizar a busca
      */
     public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                            String codRegional, String codUnidade, String equipe)throws SQLException{
+                                                            String codRegional, String codUnidade, String equipe) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         List<IndicadorAcumulado> acumulados = new ArrayList<>();
-        try{
+        try {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES);
             stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
@@ -129,11 +131,13 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
             rSet = stmt.executeQuery();
+            final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+            // TODO: poderia ser um if aqui?
             while (rSet.next()) {
-                acumulados = new IndicadorDaoImpl().createAcumulados(rSet);
+                acumulados = indicadorDao.createAcumulados(rSet);
             }
-        }finally {
-            closeConnection(conn,stmt,rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
         return acumulados;
     }
@@ -141,29 +145,30 @@ public class RelatorioDaoImpl extends DatabaseConnection {
 
     public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
                                                String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
-
-        return new IndicadorDaoImpl().getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
+        final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+        return indicadorDao.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
                 codUnidade, equipe, cpf, indicador);
     }
 
     /**
      * Busca os dados para a aba Diário da tela Relatórios, pilar Entrega
+     *
      * @param dataInicial um Long
-     * @param dataFinal um Long
-     * @param codEmpresa código da empresa usado no filtro
+     * @param dataFinal   um Long
+     * @param codEmpresa  código da empresa usado no filtro
      * @param codRegional código da regional usado no filtro
-     * @param codUnidade código da unidade usado no filtro
-     * @param equipe nome da equipe usado no filtro
+     * @param codUnidade  código da unidade usado no filtro
+     * @param equipe      nome da equipe usado no filtro
      * @return lista de {@link ConsolidadoDia}
      * @throws SQLException caso não seja possível realizar a busca
      */
     public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                  String codRegional, String codUnidade, String equipe, int limit, int offset)throws SQLException{
+                                                  String codRegional, String codUnidade, String equipe, int limit, int offset) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         List<ConsolidadoDia> consolidados = new ArrayList<>();
-        try{
+        try {
             conn = getConnection();
             String query = String.format(BUSCA_ACUMULADO_POR_DIA, " LIMIT " + limit + " OFFSET " + offset);
             stmt = conn.prepareStatement(query);
@@ -174,16 +179,16 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
             rSet = stmt.executeQuery();
-            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
-            while (rSet.next()){
-                ConsolidadoDia consolidado = new ConsolidadoDia();
+            final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+            while (rSet.next()) {
+                final ConsolidadoDia consolidado = new ConsolidadoDia();
                 consolidado.setData(rSet.getDate("DATA"))
-                            .setQtdMapas(rSet.getInt("VIAGENS_TOTAL"))
-                            .setIndicadores(indicadorDao.createAcumulados(rSet));
+                        .setQtdMapas(rSet.getInt("VIAGENS_TOTAL"))
+                        .setIndicadores(indicadorDao.createAcumulados(rSet));
                 consolidados.add(consolidado);
             }
-        }finally {
-            closeConnection(conn,stmt,rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
         return consolidados;
     }
@@ -191,22 +196,22 @@ public class RelatorioDaoImpl extends DatabaseConnection {
     /**
      * Estratifica os mapas de um dia, contém os dados da equipe, data e mapa, além dos indicadores
      * no formato de item e não de acumulado, chamado quando acontece um clique no FAB
-     * @param data uma data, serão buscados apenas os mapas dessa data
-     * @param codEmpresa código da empresa a ser usado no filtro
+     *
+     * @param data        uma data, serão buscados apenas os mapas dessa data
+     * @param codEmpresa  código da empresa a ser usado no filtro
      * @param codRegional código da regional a ser usado no filtro
-     * @param codUnidade código da unidade a ser usado no filtro
-     * @param equipe nome da equipe a ser usado no filtro
+     * @param codUnidade  código da unidade a ser usado no filtro
+     * @param equipe      nome da equipe a ser usado no filtro
      * @return lista de {@link MapaEstratificado}
      * @throws SQLException caso não seja possível realizar a busca
      */
     public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
-                                                          String codUnidade, String equipe) throws SQLException{
+                                                          String codUnidade, String equipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<MapaEstratificado> mapas = new ArrayList<>();
-        IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
-        try{
+        try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT \n" +
                     FRAGMENTO_BUSCA_EXTRATO_DIA +
@@ -220,12 +225,13 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             stmt.setDate(1, DateUtils.toSqlDate(new Date(data)));
             stmt.setString(2, codEmpresa);
             stmt.setString(3, codRegional);
-            stmt.setString(4 ,codUnidade);
+            stmt.setString(4, codUnidade);
             stmt.setString(5, equipe);
             Log.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
-            while(rSet.next()){
-                MapaEstratificado mapa = new MapaEstratificado();
+            final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+            while (rSet.next()) {
+                final MapaEstratificado mapa = new MapaEstratificado();
                 mapa.setNumeroMapa(rSet.getInt("MAPA"))
                         .setMotorista(rSet.getString("MOTORISTA"))
                         .setAjudante1(rSet.getString("AJ1"))
@@ -236,19 +242,19 @@ public class RelatorioDaoImpl extends DatabaseConnection {
                         .setIndicadores(indicadorDao.createExtratoDia(rSet));
                 mapas.add(mapa);
             }
-        }finally {
-            closeConnection(conn,stmt,rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
         return mapas;
     }
 
     public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                String codRegional, String codUnidade, String equipe, String indicador)throws SQLException{
+                                              String codRegional, String codUnidade, String equipe, String indicador) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         List<DadosGrafico> dados = new ArrayList<>();
-        try{
+        try {
             conn = getConnection();
             String query = String.format(BUSCA_ACUMULADO_POR_DIA, "");
             stmt = conn.prepareStatement(query);
@@ -259,15 +265,15 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             stmt.setString(5, codUnidade);
             stmt.setString(6, equipe);
             rSet = stmt.executeQuery();
-            IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
-            while (rSet.next()){
-                DadosGrafico dado = new DadosGrafico();
+            final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+            while (rSet.next()) {
+                final DadosGrafico dado = new DadosGrafico();
                 dado.setData(rSet.getDate("DATA"))
                         .setIndicador(indicadorDao.createAcumuladoIndicador(rSet, indicador));
                 dados.add(dado);
             }
-        }finally {
-            closeConnection(conn,stmt,rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
         return dados;
     }

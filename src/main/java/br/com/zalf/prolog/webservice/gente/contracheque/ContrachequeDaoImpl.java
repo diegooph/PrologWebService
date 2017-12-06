@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
@@ -163,12 +164,10 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException{
-        IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
-        ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
-        PeriodoProdutividade periodoProdutividade;
-        ProdutividadeService produtividadeService = new ProdutividadeService();
-        periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
-        List<IndicadorAcumulado> indicadores =
+        final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
+        final ProdutividadeService produtividadeService = new ProdutividadeService();
+        final PeriodoProdutividade periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
+        final List<IndicadorAcumulado> indicadores =
                 indicadorDao.getAcumuladoIndicadoresIndividual(periodoProdutividade.getDataInicio().getTime(),
                         periodoProdutividade.getDataTermino().getTime(), cpf);
 

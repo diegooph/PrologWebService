@@ -171,13 +171,17 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas, "  +
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf;";
 
+	public IndicadorDaoImpl() {
+
+	}
+
 	@Override
 	public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
 											   String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<Indicador> itens = new ArrayList<>();
+		List<Indicador> itens;
 		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_EXTRATO_INDICADORES);
@@ -198,138 +202,31 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	}
 
 	@Override
-	public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial, Long dataFinal, Long cpf)throws SQLException{
+	public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial, Long dataFinal, Long cpf) throws SQLException {
 		Connection conn = null;
 		ResultSet rSet = null;
 		PreparedStatement stmt = null;
 		List<IndicadorAcumulado> acumulados = new ArrayList<>();
-		try{
+		try {
 			conn = getConnection();
 			stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL);
 			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
 			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
 			stmt.setLong(3, cpf);
-            Log.d(TAG, stmt.toString());
+			Log.d(TAG, stmt.toString());
 			rSet = stmt.executeQuery();
-			if(rSet.next()) {
+			if (rSet.next()) {
 				acumulados = createAcumulados(rSet);
 			}
-		}finally {
-			closeConnection(conn,stmt,rSet);
+		} finally {
+			closeConnection(conn, stmt, rSet);
 		}
 		return acumulados;
 	}
 
-	/**
-	 * Cria os objetos que representam os indicadores acumulados
-	 * @param rSet ResultSet contendo os acumulados do período solicitado
-	 * @return uma lista de {@link IndicadorAcumulado}
-	 * @throws SQLException caso não seja possível recuperar alguma coluna do ResultSet
-     */
-	public List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException{
-		List<IndicadorAcumulado> acumulados = new ArrayList<>();
-			acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDevNf(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoJornadaMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDispersaoKm(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoJornadaMedia(rSet));
-			acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet));
-		return acumulados;
-	}
-
-	/**
-	 * Cria os itens para compor o extrato
-	 * @param rSet um ResultSet contendo o resultado da busca
-	 * @param indicador String para indicar qual o indicador que deve ser montado o extrato
-	 * @return uma lista de Indicador {@link Indicador}
-	 * @throws SQLException caso não seja possível recuparar alguma coluna do ResultSet
-	 */
-	public List<Indicador> createExtratoIndicador(ResultSet rSet, String indicador) throws SQLException{
-
-		if (indicador.equals(CaixaViagem.CAIXA_VIAGEM)){
-			return IndicadorConverter.createExtratoCaixaViagem(rSet);
-		}else if(indicador.equals(DevHl.DEVOLUCAO_HL)){
-			return IndicadorConverter.createExtratoDevHl(rSet);
-		}else if(indicador.equals(DevPdv.DEVOLUCAO_PDV)){
-			return IndicadorConverter.createExtratoDevPdv(rSet);
-		}else if(indicador.equals(DispersaoKm.DISPERSAO_KM)){
-			return IndicadorConverter.createExtratoDispersaoKm(rSet);
-		}else if(indicador.equals(Tracking.TRACKING)){
-			return IndicadorConverter.createExtratoTracking(rSet);
-		}else if(indicador.equals(DispersaoTempo.DISPERSAO_TEMPO)){
-			return IndicadorConverter.createExtratoDispersaoTempo(rSet);
-		}else if(indicador.equals(Jornada.JORNADA)){
-			return IndicadorConverter.createExtratoJornada(rSet);
-		}else if(indicador.equals(TempoInterno.TEMPO_INTERNO)){
-			return IndicadorConverter.createExtratoTempoInterno(rSet);
-		}else if(indicador.equals(TempoLargada.TEMPO_LARGADA)){
-			return IndicadorConverter.createExtratoTempoLargada(rSet);
-		}else if(indicador.equals(TempoRota.TEMPO_ROTA)) {
-			return IndicadorConverter.createExtratoTempoRota(rSet);
-		}else if(indicador.equals(DevNf.DEVOLUCAO_NF)) {
-		return IndicadorConverter.createExtratoDevNf(rSet);
-	}
-		return Collections.emptyList();
-	}
-
-	public IndicadorAcumulado createAcumuladoIndicador(ResultSet rSet, String indicador) throws SQLException{
-
-		if (indicador.equals(CaixaViagemAcumulado.CAIXA_VIAGEM_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoCaixaViagem(rSet);
-		}else if(indicador.equals(DevHlAcumulado.DEV_HL_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoDevHl(rSet);
-		}else if(indicador.equals(DevNfAcumulado.DEV_NF_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoDevNf(rSet);
-		}else if(indicador.equals(DevPdvAcumulado.DEV_PDV_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoDevPdv(rSet);
-		}else if(indicador.equals(DispersaoKmAcumulado.DISPERSAO_KM_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoDispersaoKm(rSet);
-		}else if(indicador.equals(TrackingAcumulado.TRACKING_ACUMULADO)){
-			return IndicadorConverter.createAcumuladoTracking(rSet);
-		}else if(indicador.equals(DispersaoTempoAcumuladoMapas.DISPERSAO_TEMPO_ACUMULADO_MAPAS)){
-			return IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet);
-		}else if(indicador.equals(DispersaoTempoAcumuladoMedia.DISPERSAO_TEMPO_ACUMULADO_MEDIA)){
-			return IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet);
-		}else if(indicador.equals(JornadaAcumuladoMapas.JORNADA_ACUMULADO_MAPAS)){
-			return IndicadorConverter.createAcumuladoJornadaMapas(rSet);
-		}else if(indicador.equals(JornadaAcumuladoMedia.JORNADA_ACUMULADO_MEDIA)){
-			return IndicadorConverter.createAcumuladoJornadaMedia(rSet);
-		}else if(indicador.equals(TempoInternoAcumuladoMapas.TEMPO_INTERNO_ACUMULADO_MAPAS)){
-			return IndicadorConverter.createAcumuladoTempoInternoMapas(rSet);
-		}else if(indicador.equals(TempoInternoAcumuladoMedia.TEMPO_INTERNO_ACUMULADO_MEDIA)){
-			return IndicadorConverter.createAcumuladoTempoInternoMedia(rSet);
-		}else if(indicador.equals(TempoLargadaAcumuladoMapas.TEMPO_LARGADA_ACUMULADO_MAPAS)){
-			return IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet);
-		}else if(indicador.equals(TempoLargadaAcumuladoMedia.TEMPO_LARGADA_ACUMULADO_MEDIA)){
-			return IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet);
-		}else if(indicador.equals(TempoRotaAcumuladoMapas.TEMPO_ROTA_ACUMULADO_MAPAS)) {
-			return IndicadorConverter.createAcumuladoTempoRotaMapas(rSet);
-		}else if(indicador.equals(TempoRotaAcumuladoMedia.TEMPO_ROTA_ACUMULADO_MEDIA)) {
-			return IndicadorConverter.createAcumuladoTempoRotaMedia(rSet);
-		}
-		return null;
-	}
-
-
-
-	/**
-	 * Cria apenas um item de cada indicador, que irá compor os indicadores de um mapa
-	 * @param rSet ResultSet contendo os dados de apenas um unico mapa
-	 * @return lista com os indicadores desse mapa
-	 * @throws SQLException caso não seja possivel realizar a busca de alguma coluna
-     */
-	public List<IndicadorItem> createExtratoDia(ResultSet rSet)throws SQLException{
-		List<IndicadorItem> itens = new ArrayList<>();
+	@Override
+	public List<IndicadorItem> createExtratoDia(ResultSet rSet) throws SQLException {
+		final List<IndicadorItem> itens = new ArrayList<>();
 		itens.add(IndicadorConverter.createDevHl(rSet));
 		itens.add(IndicadorConverter.createDevPdv(rSet));
 		itens.add(IndicadorConverter.createDevNf(rSet));
@@ -344,4 +241,100 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 		return itens;
 	}
 
+	@Override
+	public List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException {
+		final List<IndicadorAcumulado> acumulados = new ArrayList<>();
+		acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoDevNf(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTracking(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMapas(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMapas(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoJornadaMapas(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoDispersaoKm(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoCaixaViagem(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoRotaMedia(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoTempoInternoMedia(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoJornadaMedia(rSet));
+		acumulados.add(IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet));
+		return acumulados;
+	}
+
+	@Override
+	public IndicadorAcumulado createAcumuladoIndicador(ResultSet rSet, String indicador) throws SQLException {
+		switch (indicador) {
+			case CaixaViagemAcumulado.CAIXA_VIAGEM_ACUMULADO:
+				return IndicadorConverter.createAcumuladoCaixaViagem(rSet);
+			case DevHlAcumulado.DEV_HL_ACUMULADO:
+				return IndicadorConverter.createAcumuladoDevHl(rSet);
+			case DevNfAcumulado.DEV_NF_ACUMULADO:
+				return IndicadorConverter.createAcumuladoDevNf(rSet);
+			case DevPdvAcumulado.DEV_PDV_ACUMULADO:
+				return IndicadorConverter.createAcumuladoDevPdv(rSet);
+			case DispersaoKmAcumulado.DISPERSAO_KM_ACUMULADO:
+				return IndicadorConverter.createAcumuladoDispersaoKm(rSet);
+			case TrackingAcumulado.TRACKING_ACUMULADO:
+				return IndicadorConverter.createAcumuladoTracking(rSet);
+			case DispersaoTempoAcumuladoMapas.DISPERSAO_TEMPO_ACUMULADO_MAPAS:
+				return IndicadorConverter.createAcumuladoDispersaoTempoMapas(rSet);
+			case DispersaoTempoAcumuladoMedia.DISPERSAO_TEMPO_ACUMULADO_MEDIA:
+				return IndicadorConverter.createAcumuladoDispersaoTempoMedia(rSet);
+			case JornadaAcumuladoMapas.JORNADA_ACUMULADO_MAPAS:
+				return IndicadorConverter.createAcumuladoJornadaMapas(rSet);
+			case JornadaAcumuladoMedia.JORNADA_ACUMULADO_MEDIA:
+				return IndicadorConverter.createAcumuladoJornadaMedia(rSet);
+			case TempoInternoAcumuladoMapas.TEMPO_INTERNO_ACUMULADO_MAPAS:
+				return IndicadorConverter.createAcumuladoTempoInternoMapas(rSet);
+			case TempoInternoAcumuladoMedia.TEMPO_INTERNO_ACUMULADO_MEDIA:
+				return IndicadorConverter.createAcumuladoTempoInternoMedia(rSet);
+			case TempoLargadaAcumuladoMapas.TEMPO_LARGADA_ACUMULADO_MAPAS:
+				return IndicadorConverter.createAcumuladoTempoLargadaMapas(rSet);
+			case TempoLargadaAcumuladoMedia.TEMPO_LARGADA_ACUMULADO_MEDIA:
+				return IndicadorConverter.createAcumuladoTempoLargadaMedia(rSet);
+			case TempoRotaAcumuladoMapas.TEMPO_ROTA_ACUMULADO_MAPAS:
+				return IndicadorConverter.createAcumuladoTempoRotaMapas(rSet);
+			case TempoRotaAcumuladoMedia.TEMPO_ROTA_ACUMULADO_MEDIA:
+				return IndicadorConverter.createAcumuladoTempoRotaMedia(rSet);
+		}
+		return null;
+	}
+
+	/**
+	 * Cria os itens para compor o extrato
+	 *
+	 * @param rSet      um ResultSet contendo o resultado da busca
+	 * @param indicador String para indicar qual o indicador que deve ser montado o extrato
+	 * @return uma lista de Indicador {@link Indicador}
+	 * @throws SQLException caso não seja possível recuparar alguma coluna do ResultSet
+	 */
+	private List<Indicador> createExtratoIndicador(ResultSet rSet, String indicador) throws SQLException {
+		switch (indicador) {
+			case CaixaViagem.CAIXA_VIAGEM:
+				return IndicadorConverter.createExtratoCaixaViagem(rSet);
+			case DevHl.DEVOLUCAO_HL:
+				return IndicadorConverter.createExtratoDevHl(rSet);
+			case DevPdv.DEVOLUCAO_PDV:
+				return IndicadorConverter.createExtratoDevPdv(rSet);
+			case DispersaoKm.DISPERSAO_KM:
+				return IndicadorConverter.createExtratoDispersaoKm(rSet);
+			case Tracking.TRACKING:
+				return IndicadorConverter.createExtratoTracking(rSet);
+			case DispersaoTempo.DISPERSAO_TEMPO:
+				return IndicadorConverter.createExtratoDispersaoTempo(rSet);
+			case Jornada.JORNADA:
+				return IndicadorConverter.createExtratoJornada(rSet);
+			case TempoInterno.TEMPO_INTERNO:
+				return IndicadorConverter.createExtratoTempoInterno(rSet);
+			case TempoLargada.TEMPO_LARGADA:
+				return IndicadorConverter.createExtratoTempoLargada(rSet);
+			case TempoRota.TEMPO_ROTA:
+				return IndicadorConverter.createExtratoTempoRota(rSet);
+			case DevNf.DEVOLUCAO_NF:
+				return IndicadorConverter.createExtratoDevNf(rSet);
+		}
+		return Collections.emptyList();
+	}
 }

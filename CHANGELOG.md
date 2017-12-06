@@ -4,6 +4,8 @@ Change Log
 <a name="v2.0.41"></a>
 ## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (release-date) - [unreleased]
 
+### Refactor
+* Altera seguintes classes para utilizarem Injection: `IndicadorDaoImpl`
 
 <a name="v2.0.40"></a>
 ## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (2017-11-29)
