@@ -15,11 +15,11 @@ public class ServicoService {
     private static final String TAG = ServicoService.class.getSimpleName();
     private ServicoDao dao = new ServicoDaoImpl();
 
-    public PlacaServicoHolder getConsolidadoListaVeiculos(Long codUnidade) {
+    public QuantidadeServicosVeiculo getQuantidadeServicosAbertosVeiculo(Long codUnidade) {
         try {
-            return dao.getPlacasServico(codUnidade);
+            return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o consolidado de veículos. \n," +
+            Log.e(TAG, String.format("Erro ao buscar quantidade de serviços abertos por veículo. \n," +
                     "Unidade: %d", codUnidade), e);
             return null;
         }
@@ -82,7 +82,7 @@ public class ServicoService {
                 return dao.getQuantidadeServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);
             }
         } catch (SQLException e) {
-            final String message = String.format("Erro ao buscar os serviços fechados. \n," +
+            final String message = String.format("Erro ao buscar os serviços fechados. \n" +
                     "Unidade: %d \n" +
                     "Data Inicial: %d \n" +
                     "Data Final: %d", codUnidade, dataInicial, dataFinal);

@@ -9,18 +9,18 @@ import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public abstract class QuantidadeServicosFechados {
+public abstract class QuantidadeServicos {
     private int qtdServicosFechadosCalibragem;
     private int qtdServicosFechadosInspecao;
     private int qtdServicosFechadosMovimentacao;
     @Exclude
     private AgrupamentoServicosFechados agrupamento;
 
-    public static RuntimeTypeAdapterFactory<QuantidadeServicosFechados> provideTypeAdapterFactory() {
+    public static RuntimeTypeAdapterFactory<QuantidadeServicos> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
-                .of(QuantidadeServicosFechados.class, "agrupamento")
-                .registerSubtype(QuantidadeServicosFechadosPneu.class, AgrupamentoServicosFechados.POR_PNEU.asString())
-                .registerSubtype(QuantidadeServicosFechadosVeiculo.class, AgrupamentoServicosFechados.POR_VEICULO.asString());
+                .of(QuantidadeServicos.class, "agrupamento")
+                .registerSubtype(QuantidadeServicosPneu.class, AgrupamentoServicosFechados.POR_PNEU.asString())
+                .registerSubtype(QuantidadeServicosVeiculo.class, AgrupamentoServicosFechados.POR_VEICULO.asString());
     }
 
     public int getQtdServicosFechadosCalibragem() {

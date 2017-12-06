@@ -10,13 +10,7 @@ import java.util.List;
 
 public interface ServicoDao {
 
-	/**
-	 * busca as placas com serviços da unidade
-	 * @param codUnidade código da unidade
-	 * @return placas com serviços
-	 * @throws SQLException se ocorrer erro no banco de dados
-	 */
-	PlacaServicoHolder getPlacasServico(Long codUnidade) throws SQLException;
+	QuantidadeServicosVeiculo getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
 	/**
 	 * busca os serviços referentes a uma placa especifica

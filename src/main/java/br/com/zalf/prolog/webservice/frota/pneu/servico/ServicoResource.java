@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicosVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicosFechadosHolder;
@@ -45,17 +45,17 @@ public class ServicoResource {
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/abertos/{codUnidade}/veiculos")
-	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
-		return service.getConsolidadoListaVeiculos(codUnidade);
+	public QuantidadeServicosVeiculo getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
+		return service.getQuantidadeServicosAbertosVeiculo(codUnidade);
 	}
 
-	@GET
-	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-	@Path("/abertos/veiculos/{placaVeiculo}")
-	public ServicoHolder getServicosByPlaca(@PathParam("placaVeiculo") @Required String placa,
-											@QueryParam("codUnidade") @Required Long codUnidade) {
-		return service.getServicosByPlaca(placa, codUnidade);
-	}
+//	@GET
+//	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+//	@Path("/abertos/veiculos/{placaVeiculo}")
+//	public ServicoHolder getServicosByPlaca(@PathParam("placaVeiculo") @Required String placa,
+//											@QueryParam("codUnidade") @Required Long codUnidade) {
+//		return service.getServicosByPlaca(placa, codUnidade);
+//	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})

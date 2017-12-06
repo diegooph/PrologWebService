@@ -87,7 +87,7 @@ public final class GsonUtils {
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
 		builder.registerTypeAdapterFactory(adapterModelo);
-		builder.registerTypeAdapterFactory(QuantidadeServicosFechados.provideTypeAdapterFactory());
+		builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
 
 		sGson = builder.create();
 	}

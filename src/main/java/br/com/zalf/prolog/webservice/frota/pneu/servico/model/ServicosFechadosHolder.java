@@ -8,13 +8,13 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ServicosFechadosHolder {
-   private List<QuantidadeServicosFechados> servicosFechados;
+   private List<QuantidadeServicos> servicosFechados;
 
-   public List<QuantidadeServicosFechados> getServicosFechados() {
+   public List<QuantidadeServicos> getServicosFechados() {
       return servicosFechados;
    }
 
-   public void setServicosFechados(List<QuantidadeServicosFechados> servicosFechados) {
+   public void setServicosFechados(List<QuantidadeServicos> servicosFechados) {
       this.servicosFechados = servicosFechados;
    }
 }
