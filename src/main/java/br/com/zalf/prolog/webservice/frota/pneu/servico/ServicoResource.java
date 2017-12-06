@@ -17,7 +17,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ServicoResource {
 
-	private ServicoService service = new ServicoService();
+	private final ServicoService service = new ServicoService();
 
 	@POST
 	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
@@ -41,25 +41,25 @@ public class ServicoResource {
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-	@Path("/abertos/{codUnidade}/veiculos")
-	public ServicosAbertosHolder getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
-		return service.getQuantidadeServicosAbertosVeiculo(codUnidade);
+	@Path("/abertos/{codUnidade}/totais")
+	public ServicosAbertosHolder getQuantidadeServicosAbertos(@PathParam("codUnidade") @Required Long codUnidade,
+															  @QueryParam("agrupamento") @Required String agrupamento) {
+		return service.getQuantidadeServicosAbertosVeiculo(codUnidade, agrupamento);
 	}
 
-//	@GET
-//	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-//	@Path("/abertos/veiculos/{placaVeiculo}")
-//	public ServicoHolder getServicosByPlaca(@PathParam("placaVeiculo") @Required String placa,
-//											@QueryParam("codUnidade") @Required Long codUnidade) {
-//		return service.getServicosByPlaca(placa, codUnidade);
-//	}
+	@GET
+	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+	@Path("/abertos/veiculos/{placaVeiculo}/completo")
+	public ServicoHolder getServicoHolder(@PathParam("placaVeiculo") @Required String placa,
+										  @QueryParam("codUnidade") @Required Long codUnidade) {
+		return service.getServicoHolder(placa, codUnidade);
+	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/abertos/veiculos/{placaVeiculo}")
-	public List<Servico> getServicosAbertosByPlaca(
-			@PathParam("placaVeiculo") @Required String placa,
-			@QueryParam("tipoServico") @Optional String tipoServico) {
+	public List<Servico> getServicosAbertosByPlaca(@PathParam("placaVeiculo") @Required String placa,
+												   @QueryParam("tipoServico") @Optional String tipoServico) {
 		return service.getServicosAbertosByPlaca(placa, tipoServico);
 	}
 

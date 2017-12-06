@@ -8,20 +8,24 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import java.util.List;
 
 /**
+ * Essa classe contém todas as informações necessárias para o fechamento de qualquer tipo de serviço
+ * ({@link TipoServico}) bem como os serviços disponíveis para fechamento.
+ *
  * Created by jean on 04/04/16.
  */
 public class ServicoHolder {
-
     private List<Servico> listServicos;
     private List<Alternativa> listAlternativaInspecao;
     private List<Pneu> pneusDisponiveis;
     private Restricao restricao;
+
     /**
      * Veículo em cima do qual esse serviço é baseado
      */
     private Veiculo veiculo;
 
     public ServicoHolder() {
+
     }
 
     public List<Alternativa> getListAlternativaInspecao() {

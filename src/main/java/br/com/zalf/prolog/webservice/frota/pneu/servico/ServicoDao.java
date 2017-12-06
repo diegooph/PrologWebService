@@ -12,14 +12,7 @@ public interface ServicoDao {
 
 	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
-	/**
-	 * busca os serviços referentes a uma placa especifica
-	 * @param placa placa do veículo
-	 * @param codUnidade código da unidade
-	 * @return serviços da placa
-	 * @throws SQLException se ocorrer erro no banco de dados
-	 */
-	ServicoHolder getServicosByPlaca(String placa, Long codUnidade) throws SQLException;
+	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException;
 
 	/**
 	 * busca os serviços abertos de uma placa

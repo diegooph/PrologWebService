@@ -15,19 +15,26 @@ public class ServicoService {
     private static final String TAG = ServicoService.class.getSimpleName();
     private ServicoDao dao = new ServicoDaoImpl();
 
-    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) {
-        try {
-            return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar quantidade de serviços abertos por veículo. \n," +
-                    "Unidade: %d", codUnidade), e);
-            return null;
+    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade,
+                                                                     String agrupamento) {
+        final AgrupamentoServicosFechados tipoAgrupamento = AgrupamentoServicosFechados.fromString(agrupamento);
+        if (tipoAgrupamento.equals(AgrupamentoServicosFechados.POR_VEICULO)) {
+            try {
+                return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
+            } catch (SQLException e) {
+                Log.e(TAG, String.format("Erro ao buscar quantidade de serviços abertos por veículo. \n," +
+                        "Unidade: %d", codUnidade), e);
+                return null;
+            }
+        } else {
+            throw new IllegalArgumentException("O único tipo de agrupamento suportado na busca dos serviços abertos é " +
+                    "por veículo. Agrupamento recebido: " + agrupamento);
         }
     }
 
-    public ServicoHolder getServicosByPlaca(String placa, Long codUnidade) {
+    public ServicoHolder getServicoHolder(String placa, Long codUnidade) {
         try {
-            return dao.getServicosByPlaca(placa, codUnidade);
+            return dao.getServicoHolder(placa, codUnidade);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os serviços da placa. \n," +
                     "Unidade: %d \n" +

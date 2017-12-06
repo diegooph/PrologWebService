@@ -66,7 +66,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
-    public ServicoHolder getServicosByPlaca(String placa, Long codUnidade) throws SQLException {
+    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException {
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoHolder holder = new ServicoHolder();
