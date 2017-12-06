@@ -46,7 +46,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
                     "FROM AFERICAO_MANUTENCAO AM " +
                     "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                    "WHERE AM.COD_UNIDADE = ?" +
+                    "WHERE AM.COD_UNIDADE = ? " +
                     "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
             stmt.setString(1, TipoServico.MOVIMENTACAO.asString());
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
@@ -546,14 +546,16 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         return listAlternativas;
     }
 
-    private void insertCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException {
+    private void insertCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+            throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                     + "DATA_HORA_RESOLUCAO = ?, "
                     + "CPF_MECANICO = ?, "
                     + "PSI_APOS_CONSERTO = ?, "
-                    + "KM_MOMENTO_CONSERTO = ? "
+                    + "KM_MOMENTO_CONSERTO = ?, "
+                    + "TEMPO_REALIZACAO_MILLIS = ? "
                     + "WHERE COD_AFERICAO = ? AND "
                     + "DATA_HORA_RESOLUCAO IS NULL AND "
                     + "COD_PNEU = ? "
@@ -562,9 +564,10 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(2, servico.getCpfResponsavelFechamento());
             stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
             stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
-            stmt.setLong(5, servico.getCodAfericao());
-            stmt.setString(6, servico.getPneuComProblema().getCodigo());
-            stmt.setString(7, servico.getTipoServico().asString());
+            stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
+            stmt.setLong(6, servico.getCodAfericao());
+            stmt.setString(7, servico.getPneuComProblema().getCodigo());
+            stmt.setString(8, servico.getTipoServico().asString());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -576,7 +579,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
 
     }
 
-    private void insertInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn) throws SQLException {
+    private void insertInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+            throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
@@ -584,7 +588,8 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     + "CPF_MECANICO = ?, "
                     + "PSI_APOS_CONSERTO = ?, "
                     + "KM_MOMENTO_CONSERTO = ?, "
-                    + "COD_ALTERNATIVA = ? "
+                    + "COD_ALTERNATIVA = ?, "
+                    + "TEMPO_REALIZACAO_MILLIS = ? "
                     + "WHERE COD_AFERICAO = ? AND "
                     + "COD_PNEU = ? AND "
                     + "DATA_HORA_RESOLUCAO IS NULL "
@@ -594,9 +599,10 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
             stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
             stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
-            stmt.setLong(6, servico.getCodAfericao());
-            stmt.setString(7, servico.getPneuComProblema().getCodigo());
-            stmt.setString(8, servico.getTipoServico().asString());
+            stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
+            stmt.setLong(7, servico.getCodAfericao());
+            stmt.setString(8, servico.getPneuComProblema().getCodigo());
+            stmt.setString(9, servico.getTipoServico().asString());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -616,6 +622,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     + "CPF_MECANICO = ?, "
                     + "KM_MOMENTO_CONSERTO = ?, "
                     + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                    + "TEMPO_REALIZACAO_MILLIS = ? "
                     + "WHERE COD_AFERICAO = ? AND "
                     + "COD_PNEU = ? AND "
                     + "DATA_HORA_RESOLUCAO IS NULL "
@@ -624,6 +631,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             stmt.setLong(2, servico.getCpfResponsavelFechamento());
             stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
             stmt.setLong(4, servico.getCodProcessoMovimentacao());
+            stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
             stmt.setLong(6, servico.getCodAfericao());
             stmt.setString(7, servico.getPneuComProblema().getCodigo());
             stmt.setString(8, servico.getTipoServico().asString());
