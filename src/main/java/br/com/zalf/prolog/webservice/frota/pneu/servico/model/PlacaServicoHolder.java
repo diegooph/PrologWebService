@@ -6,13 +6,13 @@ import java.util.List;
  * Created by jean on 09/04/16.
  */
 public class PlacaServicoHolder {
-
     private List<PlacaServico> listPlacas;
     private int qtCalibragemTotal;
     private int qtMovimentacaoTotal;
     private int qtInspecaoTotal;
 
     public PlacaServicoHolder() {
+
     }
 
     public List<PlacaServico> getListPlacas() {
@@ -65,6 +65,7 @@ public class PlacaServicoHolder {
         public int qtInspecao;
 
         public PlacaServico() {
+
         }
 
         @Override

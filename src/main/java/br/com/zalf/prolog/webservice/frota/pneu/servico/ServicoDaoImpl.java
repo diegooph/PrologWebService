@@ -23,6 +23,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Optional;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -107,7 +110,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoHolder holder = new ServicoHolder();
         holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
-        holder.setListServicos(getServicosAbertosByPlaca(placa, "%"));
+        holder.setListServicos(getServicosAbertosByPlaca(placa, null));
         if (containInspecao(holder.getListServicos())) {
             holder.setListAlternativaInspecao(getListAlternativasInspecao());
         }
@@ -122,7 +125,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
-    public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException {
+    public List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -151,7 +154,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
                     + "WHERE A.PLACA_VEICULO = ? AND AM.DATA_HORA_RESOLUCAO IS NULL AND AM.TIPO_SERVICO LIKE ? "
                     + "ORDER BY AM.TIPO_SERVICO");
             stmt.setString(1, placa);
-            stmt.setString(2, tipoServico);
+            stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
@@ -475,14 +478,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT" +
                     "  A.PLACA_VEICULO, AM.COD_PNEU," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.CALIBRAGEM.asString() + " THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.INSPECAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
-                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.MOVIMENTACAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
-                    "FROM AFERICAO_MANUTENCAO AM" +
-                    "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.CALIBRAGEM.asString() + " THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.INSPECAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
+                    "  SUM(CASE WHEN AM.TIPO_SERVICO = " + TipoServico.MOVIMENTACAO.asString() + " THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
+                    "FROM AFERICAO_MANUTENCAO AM " +
+                    "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                     "WHERE AM.COD_UNIDADE = ?" +
-                    "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL" +
-                    "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?" +
+                    "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
+                    "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
                     "GROUP BY A.PLACA_VEICULO, AM.COD_PNEU;");
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, new java.sql.Date(dataInicial));

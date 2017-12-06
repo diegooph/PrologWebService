@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
@@ -13,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 
-@Path("/servico")
+@Path("/servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ServicoResource {
@@ -23,7 +25,8 @@ public class ServicoResource {
 	@POST
 	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
 	@Path("/conserto/{codUnidade}")
-	public Response insertManutencao(Servico servico, @PathParam("codUnidade") Long codUnidade) {
+	public Response insertManutencao(@Required Servico servico,
+									 @PathParam("codUnidade") @Required Long codUnidade) {
 		if (service.insertManutencao(servico, codUnidade)) {
 			return Response.ok("Serviço consertado com sucesso.");
 		} else {
@@ -34,72 +37,71 @@ public class ServicoResource {
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codUnidade}/{codServico}")
-	public Servico getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade,
-										  @PathParam("codUnidade") Long codServico) {
+	public Servico getServicoByCod(@PathParam("codUnidade") @Required Long codUnidade,
+								   @PathParam("codUnidade") @Required Long codServico) {
 		return service.getServicoByCod(codUnidade, codServico);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-	@Path("/{codUnidade}")
-	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") Long codUnidade) {
+	@Path("/abertos/{codUnidade}/veiculos")
+	public PlacaServicoHolder getConsolidadoServicos(@PathParam("codUnidade") @Required Long codUnidade) {
 		return service.getConsolidadoListaVeiculos(codUnidade);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-	@Path("/{codUnidade}/{placaVeiculo}")
-	public ServicoHolder getServicosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("codUnidade") Long codUnidade) {
+	@Path("/abertos/veiculos/{placaVeiculo}")
+	public ServicoHolder getServicosByPlaca(@PathParam("placaVeiculo") @Required String placa,
+											@QueryParam("codUnidade") @Required Long codUnidade) {
 		return service.getServicosByPlaca(placa, codUnidade);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-	@Path("/abertos/{placaVeiculo}/{tipoServico}")
+	@Path("/abertos/veiculos/{placaVeiculo}")
 	public List<Servico> getServicosAbertosByPlaca(
-			@PathParam("placaVeiculo") String placa,
-			@PathParam("tipoServico") String tipoServico) {
+			@PathParam("placaVeiculo") @Required String placa,
+			@QueryParam("tipoServico") @Optional String tipoServico) {
 		return service.getServicosAbertosByPlaca(placa, tipoServico);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}/totais")
-	public ServicosFechadosHolder getQuantidadeServicosFechados(@PathParam("codUnidade") Long codUnidade,
-																@QueryParam("dataInicial") long dataInicial,
-																@QueryParam("dataFinal") long dataFinal,
-																@QueryParam("agrupamento") String agrupamento) {
+	public ServicosFechadosHolder getQuantidadeServicosFechados(@PathParam("codUnidade") @Required Long codUnidade,
+																@QueryParam("dataInicial") @Required long dataInicial,
+																@QueryParam("dataFinal") @Required long dataFinal,
+																@QueryParam("agrupamento") @Required String agrupamento) {
 		return service.getQuantidadeServicosFechados(codUnidade, dataInicial, dataFinal, agrupamento);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}")
-	public List<Servico> getServicosFechados(@PathParam("codUnidade") Long codUnidade,
-											 @QueryParam("dataInicial") long dataInicial,
-											 @QueryParam("dataFinal") long dataFinal) {
+	public List<Servico> getServicosFechados(@PathParam("codUnidade") @Required Long codUnidade,
+											 @QueryParam("dataInicial") @Required long dataInicial,
+											 @QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechados(codUnidade, dataInicial, dataFinal);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}/pneus/{codPneu}")
-	public List<Servico> getServicosFechadosPneu(@PathParam("codUnidade") Long codUnidade,
-												 @PathParam("codPneu") String codPneu,
-												 @QueryParam("dataInicial") long dataInicial,
-												 @QueryParam("dataFinal") long dataFinal) {
+	public List<Servico> getServicosFechadosPneu(@PathParam("codUnidade") @Required Long codUnidade,
+												 @PathParam("codPneu") @Required String codPneu,
+												 @QueryParam("dataInicial") @Required long dataInicial,
+												 @QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
 	}
 
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}/veiculos/{placaVeiculo}")
-	public List<Servico> getServicosFechadosVeiculo(@PathParam("codUnidade") Long codUnidade,
-													@PathParam("placaVeiculo") String placaVeiculo,
-													@QueryParam("dataInicial") long dataInicial,
-													@QueryParam("dataFinal") long dataFinal) {
+	public List<Servico> getServicosFechadosVeiculo(@PathParam("codUnidade") @Required Long codUnidade,
+													@PathParam("placaVeiculo") @Required String placaVeiculo,
+													@QueryParam("dataInicial") @Required long dataInicial,
+													@QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
 	}
 }

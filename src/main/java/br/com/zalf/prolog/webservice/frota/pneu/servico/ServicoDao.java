@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.PlacaServicoHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicoHolder;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.ServicosFechadosHolder;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,7 +34,7 @@ public interface ServicoDao {
 	 * @return lista de serviços da placa
 	 * @throws SQLException se ocorrer erro no banco de dados
 	 */
-	List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) throws SQLException;
+	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
 	/**
 	 * insere um serviço

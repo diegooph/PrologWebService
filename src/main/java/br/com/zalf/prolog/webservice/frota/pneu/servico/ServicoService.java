@@ -38,7 +38,7 @@ public class ServicoService {
 
     public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) {
         try {
-            return dao.getServicosAbertosByPlaca(placa, tipoServico);
+            return dao.getServicosAbertosByPlaca(placa, TipoServico.fromString(tipoServico));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os serviços abertos da placa. \n," +
                     "TipoServico: %s \n" +
