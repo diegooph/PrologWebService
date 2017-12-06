@@ -86,7 +86,7 @@ public class ServicoService {
         final AgrupamentoServicosFechados tipoAgrupamento = AgrupamentoServicosFechados.fromString(agrupamento);
         try {
             if (tipoAgrupamento.equals(AgrupamentoServicosFechados.POR_VEICULO)) {
-                return dao.getQuantidadeServicosFechadosByPlaca(codUnidade, dataInicial, dataFinal);
+                return dao.getQuantidadeServicosFechadosByVeiculo(codUnidade, dataInicial, dataFinal);
             } else {
                 return dao.getQuantidadeServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);
             }

@@ -150,14 +150,14 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     }
 
     @Override
-    public ServicosFechadosHolder getQuantidadeServicosFechadosByPlaca(Long codUnidade, long dataInicial, long dataFinal)
+    public ServicosFechadosHolder getQuantidadeServicosFechadosByVeiculo(Long codUnidade, long dataInicial, long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = ServicoQueryBinder.getQuantidadeServicosFechados(codUnidade, dataInicial, dataFinal, conn);
+            stmt = ServicoQueryBinder.getQuantidadeServicosFechadosVeiculo(codUnidade, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
             final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
             final List<QuantidadeServicos> quantidadeServicosFechados = new ArrayList<>();
@@ -179,7 +179,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = ServicoQueryBinder.getQuantidadeServicosFechados(codUnidade, dataInicial, dataFinal, conn);
+            stmt = ServicoQueryBinder.getQuantidadeServicosFechadosPneu(codUnidade, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
             final ServicosFechadosHolder servicosFechadosHolder = new ServicosFechadosHolder();
             final List<QuantidadeServicos> quantidadeServicosFechados = new ArrayList<>();

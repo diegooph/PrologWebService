@@ -71,12 +71,12 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosFechados(Long codUnidade,
-                                                           long dataInicial,
-                                                           long dataFinal,
-                                                           Connection connection) throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT" +
-                "  A.PLACA_VEICULO, AM.COD_PNEU," +
+    static PreparedStatement getQuantidadeServicosFechadosPneu(Long codUnidade,
+                                                               long dataInicial,
+                                                               long dataFinal,
+                                                               Connection connection) throws SQLException {
+        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "  AM.COD_PNEU, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
@@ -85,7 +85,31 @@ final class ServicoQueryBinder {
                 "WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
-                "GROUP BY A.PLACA_VEICULO, AM.COD_PNEU;");
+                "GROUP BY AM.COD_PNEU;");
+        stmt.setString(1, TipoServico.CALIBRAGEM.asString());
+        stmt.setString(2, TipoServico.INSPECAO.asString());
+        stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
+        stmt.setLong(4, codUnidade);
+        stmt.setDate(5, new java.sql.Date(dataInicial));
+        stmt.setDate(6, new java.sql.Date(dataFinal));
+        return stmt;
+    }
+
+    static PreparedStatement getQuantidadeServicosFechadosVeiculo(Long codUnidade,
+                                                                  long dataInicial,
+                                                                  long dataFinal,
+                                                                  Connection connection) throws SQLException {
+        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "  A.PLACA_VEICULO, " +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
+                "FROM AFERICAO_MANUTENCAO AM " +
+                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "WHERE AM.COD_UNIDADE = ?" +
+                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
+                "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
+                "GROUP BY A.PLACA_VEICULO;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());

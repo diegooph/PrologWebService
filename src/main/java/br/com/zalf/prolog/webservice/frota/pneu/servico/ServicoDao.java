@@ -36,9 +36,9 @@ public interface ServicoDao {
 
 	Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
 
-	ServicosFechadosHolder getQuantidadeServicosFechadosByPlaca(final Long codUnidade,
-																final long dataInicial,
-																final long dataFinal) throws SQLException;
+	ServicosFechadosHolder getQuantidadeServicosFechadosByVeiculo(final Long codUnidade,
+																  final long dataInicial,
+																  final long dataFinal) throws SQLException;
 
 
 	ServicosFechadosHolder getQuantidadeServicosFechadosByPneu(final Long codUnidade,
