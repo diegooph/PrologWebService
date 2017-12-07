@@ -61,6 +61,24 @@ final class ServicoConverter {
         return servico;
     }
 
+    static ServicosAbertosHolder createServicosAbertosHolder(ResultSet resultSet) throws SQLException {
+        final ServicosAbertosHolder holder = new ServicosAbertosHolder();
+        final List<QuantidadeServicos> servicos = new ArrayList<>();
+        int totalCalibragens = 0, totalInspecoes = 0, totalMovimentacoes = 0;
+        while (resultSet.next()) {
+            final QuantidadeServicosVeiculo qtdServicosVeiculo = createQtdServicosVeiculo(resultSet);
+            totalCalibragens += qtdServicosVeiculo.getQtdServicosCalibragem();
+            totalInspecoes += qtdServicosVeiculo.getQtdServicosInspecao();
+            totalMovimentacoes += qtdServicosVeiculo.getQtdServicosMovimentacao();
+            servicos.add(qtdServicosVeiculo);
+        }
+        holder.setQtdTotalCalibragensAbertas(totalCalibragens);
+        holder.setQtdTotalInspecoesAbertas(totalInspecoes);
+        holder.setQtdTotalMovimentacoesAbertas(totalMovimentacoes);
+        holder.setServicosAbertos(servicos);
+        return holder;
+    }
+
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));

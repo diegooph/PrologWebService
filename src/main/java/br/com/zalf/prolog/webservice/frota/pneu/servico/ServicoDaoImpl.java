@@ -41,13 +41,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = ServicoQueryBinder.getQuantidadeServicosAbertosVeiculo(codUnidade, conn);
             rSet = stmt.executeQuery();
-            final ServicosAbertosHolder holder = new ServicosAbertosHolder();
-            final List<QuantidadeServicos> servicos = new ArrayList<>();
-            while (rSet.next()) {
-                servicos.add(ServicoConverter.createQtdServicosVeiculo(rSet));
-            }
-            holder.setServicosAbertos(servicos);
-            return holder;
+            return ServicoConverter.createServicosAbertosHolder(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
