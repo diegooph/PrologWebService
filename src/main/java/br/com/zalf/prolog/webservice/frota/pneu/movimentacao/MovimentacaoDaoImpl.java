@@ -57,8 +57,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // antes de fazer qualquer movimentação, remover todos os pneus que sairam do veículo.
-            removeOrigensVeiculo(processoMov, conn);
+            removePneusComOrigemVeiculo(processoMov, conn);
             final Long codUnidade = processoMov.getUnidade().getCodigo();
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
@@ -105,12 +104,21 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
-    private void removeOrigensVeiculo(ProcessoMovimentacao movimentacao, Connection conn) throws SQLException {
-        for (Movimentacao mov : movimentacao.getMovimentacoes()) {
+    /**
+     * Antes de o {@link ProcessoMovimentacao} começar a ser processado. Todos os pneus movimentados com origem no
+     * veículo são antes desvinculados do mesmo. Com isso, removemos a dependência temporal no processamento das
+     * movimentações, pois podemos primeiro movimentar um {@link Pneu} do estoque para o veículo mesmo que na posição
+     * de destino dele já existisse um pneu.
+     */
+    private void removePneusComOrigemVeiculo(ProcessoMovimentacao processoMovimentacao, Connection conn) throws SQLException {
+        for (final Movimentacao mov : processoMovimentacao.getMovimentacoes()) {
             if (mov.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
-                removePneuVeiculo(conn, movimentacao.getUnidade().getCodigo(), origem.getVeiculo().getPlaca(), mov
-                        .getPneu().getCodigo());
+                final OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
+                removePneuVeiculo(
+                        conn,
+                        processoMovimentacao.getUnidade().getCodigo(),
+                        origem.getVeiculo().getPlaca(),
+                        mov.getPneu().getCodigo());
             }
         }
     }
@@ -123,9 +131,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
             stmt.setString(3, codPneu);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
-                throw new SQLException("Erro ao deletar o pneu do veiculo");
+                throw new SQLException("Erro ao deletar o pneu do veículo");
             }
         } finally {
             closeConnection(null, stmt, null);
@@ -133,8 +141,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
     }
 
     private void validaMovimentacoes(List<Movimentacao> movimentacoes) throws OrigemDestinoInvalidaException {
-        OrigemDestinoValidator origemDestinoValidator = new OrigemDestinoValidator();
-        for (Movimentacao movimentacao : movimentacoes) {
+        final OrigemDestinoValidator origemDestinoValidator = new OrigemDestinoValidator();
+        for (final Movimentacao movimentacao : movimentacoes) {
             origemDestinoValidator.validate(movimentacao.getOrigem(), movimentacao.getDestino());
         }
     }
@@ -154,8 +162,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 veiculoDao.updateKmByPlaca(origemVeiculo.getVeiculo().getPlaca(), origemVeiculo.getVeiculo()
                         .getKmAtual(), conn);
                 stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
@@ -182,8 +190,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
-                VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 veiculoDao.updateKmByPlaca(destinoVeiculo.getVeiculo().getPlaca(), destinoVeiculo.getVeiculo()
                         .getKmAtual(), conn);
                 stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
@@ -214,10 +222,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
             stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             stmt.setLong(2, cpfColaborador);
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
+                final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
                 stmt.setLong(3, origemVeiculo.getVeiculo().getKmAtual());
             } else if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+                final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
                 stmt.setLong(3, destinoVeiculo.getVeiculo().getKmAtual());
             } else {
                 stmt.setNull(3, Types.INTEGER);
@@ -235,7 +243,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         try {
             stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
                     "VALUES (?,?,?,?)");
-            DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+            final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
             stmt.setString(1, destinoVeiculo.getVeiculo().getPlaca());
             stmt.setString(2, movimentacao.getPneu().getCodigo());
             stmt.setLong(3, codUnidade);
