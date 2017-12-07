@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import com.google.gson.Gson;
 
 import java.util.Date;
 
@@ -11,11 +13,11 @@ import java.util.Date;
  */
 public abstract class Servico {
     private Long codigo;
+
     /**
      * O código da {@link Afericao} que originou esse serviço.
      */
     private Long codAfericao;
-    private TipoServico tipoServico;
     private Date dataHoraAbertura;
     private Date dataHoraFechamento;
     private Pneu pneuComProblema;
@@ -23,10 +25,18 @@ public abstract class Servico {
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
+
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
      */
     private long tempoRealizacaoServicoInMillis;
+
+    /**
+     * O tipo desse serviço. Precisamos utilizar o {@link Exclude} para a serialização/desserialização das subclasses
+     * funcionar corretamente utilizando o {@link Gson}.
+     */
+    @Exclude
+    private TipoServico tipoServico;
 
     public Servico() {
 
