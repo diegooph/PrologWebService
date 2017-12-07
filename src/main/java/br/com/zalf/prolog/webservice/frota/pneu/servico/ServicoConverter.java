@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -146,7 +147,10 @@ final class ServicoConverter {
     private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
             throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
-        servico.setCpfResponsavelFechamento(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
+        colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
+        servico.setColaboradorResponsavelFechamento(colaborador);
         servico.setDataHoraAbertura(resultSet.getDate("DATA_HORA_ABERTURA"));
         servico.setDataHoraFechamento(resultSet.getDate("DATA_HORA_FECHAMENTO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));

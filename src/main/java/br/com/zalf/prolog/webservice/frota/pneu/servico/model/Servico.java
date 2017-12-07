@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -21,7 +22,7 @@ public abstract class Servico {
     private Date dataHoraAbertura;
     private Date dataHoraFechamento;
     private Pneu pneuComProblema;
-    private Long cpfResponsavelFechamento;
+    private Colaborador colaboradorResponsavelFechamento;
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
@@ -98,12 +99,12 @@ public abstract class Servico {
         this.pneuComProblema = pneuComProblema;
     }
 
-    public Long getCpfResponsavelFechamento() {
-        return cpfResponsavelFechamento;
+    public Colaborador getColaboradorResponsavelFechamento() {
+        return colaboradorResponsavelFechamento;
     }
 
-    public void setCpfResponsavelFechamento(Long cpfResponsavelFechamento) {
-        this.cpfResponsavelFechamento = cpfResponsavelFechamento;
+    public void setColaboradorResponsavelFechamento(Colaborador colaboradorResponsavelFechamento) {
+        this.colaboradorResponsavelFechamento = colaboradorResponsavelFechamento;
     }
 
     public int getQtdApontamentos() {
@@ -136,5 +137,9 @@ public abstract class Servico {
 
     public void setTempoRealizacaoServicoInMillis(long tempoRealizacaoServicoInMillis) {
         this.tempoRealizacaoServicoInMillis = tempoRealizacaoServicoInMillis;
+    }
+
+    public Long getCpfResponsavelFechamento() {
+        return colaboradorResponsavelFechamento.getCpf();
     }
 }
