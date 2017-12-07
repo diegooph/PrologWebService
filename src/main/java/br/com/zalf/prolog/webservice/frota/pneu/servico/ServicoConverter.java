@@ -142,7 +142,7 @@ final class ServicoConverter {
 
     private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
             throws SQLException {
-        servico.setCodigo(resultSet.getLong("CODIGO"));
+        servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
         servico.setCpfResponsavelFechamento(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
         servico.setDataHoraAbertura(resultSet.getDate("DATA_HORA_ABERTURA"));
         servico.setDataHoraFechamento(resultSet.getDate("DATA_HORA_FECHAMENTO"));

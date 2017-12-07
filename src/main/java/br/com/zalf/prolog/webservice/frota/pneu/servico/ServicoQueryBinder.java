@@ -47,7 +47,7 @@ final class ServicoQueryBinder {
                                                        @NotNull Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO, "
+                + "AM.CODIGO AS CODIGO_SERVICO, "
                 + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
                 + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
                 + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
@@ -64,7 +64,9 @@ final class ServicoQueryBinder {
                 + "MP.NOME AS MODELO, "
                 + "MP.CODIGO AS COD_MODELO, "
                 + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "DP.*, "
+                + "DP.ALTURA, "
+                + "DP.LARGURA, "
+                + "DP.ARO, "
                 + "P.*, "
                 + "MB.codigo AS COD_MODELO_BANDA, "
                 + "MB.nome AS NOME_MODELO_BANDA, "
@@ -144,7 +146,7 @@ final class ServicoQueryBinder {
                                              final Long codServico,
                                              Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO, "
+                + "AM.CODIGO AS CODIGO_SERVICO, "
                 + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
                 + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
                 + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
@@ -161,7 +163,9 @@ final class ServicoQueryBinder {
                 + "MP.NOME AS MODELO, "
                 + "MP.CODIGO AS COD_MODELO, "
                 + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "DP.*, "
+                + "DP.ALTURA, "
+                + "DP.LARGURA, "
+                + "DP.ARO, "
                 + "P.*, "
                 + "MB.codigo AS COD_MODELO_BANDA, "
                 + "MB.nome AS NOME_MODELO_BANDA, "
@@ -192,7 +196,7 @@ final class ServicoQueryBinder {
                                                  final long dataFinal,
                                                  final Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO, "
+                + "AM.CODIGO AS CODIGO_SERVICO, "
                 + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
                 + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
                 + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
@@ -209,7 +213,9 @@ final class ServicoQueryBinder {
                 + "MP.NOME AS MODELO, "
                 + "MP.CODIGO AS COD_MODELO, "
                 + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "DP.*, "
+                + "DP.ALTURA, "
+                + "DP.LARGURA, "
+                + "DP.ARO, "
                 + "P.*, "
                 + "MB.codigo AS COD_MODELO_BANDA, "
                 + "MB.nome AS NOME_MODELO_BANDA, "
@@ -244,7 +250,7 @@ final class ServicoQueryBinder {
                                                      final long dataFinal,
                                                      Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO, "
+                + "AM.CODIGO AS CODIGO_SERVICO, "
                 + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
                 + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
                 + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
@@ -261,7 +267,9 @@ final class ServicoQueryBinder {
                 + "MP.NOME AS MODELO, "
                 + "MP.CODIGO AS COD_MODELO, "
                 + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "DP.*, "
+                + "DP.ALTURA, "
+                + "DP.LARGURA, "
+                + "DP.ARO, "
                 + "P.*, "
                 + "MB.codigo AS COD_MODELO_BANDA, "
                 + "MB.nome AS NOME_MODELO_BANDA, "
@@ -297,7 +305,7 @@ final class ServicoQueryBinder {
                                                         final long dataFinal,
                                                         Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO, "
+                + "AM.CODIGO AS CODIGO_SERVICO, "
                 + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
                 + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
                 + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
@@ -314,7 +322,9 @@ final class ServicoQueryBinder {
                 + "MP.NOME AS MODELO, "
                 + "MP.CODIGO AS COD_MODELO, "
                 + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "DP.*, "
+                + "DP.ALTURA, "
+                + "DP.LARGURA, "
+                + "DP.ARO, "
                 + "P.*, "
                 + "MB.codigo AS COD_MODELO_BANDA, "
                 + "MB.nome AS NOME_MODELO_BANDA, "
