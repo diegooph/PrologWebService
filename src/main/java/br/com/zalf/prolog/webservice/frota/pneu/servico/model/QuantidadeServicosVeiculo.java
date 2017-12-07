@@ -9,7 +9,7 @@ public final class QuantidadeServicosVeiculo extends QuantidadeServicos {
     private String placaVeiculo;
 
     public QuantidadeServicosVeiculo() {
-        setAgrupamento(AgrupamentoServicosFechados.POR_VEICULO);
+        setAgrupamento(AgrupamentoQuantidadeServicos.POR_VEICULO);
     }
 
     public String getPlacaVeiculo() {

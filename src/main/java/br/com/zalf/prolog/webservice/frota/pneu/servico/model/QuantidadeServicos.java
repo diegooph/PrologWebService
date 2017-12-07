@@ -10,44 +10,44 @@ import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public abstract class QuantidadeServicos {
-    private int qtdServicosFechadosCalibragem;
-    private int qtdServicosFechadosInspecao;
-    private int qtdServicosFechadosMovimentacao;
+    private int qtdServicosCalibragem;
+    private int qtdServicosInspecao;
+    private int qtdServicosMovimentacao;
     @Exclude
-    private AgrupamentoServicosFechados agrupamento;
+    private AgrupamentoQuantidadeServicos agrupamento;
 
     public static RuntimeTypeAdapterFactory<QuantidadeServicos> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(QuantidadeServicos.class, "agrupamento")
-                .registerSubtype(QuantidadeServicosPneu.class, AgrupamentoServicosFechados.POR_PNEU.asString())
-                .registerSubtype(QuantidadeServicosVeiculo.class, AgrupamentoServicosFechados.POR_VEICULO.asString());
+                .registerSubtype(QuantidadeServicosPneu.class, AgrupamentoQuantidadeServicos.POR_PNEU.asString())
+                .registerSubtype(QuantidadeServicosVeiculo.class, AgrupamentoQuantidadeServicos.POR_VEICULO.asString());
     }
 
-    public int getQtdServicosFechadosCalibragem() {
-        return qtdServicosFechadosCalibragem;
+    public int getQtdServicosCalibragem() {
+        return qtdServicosCalibragem;
     }
 
-    public void setQtdServicosFechadosCalibragem(int qtdServicosFechadosCalibragem) {
-        this.qtdServicosFechadosCalibragem = qtdServicosFechadosCalibragem;
+    public void setQtdServicosCalibragem(int qtdServicosCalibragem) {
+        this.qtdServicosCalibragem = qtdServicosCalibragem;
     }
 
-    public int getQtdServicosFechadosInspecao() {
-        return qtdServicosFechadosInspecao;
+    public int getQtdServicosInspecao() {
+        return qtdServicosInspecao;
     }
 
-    public void setQtdServicosFechadosInspecao(int qtdServicosFechadosInspecao) {
-        this.qtdServicosFechadosInspecao = qtdServicosFechadosInspecao;
+    public void setQtdServicosInspecao(int qtdServicosInspecao) {
+        this.qtdServicosInspecao = qtdServicosInspecao;
     }
 
-    public int getQtdServicosFechadosMovimentacao() {
-        return qtdServicosFechadosMovimentacao;
+    public int getQtdServicosMovimentacao() {
+        return qtdServicosMovimentacao;
     }
 
-    public void setQtdServicosFechadosMovimentacao(int qtdServicosFechadosMovimentacao) {
-        this.qtdServicosFechadosMovimentacao = qtdServicosFechadosMovimentacao;
+    public void setQtdServicosMovimentacao(int qtdServicosMovimentacao) {
+        this.qtdServicosMovimentacao = qtdServicosMovimentacao;
     }
 
-    void setAgrupamento(AgrupamentoServicosFechados agrupamento) {
+    void setAgrupamento(AgrupamentoQuantidadeServicos agrupamento) {
         this.agrupamento = agrupamento;
     }
 }

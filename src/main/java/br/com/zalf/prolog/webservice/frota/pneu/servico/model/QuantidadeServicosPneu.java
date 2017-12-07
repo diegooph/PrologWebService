@@ -9,7 +9,7 @@ public final class QuantidadeServicosPneu extends QuantidadeServicos {
     private String codigoPneu;
 
     public QuantidadeServicosPneu() {
-        setAgrupamento(AgrupamentoServicosFechados.POR_PNEU);
+        setAgrupamento(AgrupamentoQuantidadeServicos.POR_PNEU);
     }
 
     public String getCodigoPneu() {

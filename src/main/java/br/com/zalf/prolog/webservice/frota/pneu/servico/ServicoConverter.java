@@ -64,18 +64,18 @@ final class ServicoConverter {
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
-        qtdServicosFechados.setQtdServicosFechadosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
+        qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
+        qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
         return qtdServicosFechados;
     }
 
     static QuantidadeServicosPneu createQtdServicosPneu(ResultSet resultSet) throws SQLException {
         final QuantidadeServicosPneu qtdServicosFechados = new QuantidadeServicosPneu();
         qtdServicosFechados.setCodigoPneu(resultSet.getString("COD_PNEU"));
-        qtdServicosFechados.setQtdServicosFechadosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
-        qtdServicosFechados.setQtdServicosFechadosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
-        qtdServicosFechados.setQtdServicosFechadosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
+        qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
+        qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
+        qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
         return qtdServicosFechados;
     }
 

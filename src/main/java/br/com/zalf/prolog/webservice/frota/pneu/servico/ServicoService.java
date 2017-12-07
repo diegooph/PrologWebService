@@ -19,8 +19,8 @@ public class ServicoService {
 
     public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade,
                                                                      String agrupamento) {
-        final AgrupamentoServicosFechados tipoAgrupamento = AgrupamentoServicosFechados.fromString(agrupamento);
-        if (tipoAgrupamento.equals(AgrupamentoServicosFechados.POR_VEICULO)) {
+        final AgrupamentoQuantidadeServicos tipoAgrupamento = AgrupamentoQuantidadeServicos.fromString(agrupamento);
+        if (tipoAgrupamento.equals(AgrupamentoQuantidadeServicos.POR_VEICULO)) {
             try {
                 return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
             } catch (SQLException e) {
@@ -83,9 +83,9 @@ public class ServicoService {
                                                                 long dataInicial,
                                                                 long dataFinal,
                                                                 String agrupamento) {
-        final AgrupamentoServicosFechados tipoAgrupamento = AgrupamentoServicosFechados.fromString(agrupamento);
+        final AgrupamentoQuantidadeServicos tipoAgrupamento = AgrupamentoQuantidadeServicos.fromString(agrupamento);
         try {
-            if (tipoAgrupamento.equals(AgrupamentoServicosFechados.POR_VEICULO)) {
+            if (tipoAgrupamento.equals(AgrupamentoQuantidadeServicos.POR_VEICULO)) {
                 return dao.getQuantidadeServicosFechadosByVeiculo(codUnidade, dataInicial, dataFinal);
             } else {
                 return dao.getQuantidadeServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);

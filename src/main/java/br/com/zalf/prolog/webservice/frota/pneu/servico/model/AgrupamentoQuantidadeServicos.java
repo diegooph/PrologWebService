@@ -9,13 +9,13 @@ import javax.annotation.Nonnull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum AgrupamentoServicosFechados {
+public enum AgrupamentoQuantidadeServicos {
     POR_PNEU("por-pneu"),
     POR_VEICULO("por-veiculo");
 
     private final String stringRepresentation;
 
-    AgrupamentoServicosFechados(String stringRepresentation) {
+    AgrupamentoQuantidadeServicos(String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
@@ -23,10 +23,10 @@ public enum AgrupamentoServicosFechados {
         return stringRepresentation;
     }
 
-    public static AgrupamentoServicosFechados fromString(@Nonnull final String string) {
+    public static AgrupamentoQuantidadeServicos fromString(@Nonnull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 
-        for (final AgrupamentoServicosFechados agrupamento : AgrupamentoServicosFechados.values()) {
+        for (final AgrupamentoQuantidadeServicos agrupamento : AgrupamentoQuantidadeServicos.values()) {
             if (string.equals(agrupamento.stringRepresentation)) {
                 return agrupamento;
             }
