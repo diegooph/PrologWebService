@@ -46,27 +46,47 @@ final class ServicoQueryBinder {
                                                        @Nullable TipoServico tipoServico,
                                                        @NotNull Connection connection)
             throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT V.PLACA, V.KM,V.COD_UNIDADE AS COD_UNIDADE, "
-                + "A.CODIGO AS COD_AFERICAO, AM.TIPO_SERVICO, AM.QT_APONTAMENTOS, P.CODIGO, VP.POSICAO, MAP" +
-                ".NOME AS MARCA, MAP.CODIGO AS COD_MARCA, "
-                + "MP.NOME AS MODELO, MP.CODIGO AS COD_MODELO, MP.QT_SULCOS AS QT_SULCOS_MODELO, DP.*, P.*, "
-                + "MB.codigo AS COD_MODELO_BANDA, MB.nome AS NOME_MODELO_BANDA, MB.QT_SULCOS AS QT_SULCOS_BANDA, " +
-                "MAB.codigo AS COD_MARCA_BANDA, MAB.nome AS NOME_MARCA_BANDA\n "
+        final PreparedStatement stmt = connection.prepareStatement("SELECT "
+                + "AM.CODIGO, "
+                + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
+                + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
+                + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
+                + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
+                + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
+                + "V.PLACA AS PLACA_VEICULO, "
+                + "AM.COD_UNIDADE AS COD_UNIDADE, "
+                + "A.CODIGO AS COD_AFERICAO, "
+                + "AM.TIPO_SERVICO, "
+                + "AM.QT_APONTAMENTOS, "
+                + "VP.POSICAO, "
+                + "MAP.NOME AS MARCA, "
+                + "MAP.CODIGO AS COD_MARCA, "
+                + "MP.NOME AS MODELO, "
+                + "MP.CODIGO AS COD_MODELO, "
+                + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
+                + "DP.*, "
+                + "P.*, "
+                + "MB.codigo AS COD_MODELO_BANDA, "
+                + "MB.nome AS NOME_MODELO_BANDA, "
+                + "MB.QT_SULCOS AS QT_SULCOS_BANDA, "
+                + "MAB.codigo AS COD_MARCA_BANDA, "
+                + "MAB.nome AS NOME_MARCA_BANDA "
                 + "FROM AFERICAO_MANUTENCAO AM "
                 + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
                 + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
                 + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
                 + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
                 + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
-                + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND A" +
-                ".PLACA_VEICULO = VP.PLACA "
+                + "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO AND VP.COD_UNIDADE = P.COD_UNIDADE AND "
+                + "A.PLACA_VEICULO = VP.PLACA "
                 + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
-                + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n "
-                + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U" +
-                ".cod_empresa\n "
-                + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n "
-                + "WHERE A.PLACA_VEICULO = ? AND AM.DATA_HORA_RESOLUCAO IS NULL AND AM.TIPO_SERVICO LIKE ? "
-                + "ORDER BY AM.TIPO_SERVICO");
+                + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
+                + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
+                + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa "
+                + "WHERE A.PLACA_VEICULO = ? "
+                + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
+                + "AND AM.TIPO_SERVICO LIKE ? "
+                + "ORDER BY AM.TIPO_SERVICO;");
         stmt.setString(1, placa);
         stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
         return stmt;
