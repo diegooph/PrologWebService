@@ -54,14 +54,9 @@ public interface PneuDao {
     boolean update(Pneu pneu, Long codUnidade, String codOriginal) throws SQLException;
 
     /**
-     * atualiza a calibragem do pneu
-     *
-     * @param pneu       um pneu
-     * @param codUnidade código da unidade
-     * @param conn       conexão
-     * @throws SQLException caso ocorra erro no banco
+     * Atualiza a pressão do pneu.
      */
-    boolean updatePressao(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    boolean updatePressao(String codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza status do pneu

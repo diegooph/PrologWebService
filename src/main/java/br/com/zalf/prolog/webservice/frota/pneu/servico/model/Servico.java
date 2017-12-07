@@ -26,6 +26,7 @@ public abstract class Servico {
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
+    private Double pressaoColetadaFechamento;
 
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
@@ -141,5 +142,13 @@ public abstract class Servico {
 
     public Long getCpfResponsavelFechamento() {
         return colaboradorResponsavelFechamento.getCpf();
+    }
+
+    public Double getPressaoColetadaFechamento() {
+        return pressaoColetadaFechamento;
+    }
+
+    public void setPressaoColetadaFechamento(Double pressaoColetadaFechamento) {
+        this.pressaoColetadaFechamento = pressaoColetadaFechamento;
     }
 }

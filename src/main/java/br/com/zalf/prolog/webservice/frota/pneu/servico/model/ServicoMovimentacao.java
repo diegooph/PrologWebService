@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 
 /**
  * Created by jean on 04/04/16.
@@ -14,6 +15,7 @@ public final class ServicoMovimentacao extends Servico {
      */
     private Long codProcessoMovimentacao;
     private Pneu pneuNovo;
+    private Sulcos sulcosColetadosFechamento;
 
     public ServicoMovimentacao(Pneu pneuNovo) {
         this.pneuNovo = pneuNovo;
@@ -38,5 +40,13 @@ public final class ServicoMovimentacao extends Servico {
 
     public void setCodProcessoMovimentacao(Long codProcessoMovimentacao) {
         this.codProcessoMovimentacao = codProcessoMovimentacao;
+    }
+
+    public Sulcos getSulcosColetadosFechamento() {
+        return sulcosColetadosFechamento;
+    }
+
+    public void setSulcosColetadosFechamento(Sulcos sulcosColetadosFechamento) {
+        this.sulcosColetadosFechamento = sulcosColetadosFechamento;
     }
 }

@@ -205,8 +205,6 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-
-
     static PreparedStatement getVeiculoAberturaServico(@NotNull final Long codServico,
                                                        @NotNull final String placaVeiculo,
                                                        @NotNull final  Connection connection)
@@ -240,7 +238,7 @@ final class ServicoQueryBinder {
                 + "WHERE A.STATUS_ATIVO = TRUE");
     }
 
-    static PreparedStatement insertCalibragem(ServicoCalibragem servico, Long codUnidade, Connection connection)
+    static PreparedStatement insertCalibragem(ServicoCalibragem servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -254,7 +252,7 @@ final class ServicoQueryBinder {
                 + "AND TIPO_SERVICO = ?");
         stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
-        stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
+        stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
         stmt.setLong(6, servico.getCodAfericao());
@@ -263,7 +261,7 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement insertInspecao(ServicoInspecao servico, Long codUnidade, Connection connection)
+    static PreparedStatement insertInspecao(ServicoInspecao servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -278,7 +276,7 @@ final class ServicoQueryBinder {
                 + "AND TIPO_SERVICO = ?");
         stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
-        stmt.setDouble(3, servico.getPneuComProblema().getPressaoAtual());
+        stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
@@ -306,7 +304,7 @@ final class ServicoQueryBinder {
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
-        stmt.setDouble(5, servico.getPneuComProblema().getPressaoAtual());
+        stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setLong(7, servico.getCodAfericao());
         stmt.setString(8, servico.getPneuComProblema().getCodigo());

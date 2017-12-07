@@ -29,7 +29,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
+public final class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private static final String TAG = ServicoDaoImpl.class.getSimpleName();
 
     @Override
@@ -340,12 +340,16 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.insertCalibragem(servico, codUnidade, conn);
+            stmt = ServicoQueryBinder.insertCalibragem(servico, conn);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
-            pneuDao.updatePressao(servico.getPneuComProblema(), codUnidade, conn);
+            pneuDao.updatePressao(
+                    servico.getPneuComProblema().getCodigo(),
+                    servico.getPneuComProblema().getPressaoAtual(),
+                    codUnidade,
+                    conn);
         } finally {
             closeConnection(null, stmt, null);
         }
@@ -356,12 +360,16 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.insertInspecao(servico, codUnidade, conn);
+            stmt = ServicoQueryBinder.insertInspecao(servico, conn);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
-            pneuDao.updatePressao(servico.getPneuComProblema(), codUnidade, conn);
+            pneuDao.updatePressao(
+                    servico.getPneuComProblema().getCodigo(),
+                    servico.getPneuComProblema().getPressaoAtual(),
+                    codUnidade,
+                    conn);
         } finally {
             closeConnection(null, stmt, null);
         }
