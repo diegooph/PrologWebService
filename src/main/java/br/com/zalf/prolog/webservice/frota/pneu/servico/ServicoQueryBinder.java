@@ -295,19 +295,22 @@ final class ServicoQueryBinder {
                 + "CPF_MECANICO = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                + "PSI_APOS_CONSERTO = ?, "
                 + "TEMPO_REALIZACAO_MILLIS = ? "
                 + "WHERE COD_AFERICAO = ? AND "
                 + "COD_PNEU = ? AND "
                 + "DATA_HORA_RESOLUCAO IS NULL "
                 + "AND TIPO_SERVICO = ?");
+        // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
-        stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(6, servico.getCodAfericao());
-        stmt.setString(7, servico.getPneuComProblema().getCodigo());
-        stmt.setString(8, servico.getTipoServico().asString());
+        stmt.setDouble(5, servico.getPneuComProblema().getPressaoAtual());
+        stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
+        stmt.setLong(7, servico.getCodAfericao());
+        stmt.setString(8, servico.getPneuComProblema().getCodigo());
+        stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 }
