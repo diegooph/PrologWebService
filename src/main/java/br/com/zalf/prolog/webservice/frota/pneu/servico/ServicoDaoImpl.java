@@ -77,11 +77,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosAbertosByPlaca(placa, tipoServico, conn);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ServicoConverter.createServicos(rSet, pneuDao);
-            } else {
-                throw new SQLException("Erro ao buscar serviços em aberto para placa: " + placa);
-            }
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -197,11 +193,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechados(codUnidade, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ServicoConverter.createServicos(rSet, pneuDao);
-            } else {
-                throw new SQLException("Erro ao buscar seviços fechados");
-            }
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -218,11 +210,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ServicoConverter.createServicos(rSet, pneuDao);
-            } else {
-                throw new SQLException("Erro ao buscar serviços fechados para pneu: " + codPneu);
-            }
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -239,11 +227,7 @@ public class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return ServicoConverter.createServicos(rSet, pneuDao);
-            } else {
-                throw new SQLException("Erro ao buscar serviços fechados para placa: " + placaVeiculo);
-            }
+            return ServicoConverter.createServicos(rSet, pneuDao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }

@@ -27,12 +27,9 @@ final class ServicoConverter {
 
     static List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
-        // Aqui precisa ser um do-while porque já é feito um resultSet.next() antes de chamar
-        // esse método. Se fizessemos apenas um while, perderíamos o primeiro elemento.
-        do {
+        while (rSet.next()) {
             servicos.add(createServico(rSet, pneuDao, false));
-        } while (rSet.next());
-
+        }
         return servicos;
     }
 
