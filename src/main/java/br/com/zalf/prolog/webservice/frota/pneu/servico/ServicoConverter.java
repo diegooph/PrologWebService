@@ -134,11 +134,23 @@ final class ServicoConverter {
         inspecao.setAlternativaSelecionada(alternativa);
     }
 
-    private static void setAtributosMovimentacao(final ServicoMovimentacao movimentacao, final ResultSet rSet) throws SQLException {
-        // TODO: qual a melhor forma de recuperar o pneu novo aqui? Uma chamada a PneuDao não vai dar certo pq o pneu
-        // será buscado com os novos valores. Teriamos que salvar em banco no momento de finalizar uma movimentação
-        // todos
-//        movimentacao.setPneuNovo(pneuDao.getPneuByCod());
+    private static void setAtributosMovimentacao(final ServicoMovimentacao movimentacao, final ResultSet rSet)
+            throws SQLException {
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setExterno(rSet.getDouble("SULCO_EXTERNO_PNEU_NOVO"));
+        sulcos.setCentralExterno(rSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_NOVO"));
+        sulcos.setCentralInterno(rSet.getDouble("SULCO_CENTRAL_INTERNO_PNEU_NOVO"));
+        sulcos.setInterno(rSet.getDouble("SULCO_INTERNO_PNEU_NOVO"));
+        movimentacao.setSulcosColetadosFechamento(sulcos);
+
+        final Pneu pneuNovo = new Pneu();
+        pneuNovo.setSulcosAtuais(sulcos);
+        pneuNovo.setPressaoAtual(rSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
+        // Podemos pegar da coluna posição pois o pneu novo foi movido para a posição onde o pneu com problema se
+        // encontrava.
+        pneuNovo.setPosicao(rSet.getInt("POSICAO"));
+        pneuNovo.setVidaAtual(rSet.getInt("VIDA_PNEU_NOVO"));
+        movimentacao.setPneuNovo(pneuNovo);
     }
 
     private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
@@ -157,5 +169,6 @@ final class ServicoConverter {
         servico.setTipoServico(TipoServico.fromString(resultSet.getString("TIPO_SERVICO")));
         servico.setQtdApontamentos(resultSet.getInt("QT_APONTAMENTOS"));
         servico.setTempoRealizacaoServicoInMillis(resultSet.getLong("TEMPO_REALIZACAO_MILLIS"));
+        servico.setPressaoColetadaFechamento(resultSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
     }
 }
