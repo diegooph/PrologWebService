@@ -35,9 +35,9 @@ final class ServicoQueryBinder {
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
                 "GROUP BY A.PLACA_VEICULO;");
-        stmt.setString(1, TipoServico.MOVIMENTACAO.asString());
-        stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-        stmt.setString(3, TipoServico.INSPECAO.asString());
+        stmt.setString(1, TipoServico.CALIBRAGEM.asString());
+        stmt.setString(2, TipoServico.INSPECAO.asString());
+        stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
         stmt.setLong(4, codUnidade);
         return stmt;
     }
