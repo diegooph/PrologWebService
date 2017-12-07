@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 /**
  * Essa classe mantém todas as queries utilizadas na {@link ServicoDaoImpl} e faz o bind na query dos atributos
@@ -238,8 +235,8 @@ final class ServicoQueryBinder {
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
                 + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
         stmt.setLong(1, codUnidade);
-        stmt.setLong(2, dataInicial);
-        stmt.setLong(3, dataFinal);
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 
@@ -294,8 +291,8 @@ final class ServicoQueryBinder {
                 + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, codPneu);
-        stmt.setLong(3, dataInicial);
-        stmt.setLong(4, dataFinal);
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 
@@ -349,8 +346,8 @@ final class ServicoQueryBinder {
                 + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placaVeiculo);
-        stmt.setLong(3, dataInicial);
-        stmt.setLong(4, dataFinal);
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 
