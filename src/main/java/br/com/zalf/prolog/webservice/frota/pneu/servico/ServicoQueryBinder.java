@@ -25,15 +25,16 @@ final class ServicoQueryBinder {
 
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(Long codUnidade, Connection connection)
             throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT" +
-                "  A.PLACA_VEICULO, AM.COD_PNEU," +
+        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "  A.PLACA_VEICULO, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
                 "FROM AFERICAO_MANUTENCAO AM " +
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                 "WHERE AM.COD_UNIDADE = ? " +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
+                "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
+                "GROUP BY A.PLACA_VEICULO;");
         stmt.setString(1, TipoServico.MOVIMENTACAO.asString());
         stmt.setString(2, TipoServico.CALIBRAGEM.asString());
         stmt.setString(3, TipoServico.INSPECAO.asString());
