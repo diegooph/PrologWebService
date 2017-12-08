@@ -22,12 +22,14 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class ServicoDaoImpl extends DatabaseConnection implements ServicoDao {
     private static final String TAG = ServicoDaoImpl.class.getSimpleName();
@@ -245,7 +247,14 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt = ServicoQueryBinder.getVeiculoAberturaServico(codServico, placaVeiculo, conn);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ServicoConverter.createVeiculoAberturaServico(rSet);
+                final Veiculo veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);
+                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+                final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
+                // Fazemos direto um get() no Optional pois se não existir diagrama é melhor da crash aqui do que no
+                // aplicativo, por exemplo.
+                //noinspection ConstantConditions
+                veiculo.setDiagrama(diagrama.get());
+                return veiculo;
             } else {
                 throw new SQLException("Erro ao buscar veículo do serviço");
             }
