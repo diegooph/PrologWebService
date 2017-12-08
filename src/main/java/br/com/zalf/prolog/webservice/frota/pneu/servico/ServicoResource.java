@@ -36,7 +36,7 @@ public class ServicoResource {
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codUnidade}/{codServico}")
 	public Servico getServicoByCod(@PathParam("codUnidade") @Required Long codUnidade,
-								   @PathParam("codUnidade") @Required Long codServico) {
+								   @PathParam("codServico") @Required Long codServico) {
 		return service.getServicoByCod(codUnidade, codServico);
 	}
 
