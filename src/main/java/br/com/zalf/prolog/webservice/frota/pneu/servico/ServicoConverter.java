@@ -160,8 +160,8 @@ final class ServicoConverter {
         colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
         colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
         servico.setColaboradorResponsavelFechamento(colaborador);
-        servico.setDataHoraAbertura(resultSet.getDate("DATA_HORA_ABERTURA"));
-        servico.setDataHoraFechamento(resultSet.getDate("DATA_HORA_FECHAMENTO"));
+        servico.setDataHoraAbertura(resultSet.getTimestamp("DATA_HORA_ABERTURA"));
+        servico.setDataHoraFechamento(resultSet.getTimestamp("DATA_HORA_FECHAMENTO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setPneuComProblema(pneuDao.createPneu(resultSet));
         servico.setKmVeiculoMomentoFechamento(resultSet.getInt("KM_VEICULO_MOMENTO_FECHAMENTO"));
