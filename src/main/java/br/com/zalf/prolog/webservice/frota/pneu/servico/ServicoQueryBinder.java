@@ -228,13 +228,13 @@ final class ServicoQueryBinder {
                                                      Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
-                + "WHERE AM.COD_PNEU = ? "
+                + "AND AM.COD_PNEU = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
                 + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, codPneu);
-        stmt.setDate(2, new Date(dataInicial));
-        stmt.setDate(3, new Date(dataFinal));
+        stmt.setDate(3, new Date(dataInicial));
+        stmt.setDate(4, new Date(dataFinal));
         return stmt;
     }
 
@@ -245,13 +245,13 @@ final class ServicoQueryBinder {
                                                         Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
-                + "WHERE A.PLACA_VEICULO = ? "
+                + "AND A.PLACA_VEICULO = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
                 + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placaVeiculo);
-        stmt.setDate(2, new Date(dataInicial));
-        stmt.setDate(3, new Date(dataFinal));
+        stmt.setDate(3, new Date(dataInicial));
+        stmt.setDate(4, new Date(dataFinal));
         return stmt;
     }
 
