@@ -126,13 +126,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicoByCod(codUnidade, codServico, conn);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return ServicoConverter.createServico(rSet, pneuDao, true);
+                return ServicoConverter.createServico(rSet, true);
             } else {
                 throw new SQLException("Erro ao buscar serviço com código: " + codServico);
             }

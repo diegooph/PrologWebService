@@ -28,13 +28,12 @@ final class ServicoConverter {
     static List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
-            servicos.add(createServico(rSet, pneuDao, false));
+            servicos.add(createServico(rSet, false));
         }
         return servicos;
     }
 
     static Servico createServico(final ResultSet resultSet,
-                                 final PneuDao pneuDao,
                                  final boolean incluirAtributosEspecificos) throws SQLException {
         final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
         Servico servico;
@@ -58,7 +57,7 @@ final class ServicoConverter {
             default:
                 throw new IllegalStateException("Tipo de serviço desconhecido: " + tipo);
         }
-        setAtributosComunsServico(servico, resultSet, pneuDao);
+        setAtributosComunsServico(servico, resultSet);
         return servico;
     }
 
@@ -144,16 +143,17 @@ final class ServicoConverter {
         movimentacao.setSulcosColetadosFechamento(sulcos);
 
         final Pneu pneuNovo = new Pneu();
+        pneuNovo.setCodigo(rSet.getString("COD_PNEU_NOVO"));
         pneuNovo.setSulcosAtuais(sulcos);
         pneuNovo.setPressaoAtual(rSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
-        // Podemos pegar da coluna posição pois o pneu novo foi movido para a posição onde o pneu com problema se
-        // encontrava.
-        pneuNovo.setPosicao(rSet.getInt("POSICAO"));
+        // Podemos pegar da coluna POSICAO_PNEU_PROBLEMA pois o pneu novo foi movido para a posição onde o pneu com
+        // problema se encontrava.
+        pneuNovo.setPosicao(rSet.getInt("POSICAO_PNEU_PROBLEMA"));
         pneuNovo.setVidaAtual(rSet.getInt("VIDA_PNEU_NOVO"));
         movimentacao.setPneuNovo(pneuNovo);
     }
 
-    private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet, final PneuDao pneuDao)
+    private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet)
             throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
         final Colaborador colaborador = new Colaborador();
@@ -163,7 +163,21 @@ final class ServicoConverter {
         servico.setDataHoraAbertura(resultSet.getTimestamp("DATA_HORA_ABERTURA"));
         servico.setDataHoraFechamento(resultSet.getTimestamp("DATA_HORA_FECHAMENTO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
-        servico.setPneuComProblema(pneuDao.createPneu(resultSet));
+
+        // Cria pneu com problema, responsável por originar o serviço.
+        final Pneu pneuProblema = new Pneu();
+        pneuProblema.setCodigo(resultSet.getString("COD_PNEU_PROBLEMA"));
+        pneuProblema.setPosicao(resultSet.getInt("POSICAO_PNEU_PROBLEMA"));
+        pneuProblema.setVidaAtual(resultSet.getInt("VIDA_PNEU_PROBLEMA"));
+        final Sulcos sulcosProblema = new Sulcos();
+        sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_PNEU_PROBLEMA"));
+        sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA"));
+        sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA"));
+        sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_PNEU_PROBLEMA"));
+        pneuProblema.setSulcosAtuais(sulcosProblema);
+        pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));
+        servico.setPneuComProblema(pneuProblema);
+
         servico.setKmVeiculoMomentoFechamento(resultSet.getInt("KM_VEICULO_MOMENTO_FECHAMENTO"));
         servico.setCodAfericao(resultSet.getLong("COD_AFERICAO"));
         servico.setTipoServico(TipoServico.fromString(resultSet.getString("TIPO_SERVICO")));

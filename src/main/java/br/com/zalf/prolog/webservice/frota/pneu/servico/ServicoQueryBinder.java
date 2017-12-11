@@ -33,33 +33,21 @@ final class ServicoQueryBinder {
             + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
             + "A.CODIGO AS COD_AFERICAO, "
-            + "AV.POSICAO, "
-            + "MAP.NOME AS MARCA, "
-            + "MAP.CODIGO AS COD_MARCA, "
-            + "MP.NOME AS MODELO, "
-            + "MP.CODIGO AS COD_MODELO, "
-            + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-            + "C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, "
-            + "DP.ALTURA, "
-            + "DP.LARGURA, "
-            + "DP.ARO, "
-            + "P.*, "
-            + "MB.codigo AS COD_MODELO_BANDA, "
-            + "MB.nome AS NOME_MODELO_BANDA, "
-            + "MB.QT_SULCOS AS QT_SULCOS_BANDA, "
-            + "MAB.codigo AS COD_MARCA_BANDA, "
-            + "MAB.nome AS NOME_MARCA_BANDA "
+            + "A.CODIGO AS COD_AFERICAO, "
+            + "AV.COD_PNEU AS COD_PNEU_PROBLEMA, "
+            + "AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, "
+            + "AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, "
+            + "AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, "
+            + "AV.ALTURA_SULCO_INTERNO AS SULCO_INTERNO_PNEU_PROBLEMA, "
+            + "AV.PSI AS PRESSAO_PNEU_PROBLEMA, "
+            + "AV.POSICAO AS POSICAO_PNEU_PROBLEMA, "
+            + "AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, "
+            + "C.NOME AS NOME_RESPONSAVEL_FECHAMENTO "
             + "FROM AFERICAO_MANUTENCAO AM "
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
-            + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
-            + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
-            + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
-            + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
-            + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
-            + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
-            + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa ";
+            + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
 
     private ServicoQueryBinder() {
         throw new IllegalStateException(ServicoQueryBinder.class.getSimpleName() + " cannot be instantiated!");
@@ -149,58 +137,45 @@ final class ServicoQueryBinder {
     static PreparedStatement getServicoByCod(final Long codUnidade,
                                              final Long codServico,
                                              Connection connection) throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT "
-                + "AM.CODIGO AS CODIGO_SERVICO, "
-                + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
-                + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
-                + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
-                + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
-                + "AM.COD_UNIDADE AS COD_UNIDADE, "
-                + "AM.TIPO_SERVICO, "
-                + "AM.QT_APONTAMENTOS, "
-                + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
-                + "AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, "
-                + "AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, "
-                + "M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, "
-                + "M.SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_NOVO, "
-                + "M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, "
-                + "M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, "
-                + "M.VIDA AS VIDA_PNEU_NOVO, "
-                + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
-                + "A.PLACA_VEICULO AS PLACA_VEICULO, "
-                + "A.CODIGO AS COD_AFERICAO, "
-                + "AV.POSICAO, "
-                + "MAP.NOME AS MARCA, "
-                + "MAP.CODIGO AS COD_MARCA, "
-                + "MP.NOME AS MODELO, "
-                + "MP.CODIGO AS COD_MODELO, "
-                + "MP.QT_SULCOS AS QT_SULCOS_MODELO, "
-                + "C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, "
-                + "DP.ALTURA, "
-                + "DP.LARGURA, "
-                + "DP.ARO, "
-                + "P.*, "
-                + "MB.codigo AS COD_MODELO_BANDA, "
-                + "MB.nome AS NOME_MODELO_BANDA, "
-                + "MB.QT_SULCOS AS QT_SULCOS_BANDA, "
-                + "MAB.codigo AS COD_MARCA_BANDA, "
-                + "MAB.nome AS NOME_MARCA_BANDA "
-                + "FROM AFERICAO_MANUTENCAO AM "
-                + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
-                + "JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO "
-                + "JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA "
-                + "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO "
-                + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
-                + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
-                + "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade "
-                + "LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO "
-                + "AND M.COD_PNEU = AM.COD_PNEU "
-                + "LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA "
-                + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
-                + "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa "
-                + "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa "
-                + "WHERE AM.COD_UNIDADE = ? AND "
-                + "AM.CODIGO = ?;");
+        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "   AM.CODIGO AS CODIGO_SERVICO, " +
+                "   AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, " +
+                "   AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, " +
+                "   AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, " +
+                "   AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, " +
+                "   AM.COD_UNIDADE AS COD_UNIDADE, " +
+                "   AM.TIPO_SERVICO, " +
+                "   AM.QT_APONTAMENTOS, " +
+                "   AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, " +
+                "   AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, " +
+                "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
+                "   M.COD_PNEU AS COD_PNEU_NOVO, " +
+                "   M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, " +
+                "   M.SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_NOVO, " +
+                "   M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
+                "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
+                "   M.VIDA AS VIDA_PNEU_NOVO, " +
+                "   A.DATA_HORA AS DATA_HORA_ABERTURA, " +
+                "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
+                "   A.CODIGO AS COD_AFERICAO, " +
+                "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
+                "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
+                "   AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, " +
+                "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
+                "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
+                "   AV.ALTURA_SULCO_INTERNO AS SULCO_INTERNO_PNEU_PROBLEMA, " +
+                "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
+                "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
+                "   AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA " +
+                "   FROM AFERICAO_MANUTENCAO AM " +
+                "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
+                "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
+                "   LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO " +
+                "   AND M.COD_PNEU = AM.COD_PNEU " +
+                "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
+                "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
+                "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codServico);
         return stmt;
