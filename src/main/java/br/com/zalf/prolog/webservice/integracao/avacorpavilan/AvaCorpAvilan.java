@@ -93,6 +93,15 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
+        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
+        // vazio.
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
+        if (codTipo.equals("%")) {
+            codTipo = "";
+        } else {
+            codTipo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+        }
+
         return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(
                 codTipo,
                 getCpf(),
