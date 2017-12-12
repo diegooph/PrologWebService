@@ -65,14 +65,14 @@ public class RelatorioService {
     }
 
     public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws SQLException, IOException {
+            throws RuntimeException {
         try {
             dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (CSV). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw e;
+            throw new RuntimeException();
         }
     }
 
@@ -88,14 +88,14 @@ public class RelatorioService {
     }
 
     public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws IOException, SQLException {
+            throws RuntimeException {
         try {
             dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (CSV). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw e;
+            throw new RuntimeException();
         }
     }
 
@@ -111,14 +111,14 @@ public class RelatorioService {
     }
 
     public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws SQLException, IOException {
+            throws RuntimeException {
         try {
             dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (CSV). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw e;
+            throw new RuntimeException();
         }
     }
 
@@ -149,13 +149,13 @@ public class RelatorioService {
         }
     }
 
-    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws SQLException, IOException {
+    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws RuntimeException {
         try {
             dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (CSV). \n" +
                     "Unidade: %d", codUnidade), e);
-            throw e;
+            throw new RuntimeException();
         }
     }
 
@@ -183,7 +183,7 @@ public class RelatorioService {
     }
 
     public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, long dataInicial,
-                                                     long dataFinal) throws SQLException, IOException {
+                                                     long dataFinal) throws RuntimeException {
         try {
             dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
@@ -191,7 +191,7 @@ public class RelatorioService {
                     "Unidade: %d \n" +
                     "Data Inicial: %s \n" +
                     "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw e;
+            throw new RuntimeException();
         }
     }
 }

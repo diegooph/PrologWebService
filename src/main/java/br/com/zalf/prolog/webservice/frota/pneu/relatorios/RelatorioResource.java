@@ -64,7 +64,7 @@ public class RelatorioResource {
 	@Produces("application/csv")
 	public StreamingOutput getPrevisaoTrocaCsv(@PathParam("codUnidade") Long codUnidade,
 											   @QueryParam("dataInicial") long dataInicial,
-											   @QueryParam("dataFinal") long dataFinal){
+											   @QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
@@ -82,7 +82,7 @@ public class RelatorioResource {
 	@Produces("application/csv")
 	public StreamingOutput getPrevisaoTrocaConsolidadoCsv(@PathParam("codUnidade") Long codUnidade,
 														  @QueryParam("dataInicial") long dataInicial,
-														  @QueryParam("dataFinal") long dataFinal){
+														  @QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
@@ -100,7 +100,7 @@ public class RelatorioResource {
 	@Produces("application/csv")
 	public StreamingOutput getAderenciaPlacasCsv(@PathParam("codUnidade") Long codUnidade,
 												 @QueryParam("dataInicial") long dataInicial,
-												 @QueryParam("dataFinal") long dataFinal){
+												 @QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
@@ -125,7 +125,7 @@ public class RelatorioResource {
 
 	@GET
 	@Path("/afericoes/resumo/pneus/{codUnidade}/csv")
-	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) {
+	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade)  throws RuntimeException{
 		return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
 	}
 
@@ -145,7 +145,7 @@ public class RelatorioResource {
 	@Deprecated
 	public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
 													@QueryParam("dataInicial") long dataInicial,
-													@QueryParam("dataFinal") long dataFinal){
+													@QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
 	}
 
@@ -173,7 +173,7 @@ public class RelatorioResource {
 	@Path("/servicos/estratificacao/fechados/{codUnidade}/csv")
 	public StreamingOutput getEstratificacaoServicosFechadosCsv(@PathParam("codUnidade") Long codUnidade,
 																@QueryParam("dataInicial") long dataInicial,
-																@QueryParam("dataFinal") long dataFinal) {
+																@QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, dataInicial, dataFinal);
 	}
 }
