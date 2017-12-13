@@ -24,7 +24,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         try {
             connection = getConnection();
             connection.setAutoCommit(false);
-            return insert(processoMovimentacao, connection);
+            final Long codigoProcessoMovimentacao = insert(processoMovimentacao, connection);
+            connection.commit();
+            return codigoProcessoMovimentacao;
         } catch (SQLException e) {
             connection.rollback();
             throw e;
@@ -51,7 +53,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
                 insertValores(processoMovimentacao, conn);
-                conn.commit();
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
