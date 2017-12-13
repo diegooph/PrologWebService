@@ -19,36 +19,45 @@ import java.util.List;
  */
 public class MovimentacaoDaoImpl extends DatabaseConnection {
 
-    public Long insert(ProcessoMovimentacao movimentacao) throws SQLException, OrigemDestinoInvalidaException {
-        validaMovimentacoes(movimentacao.getMovimentacoes());
-        Connection conn = null;
+    public Long insert(ProcessoMovimentacao processoMovimentacao) throws SQLException, OrigemDestinoInvalidaException {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            connection.setAutoCommit(false);
+            return insert(processoMovimentacao, connection);
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            closeConnection(connection, null, null);
+        }
+    }
+
+    public Long insert(ProcessoMovimentacao processoMovimentacao, Connection conn)
+            throws SQLException, OrigemDestinoInvalidaException {
+        validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO movimentacao_processo(cod_unidade, data_hora, cpf_responsavel, " +
                     "observacao) " +
                     "VALUES (?,?,?,?) RETURNING codigo;");
-            stmt.setLong(1, movimentacao.getUnidade().getCodigo());
+            stmt.setLong(1, processoMovimentacao.getUnidade().getCodigo());
             stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(3, movimentacao.getColaborador().getCpf());
-            stmt.setString(4, movimentacao.getObservacao());
+            stmt.setLong(3, processoMovimentacao.getColaborador().getCpf());
+            stmt.setString(4, processoMovimentacao.getObservacao());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
-                movimentacao.setCodigo(codigoProcesso);
-                insertValores(movimentacao, conn);
+                processoMovimentacao.setCodigo(codigoProcesso);
+                insertValores(processoMovimentacao, conn);
                 conn.commit();
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
             }
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
     }
 

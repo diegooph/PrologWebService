@@ -263,7 +263,7 @@ final class ServicoQueryBinder {
                 + "WHERE A.STATUS_ATIVO = TRUE");
     }
 
-    static PreparedStatement insertCalibragem(ServicoCalibragem servico, Connection connection)
+    static PreparedStatement consertaCalibragem(ServicoCalibragem servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -286,7 +286,7 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement insertInspecao(ServicoInspecao servico, Connection connection)
+    static PreparedStatement consertaInspecao(ServicoInspecao servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -311,7 +311,7 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement insertMovimentacao(ServicoMovimentacao servico, Connection connection)
+    static PreparedStatement consertaMovimentacao(ServicoMovimentacao servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "

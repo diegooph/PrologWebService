@@ -7,10 +7,23 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface ServicoDao {
+
+	Long criaServico(String pneu, Long codAfericao, TipoServico tipoServico, Long codUnidade, Connection conn)
+			throws SQLException;
+
+	void incrementaQtdApontamentosServico(String codPneu, Long codUnidade, TipoServico tipoServico, Connection conn) throws SQLException;
+
+	/**
+	 * Método usado para trocar um serviço cadastrado como calibragem para inspeção.
+	 */
+	void calibragemToInspecao(String codPneu, Long codUnidade, Connection conn) throws SQLException;
+
+	List<TipoServico> getServicosCadastradosByPneu(String codPneu, Long codUnidade) throws SQLException;
 
 	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
@@ -25,14 +38,7 @@ public interface ServicoDao {
 	 */
 	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
-	/**
-	 * insere um serviço
-	 * @param servico um serviço
-	 * @param codUnidade código da unidade
-	 * @return valor da operação
-	 * @throws SQLException se ocorrer erro no banco de dados
-	 */
-	void insertManutencao(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
+	void consertaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
 
 	Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
 

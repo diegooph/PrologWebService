@@ -56,9 +56,9 @@ public class ServicoService {
         }
     }
 
-    public boolean insertManutencao(Servico servico, Long codUnidade) {
+    public boolean consertaServico(Servico servico, Long codUnidade) {
         try {
-            dao.insertManutencao(servico, codUnidade);
+            dao.consertaServico(servico, codUnidade);
             return true;
         } catch (SQLException | OrigemDestinoInvalidaException e) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item. \n," +
