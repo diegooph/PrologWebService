@@ -283,8 +283,8 @@ final class ServicoQueryBinder {
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(7, servico.getCodigo());
-        stmt.setString(8, servico.getTipoServico().asString());
+        stmt.setLong(6, servico.getCodigo());
+        stmt.setString(7, servico.getTipoServico().asString());
         return stmt;
     }
 

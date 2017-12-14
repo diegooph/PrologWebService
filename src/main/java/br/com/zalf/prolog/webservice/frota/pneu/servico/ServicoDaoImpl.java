@@ -181,6 +181,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 case MOVIMENTACAO:
                     final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
+                    // Atualiza o pneuNovo com os valores referentes ao serviço executad.
+                    movimentacao.getPneuNovo().setSulcosAtuais(movimentacao.getSulcosColetadosFechamento());
+                    movimentacao.setPosicaoNovoPneu(movimentacao.getPneuComProblema().getPosicao());
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
