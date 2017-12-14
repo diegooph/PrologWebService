@@ -102,7 +102,8 @@ final class ServicoQueryBinder {
                 "WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
-                "GROUP BY AM.COD_PNEU;");
+                "GROUP BY AM.COD_PNEU "+
+                "ORDER BY TOTAL_CALIBRAGENS, TOTAL_INSPECOES, TOTAL_MOVIMENTACOES;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -126,7 +127,8 @@ final class ServicoQueryBinder {
                 "WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
-                "GROUP BY A.PLACA_VEICULO;");
+                "GROUP BY A.PLACA_VEICULO " +
+                "ORDER BY TOTAL_CALIBRAGENS, TOTAL_INSPECOES, TOTAL_MOVIMENTACOES;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -192,7 +194,8 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
+                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? "
+                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, new Date(dataInicial));
         stmt.setDate(3, new Date(dataFinal));
