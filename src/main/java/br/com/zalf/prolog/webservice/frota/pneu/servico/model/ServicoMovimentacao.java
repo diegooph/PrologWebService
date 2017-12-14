@@ -16,7 +16,6 @@ public final class ServicoMovimentacao extends Servico {
     private Long codProcessoMovimentacao;
     private Pneu pneuNovo;
     private Sulcos sulcosColetadosFechamento;
-    private int posicaoNovoPneu;
 
     public ServicoMovimentacao(Pneu pneuNovo) {
         this.pneuNovo = pneuNovo;
@@ -49,13 +48,5 @@ public final class ServicoMovimentacao extends Servico {
 
     public void setSulcosColetadosFechamento(Sulcos sulcosColetadosFechamento) {
         this.sulcosColetadosFechamento = sulcosColetadosFechamento;
-    }
-
-    public int getPosicaoNovoPneu() {
-        return posicaoNovoPneu;
-    }
-
-    public void setPosicaoNovoPneu(int posicaoNovoPneu) {
-        this.posicaoNovoPneu = posicaoNovoPneu;
     }
 }

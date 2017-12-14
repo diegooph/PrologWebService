@@ -183,7 +183,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
                     // Atualiza o pneuNovo com os valores referentes ao serviço executad.
                     movimentacao.getPneuNovo().setSulcosAtuais(movimentacao.getSulcosColetadosFechamento());
-                    movimentacao.setPosicaoNovoPneu(movimentacao.getPneuComProblema().getPosicao());
+                    movimentacao.getPneuNovo().setPosicao(movimentacao.getPneuComProblema().getPosicao());
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
