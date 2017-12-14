@@ -263,7 +263,7 @@ final class ServicoQueryBinder {
                 + "WHERE A.STATUS_ATIVO = TRUE");
     }
 
-    static PreparedStatement consertaCalibragem(ServicoCalibragem servico, Connection connection)
+    static PreparedStatement fechaCalibragem(ServicoCalibragem servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -284,7 +284,7 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement consertaInspecao(ServicoInspecao servico, Connection connection)
+    static PreparedStatement fechaInspecao(ServicoInspecao servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -307,7 +307,7 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement consertaMovimentacao(ServicoMovimentacao servico, Connection connection)
+    static PreparedStatement fechaMovimentacao(ServicoMovimentacao servico, Connection connection)
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
@@ -335,9 +335,27 @@ final class ServicoQueryBinder {
             throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
                 "AFERICAO_MANUTENCAO AM " +
-                "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ?;");
-        stmt.setLong(2, codUnidade);
+                "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? AND DATA_HORA_RESOLUCAO IS NULL;");
+        stmt.setLong(1, codUnidade);
         stmt.setString(2, codPneu);
+        return stmt;
+    }
+
+    static PreparedStatement fecharAutomaticamenteServicosPneu(final Long codUnidade,
+                                                               final String codPneu,
+                                                               final Long codProcessoMovimentacao,
+                                                               Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
+                + "DATA_HORA_RESOLUCAO = ?, "
+                + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                + "FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE "
+                + "WHERE COD_UNIDADE = ? "
+                + "AND COD_PNEU = ? "
+                + "AND DATA_HORA_RESOLUCAO IS NULL;");
+        stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        stmt.setLong(2, codProcessoMovimentacao);
+        stmt.setLong(3, codUnidade);
+        stmt.setString(4, codPneu);
         return stmt;
     }
 }

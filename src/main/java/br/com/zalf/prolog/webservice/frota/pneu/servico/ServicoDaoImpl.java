@@ -26,7 +26,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -162,7 +165,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void consertaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
+    public void fechaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -170,19 +173,47 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final PneuDao pneuDao = Injection.providePneuDao();
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    consertaCalibragem((ServicoCalibragem) servico, codUnidade, pneuDao, conn);
+                    fechaCalibragem((ServicoCalibragem) servico, codUnidade, pneuDao, conn);
                     break;
                 case INSPECAO:
-                    consertaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
+                    fechaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
                     final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
-                    final Long codigoProcesso = movimentacaoDao.insert(processoMovimentacao, conn);
-                    movimentacao.setCodProcessoMovimentacao(codigoProcesso);
-                    consertaMovimentacao(movimentacao, conn);
+                    final Long codProcessoMovimentacao = movimentacaoDao.insert(
+                            processoMovimentacao,
+                            this,
+                            false,
+                            conn);
+                    movimentacao.setCodProcessoMovimentacao(codProcessoMovimentacao);
+
+                    // Como impedimos o processo de movimentação de fechar automaticamente todos os serviços,
+                    // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
+                    // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos e necessária e não deve
+                    // ser alterada!
+                    fechaMovimentacao(movimentacao, conn);
+                    final String codPneu = servico.getPneuComProblema().getCodigo();
+                    final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
+                            codUnidade,
+                            codPneu,
+                            conn);
+                    if (qtdServicosEmAbertoPneu > 0) {
+                        final int qtdServicosFechadosPneu = fecharAutomaticamenteServicosPneu(
+                                codUnidade,
+                                codPneu,
+                                codProcessoMovimentacao,
+                                conn);
+                        if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
+                            throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam ser fechados "
+                                    + qtdServicosEmAbertoPneu + " serviços mas foram fechados " + qtdServicosFechadosPneu + "!");
+                        }
+
+                    } else {
+                        Log.d(TAG, "Não existem serviços em aberto para o pneu: " + codPneu);
+                    }
                     break;
             }
             // Atualiza KM do veículo.
@@ -308,17 +339,39 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public int getQuantidadeServicosEmAbertoPneu(Long codUnidade, String codPneu) throws SQLException {
-        Connection conn = null;
+    public int getQuantidadeServicosEmAbertoPneu(final Long codUnidade,
+                                                 final String codPneu,
+                                                 final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            conn = getConnection();
             stmt = ServicoQueryBinder.getQuantidadeServicosEmAbertoPneu(codUnidade, codPneu, conn);
             rSet = stmt.executeQuery();
-            return ServicoConverter.getQuantidadeServicosEmAbertoPneu(rSet);
+            if (rSet.next()) {
+                return ServicoConverter.getQuantidadeServicosEmAbertoPneu(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar quantidade de serviços em aberto para o pneu: " + codPneu);
+            }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
+        }
+    }
+
+    @Override
+    public int fecharAutomaticamenteServicosPneu(final Long codUnidade,
+                                                 final String codPneu,
+                                                 final Long codProcessoMovimentacao,
+                                                 final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = ServicoQueryBinder.fecharAutomaticamenteServicosPneu(
+                    codUnidade,
+                    codPneu,
+                    codProcessoMovimentacao,
+                    conn);
+            return stmt.executeUpdate();
+        } finally {
+            closeConnection(null, stmt, null);
         }
     }
 
@@ -432,11 +485,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         return listAlternativas;
     }
 
-    private void consertaCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+    private void fechaCalibragem(ServicoCalibragem servico, Long codUnidade, PneuDao pneuDao, Connection conn)
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.consertaCalibragem(servico, conn);
+            stmt = ServicoQueryBinder.fechaCalibragem(servico, conn);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -452,11 +505,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     }
 
-    private void consertaInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+    private void fechaInspecao(ServicoInspecao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.consertaInspecao(servico, conn);
+            stmt = ServicoQueryBinder.fechaInspecao(servico, conn);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
@@ -472,10 +525,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     }
 
-    private void consertaMovimentacao(ServicoMovimentacao servico, Connection conn) throws SQLException {
+    private void fechaMovimentacao(ServicoMovimentacao servico, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = ServicoQueryBinder.consertaMovimentacao(servico, conn);
+            stmt = ServicoQueryBinder.fechaMovimentacao(servico, conn);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");

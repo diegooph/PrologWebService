@@ -56,9 +56,9 @@ public class ServicoService {
         }
     }
 
-    public boolean consertaServico(Servico servico, Long codUnidade) {
+    public boolean fechaServico(Servico servico, Long codUnidade) {
         try {
-            dao.consertaServico(servico, codUnidade);
+            dao.fechaServico(servico, codUnidade);
             return true;
         } catch (SQLException | OrigemDestinoInvalidaException e) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item. \n," +

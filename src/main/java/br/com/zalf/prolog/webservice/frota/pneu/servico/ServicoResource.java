@@ -23,9 +23,9 @@ public class ServicoResource {
 	@POST
 	@Secured(permissions = Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM)
 	@Path("/conserto/{codUnidade}")
-	public Response consertaServico(@Required Servico servico,
-									@PathParam("codUnidade") @Required Long codUnidade) {
-		if (service.consertaServico(servico, codUnidade)) {
+	public Response fechaServico(@Required Servico servico,
+								 @PathParam("codUnidade") @Required Long codUnidade) {
+		if (service.fechaServico(servico, codUnidade)) {
 			return Response.ok("Serviço consertado com sucesso.");
 		} else {
 			return Response.error("Erro ao marcar o item como consertado.");
