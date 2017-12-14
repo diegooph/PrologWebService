@@ -330,4 +330,14 @@ final class ServicoQueryBinder {
         stmt.setString(8, servico.getTipoServico().asString());
         return stmt;
     }
+
+    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, String codPneu, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
+                "AFERICAO_MANUTENCAO AM " +
+                "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ?;");
+        stmt.setLong(2, codUnidade);
+        stmt.setString(2, codPneu);
+        return stmt;
+    }
 }

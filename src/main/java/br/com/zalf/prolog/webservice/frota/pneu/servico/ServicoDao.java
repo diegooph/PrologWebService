@@ -29,13 +29,6 @@ public interface ServicoDao {
 
 	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException;
 
-	/**
-	 * busca os serviços abertos de uma placa
-	 * @param placa placa do veículo
-	 * @param tipoServico tipo do serviço
-	 * @return lista de serviços da placa
-	 * @throws SQLException se ocorrer erro no banco de dados
-	 */
 	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
 	void consertaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
@@ -70,6 +63,8 @@ public interface ServicoDao {
 											 final String placaVeiculo,
 											 final long dataInicial,
 											 final long dataFinal) throws SQLException;
+
+	int getQuantidadeServicosEmAbertoPneu(final Long codUnidade, final String codPneu) throws SQLException;
 
 
 	/**

@@ -151,12 +151,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosAbertosByPlaca(placa, tipoServico, conn);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -266,12 +265,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechados(codUnidade, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -283,12 +281,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -300,12 +297,26 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet, pneuDao);
+            return ServicoConverter.createServicos(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public int getQuantidadeServicosEmAbertoPneu(Long codUnidade, String codPneu) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = ServicoQueryBinder.getQuantidadeServicosEmAbertoPneu(codUnidade, codPneu, conn);
+            rSet = stmt.executeQuery();
+            return ServicoConverter.getQuantidadeServicosEmAbertoPneu(rSet);
         } finally {
             closeConnection(conn, stmt, rSet);
         }

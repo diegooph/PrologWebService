@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
@@ -25,7 +24,7 @@ final class ServicoConverter {
     }
 
 
-    static List<Servico> createServicos(final ResultSet rSet, final PneuDao pneuDao) throws SQLException {
+    static List<Servico> createServicos(final ResultSet rSet) throws SQLException {
         final List<Servico> servicos = new ArrayList<>();
         while (rSet.next()) {
             servicos.add(createServico(rSet, false));
@@ -184,5 +183,9 @@ final class ServicoConverter {
         servico.setQtdApontamentos(resultSet.getInt("QT_APONTAMENTOS"));
         servico.setTempoRealizacaoServicoInMillis(resultSet.getLong("TEMPO_REALIZACAO_MILLIS"));
         servico.setPressaoColetadaFechamento(resultSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
+    }
+
+    static int getQuantidadeServicosEmAbertoPneu(ResultSet rSet) throws SQLException {
+        return rSet.getInt("QTD_SERVICOS_ABERTOS");
     }
 }
