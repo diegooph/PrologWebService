@@ -176,7 +176,7 @@ final class ServicoQueryBinder {
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
                 "   JOIN PNEU P ON AM.COD_UNIDADE = P.COD_UNIDADE AND AM.COD_PNEU = P.CODIGO " +
                 "   LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO " +
-                "   AND M.COD_PNEU = AM.COD_PNEU " +
+                "   AND M.COD_PNEU = AM.COD_PNEU_INSERIDO " +
                 "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
                 "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
                 "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
@@ -319,19 +319,21 @@ final class ServicoQueryBinder {
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "
                 + "PSI_APOS_CONSERTO = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ? "
+                + "TEMPO_REALIZACAO_MILLIS = ?, "
+                + "COD_PNEU_INSERIDO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
+        // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(7, servico.getCodigo());
-        stmt.setString(8, servico.getTipoServico().asString());
+        stmt.setString(7, servico.getPneuNovo().getCodigo());
+        stmt.setLong(8, servico.getCodigo());
+        stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 

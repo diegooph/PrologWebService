@@ -490,7 +490,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaCalibragem(servico, conn);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
@@ -510,7 +510,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaInspecao(servico, conn);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
@@ -529,7 +529,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaMovimentacao(servico, conn);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
