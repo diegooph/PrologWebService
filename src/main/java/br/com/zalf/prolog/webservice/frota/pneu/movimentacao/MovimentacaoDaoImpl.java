@@ -17,8 +17,9 @@ import java.util.List;
 /**
  * Created by Zart on 03/03/17.
  */
-public class MovimentacaoDaoImpl extends DatabaseConnection {
+public class MovimentacaoDaoImpl extends DatabaseConnection implements MovimentacaoDao {
 
+    @Override
     public Long insert(ProcessoMovimentacao processoMovimentacao) throws SQLException, OrigemDestinoInvalidaException {
         Connection connection = null;
         try {
@@ -35,6 +36,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Long insert(ProcessoMovimentacao processoMovimentacao, Connection conn)
             throws SQLException, OrigemDestinoInvalidaException {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
