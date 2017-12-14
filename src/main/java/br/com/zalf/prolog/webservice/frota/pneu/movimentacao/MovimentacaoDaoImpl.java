@@ -153,6 +153,23 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void validaMovimentacoes(List<Movimentacao> movimentacoes) throws OrigemDestinoInvalidaException {
+        // Garantimos que não exista mais de uma movimentação para um mesmo pneu.
+        for (final Movimentacao m1 : movimentacoes) {
+            int numCount = 0;
+            final Pneu pneuMovimentado = m1.getPneu();
+            for (final Movimentacao m2 : movimentacoes) {
+                if (pneuMovimentado.equals(m2.getPneu())) {
+                    numCount++;
+                    if (numCount > 1) {
+                        throw new IllegalStateException("Não é possível movimentar o mesmo pneu mais de uma vez no " +
+                                "mesmo processo de movimentação! Pneu com mais de uma movimentação: "
+                                + pneuMovimentado.getCodigo());
+                    }
+                }
+            }
+        }
+
+        // Aqui validamos que todas as movimentações respeitam as regras de origem/destino.
         final OrigemDestinoValidator origemDestinoValidator = new OrigemDestinoValidator();
         for (final Movimentacao movimentacao : movimentacoes) {
             origemDestinoValidator.validate(movimentacao.getOrigem(), movimentacao.getDestino());
