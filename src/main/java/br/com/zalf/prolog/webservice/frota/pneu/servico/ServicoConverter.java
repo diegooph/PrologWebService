@@ -168,13 +168,14 @@ final class ServicoConverter {
         pneuProblema.setCodigo(resultSet.getString("COD_PNEU_PROBLEMA"));
         pneuProblema.setPosicao(resultSet.getInt("POSICAO_PNEU_PROBLEMA"));
         pneuProblema.setVidaAtual(resultSet.getInt("VIDA_PNEU_PROBLEMA"));
+        pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));
+        pneuProblema.setPressaoCorreta(resultSet.getDouble("PRESSAO_RECOMENDADA"));
         final Sulcos sulcosProblema = new Sulcos();
         sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_PNEU_PROBLEMA"));
         sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA"));
         sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA"));
         sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_PNEU_PROBLEMA"));
         pneuProblema.setSulcosAtuais(sulcosProblema);
-        pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));
         servico.setPneuComProblema(pneuProblema);
 
         servico.setKmVeiculoMomentoFechamento(resultSet.getInt("KM_VEICULO_MOMENTO_FECHAMENTO"));
