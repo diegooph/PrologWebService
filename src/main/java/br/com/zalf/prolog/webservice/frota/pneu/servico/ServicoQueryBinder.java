@@ -30,6 +30,7 @@ final class ServicoQueryBinder {
             + "AM.TIPO_SERVICO, "
             + "AM.QT_APONTAMENTOS, "
             + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
+            + "AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, "
             + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -152,6 +153,7 @@ final class ServicoQueryBinder {
                 "   AM.QT_APONTAMENTOS, " +
                 "   AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, " +
                 "   AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, " +
+                "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                 "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
                 "   M.COD_PNEU AS COD_PNEU_NOVO, " +
                 "   M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, " +

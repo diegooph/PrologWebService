@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import com.google.gson.Gson;
 
@@ -27,6 +28,11 @@ public abstract class Servico {
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
     private Double pressaoColetadaFechamento;
+
+    /**
+     * Indica se esse serviço foi fechado automaticamente por um {@link ProcessoMovimentacao}.
+     */
+    private boolean fechadoAutomaticamenteMovimentacao;
 
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
@@ -150,5 +156,13 @@ public abstract class Servico {
 
     public void setPressaoColetadaFechamento(Double pressaoColetadaFechamento) {
         this.pressaoColetadaFechamento = pressaoColetadaFechamento;
+    }
+
+    public boolean isFechadoAutomaticamenteMovimentacao() {
+        return fechadoAutomaticamenteMovimentacao;
+    }
+
+    public void setFechadoAutomaticamenteMovimentacao(boolean fechadoAutomaticamenteMovimentacao) {
+        this.fechadoAutomaticamenteMovimentacao = fechadoAutomaticamenteMovimentacao;
     }
 }
