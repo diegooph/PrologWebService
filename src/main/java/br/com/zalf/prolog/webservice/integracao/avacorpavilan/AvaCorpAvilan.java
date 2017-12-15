@@ -132,7 +132,9 @@ public final class AvaCorpAvilan extends Sistema {
                 AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist),
                 getCpf(),
                 getDataNascimento());
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);
+        final Map<Long, String> mapCodPerguntUrlImagem =
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
+        return AvaCorpAvilanConverter.convert(questoesVeiculo, mapCodPerguntUrlImagem, placaVeiculo);
     }
 
     @Override

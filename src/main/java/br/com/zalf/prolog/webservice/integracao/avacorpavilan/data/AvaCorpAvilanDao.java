@@ -7,6 +7,7 @@ import com.sun.istack.internal.NotNull;
 import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 10/11/17
@@ -49,4 +50,6 @@ public interface AvaCorpAvilanDao {
     @Nonnull
     BiMap<String, Integer> getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
         throws SQLException;
+
+    Map<Long, String> getMapeamentoCodPerguntaUrlImagem(final Long codQuestionario) throws SQLException;
 }
