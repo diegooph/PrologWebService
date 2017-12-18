@@ -92,7 +92,7 @@ public interface PneuDao {
      * @return uma lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
+    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
 
     /**
      * cria um novo pneu

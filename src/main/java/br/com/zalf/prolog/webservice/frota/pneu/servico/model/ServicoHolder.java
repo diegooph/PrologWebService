@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
-import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.util.List;
 
@@ -14,34 +14,42 @@ import java.util.List;
  * Created by jean on 04/04/16.
  */
 public class ServicoHolder {
-    private List<Servico> listServicos;
-    private List<Alternativa> listAlternativaInspecao;
-    private List<Pneu> pneusDisponiveis;
+    private List<Servico> servicos;
     private Restricao restricao;
 
     /**
-     * Veículo em cima do qual esse serviço é baseado
+     * Placa do {@link Veiculo} no qual os {@link #servicos} são baseados.
      */
-    private Veiculo veiculo;
+    private String placaVeiculo;
+
+    /**
+     * Utilizado para os serviços de inspeção.
+     */
+    private List<Alternativa> alternativasInspecao;
+
+    /**
+     * Utilizado para os serviços de movimentação.
+     */
+    private List<Pneu> pneusDisponiveis;
 
     public ServicoHolder() {
 
     }
 
-    public List<Alternativa> getListAlternativaInspecao() {
-        return listAlternativaInspecao;
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
     }
 
-    public void setListAlternativaInspecao(List<Alternativa> listAlternativaInspecao) {
-        this.listAlternativaInspecao = listAlternativaInspecao;
+    public void setPlacaVeiculo(String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
     }
 
-    public Veiculo getVeiculo() {
-        return veiculo;
+    public List<Alternativa> getAlternativasInspecao() {
+        return alternativasInspecao;
     }
 
-    public void setVeiculo(Veiculo veiculo) {
-        this.veiculo = veiculo;
+    public void setAlternativasInspecao(List<Alternativa> listAlternativaInspecao) {
+        this.alternativasInspecao = listAlternativaInspecao;
     }
 
     public Restricao getRestricao() {
@@ -60,22 +68,22 @@ public class ServicoHolder {
         this.pneusDisponiveis = pneusDisponiveis;
     }
 
-    public List<Servico> getListServicos() {
-        return listServicos;
+    public List<Servico> getServicos() {
+        return servicos;
     }
 
-    public void setListServicos(List<Servico> listServicos) {
-        this.listServicos = listServicos;
+    public void setServicos(List<Servico> listServicos) {
+        this.servicos = listServicos;
     }
 
     @Override
     public String toString() {
         return "ServicoHolder{" +
-                "listServicos=" + listServicos +
-                ", listAlternativaInspecao=" + listAlternativaInspecao +
-                ", pneusDisponiveis=" + pneusDisponiveis +
+                "servicos=" + servicos +
                 ", restricao=" + restricao +
-                ", veiculo=" + veiculo +
+                ", placaVeiculo='" + placaVeiculo + '\'' +
+                ", alternativasInspecao=" + alternativasInspecao +
+                ", pneusDisponiveis=" + pneusDisponiveis +
                 '}';
     }
 }

@@ -131,20 +131,27 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @Override
     public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException {
-        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final PneuDao pneuDao = Injection.providePneuDao();
         final ServicoHolder holder = new ServicoHolder();
-        holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, true));
-        holder.setListServicos(getServicosAbertosByPlaca(placa, null));
-        if (containInspecao(holder.getListServicos())) {
-            holder.setListAlternativaInspecao(getListAlternativasInspecao());
+        holder.setPlacaVeiculo(placa);
+
+        final List<Servico> servicos = getServicosAbertosByPlaca(placa, null);
+        holder.setServicos(servicos);
+        //  Se não existirem serviços para placa buscada, nada mais será setado no Holder.
+        if (!servicos.isEmpty()) {
+            Log.d(TAG, "Existem serviços para a placa: " + placa);
+
+            final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+            holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
+            if (contains(servicos, TipoServico.INSPECAO)) {
+                Log.d(TAG, "Contém inspeção");
+                holder.setAlternativasInspecao(getAlternativasInspecao());
+            }
+            if (contains(servicos, TipoServico.MOVIMENTACAO)) {
+                Log.d(TAG, "Contém movimentação");
+                final PneuDao pneuDao = Injection.providePneuDao();
+                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
+            }
         }
-        if (containMovimentacao(holder.getListServicos())) {
-            Log.d(TAG, "Contém movimentação");
-            holder.setPneusDisponiveis(pneuDao.getPneuByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
-        }
-        final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
-        holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
 
         return holder;
     }
@@ -449,25 +456,17 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 "Fechamento de serviço");
     }
 
-    private boolean containInspecao(List<Servico> listServicos) {
-        for (Servico servico : listServicos) {
-            if (servico instanceof ServicoInspecao) {
+    private boolean contains(@NotNull final List<Servico> servicos, @NotNull final TipoServico tipoServico) {
+        for (final Servico servico : servicos) {
+            if (servico.getTipoServico().equals(tipoServico)) {
                 return true;
             }
         }
+
         return false;
     }
 
-    private boolean containMovimentacao(List<Servico> listServicos) {
-        for (Servico servico : listServicos) {
-            if (servico instanceof ServicoMovimentacao) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<Alternativa> getListAlternativasInspecao() throws SQLException {
+    private List<Alternativa> getAlternativasInspecao() throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
