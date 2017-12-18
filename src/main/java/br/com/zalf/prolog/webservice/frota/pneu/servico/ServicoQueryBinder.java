@@ -214,7 +214,8 @@ final class ServicoQueryBinder {
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.COD_PNEU = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
+                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? "
+                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, codPneu);
         stmt.setDate(3, new Date(dataInicial));
@@ -231,7 +232,8 @@ final class ServicoQueryBinder {
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND A.PLACA_VEICULO = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ?;");
+                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? "
+                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placaVeiculo);
         stmt.setDate(3, new Date(dataInicial));
