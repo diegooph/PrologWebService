@@ -204,7 +204,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
                     // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos e necessária e não deve
                     // ser alterada!
-                    fechaMovimentacao(movimentacao, conn);
+                    fechaMovimentacao(movimentacao, codUnidade, pneuDao, conn);
                     final String codPneu = servico.getPneuComProblema().getCodigo();
                     final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
                             codUnidade,
@@ -498,7 +498,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
             pneuDao.updatePressao(
                     servico.getPneuComProblema().getCodigo(),
-                    servico.getPneuComProblema().getPressaoAtual(),
+                    servico.getPressaoColetadaFechamento(),
                     codUnidade,
                     conn);
         } finally {
@@ -518,7 +518,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
             pneuDao.updatePressao(
                     servico.getPneuComProblema().getCodigo(),
-                    servico.getPneuComProblema().getPressaoAtual(),
+                    servico.getPressaoColetadaFechamento(),
                     codUnidade,
                     conn);
         } finally {
@@ -527,7 +527,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     }
 
-    private void fechaMovimentacao(ServicoMovimentacao servico, Connection conn) throws SQLException {
+    private void fechaMovimentacao(ServicoMovimentacao servico, Long codUnidade, PneuDao pneuDao, Connection conn)
+            throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fechaMovimentacao(servico, conn);
@@ -535,6 +536,18 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item consertado");
             }
+
+            // No caso da movimentação precisamos atualizar do Pneu Novo.
+            pneuDao.updatePressao(
+                    servico.getPneuNovo().getCodigo(),
+                    servico.getPressaoColetadaFechamento(),
+                    codUnidade,
+                    conn);
+            pneuDao.updateSulcos(
+                    servico.getPneuNovo().getCodigo(),
+                    servico.getSulcosColetadosFechamento(),
+                    codUnidade,
+                    conn);
         } finally {
             closeConnection(null, stmt, null);
         }

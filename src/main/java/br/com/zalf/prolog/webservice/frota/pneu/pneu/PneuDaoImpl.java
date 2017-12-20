@@ -545,18 +545,17 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void updateSulcos(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void updateSulcos(String codPneu, Sulcos sulcosNovos, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("UPDATE PNEU SET ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, "
                     + "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
-            stmt.setDouble(1, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(2, pneu.getSulcosAtuais().getExterno());
-            stmt.setDouble(3, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(4, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setString(5, pneu.getCodigo());
+            stmt.setDouble(1, sulcosNovos.getInterno());
+            stmt.setDouble(2, sulcosNovos.getExterno());
+            stmt.setDouble(3, sulcosNovos.getCentralInterno());
+            stmt.setDouble(4, sulcosNovos.getCentralExterno());
+            stmt.setString(5, codPneu);
             stmt.setLong(6, codUnidade);
             final int count = stmt.executeUpdate();
             if (count == 0) {
