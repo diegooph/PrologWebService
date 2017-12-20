@@ -264,7 +264,7 @@ final class ServicoQueryBinder {
                 "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
                 "       AND A.CODIGO = AV.COD_AFERICAO " +
                 "  JOIN VEICULO V " +
-                "    ON V.PLACA = A.PLACA_VEICULO" +
+                "    ON V.PLACA = A.PLACA_VEICULO " +
                 "WHERE AM.CODIGO = ? " +
                 "      AND A.PLACA_VEICULO = ?;");
         stmt.setLong(1, codServico);
