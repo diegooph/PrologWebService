@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestino
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,6 +90,6 @@ public interface ServicoDao {
 	 * ({@link Pneu}) na posição onde estavam na época e com os valores de sulco e pressão setados.
 	 */
 	@NotNull
-	Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
+	VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
 			throws SQLException;
 }

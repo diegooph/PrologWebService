@@ -106,8 +106,8 @@ public class ServicoResource {
 	@GET
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/{codServico}/veiculos/{placaVeiculo}")
-	public Veiculo getVeiculoAberturaServico(@PathParam("codServico") @Required Long codServico,
-											 @PathParam("placaVeiculo") @Required String placaVeiculo) {
+	public VeiculoServico getVeiculoAberturaServico(@PathParam("codServico") @Required Long codServico,
+													@PathParam("placaVeiculo") @Required String placaVeiculo) {
 		return service.getVeiculoAberturaServico(codServico, placaVeiculo);
 	}
 }

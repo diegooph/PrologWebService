@@ -247,7 +247,7 @@ final class ServicoQueryBinder {
             throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
-                "  A.KM_VEICULO, " +
+                "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                 "  AV.COD_PNEU, " +
                 "  AV.ALTURA_SULCO_EXTERNO, " +
                 "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
@@ -255,13 +255,16 @@ final class ServicoQueryBinder {
                 "  AV.ALTURA_SULCO_INTERNO, " +
                 "  AV.PSI, " +
                 "  AV.POSICAO, " +
-                "  AV.VIDA_MOMENTO_AFERICAO " +
+                "  AV.VIDA_MOMENTO_AFERICAO, " +
+                "  V.KM AS KM_ATUAL_VEICULO " +
                 "FROM AFERICAO_MANUTENCAO AM " +
                 "  JOIN AFERICAO A " +
                 "    ON AM.COD_AFERICAO = A.CODIGO " +
                 "  JOIN AFERICAO_VALORES AV " +
                 "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
                 "       AND A.CODIGO = AV.COD_AFERICAO " +
+                "  JOIN VEICULO V " +
+                "    ON V.PLACA = A.PLACA_VEICULO" +
                 "WHERE AM.CODIGO = ? " +
                 "      AND A.PLACA_VEICULO = ?;");
         stmt.setLong(1, codServico);

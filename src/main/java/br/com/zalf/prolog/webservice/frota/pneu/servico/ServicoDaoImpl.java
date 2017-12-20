@@ -387,7 +387,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @NotNull
     @Override
-    public Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -397,7 +397,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt = ServicoQueryBinder.getVeiculoAberturaServico(codServico, placaVeiculo, conn);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Veiculo veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);
+                final VeiculoServico veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                 final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
                 // Fazemos direto um get() no Optional pois se não existir diagrama é melhor da crash aqui do que no

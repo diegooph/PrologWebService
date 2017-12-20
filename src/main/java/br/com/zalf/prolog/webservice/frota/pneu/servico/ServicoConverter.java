@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,10 +95,11 @@ final class ServicoConverter {
         return qtdServicosFechados;
     }
 
-    static Veiculo createVeiculoAberturaServico(ResultSet resultSet) throws SQLException {
-        final Veiculo veiculo = new Veiculo();
+    static VeiculoServico createVeiculoAberturaServico(ResultSet resultSet) throws SQLException {
+        final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
-        veiculo.setKmAtual(resultSet.getInt("KM_VEICULO"));
+        veiculo.setKmAtual(resultSet.getInt("KM_ATUAL_VEICULO"));
+        veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
         final List<Pneu> pneus = new ArrayList<>();
         // Aqui precisa ser um do-while porque já é feito um resultSet.next() antes de chamar

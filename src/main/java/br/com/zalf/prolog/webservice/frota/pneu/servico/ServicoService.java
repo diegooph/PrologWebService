@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -150,7 +149,7 @@ public class ServicoService {
     }
 
     @NotNull
-    public Veiculo getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo) {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo) {
         try {
             return dao.getVeiculoAberturaServico(codServico, placaVeiculo);
         } catch (SQLException e) {
