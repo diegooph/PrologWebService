@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,14 +55,9 @@ public interface PneuDao {
     boolean update(Pneu pneu, Long codUnidade, String codOriginal) throws SQLException;
 
     /**
-     * atualiza a calibragem do pneu
-     *
-     * @param pneu       um pneu
-     * @param codUnidade código da unidade
-     * @param conn       conexão
-     * @throws SQLException caso ocorra erro no banco
+     * Atualiza a pressão do pneu.
      */
-    boolean updatePressao(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    boolean updatePressao(String codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza status do pneu
@@ -76,7 +72,7 @@ public interface PneuDao {
 
     void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
-    void updateSulcos(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void updateSulcos(String codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza dados do veículo
@@ -97,7 +93,7 @@ public interface PneuDao {
      * @return uma lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
+    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
 
     /**
      * cria um novo pneu

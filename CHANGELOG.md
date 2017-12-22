@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+<a name="v2.0.41"></a>
+## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
+
+### Features
+* Cria tabela para poder vincular imagens aos modelos de checklists da Avilan, buscados do Latromi.
+* Cria métodos para busca dos serviços fechados dos pneus
+
+### Refactor
+* Altera seguintes classes para utilizarem Injection: `IndicadorDaoImpl`
+* Refatora criação de serviços dos pneus
+
+### Bug Fixes
+* Corrige busca das placas dos veículos com base no tipo na integração com a Avilan
+* Corrige query de relatório do checklist
+
 <a name="v2.0.40"></a>
 ## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (2017-11-29)
 

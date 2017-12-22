@@ -45,4 +45,12 @@ public class Banda {
         this.modelo = modelo;
     }
 
+    @Override
+    public String toString() {
+        return "Banda{" +
+                "marca=" + marca +
+                ", modelo=" + modelo +
+                ", valor=" + valor +
+                '}';
+    }
 }

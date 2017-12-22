@@ -1,45 +1,69 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import com.google.gson.Gson;
+
+import java.util.Date;
 
 /**
  * Created by jean on 04/04/16.
  */
-public class Servico {
-    public static final String TIPO_CALIBRAGEM = "calibragem";
-    public static final String TIPO_MOVIMENTACAO = "movimentacao";
-    public static final String TIPO_INSPECAO = "inspecao";
-    public static final String TIPO_AMBOS = "ambos";
-    private Long codAfericao;
-    private String tipo;
-    private Pneu pneu;
-    private Long cpfMecanico;
-    private int qtApontamentos;
-    private long kmVeiculo;
-    private String placa;
+public abstract class Servico {
+    private Long codigo;
 
     /**
-     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos
+     * O código da {@link Afericao} que originou esse serviço.
+     */
+    private Long codAfericao;
+    private Date dataHoraAbertura;
+    private Date dataHoraFechamento;
+    private Pneu pneuComProblema;
+    private Colaborador colaboradorResponsavelFechamento;
+    private int qtdApontamentos;
+    private long kmVeiculoMomentoFechamento;
+    private String placaVeiculo;
+    private Double pressaoColetadaFechamento;
+
+    /**
+     * Indica se esse serviço foi fechado automaticamente por um {@link ProcessoMovimentacao}.
+     */
+    private boolean fechadoAutomaticamenteMovimentacao;
+
+    /**
+     * Armazena o tempo que o colaborador levou para realizar esse serviço, em milisegundos.
      */
     private long tempoRealizacaoServicoInMillis;
 
+    /**
+     * O tipo desse serviço. Precisamos utilizar o {@link Exclude} para a serialização/desserialização das subclasses
+     * funcionar corretamente utilizando o {@link Gson}.
+     */
+    @Exclude
+    private TipoServico tipoServico;
+
     public Servico() {
+
     }
 
-    public Long getCpfMecanico() {
-        return cpfMecanico;
+    public static RuntimeTypeAdapterFactory<Servico> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(Servico.class, "tipoServico")
+                .registerSubtype(ServicoCalibragem.class, TipoServico.CALIBRAGEM.asString())
+                .registerSubtype(ServicoMovimentacao.class, TipoServico.MOVIMENTACAO.asString())
+                .registerSubtype(ServicoInspecao.class, TipoServico.INSPECAO.asString());
     }
 
-    public void setCpfMecanico(Long cpfMecanico) {
-        this.cpfMecanico = cpfMecanico;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public long getKmVeiculo() {
-        return kmVeiculo;
-    }
-
-    public void setKmVeiculo(long kmVeiculo) {
-        this.kmVeiculo = kmVeiculo;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public Long getCodAfericao() {
@@ -50,40 +74,68 @@ public class Servico {
         this.codAfericao = codAfericao;
     }
 
-    public String getTipo() {
-        return tipo;
+    public TipoServico getTipoServico() {
+        return tipoServico;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipoServico(TipoServico tipoServico) {
+        this.tipoServico = tipoServico;
     }
 
-    public Pneu getPneu() {
-        return pneu;
+    public Date getDataHoraAbertura() {
+        return dataHoraAbertura;
     }
 
-    public void setPneu(Pneu pneu) {
-        this.pneu = pneu;
+    public void setDataHoraAbertura(Date dataHoraAbertura) {
+        this.dataHoraAbertura = dataHoraAbertura;
     }
 
-    public int getQtApontamentos() {
-        return qtApontamentos;
+    public Date getDataHoraFechamento() {
+        return dataHoraFechamento;
     }
 
-    public void setQtApontamentos(int qtApontamentos) {
-        this.qtApontamentos = qtApontamentos;
+    public void setDataHoraFechamento(Date dataHoraFechamento) {
+        this.dataHoraFechamento = dataHoraFechamento;
     }
 
-    @Override
-    public String toString() {
-        return "Servico{" +
-                "codAfericao=" + codAfericao +
-                ", tipo='" + tipo + '\'' +
-                ", pneu=" + pneu +
-                ", cpfMecanico=" + cpfMecanico +
-                ", qtApontamentos=" + qtApontamentos +
-                ", kmVeiculo=" + kmVeiculo +
-                '}';
+    public Pneu getPneuComProblema() {
+        return pneuComProblema;
+    }
+
+    public void setPneuComProblema(Pneu pneuComProblema) {
+        this.pneuComProblema = pneuComProblema;
+    }
+
+    public Colaborador getColaboradorResponsavelFechamento() {
+        return colaboradorResponsavelFechamento;
+    }
+
+    public void setColaboradorResponsavelFechamento(Colaborador colaboradorResponsavelFechamento) {
+        this.colaboradorResponsavelFechamento = colaboradorResponsavelFechamento;
+    }
+
+    public int getQtdApontamentos() {
+        return qtdApontamentos;
+    }
+
+    public void setQtdApontamentos(int qtdApontamentos) {
+        this.qtdApontamentos = qtdApontamentos;
+    }
+
+    public long getKmVeiculoMomentoFechamento() {
+        return kmVeiculoMomentoFechamento;
+    }
+
+    public void setKmVeiculoMomentoFechamento(long kmVeiculoMomentoFechamento) {
+        this.kmVeiculoMomentoFechamento = kmVeiculoMomentoFechamento;
+    }
+
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
+
+    public void setPlacaVeiculo(String placaVeiculo) {
+        this.placaVeiculo = placaVeiculo;
     }
 
     public long getTempoRealizacaoServicoInMillis() {
@@ -94,11 +146,23 @@ public class Servico {
         this.tempoRealizacaoServicoInMillis = tempoRealizacaoServicoInMillis;
     }
 
-    public String getPlaca() {
-        return placa;
+    public Long getCpfResponsavelFechamento() {
+        return colaboradorResponsavelFechamento.getCpf();
     }
 
-    public void setPlaca(String placa) {
-        this.placa = placa;
+    public Double getPressaoColetadaFechamento() {
+        return pressaoColetadaFechamento;
+    }
+
+    public void setPressaoColetadaFechamento(Double pressaoColetadaFechamento) {
+        this.pressaoColetadaFechamento = pressaoColetadaFechamento;
+    }
+
+    public boolean isFechadoAutomaticamenteMovimentacao() {
+        return fechadoAutomaticamenteMovimentacao;
+    }
+
+    public void setFechadoAutomaticamenteMovimentacao(boolean fechadoAutomaticamenteMovimentacao) {
+        this.fechadoAutomaticamenteMovimentacao = fechadoAutomaticamenteMovimentacao;
     }
 }

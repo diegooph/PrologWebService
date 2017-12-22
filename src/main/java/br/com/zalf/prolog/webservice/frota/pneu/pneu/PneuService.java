@@ -12,7 +12,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +50,7 @@ public class PneuService {
 
     public List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) {
         try {
-            return dao.getPneuByCodUnidadeByStatus(codUnidade, status);
+            return dao.getPneusByCodUnidadeByStatus(codUnidade, status);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, e);
             return null;

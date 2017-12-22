@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -86,7 +86,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(Short codDiagrama) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@Nonnull Short codDiagrama) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -94,7 +94,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(String placaVeiculo) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@Nonnull String placaVeiculo) throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -102,7 +102,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public String getCodUnidadeClienteByCodUnidadeProLog(Long codUnidadeProLog) throws Exception {
+    public String getCodUnidadeClienteByCodUnidadeProLog(@Nonnull Long codUnidadeProLog) throws Exception {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
@@ -126,8 +126,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, String codTipo) throws Exception {
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
+    }
+
+    @Override
+    public Veiculo getVeiculoByPlaca(@Nonnull String placa, boolean withPneus) throws Exception {
+        return veiculoDao.getVeiculoByPlaca(placa, withPneus);
     }
 
     @Override
@@ -136,7 +141,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@Nonnull String placaVeiculo) throws Exception {
         return afericaoDao.getNovaAfericao(placaVeiculo);
     }
 

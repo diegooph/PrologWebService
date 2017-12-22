@@ -18,6 +18,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilan
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,15 +34,16 @@ import static test.integracao.avilan.AvaCorpAvilanConstants.*;
  */
 public class AvaCorpAvilanRequesterTest {
     private final AvaCorpAvilanRequester requester = new AvaCorpAvilanRequesterImpl();
+    private final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @Before
     public void setup() {
         // Printa no console todos os logs das requisições HTTP. Headers, Body...
-//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
-//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
-//        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -108,27 +111,28 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarChecklistByCodigo() throws Exception {
         final ChecklistFiltro checklistFiltro = requester.getChecklistByCodigo(
-                34360,
+                45354,
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
         assertNotNull(checklistFiltro.getAvaliacao());
-        System.out.println(GsonUtils.getGson().toJson(checklistFiltro));
+        System.out.println(PRETTY_GSON.toJson(checklistFiltro));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarChecklists() throws Exception {
         final ArrayOfChecklistFiltro checklistFiltro = requester.getChecklists(
-                11,
+                8,
                 1,
                 "",
                 "",
-                "2017-09-28",
-                "2017-10-11",
+                "2017-12-13",
+                "2017-12-13",
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
         assertTrue(!checklistFiltro.getChecklistFiltro().isEmpty());
+        System.out.println(PRETTY_GSON.toJson(checklistFiltro));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -262,16 +266,16 @@ public class AvaCorpAvilanRequesterTest {
     public void buscarFarolChecklist() throws Exception {
         final ArrayOfFarolDia farolDia =
                 requester.getFarolChecklist(
-                        11,
+                        8,
                         1,
-                        "2017-10-25",
-                        "2017-10-25",
+                        "2017-12-13",
+                        "2017-12-13",
                         false,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(farolDia);
         assertTrue(!farolDia.getFarolDia().isEmpty());
-        System.out.println(GsonUtils.getGson().toJson(farolDia));
+        System.out.println(PRETTY_GSON.toJson(farolDia));
     }
 
     @Test(timeout = 7 * 60 * 1000)

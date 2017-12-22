@@ -45,13 +45,16 @@ public class VeiculoService {
         }
     }
 
-    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) {
+    public Veiculo getVeiculoByPlaca(String userToken, String placa, boolean withPneus) {
         try {
-            return dao.getVeiculoByPlaca(placa, withPneus);
-        } catch (SQLException e) {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getVeiculoByPlaca(placa, withPneus);
+        } catch (Exception e) {
             Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
                     "Placa: %s \n" +
-                    "withPneus: %b", placa, withPneus), e);
+                    "withPneus: %b \n" +
+                    "userToken: %s", placa, withPneus, userToken), e);
             return null;
         }
     }

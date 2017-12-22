@@ -93,10 +93,25 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public List<String> getPlacasVeiculosByTipo(@Nonnull Long codUnidade, @Nonnull String codTipo) throws Exception {
+        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
+        // vazio.
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
+        if (codTipo.equals("%")) {
+            codTipo = "";
+        } else {
+            codTipo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+        }
+
         return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(
                 codTipo,
                 getCpf(),
                 getDataNascimento()));
+    }
+
+    @Override
+    public Veiculo getVeiculoByPlaca(@Nonnull String placa, boolean withPneus) throws Exception {
+        throw new IllegalStateException("O sistema "+ AvaCorpAvilan.class.getSimpleName() +
+                " não possui integração com o ProLog.");
     }
 
     @Override
@@ -117,7 +132,9 @@ public final class AvaCorpAvilan extends Sistema {
                 AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist),
                 getCpf(),
                 getDataNascimento());
-        return AvaCorpAvilanConverter.convert(questoesVeiculo, placaVeiculo);
+        final Map<Long, String> mapCodPerguntUrlImagem =
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModelo);
+        return AvaCorpAvilanConverter.convert(questoesVeiculo, mapCodPerguntUrlImagem, placaVeiculo);
     }
 
     @Override

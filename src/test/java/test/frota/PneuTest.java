@@ -32,7 +32,7 @@ public class PneuTest {
 
         pneu.setSulcosAtuais(sulcos);
 
-        dao.updateSulcos(pneu, 14L, null /* Alterar */);
+        dao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), 14L, null /* Alterar */);
 
         final Pneu pneuAtualizado = dao.getPneuByCod("16304", 14L);
         final Sulcos sulcosAtualizados = pneuAtualizado.getSulcosAtuais();

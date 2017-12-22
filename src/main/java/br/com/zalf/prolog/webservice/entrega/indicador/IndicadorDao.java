@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
+import br.com.zalf.prolog.webservice.entrega.indicador.item.IndicadorItem;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.Jornada;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -46,4 +48,23 @@ public interface IndicadorDao {
                                         String equipe,
                                         String cpf,
                                         String indicador) throws SQLException;
+
+    /**
+     * Cria apenas um item de cada indicador, que irá compor os indicadores de um mapa
+     * @param rSet ResultSet contendo os dados de apenas um unico mapa
+     * @return lista com os indicadores desse mapa
+     * @throws SQLException caso não seja possivel realizar a busca de alguma coluna
+     */
+    List<IndicadorItem> createExtratoDia(ResultSet rSet) throws SQLException;
+
+    /**
+     * Cria os objetos que representam os indicadores acumulados
+     *
+     * @param rSet ResultSet contendo os acumulados do período solicitado
+     * @return uma lista de {@link IndicadorAcumulado}
+     * @throws SQLException caso não seja possível recuperar alguma coluna do ResultSet
+     */
+    List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException;
+
+    IndicadorAcumulado createAcumuladoIndicador(ResultSet rSet, String indicador) throws SQLException;
 }

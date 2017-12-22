@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.io.IOException;
@@ -307,17 +308,17 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt = conn.prepareStatement(RESUMO_SERVICOS);
 
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(2, Servico.TIPO_CALIBRAGEM);
+			stmt.setString(2, TipoServico.CALIBRAGEM.asString());
 			stmt.setArray(3, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(4, Servico.TIPO_INSPECAO);
+			stmt.setString(4, TipoServico.INSPECAO.asString());
 			stmt.setArray(5, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(6, Servico.TIPO_MOVIMENTACAO);
+			stmt.setString(6, TipoServico.MOVIMENTACAO.asString());
 			stmt.setArray(7, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(8, Servico.TIPO_CALIBRAGEM);
+			stmt.setString(8, TipoServico.CALIBRAGEM.asString());
 			stmt.setArray(9, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(10, Servico.TIPO_INSPECAO);
+			stmt.setString(10, TipoServico.INSPECAO.asString());
 			stmt.setArray(11, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(12, Servico.TIPO_MOVIMENTACAO);
+			stmt.setString(12, TipoServico.MOVIMENTACAO.asString());
 			stmt.setDate(13, dataInicial);
 			stmt.setDate(14, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(dataInicial)));
 			rSet = stmt.executeQuery();
@@ -499,33 +500,7 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 
 	private PreparedStatement getAderenciaPlacasStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
 			throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT CALCULO.PLACA as \"PLACA\",\n" +
-				"  COUNT(CALCULO.PLACA) AS \"QTD DE AFERIÇÕES\",\n" +
-				"\n" +
-				"  CASE WHEN\n" +
-				"  MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MAX(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÁX DE DIAS ENTRE AFERIÇÕES\",\n" +
-				"  CASE WHEN\n" +
-				"  MIN(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN MIN(CALCULO.DIAS_ENTRE_AFERICOES)::TEXT ELSE 'NÃO AFERIDO' END AS \"MIN DE DIAS ENTRE AFERIÇÕES\",\n" +
-				"  CASE WHEN\n" +
-				"    MAX(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN trunc(CASE WHEN SUM(CALCULO.DIAS_ENTRE_AFERICOES) IS NOT NULL THEN\n" +
-				"            SUM(CALCULO.DIAS_ENTRE_AFERICOES) /\n" +
-				"            SUM(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES IS NOT NULL THEN 1 ELSE 0 END)\n" +
-				"  END)::TEXT ELSE 'NÃO AFERIDO' END AS \"MÉDIA DIAS ENTRE ADERIÇÕES\",\n" +
-				"  sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) as \"QTD AFERIÇÕES DENTRO DA META\",\n" +
-				"  TRUNC(sum(CASE WHEN CALCULO.DIAS_ENTRE_AFERICOES <= CALCULO.PERIODO_AFERICAO_PRESSAO THEN 1 ELSE 0 END) / COUNT(CALCULO.PLACA)::NUMERIC * 100) || '%' AS \"ADERÊNCIA\"\n" +
-				"  FROM\n" +
-				"-- QUERY PARA CONTAR A QUANTIDADES DE AFERIÇÕES DENTRO DO PRAZO REALIZADAS, POR PLACA E RESPEITANDO UM PERÍODO SELECIONADO\n" +
-				"(SELECT A.placa_veiculo AS PLACA,  A.data_hora, R.periodo_afericao_pressao AS PERIODO_AFERICAO,\n" +
-				"            CASE WHEN A.placa_veiculo = lag(A.PLACA_VEICULO) over (ORDER BY placa_veiculo, data_hora) THEN\n" +
-				"            EXTRACT( DAYS FROM  A.DATA_HORA - lag(A.data_hora) over (ORDER BY placa_veiculo, data_hora))\n" +
-				"            END AS DIAS_ENTRE_AFERICOES\n" +
-				"      FROM afericao A\n" +
-				"        JOIN VEICULO V ON V.placa = A.placa_veiculo\n" +
-				"        JOIN empresa_restricao_pneu R ON R.cod_unidade = V.cod_unidade\n" +
-				"    WHERE v.cod_unidade = ? and A.data_hora BETWEEN ? AND ?\n" +
-				"    ORDER BY 1,2) AS CALCULO\n" +
-				"GROUP BY 1\n" +
-				"ORDER BY 7 DESC, 3;");
+		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
 		stmt.setLong(1, codUnidade);
 		stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
 		stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));

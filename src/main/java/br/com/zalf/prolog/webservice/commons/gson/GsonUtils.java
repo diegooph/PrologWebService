@@ -14,10 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Calibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Inspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
@@ -49,12 +46,6 @@ public final class GsonUtils {
 			builder.setPrettyPrinting();
 		}
 
-		RuntimeTypeAdapterFactory<Servico> adapterServico = RuntimeTypeAdapterFactory
-				.of(Servico.class)
-				.registerSubtype(Calibragem.class)
-				.registerSubtype(Movimentacao.class)
-				.registerSubtype(Inspecao.class);
-
 		RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
 				.of(Origem.class, "tipo")
 				.registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
@@ -80,8 +71,8 @@ public final class GsonUtils {
 				.registerSubtype(AlternativaEscolhaQuiz.class)
 				.registerSubtype(AlternativaOrdenamentoQuiz.class)
 				.registerSubtype(AlternativaChecklist.class)
-				/* Como Modelo não é abstrato e nós iremos instancia-lo, o mesmo foi adicionado como subtipo de si
-				* próprio. */
+				/* Como Alternativa não é abstrato e nós iremos instancia-la, a mesma foi adicionada como subtipo de si
+				* própria. */
 				.registerSubtype(Alternativa.class);
 
 		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
@@ -90,12 +81,13 @@ public final class GsonUtils {
                 .registerSubtype(ResponseWithCod.class)
 				.registerSubtype(ResponseIntervalo.class);
 
-		builder.registerTypeAdapterFactory(adapterServico);
+		builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
 		builder.registerTypeAdapterFactory(adapterAlternativa);
 		builder.registerTypeAdapterFactory(adapterResponse);
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
 		builder.registerTypeAdapterFactory(adapterModelo);
+		builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
 
 		sGson = builder.create();
 	}

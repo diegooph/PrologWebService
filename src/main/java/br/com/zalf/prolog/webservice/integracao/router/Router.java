@@ -88,6 +88,15 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
+    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoByPlaca(placa, withPneus);
+        } else {
+            return integradorProLog.getVeiculoByPlaca(placa, withPneus);
+        }
+    }
+
+    @Override
     public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
         if (getSistema() != null) {
             return getSistema().getCronogramaAfericao(codUnidade);

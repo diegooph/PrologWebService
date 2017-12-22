@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		List<ItemProdutividade> itens = new ArrayList<>();
-		IndicadorDaoImpl indicadorDao = new IndicadorDaoImpl();
+		final List<ItemProdutividade> itens = new ArrayList<>();
+		final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("select * from func_get_produtividade_colaborador(?,?,?)");

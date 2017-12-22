@@ -28,9 +28,10 @@ import com.sun.istack.internal.Nullable;
 
 import javax.annotation.Nonnull;
 import java.text.ParseException;
-import java.time.Duration;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -183,8 +184,11 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes, String placaVeiculo) {
+    public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes,
+                                              Map<Long, String> mapCodPerguntUrlImagem,
+                                              String placaVeiculo) {
         checkNotNull(veiculosQuestoes, "veiculosQuestoes não pode ser null!");
+        checkNotNull(mapCodPerguntUrlImagem, "mapCodPerguntUrlImagem não pode ser null!");
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
 
         final NovoChecklistHolder novoChecklistHolder = new NovoChecklistHolder();
@@ -214,6 +218,7 @@ public final class AvaCorpAvilanConverter {
             final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
             pergunta.setCodigo((long) questao.getSequenciaQuestao());
             pergunta.setPergunta(questao.getDescricao());
+            pergunta.setUrl(mapCodPerguntUrlImagem.get((long) questao.getSequenciaQuestao()));
 
             final List<AlternativaChecklist> alternativas = new ArrayList<>();
 

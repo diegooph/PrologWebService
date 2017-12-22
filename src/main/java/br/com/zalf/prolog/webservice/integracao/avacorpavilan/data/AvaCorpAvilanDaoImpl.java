@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 10/11/17
@@ -159,6 +161,34 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
             closeConnection(conn, stmt, rSet);
         }
         return posicoesPneu;
+    }
+
+    @Override
+    public Map<Long, String> getMapeamentoCodPerguntaUrlImagem(Long codQuestionario) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Connection conn = null;
+        final Map<Long, String> mapPerguntaUrlImagem = new HashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT COD_PERGUNTA, URL_IMAGEM FROM " +
+                    "AVILAN.CHECKLIST_PERGUNTA_URL_IMAGEM WHERE COD_QUESTIONARIO = ?;");
+            stmt.setLong(1, codQuestionario);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                do {
+                    mapPerguntaUrlImagem.put(
+                            rSet.getLong("COD_PERGUNTA"),
+                            rSet.getString("URL_IMAGEM"));
+                } while (rSet.next());
+            } else {
+                throw new RuntimeException("Erro ao buscar mapeamento de perguntas para URL de imagens para o " +
+                        "questionário: " + codQuestionario);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return mapPerguntaUrlImagem;
     }
 
     @Nonnull

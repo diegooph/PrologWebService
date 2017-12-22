@@ -210,10 +210,11 @@ public class AvaCorpAvilanConverterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void Should_Fail_If_Questions_And_Answers_Transformation_Diverges() throws Exception {
+        final long codQuestionario = 1L;
         final String veiculoUtilizado = VEICULO_COM_CHECK_VINCULADO;
         final ArrayOfVeiculoQuestao veiculosQuestoes =
                 requester.getQuestoesVeiculo(
-                        1,
+                        Math.toIntExact(codQuestionario),
                         veiculoUtilizado,
                         AvacorpAvilanTipoChecklist.SAIDA,
                         CPF,
@@ -230,7 +231,9 @@ public class AvaCorpAvilanConverterTest {
         assertNotNull(veiculoQuestao.getVeiculo());
         assertNotNull(veiculoQuestao.getQuestoes());
 
-        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(veiculosQuestoes, veiculoUtilizado);
+        final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem(codQuestionario);
+
+        final NovoChecklistHolder novoChecklistHolder = AvaCorpAvilanConverter.convert(veiculosQuestoes, mapCodPerguntUrlImagem, veiculoUtilizado);
         assertNotNull(novoChecklistHolder);
         assertNotNull(novoChecklistHolder.getVeiculo());
         assertNotNull(novoChecklistHolder.getListPerguntas());
@@ -281,8 +284,10 @@ public class AvaCorpAvilanConverterTest {
                 DATA_NASCIMENTO);
         assertNotNull(arrayOfVeiculoQuestao);
         assertFalse(arrayOfVeiculoQuestao.getVeiculoQuestao().isEmpty());
+        final Map<Long, String> mapCodPerguntUrlImagem = new AvaCorpAvilanDaoImpl().getMapeamentoCodPerguntaUrlImagem((long) codigoQuestionarioModelo);
         final NovoChecklistHolder holder = AvaCorpAvilanConverter.convert(
                 arrayOfVeiculoQuestao,
+                mapCodPerguntUrlImagem,
                 veiculoUtilizado);
         assertNotNull(holder);
         assertNotNull(holder.getVeiculo());
