@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+<a name="v2.0.42"></a>
+## Version [v2.0.42](https://github.com/luizfp/PrologAndroid/compare/v2.0.41...v2.0.42) (release-date) - [unreleased]
+
 <a name="v2.0.41"></a>
 ## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
 
