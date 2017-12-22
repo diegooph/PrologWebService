@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v2.0.41"></a>
-## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (release-date) - [unreleased]
+## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
 
 ### Features
 * Cria tabela para poder vincular imagens aos modelos de checklists da Avilan, buscados do Latromi.
