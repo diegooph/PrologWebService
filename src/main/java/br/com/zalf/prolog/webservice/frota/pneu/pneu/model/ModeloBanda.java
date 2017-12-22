@@ -22,4 +22,10 @@ public class ModeloBanda extends Modelo {
         this.quantidadeSulcos = quantidadeSulcos;
     }
 
+    @Override
+    public String toString() {
+        return "ModeloBanda{" +
+                "quantidadeSulcos=" + quantidadeSulcos +
+                '}';
+    }
 }

@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.io.IOException;
@@ -307,17 +308,17 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			stmt = conn.prepareStatement(RESUMO_SERVICOS);
 
 			stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(2, Servico.TIPO_CALIBRAGEM);
+			stmt.setString(2, TipoServico.CALIBRAGEM.asString());
 			stmt.setArray(3, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(4, Servico.TIPO_INSPECAO);
+			stmt.setString(4, TipoServico.INSPECAO.asString());
 			stmt.setArray(5, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(6, Servico.TIPO_MOVIMENTACAO);
+			stmt.setString(6, TipoServico.MOVIMENTACAO.asString());
 			stmt.setArray(7, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(8, Servico.TIPO_CALIBRAGEM);
+			stmt.setString(8, TipoServico.CALIBRAGEM.asString());
 			stmt.setArray(9, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(10, Servico.TIPO_INSPECAO);
+			stmt.setString(10, TipoServico.INSPECAO.asString());
 			stmt.setArray(11, PostgresUtil.ListToArray(conn, codUnidades));
-			stmt.setString(12, Servico.TIPO_MOVIMENTACAO);
+			stmt.setString(12, TipoServico.MOVIMENTACAO.asString());
 			stmt.setDate(13, dataInicial);
 			stmt.setDate(14, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(dataInicial)));
 			rSet = stmt.executeQuery();

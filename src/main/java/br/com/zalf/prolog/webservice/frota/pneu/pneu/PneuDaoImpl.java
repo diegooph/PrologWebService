@@ -1,15 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import com.google.common.base.Preconditions;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -278,15 +277,15 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean updatePressao(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public boolean updatePressao(String codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("UPDATE PNEU SET "
                 + "PRESSAO_ATUAL = ? "
                 + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-        stmt.setDouble(1, pneu.getPressaoAtual());
-        stmt.setString(2, pneu.getCodigo());
+        stmt.setDouble(1, pressao);
+        stmt.setString(2, codPneu);
         stmt.setLong(3, codUnidade);
         if (stmt.executeUpdate() == 0) {
-            throw new SQLException("Erro ao atualizar calibragem do pneu: " + pneu.getCodigo());
+            throw new SQLException("Erro ao atualizar pressão do pneu: " + codPneu);
         }
         return true;
     }
@@ -330,7 +329,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException {
+    public List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -546,18 +545,17 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void updateSulcos(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void updateSulcos(String codPneu, Sulcos sulcosNovos, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            conn = getConnection();
             stmt = conn.prepareStatement("UPDATE PNEU SET ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, "
                     + "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
-            stmt.setDouble(1, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(2, pneu.getSulcosAtuais().getExterno());
-            stmt.setDouble(3, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(4, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setString(5, pneu.getCodigo());
+            stmt.setDouble(1, sulcosNovos.getInterno());
+            stmt.setDouble(2, sulcosNovos.getExterno());
+            stmt.setDouble(3, sulcosNovos.getCentralInterno());
+            stmt.setDouble(4, sulcosNovos.getCentralExterno());
+            stmt.setString(5, codPneu);
             stmt.setLong(6, codUnidade);
             final int count = stmt.executeUpdate();
             if (count == 0) {

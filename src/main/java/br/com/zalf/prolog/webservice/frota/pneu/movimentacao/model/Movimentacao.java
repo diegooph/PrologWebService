@@ -1,28 +1,22 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Destino;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by Zart on 23/02/17.
  */
 public class Movimentacao {
-
-    @Nullable
     private Long codigo;
-    @NotNull
     private final Pneu pneu;
-    @NotNull
     private final Origem origem;
-    @NotNull
     private final Destino destino;
-    @Nullable
     private final String observacao;
 
-    public Movimentacao(@NotNull Long codigo, @NotNull Pneu pneu, @NotNull Origem origem, @NotNull Destino destino,
+    public Movimentacao(@Nullable Long codigo, @NotNull Pneu pneu, @NotNull Origem origem, @NotNull Destino destino,
                         @Nullable String observacao) {
         this.codigo = codigo;
         this.pneu = pneu;
@@ -53,6 +47,13 @@ public class Movimentacao {
 
     public String getObservacao() {
         return observacao;
+    }
+
+    /**
+     * Verifica se a movimentação é da origem fornecida.
+     */
+    public boolean isFrom(@NotNull final String origem) {
+        return this.origem.getTipo().equals(origem);
     }
 
     public boolean isFromDestinoToOrigem(@NotNull final String origem, @NotNull final String destino) {
