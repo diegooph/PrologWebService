@@ -260,6 +260,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                     Movimentacao movimentacao,
                                     ServicoDao servicoDao,
                                     Connection conn) throws SQLException {
+        if (movimentacao.isFromDestinoToOrigem(OrigemDestinoConstants.VEICULO, OrigemDestinoConstants.VEICULO)) {
+            Log.d(TAG, "O pneu está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
+            return;
+        }
+
         final String codPneu = movimentacao.getPneu().getCodigo();
         final int qtdServicosEmAbertoPneu = servicoDao.getQuantidadeServicosEmAbertoPneu(
                 codUnidade,
