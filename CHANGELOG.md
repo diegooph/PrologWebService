@@ -6,9 +6,11 @@ Change Log
 
 ### Features
 * Cria tabela para poder vincular imagens aos modelos de checklists da Avilan, buscados do Latromi.
+* Cria métodos para busca dos serviços fechados dos pneus
 
 ### Refactor
 * Altera seguintes classes para utilizarem Injection: `IndicadorDaoImpl`
+* Refatora criação de serviços dos pneus
 
 ### Bug Fixes
 * Corrige busca das placas dos veículos com base no tipo na integração com a Avilan
