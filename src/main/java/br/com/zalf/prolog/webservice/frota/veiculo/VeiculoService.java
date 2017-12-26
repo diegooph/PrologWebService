@@ -98,6 +98,16 @@ public class VeiculoService {
         }
     }
 
+    public boolean updateStatus(Long codUnidade, String placa, Veiculo veiculo) {
+        try {
+            dao.updateStatus(codUnidade, placa, veiculo);
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %d", placa), e);
+            return false;
+        }
+    }
+
     public boolean delete(String placa) {
         try {
             return dao.delete(placa);

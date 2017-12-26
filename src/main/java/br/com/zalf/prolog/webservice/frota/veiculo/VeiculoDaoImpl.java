@@ -2,17 +2,15 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Android;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.ws.rs.DELETE;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -88,10 +86,27 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
+    public void updateStatus(@NotNull Long codUnidade, @NotNull String placa, @NotNull Veiculo veiculo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? WHERE COD_UNIDADE = ? AND PLACA = ?;");
+            stmt.setBoolean(1, veiculo.isAtivo());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, placa);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o status do veículo com placa: " + placa);
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
     public boolean delete(String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        Log.d("delete", placa);
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
@@ -286,7 +301,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         }
     }
 
-    @DELETE
     public boolean deleteTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -503,7 +517,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         return total;
     }
 
-    @Android
     @Override
     public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
         Connection conn = null;

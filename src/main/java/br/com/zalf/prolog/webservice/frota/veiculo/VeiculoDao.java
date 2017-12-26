@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
@@ -33,6 +33,9 @@ public interface VeiculoDao {
 	 * @throws SQLException caso não seja possível realizar o update
 	 */
 	boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
+
+	void updateStatus(@NotNull final Long codUnidade, @NotNull final String placa, @NotNull final Veiculo veiculo)
+			throws SQLException;
 	
 	/**
 	 * Seta o veiculo como inativo no banco de dados

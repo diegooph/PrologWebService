@@ -44,6 +44,19 @@ public class VeiculoResource {
         }
     }
 
+    @PUT
+    @Path("/{codUnidade}/{placa}/status")
+    @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
+    public Response updateStatus(@PathParam("codUnidade") @Required Long codUnidade,
+                                 @PathParam("placa") @Required String placa,
+                                 Veiculo veiculo) {
+        if (service.updateStatus(codUnidade, placa, veiculo)) {
+            return Response.ok("Colaborador atualizado com sucesso");
+        } else {
+            return Response.error("Erro ao atualizar o colaborador");
+        }
+    }
+
     @DELETE
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{placa}")

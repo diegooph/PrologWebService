@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Permite filtrar por ativo/inativo busca dos veículos de uma unidade
+* Cria método para alterar o status de um veículo (ativo/inativo)
 
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
