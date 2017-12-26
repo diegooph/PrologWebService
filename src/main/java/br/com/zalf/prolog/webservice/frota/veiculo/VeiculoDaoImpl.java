@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeiculo;
 import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.DELETE;
 import java.sql.Connection;
@@ -108,27 +109,45 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade)
+    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos)
             throws SQLException {
-        List<Veiculo> veiculos = new ArrayList<>();
+        final List<Veiculo> veiculos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, "
-                    + "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
-                    + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
-                    + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
-                    + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
-                    + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-                    + "WHERE V.COD_UNIDADE = ? AND V.STATUS_ATIVO = TRUE "
-                    + "ORDER BY V.PLACA");
+            stmt = conn.prepareStatement("SELECT " +
+                    "V.*, " +
+                    "MV.NOME AS MODELO, " +
+                    "EV.NOME AS EIXOS, " +
+                    "EV.DIANTEIRO, " +
+                    "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
+                    "TV.NOME AS TIPO, " +
+                    "MAV.NOME AS MARCA, " +
+                    "MAV.CODIGO AS COD_MARCA  " +
+                    "FROM VEICULO V " +
+                    "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
+                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                    "WHERE V.COD_UNIDADE = ? " +
+                    "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
+                    "ORDER BY V.PLACA");
             stmt.setLong(1, codUnidade);
+
+            // Se for nulo não filtramos por ativos/inativos.
+            if (ativos == null) {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, false);
+            } else {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, ativos);
+            }
+
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Veiculo veiculo = createVeiculo(rSet);
-                veiculos.add(veiculo);
+                veiculos.add(createVeiculo(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -606,27 +625,37 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
-        Veiculo veiculo = new Veiculo();
+        final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA"));
         veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         veiculo.setKmAtual(rSet.getLong("KM"));
-        Eixos eixos = new Eixos();
+
+        // Eixos.
+        final Eixos eixos = new Eixos();
         eixos.codigo = rSet.getLong("COD_EIXOS");
         eixos.dianteiro = rSet.getInt("DIANTEIRO");
         eixos.traseiro = rSet.getInt("TRASEIRO");
         veiculo.setEixos(eixos);
-        TipoVeiculo tipo = new TipoVeiculo();
+
+        // Tipo do veículo.
+        final TipoVeiculo tipo = new TipoVeiculo();
         tipo.setCodigo(rSet.getLong("COD_TIPO"));
         tipo.setNome(rSet.getString("TIPO"));
         veiculo.setTipo(tipo);
-        Marca marca = new Marca();
+
+        // Marca do veículo.
+        final Marca marca = new Marca();
         marca.setCodigo(rSet.getLong("COD_MARCA"));
         marca.setNome(rSet.getString("MARCA"));
         veiculo.setMarca(marca);
-        ModeloVeiculo modelo = new ModeloVeiculo();
+
+        // Modelo do veículo.
+        final ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("MODELO"));
         veiculo.setModelo(modelo);
+
+        // Diagrama do veículo.
         getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
         return veiculo;
     }

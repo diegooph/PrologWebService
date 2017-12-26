@@ -21,9 +21,8 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -123,8 +122,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
-        return veiculoDao.getVeiculosAtivosByUnidade(codUnidade);
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
+        return veiculoDao.getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
     @NotNull
@@ -135,7 +134,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
@@ -233,9 +232,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
-                                            @Nonnull final Date dataInicial,
-                                            @Nonnull final Date dataFinal,
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }

@@ -60,15 +60,17 @@ public abstract class Router implements OperacoesIntegradas {
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 
+    @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getVeiculosAtivosByUnidade(codUnidade);
+            return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
         } else {
-            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade);
+            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade, ativos);
         }
     }
 
+    @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
@@ -78,8 +80,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
         if (getSistema() != null) {
             return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
         } else {
@@ -87,8 +90,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculoByPlaca(placa, withPneus);
         } else {
@@ -96,6 +100,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
@@ -105,8 +110,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
         if (getSistema() != null) {
             return getSistema().getNovaAfericao(placaVeiculo);
         } else {
@@ -133,6 +139,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
     public List<Afericao> getAfericoes(@NotNull Long codUnidade,
                                        @NotNull String codTipoVeiculo,
@@ -150,6 +157,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
     public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
                                                                                     @NotNull Long codFuncao) throws Exception {
@@ -160,6 +168,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
     public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
                                                       @NotNull Long codModelo,
@@ -172,6 +181,7 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
     public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         if (getSistema() != null) {

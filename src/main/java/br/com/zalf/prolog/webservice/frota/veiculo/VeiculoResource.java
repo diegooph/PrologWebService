@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.Site;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -66,9 +68,10 @@ public class VeiculoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR})
     @Path("/{codUnidade}")
-    public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") String userToken,
-                                                    @PathParam("codUnidade") Long codUnidade) {
-        return service.getVeiculosAtivosByUnidade(userToken, codUnidade);
+    public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+                                                    @PathParam("codUnidade") @Required Long codUnidade,
+                                                    @QueryParam("ativos") @Optional Boolean ativos) {
+        return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
     @POST

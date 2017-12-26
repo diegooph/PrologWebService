@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.operacoes;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 interface OperacoesIntegradasVeiculo {
     @NotNull
-    List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade) throws Exception;
+    List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws Exception;
 
     @NotNull
     List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull final Long codUnidade) throws Exception;

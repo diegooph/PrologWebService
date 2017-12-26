@@ -19,11 +19,11 @@ public class VeiculoService {
     private final VeiculoDao dao = Injection.provideVeiculoDao();
     private static final String TAG = VeiculoService.class.getSimpleName();
 
-    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade) {
+    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
-                    .getVeiculosAtivosByUnidade(codUnidade);
+                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
         } catch (Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
                     "Unidade: %d \n" +

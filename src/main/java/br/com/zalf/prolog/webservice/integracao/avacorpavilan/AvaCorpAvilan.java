@@ -57,7 +57,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
         return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()));
     }
 

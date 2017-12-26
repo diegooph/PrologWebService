@@ -4,6 +4,9 @@ Change Log
 <a name="v2.0.42"></a>
 ## Version [v2.0.42](https://github.com/luizfp/PrologAndroid/compare/v2.0.41...v2.0.42) (release-date) - [unreleased]
 
+### Features
+* Permite filtrar por ativo/inativo busca dos veículos de uma unidade
+
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
 * Corrige ordenamento da busca dos serviços abertos/fechados dos pneus

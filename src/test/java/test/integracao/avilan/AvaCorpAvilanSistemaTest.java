@@ -40,7 +40,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarVeiculosAtivos() throws Exception {
-        assertNotNull(sistema.getVeiculosAtivosByUnidade(0L));
+        assertNotNull(sistema.getVeiculosAtivosByUnidade(0L, null));
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)

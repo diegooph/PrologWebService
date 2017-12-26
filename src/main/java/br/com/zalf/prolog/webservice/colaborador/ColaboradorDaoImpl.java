@@ -305,6 +305,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "ORDER BY 8");
             stmt.setLong(1, codUnidade);
 
+            //noinspection Duplicates
             if (apenasAtivos) {
                 stmt.setInt(2, 0);
                 stmt.setBoolean(3, true);
