@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Banda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
@@ -70,7 +71,11 @@ public interface PneuDao {
      */
     void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
 
-    void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    /**
+     * Altera a vida atual de um determinado {@link Pneu}. Sempre que um {@link Pneu} tiver sua vida alterada,
+     * é necessário aterar também seu código de {@link Banda}, pois significa que o mesmo foi recapado.
+     */
+    void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     void updateSulcos(String codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
@@ -141,17 +146,6 @@ public interface PneuDao {
      * @throws SQLException caso ocorra erro no banco
      */
     boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException;
-
-    /**
-     * Incrementa a vida atual de um determinado pneu
-     *
-     * @param conn       uma connection aberta previamente
-     * @param pneu    objeto pneu a ser atualizado
-     * @param codUnidade código da unidade
-     * @return booleal com resultado da operação
-     * @throws SQLException em caso de erro
-     */
-    void updateVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa

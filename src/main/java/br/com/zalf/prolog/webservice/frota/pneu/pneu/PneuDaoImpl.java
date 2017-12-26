@@ -111,7 +111,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // Pressão atual.
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getSulcosPneuNovo().getCentralInterno());
+            stmt.setDouble(6, pneu.getValorSulcoPneuNovo());
             stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
             stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
             stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
@@ -133,9 +133,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o pneu");
             }
 
-            // Verifica se precisamos inserir informações de valor da banda.
+            // Verifica se precisamos inserir informações de valor da banda para a vida atual.
             if (pneu.getVidaAtual() > 1) {
-                insertTrocaVidaPneu(pneu, codUnidade, conn);
+                insertValorBandaVidaAtual(pneu, codUnidade, conn);
             }
 
             conn.commit();
@@ -149,21 +149,29 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void insertTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         Preconditions.checkArgument(pneu.getVidaAtual() > 1, "Vida atual precisa ser maior que 1");
 
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO pneu_valor_vida(cod_unidade, cod_pneu, cod_modelo_banda, vida, " +
-                    "valor)" +
-                    "VALUES (?,?,?,?,?) ");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, pneu.getCodigo());
-            stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
-            stmt.setBigDecimal(5, pneu.getBanda().getValor());
-            stmt.setInt(4, pneu.getVidaAtual());
+            // Insere o valor da nova vida para o pneu.
+            insertValorBandaVidaAtual(pneu, codUnidade, conn);
+
+            // Atualiza a vida e o código do modelo de banda na tabela PNEU.
+            stmt = conn.prepareStatement("UPDATE PNEU SET " +
+                    "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ? " +
+                    "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setInt(1, pneu.getVidaAtual());
+            if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
+                stmt.setLong(2, pneu.getVidaAtual());
+            } else {
+                stmt.setLong(2, pneu.getVidasTotal());
+            }
+            stmt.setLong(3, pneu.getCodModeloBanda());
+            stmt.setString(4, pneu.getCodigo());
+            stmt.setLong(5, codUnidade);
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao cadastrar a mudança de vida");
+                throw new SQLException("Erro ao trocar a vida do pneu " + pneu.getCodigo() + " da unidade " + codUnidade);
             }
         } finally {
             closeConnection(null, stmt, null);
@@ -251,29 +259,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(conn, stmt, null);
         }
         return true;
-    }
-
-    @Override
-    public void updateVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE PNEU SET VIDA_ATUAL = ?, VIDA_TOTAL = ? " +
-                    "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-            stmt.setInt(1, pneu.getVidaAtual());
-            if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
-                stmt.setLong(2, pneu.getVidaAtual());
-            } else {
-                stmt.setLong(2, pneu.getVidasTotal());
-            }
-            stmt.setString(3, pneu.getCodigo());
-            stmt.setLong(4, codUnidade);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar a vida do pneu: " + pneu.getCodigo());
-            }
-        } finally {
-            closeConnection(null, stmt, null);
-        }
     }
 
     @Override
@@ -744,6 +729,27 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(conn, stmt, null);
         }
         return true;
+    }
+
+    private void insertValorBandaVidaAtual(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO pneu_valor_vida(cod_unidade, cod_pneu, cod_modelo_banda, vida, " +
+                    "valor)" +
+                    "VALUES (?,?,?,?,?) ");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, pneu.getCodigo());
+            stmt.setLong(3, pneu.getCodModeloBanda());
+            stmt.setBigDecimal(5, pneu.getBanda().getValor());
+            stmt.setInt(4, pneu.getVidaAtual());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o valor da banda do pneu "
+                        + pneu.getCodigo() + " da unidade " + codUnidade);
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+
     }
 
     private Marca createMarcaPneu(ResultSet rSet) throws SQLException {

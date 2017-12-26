@@ -238,6 +238,15 @@ public class Pneu {
         }
     }
 
+    public Double getValorSulcoPneuNovo() {
+        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar o valor de qualquer um dos sulcos.
+        return sulcosPneuNovo.getCentralInterno();
+    }
+
+    public Long getCodModeloBanda() {
+        return banda.getModelo().getCodigo();
+    }
+
     public boolean temQtdImparSulcos() {
         return getQuantidadeSulcos() % 2 != 0;
     }
