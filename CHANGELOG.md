@@ -6,6 +6,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
+* Corrige ordenamento da busca dos serviços abertos/fechados dos pneus
 
 <a name="v2.0.41"></a>
 ## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
