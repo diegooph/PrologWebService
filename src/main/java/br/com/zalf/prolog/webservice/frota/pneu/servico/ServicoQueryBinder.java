@@ -67,7 +67,8 @@ final class ServicoQueryBinder {
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY A.PLACA_VEICULO;");
+                "GROUP BY A.PLACA_VEICULO " +
+                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -104,7 +105,7 @@ final class ServicoQueryBinder {
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
                 "GROUP BY AM.COD_PNEU "+
-                "ORDER BY TOTAL_CALIBRAGENS, TOTAL_INSPECOES, TOTAL_MOVIMENTACOES;");
+                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -129,7 +130,7 @@ final class ServicoQueryBinder {
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN ? AND ? " +
                 "GROUP BY A.PLACA_VEICULO " +
-                "ORDER BY TOTAL_CALIBRAGENS, TOTAL_INSPECOES, TOTAL_MOVIMENTACOES;");
+                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
