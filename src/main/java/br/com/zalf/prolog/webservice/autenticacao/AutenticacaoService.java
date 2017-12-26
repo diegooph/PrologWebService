@@ -1,17 +1,17 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
- * Classe AutenticacaoService responsavel por comunicar-se com a interface DAO
+ * Classe AutenticacaoService responsavel por comunicar-se com a interface DAO.
  */
 public class AutenticacaoService {
-
-	private AutenticacaoDao dao = new AutenticacaoDaoImpl();
 	private static final String TAG = AutenticacaoService.class.getSimpleName();
+	private final AutenticacaoDao dao = Injection.provideAutenticacaoDao();
 
 	public Autenticacao insertOrUpdate(Long cpf) {
 		try {

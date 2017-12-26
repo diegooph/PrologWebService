@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
+import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
@@ -79,6 +81,10 @@ public final class Injection {
 
     public static MovimentacaoDao provideMovimentacaoDao() {
         return new MovimentacaoDaoImpl();
+    }
+
+    public static AutenticacaoDao provideAutenticacaoDao() {
+        return new AutenticacaoDaoImpl();
     }
 
     // ================================================

@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
  */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
+	public AutenticacaoDaoImpl() {
+
+	}
+
 	@Override
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {
 		SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();

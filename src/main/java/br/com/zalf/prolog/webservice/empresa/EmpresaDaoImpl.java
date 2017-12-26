@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.empresa;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Request;
@@ -137,7 +137,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public boolean createEquipe(Request<Equipe> request) throws SQLException {
-        AutenticacaoDao autenticacaoDao = new AutenticacaoDaoImpl();
+        final AutenticacaoDao autenticacaoDao = Injection.provideAutenticacaoDao();
         if (autenticacaoDao.verifyIfTokenExists(request.getToken(), true)) {
             Connection conn = null;
             PreparedStatement stmt = null;
