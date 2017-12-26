@@ -262,9 +262,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return null;
     }
 
-    /**
-     * Busca todos os colaboradores de uma {@link Unidade}.
-     */
     @Override
     public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException {
         List<Colaborador> list = new ArrayList<>();
