@@ -9,7 +9,7 @@ Change Log
 * Cria método para alterar o status de um veículo (ativo/inativo)
 
 ### Refactor
-* Altera seguintes classes para utilizarem Injection: `AutenticacaoDaoImpl`
+* Altera seguintes classes para utilizarem Injection: `AutenticacaoDaoImpl`, `AppDaoImpl`
 
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
