@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.app.AppDao;
+import br.com.zalf.prolog.webservice.app.AppDaoImpl;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
@@ -26,6 +28,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChang
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Provide a simple way to use DI by hand.
@@ -39,57 +42,75 @@ public final class Injection {
     // ================================================
     // DAOS
     // ================================================
+    @NotNull
     public static ChecklistDao provideChecklistDao() {
         return new ChecklistDaoImpl();
     }
 
+    @NotNull
     public static VeiculoDao provideVeiculoDao() {
         return new VeiculoDaoImpl();
     }
 
+    @NotNull
     public static IntegracaoDao provideIntegracaoDao() {
         return new IntegracaoDaoImpl();
     }
 
+    @NotNull
     public static AfericaoDao provideAfericaoDao() {
         return new AfericaoDaoImpl();
     }
 
+    @NotNull
     public static ColaboradorDao provideColaboradorDao() {
         return new ColaboradorDaoImpl();
     }
 
+    @NotNull
     public static PneuDao providePneuDao() {
         return new PneuDaoImpl();
     }
 
+    @NotNull
     public static OrdemServicoDao provideOrdemServicoDao() {
         return new OrdemServicoDaoImpl();
     }
 
+    @NotNull
     public static EmpresaDao provideEmpresaDao() {
         return new EmpresaDaoImpl();
     }
 
+    @NotNull
     public static IndicadorDao provideIndicadorDao() {
         return new IndicadorDaoImpl();
     }
 
+    @NotNull
     public static ServicoDao provideServicoDao() {
         return new ServicoDaoImpl();
     }
 
+    @NotNull
     public static MovimentacaoDao provideMovimentacaoDao() {
         return new MovimentacaoDaoImpl();
     }
 
+    @NotNull
     public static AutenticacaoDao provideAutenticacaoDao() {
         return new AutenticacaoDaoImpl();
+    }
+
+    @NotNull
+    public static AppDao provideAppDao() {
+        return new AppDaoImpl();
     }
 
     // ================================================
     // OUTROS
     // ================================================
+    @NotNull
     public static DadosIntervaloChangedListener provideDadosIntervaloChangedListener() {
         return new VersaoDadosIntervaloAtualizador();
     }

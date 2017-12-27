@@ -13,9 +13,8 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AppResource {
+	private final AppService service = new AppService();
 
-	private AppService service = new AppService();
-	
 	@POST
 	@Path("/version")
 	@Secured
