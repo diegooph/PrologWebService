@@ -848,6 +848,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
+                modelo.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS"));
                 modelos.add(modelo);
             }
         } finally {
