@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class MetaResource{
 
-	private MetaService service = new MetaService();
+	private final MetaService service = new MetaService();
 
 	@GET
 	@Secured (permissions = Pilares.Entrega.Meta.VISUALIZAR)
@@ -31,5 +31,4 @@ public class MetaResource{
 			return Response.error("Erro ao atualizar a meta");
 		}
 	}
-
 }

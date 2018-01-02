@@ -10,6 +10,10 @@ import java.time.temporal.ChronoUnit;
 
 public class MetasDaoImpl extends DatabaseConnection implements MetasDao {
 
+    public MetasDaoImpl() {
+
+    }
+
     @Override
     public Metas getByCodUnidade(Long codUnidade) throws SQLException {
         Connection conn = null;
