@@ -668,21 +668,20 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO modelo_banda\n" +
-                    "    (nome, cod_marca, cod_empresa, qt_sulcos)\n" +
-                    "SELECT ?, ?, ?, ?\n" +
-                    "WHERE\n" +
-                    "    NOT EXISTS (\n" +
-                    "        SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and " +
-                    "cod_empresa = ?\n" +
-                    "    ) RETURNING codigo;");
+            stmt = conn.prepareStatement("INSERT INTO modelo_banda " +
+                    "    (nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos) " +
+                    "SELECT ?, ?, ?, ?, ? " +
+                    "WHERE NOT EXISTS " +
+                    " (SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and cod_empresa = ?) " +
+                    "RETURNING codigo;");
             stmt.setString(1, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(2, codMarcaBanda);
             stmt.setLong(3, codEmpresa);
             stmt.setInt(4, modelo.getQuantidadeSulcos());
-            stmt.setString(5, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
-            stmt.setLong(6, codMarcaBanda);
-            stmt.setLong(7, codEmpresa);
+            stmt.setDouble(5, modelo.getAlturaSulcos());
+            stmt.setString(6, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setLong(7, codMarcaBanda);
+            stmt.setLong(8, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
