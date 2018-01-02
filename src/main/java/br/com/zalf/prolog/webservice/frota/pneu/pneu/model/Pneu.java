@@ -238,9 +238,17 @@ public class Pneu {
         }
     }
 
-    public Double getValorSulcoPneuNovo() {
-        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar o valor de qualquer um dos sulcos.
+    public Double getAlturaSulcoPneuNovo() {
+        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar a altura de qualquer um dos sulcos.
         return sulcosPneuNovo.getCentralInterno();
+    }
+
+    public Double getAlturaSulcoBandaPneu() {
+        return banda.getModelo().getAlturaSulcos();
+    }
+
+    public BigDecimal getValorBanda() {
+        return banda.getValor();
     }
 
     public Long getCodModeloBanda() {
