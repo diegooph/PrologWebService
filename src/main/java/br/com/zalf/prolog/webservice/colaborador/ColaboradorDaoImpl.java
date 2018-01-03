@@ -92,8 +92,16 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "COD_EMPRESA = ?, COD_EQUIPE = ? "
                     + "WHERE CPF = ?;");
             stmt.setLong(1, colaborador.getCpf());
-            stmt.setInt(2, colaborador.getMatriculaAmbev());
-            stmt.setInt(3, colaborador.getMatriculaTrans());
+            if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
+                stmt.setNull(2, Types.INTEGER);
+            } else {
+                stmt.setInt(2, colaborador.getMatriculaAmbev());
+            }
+            if (colaborador.getMatriculaTrans() == null || colaborador.getMatriculaTrans().equals(0)) {
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt.setInt(3, colaborador.getMatriculaTrans());
+            }
             stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
             stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
             stmt.setBoolean(6, colaborador.isAtivo());
