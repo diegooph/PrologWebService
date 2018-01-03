@@ -126,8 +126,8 @@ public class AvaCorpAvilanRequesterTest {
                 1,
                 "",
                 "",
-                "2017-12-13",
-                "2017-12-13",
+                "2017-11-13",
+                "2017-12-23",
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
@@ -160,11 +160,11 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarTodosChecklists() throws Exception {
-        final String dataInicial = "2017-09-28";
-        final String dataFinal = "2017-10-11";
+        final String dataInicial = "2017-12-01";
+        final String dataFinal = "2017-12-23";
 
         final ArrayOfChecklistFiltro checklists = requester.getChecklists(
-                11,
+                8,
                 1,
                 "",
                 "",
@@ -187,11 +187,16 @@ public class AvaCorpAvilanRequesterTest {
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarQuestionariosColaborador() throws Exception {
         final ArrayOfQuestionarioVeiculos questionarios =
-                requester.getSelecaoModeloChecklistPlacaVeiculo("02953556036", "1990-12-17");
+                requester.getSelecaoModeloChecklistPlacaVeiculo(CPF, DATA_NASCIMENTO);
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
         assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
         assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getVeiculos());
+        System.out.println(questionarios);
+        List<QuestionarioVeiculos> questionarios2 = questionarios.getQuestionarioVeiculos();
+        for(QuestionarioVeiculos questionadio : questionarios2) {
+            System.out.println(questionadio.getQuestionario().getCodigoQuestionario() + ";" + questionadio.getQuestionario().getDescricao() + questionadio.getVeiculos().getVeiculo().get(0).getPlaca());
+        }
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
@@ -253,13 +258,18 @@ public class AvaCorpAvilanRequesterTest {
     public void testBuscarPerguntasAlternativasQuestionario() throws Exception {
         final ArrayOfVeiculoQuestao veiculoQuestao =
                 requester.getQuestoesVeiculo(
-                        1,
-                        "MKR2412",
-                        AvacorpAvilanTipoChecklist.RETORNO,
+                        999,
+                        "EMP2254",
+                        AvacorpAvilanTipoChecklist.SAIDA,
                         CPF,
                         DATA_NASCIMENTO);
         assertNotNull(veiculoQuestao);
         assertTrue(!veiculoQuestao.getVeiculoQuestao().isEmpty());
+//        System.out.println(veiculoQuestao);
+        List<Questao> questoes = veiculoQuestao.getVeiculoQuestao().get(0).getQuestoes().getQuestao();
+        for(Questao questao : questoes){
+            System.out.println(questao.getSequenciaQuestao() + ";" + questao.getDescricao());
+        }
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
