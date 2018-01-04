@@ -16,8 +16,7 @@ import javax.ws.rs.core.StreamingOutput;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.PRODUTIVIDADE)
 public class ProdutividadeRelatorioResource {
-
-    private ProdutividadeRelatorioService service = new ProdutividadeRelatorioService();
+    private final ProdutividadeRelatorioService service = new ProdutividadeRelatorioService();
 
     @GET
     @Path("/consolidados/{codUnidade}/csv")
