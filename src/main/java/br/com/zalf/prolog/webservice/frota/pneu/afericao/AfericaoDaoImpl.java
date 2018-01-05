@@ -85,7 +85,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     @Override
-    public NovaAfericao getNovaAfericao(String placa) throws SQLException {
+    public NovaAfericao getNovaAfericao(String placa, String tipoAfericao) throws SQLException {
         VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);

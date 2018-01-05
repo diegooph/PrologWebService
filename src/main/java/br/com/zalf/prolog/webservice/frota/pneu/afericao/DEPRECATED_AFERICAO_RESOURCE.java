@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -59,8 +60,15 @@ public class DEPRECATED_AFERICAO_RESOURCE {
     @Path("/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     public NovaAfericao getNovaAfericao(@PathParam("placaVeiculo") String placa,
-                                        @HeaderParam("Authorization") String userToken) {
-        return service.getNovaAfericao(placa, userToken);
+                                        @QueryParam("dataInicial") String tipoAfericao,
+                                        @HeaderParam("Authorization") String userToken) throws Exception {
+        try {
+            return service.getNovaAfericao(placa, tipoAfericao, userToken);
+        } catch (TipoAfericaoNotSupported e) {
+            throw e;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @GET

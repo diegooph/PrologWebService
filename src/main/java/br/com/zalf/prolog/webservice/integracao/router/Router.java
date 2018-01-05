@@ -112,11 +112,12 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
+                                        @NotNull String tipoAfericao) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovaAfericao(placaVeiculo);
+            return getSistema().getNovaAfericao(placaVeiculo, tipoAfericao);
         } else {
-            return integradorProLog.getNovaAfericao(placaVeiculo);
+            return integradorProLog.getNovaAfericao(placaVeiculo, tipoAfericao);
         }
     }
 

@@ -15,7 +15,8 @@ interface OperacoesIntegradasAfericao {
     CronogramaAfericao getCronogramaAfericao(@NotNull final Long codUnidade) throws Exception;
 
     @NotNull
-    NovaAfericao getNovaAfericao(@NotNull final String placaVeiculo) throws Exception;
+    NovaAfericao getNovaAfericao(@NotNull final String placaVeiculo,
+                                 @NotNull final String tipoAfericao) throws Exception;
 
     boolean insertAfericao(@NotNull final Afericao afericao, @NotNull final Long codUnidade) throws Exception;
 

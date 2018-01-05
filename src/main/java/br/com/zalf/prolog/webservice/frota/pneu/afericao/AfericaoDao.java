@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 
 import java.sql.SQLException;
@@ -33,10 +33,11 @@ public interface AfericaoDao {
      * adiciona uma aferição ao veículo da placa
      *
      * @param placa placa do veículo
+     * @param tipoAfericao tipo da aferição que será realizada
      * @return retorna uma nova aferição
      * @throws SQLException se ocorrer erro no banco
      */
-    NovaAfericao getNovaAfericao(String placa) throws SQLException;
+    NovaAfericao getNovaAfericao(String placa, String tipoAfericao) throws SQLException;
 
     /**
      * retorna as restrições de medidas da unidade

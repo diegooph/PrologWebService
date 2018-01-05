@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogErrorCodes;
+import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
@@ -8,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -29,6 +32,7 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,7 +118,7 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
-        throw new IllegalStateException("O sistema "+ AvaCorpAvilan.class.getSimpleName() +
+        throw new IllegalStateException("O sistema " + AvaCorpAvilan.class.getSimpleName() +
                 " não possui integração com o ProLog.");
     }
 
@@ -265,7 +269,21 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
+                                        @NotNull String tipoAfericao) throws Exception {
+
+        /*
+         * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
+         * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
+         */
+        if (!tipoAfericao.equals(TipoAfericao.SULCO_PRESSAO.asString())) {
+            throw new TipoAfericaoNotSupported(
+                    Response.Status.BAD_REQUEST.getStatusCode(),
+                    ProLogErrorCodes.TIPO_AFERICAO_NAO_SUPORTADO.errorCode(),
+                    "Avilan só aceita aferição de " + TipoAfericao.SULCO_PRESSAO.getLegibleString(),
+                    "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
+        }
+
         final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan =
                 requester.getVeiculoAtivo(placaVeiculo, getCpf(), getDataNascimento());
 

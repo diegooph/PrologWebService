@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
-import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
 import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
@@ -11,9 +10,27 @@ import javax.annotation.Nonnull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public enum TipoAfericao {
-    SULCO("SULCO"),
-    PRESSAO("PRESSAO"),
-    SULCO_PRESSAO("SULCO_PRESSAO");
+    SULCO("SULCO") {
+        @Nonnull
+        @Override
+        public String getLegibleString() {
+            return "sulco";
+        }
+    },
+    PRESSAO("PRESSAO") {
+        @Nonnull
+        @Override
+        public String getLegibleString() {
+            return "pressão";
+        }
+    },
+    SULCO_PRESSAO("SULCO_PRESSAO") {
+        @Nonnull
+        @Override
+        public String getLegibleString() {
+            return "sulco e pressão";
+        }
+    };
 
     @Nonnull
     private final String stringRepresentation;
@@ -21,6 +38,9 @@ public enum TipoAfericao {
     TipoAfericao(@Nonnull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
+
+    @Nonnull
+    public abstract String getLegibleString();
 
     @Nonnull
     public String asString() {

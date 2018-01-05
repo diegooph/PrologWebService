@@ -152,8 +152,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        return afericaoDao.getNovaAfericao(placaVeiculo);
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
+                                        @NotNull String tipoAfericao) throws Exception {
+        return afericaoDao.getNovaAfericao(placaVeiculo, tipoAfericao);
     }
 
     @Override

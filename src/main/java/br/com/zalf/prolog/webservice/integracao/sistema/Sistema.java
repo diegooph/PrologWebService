@@ -76,8 +76,9 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo) throws Exception {
-        return getIntegradorProLog().getNovaAfericao(placaVeiculo);
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
+                                        @NotNull String tipoAfericao) throws Exception {
+        return getIntegradorProLog().getNovaAfericao(placaVeiculo, tipoAfericao);
     }
 
     @Override

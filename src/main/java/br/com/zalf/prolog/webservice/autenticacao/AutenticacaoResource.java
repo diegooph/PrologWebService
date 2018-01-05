@@ -7,8 +7,6 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-
-
 @Path("/autenticacao")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -46,7 +44,7 @@ public class AutenticacaoResource {
 	@GET
 	@Secured
 	public boolean verifyTokenValidity(){
-//		Verifica se um token é valido, retornando true, caso contrario retorna 401
+        // Verifica se um token é valido, retornando true, caso contrario retorna 401.
 		return true;
 	}
 }

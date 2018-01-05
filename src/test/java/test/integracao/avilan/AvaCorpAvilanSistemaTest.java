@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.NovaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -45,7 +46,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarNovaAfericao() throws Exception {
-        final NovaAfericao novaAfericao = sistema.getNovaAfericao("LRN9162");
+        final NovaAfericao novaAfericao = sistema.getNovaAfericao("LRN9162", TipoAfericao.SULCO_PRESSAO.asString());
         assertNotNull(novaAfericao);
         System.out.println(GsonUtils.getGson().toJson(novaAfericao));
     }
