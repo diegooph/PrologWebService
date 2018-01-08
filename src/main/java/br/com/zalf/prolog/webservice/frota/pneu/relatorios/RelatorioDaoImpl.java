@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -805,5 +806,38 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			closeConnection(conn, stmt, rSet);
 		}
 		return statusPneus;
+	}
+
+	@Override
+	public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		List<QtAfericao> qtAfericoes = new ArrayList<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT a.data_hora::date as data,\n" +
+					"  sum(case when a.tipo_afericao = 'PRESSAO' THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
+					"  sum(case when a.tipo_afericao = 'SULCO' THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
+					"  sum(case when a.tipo_afericao = 'SULCO_PRESSAO' THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
+					"FROM afericao a JOIN veiculo v ON v.placa = a.placa_veiculo\n" +
+					"WHERE v.cod_unidade:: text like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ? \n" +
+					"GROUP BY a.data_hora::DATE\n" +
+					"ORDER BY a.data_hora::DATE ASC;");
+			stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+			stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+			stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				qtAfericoes.add(
+						new QtAfericao(rSet.getDate("data"),
+						rSet.getInt("qt_afericao_pressao"),
+						rSet.getInt("qt_afericao_sulco"),
+						rSet.getInt("qt_afericao_sulco_pressao")));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return qtAfericoes;
 	}
 }

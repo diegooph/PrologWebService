@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -183,4 +184,12 @@ public class RelatorioResource {
 	public Map<String,Long> getQtPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades) {
 		return service.getQtPneusByStatus(codUnidades);
 	}
+
+    @GET
+    @Path("dashboards/afericoes/quantidades")
+    public List<QtAfericao> getQtAfericoesByTipoByData(@QueryParam("dataInicial") Long dataInicial,
+                                                       @QueryParam("dataFinal") Long dataFinal,
+                                                       @QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getQtAfericoesByTipoByData(dataInicial, dataFinal, codUnidades);
+    }
 }

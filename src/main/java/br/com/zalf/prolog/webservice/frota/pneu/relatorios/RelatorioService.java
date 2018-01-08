@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
@@ -202,6 +203,18 @@ public class RelatorioService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os pneus agrupados por status. \n" +
                     "Unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public List<QtAfericao> getQtAfericoesByTipoByData(Long dataInicial, Long dataFinal, List<Long> codUnidades) {
+        try {
+            return dao.getQtAfericoesByTipoByData(new Date(dataInicial), new Date(dataFinal), codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de aferições realizadas por data, agrupadas por tipo. \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s \n" +
+                    "unidades: %s", new Date(dataInicial).toString(), new Date(dataFinal).toString(), codUnidades.toString()), e);
             throw new RuntimeException();
         }
     }
