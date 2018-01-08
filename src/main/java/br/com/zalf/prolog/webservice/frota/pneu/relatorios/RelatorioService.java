@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe RelatorioService responsavel por comunicar-se com a interface DAO
@@ -191,6 +192,16 @@ public class RelatorioService {
                     "Unidade: %d \n" +
                     "Data Inicial: %s \n" +
                     "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) {
+        try {
+            return dao.getQtPneusByStatus(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar os pneus agrupados por status. \n" +
+                    "Unidades: %s", codUnidades.toString()), e);
             throw new RuntimeException();
         }
     }

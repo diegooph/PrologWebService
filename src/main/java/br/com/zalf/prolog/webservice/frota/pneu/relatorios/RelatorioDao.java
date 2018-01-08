@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by didi on 9/15/16.
@@ -107,5 +108,7 @@ public interface RelatorioDao {
 
 	public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
 													 Date dataFinal) throws IOException, SQLException;
+
+	public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
 }

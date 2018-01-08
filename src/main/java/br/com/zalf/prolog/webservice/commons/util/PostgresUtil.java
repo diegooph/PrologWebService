@@ -13,4 +13,8 @@ public class PostgresUtil {
 		return conn.createArrayOf("text", array);
 	}
 
+	public static Array ListLongToArray(Connection conn, List<Long> list) throws SQLException{
+		Long[] array = (Long[]) list.toArray(new Long[list.size()]);
+		return conn.createArrayOf("text", array);
+	}
 }

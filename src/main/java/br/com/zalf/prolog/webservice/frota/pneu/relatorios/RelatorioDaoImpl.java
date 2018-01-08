@@ -15,18 +15,15 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Classe responsável por estratificar os dados dos pneus.
@@ -782,5 +779,31 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		} finally {
 			closeConnection(conn, stmt, rSet);
 		}
+	}
+
+	@Override
+	public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, Long> statusPneus = new LinkedHashMap<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT P.status, COUNT(P.CODIGO)\n" +
+					"FROM PNEU P\n" +
+					"WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])\n" +
+					"GROUP BY P.status\n" +
+					"ORDER BY 1");
+			stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				statusPneus.put(
+						rSet.getString("status"),
+						rSet.getLong("count"));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return statusPneus;
 	}
 }

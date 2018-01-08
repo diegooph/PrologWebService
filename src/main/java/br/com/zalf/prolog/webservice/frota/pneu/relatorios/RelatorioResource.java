@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Path("/pneus/relatorios")
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
@@ -175,5 +176,11 @@ public class RelatorioResource {
 																@QueryParam("dataInicial") long dataInicial,
 																@QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, dataInicial, dataFinal);
+	}
+
+	@GET
+	@Path("/dashboard/agrupados/pneus/status")
+	public Map<String,Long> getQtPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades) {
+		return service.getQtPneusByStatus(codUnidades);
 	}
 }
