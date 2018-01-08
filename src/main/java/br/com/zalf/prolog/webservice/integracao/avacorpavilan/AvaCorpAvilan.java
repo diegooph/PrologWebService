@@ -264,14 +264,17 @@ public final class AvaCorpAvilan extends Sistema {
         final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
-        return AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
+        final CronogramaAfericao cronograma =
+                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
+        cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
+        cronograma.calcularTotalVeiculos(cronograma);
+        return cronograma;
     }
 
     @NotNull
     @Override
     public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
                                         @NotNull String tipoAfericao) throws Exception {
-
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}

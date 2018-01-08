@@ -215,8 +215,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
-            calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
-            calcularTotalVeiculos(cronogramaAfericao);
+            cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
+            cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -355,68 +355,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
         return afericoes;
-    }
-
-    private void calcularTotalVeiculos(CronogramaAfericao cronogramaAfericao) {
-        int totalVeiculos = 0;
-        for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
-            modelo.setTotalVeiculosModelo(modelo.getPlacasAfericao().size());
-            totalVeiculos += modelo.getPlacasAfericao().size();
-        }
-        cronogramaAfericao.setTotalVeiculos(totalVeiculos);
-    }
-
-    private void calcularQuatidadeSulcosPressaoOk(CronogramaAfericao cronogramaAfericao) {
-        int qtdSulcosOk = 0;
-        int qtdPressaoOk = 0;
-        int qtdSulcosPressaook = 0;
-
-        int qtdModeloSulcosOk = 0;
-        int qtdModeloPressaoOk = 0;
-        int qtdModeloSulcosPressaoOk = 0;
-
-        final int metaAfericaoSulco = cronogramaAfericao.getMetaAfericaoSulco();
-        final int metaAfericaoPressao = cronogramaAfericao.getMetaAfericaoPressao();
-
-        final List<ModeloPlacasAfericao> modelos = cronogramaAfericao.getModelosPlacasAfericao();
-        for (final ModeloPlacasAfericao modelo : modelos) {
-            for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
-                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)) {
-                    qtdSulcosOk++;
-                    qtdModeloSulcosOk++;
-                }
-                if (isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
-                    qtdPressaoOk++;
-                    qtdModeloPressaoOk++;
-                }
-                if (isAfericaoSulcoOk(placaAfericao, metaAfericaoSulco)
-                        && isAfericaoPressaoOk(placaAfericao, metaAfericaoPressao)) {
-                    qtdSulcosPressaook++;
-                    qtdModeloSulcosPressaoOk++;
-                }
-            }
-            // Devemos setar em cada modelo a quantidade de Sulco/Pressao.
-            modelo.setQtdModeloSulcoOk(qtdModeloSulcosOk);
-            modelo.setQtdModeloPressaoOk(qtdModeloPressaoOk);
-            modelo.setQtdModeloSulcoPressaoOk(qtdModeloSulcosPressaoOk);
-            qtdModeloSulcosOk = 0;
-            qtdModeloPressaoOk = 0;
-            qtdModeloSulcosPressaoOk = 0;
-        }
-        // Devemos setar a quatidade total de sulcos/pressões no cronograma.
-        cronogramaAfericao.setTotalSulcosOk(qtdSulcosOk);
-        cronogramaAfericao.setTotalPressaoOk(qtdPressaoOk);
-        cronogramaAfericao.setTotalSulcoPressaoOk(qtdSulcosPressaook);
-    }
-
-    private boolean isAfericaoPressaoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoPressao) {
-        return placaAfericao.getIntervaloUltimaAfericaoPressao() <= metaAfericaoPressao
-                && placaAfericao.getIntervaloUltimaAfericaoPressao() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
-    }
-
-    private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoSulco) {
-        return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericaoSulco
-                && placaAfericao.getIntervaloUltimaAfericaoSulco() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(ResultSet rSet) throws SQLException {
