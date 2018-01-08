@@ -179,7 +179,7 @@ public class RelatorioResource {
 	}
 
 	@GET
-	@Path("/dashboard/agrupados/pneus/status")
+	@Path("/dashboards/agrupados/pneus/status")
 	public Map<String,Long> getQtPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades) {
 		return service.getQtPneusByStatus(codUnidades);
 	}
