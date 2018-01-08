@@ -12,6 +12,8 @@ import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDao;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDao;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeRelatorioDao;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
@@ -119,6 +121,11 @@ public final class Injection {
     @NotNull
     public static ProdutividadeRelatorioDao provideProdutividadeRelatorioDao() {
         return new ProdutividadeRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static ProdutividadeDao provideProdutividadeDao() {
+        return new ProdutividadeDaoImpl();
     }
 
     // ================================================
