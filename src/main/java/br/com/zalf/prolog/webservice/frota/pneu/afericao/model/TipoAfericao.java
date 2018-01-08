@@ -14,21 +14,21 @@ public enum TipoAfericao {
         @Nonnull
         @Override
         public String getLegibleString() {
-            return "sulco";
+            return "Sulco";
         }
     },
     PRESSAO("PRESSAO") {
         @Nonnull
         @Override
         public String getLegibleString() {
-            return "pressão";
+            return "Pressão";
         }
     },
     SULCO_PRESSAO("SULCO_PRESSAO") {
         @Nonnull
         @Override
         public String getLegibleString() {
-            return "sulco e pressão";
+            return "Sulco e Pressão";
         }
     };
 
