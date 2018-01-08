@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
@@ -14,16 +15,15 @@ import java.util.List;
 /**
  * Created by Zalf on 14/09/16.
  */
-public class RelatorioService {
-
-    private RelatorioDaoImpl dao = new RelatorioDaoImpl();
-    private static final String TAG = RelatorioService.class.getSimpleName();
+public class RelatorioEntregaService {
+    private static final String TAG = RelatorioEntregaService.class.getSimpleName();
+    private final RelatorioEntregaDao dao = Injection.provideRelatorioEntregaDao();
 
     public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
-                                                            String codRegional, String codUnidade, String equipe){
-        try{
+                                                            String codRegional, String codUnidade, String equipe) {
+        try {
             return dao.getAcumuladoIndicadores(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o acumulado dos indicadores. \n" +
                             "Empresa: %s \n" +
                             "Regional: %s \n" +
@@ -36,10 +36,10 @@ public class RelatorioService {
     }
 
     public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
-                                               String codUnidade, String equipe, String cpf, String indicador){
-        try{
+                                               String codUnidade, String equipe, String cpf, String indicador) {
+        try {
             return dao.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa, codUnidade, equipe, cpf, indicador);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o extrato do indicador.\n" +
                             "Empresa: %s \n" +
                             "Regional: %s \n" +
@@ -70,10 +70,10 @@ public class RelatorioService {
     }
 
     public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
-                                                          String codUnidade, String equipe){
-        try{
+                                                          String codUnidade, String equipe) {
+        try {
             return dao.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os mapas estratificados. \n" +
                             "Empresa: %s \n" +
                             "Regional: %s \n" +
@@ -86,10 +86,10 @@ public class RelatorioService {
     }
 
     public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
-                                              String codRegional, String codUnidade, String equipe, String indicador){
-        try{
+                                              String codRegional, String codUnidade, String equipe, String indicador) {
+        try {
             return dao.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os dados para montagem do gráfico. \n" +
                             "Empresa: %s \n" +
                             "Regional: %s \n" +
@@ -97,7 +97,7 @@ public class RelatorioService {
                             "Equipe: %s \n" +
                             "Indicador: %s \n" +
                             "Período: %d a %d",
-                    codEmpresa, codRegional, codUnidade, equipe, indicador ,dataInicial, dataFinal), e);
+                    codEmpresa, codRegional, codUnidade, equipe, indicador, dataInicial, dataFinal), e);
             return null;
         }
     }

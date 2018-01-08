@@ -19,9 +19,9 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.INDICADORES)
-public class RelatorioResource {
+public class RelatorioEntregaResource {
 
-    private RelatorioService service = new RelatorioService();
+    private RelatorioEntregaService service = new RelatorioEntregaService();
 
     @GET
     @Secured

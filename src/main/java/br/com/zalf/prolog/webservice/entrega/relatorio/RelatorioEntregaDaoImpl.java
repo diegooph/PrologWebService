@@ -26,9 +26,9 @@ import java.util.List;
 /**
  * Created by jean on 13/09/16.
  */
-public class RelatorioDaoImpl extends DatabaseConnection {
+public class RelatorioEntregaDaoImpl extends DatabaseConnection implements RelatorioEntregaDao {
 
-    private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
+    private static final String TAG = RelatorioEntregaDaoImpl.class.getSimpleName();
 
     private static final String BUSCA_ACUMULADO_INDICADORES = "select\n" +
              IndicadorDaoImpl.COLUNAS_ACUMULADOS +
@@ -102,19 +102,11 @@ public class RelatorioDaoImpl extends DatabaseConnection {
             "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade and c2.cod_funcao = ufp.cod_funcao_ajudante\n" +
             "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade and c3.cod_funcao = ufp.cod_funcao_ajudante ";
 
-    /**
-     * Método utilizado para buscar os dados da aba acumulados, tela Relatórios.
-     * Busca os dados pós clique de um card da aba Diário, mostrando o acumulado
-     * do dia clicado, tela Relatórios, pilar Entrega.
-     * @param dataInicial um Long
-     * @param dataFinal um Long
-     * @param codEmpresa código da empresa a ser usado no filtro
-     * @param codRegional código da regional a ser usado no filtro
-     * @param codUnidade código da unidade a ser usado no filtro
-     * @param equipe nome da equipe a ser usado no filtro
-     * @return lista de {@link IndicadorAcumulado}
-     * @throws SQLException caso não seja possível realizar a busca
-     */
+    public RelatorioEntregaDaoImpl() {
+
+    }
+
+    @Override
     public List<IndicadorAcumulado> getAcumuladoIndicadores(Long dataInicial, Long dataFinal, String codEmpresa,
                                                             String codRegional, String codUnidade, String equipe) throws SQLException {
         Connection conn = null;
@@ -142,7 +134,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
         return acumulados;
     }
 
-
+    @Override
     public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
                                                String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
         final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
@@ -150,18 +142,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
                 codUnidade, equipe, cpf, indicador);
     }
 
-    /**
-     * Busca os dados para a aba Diário da tela Relatórios, pilar Entrega
-     *
-     * @param dataInicial um Long
-     * @param dataFinal   um Long
-     * @param codEmpresa  código da empresa usado no filtro
-     * @param codRegional código da regional usado no filtro
-     * @param codUnidade  código da unidade usado no filtro
-     * @param equipe      nome da equipe usado no filtro
-     * @return lista de {@link ConsolidadoDia}
-     * @throws SQLException caso não seja possível realizar a busca
-     */
+    @Override
     public List<ConsolidadoDia> getConsolidadoDia(Long dataInicial, Long dataFinal, String codEmpresa,
                                                   String codRegional, String codUnidade, String equipe, int limit, int offset) throws SQLException {
         Connection conn = null;
@@ -193,18 +174,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
         return consolidados;
     }
 
-    /**
-     * Estratifica os mapas de um dia, contém os dados da equipe, data e mapa, além dos indicadores
-     * no formato de item e não de acumulado, chamado quando acontece um clique no FAB
-     *
-     * @param data        uma data, serão buscados apenas os mapas dessa data
-     * @param codEmpresa  código da empresa a ser usado no filtro
-     * @param codRegional código da regional a ser usado no filtro
-     * @param codUnidade  código da unidade a ser usado no filtro
-     * @param equipe      nome da equipe a ser usado no filtro
-     * @return lista de {@link MapaEstratificado}
-     * @throws SQLException caso não seja possível realizar a busca
-     */
+    @Override
     public List<MapaEstratificado> getMapasEstratificados(Long data, String codEmpresa, String codRegional,
                                                           String codUnidade, String equipe) throws SQLException {
         Connection conn = null;
@@ -248,8 +218,10 @@ public class RelatorioDaoImpl extends DatabaseConnection {
         return mapas;
     }
 
+    @Override
     public List<DadosGrafico> getDadosGrafico(Long dataInicial, Long dataFinal, String codEmpresa,
-                                              String codRegional, String codUnidade, String equipe, String indicador) throws SQLException {
+                                              String codRegional, String codUnidade, String equipe, String indicador)
+            throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
@@ -278,7 +250,9 @@ public class RelatorioDaoImpl extends DatabaseConnection {
         return dados;
     }
 
-    public void getEstratificacaoMapasCsv(Long codUnidade, Date dataInicial, Date dataFinal, OutputStream out) throws SQLException, IOException {
+    @Override
+    public void getEstratificacaoMapasCsv(Long codUnidade, Date dataInicial, Date dataFinal, OutputStream out)
+            throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -292,6 +266,7 @@ public class RelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Report getEstratificacaoMapasReport(Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
