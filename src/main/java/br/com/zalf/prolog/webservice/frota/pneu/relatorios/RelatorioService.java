@@ -218,4 +218,14 @@ public class RelatorioService {
             throw new RuntimeException();
         }
     }
+
+    public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) {
+        try {
+            return dao.getServicosEmAbertoByTipo(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
+                    "unidades:", codUnidades.toString()),e);
+            throw new RuntimeException();
+        }
+    }
 }

@@ -34,4 +34,10 @@ public class DashboardPneuResource {
                                                        @QueryParam("codUnidade") List<Long> codUnidades) {
         return service.getQtAfericoesByTipoByData(dataInicial, dataFinal, codUnidades);
     }
+
+    @GET
+    @Path("servicos/abertos")
+    public Map<String, Integer> getServicosEmAbertoByTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getServicosEmAbertoByTipo(codUnidades);
+    }
 }
