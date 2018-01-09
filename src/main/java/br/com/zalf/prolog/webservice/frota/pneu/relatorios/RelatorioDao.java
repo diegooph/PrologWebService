@@ -116,4 +116,6 @@ public interface RelatorioDao {
 
 	public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
 
+	public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException;
+
 }

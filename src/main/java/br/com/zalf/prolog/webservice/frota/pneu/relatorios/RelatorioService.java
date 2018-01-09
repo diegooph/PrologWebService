@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
@@ -10,9 +11,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -174,7 +175,8 @@ public class RelatorioService {
     public Report getEstratificacaoServicosFechadosReport(Long codUnidade, long dataInicial,
                                                           long dataFinal) {
         try {
-            return dao.getEstratificacaoServicosFechadosReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
+            return dao.getEstratificacaoServicosFechadosReport(codUnidade, DateUtils.toSqlDate(new Date(dataInicial)),
+                    DateUtils.toSqlDate(new Date(dataFinal)));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (REPORT). \n" +
                     "Unidade: %d \n" +
@@ -187,7 +189,8 @@ public class RelatorioService {
     public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, long dataInicial,
                                                      long dataFinal) throws RuntimeException {
         try {
-            dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, new Date(dataInicial), new Date(dataFinal));
+            dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, DateUtils.toSqlDate(new Date(dataInicial)),
+                    DateUtils.toSqlDate(new Date(dataFinal)));
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (CSV). \n" +
                     "Unidade: %d \n" +
@@ -207,14 +210,14 @@ public class RelatorioService {
         }
     }
 
-    public List<QtAfericao> getQtAfericoesByTipoByData(Long dataInicial, Long dataFinal, List<Long> codUnidades) {
+    public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) {
         try {
-            return dao.getQtAfericoesByTipoByData(new Date(dataInicial), new Date(dataFinal), codUnidades);
+            return dao.getQtAfericoesByTipoByData(DateUtils.toSqlDate(dataInicial), DateUtils.toSqlDate(dataFinal), codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de aferições realizadas por data, agrupadas por tipo. \n" +
                     "dataInicial: %s \n" +
                     "dataFinal: %s \n" +
-                    "unidades: %s", new Date(dataInicial).toString(), new Date(dataFinal).toString(), codUnidades.toString()), e);
+                    "unidades: %s", dataInicial.toString(), dataFinal, codUnidades.toString()), e);
             throw new RuntimeException();
         }
     }
@@ -225,6 +228,16 @@ public class RelatorioService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
                     "unidades:", codUnidades.toString()),e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) {
+        try {
+            return dao.getQtdPlacasAfericaoVencida(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida. \n" +
+                    "unidade: %s", codUnidades.toString()), e);
             throw new RuntimeException();
         }
     }
