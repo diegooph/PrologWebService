@@ -840,4 +840,29 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		return qtAfericoes;
 	}
+
+	@Override
+	public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, Integer> servicosAbertos = new LinkedHashMap<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT am.tipo_servico, count(am.tipo_servico)\n" +
+					"FROM afericao_manutencao am\n" +
+					"WHERE am.cpf_mecanico IS NULL AND am.cod_unidade::TEXT LIKE ANY(ARRAY[?])\n" +
+					"GROUP BY am.tipo_servico;");
+			stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+			rSet = stmt.executeQuery();
+			while(rSet.next()){
+				servicosAbertos.put(
+						rSet.getString("tipo_servico"),
+						rSet.getInt("count"));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return servicosAbertos;
+	}
 }

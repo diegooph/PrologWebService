@@ -114,4 +114,6 @@ public interface RelatorioDao {
 
 	public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
 
+	public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
+
 }
