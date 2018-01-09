@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class ChecklistModeloService {
 
-	private ChecklistModeloDao dao = new ChecklistModeloDaoImpl();
+	private ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 	
 	public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
 		try{

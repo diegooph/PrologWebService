@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
@@ -231,7 +230,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	@Override
 	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklis) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
-		ChecklistModeloDao checklistModeloDaoImpl = new ChecklistModeloDaoImpl();
+		ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
 		veiculoDao = Injection.provideVeiculoDao();
 		holder.setCodigoModeloChecklist(codModelo);
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
