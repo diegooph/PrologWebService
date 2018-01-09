@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -14,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @Path("/pneus/relatorios")
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
@@ -178,18 +176,4 @@ public class RelatorioResource {
 																@QueryParam("dataFinal") long dataFinal) throws RuntimeException{
 		return outputStream -> service.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, dataInicial, dataFinal);
 	}
-
-	@GET
-	@Path("/dashboards/agrupados/status")
-	public Map<String,Long> getQtPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades) {
-		return service.getQtPneusByStatus(codUnidades);
-	}
-
-    @GET
-    @Path("dashboards/afericoes/quantidades")
-    public List<QtAfericao> getQtAfericoesByTipoByData(@QueryParam("dataInicial") Long dataInicial,
-                                                       @QueryParam("dataFinal") Long dataFinal,
-                                                       @QueryParam("codUnidade") List<Long> codUnidades) {
-        return service.getQtAfericoesByTipoByData(dataInicial, dataFinal, codUnidades);
-    }
 }
