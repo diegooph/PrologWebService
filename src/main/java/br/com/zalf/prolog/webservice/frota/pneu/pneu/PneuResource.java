@@ -101,7 +101,7 @@ public class PneuResource {
     @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
-    @Path("/bandas/{codEmpresa}")
+    @Path("/bandas/marcas/{codEmpresa}")
     public List<Marca> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloBanda(codEmpresa);
     }
