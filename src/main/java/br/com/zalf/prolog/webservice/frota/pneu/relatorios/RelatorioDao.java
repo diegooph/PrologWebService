@@ -118,4 +118,14 @@ public interface RelatorioDao {
 
 	public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException;
 
+	public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException;
+
+	public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
+
 }

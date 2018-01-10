@@ -241,4 +241,54 @@ public class RelatorioService {
             throw new RuntimeException();
         }
     }
+
+    public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) {
+        try {
+            return dao.getQtdVeiculosAtivosComPneuAplicado(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos com pneus aplicados. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) {
+        try {
+            return dao.getMdTempoConsertoServicoPorTipo(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a md de tempo de conserto dos serviços (pneus). \n" +
+                    "unidades: %s.", codUnidades), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) {
+        try {
+            return dao.getQtKmRodadoServicoAberto(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) {
+        try {
+            return dao.getPlacasComPneuAbaixoLimiteMilimetragem(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a lista com as placas e qtd de pneus abaixo do limite. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) {
+        try {
+            return dao.getQtdPneusPressaoIncorreta(codUnidades);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus com pressão incorreta. \n" +
+                    "unidades: %s", codUnidades), e);
+            throw new RuntimeException();
+        }
+    }
 }

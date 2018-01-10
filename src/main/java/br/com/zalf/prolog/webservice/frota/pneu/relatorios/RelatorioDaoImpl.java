@@ -921,4 +921,124 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 		}
 		return placasVencidas;
 	}
+
+	@Override
+    public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        int total = 0;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT count(DISTINCT v.placa) as total_veiculos \n" +
+                    "FROM veiculo_pneu vp JOIN veiculo v ON v.cod_unidade = vp.cod_unidade and v.placa = vp.placa\n" +
+                    "WHERE v.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND v.status_ativo IS TRUE;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getInt("total_veiculos");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return total;
+    }
+
+    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Map<String, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT am.tipo_servico, avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas\n" +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo\n" +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL\n" +
+                    "GROUP BY am.tipo_servico;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(rSet.getString("tipo_servico"),
+                        rSet.getInt("md_tempo_conserto_horas"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    @Override
+    public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Map<String, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km \n" +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao\n" +
+                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade\n" +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND (am.tipo_servico LIKE 'calibragem' OR am.tipo_servico like 'inspecao')\n" +
+                    "GROUP BY a.placa_veiculo\n" +
+                    "ORDER BY 2 DESC;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(rSet.getString("placa_veiculo"),
+                        rSet.getInt("total_km"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Map<String, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT vp.placa as placa_veiculo,\n" +
+                    "  sum(case when least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte\n" +
+                    "    then 1 else 0 end) as qt_pneus_abaixo_limite\n" +
+                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade\n" +
+                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade\n" +
+                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
+                    "GROUP BY vp.placa\n" +
+                    "ORDER BY 2 DESC");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(rSet.getString("placa_veiculo"),
+                        rSet.getInt("qt_pneus_abaixo_limite"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        int total = 0;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
+                    "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = 'calibragem' or am.tipo_servico = 'inspecao') and am.cpf_mecanico is null;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getInt("total");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return total;
+    }
 }

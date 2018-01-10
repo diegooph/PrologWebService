@@ -54,4 +54,34 @@ public class DashboardPneuResource {
     public Map<String, Integer> getQtdPlacasAfericaoVencida(@QueryParam("codUnidade") List<Long> codUnidades) {
         return service.getQtdPlacasAfericaoVencida(codUnidades);
     }
+
+    @GET
+    @Path("quantidade-veiculos-ativos-com-pneus-aplicados")
+    public int getQtdVeiculosAtivosComPneuAplicado(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getQtdVeiculosAtivosComPneuAplicado(codUnidades);
+    }
+
+    @GET
+    @Path("media-tempo-conserto-servicos-por-tipo")
+    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getMdTempoConsertoServicoPorTipo(codUnidades);
+    }
+
+    @GET
+    @Path("quantidade-km-rodado-com-servico-aberto")
+    public Map<String, Integer> getQtKmRodadoServicoAberto(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getQtKmRodadoServicoAberto(codUnidades);
+    }
+
+    @GET
+    @Path("placas-com-pneus-abaixo-limite-milimetragem")
+    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getPlacasComPneuAbaixoLimiteMilimetragem(codUnidades);
+    }
+
+    @GET
+    @Path("quantidade-pneus-pressao-incorreta")
+    public int getQtdPneusPressaoIncorreta(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getQtdPneusPressaoIncorreta(codUnidades);
+    }
 }
