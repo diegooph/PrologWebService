@@ -290,7 +290,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Cargo> getFuncoesByCodUnidade(Long codUnidade) throws SQLException {
+    public List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException {
         List<Cargo> listCargo = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -305,12 +305,34 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listCargo.add(createFuncao(rSet));
+                listCargo.add(createCargo(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
         return listCargo;
+    }
+
+    @Override
+    public Cargo getCargo(Long codEmpresa, Long codCargo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT f.codigo, f.nome " +
+                    "FROM funcao f " +
+                    "WHERE f.cod_empresa = ? and f.codigo = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codCargo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createCargo(rSet);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
     }
 
     @Override
@@ -566,7 +588,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return equipe;
     }
 
-    private Cargo createFuncao(ResultSet rSet) throws SQLException {
+    private Cargo createCargo(ResultSet rSet) throws SQLException {
         Cargo cargo = new Cargo();
         cargo.setCodigo(rSet.getLong("CODIGO"));
         cargo.setNome(rSet.getString("NOME"));
