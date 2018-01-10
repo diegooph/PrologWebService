@@ -74,7 +74,7 @@ public class DeprecatedEmpresaResource {
     @Secured
     @Path("/unidades/{codUnidade}/funcoes")
     public List<Cargo> getFuncoesByCodUnidade(@PathParam("codUnidade") Long codUnidade) {
-        return service.getFuncoesByCodUnidade(codUnidade);
+        return service.getCargosByCodUnidade(codUnidade);
     }
 
     @GET
@@ -188,7 +188,7 @@ public class DeprecatedEmpresaResource {
     @Path("/funcoes/{codUnidade}")
     @Deprecated
     public List<Cargo> DEPRECATE_GET_FUNCOES_UNIDADE(@PathParam("codUnidade") Long codUnidade) {
-        return service.getFuncoesByCodUnidade(codUnidade);
+        return service.getCargosByCodUnidade(codUnidade);
     }
 
     /**

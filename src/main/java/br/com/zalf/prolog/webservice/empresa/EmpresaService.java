@@ -92,11 +92,20 @@ public class EmpresaService {
         }
     }
 
-    public List<Cargo> getFuncoesByCodUnidade(long codUnidade) {
+    public List<Cargo> getCargosByCodUnidade(Long codUnidade) {
         try {
-            return dao.getFuncoesByCodUnidade(codUnidade);
+            return dao.getCargosByCodUnidade(codUnidade);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os cargos da unidade %d", codUnidade), e);
+            return null;
+        }
+    }
+
+    public Cargo getCargoByCodEmpresa(Long codEmpresa, Long codCargo) {
+        try {
+            return dao.getCargo(codEmpresa, codCargo);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o cargo %d da empresa %d", codCargo, codEmpresa), e);
             return null;
         }
     }
