@@ -1041,4 +1041,28 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
         }
         return total;
     }
+
+	public Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) throws SQLException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rSet = null;
+		Map<String, Double> resultados = new LinkedHashMap<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement("SELECT p.codigo as cod_pneu, " +
+					"trunc(least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno)::numeric, 2) as menor_sulco\n" +
+					"FROM pneu p\n" +
+					"WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
+					"ORDER BY menor_sulco ASC");
+			stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+			rSet = stmt.executeQuery();
+			while (rSet.next()) {
+				resultados.put(rSet.getString("cod_pneu"),
+						rSet.getDouble("menor_sulco"));
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return resultados;
+	}
 }

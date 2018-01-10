@@ -84,4 +84,10 @@ public class DashboardPneuResource {
     public int getQtdPneusPressaoIncorreta(@QueryParam("codUnidade") List<Long> codUnidades) {
         return service.getQtdPneusPressaoIncorreta(codUnidades);
     }
+
+    @GET
+    @Path("listagem-menor-sulco-pneus")
+    public Map<String, Double> getMenorSulcoPneu(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return service.getMenorSulcoPneu(codUnidades);
+    }
 }

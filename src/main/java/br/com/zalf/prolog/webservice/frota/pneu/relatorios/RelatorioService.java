@@ -291,4 +291,14 @@ public class RelatorioService {
             throw new RuntimeException();
         }
     }
+
+    public Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) {
+        try {
+            return dao.getMenorSulcoPneu(codUnidades);
+        } catch (SQLException e){
+            Log.e(TAG, String.format("Erro ao buscar a lista com o menor sulco de cada pneu. \n" +
+                    "unidades: %s", codUnidades), e);
+            throw new RuntimeException();
+        }
+    }
 }
