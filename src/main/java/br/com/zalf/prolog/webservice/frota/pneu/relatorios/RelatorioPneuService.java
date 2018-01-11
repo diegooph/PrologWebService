@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -18,12 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Classe RelatorioService responsavel por comunicar-se com a interface DAO
+ * Classe responsável por comunicar-se com a interface DAO.
  */
-public class RelatorioService {
-
-    private RelatorioDao dao = new RelatorioDaoImpl();
-    private static final String TAG = RelatorioService.class.getSimpleName();
+public class RelatorioPneuService {
+    private static final String TAG = RelatorioPneuService.class.getSimpleName();
+    private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
 
     public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status) {
         try {
