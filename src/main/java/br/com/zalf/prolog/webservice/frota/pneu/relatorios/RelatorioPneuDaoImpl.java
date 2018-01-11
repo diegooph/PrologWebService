@@ -32,9 +32,9 @@ import java.util.*;
  * @author jean
  *
  */
-public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao {
+public class RelatorioPneuDaoImpl extends DatabaseConnection implements RelatorioPneuDao {
 
-	private static final String TAG = RelatorioDaoImpl.class.getSimpleName();
+	private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
 	private static final String PNEUS_RESUMO_SULCOS="SELECT COALESCE(ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_INTERNO, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
 			+ "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
@@ -106,6 +106,9 @@ public class RelatorioDaoImpl extends DatabaseConnection implements RelatorioDao
 			+ "ORDER BY AM.DATA_HORA_RESOLUCAO::DATE DESC) AS MOV_FECHADAS ON MOV_FECHADAS.DATA = AD.DATA "
 			+ "WHERE AD.DATA BETWEEN ? AND ? ";
 
+	public RelatorioPneuDaoImpl() {
+
+	}
 
 	@Override
 	public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status)throws SQLException {

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioService;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class DashboardPneuResource {
 
-    private RelatorioService service = new RelatorioService();
+    private RelatorioPneuService service = new RelatorioPneuService();
 
     @GET
     @Path("/pneus-por-status")

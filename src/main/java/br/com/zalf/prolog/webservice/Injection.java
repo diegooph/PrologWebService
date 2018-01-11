@@ -26,12 +26,15 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDa
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.RelatoriosOrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios.RelatoriosOrdemServicoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -147,6 +150,16 @@ public final class Injection {
     @NotNull
     public static RelatoriosOrdemServicoDao provideRelatoriosOrdemServicoDao() {
         return new RelatoriosOrdemServicoDaoImpl();
+    }
+
+    @NotNull
+    public static ChecklistRelatorioDaoImpl provideChecklistRelatorioDao() {
+        return new ChecklistRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static RelatorioPneuDao provideRelatorioPneuDao() {
+        return new RelatorioPneuDaoImpl();
     }
 
     // ================================================

@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by didi on 9/15/16.
  */
-public interface RelatorioDao {
+public interface RelatorioPneuDao {
 
 	/**
 	 * seleciona pneus com base no sulco
