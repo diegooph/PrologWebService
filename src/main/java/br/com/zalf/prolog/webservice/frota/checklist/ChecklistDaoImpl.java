@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
@@ -21,10 +20,7 @@ import java.util.Date;
 
 public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
 
-	private VeiculoDao veiculoDao;
-
 	public ChecklistDaoImpl() {
-
 	}
 
 	@Override
@@ -32,8 +28,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
-		veiculoDao = Injection.provideVeiculoDao();
-		final OrdemServicoDao osDao = new OrdemServicoDaoImpl();
+		final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+		final OrdemServicoDao osDao = Injection.provideOrdemServicoDao();
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -42,7 +38,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO, COD_UNIDADE");
 			stmt.setString(1, checklist.getPlacaVeiculo());
 			stmt.setLong(2, checklist.getCodModelo());
-			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 			stmt.setLong(4, checklist.getColaborador().getCpf());
 			stmt.setString(5, checklist.getPlacaVeiculo());
 			stmt.setString(6, String.valueOf(checklist.getTipo()));
@@ -231,7 +227,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char tipoChecklis) throws SQLException {
 		NovoChecklistHolder holder = new NovoChecklistHolder();
 		ChecklistModeloDao checklistModeloDaoImpl = Injection.provideChecklistModeloDao();
-		veiculoDao = Injection.provideVeiculoDao();
+		final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
 		holder.setCodigoModeloChecklist(codModelo);
 		holder.setListPerguntas(checklistModeloDaoImpl.getPerguntas(codUnidade, codModelo));
 		holder.setVeiculo(veiculoDao.getVeiculoByPlaca(placa, false));

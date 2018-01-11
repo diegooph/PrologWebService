@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class OrdemServicoService {
 
-    private OrdemServicoDao dao = new OrdemServicoDaoImpl();
+    private OrdemServicoDao dao = Injection.provideOrdemServicoDao();
     private static final String TAG = OrdemServicoService.class.getSimpleName();
 
     public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
