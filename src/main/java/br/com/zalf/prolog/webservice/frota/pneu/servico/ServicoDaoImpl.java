@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
@@ -186,7 +186,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     fechaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
-                    final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
+                    final MovimentacaoDao movimentacaoDao = Injection.provideMovimentacaoDao();
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
                     // Atualiza o pneuNovo com os valores referentes ao serviço executad.
                     movimentacao.getPneuNovo().setSulcosAtuais(movimentacao.getSulcosColetadosFechamento());
