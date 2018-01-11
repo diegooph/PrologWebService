@@ -336,6 +336,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
+    @Deprecated
     public Pneu createPneu(ResultSet rSet) throws SQLException {
         final Pneu pneu = new Pneu();
 
@@ -562,6 +563,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "  MP.NOME                                    AS MARCA,\n" +
                     "  MP.CODIGO                                  AS COD_MARCA,\n" +
                     "  P.CODIGO,\n" +
+                    "  U.CODIGO                                   AS COD_UNIDADE,\n" +
+                    "  R.CODIGO                                   AS COD_REGIONAL,\n" +
                     "  P.PRESSAO_ATUAL,\n" +
                     "  P.VIDA_ATUAL,\n" +
                     "  P.VIDA_TOTAL,\n" +
@@ -591,7 +594,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO\n" +
                     "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA\n" +
                     "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO\n" +
-                    "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade\n" +
+                    "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE\n" +
+                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO\n" +
                     "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa\n" +
                     "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa\n" +
                     "LEFT JOIN pneu_valor_vida PVV ON PVV.cod_unidade = P.cod_unidade AND PVV.cod_pneu = P.codigo AND PVV.vida = P.vida_atual " +
@@ -600,7 +604,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createPneu(rSet);
+                return PneuConverter.createPneuCompleto(rSet);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
