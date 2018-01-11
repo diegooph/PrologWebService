@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -15,9 +16,8 @@ import java.sql.SQLException;
 
 
 class ChecklistRelatorioService {
-
-    private ChecklistRelatorioDao dao = new ChecklistRelatorioDaoImpl();
     private static final String TAG = ChecklistRelatorioService.class.getSimpleName();
+    private final ChecklistRelatorioDao dao = Injection.provideChecklistRelatorioDao();
 
     void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
                                         @NotNull Long codUnidade,

@@ -15,6 +15,10 @@ import java.sql.*;
  */
 public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements ChecklistRelatorioDao {
 
+    public ChecklistRelatorioDaoImpl() {
+
+    }
+
     @Override
     public void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
                                               @NotNull Long codUnidade,
