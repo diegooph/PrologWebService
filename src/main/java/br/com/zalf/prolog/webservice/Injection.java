@@ -39,6 +39,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
+import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
@@ -160,6 +162,11 @@ public final class Injection {
     @NotNull
     public static RelatorioPneuDao provideRelatorioPneuDao() {
         return new RelatorioPneuDaoImpl();
+    }
+
+    @NotNull
+    public static CalendarioDao provideCalendarioDao() {
+        return new CalendarioDaoImpl();
     }
 
     // ================================================
