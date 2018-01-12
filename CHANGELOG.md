@@ -1,8 +1,11 @@
 Change Log
 ==========
 
+<a name="v2.0.43"></a>
+## Version [v2.0.43](https://github.com/luizfp/PrologAndroid/compare/v2.0.42...v2.0.43) (release-date) - [unreleased]
+
 <a name="v2.0.42"></a>
-## Version [v2.0.42](https://github.com/luizfp/PrologAndroid/compare/v2.0.41...v2.0.42) (release-date) - [unreleased]
+## Version [v2.0.42](https://github.com/luizfp/PrologAndroid/compare/v2.0.41...v2.0.42) (2017-01-12)
 
 ### Features
 * Permite filtrar por ativo/inativo busca dos veículos de uma unidade
