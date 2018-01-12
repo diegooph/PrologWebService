@@ -290,4 +290,50 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
         return stmt;
     }
+
+    @Override
+    public void getExtratoMapasIndicadorCsv(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                            Date dataInicial, Date dataFinal, String equipe, OutputStream out) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getExtratoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                                 Date dataInicial, Date dataFinal, String equipe) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private PreparedStatement getExtratoMapasIndicadorStatement(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                                                Date dataInicial, Date dataFinal, String equipe, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_extrato_mapas_indicadores(?,?,?,?,?,?,?);");
+        stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(3, cpf);
+        stmt.setString(4, codUnidade);
+        stmt.setString(5, equipe);
+        stmt.setLong(6, codEmpresa);
+        stmt.setString(7, codRegional);
+        return stmt;
+    }
 }
