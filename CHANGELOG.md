@@ -7,13 +7,21 @@ Change Log
 ### Features
 * Permite filtrar por ativo/inativo busca dos veículos de uma unidade
 * Cria método para alterar o status de um veículo (ativo/inativo)
+* Adiciona `codUnidadeAlocado` e `codRegionalAlocado` ao objeto `Pneu`
+* Cria objetos e métodos base para criação das dashboards
 
 ### Refactor
-* Altera seguintes classes para utilizarem Injection: `AutenticacaoDaoImpl`, `AppDaoImpl`
+* Altera seguintes classes para utilizarem Injection: `AutenticacaoDaoImpl`, `AppDaoImpl`, `MetasDaoImpl`,
+`ProdutividadeRelatorioDaoImpl`, `ProdutividadeDaoImpl`, `RelatorioEntregaDaoImpl`, `ChecklistModeloDaoImpl`,
+`RelatoriosOrdemServicoDaoImpl`, `OrdemServicoDaoImpl`, `ChecklistRelatorioDaoImpl`, `MovimentacaoDaoImpl`,
+`RelatorioPneuDaoImpl`, `ServicoDaoImpl`, `VeiculoDaoImpl`, `CalendarioDaoImpl`, `ContrachequeDaoImpl`
+* Altera `ModeloBanda` para conter a altura dos sulcos
+* Altera método de início de uma aferição para enviar o tipo da aferição sendo iniciada
 
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
 * Corrige ordenamento da busca dos serviços abertos/fechados dos pneus
+* Corrige criação do objeto `CronogramaAfericao` na integração com a Avilan
 
 <a name="v2.0.41"></a>
 ## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
