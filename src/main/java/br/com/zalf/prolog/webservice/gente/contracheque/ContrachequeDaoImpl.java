@@ -27,9 +27,11 @@ import java.util.List;
  * Created by Zalf on 21/11/16.
  */
 public class ContrachequeDaoImpl extends DatabaseConnection implements ContrachequeDao {
-
     private static final String TAG = ContrachequeDaoImpl.class.getSimpleName();
 
+    public ContrachequeDaoImpl() {
+
+    }
 
     @Override
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException {
