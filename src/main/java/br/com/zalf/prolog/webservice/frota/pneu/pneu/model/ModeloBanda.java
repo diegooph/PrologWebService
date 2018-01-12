@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 public class ModeloBanda extends Modelo {
     public static final String TIPO_MODELO_BANDA = "MODELO_BANDA";
     private int quantidadeSulcos;
+    private Double alturaSulcos;
 
     public ModeloBanda() {
         setTipo(TIPO_MODELO_BANDA);
@@ -22,10 +23,19 @@ public class ModeloBanda extends Modelo {
         this.quantidadeSulcos = quantidadeSulcos;
     }
 
+    public Double getAlturaSulcos() {
+        return alturaSulcos;
+    }
+
+    public void setAlturaSulcos(Double alturaSulcos) {
+        this.alturaSulcos = alturaSulcos;
+    }
+
     @Override
     public String toString() {
         return "ModeloBanda{" +
                 "quantidadeSulcos=" + quantidadeSulcos +
+                ", alturaSulcos=" + alturaSulcos +
                 '}';
     }
 }

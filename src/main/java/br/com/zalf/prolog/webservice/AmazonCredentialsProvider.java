@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.colaborador.model.AmazonCredentials;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogErrorCodes;
 
+import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +27,11 @@ public class AmazonCredentialsProvider extends DatabaseConnection {
                 amazonCredentials.setUser(rSet.getString("USER_ID"));
                 return amazonCredentials;
             } else {
-                throw new AmazonCredentialsException();
+                throw new AmazonCredentialsException(
+                        Response.Status.NOT_FOUND.getStatusCode(),
+                        ProLogErrorCodes.AMAZON_CREDENTIALS.errorCode(),
+                        "Sem credencial cadastrada",
+                        "Tabela AMAZON_CREDENTIALS não possui dados");
             }
         } finally {
             closeConnection(conn, stmt, rSet);

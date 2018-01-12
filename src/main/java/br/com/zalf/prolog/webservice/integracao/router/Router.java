@@ -17,9 +17,9 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,22 +35,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * instanciará a subclasse de {@link Sistema} correta para processar a requisição.
  */
 public abstract class Router implements OperacoesIntegradas {
-    @Nonnull
+    @NotNull
     private final IntegracaoDao integracaoDao;
-    @Nonnull
+    @NotNull
     private final IntegradorProLog integradorProLog;
-    @Nonnull
+    @NotNull
     private final String userToken;
-    @Nonnull
+    @NotNull
     private final RecursoIntegrado recursoIntegrado;
     @Nullable
     private SistemaKey sistemaKey;
     private boolean hasTried;
 
-    Router(@Nonnull final IntegracaoDao integracaoDao,
-           @Nonnull final IntegradorProLog integradorProLog,
-           @Nonnull final String userToken,
-           @Nonnull final RecursoIntegrado recursoIntegrado) {
+    Router(@NotNull final IntegracaoDao integracaoDao,
+           @NotNull final IntegradorProLog integradorProLog,
+           @NotNull final String userToken,
+           @NotNull final RecursoIntegrado recursoIntegrado) {
         checkNotNull(userToken, "userToken não pode ser null!");
         this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser null!");
@@ -60,17 +60,19 @@ public abstract class Router implements OperacoesIntegradas {
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 
+    @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@Nonnull Long codUnidade) throws Exception {
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getVeiculosAtivosByUnidade(codUnidade);
+            return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
         } else {
-            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade);
+            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade, ativos);
         }
     }
 
+    @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosByUnidade(@Nonnull Long codUnidade) throws Exception {
+    public List<TipoVeiculo> getTiposVeiculosByUnidade(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
             return getSistema().getTiposVeiculosByUnidade(codUnidade);
         } else {
@@ -78,8 +80,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
         if (getSistema() != null) {
             return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
         } else {
@@ -87,8 +90,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculoByPlaca(placa, withPneus);
         } else {
@@ -96,8 +100,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@Nonnull Long codUnidade) throws Exception {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
             return getSistema().getCronogramaAfericao(codUnidade);
         } else {
@@ -105,17 +110,19 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public NovaAfericao getNovaAfericao(String placaVeiculo) throws Exception {
+    public NovaAfericao getNovaAfericao(@NotNull String placaVeiculo,
+                                        @NotNull String tipoAfericao) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getNovaAfericao(placaVeiculo);
+            return getSistema().getNovaAfericao(placaVeiculo, tipoAfericao);
         } else {
-            return integradorProLog.getNovaAfericao(placaVeiculo);
+            return integradorProLog.getNovaAfericao(placaVeiculo, tipoAfericao);
         }
     }
 
     @Override
-    public boolean insertAfericao(@Nonnull Afericao afericao, @Nonnull Long codUnidade) throws Exception {
+    public boolean insertAfericao(@NotNull Afericao afericao, @NotNull Long codUnidade) throws Exception {
         if (getSistema() != null) {
             return getSistema().insertAfericao(afericao, codUnidade);
         } else {
@@ -123,9 +130,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@Nonnull Long codUnidade, @Nonnull Long codAfericao) throws Exception {
+    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Exception {
         if (getSistema() != null) {
             return getSistema().getAfericaoByCodigo(codUnidade, codAfericao);
         } else {
@@ -133,10 +140,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public List<Afericao> getAfericoes(@Nonnull Long codUnidade,
-                                       @Nonnull String codTipoVeiculo,
-                                       @Nonnull String placaVeiculo,
+    public List<Afericao> getAfericoes(@NotNull Long codUnidade,
+                                       @NotNull String codTipoVeiculo,
+                                       @NotNull String placaVeiculo,
                                        long dataInicial,
                                        long dataFinal,
                                        int limit,
@@ -150,9 +158,10 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@Nonnull Long codUnidade,
-                                                                                    @Nonnull Long codFuncao) throws Exception {
+    public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(@NotNull Long codUnidade,
+                                                                                    @NotNull Long codFuncao) throws Exception {
         if (getSistema() != null) {
             return getSistema().getSelecaoModeloChecklistPlacaVeiculo(codUnidade, codFuncao);
         } else {
@@ -160,10 +169,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public NovoChecklistHolder getNovoChecklistHolder(@Nonnull Long codUnidade,
-                                                      @Nonnull Long codModelo,
-                                                      @Nonnull String placaVeiculo,
+    public NovoChecklistHolder getNovoChecklistHolder(@NotNull Long codUnidade,
+                                                      @NotNull Long codModelo,
+                                                      @NotNull String placaVeiculo,
                                                       char tipoChecklist) throws Exception {
         if (getSistema() != null) {
             return getSistema().getNovoChecklistHolder(codUnidade, codModelo, placaVeiculo, tipoChecklist);
@@ -172,8 +182,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
     @Override
-    public Long insertChecklist(@Nonnull Checklist checklist) throws Exception {
+    public Long insertChecklist(@NotNull Checklist checklist) throws Exception {
         if (getSistema() != null) {
             return getSistema().insertChecklist(checklist);
         } else {
@@ -181,9 +192,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Checklist getChecklistByCodigo(@Nonnull Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(@NotNull Long codChecklist) throws Exception {
         if (getSistema() != null) {
             return getSistema().getChecklistByCodigo(codChecklist);
         } else {
@@ -191,9 +202,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@Nonnull final Long cpf,
+    public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
                                                       @Nullable final Long dataInicial,
                                                       @Nullable final Long dataFinal,
                                                       final int limit,
@@ -206,9 +217,9 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<Checklist> getTodosChecklists(@Nonnull final Long codUnidade,
+    public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
                                               @Nullable final Long codEquipe,
                                               @Nullable final Long codTipoVeiculo,
                                               @Nullable final String placaVeiculo,
@@ -227,11 +238,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public FarolChecklist getFarolChecklist(@Nonnull final Long codUnidade,
-                                            @Nonnull final Date dataInicial,
-                                            @Nonnull final Date dataFinal,
+    public FarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                            @NotNull final Date dataInicial,
+                                            @NotNull final Date dataFinal,
                                             final boolean itensCriticosRetroativos) throws Exception {
         if (getSistema() != null) {
             return getSistema().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);

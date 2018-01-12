@@ -13,6 +13,10 @@ import java.sql.SQLException;
  */
 public class AppDaoImpl extends DatabaseConnection implements AppDao {
 
+	public AppDaoImpl() {
+
+	}
+
 	@Override
 	public boolean isThisCurrentVersion(AppVersion appVersion) throws SQLException {
 		

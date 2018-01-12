@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ItemProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
-import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDao;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeService;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemContracheque;
@@ -27,16 +27,18 @@ import java.util.List;
  * Created by Zalf on 21/11/16.
  */
 public class ContrachequeDaoImpl extends DatabaseConnection implements ContrachequeDao {
-
     private static final String TAG = ContrachequeDaoImpl.class.getSimpleName();
 
+    public ContrachequeDaoImpl() {
+
+    }
 
     @Override
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException {
         Connection conn = null;
         Contracheque contracheque = null;
         RestricoesContracheque restricoes = null;
-        ProdutividadeDaoImpl produtividadeDao = new ProdutividadeDaoImpl();
+        final ProdutividadeDao produtividadeDao = Injection.provideProdutividadeDao();
         try {
             conn = getConnection();
             List<ItemContracheque> itens = getItensContracheque(conn, cpf, ano, mes, codUnidade);

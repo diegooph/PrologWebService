@@ -19,11 +19,11 @@ public class VeiculoService {
     private final VeiculoDao dao = Injection.provideVeiculoDao();
     private static final String TAG = VeiculoService.class.getSimpleName();
 
-    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade) {
+    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
-                    .getVeiculosAtivosByUnidade(codUnidade);
+                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
         } catch (Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
                     "Unidade: %d \n" +
@@ -94,6 +94,16 @@ public class VeiculoService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar o veículo. \n" +
                     "placaOriginal: %s", placaOriginal), e);
+            return false;
+        }
+    }
+
+    public boolean updateStatus(Long codUnidade, String placa, Veiculo veiculo) {
+        try {
+            dao.updateStatus(codUnidade, placa, veiculo);
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo %d", placa), e);
             return false;
         }
     }

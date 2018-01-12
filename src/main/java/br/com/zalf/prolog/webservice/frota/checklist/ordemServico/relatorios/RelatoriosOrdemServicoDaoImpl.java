@@ -51,7 +51,10 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public void getMediaTempoConsertoItemCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException, IOException {
+    public void getMediaTempoConsertoItemCsv(@NotNull OutputStream outputStream,
+                                             @NotNull Long codUnidade,
+                                             @NotNull Date dataInicial,
+                                             @NotNull Date dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -66,7 +69,9 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public Report getMediaTempoConsertoItemReport(@NotNull Long codUnidade, @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException {
+    public Report getMediaTempoConsertoItemReport(@NotNull Long codUnidade,
+                                                  @NotNull Date dataInicial,
+                                                  @NotNull Date dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -81,7 +86,10 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public void getProdutividadeMecanicosCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException, IOException {
+    public void getProdutividadeMecanicosCsv(@NotNull OutputStream outputStream,
+                                             @NotNull Long codUnidade,
+                                             @NotNull Date dataInicial,
+                                             @NotNull Date dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -96,7 +104,9 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public Report getProdutividadeMecanicosReport(@NotNull Long codUnidade, @NotNull Date dataInicial, @NotNull Date dataFinal) throws SQLException {
+    public Report getProdutividadeMecanicosReport(@NotNull Long codUnidade,
+                                                  @NotNull Date dataInicial,
+                                                  @NotNull Date dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -230,8 +240,12 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public void getEstratificacaoOsCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
-                                       @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+    public void getEstratificacaoOsCsv(@NotNull OutputStream outputStream,
+                                       @NotNull Long codUnidade,
+                                       @NotNull String placa,
+                                       @NotNull Date dataInicial,
+                                       @NotNull Date dataFinal,
+                                       @NotNull String statusOs,
                                        @NotNull String statusItem) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -247,8 +261,11 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public Report getEstratificacaoOsReport(@NotNull Long codUnidade, @NotNull String placa,
-                                            @NotNull Date dataInicial, @NotNull Date dataFinal, @NotNull String statusOs,
+    public Report getEstratificacaoOsReport(@NotNull Long codUnidade,
+                                            @NotNull String placa,
+                                            @NotNull Date dataInicial,
+                                            @NotNull Date dataFinal,
+                                            @NotNull String statusOs,
                                             @NotNull String statusItem) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;

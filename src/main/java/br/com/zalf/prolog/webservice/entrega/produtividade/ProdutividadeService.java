@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class ProdutividadeService {
 
-	private ProdutividadeDao dao = new ProdutividadeDaoImpl();
+	private final ProdutividadeDao dao = Injection.provideProdutividadeDao();
 	private static final String TAG = ProdutividadeService.class.getSimpleName();
 	
 	public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf) {

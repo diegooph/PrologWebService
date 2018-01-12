@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpAvilanDao {
+    private static final String TAG = AvaCorpAvilanDaoImpl.class.getSimpleName();
 
     @Nonnull
     @Override
@@ -182,8 +184,8 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
                             rSet.getString("URL_IMAGEM"));
                 } while (rSet.next());
             } else {
-                throw new RuntimeException("Erro ao buscar mapeamento de perguntas para URL de imagens para o " +
-                        "questionário: " + codQuestionario);
+                Log.d(TAG, "Não há imagens mapeadas para o questionário com código " + codQuestionario
+                        + " da Avilan");
             }
         } finally {
             closeConnection(conn, stmt, rSet);

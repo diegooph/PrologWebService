@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -14,7 +15,7 @@ import java.sql.SQLException;
  */
 public class RelatoriosOrdemServicoService {
 
-    private RelatoriosOrdemServicoDao dao = new RelatoriosOrdemServicoDaoImpl();
+    private RelatoriosOrdemServicoDao dao = Injection.provideRelatoriosOrdemServicoDao();
     private static final String TAG = RelatoriosOrdemServicoService.class.getSimpleName();
 
     void getItensMaiorQuantidadeNokCsv(@NotNull OutputStream outputStream,

@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
 import com.sun.istack.internal.Nullable;
@@ -48,6 +50,16 @@ public class Pneu {
     private int vidaAtual;
     private int vidasTotal;
     private String status;
+
+    /**
+     * {@link Regional} onde o pneu se encontra.
+     */
+    public Long codRegionalAlocado;
+
+    /**
+     * {@link Unidade} onde o pneu se encontra.
+     */
+    public Long codUnidadeAlocado;
 
     /**
      * O código DOT gravado na lateral do pneu indica sua conformidade com os padrões de segurança e fornece dados
@@ -172,6 +184,22 @@ public class Pneu {
         this.status = status;
     }
 
+    public Long getCodRegionalAlocado() {
+        return codRegionalAlocado;
+    }
+
+    public void setCodRegionalAlocado(Long codRegionalAlocado) {
+        this.codRegionalAlocado = codRegionalAlocado;
+    }
+
+    public Long getCodUnidadeAlocado() {
+        return codUnidadeAlocado;
+    }
+
+    public void setCodUnidadeAlocado(Long codUnidadeAlocado) {
+        this.codUnidadeAlocado = codUnidadeAlocado;
+    }
+
     public int getPosicao() {
         return posicao;
     }
@@ -236,6 +264,23 @@ public class Pneu {
         } else {
             return banda.getModelo().getQuantidadeSulcos();
         }
+    }
+
+    public Double getAlturaSulcoPneuNovo() {
+        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar a altura de qualquer um dos sulcos.
+        return sulcosPneuNovo.getCentralInterno();
+    }
+
+    public Double getAlturaSulcoBandaPneu() {
+        return banda.getModelo().getAlturaSulcos();
+    }
+
+    public BigDecimal getValorBanda() {
+        return banda.getValor();
+    }
+
+    public Long getCodModeloBanda() {
+        return banda.getModelo().getCodigo();
     }
 
     public boolean temQtdImparSulcos() {

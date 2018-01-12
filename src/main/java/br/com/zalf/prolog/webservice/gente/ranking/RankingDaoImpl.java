@@ -52,7 +52,7 @@ public class RankingDaoImpl extends DatabaseConnection implements RankingDao {
 //	private static final int PONTOS_BRONZE = 1;
 //
 //	private Meta meta;
-//	private RelatorioDaoImpl create;
+//	private RelatorioEntregaDaoImpl create;
 //
 //
 //
@@ -64,7 +64,7 @@ public class RankingDaoImpl extends DatabaseConnection implements RankingDao {
 //		ResultSet rSet = null;
 //		MetasDaoImpl metasDao = new MetasDaoImpl();
 //		//meta = metasDao.getMetasByUnidade(codUnidade);
-//		//create = new RelatorioDaoImpl(meta);
+//		//create = new RelatorioEntregaDaoImpl(meta);
 //		List<ItemPosicao> listPosicao = new ArrayList<>();
 //
 //		try{

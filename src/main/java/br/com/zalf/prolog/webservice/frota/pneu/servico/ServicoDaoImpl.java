@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
@@ -20,7 +20,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -186,7 +185,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     fechaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
-                    final MovimentacaoDaoImpl movimentacaoDao = new MovimentacaoDaoImpl();
+                    final MovimentacaoDao movimentacaoDao = Injection.provideMovimentacaoDao();
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
                     // Atualiza o pneuNovo com os valores referentes ao serviço executad.
                     movimentacao.getPneuNovo().setSulcosAtuais(movimentacao.getSulcosColetadosFechamento());
@@ -227,7 +226,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     break;
             }
             // Atualiza KM do veículo.
-            final VeiculoDao veiculoDao = new VeiculoDaoImpl();
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
         } catch (SQLException e) {

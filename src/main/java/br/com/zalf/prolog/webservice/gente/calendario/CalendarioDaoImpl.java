@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioDao {
-
     private static final String TAG = CalendarioDaoImpl.class.getSimpleName();
+
     /**
      * Busca dos eventos, foi fracionada a busca em 5 partes, sendo elas:
      * 1 - Busca os eventos exclusivos para uma unidade + função + equipe
@@ -53,6 +53,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
             + "AND CAL.COD_FUNCAO IS NULL "
             + "AND CAL.COD_EQUIPE IS NULL "
             + "WHERE C.CPF=? ";
+
+    public CalendarioDaoImpl() {
+
+    }
 
     @Override
     public List<Evento> getEventosByCpf(Long cpf) throws SQLException {

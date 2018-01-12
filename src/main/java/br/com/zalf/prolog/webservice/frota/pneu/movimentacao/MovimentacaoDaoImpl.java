@@ -114,14 +114,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
                     // Pneu voltou recapado, devemos incrementar a vida.
                     if (mov.isFromDestinoToOrigem(OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.ESTOQUE)) {
-                        mov.getPneu().setVidaAtual(mov.getPneu().getVidaAtual() + 1);
-                        pneuDao.updateVida(mov.getPneu(), codUnidade, conn);
-                        pneuDao.insertTrocaVidaPneu(mov.getPneu(), codUnidade, conn);
+                        pneu.setVidaAtual(pneu.getVidaAtual() + 1);
+                        pneuDao.trocarVida(pneu, codUnidade, conn);
                     }
 
                     // Atualiza o status do pneu.
                     pneuDao.updateStatus(
-                            mov.getPneu(),
+                            pneu,
                             codUnidade,
                             mov.getDestino().getTipo(),
                             conn);

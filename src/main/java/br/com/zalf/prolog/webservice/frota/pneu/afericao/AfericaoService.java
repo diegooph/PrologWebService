@@ -41,15 +41,10 @@ public class AfericaoService {
         }
     }
 
-    public NovaAfericao getNovaAfericao(String placa, String userToken) {
-        try {
-            return RouterAfericao
-                    .create(dao, userToken)
-                    .getNovaAfericao(placa);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar uma nova aferição", e);
-            throw new RuntimeException(e);
-        }
+    public NovaAfericao getNovaAfericao(String placa, String tipoAfericao, String userToken) throws Exception {
+        return RouterAfericao
+                .create(dao, userToken)
+                .getNovaAfericao(placa, tipoAfericao);
     }
 
     public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) {

@@ -15,6 +15,10 @@ import java.sql.*;
  */
 public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements ProdutividadeRelatorioDao {
 
+    public ProdutividadeRelatorioDaoImpl() {
+
+    }
+
     @Override
     public void getConsolidadoProdutividadeCsv(@NotNull OutputStream outputStream,
                                                @NotNull Long codUnidade,

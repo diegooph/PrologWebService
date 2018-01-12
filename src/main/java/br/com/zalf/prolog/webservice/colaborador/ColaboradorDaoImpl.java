@@ -86,32 +86,33 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "CPF = ?, MATRICULA_AMBEV = ?, MATRICULA_TRANS = ?, "
-                    + "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, DATA_DEMISSAO = ?, "
+                    + "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, "
                     + "STATUS_ATIVO = ?, NOME = ?, COD_SETOR = ?, "
                     + "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
                     + "COD_EMPRESA = ?, COD_EQUIPE = ? "
                     + "WHERE CPF = ?;");
             stmt.setLong(1, colaborador.getCpf());
-            stmt.setInt(2, colaborador.getMatriculaAmbev());
-            stmt.setInt(3, colaborador.getMatriculaTrans());
+            if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
+                stmt.setNull(2, Types.INTEGER);
+            } else {
+                stmt.setInt(2, colaborador.getMatriculaAmbev());
+            }
+            if (colaborador.getMatriculaTrans() == null || colaborador.getMatriculaTrans().equals(0)) {
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt.setInt(3, colaborador.getMatriculaTrans());
+            }
             stmt.setDate(4, DateUtils.toSqlDate(colaborador.getDataNascimento()));
             stmt.setDate(5, DateUtils.toSqlDate(colaborador.getDataAdmissao()));
-
-            // Só vai ter data de demissão quando estiver fazendo um update
-            // em um colaborador que já está deletado (inativo).
-            if (colaborador.getDataDemissao() != null)
-                stmt.setDate(6, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
-            else
-                stmt.setDate(6, null);
-            stmt.setBoolean(7, colaborador.isAtivo());
-            stmt.setString(8, colaborador.getNome());
-            stmt.setLong(9, colaborador.getSetor().getCodigo());
-            stmt.setLong(10, colaborador.getFuncao().getCodigo());
-            stmt.setLong(11, colaborador.getCodUnidade());
-            stmt.setLong(12, colaborador.getCodPermissao());
-            stmt.setLong(13, colaborador.getCodEmpresa());
-            stmt.setLong(14, colaborador.getEquipe().getCodigo());
-            stmt.setLong(15, cpfAntigo);
+            stmt.setBoolean(6, colaborador.isAtivo());
+            stmt.setString(7, colaborador.getNome());
+            stmt.setLong(8, colaborador.getSetor().getCodigo());
+            stmt.setLong(9, colaborador.getFuncao().getCodigo());
+            stmt.setLong(10, colaborador.getUnidade().getCodigo());
+            stmt.setLong(11, colaborador.getCodPermissao());
+            stmt.setLong(12, colaborador.getEmpresa().getCodigo());
+            stmt.setLong(13, colaborador.getEquipe().getCodigo());
+            stmt.setLong(14, cpfAntigo);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
@@ -159,9 +160,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
-                    + "STATUS_ATIVO = FALSE "
+                    + "STATUS_ATIVO = FALSE, data_demissao = ? "
                     + "WHERE CPF = ?;");
-            stmt.setLong(1, cpf);
+            stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
+            stmt.setLong(2, cpf);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
             }
@@ -262,9 +264,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return null;
     }
 
-    /**
-     * Busca todos os colaboradores de uma {@link Unidade}.
-     */
     @Override
     public List<Colaborador> getAll(Long codUnidade, boolean apenasAtivos) throws SQLException {
         List<Colaborador> list = new ArrayList<>();
@@ -308,6 +307,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "ORDER BY 8");
             stmt.setLong(1, codUnidade);
 
+            //noinspection Duplicates
             if (apenasAtivos) {
                 stmt.setInt(2, 0);
                 stmt.setBoolean(3, true);

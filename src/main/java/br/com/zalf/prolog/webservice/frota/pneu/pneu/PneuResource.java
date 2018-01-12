@@ -34,7 +34,7 @@ public class PneuResource {
     }
 
     @PUT
-	@Secured(permissions = { Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR })
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
     public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String codOriginal) {
         if (service.update(pneu, codUnidade, codOriginal)) {
@@ -101,7 +101,7 @@ public class PneuResource {
     @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
-    @Path("/bandas/{codEmpresa}")
+    @Path("/bandas/marcas/{codEmpresa}")
     public List<Marca> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloBanda(codEmpresa);
     }
@@ -129,9 +129,9 @@ public class PneuResource {
     @Secured
     @Path("bandas/marcas/{codEmpresa}")
     public Response updateMarcaBanda(Marca marca, @PathParam("codEmpresa") Long codEmpresa) {
-        if(service.updateMarcaBanda(marca, codEmpresa)){
+        if (service.updateMarcaBanda(marca, codEmpresa)) {
             return Response.ok("Marca atualizada com sucesso");
-        }else {
+        } else {
             return Response.error("Erro ao atualizar a marca");
         }
     }
@@ -142,7 +142,7 @@ public class PneuResource {
     public Response updateModeloBanda(Modelo modelo) {
         if (service.updateModeloBanda(modelo)) {
             return Response.ok("Modelo de banda atualizado com sucesso");
-        }else {
+        } else {
             return Response.error("Erro ao atualizar o modelo de banda");
         }
     }
@@ -153,7 +153,17 @@ public class PneuResource {
     public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
+
+    /**
+     * @deprecated Use {@link #getMarcaModeloBanda(Long)} instead.
+     */
+    @GET
+    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR})
+    @Path("/bandas/{codEmpresa}")
+    @Deprecated
+    public List<Marca> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {
+        return service.getMarcaModeloBanda(codEmpresa);
+    }
 }
-
-
-

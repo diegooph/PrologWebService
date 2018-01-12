@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -13,8 +14,7 @@ import java.sql.SQLException;
  * Created by Zart on 18/05/2017.
  */
 public class ProdutividadeRelatorioService {
-
-    private ProdutividadeRelatorioDao dao = new ProdutividadeRelatorioDaoImpl();
+    private final ProdutividadeRelatorioDao dao = Injection.provideProdutividadeRelatorioDao();
     private static final String TAG = ProdutividadeRelatorioService.class.getSimpleName();
 
     public void getConsolidadoProdutividadeCsv(@NotNull OutputStream outputStream,

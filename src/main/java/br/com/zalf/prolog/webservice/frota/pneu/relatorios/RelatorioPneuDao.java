@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
@@ -11,11 +12,12 @@ import java.io.OutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by didi on 9/15/16.
  */
-public interface RelatorioDao {
+public interface RelatorioPneuDao {
 
 	/**
 	 * seleciona pneus com base no sulco
@@ -107,5 +109,25 @@ public interface RelatorioDao {
 
 	public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
 													 Date dataFinal) throws IOException, SQLException;
+
+	public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
+
+	public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException;
+
+	public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException;
+
+	public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
+
+	public Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) throws SQLException;
 
 }

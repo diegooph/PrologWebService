@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
@@ -14,7 +15,7 @@ import java.util.List;
 public class ServicoService {
 
     private static final String TAG = ServicoService.class.getSimpleName();
-    private ServicoDao dao = new ServicoDaoImpl();
+    private ServicoDao dao = Injection.provideServicoDao();
 
     public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade,
                                                                      String agrupamento) {

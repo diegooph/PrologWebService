@@ -2,7 +2,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,6 +33,9 @@ public interface VeiculoDao {
 	 * @throws SQLException caso não seja possível realizar o update
 	 */
 	boolean update(Veiculo veiculo, String placaOriginal) throws SQLException;
+
+	void updateStatus(@NotNull final Long codUnidade, @NotNull final String placa, @NotNull final Veiculo veiculo)
+			throws SQLException;
 	
 	/**
 	 * Seta o veiculo como inativo no banco de dados
@@ -44,10 +48,11 @@ public interface VeiculoDao {
 	/**
 	 * Busca os veículos ativos de uma determinada unidade
 	 * @param codUnidade um código
+	 * @param ativos indica se queremos buscar os veículos ativos ou não.
 	 * @return lista de Veiculo
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade) throws SQLException;
+	List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
 	/**
 	 * Busca os veículos ativos de uma determinada unidade
 	 * @param cpf um cpf, ao qual será feita a busca da unidade

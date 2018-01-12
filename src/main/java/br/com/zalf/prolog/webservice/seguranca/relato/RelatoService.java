@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioService;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 
 import java.sql.SQLException;
@@ -14,7 +13,7 @@ import java.util.List;
 public class RelatoService {
 
     private RelatoDao dao = new RelatoDaoImpl();
-    private static final String TAG = RelatorioService.class.getSimpleName();
+    private static final String TAG = RelatoService.class.getSimpleName();
 
     public boolean insert(Relato relato) {
         try {

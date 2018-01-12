@@ -18,9 +18,9 @@ import java.util.List;
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class RelatorioResource {
+public class RelatorioPneuResource {
 
-	private RelatorioService service = new RelatorioService();
+	private RelatorioPneuService service = new RelatorioPneuService();
 
 	@GET
 	@Path("/resumoSulcos")
@@ -137,7 +137,7 @@ public class RelatorioResource {
 	}
 
 	/**
-	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasCsv(Long, long, long)} (Long, long)} instead
+	 * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(Long, long, long)} (Long, long)} instead
 	 */
 	@GET
 	@Path("/aderencia/placas/{codUnidade}/csv")
@@ -150,7 +150,7 @@ public class RelatorioResource {
 	}
 
 	/**
-	 * @deprecated in v0.0.11. Use {@link RelatorioResource#getAderenciaPlacasReport(Long, long, long)} (Long, long)} instead
+	 * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasReport(Long, long, long)} (Long, long)} instead
 	 */
 	@GET
 	@Path("/aderencia/placas/{codUnidade}/report")
