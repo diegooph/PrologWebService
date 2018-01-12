@@ -17,6 +17,7 @@ Change Log
 `RelatorioPneuDaoImpl`, `ServicoDaoImpl`, `VeiculoDaoImpl`, `CalendarioDaoImpl`, `ContrachequeDaoImpl`
 * Altera `ModeloBanda` para conter a altura dos sulcos
 * Altera método de início de uma aferição para enviar o tipo da aferição sendo iniciada
+* Cria novo método com path diferente para a busca das marcas de banda
 
 ### Bug Fixes
 * Corrige mapeamento de perguntas do checklist para URL de imagens na integração com Avilan
