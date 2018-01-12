@@ -111,7 +111,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // Pressão atual.
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getValorSulcoPneuNovo());
+            stmt.setDouble(6, pneu.getAlturaSulcoPneuNovo());
             stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
             stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
             stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
@@ -157,9 +157,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             // Insere o valor da nova vida para o pneu.
             insertValorBandaVidaAtual(pneu, codUnidade, conn);
 
-            // Atualiza a vida e o código do modelo de banda na tabela PNEU.
+            // Atualiza a vidao, o código do modelo de banda e a altura dos sulcos do pneu.
+            // É preciso atualizar os sulcos pois para trocar de vida o pneu foi recapado, logo, ele tem novos sulcos.
             stmt = conn.prepareStatement("UPDATE PNEU SET " +
-                    "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ? " +
+                    "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ?, " +
+                    "ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, " +
+                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "+
                     "WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setInt(1, pneu.getVidaAtual());
             if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
@@ -168,8 +171,16 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 stmt.setLong(2, pneu.getVidasTotal());
             }
             stmt.setLong(3, pneu.getCodModeloBanda());
-            stmt.setString(4, pneu.getCodigo());
-            stmt.setLong(5, codUnidade);
+
+            // Atualiza os sulcos do pneu.
+            stmt.setDouble(4, pneu.getAlturaSulcoBandaPneu());
+            stmt.setDouble(5, pneu.getAlturaSulcoBandaPneu());
+            stmt.setDouble(6, pneu.getAlturaSulcoBandaPneu());
+            stmt.setDouble(7, pneu.getAlturaSulcoBandaPneu());
+
+            stmt.setString(8, pneu.getCodigo());
+            stmt.setLong(9, codUnidade);
+
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao trocar a vida do pneu " + pneu.getCodigo() + " da unidade " + codUnidade);
             }
@@ -672,21 +683,20 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO modelo_banda\n" +
-                    "    (nome, cod_marca, cod_empresa, qt_sulcos)\n" +
-                    "SELECT ?, ?, ?, ?\n" +
-                    "WHERE\n" +
-                    "    NOT EXISTS (\n" +
-                    "        SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and " +
-                    "cod_empresa = ?\n" +
-                    "    ) RETURNING codigo;");
+            stmt = conn.prepareStatement("INSERT INTO modelo_banda " +
+                    "    (nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos) " +
+                    "SELECT ?, ?, ?, ?, ? " +
+                    "WHERE NOT EXISTS " +
+                    " (SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and cod_empresa = ?) " +
+                    "RETURNING codigo;");
             stmt.setString(1, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(2, codMarcaBanda);
             stmt.setLong(3, codEmpresa);
             stmt.setInt(4, modelo.getQuantidadeSulcos());
-            stmt.setString(5, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
-            stmt.setLong(6, codMarcaBanda);
-            stmt.setLong(7, codEmpresa);
+            stmt.setDouble(5, modelo.getAlturaSulcos());
+            stmt.setString(6, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setLong(7, codMarcaBanda);
+            stmt.setLong(8, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -744,7 +754,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(1, codUnidade);
             stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, pneu.getCodModeloBanda());
-            stmt.setBigDecimal(5, pneu.getBanda().getValor());
+            stmt.setBigDecimal(5, pneu.getValorBanda());
             stmt.setInt(4, pneu.getVidaAtual());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o valor da banda do pneu "
@@ -842,6 +852,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
+                modelo.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS"));
                 modelos.add(modelo);
             }
         } finally {
