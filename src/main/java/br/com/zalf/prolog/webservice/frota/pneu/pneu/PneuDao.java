@@ -107,6 +107,7 @@ public interface PneuDao {
      * @return um novo pneu
      * @throws SQLException caso ocorra erro no banco
      */
+    @Deprecated
     Pneu createPneu(ResultSet rSet) throws SQLException;
 
     /**

@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +15,10 @@ import java.sql.SQLException;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class PneuConverter {
+    private static final String TAG = PneuConverter.class.getSimpleName();
 
     private PneuConverter() {
+        throw new IllegalStateException(PneuConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
@@ -69,22 +73,30 @@ public final class PneuConverter {
         return pneu;
     }
 
-    @NotNull
+    @Nullable
     private static Banda createBanda(@NotNull final Pneu pneu, @NotNull final ResultSet rSet) throws SQLException {
-        final Banda banda = new Banda();
-        if (rSet.getString("COD_MARCA_BANDA") != null) {
+        if (rSet.getString("COD_MODELO_BANDA") != null) {
+            final Banda banda = new Banda();
             banda.setModelo(createModeloBanda(rSet));
             banda.setMarca(createMarcaBanda(rSet));
             banda.setValor(rSet.getBigDecimal("VALOR_BANDA"));
-        } else {
+            return banda;
+        } else if (rSet.getInt("VIDA_ATUAL") == 1) {
+            final Banda banda = new Banda();
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setQuantidadeSulcos(pneu.getModelo().getQuantidadeSulcos());
             modeloBanda.setCodigo(pneu.getModelo().getCodigo());
             modeloBanda.setNome(pneu.getModelo().getNome());
             banda.setModelo(modeloBanda);
             banda.setMarca(pneu.getMarca());
+            return banda;
+        } else {
+            // TODO: 12/01/2017 - Atualmente não podemos quebrar a servidor caso atinja esse estado porque possuimos
+            // pneus com essa inconsistência em banco. Isso será eliminado no futuro e poderemos lançar uma exceção aqui.
+            Log.d(TAG, "Esse estado é uma inconsistência e não deveria acontecer! " +
+                    "Algum pneu está acima da primeira vida porém não possui banda associada.");
+            return null;
         }
-        return banda;
     }
 
     @NotNull
