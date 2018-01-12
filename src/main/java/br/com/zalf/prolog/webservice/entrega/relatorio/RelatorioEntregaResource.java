@@ -110,4 +110,31 @@ public class RelatorioEntregaResource {
                                                @QueryParam("dataFinal") Long dataFinal) {
         return service.getEstratificacaoMapasReport(codUnidade, dataInicial, dataFinal);
     }
+
+    @GET
+    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/csv")
+    public StreamingOutput getExtratoMapasIndicadorCsv(@PathParam("codEmpresa") Long codEmpresa,
+                                                       @PathParam("codRegional") String codRegional,
+                                                       @PathParam("codUnidade") String codUnidade,
+                                                       @PathParam("cpf") String cpf,
+                                                       @QueryParam("dataInicial") Long dataInicial,
+                                                       @QueryParam("dataFinal") Long dataFinal,
+                                                       @PathParam("equipe") String equipe) {
+        return outputstream -> service.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf,
+                dataInicial, dataFinal, equipe, outputstream);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/report")
+    public Report getExtratoMapasIndicadorReport(@PathParam("codEmpresa") Long codEmpresa,
+                                                 @PathParam("codRegional") String codRegional,
+                                                 @PathParam("codUnidade") String codUnidade,
+                                                 @PathParam("cpf") String cpf,
+                                                 @QueryParam("dataInicial") Long dataInicial,
+                                                 @QueryParam("dataFinal") Long dataFinal,
+                                                 @PathParam("equipe") String equipe) {
+        return service.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe);
+    }
 }

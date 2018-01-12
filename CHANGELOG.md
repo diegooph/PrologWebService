@@ -9,6 +9,7 @@ Change Log
 * Cria método para alterar o status de um veículo (ativo/inativo)
 * Adiciona `codUnidadeAlocado` e `codRegionalAlocado` ao objeto `Pneu`
 * Cria objetos e métodos base para criação das dashboards
+* Cria relatório para estratificar os indicadores de cada mapa por colaborador
 
 ### Refactor
 * Altera seguintes classes para utilizarem Injection: `AutenticacaoDaoImpl`, `AppDaoImpl`, `MetasDaoImpl`,
