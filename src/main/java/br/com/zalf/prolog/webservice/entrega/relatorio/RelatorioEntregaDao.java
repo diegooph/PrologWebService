@@ -105,4 +105,10 @@ public interface RelatorioEntregaDao {
 
     Report getExtratoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
                                           Date dataInicial, Date dataFinal, String equipe) throws SQLException;
+
+    void getConsolidadoMapasIndicadorCsv(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                     Date dataInicial, Date dataFinal, String equipe, OutputStream out) throws SQLException, IOException;
+
+    Report getConsolidadoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                          Date dataInicial, Date dataFinal, String equipe) throws SQLException;
 }
