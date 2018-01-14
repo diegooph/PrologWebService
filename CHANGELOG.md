@@ -1,8 +1,11 @@
 Change Log
 ==========
 
-<a name="v2.0.44"></a>
-## Version [v2.0.44](https://github.com/luizfp/PrologWebService/compare/v2.0.43...v2.0.44) (release-date) - [unreleased]
+<a name="v2.0.43-h1"></a>
+## Version [v2.0.43-h1](https://github.com/luizfp/PrologWebService/compare/v2.0.43...v2.0.43-h1) (2017-01-14)
+
+### Bug Fixes
+* Corrige busca do relatório de indicadores acumulados
 
 <a name="v2.0.43"></a>
 ## Version [v2.0.43](https://github.com/luizfp/PrologWebService/compare/v2.0.42...v2.0.43) (2017-01-14)
