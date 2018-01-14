@@ -1,8 +1,14 @@
 Change Log
 ==========
 
+<a name="v2.0.43"></a>
+## Version [v2.0.43](https://github.com/luizfp/PrologWebService/compare/v2.0.42...v2.0.43) (2017-01-14)
+
+### Features
+* Cria relatório para mostrar os indicadores acumulados
+
 <a name="v2.0.42"></a>
-## Version [v2.0.42](https://github.com/luizfp/PrologAndroid/compare/v2.0.41...v2.0.42) (release-date) - [unreleased]
+## Version [v2.0.42](https://github.com/luizfp/PrologWebService/compare/v2.0.41...v2.0.42) (2017-01-12)
 
 ### Features
 * Permite filtrar por ativo/inativo busca dos veículos de uma unidade
@@ -26,7 +32,7 @@ Change Log
 * Corrige criação do objeto `CronogramaAfericao` na integração com a Avilan
 
 <a name="v2.0.41"></a>
-## Version [v2.0.41](https://github.com/luizfp/PrologAndroid/compare/v2.0.40...v2.0.41) (2017-12-22)
+## Version [v2.0.41](https://github.com/luizfp/PrologWebService/compare/v2.0.40...v2.0.41) (2017-12-22)
 
 ### Features
 * Cria tabela para poder vincular imagens aos modelos de checklists da Avilan, buscados do Latromi.
@@ -41,7 +47,7 @@ Change Log
 * Corrige query de relatório do checklist
 
 <a name="v2.0.40"></a>
-## Version [v2.0.40](https://github.com/luizfp/PrologAndroid/compare/v2.0.39...v2.0.40) (2017-11-29)
+## Version [v2.0.40](https://github.com/luizfp/PrologWebService/compare/v2.0.39...v2.0.40) (2017-11-29)
 
 ### Refactor
 * Na integração com a Avilan, ao enviar uma aferição realizada, envia medidas apenas de pneus que não sejam estepes
@@ -57,7 +63,7 @@ Change Log
 * Corrige método que busca uma aferição pelo seu código
 
 <a name="v2.0.39"></a>
-## Version [v2.0.39](https://github.com/luizfp/PrologAndroid/compare/v2.0.38...v2.0.39) (2017-11-20)
+## Version [v2.0.39](https://github.com/luizfp/PrologWebService/compare/v2.0.38...v2.0.39) (2017-11-20)
 
 ### Features
 * Implementa relatório que estratifica as respostas NOK dos checklists
@@ -92,7 +98,7 @@ Change Log
 * Corrige update de um Pneu
 
 <a name="v2.0.38"></a>
-## Version [v2.0.38](https://github.com/luizfp/PrologAndroid/compare/v2.0.37...v2.0.38) (2017-10-25)
+## Version [v2.0.38](https://github.com/luizfp/PrologWebService/compare/v2.0.37...v2.0.38) (2017-10-25)
 
 ### Features
 * Implementa relatório para estratificar os mapas
@@ -110,7 +116,7 @@ Change Log
 * Corrige busca de todos os relatos de uma unidade
 
 <a name="v2.0.37"></a>
-## Version [v2.0.37](https://github.com/luizfp/PrologAndroid/compare/v2.0.36...v2.0.37) (2017-10-19)
+## Version [v2.0.37](https://github.com/luizfp/PrologWebService/compare/v2.0.36...v2.0.37) (2017-10-19)
 
 ### Refactors
 * Altera insert de aferição na integração com Avilan para enviar CPF do colaborador que realizou a aferição e data/hora
@@ -118,7 +124,7 @@ em que foi realizada, não apenas data
 * Altera busca das aferições na integração com Avilan para conter colaborador que realizou e hora realização
 
 <a name="v2.0.36"></a>
-## Version [v2.0.36](https://github.com/luizfp/PrologAndroid/compare/v0.0.35-h1...v2.0.36) (2017-10-19)
+## Version [v2.0.36](https://github.com/luizfp/PrologWebService/compare/v0.0.35-h1...v2.0.36) (2017-10-19)
 
 ### Features
 * Integra busca das aferições com Avilan
@@ -136,13 +142,13 @@ mais estar cadastrado no ProLog para o diagrama estar disponível
 * Corrige problema para aferir os bitrucks da Avilan
 
 <a name="v0.0.35-h1"></a>
-## Version [v0.0.35-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.35...v0.0.35-h1) (2017-10-13)
+## Version [v0.0.35-h1](https://github.com/luizfp/PrologWebService/compare/v0.0.35...v0.0.35-h1) (2017-10-13)
 
 ### Bug Fixes
 * Integra busca dos checklists por colaborador com Avilan
 
 <a name="v0.0.35"></a>
-## Version [v0.0.35](https://github.com/luizfp/PrologAndroid/compare/v0.0.34-h1...v0.0.35) (2017-10-13)
+## Version [v0.0.35](https://github.com/luizfp/PrologWebService/compare/v0.0.34-h1...v0.0.35) (2017-10-13)
 
 ### Features
 * Implementa upadate de um tipo de intervalo
@@ -157,7 +163,7 @@ mais estar cadastrado no ProLog para o diagrama estar disponível
 * Resource da Aferição com path `afericao`. Novo resource agora possui path `afericoes`
 
 <a name="v0.0.34-h1"></a>
-## Version [v0.0.34-h1](https://github.com/luizfp/PrologAndroid/compare/v0.0.34...v0.0.34-h1) (2017-10-06)
+## Version [v0.0.34-h1](https://github.com/luizfp/PrologWebService/compare/v0.0.34...v0.0.34-h1) (2017-10-06)
 
 ### Bug Fixes
 * Corrige path da busca do farol do checklist na integração com AvaCorp

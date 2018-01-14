@@ -128,7 +128,7 @@ public class RelatorioEntregaService {
         try {
             dao.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe, out);
         } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao gerar o relatório que esrtatifica os indicadores de cada mapa. \n" +
+            Log.e(TAG, String.format("Erro ao gerar o relatório que estratifica os indicadores de cada mapa. \n" +
                     "codEmpresa: %d \n" +
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
@@ -144,7 +144,39 @@ public class RelatorioEntregaService {
         try {
             return dao.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao gerar o relatório que esrtatifica os indicadores de cada mapa. \n" +
+            Log.e(TAG, String.format("Erro ao gerar o relatório que estratifica os indicadores de cada mapa. \n" +
+                    "codEmpresa: %d \n" +
+                    "codRegional: %s \n" +
+                    "codUnidade: %s \n" +
+                    "equipe: %s \n" +
+                    "cpf: %d \n" +
+                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public void getConsolidadoMapasIndicadorCsv(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                            Long dataInicial, Long dataFinal, String equipe, OutputStream out) {
+        try {
+            dao.getConsolidadoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe, out);
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao gerar o relatório consolidado dos indicadores. \n" +
+                    "codEmpresa: %d \n" +
+                    "codRegional: %s \n" +
+                    "codUnidade: %s \n" +
+                    "equipe: %s \n" +
+                    "cpf: %d \n" +
+                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException();
+        }
+    }
+
+    public Report getConsolidadoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
+                                                 Long dataInicial, Long dataFinal, String equipe) {
+        try {
+            return dao.getConsolidadoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao gerar o relatório consolidado dos indicadores. \n" +
                     "codEmpresa: %d \n" +
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
