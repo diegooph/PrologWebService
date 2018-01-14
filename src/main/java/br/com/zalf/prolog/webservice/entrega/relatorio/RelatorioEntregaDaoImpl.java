@@ -345,7 +345,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            stmt = getConsolidadoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -361,7 +361,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            stmt = getConsolidadoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
