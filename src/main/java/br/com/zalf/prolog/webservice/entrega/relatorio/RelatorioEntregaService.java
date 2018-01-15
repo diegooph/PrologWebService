@@ -133,7 +133,7 @@ public class RelatorioEntregaService {
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
-                    "cpf: %d \n" +
+                    "cpf: %s \n" +
                     "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
             throw new RuntimeException();
         }
@@ -149,7 +149,7 @@ public class RelatorioEntregaService {
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
-                    "cpf: %d \n" +
+                    "cpf: %s \n" +
                     "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
             throw new RuntimeException();
         }
@@ -165,7 +165,7 @@ public class RelatorioEntregaService {
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
-                    "cpf: %d \n" +
+                    "cpf: %s \n" +
                     "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
             throw new RuntimeException();
         }
@@ -181,7 +181,7 @@ public class RelatorioEntregaService {
                     "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
-                    "cpf: %d \n" +
+                    "cpf: %s \n" +
                     "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
             throw new RuntimeException();
         }
