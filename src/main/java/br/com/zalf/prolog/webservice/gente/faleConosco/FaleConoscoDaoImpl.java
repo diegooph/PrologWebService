@@ -12,6 +12,10 @@ import java.util.List;
 
 public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConoscoDao {
 
+	public FaleConoscoDaoImpl() {
+
+	}
+
 	@Override
 	public Long insert(FaleConosco faleConosco, Long codUnidade) throws SQLException {
 		Connection conn = null;

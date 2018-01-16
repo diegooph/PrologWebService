@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -16,11 +18,12 @@ import javax.ws.rs.core.StreamingOutput;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
 public class RelatoriosOrdemServicoResource {
-    private RelatoriosOrdemServicoService service = new RelatoriosOrdemServicoService();
+    private final RelatoriosOrdemServicoService service = new RelatoriosOrdemServicoService();
 
     @GET
     @Path("/itens/maior-quantidade-nok/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getItensMaiorQuantidadeNokCsv(@PathParam("codUnidade") Long codUnidade,
                                                          @QueryParam("dataInicial") long dataInicial,
                                                          @QueryParam("dataFinal") long dataFinal) {
@@ -38,6 +41,7 @@ public class RelatoriosOrdemServicoResource {
     @GET
     @Path("/itens/media-tempo-conserto/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getMediaTempoConsertoItemCsv(@PathParam("codUnidade") Long codUnidade,
                                                         @QueryParam("dataInicial") long dataInicial,
                                                         @QueryParam("dataFinal") long dataFinal) {
@@ -55,6 +59,7 @@ public class RelatoriosOrdemServicoResource {
     @GET
     @Path("/produtividade-mecanicos/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getProdutividadeMecanicosCsv(@PathParam("codUnidade") Long codUnidade,
                                                         @QueryParam("dataInicial") long dataInicial,
                                                         @QueryParam("dataFinal") long dataFinal) {
@@ -82,6 +87,7 @@ public class RelatoriosOrdemServicoResource {
 
     @GET
     @Path("/estratificacoes/{codUnidade}/{placa}/{statusOs}/{statusItem}/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getEstratificacaoOsCsv(@PathParam("codUnidade") Long codUnidade,
                                             @PathParam("placa") String placa,
                                             @QueryParam("dataInicial") Long dataInicial,
@@ -91,6 +97,4 @@ public class RelatoriosOrdemServicoResource {
         return outputStream -> service.getEstratificacaoOsCsv(outputStream, codUnidade, placa, dataInicial, dataFinal,
                 statusOs, statusItem);
     }
-
-
 }

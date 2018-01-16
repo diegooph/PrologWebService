@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
@@ -13,9 +14,8 @@ import java.util.List;
  * Classe FaleConoscoService responsavel por comunicar-se com a interface DAO
  */
 public class FaleConoscoService {
-
-	private FaleConoscoDao dao = new FaleConoscoDaoImpl();
 	private static final String TAG = FaleConoscoService.class.getSimpleName();
+	private final FaleConoscoDao dao = Injection.provideFaleConoscoDao();
 
 	public AbstractResponse insert(FaleConosco faleConosco, Long codUnidade) {
 		try {
