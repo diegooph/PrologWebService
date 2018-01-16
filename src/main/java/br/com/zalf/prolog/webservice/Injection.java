@@ -51,6 +51,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.Controle
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import org.jetbrains.annotations.NotNull;
@@ -195,6 +197,11 @@ public final class Injection {
     @NotNull
     public static FaleConoscoDao provideFaleConoscoDao() {
         return new FaleConoscoDaoImpl();
+    }
+
+    @NotNull
+    public static FaleConoscoRelatorioDao provideFaleConoscoRelatorioDao() {
+        return new FaleConoscoRelatorioDaoImpl();
     }
 
     // ================================================

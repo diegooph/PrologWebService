@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 
 import java.io.IOException;
@@ -11,8 +12,7 @@ import java.util.Date;
  * Created by Zart on 02/05/17.
  */
 public class FaleConoscoRelatorioService {
-
-    FaleConoscoRelatorioDao dao = new FaleConoscoRelatorioDaoImpl();
+    private final FaleConoscoRelatorioDao dao = Injection.provideFaleConoscoRelatorioDao();
 
     public void getResumoCsv(Long codUnidade, OutputStream outputStream, Date dataInicial, Date dataFinal) {
         try {
