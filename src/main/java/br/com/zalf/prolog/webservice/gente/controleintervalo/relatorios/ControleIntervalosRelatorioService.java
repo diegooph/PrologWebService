@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 public class ControleIntervalosRelatorioService {
 
-    private ControleIntervaloRelatoriosDao dao = new ControleIntervaloRelatorioDaoImpl();
+    private ControleIntervaloRelatoriosDao dao = Injection.provideControleIntervaloRelatoriosDao();
     private static final String TAG = ControleIntervalosRelatorioService.class.getSimpleName();
 
     public void getIntervalosCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {

@@ -47,6 +47,8 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDa
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import org.jetbrains.annotations.NotNull;
@@ -181,6 +183,11 @@ public final class Injection {
     @NotNull
     public static ControleIntervaloDao provideControleIntervaloDao() {
         return new ControleIntervaloDaoImpl();
+    }
+
+    @NotNull
+    public static ControleIntervaloRelatoriosDao provideControleIntervaloRelatoriosDao() {
+        return new ControleIntervaloRelatorioDaoImpl();
     }
 
     // ================================================
