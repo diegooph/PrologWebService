@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -16,11 +18,12 @@ import javax.ws.rs.core.StreamingOutput;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
 public class ChecklistRelatorioResource {
-    private ChecklistRelatorioService service = new ChecklistRelatorioService();
+    private final ChecklistRelatorioService service = new ChecklistRelatorioService();
 
     @GET
     @Path("/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                           @QueryParam("dataInicial") long dataInicial,
                                                           @QueryParam("dataFinal") long dataFinal) {
@@ -38,6 +41,7 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/extrato/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getExtratoChecklistsRealizadosDiaCsv(@PathParam("codUnidade") Long codUnidade,
                                                                 @QueryParam("dataInicial") long dataInicial,
                                                                 @QueryParam("dataFinal") long dataFinal) {
@@ -55,6 +59,7 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/tempos-motoristas/{codUnidade}/csv")
     @Produces("application/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getTempoRealizacaoChecklistMotoristaCsv(@PathParam("codUnidade") Long codUnidade,
                                                                    @QueryParam("dataInicial") long dataInicial,
                                                                    @QueryParam("dataFinal") long dataFinal) {
@@ -71,6 +76,7 @@ public class ChecklistRelatorioResource {
 
     @GET
     @Path("/resumos/{codUnidade}/{placa}/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getResumoChecklistCsv(@PathParam("codUnidade") Long codUnidade,
                                                  @QueryParam("dataInicial") Long dataInicial,
                                                  @QueryParam("dataFinal") Long dataFinal,
@@ -98,6 +104,7 @@ public class ChecklistRelatorioResource {
 
     @GET
     @Path("/estratificacoes/{codUnidade}/{placa}/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
     public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("codUnidade") Long codUnidade,
                                                             @PathParam("placa") String placa,
                                                             @QueryParam("dataInicial") Long dataInicial,
