@@ -39,12 +39,12 @@ public class PneuService {
         }
     }
 
-    public boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) {
+    public AbstractResponse insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) {
         try {
-            return dao.insertModeloPneu(modelo, codEmpresa, codMarca);
+            return ResponseWithCod.ok("Marca inserida com sucesso", dao.insertModeloPneu(modelo, codEmpresa, codMarca));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
-            return false;
+            return Response.error("Erro ao inserir a marca da banda");
         }
     }
 

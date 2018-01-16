@@ -47,12 +47,8 @@ public class PneuResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
-    public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
-        if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
-            return Response.ok("Modelo de pneu inserido com sucesso.");
-        } else {
-            return Response.error("Erro ao inserir o modelo de pneu.");
-        }
+    public AbstractResponse insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
+        return service.insertModeloPneu(modelo, codEmpresa, codMarca);
     }
 
     @GET

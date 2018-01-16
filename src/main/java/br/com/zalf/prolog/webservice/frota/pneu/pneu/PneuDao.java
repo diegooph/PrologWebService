@@ -133,10 +133,10 @@ public interface PneuDao {
      * @param modelo     um modelo
      * @param codEmpresa código da empresa
      * @param codMarca   código da marca
-     * @return valor da operação
+     * @return codigo de inserção do modelo
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    Long insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
 
     /**
      * Vincula pneus a um veículo
