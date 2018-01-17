@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.commons.dashboard;
+package br.com.zalf.prolog.webservice.commons.dashboard.components;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.BarData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
