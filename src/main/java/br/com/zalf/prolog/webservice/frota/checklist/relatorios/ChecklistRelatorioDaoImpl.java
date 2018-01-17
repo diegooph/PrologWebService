@@ -29,7 +29,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getChecklistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -46,7 +46,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getChecklistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -64,7 +64,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getExtratoChecklistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -81,7 +81,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoCheckilistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
+            stmt = getExtratoChecklistRealizadosDia(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -125,7 +125,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
+    private PreparedStatement getChecklistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "func_relatorio_aderencia_checklist_diaria(?, ?, ?);");
@@ -136,9 +136,9 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     @NotNull
-    private PreparedStatement getExtratoCheckilistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
+    private PreparedStatement getExtratoChecklistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT c.data_hora::date as \"DATA\",\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(c.data_hora::date, 'DD/MM/YYYY') as \"DATA\",\n" +
                 "c.placa_veiculo AS \"PLACA\",\n" +
                 "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\",\n" +
                 "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\"\n" +
@@ -150,7 +150,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                 "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ?\n" +
                 "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date and dia_mapas.placa = c.placa_veiculo\n" +
                 "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ?\n" +
-                "GROUP BY 1, 2\n" +
+                "GROUP BY c.data_hora::date, 2\n" +
                 "ORDER BY c.data_hora::date;");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
