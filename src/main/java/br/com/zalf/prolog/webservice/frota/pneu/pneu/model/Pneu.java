@@ -271,6 +271,10 @@ public class Pneu {
         return sulcosPneuNovo.getCentralInterno();
     }
 
+    public boolean jaFoiRecapado() {
+        return vidaAtual > 1;
+    }
+
     public Double getAlturaSulcoBandaPneu() {
         return banda.getModelo().getAlturaSulcos();
     }
