@@ -245,7 +245,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
             stmt.setDouble(10, pneu.getSulcosAtuais().getExterno());
             stmt.setInt(11, pneu.getVidasTotal());
-            if (pneu.getBanda() != null) {
+            if (pneu.jaFoiRecapado()) {
                 stmt.setLong(12, pneu.getBanda().getModelo().getCodigo());
                 updateTrocaVidaPneu(pneu, codUnidade, conn);
             } else {

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
@@ -13,9 +14,8 @@ import java.util.List;
  * Created by Zart on 03/07/2017.
  */
 public class ProntuarioCondutorService {
-
-    ProntuarioCondutorDao dao = new ProntuarioCondutorDaoImpl();
     private static final String TAG = ProntuarioCondutorService.class.getSimpleName();
+    private final ProntuarioCondutorDao dao = Injection.provideProntuarioCondutorDao();
 
     public ProntuarioCondutor getProntuario(Long cpf) {
         try {
@@ -30,7 +30,7 @@ public class ProntuarioCondutorService {
     public Double getPontuacaoProntuario(Long cpf) {
         try {
             return dao.getPontuacaoProntuario(cpf);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a pontuação do prontuário do colaborador. \n" +
                     "cpf: %d", cpf), e);
             return null;
@@ -40,7 +40,7 @@ public class ProntuarioCondutorService {
     public List<ProntuarioCondutor> getResumoProntuarios(Long codUnidade, String codEquipe) {
         try {
             return dao.getResumoProntuarios(codUnidade, codEquipe);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o resumo dos prontuários. \n" +
                     "codUnidade: %d \n" +
                     "codEquipe: %s", codUnidade, codEquipe), e);
@@ -66,5 +66,4 @@ public class ProntuarioCondutorService {
             return Response.error("Erro nos dados da planilha");
         }
     }
-
 }
