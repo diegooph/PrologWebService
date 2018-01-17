@@ -6,7 +6,8 @@ Change Log
 
 ### Refactor
 * Altera seguintes classes para utilizarem Injection: `ControleIntervaloDaoImpl`, `ControleIntervaloRelatorioDaoImpl`,
-`QuizDaoImpl`, `ProntuarioCondutorDaoImpl`, `FaleConoscoRelatorioDaoImpl`, `FaleConoscoDaoImpl`, `QuizModeloDaoImpl`
+`QuizDaoImpl`, `ProntuarioCondutorDaoImpl`, `FaleConoscoRelatorioDaoImpl`, `FaleConoscoDaoImpl`, `QuizModeloDaoImpl`,
+`QuizRelatorioDaoImpl`
 
 <a name="v2.0.43-h1"></a>
 ## Version [v2.0.43-h1](https://github.com/luizfp/PrologWebService/compare/v2.0.43...v2.0.43-h1) (2017-01-14)
