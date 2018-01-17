@@ -55,6 +55,8 @@ import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRel
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDao;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import org.jetbrains.annotations.NotNull;
@@ -209,6 +211,11 @@ public final class Injection {
     @NotNull
     public static ProntuarioCondutorDao provideProntuarioCondutorDao() {
         return new ProntuarioCondutorDaoImpl();
+    }
+
+    @NotNull
+    public static QuizDao provideQuizDao() {
+        return new QuizDaoImpl();
     }
 
     // ================================================
