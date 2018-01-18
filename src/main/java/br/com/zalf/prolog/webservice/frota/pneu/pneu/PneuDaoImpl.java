@@ -218,45 +218,23 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            // Se um pneu tem número ímpar de sulcos, o valor do sulco central deve ser duplicado nos dois campos de
-            // de sulco central.
-            if (pneu.temQtdImparSulcos()) {
-                if (!pneu.getSulcosAtuais().getCentralInterno().equals(pneu.getSulcosAtuais().getCentralExterno())) {
-                    throw new IllegalStateException("Um pneu com número ímpar de sulcos deve ter seus sulcos centrais iguais");
-                }
-            }
-
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE PNEU SET CODIGO = ?, COD_MODELO = ?, COD_DIMENSAO = ?, "
-                    + "PRESSAO_RECOMENDADA = ?, "
-                    + "PRESSAO_ATUAL = ?,ALTURA_SULCOS_NOVOS = ?, ALTURA_SULCO_INTERNO = ?, "
-                    + "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ?, "
-                    + "ALTURA_SULCO_EXTERNO = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ?, DOT = ?, VALOR = ? "
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ? AND VIDA_ATUAL = ? AND STATUS = ?");
-            stmt.setString(1, pneu.getCodigo().trim());
-            stmt.setLong(2, pneu.getModelo().getCodigo());
-            stmt.setLong(3, pneu.getDimensao().codigo);
-            stmt.setDouble(4, pneu.getPressaoCorreta());
-            stmt.setDouble(5, pneu.getPressaoAtual());
-            stmt.setDouble(6, pneu.getSulcosPneuNovo().getCentralInterno());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setDouble(10, pneu.getSulcosAtuais().getExterno());
-            stmt.setInt(11, pneu.getVidasTotal());
+            stmt = conn.prepareStatement("UPDATE PNEU COD_MODELO = ?, COD_DIMENSAO = ?, "
+                    + "COD_MODELO_BANDA = ?, DOT = ?, VALOR = ? "
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            stmt.setLong(1, pneu.getModelo().getCodigo());
+            stmt.setLong(2, pneu.getDimensao().codigo);
             if (pneu.jaFoiRecapado()) {
-                stmt.setLong(12, pneu.getBanda().getModelo().getCodigo());
+                stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
                 updateTrocaVidaPneu(pneu, codUnidade, conn);
             } else {
-                stmt.setNull(12, Types.BIGINT);
+                stmt.setNull(3, Types.BIGINT);
             }
-            stmt.setString(13, pneu.getDot());
-            stmt.setBigDecimal(14, pneu.getValor());
-            stmt.setString(15, codOriginal);
-            stmt.setLong(16, codUnidade);
-            stmt.setInt(17, pneu.getVidaAtual());
-            stmt.setString(18, pneu.getStatus());
+            stmt.setString(4, pneu.getDot());
+            stmt.setBigDecimal(5, pneu.getValor());
+            stmt.setString(6, codOriginal);
+            stmt.setLong(7, codUnidade);
 
             final int count = stmt.executeUpdate();
             if (count == 0) {
