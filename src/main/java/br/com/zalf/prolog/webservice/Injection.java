@@ -65,6 +65,8 @@ import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDao;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import org.jetbrains.annotations.NotNull;
@@ -244,6 +246,11 @@ public final class Injection {
     @NotNull
     public static SolicitacaoFolgaRelatorioDao provideSolicitacaoFolgaRelatorioDao() {
         return new SolicitacaoFolgaRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static TreinamentoDao provideTreinamentoDao() {
+        return new TreinamentoDaoImpl();
     }
 
     // ================================================
