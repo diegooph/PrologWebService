@@ -67,6 +67,8 @@ import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.Solicitac
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
+import br.com.zalf.prolog.webservice.imports.mapa.MapaDao;
+import br.com.zalf.prolog.webservice.imports.mapa.MapaDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import org.jetbrains.annotations.NotNull;
@@ -251,6 +253,11 @@ public final class Injection {
     @NotNull
     public static TreinamentoDao provideTreinamentoDao() {
         return new TreinamentoDaoImpl();
+    }
+
+    @NotNull
+    public static MapaDao provideMapaDao() {
+        return new MapaDaoImpl();
     }
 
     // ================================================
