@@ -53,12 +53,12 @@ public class Pneu {
     /**
      * {@link Regional} onde o pneu se encontra.
      */
-    public Long codRegionalAlocado;
+    private Long codRegionalAlocado;
 
     /**
      * {@link Unidade} onde o pneu se encontra.
      */
-    public Long codUnidadeAlocado;
+    private Long codUnidadeAlocado;
 
     /**
      * O código DOT gravado na lateral do pneu indica sua conformidade com os padrões de segurança e fornece dados

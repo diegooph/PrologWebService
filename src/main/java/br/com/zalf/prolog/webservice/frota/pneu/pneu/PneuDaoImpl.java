@@ -757,8 +757,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     private List<Modelo> getModelosBanda(Long codEmpresa, Long codMarcaBanda, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
-        List<Modelo> modelos = new ArrayList<>();
         ResultSet rSet = null;
+        final List<Modelo> modelos = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM modelo_banda WHERE cod_marca = ? and cod_empresa = ? ORDER BY" +
                     " nome ASC");
@@ -766,7 +766,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                ModeloBanda modelo = new ModeloBanda();
+                final ModeloBanda modelo = new ModeloBanda();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
@@ -777,69 +777,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(null, stmt, rSet);
         }
         return modelos;
-    }
-
-    @Override
-    @Deprecated
-    public Pneu createPneu(ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
-
-        pneu.setCodigo(rSet.getString("CODIGO"));
-        pneu.setDot(rSet.getString("DOT"));
-        pneu.setValor(rSet.getBigDecimal("VALOR"));
-
-        final Marca marcaPneu = new Marca();
-        marcaPneu.setCodigo(rSet.getLong("COD_MARCA"));
-        marcaPneu.setNome(rSet.getString("MARCA"));
-        pneu.setMarca(marcaPneu);
-
-        final ModeloPneu modeloPneu = new ModeloPneu();
-        modeloPneu.setCodigo(rSet.getLong("COD_MODELO"));
-        modeloPneu.setNome(rSet.getString("MODELO"));
-        modeloPneu.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_MODELO"));
-        pneu.setModelo(modeloPneu);
-
-        final Banda banda = new Banda();
-        final ModeloBanda modeloBanda = new ModeloBanda();
-        if (rSet.getString("COD_MARCA_BANDA") != null) {
-            final Marca marcaBanda = new Marca();
-            marcaBanda.setCodigo(rSet.getLong("COD_MARCA_BANDA"));
-            marcaBanda.setNome(rSet.getString("NOME_MARCA_BANDA"));
-            modeloBanda.setCodigo(rSet.getLong("COD_MODELO_BANDA"));
-            modeloBanda.setNome(rSet.getString("NOME_MODELO_BANDA"));
-            modeloBanda.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_BANDA"));
-            banda.setValor(rSet.getBigDecimal("VALOR_BANDA"));
-            banda.setMarca(marcaBanda);
-            banda.setModelo(modeloBanda);
-        } else {
-            banda.setMarca(marcaPneu);
-            modeloBanda.setQuantidadeSulcos(modeloPneu.getQuantidadeSulcos());
-            modeloBanda.setCodigo(modeloPneu.getCodigo());
-            modeloBanda.setNome(modeloPneu.getNome());
-            banda.setModelo(modeloBanda);
-        }
-        pneu.setBanda(banda);
-
-        final Dimensao dimensao = new Dimensao();
-        dimensao.codigo = rSet.getLong("COD_DIMENSAO");
-        dimensao.altura = rSet.getInt("ALTURA");
-        dimensao.aro = rSet.getInt("ARO");
-        dimensao.largura = rSet.getInt("LARGURA");
-        pneu.setDimensao(dimensao);
-
-        final Sulcos sulcoAtual = new Sulcos();
-        sulcoAtual.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcoAtual.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        pneu.setSulcosAtuais(sulcoAtual);
-
-        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
-        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
-        pneu.setStatus(rSet.getString("STATUS"));
-        pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
-        pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
-        return pneu;
     }
 
     @Deprecated

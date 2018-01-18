@@ -98,16 +98,6 @@ public interface PneuDao {
     List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
 
     /**
-     * cria um novo pneu
-     *
-     * @param rSet conjunto de informações do banco
-     * @return um novo pneu
-     * @throws SQLException caso ocorra erro no banco
-     */
-    @Deprecated
-    Pneu createPneu(ResultSet rSet) throws SQLException;
-
-    /**
      * retorna uma lista de marcas de pneus da empresa
      *
      * @param codEmpresa código da empresa

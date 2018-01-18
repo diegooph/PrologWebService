@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -274,76 +275,48 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Afericao afericao = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final List<Pneu> pneus = new ArrayList<>();
-        final PneuDao pneuDao = Injection.providePneuDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "A.KM_VEICULO, A.CODIGO as COD_AFERICAO, " +
+                    "A.KM_VEICULO, " +
+                    "A.CODIGO AS COD_AFERICAO, " +
                     "A.DATA_HORA, " +
                     "A.PLACA_VEICULO, " +
                     "A.KM_VEICULO, " +
                     "A.TEMPO_REALIZACAO, " +
                     "A.TIPO_AFERICAO, " +
-                    "C.CPF, C.NOME, " +
+                    "C.CPF, " +
+                    "C.NOME, " +
                     "AV.COD_AFERICAO, " +
                     "AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
                     "AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
                     "AV.ALTURA_SULCO_EXTERNO, " +
                     "AV.ALTURA_SULCO_INTERNO, " +
-                    "AV.PSI::INT AS PRESSAO_ATUAL, " +
-                    "AV.POSICAO, " +
-                    "P.CODIGO, " +
-                    "MP.CODIGO AS COD_MARCA, " +
-                    "MP.NOME AS MARCA, " +
-                    "MO.CODIGO AS COD_MODELO, " +
-                    "MO.NOME AS MODELO, " +
-                    "MO.QT_SULCOS AS QT_SULCOS_MODELO, " +
-                    "DP.ALTURA, " +
-                    "DP.LARGURA, " +
-                    "DP.ARO, " +
-                    "DP.CODIGO AS COD_DIMENSAO, " +
-                    "P.PRESSAO_RECOMENDADA, " +
-                    "P.ALTURA_SULCOS_NOVOS, " +
-                    "P.STATUS, " +
-                    "P.VIDA_ATUAL, " +
-                    "P.VIDA_TOTAL, " +
-                    "P.DOT, " +
-                    "MB.codigo AS COD_MODELO_BANDA, " +
-                    "MB.nome AS NOME_MODELO_BANDA, " +
-                    "MB.qt_sulcos as QT_SULCOS_BANDA, " +
-                    "MAB.codigo AS COD_MARCA_BANDA, " +
-                    "MAB.nome AS NOME_MARCA_BANDA, " +
-                    "PVV.valor AS VALOR_BANDA, " +
-                    "P.VALOR " +
+                    "AV.PSI::INT AS PRESSAO_PNEU, " +
+                    "AV.POSICAO AS POSICAO_PNEU, " +
+                    "P.CODIGO AS CODIGO_PNEU, " +
+                    "P.PRESSAO_RECOMENDADA " +
                     "FROM AFERICAO A " +
                     "JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO " +
-                    "JOIN pneu_ordem po on av.posicao = po.posicao_prolog " +
+                    "JOIN PNEU_ORDEM PO ON AV.POSICAO = PO.POSICAO_PROLOG " +
                     "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU AND P.COD_UNIDADE = AV.COD_UNIDADE " +
                     "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO " +
                     "JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA " +
-                    "JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO " +
-                    "JOIN UNIDADE U ON U.CODIGO = P.cod_unidade " +
-                    "LEFT JOIN modelo_banda MB ON MB.codigo = P.cod_modelo_banda AND MB.cod_empresa = U.cod_empresa " +
-                    "LEFT JOIN marca_banda MAB ON MAB.codigo = MB.cod_marca AND MAB.cod_empresa = MB.cod_empresa " +
-                    "LEFT JOIN pneu_valor_vida PVV ON PVV.cod_unidade = P.cod_unidade AND PVV.cod_pneu = P.codigo AND PVV.vida = P.vida_atual " +
+                    "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
                     "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR " +
                     "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? " +
-                    "ORDER BY po.ordem_exibicao ASC");
+                    "ORDER BY PO.ORDEM_EXIBICAO ASC");
             stmt.setLong(1, codAfericao);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
                 afericao = createAfericaoResumida(rSet);
-                Pneu pneu = pneuDao.createPneu(rSet);
-                pneu.setPosicao(rSet.getInt("POSICAO"));
-                pneus.add(pneu);
+                pneus.add(createPneuAfericao(rSet));
                 final Veiculo veiculo =
                         veiculoDao.getVeiculoByPlaca(rSet.getString("PLACA_VEICULO"), false);
                 while (rSet.next()) {
-                    pneu = pneuDao.createPneu(rSet);
-                    pneu.setPosicao(rSet.getInt("POSICAO"));
-                    pneus.add(pneu);
+                    pneus.add(createPneuAfericao(rSet));
                 }
                 veiculo.setListPneus(pneus);
                 afericao.setVeiculo(veiculo);
@@ -352,6 +325,22 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
         return afericao;
+    }
+
+    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
+        final Pneu pneu = new Pneu();
+        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
+        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
+        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
+        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
+
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        pneu.setSulcosAtuais(sulcos);
+        return pneu;
     }
 
     @Override
@@ -499,26 +488,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return servicos;
     }
 
-    private void insertInconsistencia(Long codAfericao, String placa, Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
-                    + "COD_AFERICAO, PLACA, COD_PNEU_CORRETO, COD_PNEU_INCORRETO, POSICAO, COD_UNIDADE) VALUES (?,?,?,?,?,?,?)");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(2, codAfericao);
-            stmt.setString(3, placa);
-            stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
-            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
-            stmt.setInt(6, pneu.getPosicao());
-            stmt.setLong(7, codUnidade);
-            stmt.executeQuery();
-        } finally {
-            closeConnection(null, stmt, null);
-        }
-    }
-
     private Restricao createRestricao(ResultSet rSet) throws SQLException {
-        Restricao restricao = new Restricao();
+        final Restricao restricao = new Restricao();
         restricao.setSulcoMinimoDescarte(rSet.getDouble("SULCO_MINIMO_DESCARTE"));
         restricao.setSulcoMinimoRecape(rSet.getDouble("SULCO_MINIMO_RECAPAGEM"));
         restricao.setToleranciaCalibragem(rSet.getDouble("TOLERANCIA_CALIBRAGEM"));
@@ -575,5 +546,23 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         colaborador.setNome(rSet.getString("NOME"));
         afericao.setColaborador(colaborador);
         return afericao;
+    }
+
+    private void insertInconsistencia(Long codAfericao, String placa, Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
+                    + "COD_AFERICAO, PLACA, COD_PNEU_CORRETO, COD_PNEU_INCORRETO, POSICAO, COD_UNIDADE) VALUES (?,?,?,?,?,?,?)");
+            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setLong(2, codAfericao);
+            stmt.setString(3, placa);
+            stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
+            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+            stmt.setInt(6, pneu.getPosicao());
+            stmt.setLong(7, codUnidade);
+            stmt.executeQuery();
+        } finally {
+            closeConnection(null, stmt, null);
+        }
     }
 }
