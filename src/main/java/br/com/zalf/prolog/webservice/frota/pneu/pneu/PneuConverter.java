@@ -29,8 +29,8 @@ public final class PneuConverter {
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setDot(rSet.getString("DOT"));
         pneu.setValor(rSet.getBigDecimal("VALOR"));
-        pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE"));
-        pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL"));
+        pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE_ALOCADO"));
+        pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
 
         final Marca marcaPneu = new Marca();
         marcaPneu.setCodigo(rSet.getLong("COD_MARCA_PNEU"));
