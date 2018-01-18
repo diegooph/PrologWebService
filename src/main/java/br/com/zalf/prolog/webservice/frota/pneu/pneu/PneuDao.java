@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Banda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
@@ -136,7 +133,7 @@ public interface PneuDao {
      * @return codigo de inserção do modelo
      * @throws SQLException caso ocorra erro no banco
      */
-    Long insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    Long insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) throws SQLException;
 
     /**
      * Vincula pneus a um veículo

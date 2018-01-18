@@ -454,17 +454,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public Long insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException {
+    public Long insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, COD_MARCA, COD_EMPRESA) " +
-                    "VALUES (?,?,?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, QT_SULCOS, ALTURA_SULCOS, COD_MARCA, " +
+                    "COD_EMPRESA) VALUES (?,?,?,?) RETURNING CODIGO");
             stmt.setString(1, modelo.getNome());
-            stmt.setLong(2, codMarca);
-            stmt.setLong(3, codEmpresa);
+            stmt.setInt(2, modelo.getQuantidadeSulcos());
+            stmt.setDouble(3, modelo.getAlturaSulcos());
+            stmt.setLong(4, codMarca);
+            stmt.setLong(5, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -472,7 +474,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir o modelo do pneu ou modelo já existente");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
@@ -605,7 +607,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Marca marca = new Marca();
+                final Marca marca = new Marca();
                 marca.setCodigo(rSet.getLong("CODIGO"));
                 marca.setNome(rSet.getString("NOME"));
                 marca.setModelos(getModelosBanda(codEmpresa, marca.getCodigo(), conn));
