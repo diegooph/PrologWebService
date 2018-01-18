@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * Created by Zart on 20/03/17.
  */
-public class QuizRelatorioDaoImpl extends DatabaseConnection {
+public class QuizRelatorioDaoImpl extends DatabaseConnection implements QuizRelatorioDao {
 
     private static final String TAG = QuizRelatorioDaoImpl.class.getSimpleName();
 
@@ -58,6 +58,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         return stmt;
     }
 
+    @Override
     public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String codModeloQuiz, Long codUnidade,
                                                    long dataInicial, long dataFinal) throws IOException, SQLException {
         Connection conn = null;
@@ -73,6 +74,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Report getEstratificacaoRealizacaoQuizReport(String codModeloQuiz, Long codUnidade,
                                                         long dataInicial, long dataFinal) throws SQLException {
         Connection conn = null;
@@ -96,6 +98,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         return stmt;
     }
 
+    @Override
     public void getRealizacaoQuizByCargoCsv(OutputStream out, Long codUnidade, String codModeloQuiz)
             throws SQLException, IOException {
         Connection conn = null;
@@ -111,6 +114,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Report getRealizacaoQuizByCargoReport(Long codUnidade, String codModeloQuiz) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -147,6 +151,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         return stmt;
     }
 
+    @Override
     public void getEstratificacaoQuizRespostasCsv(OutputStream out, Long codUnidade, String codModeloQuiz) throws SQLException,
             IOException {
         Connection conn = null;
@@ -162,6 +167,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Report getEstratificacaoQuizRespostasReport(Long codUnidade, String codModeloQuiz) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -199,6 +205,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         return stmt;
     }
 
+    @Override
     public void getExtratoGeralCsv(OutputStream out, Long codUnidade, long dataInicial, long dataFinal) throws SQLException,
             IOException {
         Connection conn = null;
@@ -214,6 +221,7 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection {
         }
     }
 
+    @Override
     public Report getExtratoGeralReport (Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
