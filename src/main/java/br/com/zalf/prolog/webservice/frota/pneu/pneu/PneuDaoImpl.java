@@ -100,33 +100,31 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO pneu(codigo, cod_modelo, cod_dimensao, pressao_recomendada, " +
-                    "pressao_atual, altura_sulcos_novos, \n" +
-                    "                 altura_sulco_interno, altura_sulco_central_interno, " +
+                    "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
                     "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
                     "                 vida_atual, vida_total, cod_modelo_banda, dot, valor)\n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
             stmt.setString(1, pneu.getCodigo().trim());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
             stmt.setDouble(4, pneu.getPressaoCorreta());
             // Pressão atual.
             stmt.setDouble(5, 0L);
-            stmt.setDouble(6, pneu.getAlturaSulcoPneuNovo());
-            stmt.setDouble(7, pneu.getSulcosAtuais().getInterno());
-            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralInterno());
-            stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
-            stmt.setDouble(10, pneu.getSulcosAtuais().getExterno());
-            stmt.setLong(11, codUnidade);
-            stmt.setString(12, pneu.getStatus());
-            stmt.setInt(13, pneu.getVidaAtual());
-            stmt.setInt(14, pneu.getVidasTotal());
+            stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
+            stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
+            stmt.setDouble(8, pneu.getSulcosAtuais().getCentralExterno());
+            stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
+            stmt.setLong(10, codUnidade);
+            stmt.setString(11, pneu.getStatus());
+            stmt.setInt(12, pneu.getVidaAtual());
+            stmt.setInt(13, pneu.getVidasTotal());
             if (pneu.getVidaAtual() == 1) {
-                stmt.setNull(15, Types.BIGINT);
+                stmt.setNull(14, Types.BIGINT);
             } else {
-                stmt.setLong(15, pneu.getBanda().getModelo().getCodigo());
+                stmt.setLong(14, pneu.getBanda().getModelo().getCodigo());
             }
-            stmt.setString(16, pneu.getDot().trim());
-            stmt.setBigDecimal(17, pneu.getValor());
+            stmt.setString(15, pneu.getDot().trim());
+            stmt.setBigDecimal(16, pneu.getValor());
 
             final int count = stmt.executeUpdate();
             if (count == 0) {
@@ -378,13 +376,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         sulcoAtual.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
         pneu.setSulcosAtuais(sulcoAtual);
-
-        final Sulcos sulcoNovo = new Sulcos();
-        sulcoNovo.setCentralExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setCentralInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        pneu.setSulcosPneuNovo(sulcoNovo);
 
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));

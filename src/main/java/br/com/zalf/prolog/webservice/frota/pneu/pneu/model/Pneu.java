@@ -45,7 +45,6 @@ public class Pneu {
     private Dimensao dimensao;
     private double pressaoCorreta;
     private double pressaoAtual;
-    private Sulcos sulcosPneuNovo;
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
@@ -160,14 +159,6 @@ public class Pneu {
         this.pressaoCorreta = pressaoCorreta;
     }
 
-    public Sulcos getSulcosPneuNovo() {
-        return sulcosPneuNovo;
-    }
-
-    public void setSulcosPneuNovo(Sulcos sulcosPneuNovo) {
-        this.sulcosPneuNovo = sulcosPneuNovo;
-    }
-
     public Sulcos getSulcosAtuais() {
         return sulcosAtuais;
     }
@@ -266,11 +257,6 @@ public class Pneu {
         }
     }
 
-    public Double getAlturaSulcoPneuNovo() {
-        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar a altura de qualquer um dos sulcos.
-        return sulcosPneuNovo.getCentralInterno();
-    }
-
     public boolean jaFoiRecapado() {
         return vidaAtual > 1;
     }
@@ -306,7 +292,6 @@ public class Pneu {
                 ", dimensao=" + dimensao +
                 ", pressaoCorreta=" + pressaoCorreta +
                 ", pressaoAtual=" + pressaoAtual +
-                ", sulcosPneuNovo=" + sulcosPneuNovo +
                 ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +

@@ -58,13 +58,6 @@ public final class PneuConverter {
         sulcoAtual.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
         pneu.setSulcosAtuais(sulcoAtual);
 
-        final Sulcos sulcoNovo = new Sulcos();
-        sulcoNovo.setCentralExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setCentralInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setExterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        sulcoNovo.setInterno(rSet.getDouble("ALTURA_SULCOS_NOVOS"));
-        pneu.setSulcosPneuNovo(sulcoNovo);
-
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
         pneu.setStatus(rSet.getString("STATUS"));
