@@ -220,7 +220,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE PNEU COD_MODELO = ?, COD_DIMENSAO = ?, "
+            stmt = conn.prepareStatement("UPDATE PNEU SET COD_MODELO = ?, COD_DIMENSAO = ?, "
                     + "COD_MODELO_BANDA = ?, DOT = ?, VALOR = ? "
                     + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
             stmt.setLong(1, pneu.getModelo().getCodigo());
