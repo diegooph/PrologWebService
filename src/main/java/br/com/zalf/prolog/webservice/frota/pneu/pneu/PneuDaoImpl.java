@@ -50,13 +50,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  PVV.VALOR                                   AS VALOR_BANDA, " +
             "  PO.POSICAO_PROLOG                           AS POSICAO_PNEU " +
             "FROM PNEU P " +
-            "JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO " +
-            "JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
             "JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO " +
             "JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA " +
             "JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO " +
             "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
             "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+            "LEFT JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO " +
+            "LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG " +
             "LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA " +
             "LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA " +
             "LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_UNIDADE = P.COD_UNIDADE AND PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL ";
@@ -578,7 +578,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "    NOT EXISTS (\n" +
                     "        SELECT nome FROM marca_banda WHERE lower(nome) = lower(?) and cod_empresa = ?\n" +
                     "    ) RETURNING codigo;");
-            stmt.setString(1, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setString(1, marca.getNome().trim().replaceAll("\\s+", " "));
             stmt.setLong(2, codEmpresa);
             stmt.setString(3, marca.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
             stmt.setLong(4, codEmpresa);
@@ -589,7 +589,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao inserir a marca da banda ou banda já existente");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
@@ -606,7 +606,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "WHERE NOT EXISTS " +
                     " (SELECT nome FROM modelo_banda WHERE lower(nome) = lower(?) and cod_marca = ? and cod_empresa = ?) " +
                     "RETURNING codigo;");
-            stmt.setString(1, modelo.getNome().trim().toLowerCase().replaceAll("\\s+", " "));
+            stmt.setString(1, modelo.getNome().trim().replaceAll("\\s+", " "));
             stmt.setLong(2, codMarcaBanda);
             stmt.setLong(3, codEmpresa);
             stmt.setInt(4, modelo.getQuantidadeSulcos());
