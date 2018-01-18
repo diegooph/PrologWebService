@@ -26,20 +26,22 @@ public final class PneuConverter {
         final Pneu pneu = new Pneu();
 
         pneu.setCodigo(rSet.getString("CODIGO"));
+        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setDot(rSet.getString("DOT"));
         pneu.setValor(rSet.getBigDecimal("VALOR"));
         pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE"));
         pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL"));
 
         final Marca marcaPneu = new Marca();
-        marcaPneu.setCodigo(rSet.getLong("COD_MARCA"));
-        marcaPneu.setNome(rSet.getString("MARCA"));
+        marcaPneu.setCodigo(rSet.getLong("COD_MARCA_PNEU"));
+        marcaPneu.setNome(rSet.getString("NOME_MARCA_PNEU"));
         pneu.setMarca(marcaPneu);
 
         final ModeloPneu modeloPneu = new ModeloPneu();
-        modeloPneu.setCodigo(rSet.getLong("COD_MODELO"));
-        modeloPneu.setNome(rSet.getString("MODELO"));
-        modeloPneu.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_MODELO"));
+        modeloPneu.setCodigo(rSet.getLong("COD_MODELO_PNEU"));
+        modeloPneu.setNome(rSet.getString("NOME_MODELO_PNEU"));
+        modeloPneu.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_MODELO_PNEU"));
+        modeloPneu.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS_MODELO_PNEU"));
         pneu.setModelo(modeloPneu);
 
         pneu.setBanda(createBanda(pneu, rSet));
@@ -80,13 +82,14 @@ public final class PneuConverter {
             modeloBanda.setQuantidadeSulcos(pneu.getModelo().getQuantidadeSulcos());
             modeloBanda.setCodigo(pneu.getModelo().getCodigo());
             modeloBanda.setNome(pneu.getModelo().getNome());
+            modeloBanda.setAlturaSulcos(pneu.getModelo().getAlturaSulcos());
             banda.setModelo(modeloBanda);
             banda.setMarca(pneu.getMarca());
             return banda;
         } else {
-            // TODO: 12/01/2017 - Atualmente não podemos quebrar a servidor caso atinja esse estado porque possuimos
+            // TODO: 12/01/2017 - Atualmente não podemos quebrar o servidor caso atinja esse estado porque possuimos
             // pneus com essa inconsistência em banco. Isso será eliminado no futuro e poderemos lançar uma exceção aqui.
-            Log.d(TAG, "Esse estado é uma inconsistência e não deveria acontecer! " +
+            Log.w(TAG, "Esse estado é uma inconsistência e não deveria acontecer! " +
                     "Algum pneu está acima da primeira vida porém não possui banda associada.");
             return null;
         }
@@ -105,7 +108,8 @@ public final class PneuConverter {
         final ModeloBanda modeloBanda = new ModeloBanda();
         modeloBanda.setCodigo(rSet.getLong("COD_MODELO_BANDA"));
         modeloBanda.setNome(rSet.getString("NOME_MODELO_BANDA"));
-        modeloBanda.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_BANDA"));
+        modeloBanda.setQuantidadeSulcos(rSet.getInt("QT_SULCOS_MODELO_BANDA"));
+        modeloBanda.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS_MODELO_BANDA"));
         return modeloBanda;
     }
 }

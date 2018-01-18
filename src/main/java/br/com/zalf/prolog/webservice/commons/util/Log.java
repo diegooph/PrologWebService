@@ -13,6 +13,10 @@ public class Log {
 			LogManager.getLogger(tag).debug(message);
 		}
 	}
+
+	public static void w(String tag, String message) {
+		LogManager.getLogger(tag).warn(message);
+	}
 	
 	public static void e(String tag, String message) {
 		LogManager.getLogger(tag).error(message);
