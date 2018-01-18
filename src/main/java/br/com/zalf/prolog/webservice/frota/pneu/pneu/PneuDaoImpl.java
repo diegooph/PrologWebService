@@ -461,7 +461,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, QT_SULCOS, ALTURA_SULCOS, COD_MARCA, " +
-                    "COD_EMPRESA) VALUES (?,?,?,?) RETURNING CODIGO");
+                    "COD_EMPRESA) VALUES (?,?,?,?,?) RETURNING CODIGO");
             stmt.setString(1, modelo.getNome());
             stmt.setInt(2, modelo.getQuantidadeSulcos());
             stmt.setDouble(3, modelo.getAlturaSulcos());
