@@ -393,11 +393,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         List<Marca> marcas = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT\n" +
-                    "  MA.NOME   AS NOME,\n" +
-                    "  MA.CODIGO AS COD_MARCA\n" +
-                    "FROM MARCA_PNEU MA LEFT OUTER JOIN MODELO_PNEU MP ON MA.CODIGO = MP.COD_MARCA AND MP.COD_EMPRESA" +
-                    " = ?\n" +
+            stmt = conn.prepareStatement("SELECT DISTINCT MA.NOME AS NOME_MARCA_PNEU, MA.CODIGO AS COD_MARCA_PNEU " +
+                    "FROM MARCA_PNEU MA LEFT OUTER JOIN MODELO_PNEU MP ON MA.CODIGO = MP.COD_MARCA " +
+                    "AND MP.COD_EMPRESA = ? " +
                     "ORDER BY MA.NOME ASC");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
@@ -739,9 +737,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     private Marca createMarcaPneu(ResultSet rSet) throws SQLException {
-        Marca marca = new Marca();
-        marca.setCodigo(rSet.getLong("COD_MARCA"));
-        marca.setNome(rSet.getString("NOME"));
+        final Marca marca = new Marca();
+        marca.setCodigo(rSet.getLong("COD_MARCA_PNEU"));
+        marca.setNome(rSet.getString("NOME_MARCA_PNEU"));
         return marca;
     }
 
@@ -765,10 +763,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     private Modelo createModeloPneu(ResultSet rSet) throws SQLException {
-        ModeloPneu modelo = new ModeloPneu();
+        final ModeloPneu modelo = new ModeloPneu();
         modelo.setCodigo(rSet.getLong("CODIGO"));
         modelo.setNome(rSet.getString("NOME"));
         modelo.setQuantidadeSulcos(rSet.getInt("QT_SULCOS"));
+        modelo.setAlturaSulcos(rSet.getDouble("ALTURA_SULCOS"));
         return modelo;
     }
 

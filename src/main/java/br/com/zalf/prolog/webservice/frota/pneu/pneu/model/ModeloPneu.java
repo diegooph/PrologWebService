@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 public class ModeloPneu extends Modelo {
     public static final String TIPO_MODELO_PNEU = "MODELO_PNEU";
     private int quantidadeSulcos;
+    private Double alturaSulcos;
 
     public ModeloPneu() {
         setTipo(TIPO_MODELO_PNEU);
@@ -21,4 +22,11 @@ public class ModeloPneu extends Modelo {
         this.quantidadeSulcos = quantidadeSulcos;
     }
 
+    public Double getAlturaSulcos() {
+        return alturaSulcos;
+    }
+
+    public void setAlturaSulcos(Double alturaSulcos) {
+        this.alturaSulcos = alturaSulcos;
+    }
 }
