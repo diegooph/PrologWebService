@@ -384,8 +384,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 Dimensao dimensao = new Dimensao();
                 dimensao.codigo = rSet.getLong("CODIGO");
                 dimensao.altura = rSet.getInt("ALTURA");
-                dimensao.aro = rSet.getInt("ARO");
                 dimensao.largura = rSet.getInt("LARGURA");
+                dimensao.aro = rSet.getDouble("ARO");
                 dimensoes.add(dimensao);
             }
         } finally {

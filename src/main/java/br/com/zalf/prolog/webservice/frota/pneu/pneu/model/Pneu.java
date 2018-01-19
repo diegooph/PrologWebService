@@ -308,6 +308,7 @@ public class Pneu {
         public double aro;
 
         public Dimensao() {
+
         }
 
         @Override
