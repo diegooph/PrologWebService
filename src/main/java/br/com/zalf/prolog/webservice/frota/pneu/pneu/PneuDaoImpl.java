@@ -401,13 +401,19 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, QT_SULCOS, ALTURA_SULCOS, COD_MARCA, " +
-                    "COD_EMPRESA) VALUES (?,?,?,?,?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("INSERT INTO MODELO_PNEU(NOME, QT_SULCOS, ALTURA_SULCOS, COD_MARCA, COD_EMPRESA)" +
+                    "  SELECT ?, ?, ?, ?, ?\n" +
+                    "  WHERE NOT EXISTS (SELECT nome FROM modelo_pneu as mp " +
+                    "WHERE lower(mp.nome) = lower(?) and mp.cod_marca = ? and mp.cod_empresa = ?)" +
+                    "RETURNING codigo");
             stmt.setString(1, modelo.getNome());
             stmt.setInt(2, modelo.getQuantidadeSulcos());
             stmt.setDouble(3, modelo.getAlturaSulcos());
             stmt.setLong(4, codMarca);
             stmt.setLong(5, codEmpresa);
+            stmt.setString(6, modelo.getNome());
+            stmt.setLong(7, codMarca);
+            stmt.setLong(8, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -528,12 +534,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO marca_banda\n" +
-                    "    (nome, cod_empresa)\n" +
-                    "SELECT ?, ?\n" +
-                    "WHERE\n" +
-                    "    NOT EXISTS (\n" +
-                    "        SELECT nome FROM marca_banda WHERE lower(nome) = lower(?) and cod_empresa = ?\n" +
+            stmt = conn.prepareStatement("INSERT INTO marca_banda" +
+                    "    (nome, cod_empresa)" +
+                    "SELECT ?, ?" +
+                    "WHERE" +
+                    "    NOT EXISTS (" +
+                    "        SELECT nome FROM marca_banda WHERE lower(nome) = lower(?) and cod_empresa = ?" +
                     "    ) RETURNING codigo;");
             stmt.setString(1, marca.getNome().trim().replaceAll("\\s+", " "));
             stmt.setLong(2, codEmpresa);

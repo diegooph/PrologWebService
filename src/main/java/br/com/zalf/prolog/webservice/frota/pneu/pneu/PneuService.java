@@ -45,7 +45,7 @@ public class PneuService {
             return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(modelo, codEmpresa, codMarca));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
-            return Response.error("Erro ao inserir a marca da banda");
+            return Response.error("Erro ao inserir o modelo de pneu");
         }
     }
 
