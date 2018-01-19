@@ -20,9 +20,13 @@ import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
 import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
 
 public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
-
     private static final String TAG = TrackingDaoImpl.class.getSimpleName();
 
+    public TrackingDaoImpl() {
+
+    }
+
+    @Override
     public boolean insertOrUpdateTracking(String path, Long codUnidade) throws SQLException, IOException, ParseException {
         Connection conn = null;
         try {
@@ -404,8 +408,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
      * @param str uma String
      * @return um boolean
      */
-    public static boolean containsNumber(String str) {
+    private static boolean containsNumber(String str) {
         return str.matches(".*\\d+.*");
     }
-
 }
