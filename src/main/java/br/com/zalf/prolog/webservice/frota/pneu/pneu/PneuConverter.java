@@ -49,8 +49,8 @@ public final class PneuConverter {
         final Pneu.Dimensao dimensao = new Pneu.Dimensao();
         dimensao.codigo = rSet.getLong("COD_DIMENSAO");
         dimensao.altura = rSet.getInt("ALTURA");
-        dimensao.aro = rSet.getInt("ARO");
         dimensao.largura = rSet.getInt("LARGURA");
+        dimensao.aro = rSet.getDouble("ARO");
         pneu.setDimensao(dimensao);
 
         final Sulcos sulcoAtual = new Sulcos();
