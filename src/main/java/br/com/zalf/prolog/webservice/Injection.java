@@ -75,6 +75,8 @@ import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -272,6 +274,11 @@ public final class Injection {
     @NotNull
     public static LogDao provideLogDao() {
         return new LogDaoImpl();
+    }
+
+    @NotNull
+    public static RelatoDao provideRelatoDao() {
+        return new RelatoDaoImpl();
     }
 
     // ================================================

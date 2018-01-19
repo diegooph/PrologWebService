@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class RelatoService {
 
-    private RelatoDao dao = new RelatoDaoImpl();
+    private RelatoDao dao = Injection.provideRelatoDao();
     private static final String TAG = RelatoService.class.getSimpleName();
 
     public boolean insert(Relato relato) {
