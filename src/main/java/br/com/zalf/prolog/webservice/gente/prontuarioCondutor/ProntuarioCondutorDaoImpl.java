@@ -26,9 +26,6 @@ import java.util.List;
  * Created by Zart on 03/07/2017.
  */
 public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements ProntuarioCondutorDao {
-
-    public static final String TAG = ProntuarioCondutorDaoImpl.class.getSimpleName();
-
     private static final int LINHA_INICIAL = 5;
     private static final int LINHA_VALIDACAO_1 = 3;
     private static final int LINHA_VALIDACAO_2 = 4;
@@ -66,6 +63,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     private static final int COLUMN_TELEMETRIA_FRENAGEM_BRUSCA = 33;
     private List<Integer> indices;
 
+    public ProntuarioCondutorDaoImpl() {
+
+    }
+
+    @Override
     public boolean insertOrUpdate(String path) throws SQLException, IOException, ParseException {
 
         Connection conn = null;

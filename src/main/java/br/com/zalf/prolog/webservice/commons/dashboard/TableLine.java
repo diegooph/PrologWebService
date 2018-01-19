@@ -9,27 +9,27 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class TableLines {
+public class TableLine {
 
     @NotNull
-    private List<TableColumns> tableColumns;
+    private List<TableColumn> tableColumns;
 
-    public TableLines(@NotNull List<TableColumns> tableColumns) {
+    public TableLine(@NotNull List<TableColumn> tableColumns) {
         this.tableColumns = tableColumns;
     }
 
     @NotNull
-    public List<TableColumns> getTableColumns() {
+    public List<TableColumn> getTableColumns() {
         return tableColumns;
     }
 
-    public void setTableColumns(@NotNull List<TableColumns> tableColumns) {
+    public void setTableColumns(@NotNull List<TableColumn> tableColumns) {
         this.tableColumns = tableColumns;
     }
 
     @Override
     public String toString() {
-        return "TableLines{" +
+        return "TableLine{" +
                 "tableColumns=" + tableColumns +
                 '}';
     }

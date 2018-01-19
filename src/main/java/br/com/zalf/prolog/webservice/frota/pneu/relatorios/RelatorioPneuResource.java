@@ -113,17 +113,6 @@ public class RelatorioPneuResource {
 	}
 
 	@GET
-	@Path("/faixas/sulcos/{codEmpresa}/{codUnidade}")
-	public List<Pneu> getPneusByFaixaSulco(@QueryParam("inicioFaixa") double inicioFaixa,
-										   @QueryParam("fimFaixa") double fimFaixa,
-										   @PathParam("codEmpresa") Long codEmpresa,
-										   @PathParam("codUnidade") String codUnidade,
-										   @QueryParam("limit") long limit,
-										   @QueryParam("offset") long offset) {
-		return service.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
-	}
-
-	@GET
 	@Path("/afericoes/resumo/pneus/{codUnidade}/csv")
 	public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade)  throws RuntimeException{
 		return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);

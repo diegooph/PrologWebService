@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -13,8 +14,8 @@ import java.util.Date;
  */
 public class SolicitacaoFolgaRelatorioService {
 
-    SolicitacaoFolgaRelatorioDao dao = new SolicitacaoFolgaRelatorioDaoImpl();
     private static final String TAG = SolicitacaoFolgaRelatorioService.class.getSimpleName();
+    private SolicitacaoFolgaRelatorioDao dao = Injection.provideSolicitacaoFolgaRelatorioDao();
 
     public void getResumoFolgasConcedidasCsv(Long codUnidade, OutputStream outputStream, long dataInicial, long dataFinal) {
         try {

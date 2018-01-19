@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class SolicitacaoFolgaService {
 
-    private SolicitacaoFolgaDao dao = new SolicitacaoFolgaDaoImpl();
+    private SolicitacaoFolgaDao dao = Injection.provideSolicitacaoFolgaDao();
     private static final String TAG = SolicitacaoFolgaService.class.getSimpleName();
 
     public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {

@@ -8,6 +8,10 @@ import java.sql.SQLException;
 
 public class LogDaoImpl extends DatabaseConnection implements LogDao {
 
+	public LogDaoImpl() {
+
+	}
+
 	@Override
 	public boolean insert(String log, String identificador) throws SQLException {
 		Connection conn = null;
@@ -18,11 +22,7 @@ public class LogDaoImpl extends DatabaseConnection implements LogDao {
 			stmt.setString(1, log);
 			stmt.setString(2, identificador);
 			int count = stmt.executeUpdate();
-			if (count > 0) {
-				return true;
-			} else {
-				return false;
-			}
+			return count > 0;
 		} finally {
 			closeConnection(conn, stmt, null);
 		}

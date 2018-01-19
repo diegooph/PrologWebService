@@ -8,13 +8,11 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
-import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.SQLException;
@@ -105,7 +103,7 @@ public class ColaboradorService {
 			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
 			if (colaborador.getVisao().hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
 				loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
-				final RelatoDao relatoDao = new RelatoDaoImpl();
+				final RelatoDao relatoDao = Injection.provideRelatoDao();
 				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 						colaborador.getCodUnidade(),
 						colaborador.getSetor().getCodigo()));
@@ -147,7 +145,7 @@ public class ColaboradorService {
 			// Se usuário tem acesso aos relatos, precisamos também setar essas informações no LoginHolder.
 			if (colaborador.getVisao().hasAccessToFunction(Pilares.SEGURANCA, Pilares.Seguranca.Relato.REALIZAR)) {
 				loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
-				final RelatoDao relatoDao = new RelatoDaoImpl();
+				final RelatoDao relatoDao = Injection.provideRelatoDao();
 				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
 						colaborador.getCodUnidade(),
 						colaborador.getSetor().getCodigo()));
@@ -155,7 +153,7 @@ public class ColaboradorService {
 
 			// Se usuário tem acesso a marcação de intervalo, precisamos setar os tipos de intervalo também.
 			if (colaborador.getVisao().hasAccessToFunction(Pilares.GENTE, Pilares.Gente.Intervalo.MARCAR_INTERVALO)) {
-				final ControleIntervaloDao dao = new ControleIntervaloDaoImpl();
+				final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
 				final List<TipoIntervalo> tiposIntervalo = dao.getTiposIntervalosByUnidade(
 						colaborador.getUnidade().getCodigo(),
 						true);

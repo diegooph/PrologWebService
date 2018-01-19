@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -27,7 +28,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<ModeloQuiz> modelos = new ArrayList<>();
-        TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
+        final TreinamentoDao treinamentoDao = Injection.provideTreinamentoDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
@@ -61,8 +62,8 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        TreinamentoDao treinamentoDao = new TreinamentoDaoImpl();
         ModeloQuiz modelo = null;
+        final TreinamentoDao treinamentoDao = Injection.provideTreinamentoDao();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +

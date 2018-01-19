@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 public class QuizRelatorioService {
 
-    private QuizRelatorioDaoImpl dao = new QuizRelatorioDaoImpl();
+    private QuizRelatorioDao dao = Injection.provideQuizRelatorioDao();
     private static final String TAG = QuizRelatorioService.class.getSimpleName();
 
     public void getEstratificacaoRealizacaoQuizCsv(OutputStream out, String codModeloQuiz, Long codUnidade,

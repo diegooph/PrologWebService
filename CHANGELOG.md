@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+<a name="v2.0.44"></a>
+## Version [v2.0.44](https://github.com/luizfp/PrologWebService/compare/v2.0.43-h1...v2.0.44) (2017-01-19)
+
+### Refactor
+* Altera seguintes classes para utilizarem Injection: `ControleIntervaloDaoImpl`, `ControleIntervaloRelatorioDaoImpl`,
+`QuizDaoImpl`, `ProntuarioCondutorDaoImpl`, `FaleConoscoRelatorioDaoImpl`, `FaleConoscoDaoImpl`, `QuizModeloDaoImpl`,
+`QuizRelatorioDaoImpl`, `SolicitacaoFolgaDaoImpl`, `SolicitacaoFolgaRelatorioDaoImpl`, `TreinamentoDaoImpl`, `MapaDaoImpl`,
+`RelatoDaoImpl`, `RelatoRelatorioDaoImpl`, `LogDaoImpl`, `TrackingDaoImpl`
+* Altera update do Pneu para setar apenas os atributos que nós permitimos serem atualizados
+* Altera método de insert de modelo de pneu para retornar o código gerado para o modelo inserido 
+
+### Bug Fixes
+* Corrige insert do modelo de banda para não inserir mais nomes em lower case
+* Corrige get do atributo aro da dimensão do pneu para utilizar getDouble ao invés de getInt
+
 <a name="v2.0.43-h1"></a>
 ## Version [v2.0.43-h1](https://github.com/luizfp/PrologWebService/compare/v2.0.43...v2.0.43-h1) (2017-01-14)
 

@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Banda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 
@@ -101,16 +98,6 @@ public interface PneuDao {
     List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
 
     /**
-     * cria um novo pneu
-     *
-     * @param rSet conjunto de informações do banco
-     * @return um novo pneu
-     * @throws SQLException caso ocorra erro no banco
-     */
-    @Deprecated
-    Pneu createPneu(ResultSet rSet) throws SQLException;
-
-    /**
      * retorna uma lista de marcas de pneus da empresa
      *
      * @param codEmpresa código da empresa
@@ -133,10 +120,10 @@ public interface PneuDao {
      * @param modelo     um modelo
      * @param codEmpresa código da empresa
      * @param codMarca   código da marca
-     * @return valor da operação
+     * @return codigo de inserção do modelo
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) throws SQLException;
+    Long insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) throws SQLException;
 
     /**
      * Vincula pneus a um veículo

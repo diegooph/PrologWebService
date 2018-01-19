@@ -136,22 +136,6 @@ public class RelatorioPneuService {
         }
     }
 
-    public List<Pneu> getPneusByFaixaSulco(double inicioFaixa, double fimFaixa, Long codEmpresa,
-                                           String codUnidade, long limit, long offset) {
-        try {
-            return dao.getPneusByFaixaSulco(inicioFaixa, fimFaixa, codEmpresa, codUnidade, limit, offset);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus de uma faixa de sulco. \n" +
-                    "Empresa: %d \n" +
-                    "Unidade: %s \n" +
-                    "Limit: %d \n" +
-                    "Offset: %d \n" +
-                    "Inicio faixa: %e \n" +
-                    "Fim faixa: %e", codEmpresa, codUnidade, limit, offset, inicioFaixa, fimFaixa), e);
-            return new ArrayList<>();
-        }
-    }
-
     public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws RuntimeException {
         try {
             dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
