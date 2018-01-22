@@ -136,53 +136,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public boolean createEquipe(Request<Equipe> request) throws SQLException {
-        final AutenticacaoDao autenticacaoDao = Injection.provideAutenticacaoDao();
-        if (autenticacaoDao.verifyIfTokenExists(request.getToken(), true)) {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            try {
-                conn = getConnection();
-
-                stmt = conn.prepareStatement("INSERT INTO EQUIPE "
-                        + "(NOME, COD_UNIDADE) VALUES "
-                        + "(?,?) ");
-                stmt.setString(1, request.getObject().getNome());
-                stmt.setLong(2, request.getCodUnidade());
-                int count = stmt.executeUpdate();
-                if (count == 0) {
-                    throw new SQLException("Erro ao inserir a equipe");
-                }
-            } finally {
-                closeConnection(conn, stmt, null);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean updateEquipe(Request<Equipe> request) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(UPDATE_EQUIPE);
-            stmt.setString(1, request.getObject().getNome());
-            stmt.setLong(2, request.getObject().getCodigo());
-            stmt.setLong(3, request.getCpf());
-            stmt.setString(4, request.getToken());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar a equipe");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
-    @Override
     public Equipe getEquipe(Long codUnidade, Long codEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
