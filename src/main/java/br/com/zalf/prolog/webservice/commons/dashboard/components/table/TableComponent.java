@@ -1,7 +1,6 @@
-package br.com.zalf.prolog.webservice.commons.dashboard.components;
+package br.com.zalf.prolog.webservice.commons.dashboard.components.table;
 
-import br.com.zalf.prolog.webservice.commons.dashboard.TableHeader;
-import br.com.zalf.prolog.webservice.commons.dashboard.TableLine;
+import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

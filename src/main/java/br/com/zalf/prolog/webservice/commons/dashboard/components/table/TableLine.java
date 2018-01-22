@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.dashboard;
+package br.com.zalf.prolog.webservice.commons.dashboard.components.table;
 
 import org.jetbrains.annotations.NotNull;
 

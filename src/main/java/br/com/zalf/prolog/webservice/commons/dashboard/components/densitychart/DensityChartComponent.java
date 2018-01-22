@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.commons.dashboard.components;
+package br.com.zalf.prolog.webservice.commons.dashboard.components.densitychart;
 
-import br.com.zalf.prolog.webservice.commons.dashboard.DensityData;
+import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

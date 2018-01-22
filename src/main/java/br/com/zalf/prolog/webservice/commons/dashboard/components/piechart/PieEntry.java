@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.dashboard;
+package br.com.zalf.prolog.webservice.commons.dashboard.components.piechart;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +15,15 @@ public class PieEntry {
     @NotNull
     private String pieColor;
 
-    public PieEntry(@NotNull String descricao,
-                    double valor,
-                    @NotNull String pieColor) {
+    public static PieEntry create(@NotNull final String descricao,
+                                  final double valor,
+                                  @NotNull final String pieColor) {
+        return new PieEntry(descricao, valor, pieColor);
+    }
+
+    public PieEntry(@NotNull final String descricao,
+                    final double valor,
+                    @NotNull final String pieColor) {
         this.descricao = descricao;
         this.valor = valor;
         this.pieColor = pieColor;

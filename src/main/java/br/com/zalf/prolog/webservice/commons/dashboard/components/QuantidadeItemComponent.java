@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class QuantidadeItemProdutividade extends DashboardComponent {
+public class QuantidadeItemComponent extends DashboardComponent {
 
     @NotNull
     private String qtdItens;
@@ -17,12 +18,12 @@ public class QuantidadeItemProdutividade extends DashboardComponent {
     @NotNull
     private String backgroundColor;
 
-    public QuantidadeItemProdutividade(@NotNull String titulo,
-                                       @Nullable String subtitulo,
-                                       @NotNull String descricao,
-                                       @NotNull String qtdItens,
-                                       @NotNull String urlIcone,
-                                       @NotNull String backgroundColor) {
+    public QuantidadeItemComponent(@NotNull String titulo,
+                                   @Nullable String subtitulo,
+                                   @NotNull String descricao,
+                                   @NotNull String qtdItens,
+                                   @NotNull String urlIcone,
+                                   @NotNull String backgroundColor) {
         super(titulo, subtitulo, descricao);
         this.qtdItens = qtdItens;
         this.urlIcone = urlIcone;
@@ -58,7 +59,7 @@ public class QuantidadeItemProdutividade extends DashboardComponent {
 
     @Override
     public String toString() {
-        return "QuantidadeItemProdutividade{" +
+        return "QuantidadeItemComponent{" +
                 "qtdItens='" + qtdItens + '\'' +
                 ", urlIcone='" + urlIcone + '\'' +
                 ", backgroundColor='" + backgroundColor + '\'' +

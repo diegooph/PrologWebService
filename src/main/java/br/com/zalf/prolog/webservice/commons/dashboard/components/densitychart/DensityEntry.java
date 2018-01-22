@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.dashboard;
+package br.com.zalf.prolog.webservice.commons.dashboard.components.densitychart;
 
 /**
  * Created on 10/01/18.
