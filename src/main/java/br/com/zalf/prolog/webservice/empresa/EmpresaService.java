@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -174,26 +173,6 @@ public class EmpresaService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o código da equipe %s da unidade %d", nomeEquipe, codUnidade), e);
             return null;
-        }
-    }
-
-    @Deprecated
-    public boolean createEquipe(Request<Equipe> request) {
-        try {
-            return dao.createEquipe(request);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir uma equipe", e);
-            return false;
-        }
-    }
-
-    @Deprecated
-    public boolean updateEquipe(Request<Equipe> request) {
-        try {
-            return dao.updateEquipe(request);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar uma equipe", e);
-            return false;
         }
     }
 

@@ -153,32 +153,6 @@ public class DeprecatedEmpresaResource {
         return service.insertSetor(codUnidade, setor);
     }
 
-    /**
-     * @deprecated in v0.0.10. Use {@link #insertEquipe(Long, Equipe)} instead
-     */
-    @POST
-    @Path("/insertEquipe")
-    @Secured(permissions = {Pilares.Gente.Equipe.CADASTRAR, Pilares.Gente.Equipe.EDITAR})
-    @Deprecated
-    public Response DEPRECATED_INSERT_EQUIPE(Request<Equipe> request) {
-        if (service.createEquipe(request)) {
-            return Response.ok("Equipe inserida com sucesso");
-        } else {
-            return Response.error("Erro ao inserir equipe");
-        }
-    }
-
-    /**
-     * @deprecated in v0.0.10. Use {@link #updateEquipe(Long, Long, Equipe)} instead
-     */
-    @PUT
-    @Path("/updateEquipe")
-    @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
-    @Deprecated
-    public boolean DEPRECATED_UPDATE_EQUIPE(Request<Equipe> request) {
-        return service.updateEquipe(request);
-    }
-
 
     /**
      * @deprecated in v0.0.10. Use {@link #getFuncoesByCodUnidade(Long)} instead
