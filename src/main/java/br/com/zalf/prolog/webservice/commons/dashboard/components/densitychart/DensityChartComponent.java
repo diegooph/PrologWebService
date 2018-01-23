@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.densitychart;
 
 import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponentBuilder;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,13 +24,13 @@ public class DensityChartComponent extends DashboardComponent {
     @NotNull
     private DensityData data;
 
-    public DensityChartComponent(@NotNull String titulo,
-                                 @Nullable String subtitulo,
-                                 @NotNull String descricao,
-                                 @NotNull String labelEixoX,
-                                 @NotNull String labelEixoY,
-                                 @NotNull List<String> legendas,
-                                 @NotNull DensityData data) {
+    DensityChartComponent(@NotNull String titulo,
+                          @Nullable String subtitulo,
+                          @NotNull String descricao,
+                          @NotNull String labelEixoX,
+                          @NotNull String labelEixoY,
+                          @NotNull List<String> legendas,
+                          @NotNull DensityData data) {
         super(titulo, subtitulo, descricao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
@@ -80,5 +82,70 @@ public class DensityChartComponent extends DashboardComponent {
                 ", legendas=" + legendas +
                 ", data=" + data +
                 '}';
+    }
+
+    public static class Builder implements DashboardComponentBuilder {
+        private String titulo;
+        private String subtitulo;
+        private String descricao;
+        private String labelEixoX;
+        private String labelEixoY;
+        private DensityData data;
+        private List<String> legendas;
+
+        public Builder() {}
+
+        public Builder(@NotNull String titulo, @NotNull String descricao) {
+            this.titulo = titulo;
+            this.descricao = descricao;
+        }
+
+        @Override
+        public Builder withTitulo(@NotNull String titulo) {
+            this.titulo = titulo;
+            return this;
+        }
+
+        @Override
+        public Builder withSubtitulo(@Nullable String subtitulo) {
+            this.subtitulo = subtitulo;
+            return this;
+        }
+
+        @Override
+        public Builder withDescricao(@NotNull String descricao) {
+            this.descricao = descricao;
+            return this;
+        }
+
+        public Builder withLabelEixoX(@NotNull String labelEixoX) {
+            this.labelEixoX = labelEixoX;
+            return this;
+        }
+
+        public Builder withLabelEixoY(@NotNull String labelEixoY) {
+            this.labelEixoY = labelEixoY;
+            return this;
+        }
+
+        public Builder withDensityData(@NotNull DensityData data) {
+            this.data = data;
+            return this;
+        }
+
+        public Builder withLegendas(@NotNull List<String> legendas) {
+            this.legendas = legendas;
+            return this;
+        }
+
+        @Override
+        public DashboardComponent build() {
+            Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
+            Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
+            Preconditions.checkNotNull(data, "data deve ser instanciada com 'withDensityData'");
+            Preconditions.checkNotNull(legendas, "meta deve ser instanciada com 'withLegendas'");
+            return new DensityChartComponent(titulo, subtitulo, descricao,
+                    labelEixoX, labelEixoY, legendas, data);
+        }
     }
 }
