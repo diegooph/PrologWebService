@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.densitychart;
 
 import br.com.zalf.prolog.webservice.commons.dashboard.base.Entry;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 10/01/18.
@@ -10,15 +11,27 @@ import br.com.zalf.prolog.webservice.commons.dashboard.base.Entry;
 public class DensityEntry extends Entry {
 
     private double x;
+    @NotNull
+    private String representacaoX;
     private double y;
+    @NotNull
+    private String representacaoY;
 
-    public static DensityEntry create(double x, double y) {
-        return new DensityEntry(x, y);
+    public static DensityEntry create(final double x,
+                                      @NotNull final String representacaoX,
+                                      final double y,
+                                      @NotNull final String representacaoY) {
+        return new DensityEntry(x, representacaoX, y, representacaoY);
     }
 
-    private DensityEntry(double x, double y) {
+    private DensityEntry(final double x,
+                         @NotNull final String representacaoX,
+                         final double y,
+                         @NotNull final String representacaoY) {
         this.x = x;
+        this.representacaoX = representacaoX;
         this.y = y;
+        this.representacaoY = representacaoY;
     }
 
     public double getX() {
@@ -29,6 +42,15 @@ public class DensityEntry extends Entry {
         this.x = x;
     }
 
+    @NotNull
+    public String getRepresentacaoX() {
+        return representacaoX;
+    }
+
+    public void setRepresentacaoX(@NotNull String representacaoX) {
+        this.representacaoX = representacaoX;
+    }
+
     public double getY() {
         return y;
     }
@@ -37,11 +59,22 @@ public class DensityEntry extends Entry {
         this.y = y;
     }
 
+    @NotNull
+    public String getRepresentacaoY() {
+        return representacaoY;
+    }
+
+    public void setRepresentacaoY(@NotNull String representacaoY) {
+        this.representacaoY = representacaoY;
+    }
+
     @Override
     public String toString() {
         return "DensityEntry{" +
                 "x=" + x +
+                ", representacaoX='" + representacaoX + '\'' +
                 ", y=" + y +
+                ", representacaoY='" + representacaoY + '\'' +
                 '}';
     }
 }

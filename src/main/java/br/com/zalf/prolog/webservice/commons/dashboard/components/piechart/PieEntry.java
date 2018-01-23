@@ -14,19 +14,24 @@ public class PieEntry extends Entry {
     private String descricao;
     private double valor;
     @NotNull
+    private String representacaoValor;
+    @NotNull
     private String pieColor;
 
     public static PieEntry create(@NotNull final String descricao,
                                   final double valor,
+                                  @NotNull final String representacaoValor,
                                   @NotNull final String pieColor) {
-        return new PieEntry(descricao, valor, pieColor);
+        return new PieEntry(descricao, valor, representacaoValor, pieColor);
     }
 
     private PieEntry(@NotNull final String descricao,
                      final double valor,
+                     @NotNull final String representacaoValor,
                      @NotNull final String pieColor) {
         this.descricao = descricao;
         this.valor = valor;
+        this.representacaoValor = representacaoValor;
         this.pieColor = pieColor;
     }
 
@@ -48,11 +53,30 @@ public class PieEntry extends Entry {
     }
 
     @NotNull
+    public String getRepresentacaoValor() {
+        return representacaoValor;
+    }
+
+    public void setRepresentacaoValor(@NotNull String representacaoValor) {
+        this.representacaoValor = representacaoValor;
+    }
+
+    @NotNull
     public String getPieColor() {
         return pieColor;
     }
 
     public void setPieColor(@NotNull String pieColor) {
         this.pieColor = pieColor;
+    }
+
+    @Override
+    public String toString() {
+        return "PieEntry{" +
+                "descricao='" + descricao + '\'' +
+                ", valor=" + valor +
+                ", representacaoValor='" + representacaoValor + '\'' +
+                ", pieColor='" + pieColor + '\'' +
+                '}';
     }
 }
