@@ -66,15 +66,12 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
-                    + "PLACA = ?, KM = ?,  COD_TIPO = ?, COD_MODELO = ?, "
-                    + "COD_EIXOS = ? "
+                    + "KM = ?, COD_MODELO = ?, COD_EIXOS = ? "
                     + "WHERE PLACA = ?");
-            stmt.setString(1, veiculo.getPlaca());
-            stmt.setLong(2, veiculo.getKmAtual());
-            stmt.setLong(3, veiculo.getTipo().getCodigo());
-            stmt.setLong(4, veiculo.getModelo().getCodigo());
-            stmt.setLong(5, veiculo.getEixos().codigo);
-            stmt.setString(6, placaOriginal);
+            stmt.setLong(1, veiculo.getKmAtual());
+            stmt.setLong(2, veiculo.getModelo().getCodigo());
+            stmt.setLong(3, veiculo.getEixos().codigo);
+            stmt.setString(4, placaOriginal);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o veículo");
