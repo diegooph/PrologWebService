@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Android;
-import br.com.zalf.prolog.webservice.commons.util.Optional;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.Site;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -98,7 +95,6 @@ public class VeiculoResource {
         }
     }
 
-    @Android
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -112,6 +108,7 @@ public class VeiculoResource {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/byTipo/{codUnidade}/{codTipo}")
+    @UsedBy(platforms = Platform.ANDROID)
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
                                           @PathParam("codTipo") String codTipo,
                                           @HeaderParam("Authorization") String userToken) {
@@ -119,8 +116,6 @@ public class VeiculoResource {
     }
 
     @GET
-    @Android
-    @Site
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR,
@@ -133,6 +128,7 @@ public class VeiculoResource {
             Pilares.Frota.Afericao.VISUALIZAR,
             Pilares.Frota.Pneu.MOVIMENTAR})
     @Path("/{codUnidade}/tipo")
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,
                                                       @PathParam("codUnidade") Long codUnidade) {
         return service.getTipoVeiculosByUnidade(userToken, codUnidade);

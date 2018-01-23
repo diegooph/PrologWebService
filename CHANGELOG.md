@@ -8,6 +8,8 @@ Change Log
 ## Version [v2.0.44](https://github.com/luizfp/PrologWebService/compare/v2.0.43-h1...v2.0.44) (2017-01-19)
 
 ### Refactor
+* Remove métodos deprecated das seguintes classes: `EmpresaService`, `EmpresaDao`, `ProntuarioCondutorResource`,
+`EmpresaDaoImpl`, `VeiculoResource`, `ProdutividadeResource`, `SolicitacaoFolgaDaoImpl`
 * Altera seguintes classes para utilizarem Injection: `ControleIntervaloDaoImpl`, `ControleIntervaloRelatorioDaoImpl`,
 `QuizDaoImpl`, `ProntuarioCondutorDaoImpl`, `FaleConoscoRelatorioDaoImpl`, `FaleConoscoDaoImpl`, `QuizModeloDaoImpl`,
 `QuizRelatorioDaoImpl`, `SolicitacaoFolgaDaoImpl`, `SolicitacaoFolgaRelatorioDaoImpl`, `TreinamentoDaoImpl`, `MapaDaoImpl`,

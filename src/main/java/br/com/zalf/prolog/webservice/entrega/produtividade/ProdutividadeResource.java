@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,9 +26,9 @@ public class ProdutividadeResource{
 	}
 
 	@GET
-	@Android
 	@Secured(permissions = Pilares.Entrega.Produtividade.CONSOLIDADO)
 	@Path("consolidados/{codUnidade}/{equipe}/{codFuncao}")
+	@UsedBy(platforms = Platform.ANDROID)
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(@PathParam("codUnidade") Long codUnidade,
 																			@PathParam("equipe") String equipe,
 																			@PathParam("codFuncao") String codFuncao,

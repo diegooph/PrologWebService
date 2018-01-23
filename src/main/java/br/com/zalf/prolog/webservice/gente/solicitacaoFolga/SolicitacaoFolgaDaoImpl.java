@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -123,11 +122,6 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
 			closeConnection(conn, stmt, null);
 		}
 		return false;
-	}
-
-	@Override
-	public SolicitacaoFolga getByCod(Request<?> request) throws SQLException {
-		throw new UnsupportedOperationException("Operation not supported yet");
 	}
 
 	@Override
