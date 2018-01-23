@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.webservice.commons.util.Android;
-import br.com.zalf.prolog.webservice.commons.util.Site;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeService;
@@ -24,7 +24,7 @@ public class IndicadorResource {
     private IndicadorService service = new IndicadorService();
 
     @GET
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/{cpf}")
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@QueryParam("dataInicial") Long dataInicial,
                                                                       @QueryParam("dataFinal") Long dataFinal,
@@ -41,7 +41,7 @@ public class IndicadorResource {
      * @return uma lista de {@link IndicadorAcumulado}
      */
     @GET
-    @Site
+    @UsedBy(platforms = Platform.WEBSITE)
     @Path("/acumulados/produtividades/{cpf}/{ano}/{mes}")
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@PathParam("ano") int ano,
                                                                       @PathParam("mes") int mes,
@@ -53,7 +53,7 @@ public class IndicadorResource {
     }
 
     @GET
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/extratos/{indicador}/{cpf}")
     public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
                                                @QueryParam("dataFinal") Long dataFinal,
