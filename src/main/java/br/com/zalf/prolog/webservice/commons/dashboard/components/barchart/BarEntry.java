@@ -11,14 +11,18 @@ public class BarEntry {
 
     @NotNull
     private String descricao;
-    @NotNull
-    private Double valor;
-    @NotNull
-    private Integer index;
+    private double valor;
+    private int index;
 
-    public BarEntry(@NotNull String descricao,
-                    @NotNull Double valor,
-                    @NotNull Integer index) {
+    public static BarEntry create(@NotNull final String descricao,
+                                  final double valor,
+                                  final int index) {
+        return new BarEntry(descricao, valor, index);
+    }
+
+    private BarEntry(@NotNull String descricao,
+                     double valor,
+                     int index) {
         this.descricao = descricao;
         this.valor = valor;
         this.index = index;
@@ -33,21 +37,19 @@ public class BarEntry {
         this.descricao = descricao;
     }
 
-    @NotNull
-    public Double getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(@NotNull Double valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 
-    @NotNull
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(@NotNull Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

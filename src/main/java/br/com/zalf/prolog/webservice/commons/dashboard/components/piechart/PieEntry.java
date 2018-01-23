@@ -21,9 +21,9 @@ public class PieEntry {
         return new PieEntry(descricao, valor, pieColor);
     }
 
-    public PieEntry(@NotNull final String descricao,
-                    final double valor,
-                    @NotNull final String pieColor) {
+    private PieEntry(@NotNull final String descricao,
+                     final double valor,
+                     @NotNull final String pieColor) {
         this.descricao = descricao;
         this.valor = valor;
         this.pieColor = pieColor;

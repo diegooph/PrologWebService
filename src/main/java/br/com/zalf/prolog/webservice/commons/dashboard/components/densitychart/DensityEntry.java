@@ -10,7 +10,11 @@ public class DensityEntry {
     private double x;
     private double y;
 
-    public DensityEntry(double x, double y) {
+    public static DensityEntry create(double x, double y) {
+        return new DensityEntry(x, y);
+    }
+
+    private DensityEntry(double x, double y) {
         this.x = x;
         this.y = y;
     }
