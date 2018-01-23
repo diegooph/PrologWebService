@@ -7,6 +7,11 @@ import org.jetbrains.annotations.Nullable;
  * Created on 23/01/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
+ * Todas as classes que herdam de <code>{@link DashboardComponent}</code> devem implementam
+ * o padrão de projeto <br>Builder</br>. Para facilitar essa implementção foi criada a interface
+ * <code>{@link DashboardComponentBuilder}</code> que contém a assinatura dos métodos genéricos que
+ * todos os <br>Componentes</br> devem implementar.
  */
 public interface DashboardComponentBuilder {
 

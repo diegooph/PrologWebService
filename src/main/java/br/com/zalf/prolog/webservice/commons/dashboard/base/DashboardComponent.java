@@ -8,6 +8,18 @@ import org.jetbrains.annotations.Nullable;
  * Created on 10/01/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * <p>
+ * Classe abstrata que contém os métodos genéricos a todos os <br>Componentes</br>.
+ * <p>
+ * Um componente é qualquer tipo de informação que pode ser extratificada através de relatórios
+ * dos dados persistentes no banco de dados. A <br>Dashboard</br> será composta de um conjunto de
+ * componentes, estes serão dispostos de forma a serem um resumo de um conjunto maior de informações.
+ * <p>
+ * Todos os componentes devem estender de <code>{@link DashboardComponent}</code>, assim conterão as
+ * informações básicas para ser exibido.
+ * <p>
+ * Cada componente poderá conter informações extras para exibir as informações personalizadas
+ * para o usuário da aplicação.
  */
 public abstract class DashboardComponent {
 
