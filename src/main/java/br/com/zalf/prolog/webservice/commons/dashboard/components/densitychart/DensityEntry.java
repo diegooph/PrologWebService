@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.densitychart;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.base.Entry;
+
 /**
  * Created on 10/01/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DensityEntry {
+public class DensityEntry extends Entry {
 
     private double x;
     private double y;

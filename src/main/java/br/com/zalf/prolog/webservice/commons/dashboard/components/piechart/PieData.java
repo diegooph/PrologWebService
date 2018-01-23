@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.piechart;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.base.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PieData {
+public class PieData extends Data {
 
     @NotNull
     private List<PieEntry> pieEntries;

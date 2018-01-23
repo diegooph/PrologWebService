@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.barchart;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.base.Entry;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class BarEntry {
+public class BarEntry extends Entry {
 
     @NotNull
     private String descricao;
