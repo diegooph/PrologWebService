@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -36,14 +35,6 @@ public interface SolicitacaoFolgaDao {
 	 * @throws SQLException caso não seja possível deletar
 	 */
 	boolean delete(Long codigo) throws SQLException;
-
-	/**
-	 * Busca uma SolicitacaoFolga pelo seu código
-	 * @param request contendo a solicitação a ser buscada e os dados do solicitante
-	 * @return uma SolicitacaoFolga
-	 * @throws SQLException caso não seja possível realizar a busca
-	 */
-	SolicitacaoFolga getByCod(Request<?> request) throws SQLException;
 
 	/**
 	 * Busca todas as solicitações, respeitando os filtros
