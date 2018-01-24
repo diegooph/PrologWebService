@@ -13,6 +13,7 @@ public class MotivoDescarte extends Motivo {
     private Long codEmpresa;
 
     public MotivoDescarte() {
+        setTipo(TIPO_MOTIVO_DESCARTE);
     }
 
     public MotivoDescarte(@NotNull Long codigo,

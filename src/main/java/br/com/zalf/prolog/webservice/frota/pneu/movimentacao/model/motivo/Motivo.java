@@ -31,6 +31,15 @@ public abstract class Motivo {
     }
 
     @NotNull
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(@NotNull String tipo) {
+        this.tipo = tipo;
+    }
+
+    @NotNull
     public Long getCodigo() {
         return codigo;
     }
