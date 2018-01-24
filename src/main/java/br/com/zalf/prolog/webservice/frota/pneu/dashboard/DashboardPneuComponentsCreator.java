@@ -36,6 +36,9 @@ final class DashboardPneuComponentsCreator {
                 .withDescricao("Este gráfico mostra quantos pneus existem em cada estado")
                 .withCodTipoComponente(component.codigoTipoComponente)
                 .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
                 .withPieData(pieData)
                 .build();
     }

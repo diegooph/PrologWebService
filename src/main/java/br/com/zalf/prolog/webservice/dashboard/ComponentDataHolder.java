@@ -23,6 +23,7 @@ public class ComponentDataHolder {
     public String descricaoComponente;
     public int qtdBlocosHorizontais;
     public int qtdBlocosVerticais;
+    public int ordemExibicao;
     public String urlEndpointDados;
     public String corBackgroundHex;
     public String urlIcone;

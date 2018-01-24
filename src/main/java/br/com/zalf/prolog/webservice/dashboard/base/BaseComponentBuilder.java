@@ -20,6 +20,9 @@ public abstract class BaseComponentBuilder implements DashboardComponentBuilder 
     protected String urlEndpointDados;
     @NotNull
     protected Integer codTipoComponente;
+    protected int qtdBlocosHorizontais;
+    protected int qtdBlocosVerticais;
+    protected int ordemExibicao;
 
     @Override
     public DashboardComponentBuilder withTitulo(@NotNull String titulo) {
@@ -48,6 +51,24 @@ public abstract class BaseComponentBuilder implements DashboardComponentBuilder 
     @Override
     public DashboardComponentBuilder withCodTipoComponente(@NotNull Integer codTipoComponente) {
         this.codTipoComponente = codTipoComponente;
+        return this;
+    }
+
+    @Override
+    public DashboardComponentBuilder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+        this.qtdBlocosHorizontais = qtdBlocosHorizontais;
+        return this;
+    }
+
+    @Override
+    public DashboardComponentBuilder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+        this.qtdBlocosVerticais = qtdBlocosVerticais;
+        return this;
+    }
+
+    @Override
+    public DashboardComponentBuilder withOrdemExibicao(int ordemExibicao) {
+        this.ordemExibicao = ordemExibicao;
         return this;
     }
 

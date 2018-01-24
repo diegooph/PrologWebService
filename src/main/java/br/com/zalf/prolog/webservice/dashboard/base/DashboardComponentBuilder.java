@@ -25,5 +25,11 @@ public interface DashboardComponentBuilder {
 
     DashboardComponentBuilder withCodTipoComponente(@NotNull Integer codTipoComponente);
 
+    DashboardComponentBuilder withQtdBlocosHorizontais(int qtdBlocosHorizontais);
+
+    DashboardComponentBuilder withQtdBlocosVerticais(int qtdBlocosVerticais);
+
+    DashboardComponentBuilder withOrdemExibicao(int ordemExibicao);
+
     DashboardComponent build();
 }

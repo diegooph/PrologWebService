@@ -33,7 +33,7 @@ public abstract class DashboardComponent {
     private Integer codTipoComponente;
     private int qtdBlocosHorizontais;
     private int qtdBlocosVerticais;
-    private int ordem;
+    private int ordemExibicao;
 
     public DashboardComponent(@NotNull String titulo,
                               @Nullable String subtitulo,
@@ -42,7 +42,7 @@ public abstract class DashboardComponent {
                               @NotNull Integer codTipoComponente,
                               int qtdBlocosHorizontais,
                               int qtdBlocosVerticais,
-                              int ordem) {
+                              int ordemExibicao) {
         this.titulo = titulo;
         this.subtitulo = subtitulo;
         this.descricao = descricao;
@@ -50,7 +50,7 @@ public abstract class DashboardComponent {
         this.codTipoComponente = codTipoComponente;
         this.qtdBlocosHorizontais = qtdBlocosHorizontais;
         this.qtdBlocosVerticais = qtdBlocosVerticais;
-        this.ordem = ordem;
+        this.ordemExibicao = ordemExibicao;
     }
 
     @NotNull
@@ -114,11 +114,11 @@ public abstract class DashboardComponent {
         this.qtdBlocosVerticais = qtdBlocosVerticais;
     }
 
-    public int getOrdem() {
-        return ordem;
+    public int getOrdemExibicao() {
+        return ordemExibicao;
     }
 
-    public void setOrdem(int ordem) {
-        this.ordem = ordem;
+    public void setOrdemExibicao(int ordemExibicao) {
+        this.ordemExibicao = ordemExibicao;
     }
 }

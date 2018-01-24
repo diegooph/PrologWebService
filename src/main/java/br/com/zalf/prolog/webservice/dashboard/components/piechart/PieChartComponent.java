@@ -81,6 +81,24 @@ public class PieChartComponent extends DashboardComponent {
             return this;
         }
 
+        @Override
+        public Builder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+            super.withQtdBlocosHorizontais(qtdBlocosHorizontais);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+            super.withQtdBlocosVerticais(qtdBlocosVerticais);
+            return this;
+        }
+
+        @Override
+        public Builder withOrdemExibicao(int ordemExibicao) {
+            super.withOrdemExibicao(ordemExibicao);
+            return this;
+        }
+
         public Builder withPieData(@NotNull PieData pieData) {
             this.pieData = pieData;
             return this;
@@ -94,9 +112,9 @@ public class PieChartComponent extends DashboardComponent {
                     descricao,
                     urlEndpointDados,
                     codTipoComponente,
-                    0,
-                    0,
-                    0,
+                    qtdBlocosHorizontais,
+                    qtdBlocosVerticais,
+                    ordemExibicao,
                     pieData);
         }
 

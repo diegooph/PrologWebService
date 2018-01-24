@@ -34,7 +34,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  DCT.MINIMO_BLOCOS_HORIZONTAIS AS MINIMO_BLOCOS_HORIZONTAIS, " +
                     "  DCT.MINIMO_BLOCOS_VERTICAIS AS MINIMO_BLOCOS_VERTICAIS, " +
                     "  DC.CODIGO AS CODIGO_COMPONENTE, " +
-                    "  DC.COD_PILAR_PROLOG_COMPONENTE AS COD_PILAR_PROLOG_COMPONENTE, " +
+                    "  DC.COD_PILAR_PROLOG_COMPONENTE AS CODIGO_PILAR_PROLOG_COMPONENTE, " +
                     "  DC.TITULO AS TITULO_COMPONENTE, " +
                     "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
                     "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
@@ -57,7 +57,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                 component.maximoBlocosHorizontais = rSet.getInt("MAXIMO_BLOCOS_HORIZONTAIS");
                 component.maximoBlocosVerticais = rSet.getInt("MAXIMO_BLOCOS_VERTICAIS");
                 component.minimoBlocosHorizontais = rSet.getInt("MINIMO_BLOCOS_HORIZONTAIS");
-                component.minimoBlocosHorizontais = rSet.getInt("MINIMO_BLOCOS_VERTICAIS");
+                component.minimoBlocosVerticais = rSet.getInt("MINIMO_BLOCOS_VERTICAIS");
 
                 // Componente:
                 component.codigoComponente = rSet.getInt("CODIGO_COMPONENTE");
@@ -108,7 +108,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     final DashComponentResumido componentResumido = new DashComponentResumido();
                     componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
                     componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
-//                    componentResumido.setOrdem(rSet.getInt("ORDEM_COMPONENTE"));
+//                    componentResumido.setOrdemExibicao(rSet.getInt("ORDEM_COMPONENTE"));
                     componentResumido.setCodPilarProLog(rSet.getInt("COD_PILAR_PROLOG_COMPONENTE"));
                     componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
                     componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));

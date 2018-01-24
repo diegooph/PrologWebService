@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard.components.barchart;
 
+import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
@@ -91,7 +92,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
                 '}';
     }
 
-    public static class Builder implements DashboardComponentBuilder {
+    public static class Builder extends BaseComponentBuilder {
         private String titulo;
         private String subtitulo;
         private String descricao;
