@@ -26,11 +26,11 @@ public interface MovimentacaoDao {
                 boolean fecharServicosAutomaticamente,
                 Connection conn) throws SQLException, OrigemDestinoInvalidaException;
 
-    Long insertMotivo(@NotNull final Motivo motivo, final long codEmpresa) throws SQLException;
+    Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException;
 
-    List<Motivo> getMotivos(final long codEmpresa, final boolean onlyAtivos) throws SQLException;
+    List<Motivo> getMotivos(@NotNull final Long codEmpresa, final boolean onlyAtivos) throws SQLException;
 
-    void updateMotivoStatus(final long codEmpresa,
-                            final long codMotivo,
+    void updateMotivoStatus(@NotNull final Long codEmpresa,
+                            @NotNull final Long codMotivo,
                             @NotNull final Motivo motivo) throws SQLException;
 }

@@ -29,29 +29,29 @@ public class MovimentacaoResource {
     @Secured
     @Path("/motivos/descarte/{codEmpresa}")
     public AbstractResponse insert(Motivo motivo,
-                           @PathParam("codEmpresa") long codEmpresa) {
+                           @PathParam("codEmpresa") Long codEmpresa) {
         return service.insertMotivo(motivo, codEmpresa);
     }
 
     @GET
     @Secured
     @Path("/motivos/descarte/{codEmpresa}")
-    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") long codEmpresa) {
+    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMotivos(codEmpresa, true);
     }
 
     @GET
     @Secured
     @Path("/motivos/descarte/todos/{codEmpresa}")
-    public List<Motivo> getTodosMotivos(@PathParam("codEmpresa") long codEmpresa) {
+    public List<Motivo> getTodosMotivos(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMotivos(codEmpresa, false);
     }
 
     @PUT
     @Secured
     @Path("/motivos/descarte/{codEmpresa}/{codMotivo}/status")
-    public Response updateMotivoStatus(@PathParam("codEmpresa") long codEmpresa,
-                                 @PathParam("codMotivo") long codMotivo,
+    public Response updateMotivoStatus(@PathParam("codEmpresa") Long codEmpresa,
+                                 @PathParam("codMotivo") Long codMotivo,
                                  final Motivo motivo) {
         if (service.updateMotivoStatus(codEmpresa, codMotivo, motivo)) {
             return Response.ok("Motivo atualizado com sucesso");

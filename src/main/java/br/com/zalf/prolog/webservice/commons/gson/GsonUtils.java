@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
@@ -81,12 +83,17 @@ public final class GsonUtils {
                 .registerSubtype(ResponseWithCod.class)
 				.registerSubtype(ResponseIntervalo.class);
 
+		RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
+				.of(Motivo.class, "tipo")
+				.registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
+
 		builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
 		builder.registerTypeAdapterFactory(adapterAlternativa);
 		builder.registerTypeAdapterFactory(adapterResponse);
 		builder.registerTypeAdapterFactory(adapterOrigem);
 		builder.registerTypeAdapterFactory(adapterDestino);
 		builder.registerTypeAdapterFactory(adapterModelo);
+		builder.registerTypeAdapterFactory(adapterMotivo);
 		builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
 
 		sGson = builder.create();

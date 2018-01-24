@@ -30,7 +30,7 @@ public class MovimentacaoService {
         }
     }
 
-    public AbstractResponse insertMotivo(@NotNull final Motivo motivo, final long codEmpresa) {
+    public AbstractResponse insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) {
         try {
             return ResponseWithCod.ok("Motivo de descarte inserido com sucesso", dao.insertMotivo(motivo, codEmpresa));
         } catch (SQLException e) {
@@ -39,7 +39,7 @@ public class MovimentacaoService {
         }
     }
 
-    public List<Motivo> getMotivos(long codEmpresa, boolean onlyAtivos) {
+    public List<Motivo> getMotivos(@NotNull Long codEmpresa, boolean onlyAtivos) {
         try {
             return dao.getMotivos(codEmpresa, onlyAtivos);
         } catch (SQLException e) {
@@ -48,7 +48,9 @@ public class MovimentacaoService {
         }
     }
 
-    public boolean updateMotivoStatus(final long codEmpresa, final long codMotivo, @NotNull final Motivo motivo) {
+    public boolean updateMotivoStatus(@NotNull final Long codEmpresa,
+                                      @NotNull final Long codMotivo,
+                                      @NotNull final Motivo motivo) {
         try {
             dao.updateMotivoStatus(codEmpresa, codMotivo, motivo);
             return true;

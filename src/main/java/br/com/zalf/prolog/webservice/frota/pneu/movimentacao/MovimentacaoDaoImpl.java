@@ -81,7 +81,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public Long insertMotivo(@NotNull Motivo motivo, long codEmpresa) throws SQLException {
+    public Long insertMotivo(@NotNull Motivo motivo, @NotNull Long codEmpresa) throws SQLException {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -107,7 +107,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public List<Motivo> getMotivos(long codEmpresa, boolean onlyAtivos) throws SQLException {
+    public List<Motivo> getMotivos(@NotNull Long codEmpresa, boolean onlyAtivos) throws SQLException {
         final List<Motivo> motivos = new ArrayList<>();
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -131,7 +131,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public void updateMotivoStatus(long codEmpresa, long codMotivo, @NotNull Motivo motivo) throws SQLException {
+    public void updateMotivoStatus(@NotNull Long codEmpresa,
+                                   @NotNull Long codMotivo,
+                                   @NotNull Motivo motivo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -149,7 +151,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private Motivo createMotivo(ResultSet rSet) throws SQLException {
-        final Motivo motivo = new Motivo();
+        final MotivoDescarte motivo = new MotivoDescarte();
+        motivo.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         motivo.setCodigo(rSet.getLong("CODIGO"));
         motivo.setMotivo(rSet.getString("MOTIVO"));
         motivo.setAtivo(rSet.getBoolean("ATIVO"));
@@ -336,11 +339,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 stmt.setNull(8, Types.VARCHAR);
                 stmt.setNull(9, Types.VARCHAR);
             } else {
-                final MotivoDescarte motivoDescarte = ((DestinoDescarte) movimentacao.getDestino()).getMotivoDescarte();
+                final DestinoDescarte destinoDescarte = (DestinoDescarte) movimentacao.getDestino();
+                final MotivoDescarte motivoDescarte = destinoDescarte.getMotivoDescarte();
                 stmt.setLong(6, motivoDescarte.getCodigo());
-                stmt.setString(7, motivoDescarte.getUrlImagemDescarte1());
-                stmt.setString(8, motivoDescarte.getUrlImagemDescarte2());
-                stmt.setString(9, motivoDescarte.getUrlImagemDescarte3());
+                stmt.setString(7, destinoDescarte.getUrlImagemDescarte1());
+                stmt.setString(8, destinoDescarte.getUrlImagemDescarte2());
+                stmt.setString(9, destinoDescarte.getUrlImagemDescarte3());
             }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o destino da movimentação");
