@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public abstract class Motivo {
+public class Motivo {
 
     private Long codigo;
     private String motivo;

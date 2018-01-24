@@ -7,14 +7,17 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -75,6 +78,82 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         } finally {
             closeConnection(null, stmt, rSet);
         }
+    }
+
+    @Override
+    public Long insertMotivo(@NotNull Motivo motivo, long codEmpresa) throws SQLException {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            connection = getConnection();
+            stmt = connection.prepareStatement("INSERT INTO movimentacao_motivo_descarte_empresa " +
+                    "VALUES (?, ?, ?, ?, ?, ?) RETURNING codigo");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, motivo.getMotivo());
+            stmt.setBoolean(3, motivo.isAtivo());
+            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            // Ao inserir um motivo setamos a data de alteração como a data atual
+            stmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao inserir novo motivo de descarte");
+            }
+        } finally {
+            closeConnection(connection, stmt, rSet);
+        }
+    }
+
+    @Override
+    public List<Motivo> getMotivos(long codEmpresa, boolean onlyAtivos) throws SQLException {
+        final List<Motivo> motivos = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            connection = getConnection();
+            if (onlyAtivos) {
+                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
+            } else {
+                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
+            }
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                motivos.add(createMotivo(rSet));
+            }
+        } finally {
+            closeConnection(connection,stmt, rSet);
+        }
+        return motivos;
+    }
+
+    @Override
+    public void updateMotivoStatus(long codEmpresa, long codMotivo, @NotNull Motivo motivo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE movimentacao_motivo_descarte_empresa SET ativo = ? WHERE cod_empresa = ? AND codigo = ?");
+            stmt.setBoolean(1, motivo.isAtivo());
+            stmt.setLong(2, codEmpresa);
+            stmt.setLong(3, codMotivo);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o status do motivo: " + codMotivo);
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    private Motivo createMotivo(ResultSet rSet) throws SQLException {
+        final Motivo motivo = new Motivo();
+        motivo.setCodigo(rSet.getLong("CODIGO"));
+        motivo.setMotivo(rSet.getString("MOTIVO"));
+        motivo.setAtivo(rSet.getBoolean("ATIVO"));
+        return motivo;
     }
 
     private void insertValores(ProcessoMovimentacao processoMov,
