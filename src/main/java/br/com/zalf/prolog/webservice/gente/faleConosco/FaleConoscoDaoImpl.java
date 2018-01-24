@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.network.Request;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -71,22 +70,6 @@ public class FaleConoscoDaoImpl extends DatabaseConnection  implements FaleConos
 			closeConnection(conn, stmt, null);
 		}		
 		return true;
-	}
-
-	@Override
-	public boolean delete(Request<FaleConosco> request) throws SQLException {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		try{
-			conn = getConnection();
-			stmt = conn.prepareStatement("DELETE FROM FALE_CONOSCO "
-					+ "WHERE CODIGO = ?");
-			stmt.setLong(1, request.getObject().getCodigo());
-			return (stmt.executeUpdate() > 0);
-		}
-		finally {
-			closeConnection(conn, stmt, null);
-		}	
 	}
 
 	@Override

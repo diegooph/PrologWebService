@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -28,14 +27,6 @@ public interface FaleConoscoDao {
 	 * @throws SQLException caso não seja possível atualizar/editar
 	 */
 	boolean update(FaleConosco faleConosco) throws SQLException;
-
-	/**
-	 * Deleta um FaleConsco do banco de dados
-	 * @param request contendo os dados do objeto a ser deletado
-	 * @return resultado da requisição
-	 * @throws SQLException caso não seja possível deletar
-	 */
-	boolean delete(Request<FaleConosco> request) throws SQLException;
 
 	/**
 	 * Busca um FaleConosco pelo código
