@@ -7,7 +7,7 @@ Change Log
 ### Refactor
 * Remove métodos deprecated das seguintes classes: `EmpresaService`, `EmpresaDao`, `ProntuarioCondutorResource`,
 `EmpresaDaoImpl`, `VeiculoResource`, `ProdutividadeResource`, `SolicitacaoFolgaDaoImpl`, `FaleConoscoDao`, 
-`RelatorioEntregaResource`, `VeiculoDaoImpl`, `IndicadorResource`, `OrdemServicoResource`
+`RelatorioEntregaResource`, `VeiculoDaoImpl`, `IndicadorResource`, `OrdemServicoResource`, `ContrachequeResource`
 
 <a name="v2.0.44"></a>
 ## Version [v2.0.44](https://github.com/luizfp/PrologWebService/compare/v2.0.43-h1...v2.0.44) (2017-01-19)
