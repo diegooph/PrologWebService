@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
@@ -733,11 +734,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Long> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
+    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Long> statusPneus = new LinkedHashMap<>();
+        final Map<StatusPneu, Integer> statusPneus = new LinkedHashMap<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT P.status, COUNT(P.CODIGO)\n" +
@@ -749,8 +750,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 statusPneus.put(
-                        rSet.getString("status"),
-                        rSet.getLong("count"));
+                        StatusPneu.fromString(rSet.getString("status")),
+                        rSet.getInt("count"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);

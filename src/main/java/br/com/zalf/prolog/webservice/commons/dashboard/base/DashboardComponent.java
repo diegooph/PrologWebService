@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.base;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,9 +32,6 @@ public abstract class DashboardComponent {
     public DashboardComponent(@NotNull String titulo,
                               @Nullable String subtitulo,
                               @NotNull String descricao) {
-        Preconditions.checkNotNull(titulo, "titulo não pode ser null!");
-        Preconditions.checkNotNull(subtitulo, "subtitulo não pode ser null!");
-        Preconditions.checkNotNull(descricao, "descricao não pode ser null!");
         this.titulo = titulo;
         this.subtitulo = subtitulo;
         this.descricao = descricao;

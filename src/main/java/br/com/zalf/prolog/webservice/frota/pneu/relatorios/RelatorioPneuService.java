@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
@@ -184,7 +184,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) {
+    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) {
         try {
             return dao.getQtPneusByStatus(codUnidades);
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.piechart;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.Color;
 import br.com.zalf.prolog.webservice.commons.dashboard.base.Entry;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,23 +17,23 @@ public class PieEntry extends Entry {
     @NotNull
     private String representacaoValor;
     @NotNull
-    private String pieColor;
+    private Color corFatia;
 
     public static PieEntry create(@NotNull final String descricao,
                                   final double valor,
                                   @NotNull final String representacaoValor,
-                                  @NotNull final String pieColor) {
+                                  @NotNull final Color pieColor) {
         return new PieEntry(descricao, valor, representacaoValor, pieColor);
     }
 
     private PieEntry(@NotNull final String descricao,
                      final double valor,
                      @NotNull final String representacaoValor,
-                     @NotNull final String pieColor) {
+                     @NotNull final Color corFatia) {
         this.descricao = descricao;
         this.valor = valor;
         this.representacaoValor = representacaoValor;
-        this.pieColor = pieColor;
+        this.corFatia = corFatia;
     }
 
     @NotNull
@@ -62,12 +63,12 @@ public class PieEntry extends Entry {
     }
 
     @NotNull
-    public String getPieColor() {
-        return pieColor;
+    public Color getCorFatia() {
+        return corFatia;
     }
 
-    public void setPieColor(@NotNull String pieColor) {
-        this.pieColor = pieColor;
+    public void setCorFatia(@NotNull Color corFatia) {
+        this.corFatia = corFatia;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class PieEntry extends Entry {
                 "descricao='" + descricao + '\'' +
                 ", valor=" + valor +
                 ", representacaoValor='" + representacaoValor + '\'' +
-                ", pieColor='" + pieColor + '\'' +
+                ", corFatia='" + corFatia + '\'' +
                 '}';
     }
 }

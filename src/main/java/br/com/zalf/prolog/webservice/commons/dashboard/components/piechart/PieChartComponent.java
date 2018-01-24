@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.commons.dashboard.components.piechart;
 
 
+import br.com.zalf.prolog.webservice.commons.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponent;
-import br.com.zalf.prolog.webservice.commons.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,34 +41,26 @@ public class PieChartComponent extends DashboardComponent {
                 '}';
     }
 
-    public static class Builder implements DashboardComponentBuilder {
-        private String titulo;
-        private String subtitulo;
-        private String descricao;
+    public static class Builder extends BaseComponentBuilder {
         private PieData pieData;
 
         public Builder() {}
 
-        public Builder(@NotNull String titulo, @NotNull String descricao) {
-            this.titulo = titulo;
-            this.descricao = descricao;
-        }
-
         @Override
         public Builder withTitulo(@NotNull String titulo) {
-            this.titulo = titulo;
+            super.withTitulo(titulo);
             return this;
         }
 
         @Override
         public Builder withSubtitulo(@Nullable String subtitulo) {
-            this.subtitulo = subtitulo;
+            super.withSubtitulo(subtitulo);
             return this;
         }
 
         @Override
         public Builder withDescricao(@NotNull String descricao) {
-            this.descricao = descricao;
+            super.withDescricao(descricao);
             return this;
         }
 
@@ -78,9 +70,14 @@ public class PieChartComponent extends DashboardComponent {
         }
 
         @Override
-        public DashboardComponent build() {
-            Preconditions.checkNotNull(pieData, "pieData deve ser instanciada com 'withPieData'");
+        public PieChartComponent build() {
             return new PieChartComponent(titulo, subtitulo, descricao, pieData);
+        }
+
+        @Override
+        protected void ensureNotNullValues() {
+            super.ensureNotNullValues();
+            Preconditions.checkNotNull(pieData, "pieData deve ser instanciada com 'withPieData'");
         }
     }
 }
