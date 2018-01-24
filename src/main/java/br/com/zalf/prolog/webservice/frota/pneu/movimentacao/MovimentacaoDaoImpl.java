@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -256,11 +257,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 stmt.setNull(8, Types.VARCHAR);
                 stmt.setNull(9, Types.VARCHAR);
             } else {
-                DestinoDescarte destino = (DestinoDescarte) movimentacao.getDestino();
-                stmt.setLong(6, destino.getCodigoMotivoDescarte());
-                stmt.setString(7, destino.getUrlImagemDescarte1());
-                stmt.setString(8, destino.getUrlImagemDescarte2());
-                stmt.setString(9, destino.getUrlImagemDescarte3());
+                final MotivoDescarte motivoDescarte = ((DestinoDescarte) movimentacao.getDestino()).getMotivoDescarte();
+                stmt.setLong(6, motivoDescarte.getCodigo());
+                stmt.setString(7, motivoDescarte.getUrlImagemDescarte1());
+                stmt.setString(8, motivoDescarte.getUrlImagemDescarte2());
+                stmt.setString(9, motivoDescarte.getUrlImagemDescarte3());
             }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o destino da movimentação");
