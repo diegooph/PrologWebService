@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
+import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
+import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
@@ -286,6 +288,11 @@ public final class Injection {
     @NotNull
     public static RelatoRelatorioDao provideRelatoRelatorioDao() {
         return new RelatoRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static DashboardDao provideDashboardDao() {
+        return new DashboardDaoImpl();
     }
 
     // ================================================
