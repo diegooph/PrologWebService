@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
-import br.com.zalf.prolog.webservice.commons.dashboard.Color;
-import br.com.zalf.prolog.webservice.commons.dashboard.base.PieSlice;
+import br.com.zalf.prolog.webservice.dashboard.Color;
+import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieSlice;
 import org.jetbrains.annotations.NotNull;
 
 /**

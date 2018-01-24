@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
-import br.com.zalf.prolog.webservice.commons.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
@@ -25,9 +25,10 @@ public class DashboardPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
     @GET
-    @Path("/pneus-por-status")
-    public PieChartComponent getQtdPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades) {
-        return new DashboardPneuService().getQtdPneusByStatus(codUnidades);
+    @Path("/pneus-por-status/{codComponente}")
+    public PieChartComponent getQtdPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                 @PathParam("codComponente") Integer codComponente) {
+        return new DashboardPneuService().getQtdPneusByStatus(codComponente, codUnidades);
     }
 
     @GET
