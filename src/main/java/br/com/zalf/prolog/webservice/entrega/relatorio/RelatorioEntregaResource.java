@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -25,7 +26,7 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
     public List<IndicadorAcumulado> getAcumuladoIndicadores(@QueryParam("dataInicial") Long dataInicial,
                                                             @QueryParam("dataFinal") Long dataFinal,
@@ -38,7 +39,7 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/extratos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}")
     public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
                                                @QueryParam("dataFinal") Long dataFinal,
@@ -54,7 +55,7 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/diarios/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
     public List<ConsolidadoDia> getConsolidadoDia(@QueryParam("dataInicial") Long dataInicial,
                                                   @QueryParam("dataFinal") Long dataFinal,
@@ -69,7 +70,7 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/mapas/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
     public List<MapaEstratificado> getMapasEstratificados(@QueryParam("data") Long data,
                                                           @PathParam("codEmpresa") String codEmpresa,
@@ -81,7 +82,7 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/graficos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
     public List<DadosGrafico> getDadosGrafico(@QueryParam("dataInicial") Long dataInicial,
                                               @QueryParam("dataFinal") Long dataFinal,
