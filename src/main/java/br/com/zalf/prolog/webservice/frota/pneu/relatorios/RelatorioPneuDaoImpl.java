@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
@@ -870,28 +869,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             closeConnection(conn, stmt, rSet);
         }
         return placasVencidas;
-    }
-
-    @Override
-    public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        int total = 0;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT count(DISTINCT v.placa) as total_veiculos \n" +
-                    "FROM veiculo_pneu vp JOIN veiculo v ON v.cod_unidade = vp.cod_unidade and v.placa = vp.placa\n" +
-                    "WHERE v.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND v.status_ativo IS TRUE;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getInt("total_veiculos");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return total;
     }
 
     public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {

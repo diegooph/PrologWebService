@@ -226,16 +226,6 @@ public class RelatorioPneuService {
         }
     }
 
-    public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) {
-        try {
-            return dao.getQtdVeiculosAtivosComPneuAplicado(codUnidades);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos com pneus aplicados. \n" +
-                    "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
-        }
-    }
-
     public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) {
         try {
             return dao.getMdTempoConsertoServicoPorTipo(codUnidades);

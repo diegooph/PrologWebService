@@ -22,6 +22,7 @@ final class DashboardPneuComponentsCreator {
         throw new IllegalStateException(DashboardPneuComponentsCreator.class.getSimpleName() + " cannot be instatiated!");
     }
 
+    @NotNull
     static PieChartComponent createQtdPneusByStatus(@NotNull final ComponentDataHolder component,
                                                     @NotNull final Map<StatusPneu, Integer> qtdPneusStatus) {
         final List<PieEntry> entries = new ArrayList<>(qtdPneusStatus.size());

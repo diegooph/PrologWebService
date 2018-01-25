@@ -41,6 +41,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
@@ -293,6 +295,11 @@ public final class Injection {
     @NotNull
     public static DashboardDao provideDashboardDao() {
         return new DashboardDaoImpl();
+    }
+
+    @NotNull
+    public static RelatorioVeiculoDao provideRelatorioVeiculoDao() {
+        return new RelatorioVeiculoDaoImpl();
     }
 
     // ================================================

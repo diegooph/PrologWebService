@@ -57,12 +57,6 @@ public class DashboardPneuResource {
     }
 
     @GET
-    @Path("quantidade-veiculos-ativos-com-pneus-aplicados")
-    public int getQtdVeiculosAtivosComPneuAplicado(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return service.getQtdVeiculosAtivosComPneuAplicado(codUnidades);
-    }
-
-    @GET
     @Path("media-tempo-conserto-servicos-por-tipo")
     public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
         return service.getMdTempoConsertoServicoPorTipo(codUnidades);

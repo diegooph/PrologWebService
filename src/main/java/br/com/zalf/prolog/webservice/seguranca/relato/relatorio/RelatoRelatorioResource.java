@@ -13,7 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 /**
  * Created by Zart on 20/11/2017.
  */
-@Path("/relatos/relatorios")
+@Path("/relatos/relatorio")
 @Secured(permissions = Pilares.Seguranca.Relato.RELATORIOS)
 public class RelatoRelatorioResource {
 

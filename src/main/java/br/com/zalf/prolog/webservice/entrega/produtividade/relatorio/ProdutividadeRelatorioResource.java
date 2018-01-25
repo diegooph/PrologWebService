@@ -11,7 +11,7 @@ import javax.ws.rs.core.StreamingOutput;
 /**
  * Created by Zart on 18/05/2017.
  */
-@Path("/produtividades/relatorios")
+@Path("/produtividades/relatorio")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.PRODUTIVIDADE)
