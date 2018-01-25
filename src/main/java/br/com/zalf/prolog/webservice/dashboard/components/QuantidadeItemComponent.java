@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.dashboard.components;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,6 +97,24 @@ public class QuantidadeItemComponent extends DashboardComponent {
         @Override
         public Builder withCodTipoComponente(@NotNull Integer codTipoComponente) {
             super.withCodTipoComponente(codTipoComponente);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+            super.withQtdBlocosHorizontais(qtdBlocosHorizontais);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+            super.withQtdBlocosVerticais(qtdBlocosVerticais);
+            return this;
+        }
+
+        @Override
+        public Builder withOrdemExibicao(int ordemExibicao) {
+            super.withOrdemExibicao(ordemExibicao);
             return this;
         }
 
