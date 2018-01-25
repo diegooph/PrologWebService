@@ -320,7 +320,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt = conn.prepareStatement("INSERT INTO movimentacao_destino(cod_movimentacao, " +
                     "tipo_destino, placa, km_veiculo, posicao_pneu_destino," +
                     " cod_motivo_descarte, url_imagem_descarte_1, url_imagem_descarte_2, url_imagem_descarte_3) " +
-                    "values (?,?,?,?,?, ?, ?, ?, ?)");
+                    "values (?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
@@ -338,6 +338,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 stmt.setNull(9, Types.VARCHAR);
             } else if (!movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.DESCARTE)) {
                 // seta informações de Descarte como Null
+                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(4, Types.BIGINT);
+                stmt.setNull(5, Types.INTEGER);
                 stmt.setNull(6, Types.BIGINT);
                 stmt.setNull(7, Types.VARCHAR);
                 stmt.setNull(8, Types.VARCHAR);
@@ -345,6 +348,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             } else {
                 final DestinoDescarte destinoDescarte = (DestinoDescarte) movimentacao.getDestino();
                 final MotivoDescarte motivoDescarte = destinoDescarte.getMotivoDescarte();
+                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(4, Types.BIGINT);
+                stmt.setNull(5, Types.INTEGER);
                 stmt.setLong(6, motivoDescarte.getCodigo());
                 stmt.setString(7, destinoDescarte.getUrlImagemDescarte1());
                 stmt.setString(8, destinoDescarte.getUrlImagemDescarte2());
