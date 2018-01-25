@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.barchart;
+package br.com.zalf.prolog.webservice.dashboard.components.combochart;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,17 +9,17 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class BarGroup {
+public class ComboGroup {
 
     @NotNull
     private String groupDescription;
     @NotNull
-    private List<BarEntry> barEntries;
+    private List<ComboEntry> comboEntries;
 
-    public BarGroup(@NotNull String groupDescription,
-                    @NotNull List<BarEntry> barEntries) {
+    public ComboGroup(@NotNull String groupDescription,
+                      @NotNull List<ComboEntry> comboEntries) {
         this.groupDescription = groupDescription;
-        this.barEntries = barEntries;
+        this.comboEntries = comboEntries;
     }
 
     @NotNull
@@ -32,19 +32,19 @@ public class BarGroup {
     }
 
     @NotNull
-    public List<BarEntry> getBarEntries() {
-        return barEntries;
+    public List<ComboEntry> getComboEntries() {
+        return comboEntries;
     }
 
-    public void setBarEntries(@NotNull List<BarEntry> barEntries) {
-        this.barEntries = barEntries;
+    public void setComboEntries(@NotNull List<ComboEntry> comboEntries) {
+        this.comboEntries = comboEntries;
     }
 
     @Override
     public String toString() {
-        return "BarGroup{" +
+        return "ComboGroup{" +
                 "groupDescription='" + groupDescription + '\'' +
-                ", barEntries=" + barEntries +
+                ", comboEntries=" + comboEntries +
                 '}';
     }
 }
