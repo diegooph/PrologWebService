@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dashboard;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -25,9 +26,9 @@ public class DashboardService {
         }
     }
 
-    public List<DashComponentResumido> getComponentesColaborador(@NotNull final String userToken) {
+    public List<DashboardComponentResumido> getComponentesColaborador(@NotNull final String userToken) {
         try {
-            return dao.getComponentesColaborador(userToken);
+            return dao.getComponentesColaborador(TokenCleaner.getOnlyToken(userToken));
         } catch (SQLException ex) {
             Log.e(TAG, "Erro ao buscar os componentes para o colaborador com token: " + userToken, ex);
             throw new RuntimeException(ex);

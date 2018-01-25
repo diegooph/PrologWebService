@@ -17,7 +17,7 @@ public class DashboardResource {
 
     @GET
     @Path("/componentes")
-    public List<DashComponentResumido> getComponentesColaborador(@HeaderParam("Authorization") String userToken) {
+    public List<DashboardComponentResumido> getComponentesColaborador(@HeaderParam("Authorization") String userToken) {
         return service.getComponentesColaborador(userToken);
     }
 }
