@@ -149,6 +149,7 @@ public class Colaborador {
 
 	public void setUnidade(Unidade unidade) {
 		this.unidade = unidade;
+		this.codUnidade = unidade.getCodigo();
 	}
 
 	public Empresa getEmpresa() {
@@ -157,6 +158,7 @@ public class Colaborador {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+		this.codEmpresa = (long) empresa.getCodigo();
 	}
 
 	public Regional getRegional() {

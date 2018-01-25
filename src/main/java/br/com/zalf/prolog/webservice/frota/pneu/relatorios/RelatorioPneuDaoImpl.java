@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -125,42 +124,49 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         PreparedStatement stmt = null;
         ResultSet rSet = null;
 
-        List<Aderencia> aderencias = new ArrayList<>();
+        final List<Aderencia> aderencias = new ArrayList<>();
         Aderencia aderencia = null;
-        AfericaoDao afericaoDao = Injection.provideAfericaoDao();
-        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        Restricao restricao = afericaoDao.getRestricaoByCodUnidade(codUnidade);
+        final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+        final Restricao restricao = afericaoDao.getRestricaoByCodUnidade(codUnidade);
 
-        Date dataAtual = new Date(System.currentTimeMillis());
-        LocalDate dataInicial = LocalDate.of(ano, mes, 01);
-        Date datainicial = Date.valueOf(dataInicial);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, ano);
+        calendar.set(Calendar.MONTH, mes - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
 
-        double meta = 0;
-        int totalVeiculos = 0;
-        int ultimoDia = 0;
-        int dia = 1;
+        final Date dataInicial = new Date(calendar.getTimeInMillis());
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        final Date dataFinal  = new Date(calendar.getTimeInMillis());
+
+        final int ultimoDia;
+        final int calendarYear = calendar.get(Calendar.YEAR);
+        final int calendarMonth = calendar.get(Calendar.MONTH);
         /* verifica se o mes procurado é o mesmo mes corrente, se for, pega o dia atual, caso contrário
 		 pega o ultimo dia do mês */
-        if (dataAtual.getYear() + 1900 == ano && dataAtual.getMonth() + 1 == mes) {
-            ultimoDia = dataAtual.getDate();
+        if (calendarYear == ano && calendarMonth + 1 == mes) {
+            ultimoDia = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         } else {
-            ultimoDia = DateUtils.getUltimoDiaMes(datainicial).getDate();
+            ultimoDia = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         }
 
         try {
             conn = getConnection();
-            totalVeiculos = veiculoDao.getTotalVeiculosByUnidade(codUnidade, conn);
-            meta = totalVeiculos / restricao.getPeriodoDiasAfericaoPressao();
+            final int totalVeiculos = veiculoDao.getTotalVeiculosByUnidade(codUnidade, conn);
+            final double meta = totalVeiculos / restricao.getPeriodoDiasAfericaoPressao();
             stmt = conn.prepareStatement("SELECT EXTRACT(DAY from A.DATA_HORA) AS DIA, COUNT(EXTRACT(DAY from A.DATA_HORA)) AS REALIZADAS "
                     + "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "WHERE A.DATA_HORA >=? AND A.DATA_HORA <= ? AND "
                     + "V.COD_UNIDADE = ? "
                     + "GROUP BY 1 "
                     + "ORDER BY 1");
-            stmt.setDate(1, datainicial);
-            stmt.setDate(2, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(datainicial)));
+            stmt.setDate(1, dataInicial);
+            stmt.setDate(2, dataFinal);
             stmt.setLong(3, codUnidade);
             rSet = stmt.executeQuery();
+            int dia = 1;
             while (rSet.next()) {
                 while (dia < rSet.getInt("DIA")) {
                     aderencias.add(createAderencia(meta, dia));
@@ -248,7 +254,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResumoServicos.Servicos fechadosAc = null;
         ResumoServicos.Servicos abertosAc = null;
 
-        Date dataInicial = new Date(ano - 1900, mes - 1, 01);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, ano);
+        calendar.set(Calendar.MONTH, mes - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+        final Date dataInicial = new Date(calendar.getTimeInMillis());
 
         try {
             conn = getConnection();
@@ -281,7 +292,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 fechados = new ResumoServicos.Servicos();
                 fechadosAc = new ResumoServicos.Servicos();
                 abertosAc = new ResumoServicos.Servicos();
-                resumoDia.setDia(rSet.getDate("DATA").getDate());
+                final Date data = rSet.getDate("DATA");
+                calendar.setTime(data);
+                resumoDia.setDia(calendar.get(Calendar.DAY_OF_MONTH));
                 // quantidade de serviços abertos no dia
                 abertos.calibragem = rSet.getInt("CAL_ABERTAS");
                 abertos.inspecao = rSet.getInt("INSP_ABERTAS");
@@ -560,7 +573,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             for (int i = 0; i < valores.size(); i++) {
                 if (valores.get(i) >= faixa.getInicio() && valores.get(i) < faixa.getFim()) {
                     faixa.setTotalPneus(faixa.getTotalPneus() + 1);
-                    ;
                     valores.remove(i);
                     i--;
                 }
