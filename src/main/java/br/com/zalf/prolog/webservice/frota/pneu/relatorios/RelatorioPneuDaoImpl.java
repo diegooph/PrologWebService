@@ -808,11 +808,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
+    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Integer> servicosAbertos = new LinkedHashMap<>();
+        final Map<TipoServico, Integer> servicosAbertos = new LinkedHashMap<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT am.tipo_servico, count(am.tipo_servico)\n" +
@@ -823,7 +823,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 servicosAbertos.put(
-                        rSet.getString("tipo_servico"),
+                        TipoServico.fromString(rSet.getString("tipo_servico")),
                         rSet.getInt("count"));
             }
         } finally {

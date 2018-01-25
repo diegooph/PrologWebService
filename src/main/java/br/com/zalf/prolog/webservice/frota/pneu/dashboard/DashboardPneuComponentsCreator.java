@@ -2,6 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarData;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboData;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboGroup;
@@ -12,6 +15,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -104,6 +108,50 @@ final class DashboardPneuComponentsCreator {
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
                 .withComboData(comboData)
+                .build();
+    }
+
+    @NotNull
+    static VerticalBarChartComponent createServicosEmAbertoByTipo(@NotNull final ComponentDataHolder component,
+                                                                  @NotNull final Map<TipoServico, Integer> servicosAbertosPorTipo) {
+        final List<BarEntry> entries = new ArrayList<>(servicosAbertosPorTipo.size());
+
+        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+        // Calibragem.
+        entries.add(BarEntry.create(
+                servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
+                String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
+                0,
+                TipoServico.CALIBRAGEM.asString(),
+                null));
+        // Inspeção.
+        entries.add(BarEntry.create(
+                servicosAbertosPorTipo.get(TipoServico.INSPECAO),
+                String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
+                1,
+                TipoServico.INSPECAO.asString(),
+                null));
+        // Movimentação.
+        entries.add(BarEntry.create(
+                servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
+                String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
+                2,
+                TipoServico.MOVIMENTACAO.asString(),
+                null));
+
+        final BarData barData = new BarData(entries);
+        return new VerticalBarChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withLabelEixoX(component.labelEixoX)
+                .withLabelEixoY(component.labelEixoY)
+                .withBarData(barData)
                 .build();
     }
 }

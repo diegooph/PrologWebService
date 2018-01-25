@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class DashboardPneuResource {
+public final class DashboardPneuResource {
     private final RelatorioPneuService relatorioPneuService = new RelatorioPneuService();
     private final DashboardPneuService service = new DashboardPneuService();
 
@@ -45,9 +46,10 @@ public class DashboardPneuResource {
     }
 
     @GET
-    @Path("quantidade-servicos-abertos-por-tipo")
-    public Map<String, Integer> getServicosEmAbertoByTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getServicosEmAbertoByTipo(codUnidades);
+    @Path("quantidade-servicos-abertos-por-tipo/{codComponente}")
+    public VerticalBarChartComponent getServicosEmAbertoByTipo(@PathParam("codComponente") Integer codComponente,
+                                                               @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getServicosEmAbertoByTipo(codComponente, codUnidades);
     }
 
     @GET

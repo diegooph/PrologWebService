@@ -190,8 +190,8 @@ public class VerticalComboChartComponent extends DashboardComponent {
             ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(comboData, "meta deve ser instanciada com 'withComboData'");
-            Preconditions.checkNotNull(legendas, "meta deve ser instanciada com 'withLegendas'");
+            Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
+            Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
             return new VerticalComboChartComponent(
                     titulo,
                     subtitulo,
