@@ -24,7 +24,7 @@ public final class DashboardPneuService {
         try {
             final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
             return DashboardPneuComponentsCreator.createQtdPneusByStatus(
-                    dashDao.getComponentByCodigo(codComponente),
+                    dashDao.getComponenteByCodigo(codComponente),
                     dao.getQtPneusByStatus(codUnidades));
         } catch (SQLException ex) {
             Log.e(TAG,

@@ -24,7 +24,7 @@ public class DashboardVeiculoService {
                                                                        @NotNull final Integer codComponente) {
         try {
             return DashboardVeiculoComponentsCreator.createQtdVeiculosAtivosComPneuAplicado(
-                    dashDao.getComponentByCodigo(codComponente),
+                    dashDao.getComponenteByCodigo(codComponente),
                     relatorioDao.getQtdVeiculosAtivosComPneuAplicado(codUnidades));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos com pneus aplicados. \n" +

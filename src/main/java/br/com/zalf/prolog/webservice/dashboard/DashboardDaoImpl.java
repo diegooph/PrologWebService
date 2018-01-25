@@ -19,7 +19,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
 
     @NotNull
     @Override
-    public ComponentDataHolder getComponentByCodigo(@NotNull final Integer codigo) throws SQLException {
+    public ComponentDataHolder getComponenteByCodigo(@NotNull final Integer codigo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
