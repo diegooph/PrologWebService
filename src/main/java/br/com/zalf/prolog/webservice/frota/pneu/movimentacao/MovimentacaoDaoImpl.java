@@ -87,11 +87,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         ResultSet rSet = null;
         try {
             connection = getConnection();
-            stmt = connection.prepareStatement("INSERT INTO movimentacao_motivo_descarte_empresa " +
-                    "VALUES (?, ?, ?, ?, ?, ?) RETURNING codigo");
+            stmt = connection.prepareStatement("INSERT INTO " +
+                    "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, data_hora_insercao, data_hora_ultima_alteracao) " +
+                    "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, motivo.getMotivo());
-            stmt.setBoolean(3, motivo.isAtivo());
+            stmt.setBoolean(3, true);
             stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             // Ao inserir um motivo setamos a data de alteração como a data atual
             stmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
@@ -121,7 +122,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             }
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            while (rSet.next()) {
                 motivos.add(createMotivo(rSet));
             }
         } finally {
@@ -138,10 +139,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE movimentacao_motivo_descarte_empresa SET ativo = ? WHERE cod_empresa = ? AND codigo = ?");
+            stmt = conn.prepareStatement("UPDATE movimentacao_motivo_descarte_empresa " +
+                    "SET ativo = ?, data_hora_ultima_alteracao = ?" +
+                    " WHERE cod_empresa = ? AND codigo = ?");
             stmt.setBoolean(1, motivo.isAtivo());
-            stmt.setLong(2, codEmpresa);
-            stmt.setLong(3, codMotivo);
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setLong(3, codEmpresa);
+            stmt.setLong(4, codMotivo);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao atualizar o status do motivo: " + codMotivo);
             }

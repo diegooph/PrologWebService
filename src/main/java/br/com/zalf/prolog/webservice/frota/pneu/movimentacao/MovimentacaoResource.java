@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -27,6 +29,7 @@ public class MovimentacaoResource {
 
     @POST
     @Secured
+    @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos/descarte/{codEmpresa}")
     public AbstractResponse insert(Motivo motivo,
                            @PathParam("codEmpresa") Long codEmpresa) {
@@ -35,6 +38,7 @@ public class MovimentacaoResource {
 
     @GET
     @Secured
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos/descarte/{codEmpresa}")
     public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMotivos(codEmpresa, true);
@@ -42,6 +46,7 @@ public class MovimentacaoResource {
 
     @GET
     @Secured
+    @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos/descarte/todos/{codEmpresa}")
     public List<Motivo> getTodosMotivos(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMotivos(codEmpresa, false);
@@ -49,6 +54,7 @@ public class MovimentacaoResource {
 
     @PUT
     @Secured
+    @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos/descarte/{codEmpresa}/{codMotivo}/status")
     public Response updateMotivoStatus(@PathParam("codEmpresa") Long codEmpresa,
                                  @PathParam("codMotivo") Long codMotivo,
