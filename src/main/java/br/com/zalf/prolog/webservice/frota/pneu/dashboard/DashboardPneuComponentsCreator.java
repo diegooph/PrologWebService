@@ -101,9 +101,8 @@ final class DashboardPneuComponentsCreator {
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withLegendas(legendas)
-                // TODO: Essas labels deveriam estar em banco (DASHBOARD_COMPONENTE)?
-                .withLabelEixoX("Dias")
-                .withLabelEixoY("Quantidade de aferições")
+                .withLabelEixoX(component.labelEixoX)
+                .withLabelEixoY(component.labelEixoY)
                 .withComboData(comboData)
                 .build();
     }

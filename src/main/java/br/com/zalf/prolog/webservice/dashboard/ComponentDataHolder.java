@@ -27,6 +27,8 @@ public class ComponentDataHolder {
     public String urlEndpointDados;
     public String corBackgroundHex;
     public String urlIcone;
+    public String labelEixoX;
+    public String labelEixoY;
 
     public ComponentDataHolder() {
 
