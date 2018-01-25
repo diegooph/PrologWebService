@@ -18,7 +18,7 @@ public class DashboardService {
 
     public ComponentDataHolder getComponentByCodigo(@NotNull final Integer codigo) {
         try {
-            return dao.getComponentByCodigo(codigo);
+            return dao.getComponenteByCodigo(codigo);
         } catch (SQLException ex) {
             Log.e(TAG, "Erro ao buscar o componente de código: " + codigo, ex);
             throw new RuntimeException(ex);

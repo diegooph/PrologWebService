@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
@@ -105,7 +105,7 @@ public interface RelatorioPneuDao {
 
     Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
-    List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
+    List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
 
     Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
 

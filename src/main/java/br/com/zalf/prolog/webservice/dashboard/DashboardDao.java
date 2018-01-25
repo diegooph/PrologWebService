@@ -13,7 +13,7 @@ import java.util.List;
 public interface DashboardDao {
 
     @NotNull
-    ComponentDataHolder getComponentByCodigo(@NotNull final Integer codigo) throws SQLException;
+    ComponentDataHolder getComponenteByCodigo(@NotNull final Integer codigo) throws SQLException;
 
     @NotNull
     List<DashComponentResumido> getComponentesColaborador(@NotNull final String userToken) throws SQLException;

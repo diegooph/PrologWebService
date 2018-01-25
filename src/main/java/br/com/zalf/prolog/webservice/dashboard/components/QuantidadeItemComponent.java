@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.dashboard.components;
 
 import br.com.zalf.prolog.webservice.dashboard.Color;
+import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,24 @@ public class QuantidadeItemComponent extends DashboardComponent {
     @NotNull
     private final Color backgroundColor;
 
-    public QuantidadeItemComponent(@NotNull String titulo,
+    public static QuantidadeItemComponent createDefault(@NotNull final ComponentDataHolder component,
+                                                        final int qtdItens) {
+        return new QuantidadeItemComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withQtdItens(String.valueOf(qtdItens))
+                .withBackgroundColor(Color.fromHex(component.corBackgroundHex))
+                .withUrlIcone(component.urlIcone)
+                .build();
+    }
+
+    private QuantidadeItemComponent(@NotNull String titulo,
                                    @Nullable String subtitulo,
                                    @NotNull String descricao,
                                    @NotNull String urlEndpointDados,

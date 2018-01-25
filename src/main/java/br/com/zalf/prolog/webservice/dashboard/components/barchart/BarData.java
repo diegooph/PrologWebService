@@ -6,32 +6,31 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Created on 10/01/18.
+ * Created on 1/25/18
  *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class BarData extends Data {
-
     @NotNull
-    private List<BarGroup> barGroups;
+    private List<BarEntry> barEntries;
 
-    public BarData(@NotNull List<BarGroup> barGroups) {
-        this.barGroups = barGroups;
+    public BarData(@NotNull List<BarEntry> barEntries) {
+        this.barEntries = barEntries;
     }
 
     @NotNull
-    public List<BarGroup> getBarGroups() {
-        return barGroups;
+    public List<BarEntry> getBarEntries() {
+        return barEntries;
     }
 
-    public void setBarGroups(@NotNull List<BarGroup> barGroups) {
-        this.barGroups = barGroups;
+    public void setBarEntries(@NotNull List<BarEntry> barEntries) {
+        this.barEntries = barEntries;
     }
 
     @Override
     public String toString() {
         return "BarData{" +
-                "barGroups=" + barGroups +
+                "barEntries=" + barEntries +
                 '}';
     }
 }

@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 
 import java.io.IOException;
@@ -194,7 +194,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) {
+    public List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) {
         try {
             return dao.getQtAfericoesByTipoByData(DateUtils.toSqlDate(dataInicial), DateUtils.toSqlDate(dataFinal), codUnidades);
         } catch (SQLException e) {
