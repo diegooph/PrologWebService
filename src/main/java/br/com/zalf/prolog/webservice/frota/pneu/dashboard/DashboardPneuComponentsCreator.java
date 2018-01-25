@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
+import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
@@ -43,5 +45,11 @@ final class DashboardPneuComponentsCreator {
                 .withOrdemExibicao(component.ordemExibicao)
                 .withPieData(pieData)
                 .build();
+    }
+
+    @NotNull
+    static QuantidadeItemComponent createQtdPneusPressaoIncorreta(@NotNull final ComponentDataHolder component,
+                                                                  final int qtdPneusPressaoIncorreta) {
+        return QuantidadeItemComponent.createDefault(component, qtdPneusPressaoIncorreta);
     }
 }
