@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/dashboards/pneus")
+@Path("/dashboards/veiculos")
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
