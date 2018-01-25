@@ -33,8 +33,9 @@ final class DashboardPneuComponentsCreator {
                 statusPneu.getSliceColor())));
         final PieData pieData = new PieData(entries);
         return new PieChartComponent.Builder()
-                .withTitulo("Quantidade de pneus por status")
-                .withDescricao("Este gráfico mostra quantos pneus existem em cada estado")
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
                 .withCodTipoComponente(component.codigoTipoComponente)
                 .withUrlEndpointDados(component.urlEndpointDados)
                 .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)

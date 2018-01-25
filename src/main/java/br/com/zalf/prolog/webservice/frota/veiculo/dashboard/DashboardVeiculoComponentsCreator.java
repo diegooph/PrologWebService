@@ -20,17 +20,17 @@ public final class DashboardVeiculoComponentsCreator {
     static QuantidadeItemComponent createQtdVeiculosAtivosComPneuAplicado(@NotNull final ComponentDataHolder component,
                                                                           final int qtdVeiculosAtivosComPneuAplicado) {
         return new QuantidadeItemComponent.Builder()
-                .withTitulo("Quantide de veículos ativos")
-                .withSubtitulo("Apenas veículos que tenham pneus aplicados")
-                .withDescricao("Mostra a quantidade de veículos ativos que possuam ao menos algum pneu aplicado")
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
                 .withCodTipoComponente(component.codigoTipoComponente)
                 .withUrlEndpointDados(component.urlEndpointDados)
                 .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withQtdItens(String.valueOf(qtdVeiculosAtivosComPneuAplicado))
-                .withBackgroundColor(Color.WHITE)
-                .withUrlIcone("TODO: URL DO ÍCONE")
+                .withBackgroundColor(Color.fromHex(component.corBackgroundHex))
+                .withUrlIcone(component.urlIcone)
                 .build();
     }
 }
