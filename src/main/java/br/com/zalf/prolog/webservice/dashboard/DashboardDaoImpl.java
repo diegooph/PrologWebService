@@ -42,7 +42,9 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  DC.QTD_BLOCOS_VERTICAIS AS QTD_BLOCOS_VERTICAIS, " +
                     "  DC.URL_ENDPOINT_DADOS AS URL_ENDPOINT_DADOS, " +
                     "  DC.COR_BACKGROUND_HEX AS COR_BACKGROUND_HEX, " +
-                    "  DC.URL_ICONE AS URL_ICONE " +
+                    "  DC.URL_ICONE AS URL_ICONE, " +
+                    "  DC.LABEL_EIXO_X AS LABEL_EIXO_X, " +
+                    "  DC.LABEL_EIXO_Y AS LABEL_EIXO_Y " +
                     "FROM PUBLIC.DASHBOARD_COMPONENTE DC " +
                     "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO " +
                     "WHERE DC.CODIGO = ?;");
@@ -70,6 +72,8 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                 component.urlEndpointDados = rSet.getString("URL_ENDPOINT_DADOS");
                 component.corBackgroundHex = rSet.getString("COR_BACKGROUND_HEX");
                 component.urlIcone = rSet.getString("URL_ICONE");
+                component.labelEixoX = rSet.getString("LABEL_EIXO_X");
+                component.labelEixoY = rSet.getString("LABEL_EIXO_Y");
                 return component;
             } else {
                 throw new IllegalStateException("Nenhum componente encontrado com o código: " + codigo);
