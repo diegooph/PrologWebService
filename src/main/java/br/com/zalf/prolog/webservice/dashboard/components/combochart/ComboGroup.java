@@ -16,8 +16,14 @@ public class ComboGroup {
     @NotNull
     private List<ComboEntry> comboEntries;
 
-    public ComboGroup(@NotNull String groupDescription,
-                      @NotNull List<ComboEntry> comboEntries) {
+    @NotNull
+    public static ComboGroup create(@NotNull String groupDescription,
+                                    @NotNull List<ComboEntry> comboEntries) {
+        return new ComboGroup(groupDescription, comboEntries);
+    }
+
+    private ComboGroup(@NotNull String groupDescription,
+                       @NotNull List<ComboEntry> comboEntries) {
         this.groupDescription = groupDescription;
         this.comboEntries = comboEntries;
     }

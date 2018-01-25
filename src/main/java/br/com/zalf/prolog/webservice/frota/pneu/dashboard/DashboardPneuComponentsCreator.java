@@ -1,12 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
-import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboData;
+import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboGroup;
+import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -51,5 +56,55 @@ final class DashboardPneuComponentsCreator {
     static QuantidadeItemComponent createQtdPneusPressaoIncorreta(@NotNull final ComponentDataHolder component,
                                                                   final int qtdPneusPressaoIncorreta) {
         return QuantidadeItemComponent.createDefault(component, qtdPneusPressaoIncorreta);
+    }
+
+    @NotNull
+    static VerticalComboChartComponent createQtdAfericoesUltimaSemana(@NotNull final ComponentDataHolder component,
+                                                                      @NotNull final List<QuantidadeAfericao> quantidadeAfericoes) {
+        final List<ComboGroup> groups = new ArrayList<>(quantidadeAfericoes.size());
+        quantidadeAfericoes.forEach(quantidadeAfericao -> {
+            final List<ComboEntry> entries = new ArrayList<>(3 /* 3 tipos de aferição */);
+            // Sulco.
+            entries.add(ComboEntry.create(
+                    quantidadeAfericao.getQtdAfericoesSulco(),
+                    String.valueOf(quantidadeAfericao.getQtdAfericoesSulco()),
+                    0));
+            // Pressão
+            entries.add(ComboEntry.create(
+                    quantidadeAfericao.getQtdAfericoesPressao(),
+                    String.valueOf(quantidadeAfericao.getQtdAfericoesPressao()),
+                    1));
+            // Sulco e Pressão
+            entries.add(ComboEntry.create(
+                    quantidadeAfericao.getQtdAfericoesSulcoPressao(),
+                    String.valueOf(quantidadeAfericao.getQtdAfericoesSulcoPressao()),
+                    2));
+
+            groups.add(ComboGroup.create(
+                    quantidadeAfericao.getData().toString(),
+                    entries));
+        });
+
+        final List<String> legendas = new ArrayList<>(3);
+        legendas.add(TipoAfericao.SULCO.getLegibleString());
+        legendas.add(TipoAfericao.PRESSAO.getLegibleString());
+        legendas.add(TipoAfericao.SULCO_PRESSAO.getLegibleString());
+
+        final ComboData comboData = new ComboData(groups);
+        return new VerticalComboChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withLegendas(legendas)
+                // TODO: Essas labels deveriam estar em banco (DASHBOARD_COMPONENTE)?
+                .withLabelEixoX("Dias")
+                .withLabelEixoY("Quantidade de aferições")
+                .withComboData(comboData)
+                .build();
     }
 }

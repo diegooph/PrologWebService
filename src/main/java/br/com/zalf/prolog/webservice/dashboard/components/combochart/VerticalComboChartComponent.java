@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ComboVerticalComponent extends DashboardComponent {
+public class VerticalComboChartComponent extends DashboardComponent {
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -25,19 +25,19 @@ public class ComboVerticalComponent extends DashboardComponent {
     @NotNull
     private List<String> legendas;
 
-    private ComboVerticalComponent(@NotNull String titulo,
-                                   @Nullable String subtitulo,
-                                   @NotNull String descricao,
-                                   @NotNull String urlEndpointDados,
-                                   @NotNull Integer codTipoComponente,
-                                   int qtdBlocosHorizontais,
-                                   int qtdBlocosVerticais,
-                                   int ordemExibicao,
-                                   @NotNull String labelEixoX,
-                                   @NotNull String labelEixoY,
-                                   @Nullable Double meta,
-                                   @NotNull ComboData comboData,
-                                   @NotNull List<String> legendas) {
+    private VerticalComboChartComponent(@NotNull String titulo,
+                                        @Nullable String subtitulo,
+                                        @NotNull String descricao,
+                                        @NotNull String urlEndpointDados,
+                                        @NotNull Integer codTipoComponente,
+                                        int qtdBlocosHorizontais,
+                                        int qtdBlocosVerticais,
+                                        int ordemExibicao,
+                                        @NotNull String labelEixoX,
+                                        @NotNull String labelEixoY,
+                                        @Nullable Double meta,
+                                        @NotNull ComboData comboData,
+                                        @NotNull List<String> legendas) {
         super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
                 qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
@@ -94,7 +94,7 @@ public class ComboVerticalComponent extends DashboardComponent {
 
     @Override
     public String toString() {
-        return "ComboVerticalComponent{" +
+        return "VerticalComboChartComponent{" +
                 "labelEixoX='" + labelEixoX + '\'' +
                 ", labelEixoY='" + labelEixoY + '\'' +
                 ", meta=" + meta +
@@ -175,7 +175,7 @@ public class ComboVerticalComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withBarData(@NotNull ComboData comboData) {
+        public Builder withComboData(@NotNull ComboData comboData) {
             this.comboData = comboData;
             return this;
         }
@@ -186,13 +186,13 @@ public class ComboVerticalComponent extends DashboardComponent {
         }
 
         @Override
-        public DashboardComponent build() {
+        public VerticalComboChartComponent build() {
             ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(comboData, "meta deve ser instanciada com 'withBarData'");
+            Preconditions.checkNotNull(comboData, "meta deve ser instanciada com 'withComboData'");
             Preconditions.checkNotNull(legendas, "meta deve ser instanciada com 'withLegendas'");
-            return new ComboVerticalComponent(
+            return new VerticalComboChartComponent(
                     titulo,
                     subtitulo,
                     descricao,
