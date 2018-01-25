@@ -320,7 +320,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt = conn.prepareStatement("INSERT INTO movimentacao_destino(cod_movimentacao, " +
                     "tipo_destino, placa, km_veiculo, posicao_pneu_destino," +
                     " cod_motivo_descarte, url_imagem_descarte_1, url_imagem_descarte_2, url_imagem_descarte_3) " +
-                    "values (?,?,?,?,?)");
+                    "values (?,?,?,?,?, ?, ?, ?, ?)");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, movimentacao.getDestino().getTipo());
             if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
