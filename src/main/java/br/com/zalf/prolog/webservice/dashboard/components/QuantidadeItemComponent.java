@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard.components;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
@@ -15,14 +16,27 @@ import org.jetbrains.annotations.Nullable;
 public class QuantidadeItemComponent extends DashboardComponent {
 
     @NotNull
-    private String qtdItens;
+    private final String qtdItens;
     @NotNull
-    private String urlIcone;
+    private final String urlIcone;
     @NotNull
-    private String backgroundColor;
+    private final Color backgroundColor;
 
-    public QuantidadeItemComponent(@NotNull String titulo, @Nullable String subtitulo, @NotNull String descricao, @NotNull String urlEndpointDados, @NotNull Integer codTipoComponente, int qtdBlocosHorizontais, int qtdBlocosVerticais, int ordem) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+    public QuantidadeItemComponent(@NotNull String titulo,
+                                   @Nullable String subtitulo,
+                                   @NotNull String descricao,
+                                   @NotNull String urlEndpointDados,
+                                   @NotNull Integer codTipoComponente,
+                                   int qtdBlocosHorizontais,
+                                   int qtdBlocosVerticais,
+                                   int ordemExibicao,
+                                   @NotNull String qtdItens,
+                                   @NotNull String urlIcone,
+                                   @NotNull Color backgroundColor) {
+        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        this.qtdItens = qtdItens;
+        this.urlIcone = urlIcone;
+        this.backgroundColor = backgroundColor;
     }
 
     @NotNull
@@ -30,26 +44,14 @@ public class QuantidadeItemComponent extends DashboardComponent {
         return qtdItens;
     }
 
-    public void setQtdItens(@NotNull String qtdItens) {
-        this.qtdItens = qtdItens;
-    }
-
     @NotNull
     public String getUrlIcone() {
         return urlIcone;
     }
 
-    public void setUrlIcone(@NotNull String urlIcone) {
-        this.urlIcone = urlIcone;
-    }
-
     @NotNull
-    public String getBackgroundColor() {
+    public Color getBackgroundColor() {
         return backgroundColor;
-    }
-
-    public void setBackgroundColor(@NotNull String backgroundColor) {
-        this.backgroundColor = backgroundColor;
     }
 
     @Override
@@ -62,19 +64,11 @@ public class QuantidadeItemComponent extends DashboardComponent {
     }
 
     public static class Builder extends BaseComponentBuilder {
-        private String titulo;
-        private String subtitulo;
-        private String descricao;
         private String qtdItens;
         private String urlIcone;
-        private String backgroundColor;
+        private Color backgroundColor;
 
         public Builder() {}
-
-        public Builder(@NotNull String titulo, @NotNull String descricao) {
-            this.titulo = titulo;
-            this.descricao = descricao;
-        }
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
@@ -95,13 +89,33 @@ public class QuantidadeItemComponent extends DashboardComponent {
         }
 
         @Override
-        public DashboardComponentBuilder withUrlEndpointDados(@NotNull String urlEndpointDados) {
-            return null;
+        public Builder withUrlEndpointDados(@NotNull String urlEndpointDados) {
+            super.withUrlEndpointDados(urlEndpointDados);
+            return this;
         }
 
         @Override
-        public DashboardComponentBuilder withCodTipoComponente(@NotNull Integer codTipoComponente) {
-            return null;
+        public Builder withCodTipoComponente(@NotNull Integer codTipoComponente) {
+            super.withCodTipoComponente(codTipoComponente);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+            super.withQtdBlocosHorizontais(qtdBlocosHorizontais);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+            super.withQtdBlocosVerticais(qtdBlocosVerticais);
+            return this;
+        }
+
+        @Override
+        public Builder withOrdemExibicao(int ordemExibicao) {
+            super.withOrdemExibicao(ordemExibicao);
+            return this;
         }
 
         public Builder withQtdItens(@NotNull String qtdItens) {
@@ -114,17 +128,29 @@ public class QuantidadeItemComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withBackgroundColor(@NotNull String backgroundColor) {
+        public Builder withBackgroundColor(@NotNull Color backgroundColor) {
             this.backgroundColor = backgroundColor;
             return this;
         }
 
         @Override
-        public DashboardComponent build() {
+        public QuantidadeItemComponent build() {
+            ensureNotNullValues();
             Preconditions.checkNotNull(qtdItens, "qtdItens deve ser instanciada com 'withQtdItens'");
             Preconditions.checkNotNull(urlIcone, "urlIcone deve ser instanciada com 'withUrlIcone'");
             Preconditions.checkNotNull(backgroundColor, "backgroundColor deve ser instanciada com 'withBackgroundColor'");
-            return  null;
+            return new QuantidadeItemComponent(
+                    titulo,
+                    subtitulo,
+                    descricao,
+                    urlEndpointDados,
+                    codTipoComponente,
+                    qtdBlocosHorizontais,
+                    qtdBlocosVerticais,
+                    ordemExibicao,
+                    qtdItens,
+                    urlIcone,
+                    backgroundColor);
         }
     }
 }

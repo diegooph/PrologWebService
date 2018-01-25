@@ -22,6 +22,7 @@ final class DashboardPneuComponentsCreator {
         throw new IllegalStateException(DashboardPneuComponentsCreator.class.getSimpleName() + " cannot be instatiated!");
     }
 
+    @NotNull
     static PieChartComponent createQtdPneusByStatus(@NotNull final ComponentDataHolder component,
                                                     @NotNull final Map<StatusPneu, Integer> qtdPneusStatus) {
         final List<PieEntry> entries = new ArrayList<>(qtdPneusStatus.size());
@@ -32,8 +33,9 @@ final class DashboardPneuComponentsCreator {
                 statusPneu.getSliceColor())));
         final PieData pieData = new PieData(entries);
         return new PieChartComponent.Builder()
-                .withTitulo("Quantidade de pneus por status")
-                .withDescricao("Este gráfico mostra quantos pneus existem em cada estado")
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
                 .withCodTipoComponente(component.codigoTipoComponente)
                 .withUrlEndpointDados(component.urlEndpointDados)
                 .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)

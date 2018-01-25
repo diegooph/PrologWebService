@@ -78,6 +78,7 @@ public final class Pilares {
 
             public static final int PNEU = 110;
             public static final int CHECKLIST = 121;
+            public static final int VEICULO = 122;
         }
     }
 

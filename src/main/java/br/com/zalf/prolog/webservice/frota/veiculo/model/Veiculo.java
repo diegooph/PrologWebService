@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,9 @@ public class Veiculo {
     private ModeloVeiculo modelo;
     private TipoVeiculo tipo;
 
+    /**
+     * Depreciado em 22/05/2017. O aplicativo utilizava esse campo nessa época para desenhar o veículo na tela.
+     */
     @Deprecated
     private Eixos eixos;
     private long kmAtual;
@@ -118,7 +121,7 @@ public class Veiculo {
 
     @NotNull
     public List<Pneu> getEstepes() {
-        List<Pneu> estepes = new ArrayList<>();
+        final List<Pneu> estepes = new ArrayList<>();
 
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < listPneus.size(); i++) {
