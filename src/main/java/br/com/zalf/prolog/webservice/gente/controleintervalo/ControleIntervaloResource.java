@@ -121,6 +121,9 @@ public class ControleIntervaloResource {
         return service.getIntervalosColaborador(cpf, codTipo, limit, offset);
     }
 
+    /**
+     * @Deprecated at 08/09/17
+     */
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
@@ -134,6 +137,9 @@ public class ControleIntervaloResource {
         }
     }
 
+    /**
+     * @Deprecated at 08/09/17
+     */
     @PUT
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}")
