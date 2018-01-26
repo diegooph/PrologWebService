@@ -5,17 +5,27 @@ package br.com.zalf.prolog.webservice.dashboard;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class DashComponentResumido {
+public final class DashboardComponentResumido {
+    private Integer codigoComponente;
     private String titulo;
     private String subtitulo;
     private String urlEndpointDados;
+
     private int codPilarProLog;
     private int qtdBlocosHorizontais;
     private int qtdBlocosVerticais;
     private int ordem;
 
-    public DashComponentResumido() {
+    public DashboardComponentResumido() {
 
+    }
+
+    public Integer getCodigoComponente() {
+        return codigoComponente;
+    }
+
+    public void setCodigoComponente(Integer codigoComponente) {
+        this.codigoComponente = codigoComponente;
     }
 
     public String getTitulo() {

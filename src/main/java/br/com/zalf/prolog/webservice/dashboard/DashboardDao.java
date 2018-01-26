@@ -16,5 +16,5 @@ public interface DashboardDao {
     ComponentDataHolder getComponenteByCodigo(@NotNull final Integer codigo) throws SQLException;
 
     @NotNull
-    List<DashComponentResumido> getComponentesColaborador(@NotNull final String userToken) throws SQLException;
+    List<DashboardComponentResumido> getComponentesColaborador(@NotNull final String userToken) throws SQLException;
 }

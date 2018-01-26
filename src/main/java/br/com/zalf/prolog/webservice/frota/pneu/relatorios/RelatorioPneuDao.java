@@ -2,10 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -107,9 +105,9 @@ public interface RelatorioPneuDao {
 
     List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
+    Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException;
+    StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
 
     Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
 

@@ -105,7 +105,7 @@ public class ColaboradorService {
 				loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
 				final RelatoDao relatoDao = Injection.provideRelatoDao();
 				loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
-						colaborador.getCodUnidade(),
+						colaborador.getUnidade().getCodigo(),
 						colaborador.getSetor().getCodigo()));
 			}
 

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
@@ -68,6 +69,32 @@ public final class DashboardPneuService {
                     "dataInicial: %s \n" +
                     "dataFinal: %s \n" +
                     "unidades: %s", dataInicial.toString(), dataFinal, codUnidades.toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public VerticalBarChartComponent getServicosEmAbertoByTipo(@NotNull final Integer codComponente,
+                                                               @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createServicosEmAbertoByTipo(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getServicosEmAbertoByTipo(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
+                    "unidades:" + codUnidades.toString(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public PieChartComponent getStatusPlacasAfericao(@NotNull final Integer codComponente,
+                                                     @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createStatusPlacaAfericao(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getStatusPlacasAfericao(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida e no prazo. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
             throw new RuntimeException(e);
         }
     }

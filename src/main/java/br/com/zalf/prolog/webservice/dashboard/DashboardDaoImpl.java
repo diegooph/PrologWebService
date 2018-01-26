@@ -85,7 +85,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
 
     @NotNull
     @Override
-    public List<DashComponentResumido> getComponentesColaborador(@NotNull String userToken) throws SQLException {
+    public List<DashboardComponentResumido> getComponentesColaborador(@NotNull String userToken) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -106,10 +106,11 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE;");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
-            final List<DashComponentResumido> components = new ArrayList<>();
+            final List<DashboardComponentResumido> components = new ArrayList<>();
             if (rSet.next()) {
                 do {
-                    final DashComponentResumido componentResumido = new DashComponentResumido();
+                    final DashboardComponentResumido componentResumido = new DashboardComponentResumido();
+                    componentResumido.setCodigoComponente(rSet.getInt("CODIGO_COMPONENTE"));
                     componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
                     componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
 //                    componentResumido.setOrdemExibicao(rSet.getInt("ORDEM_COMPONENTE"));

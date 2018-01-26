@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.barchart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
     @NotNull
     private BarData barData;
 
-    public VerticalBarChartComponent(@NotNull String titulo,
+    private VerticalBarChartComponent(@NotNull String titulo,
                                      @Nullable String subtitulo,
                                      @NotNull String descricao,
                                      @NotNull String urlEndpointDados,
@@ -48,19 +49,19 @@ public class VerticalBarChartComponent extends DashboardComponent {
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
-            this.titulo = titulo;
+            super.withTitulo(titulo);
             return this;
         }
 
         @Override
         public Builder withSubtitulo(@Nullable String subtitulo) {
-            this.subtitulo = subtitulo;
+            super.withSubtitulo(subtitulo);
             return this;
         }
 
         @Override
         public Builder withDescricao(@NotNull String descricao) {
-            this.descricao = descricao;
+            super.withDescricao(descricao);
             return this;
         }
 
@@ -94,10 +95,45 @@ public class VerticalBarChartComponent extends DashboardComponent {
             return this;
         }
 
+        public Builder withLabelEixoX(@NotNull String labelEixoX) {
+            this.labelEixoX = labelEixoX;
+            return this;
+        }
+
+        public Builder withLabelEixoY(@NotNull String labelEixoY) {
+            this.labelEixoY = labelEixoY;
+            return this;
+        }
+
+        public Builder withMeta(@NotNull Double meta) {
+            this.meta = meta;
+            return this;
+        }
+
+        public Builder withBarData(@NotNull BarData barData) {
+            this.barData = barData;
+            return this;
+        }
+
         @Override
-        public DashboardComponent build() {
+        public VerticalBarChartComponent build() {
             ensureNotNullValues();
-            return null;
+            Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
+            Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
+            Preconditions.checkNotNull(barData, "barData deve ser instanciada com 'withBarData'");
+            return new VerticalBarChartComponent(
+                    titulo,
+                    subtitulo,
+                    descricao,
+                    urlEndpointDados,
+                    codTipoComponente,
+                    qtdBlocosHorizontais,
+                    qtdBlocosVerticais,
+                    ordemExibicao,
+                    labelEixoX,
+                    labelEixoY,
+                    meta,
+                    barData);
         }
     }
 }

@@ -5,10 +5,8 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -206,19 +204,19 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) {
+    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) {
         try {
             return dao.getServicosEmAbertoByTipo(codUnidades);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
-                    "unidades:", codUnidades.toString()),e);
-            throw new RuntimeException();
+            Log.e(TAG, "Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
+                    "unidades:" + codUnidades.toString(), e);
+            throw new RuntimeException(e);
         }
     }
 
-    public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) {
+    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) {
         try {
-            return dao.getQtdPlacasAfericaoVencida(codUnidades);
+            return dao.getStatusPlacasAfericao(codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida. \n" +
                     "unidade: %s", codUnidades.toString()), e);
