@@ -197,4 +197,10 @@ final class DashboardPneuComponentsCreator {
         final TableData tableData = new TableData(lines);
         return TableComponent.createDefault(component, tableHeader, tableData);
     }
+
+    @NotNull
+    static Map<String, Double> createMenorSulcoPneus(@NotNull final ComponentDataHolder component,
+                                                     @NotNull final Map<String, Double> pneuMenorSulco) {
+        return null;
+    }
 }

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 1/22/18
@@ -121,6 +122,19 @@ public final class DashboardPneuService {
                     relatorioDao.getQtdKmRodadoComServicoEmAberto(codUnidades));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Double> getMenorSulcoPneus(@NotNull final Integer codComponente,
+                                                  @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createMenorSulcoPneus(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getMenorSulcoPneus(codUnidades));
+        } catch (SQLException e){
+            Log.e(TAG, String.format("Erro ao buscar o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades.toString()), e);
             throw new RuntimeException(e);
         }

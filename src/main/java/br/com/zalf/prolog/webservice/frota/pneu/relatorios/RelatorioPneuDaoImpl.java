@@ -986,11 +986,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return total;
     }
 
-    public Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) throws SQLException {
+    public Map<String, Double> getMenorSulcoPneus(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Double> resultados = new LinkedHashMap<>();
+        final Map<String, Double> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT p.codigo as cod_pneu, " +
@@ -1001,7 +1001,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                resultados.put(rSet.getString("cod_pneu"),
+                resultados.put(
+                        rSet.getString("cod_pneu"),
                         rSet.getDouble("menor_sulco"));
             }
         } finally {

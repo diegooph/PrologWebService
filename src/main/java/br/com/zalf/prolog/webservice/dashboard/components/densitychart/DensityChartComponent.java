@@ -2,12 +2,9 @@ package br.com.zalf.prolog.webservice.dashboard.components.densitychart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Created on 10/01/18.
@@ -21,11 +18,9 @@ public class DensityChartComponent extends DashboardComponent {
     @NotNull
     private String labelEixoY;
     @NotNull
-    private List<String> legendas;
-    @NotNull
     private DensityData data;
 
-    public DensityChartComponent(@NotNull String titulo,
+    private DensityChartComponent(@NotNull String titulo,
                                  @Nullable String subtitulo,
                                  @NotNull String descricao,
                                  @NotNull String urlEndpointDados,
@@ -35,12 +30,10 @@ public class DensityChartComponent extends DashboardComponent {
                                  int ordemExibicao,
                                  @NotNull String labelEixoX,
                                  @NotNull String labelEixoY,
-                                 @NotNull List<String> legendas,
                                  @NotNull DensityData data) {
         super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
-        this.legendas = legendas;
         this.data = data;
     }
 
@@ -63,15 +56,6 @@ public class DensityChartComponent extends DashboardComponent {
     }
 
     @NotNull
-    public List<String> getLegendas() {
-        return legendas;
-    }
-
-    public void setLegendas(@NotNull List<String> legendas) {
-        this.legendas = legendas;
-    }
-
-    @NotNull
     public DensityData getData() {
         return data;
     }
@@ -85,25 +69,17 @@ public class DensityChartComponent extends DashboardComponent {
         return "DensityChartComponent{" +
                 "labelEixoX='" + labelEixoX + '\'' +
                 ", labelEixoY='" + labelEixoY + '\'' +
-                ", legendas=" + legendas +
-                ", data=" + data +
+                ", densityData=" + data +
                 '}';
     }
 
     public static class Builder extends BaseComponentBuilder {
-        private String titulo;
-        private String subtitulo;
-        private String descricao;
         private String labelEixoX;
         private String labelEixoY;
-        private DensityData data;
-        private List<String> legendas;
+        private DensityData densityData;
 
-        public Builder() {}
+        public Builder() {
 
-        public Builder(@NotNull String titulo, @NotNull String descricao) {
-            this.titulo = titulo;
-            this.descricao = descricao;
         }
 
         @Override
@@ -125,13 +101,33 @@ public class DensityChartComponent extends DashboardComponent {
         }
 
         @Override
-        public DashboardComponentBuilder withUrlEndpointDados(@NotNull String urlEndpointDados) {
-            return null;
+        public Builder withUrlEndpointDados(@NotNull String urlEndpointDados) {
+            super.withUrlEndpointDados(urlEndpointDados);
+            return this;
         }
 
         @Override
-        public DashboardComponentBuilder withCodTipoComponente(@NotNull Integer codTipoComponente) {
-            return null;
+        public Builder withCodTipoComponente(@NotNull Integer codTipoComponente) {
+            super.withCodTipoComponente(codTipoComponente);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+            super.withQtdBlocosHorizontais(qtdBlocosHorizontais);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+            super.withQtdBlocosVerticais(qtdBlocosVerticais);
+            return this;
+        }
+
+        @Override
+        public Builder withOrdemExibicao(int ordemExibicao) {
+            super.withOrdemExibicao(ordemExibicao);
+            return this;
         }
 
         public Builder withLabelEixoX(@NotNull String labelEixoX) {
@@ -145,22 +141,28 @@ public class DensityChartComponent extends DashboardComponent {
         }
 
         public Builder withDensityData(@NotNull DensityData data) {
-            this.data = data;
-            return this;
-        }
-
-        public Builder withLegendas(@NotNull List<String> legendas) {
-            this.legendas = legendas;
+            this.densityData = data;
             return this;
         }
 
         @Override
-        public DashboardComponent build() {
+        public DensityChartComponent build() {
+            ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(data, "data deve ser instanciada com 'withDensityData'");
-            Preconditions.checkNotNull(legendas, "meta deve ser instanciada com 'withLegendas'");
-            return null;
+            Preconditions.checkNotNull(densityData, "densityData deve ser instanciada com 'withDensityData'");
+            return new DensityChartComponent(
+                    titulo,
+                    subtitulo,
+                    descricao,
+                    urlEndpointDados,
+                    codTipoComponente,
+                    qtdBlocosHorizontais,
+                    qtdBlocosVerticais,
+                    ordemExibicao,
+                    labelEixoX,
+                    labelEixoY,
+                    densityData);
         }
     }
 }

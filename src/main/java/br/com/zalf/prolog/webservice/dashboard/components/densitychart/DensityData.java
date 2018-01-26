@@ -11,7 +11,6 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class DensityData extends Data {
-
     @NotNull
     private List<DensityGroup> densityGroup;
 

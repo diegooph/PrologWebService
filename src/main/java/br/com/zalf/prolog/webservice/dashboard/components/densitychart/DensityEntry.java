@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class DensityEntry extends Entry {
-
     private double x;
     @NotNull
     private String representacaoX;

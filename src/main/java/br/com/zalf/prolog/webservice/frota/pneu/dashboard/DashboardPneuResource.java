@@ -75,14 +75,15 @@ public final class DashboardPneuResource {
     }
 
     @GET
-    @Path("media-tempo-conserto-servicos-por-tipo")
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
+    @Path("menor-sulco-pneus/{codComponente}")
+    public Map<String, Double> getMenorSulcoPneu(@PathParam("codComponente") Integer codComponente,
+                                                 @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getMenorSulcoPneus(codComponente, codUnidades);
     }
 
     @GET
-    @Path("listagem-menor-sulco-pneus")
-    public Map<String, Double> getMenorSulcoPneu(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getMenorSulcoPneu(codUnidades);
+    @Path("media-tempo-conserto-servicos-por-tipo")
+    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
     }
 }

@@ -13,9 +13,12 @@ public class DensityGroup {
 
     @NotNull
     private List<DensityEntry> densityEntries;
+    @NotNull
+    private String descricaoGrupo;
 
-    public DensityGroup(@NotNull List<DensityEntry> densityEntries) {
+    public DensityGroup(@NotNull List<DensityEntry> densityEntries, @NotNull String descricaoGrupo) {
         this.densityEntries = densityEntries;
+        this.descricaoGrupo = descricaoGrupo;
     }
 
     @NotNull
@@ -27,10 +30,20 @@ public class DensityGroup {
         this.densityEntries = densityEntries;
     }
 
+    @NotNull
+    public String getDescricaoGrupo() {
+        return descricaoGrupo;
+    }
+
+    public void setDescricaoGrupo(@NotNull String descricaoGrupo) {
+        this.descricaoGrupo = descricaoGrupo;
+    }
+
     @Override
     public String toString() {
         return "DensityGroup{" +
                 "densityEntries=" + densityEntries +
+                ", descricaoGrupo='" + descricaoGrupo + '\'' +
                 '}';
     }
 }
