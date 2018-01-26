@@ -15,7 +15,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class DensityChartComponent extends DashboardComponent {
-
+    private static final String TIPO = "GRAFICO_DENSIDADE";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -25,8 +25,19 @@ public class DensityChartComponent extends DashboardComponent {
     @NotNull
     private DensityData data;
 
-    public DensityChartComponent(@NotNull String titulo, @Nullable String subtitulo, @NotNull String descricao, @NotNull String urlEndpointDados, @NotNull Integer codTipoComponente, int qtdBlocosHorizontais, int qtdBlocosVerticais, int ordem, @NotNull String labelEixoX, @NotNull String labelEixoY, @NotNull List<String> legendas, @NotNull DensityData data) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+    public DensityChartComponent(@NotNull String titulo,
+                                 @Nullable String subtitulo,
+                                 @NotNull String descricao,
+                                 @NotNull String urlEndpointDados,
+                                 @NotNull Integer codTipoComponente,
+                                 int qtdBlocosHorizontais,
+                                 int qtdBlocosVerticais,
+                                 int ordemExibicao,
+                                 @NotNull String labelEixoX,
+                                 @NotNull String labelEixoY,
+                                 @NotNull List<String> legendas,
+                                 @NotNull DensityData data) {
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
         this.legendas = legendas;

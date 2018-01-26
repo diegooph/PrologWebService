@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class PieChartComponent extends DashboardComponent {
-
+    private static final String TIPO = "GRAFICO_SETORES";
     @NotNull
     private PieData pieData;
 
@@ -26,7 +26,7 @@ public class PieChartComponent extends DashboardComponent {
                              int qtdBlocosVerticais,
                              int ordem,
                              @NotNull PieData pieData) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
         this.pieData = pieData;
     }
 

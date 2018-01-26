@@ -14,6 +14,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class VerticalComboChartComponent extends DashboardComponent {
+    private static final String TIPO = "GRAFICO_BARRAS_VERTICAIS_AGRUPADAS";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -38,7 +39,7 @@ public class VerticalComboChartComponent extends DashboardComponent {
                                         @Nullable Double meta,
                                         @NotNull ComboData comboData,
                                         @NotNull List<String> legendas) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
                 qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class TableComponent extends DashboardComponent {
+    private static final String TIPO = "TABELA";
     @NotNull
     private TableHeader tableHeader;
     @NotNull
@@ -27,7 +28,7 @@ public class TableComponent extends DashboardComponent {
                            int ordemExibicao,
                            @NotNull TableHeader tableHeader,
                            @NotNull TableData tableData) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
     }

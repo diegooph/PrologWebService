@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class VerticalBarChartComponent extends DashboardComponent {
+    private static final String TIPO = "GRAFICO_BARRAS_VERTICAIS";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -22,18 +23,18 @@ public class VerticalBarChartComponent extends DashboardComponent {
     private BarData barData;
 
     private VerticalBarChartComponent(@NotNull String titulo,
-                                     @Nullable String subtitulo,
-                                     @NotNull String descricao,
-                                     @NotNull String urlEndpointDados,
-                                     @NotNull Integer codTipoComponente,
-                                     int qtdBlocosHorizontais,
-                                     int qtdBlocosVerticais,
-                                     int ordemExibicao,
-                                     @NotNull String labelEixoX,
-                                     @NotNull String labelEixoY,
-                                     @Nullable Double meta,
-                                     @NotNull BarData barData) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
+                                      @Nullable String subtitulo,
+                                      @NotNull String descricao,
+                                      @NotNull String urlEndpointDados,
+                                      @NotNull Integer codTipoComponente,
+                                      int qtdBlocosHorizontais,
+                                      int qtdBlocosVerticais,
+                                      int ordemExibicao,
+                                      @NotNull String labelEixoX,
+                                      @NotNull String labelEixoY,
+                                      @Nullable Double meta,
+                                      @NotNull BarData barData) {
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
                 qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class QuantidadeItemComponent extends DashboardComponent {
-
+    private static final String TIPO = "QUANTIDADE_ITENS";
     @NotNull
     private final String qtdItens;
     @NotNull
@@ -40,17 +40,17 @@ public class QuantidadeItemComponent extends DashboardComponent {
     }
 
     private QuantidadeItemComponent(@NotNull String titulo,
-                                   @Nullable String subtitulo,
-                                   @NotNull String descricao,
-                                   @NotNull String urlEndpointDados,
-                                   @NotNull Integer codTipoComponente,
-                                   int qtdBlocosHorizontais,
-                                   int qtdBlocosVerticais,
-                                   int ordemExibicao,
-                                   @NotNull String qtdItens,
-                                   @NotNull String urlIcone,
-                                   @NotNull Color backgroundColor) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+                                    @Nullable String subtitulo,
+                                    @NotNull String descricao,
+                                    @NotNull String urlEndpointDados,
+                                    @NotNull Integer codTipoComponente,
+                                    int qtdBlocosHorizontais,
+                                    int qtdBlocosVerticais,
+                                    int ordemExibicao,
+                                    @NotNull String qtdItens,
+                                    @NotNull String urlIcone,
+                                    @NotNull Color backgroundColor) {
+        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.qtdItens = qtdItens;
         this.urlIcone = urlIcone;
         this.backgroundColor = backgroundColor;
