@@ -138,19 +138,7 @@ final class DashboardPneuComponentsCreator {
                 null));
 
         final BarData barData = new BarData(entries);
-        return new VerticalBarChartComponent.Builder()
-                .withTitulo(component.tituloComponente)
-                .withSubtitulo(component.subtituloComponente)
-                .withDescricao(component.descricaoComponente)
-                .withCodTipoComponente(component.codigoTipoComponente)
-                .withUrlEndpointDados(component.urlEndpointDados)
-                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
-                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
-                .withOrdemExibicao(component.ordemExibicao)
-                .withLabelEixoX(component.labelEixoX)
-                .withLabelEixoY(component.labelEixoY)
-                .withBarData(barData)
-                .build();
+        return VerticalBarChartComponent.createDefault(component, barData, null);
     }
 
     @NotNull
@@ -231,5 +219,37 @@ final class DashboardPneuComponentsCreator {
                 .withLabelEixoY(component.labelEixoY)
                 .withDensityData(data)
                 .build();
+    }
+
+    @NotNull
+    static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder component,
+                                                                            @NotNull final Map<TipoServico, Integer> tipoServicoHorasConserto) {
+        final List<BarEntry> entries = new ArrayList<>(tipoServicoHorasConserto.size());
+
+        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+        // Calibragem.
+        entries.add(BarEntry.create(
+                tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
+                String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
+                0,
+                TipoServico.CALIBRAGEM.asString(),
+                null));
+        // Inspeção.
+        entries.add(BarEntry.create(
+                tipoServicoHorasConserto.get(TipoServico.INSPECAO),
+                String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
+                1,
+                TipoServico.INSPECAO.asString(),
+                null));
+        // Movimentação.
+        entries.add(BarEntry.create(
+                tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
+                String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
+                2,
+                TipoServico.MOVIMENTACAO.asString(),
+                null));
+
+        final BarData barData = new BarData(entries);
+        return VerticalBarChartComponent.createDefault(component, barData, null);
     }
 }

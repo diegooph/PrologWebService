@@ -109,7 +109,7 @@ public interface RelatorioPneuDao {
 
     StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+    Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
 
     Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException;
 

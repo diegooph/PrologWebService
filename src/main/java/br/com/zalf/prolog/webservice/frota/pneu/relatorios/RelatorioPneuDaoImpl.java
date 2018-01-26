@@ -882,21 +882,23 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return null;
     }
 
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
+    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Integer> resultados = new LinkedHashMap<>();
+        final Map<TipoServico, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT am.tipo_servico, avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas\n" +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo\n" +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL\n" +
+            stmt = conn.prepareStatement("SELECT am.tipo_servico, " +
+                    "avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas " +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo " +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
                     "GROUP BY am.tipo_servico;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                resultados.put(rSet.getString("tipo_servico"),
+                resultados.put(
+                        TipoServico.fromString(rSet.getString("tipo_servico")),
                         rSet.getInt("md_tempo_conserto_horas"));
             }
         } finally {

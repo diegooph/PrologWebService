@@ -13,7 +13,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Zart on 09/01/2018.
@@ -83,8 +82,9 @@ public final class DashboardPneuResource {
     }
 
     @GET
-    @Path("media-tempo-conserto-servicos-por-tipo")
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
+    @Path("media-tempo-conserto-servicos-por-tipo/{codComponente}")
+    public VerticalBarChartComponent getMdTempoConsertoServicoPorTipo(@PathParam("codComponente") Integer codComponente,
+                                                                      @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getMediaTempoConsertoServicoPorTipo(codComponente, codUnidades);
     }
 }

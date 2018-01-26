@@ -224,13 +224,13 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) {
+    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) {
         try {
-            return dao.getMdTempoConsertoServicoPorTipo(codUnidades);
+            return dao.getMediaTempoConsertoServicoPorTipo(codUnidades);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a md de tempo de conserto dos serviços (pneus). \n" +
-                    "unidades: %s.", codUnidades), e);
-            throw new RuntimeException();
+            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos serviços (pneus). \n" +
+                    "unidades: %s.", codUnidades.toString()), e);
+            throw new RuntimeException(e);
         }
     }
 

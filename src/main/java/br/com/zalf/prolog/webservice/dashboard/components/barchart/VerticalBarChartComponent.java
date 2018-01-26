@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard.components.barchart;
 
+import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import com.google.common.base.Preconditions;
@@ -21,6 +22,26 @@ public class VerticalBarChartComponent extends DashboardComponent {
     private Double meta;
     @NotNull
     private BarData barData;
+
+    @NotNull
+    public static VerticalBarChartComponent createDefault(@NotNull final ComponentDataHolder component,
+                                                          @NotNull final BarData barData,
+                                                          @Nullable final Double meta) {
+        return new VerticalBarChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withLabelEixoX(component.labelEixoX)
+                .withLabelEixoY(component.labelEixoY)
+                .withBarData(barData)
+                .withMeta(meta)
+                .build();
+    }
 
     private VerticalBarChartComponent(@NotNull String titulo,
                                       @Nullable String subtitulo,
@@ -106,7 +127,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withMeta(@NotNull Double meta) {
+        public Builder withMeta(@Nullable Double meta) {
             this.meta = meta;
             return this;
         }

@@ -110,7 +110,7 @@ public final class DashboardPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a lista com as placas e qtd de pneus abaixo do limite. \n" +
                     "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -136,6 +136,19 @@ public final class DashboardPneuService {
         } catch (SQLException e){
             Log.e(TAG, String.format("Erro ao buscar o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public VerticalBarChartComponent getMediaTempoConsertoServicoPorTipo(@NotNull final Integer codComponente,
+                                                                         @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createMediaTempoConsertoServicoPorTipo(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getMediaTempoConsertoServicoPorTipo(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos serviços (pneus). \n" +
+                    "unidades: %s.", codUnidades.toString()), e);
             throw new RuntimeException(e);
         }
     }
