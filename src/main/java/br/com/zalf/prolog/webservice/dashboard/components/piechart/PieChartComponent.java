@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard.components.piechart;
 
 
+import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import com.google.common.base.Preconditions;
@@ -17,15 +18,30 @@ public class PieChartComponent extends DashboardComponent {
     @NotNull
     private PieData pieData;
 
-    public PieChartComponent(@NotNull String titulo,
-                             @Nullable String subtitulo,
-                             @NotNull String descricao,
-                             @NotNull String urlEndpointDados,
-                             @NotNull Integer codTipoComponente,
-                             int qtdBlocosHorizontais,
-                             int qtdBlocosVerticais,
-                             int ordem,
-                             @NotNull PieData pieData) {
+    public static PieChartComponent createDefault(@NotNull final ComponentDataHolder component,
+                                                  @NotNull final PieData pieData) {
+        return new PieChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withPieData(pieData)
+                .build();
+    }
+
+    private PieChartComponent(@NotNull String titulo,
+                              @Nullable String subtitulo,
+                              @NotNull String descricao,
+                              @NotNull String urlEndpointDados,
+                              @NotNull Integer codTipoComponente,
+                              int qtdBlocosHorizontais,
+                              int qtdBlocosVerticais,
+                              int ordem,
+                              @NotNull PieData pieData) {
         super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
         this.pieData = pieData;
     }

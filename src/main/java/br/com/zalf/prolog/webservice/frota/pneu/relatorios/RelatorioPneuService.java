@@ -236,7 +236,7 @@ public class RelatorioPneuService {
 
     public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) {
         try {
-            return dao.getQtKmRodadoServicoAberto(codUnidades);
+            return dao.getQtdKmRodadoComServicoEmAberto(codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
                     "unidades: %s", codUnidades.toString()), e);

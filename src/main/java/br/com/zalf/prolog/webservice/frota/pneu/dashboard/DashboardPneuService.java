@@ -112,4 +112,17 @@ public final class DashboardPneuService {
             throw new RuntimeException();
         }
     }
+
+    public TableComponent getQtdKmRodadoComServicoEmAberto(@NotNull final Integer codComponente,
+                                                           @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createQtdKmRodadoComServicoEmAberto(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtdKmRodadoComServicoEmAberto(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
 }

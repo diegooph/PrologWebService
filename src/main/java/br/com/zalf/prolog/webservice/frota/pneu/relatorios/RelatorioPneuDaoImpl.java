@@ -906,24 +906,28 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) throws SQLException {
+    public Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Integer> resultados = new LinkedHashMap<>();
+        final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT\n" +
-                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km \n" +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao\n" +
-                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade\n" +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND (am.tipo_servico LIKE 'calibragem' OR am.tipo_servico like 'inspecao')\n" +
-                    "GROUP BY a.placa_veiculo\n" +
-                    "ORDER BY 2 DESC;");
+            stmt = conn.prepareStatement("SELECT * FROM (SELECT " +
+                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km " +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
+                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade " +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND " +
+                    "(am.tipo_servico LIKE ? OR am.tipo_servico like ?) " +
+                    "GROUP BY a.placa_veiculo " +
+                    "ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE total_km > 0;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
+            stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                resultados.put(rSet.getString("placa_veiculo"),
+                resultados.put(
+                        rSet.getString("placa_veiculo"),
                         rSet.getInt("total_km"));
             }
         } finally {

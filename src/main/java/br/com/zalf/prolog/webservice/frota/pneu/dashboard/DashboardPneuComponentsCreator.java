@@ -46,17 +46,7 @@ final class DashboardPneuComponentsCreator {
                 String.valueOf(integer),
                 statusPneu.getSliceColor())));
         final PieData pieData = new PieData(entries);
-        return new PieChartComponent.Builder()
-                .withTitulo(component.tituloComponente)
-                .withSubtitulo(component.subtituloComponente)
-                .withDescricao(component.descricaoComponente)
-                .withCodTipoComponente(component.codigoTipoComponente)
-                .withUrlEndpointDados(component.urlEndpointDados)
-                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
-                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
-                .withOrdemExibicao(component.ordemExibicao)
-                .withPieData(pieData)
-                .build();
+        return PieChartComponent.createDefault(component, pieData);
     }
 
     @NotNull
@@ -173,17 +163,7 @@ final class DashboardPneuComponentsCreator {
                 String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
                 Color.GREEN));
         final PieData pieData = new PieData(entries);
-        return new PieChartComponent.Builder()
-                .withTitulo(component.tituloComponente)
-                .withSubtitulo(component.subtituloComponente)
-                .withDescricao(component.descricaoComponente)
-                .withCodTipoComponente(component.codigoTipoComponente)
-                .withUrlEndpointDados(component.urlEndpointDados)
-                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
-                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
-                .withOrdemExibicao(component.ordemExibicao)
-                .withPieData(pieData)
-                .build();
+        return PieChartComponent.createDefault(component, pieData);
     }
 
     @NotNull
@@ -192,31 +172,29 @@ final class DashboardPneuComponentsCreator {
         // Header.
         final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Placa e quantidade de pneus. */);
         itemHeaders.add(new TableItemHeader("Placa", null));
-        itemHeaders.add(new TableItemHeader("Quantidade de pneus", null));
+        itemHeaders.add(new TableItemHeader("Quantidade de pneus com problema", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
-        final List<TableLine> lines = new ArrayList<>(placasQtdPneus.size());
-        placasQtdPneus.forEach((placa, quantidadePneus) -> {
-            // Colunas.
-            final List<TableColumn> columns = new ArrayList<>(2);
-            columns.add(new TableColumn(placa));
-            columns.add(new TableColumn(String.valueOf(quantidadePneus)));
-            lines.add(new TableLine(columns));
-        });
+        final List<TableLine> lines = TableComponent.createLinesFromMap(placasQtdPneus);
 
         final TableData tableData = new TableData(lines);
-        return new TableComponent.Builder()
-                .withTitulo(component.tituloComponente)
-                .withSubtitulo(component.subtituloComponente)
-                .withDescricao(component.descricaoComponente)
-                .withCodTipoComponente(component.codigoTipoComponente)
-                .withUrlEndpointDados(component.urlEndpointDados)
-                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
-                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
-                .withOrdemExibicao(component.ordemExibicao)
-                .withTableHeader(tableHeader)
-                .withTableData(tableData)
-                .build();
+        return TableComponent.createDefault(component, tableHeader, tableData);
+    }
+
+    @NotNull
+    static TableComponent createQtdKmRodadoComServicoEmAberto(@NotNull final ComponentDataHolder component,
+                                                              @NotNull final Map<String, Integer> placasQtdKm) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Placa e total KM. */);
+        itemHeaders.add(new TableItemHeader("Placa", null));
+        itemHeaders.add(new TableItemHeader("Total KM percorrido", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = TableComponent.createLinesFromMap(placasQtdKm);
+
+        final TableData tableData = new TableData(lines);
+        return TableComponent.createDefault(component, tableHeader, tableData);
     }
 }

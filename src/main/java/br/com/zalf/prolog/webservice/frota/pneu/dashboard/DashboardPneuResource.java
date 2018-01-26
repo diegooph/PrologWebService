@@ -68,15 +68,16 @@ public final class DashboardPneuResource {
     }
 
     @GET
-    @Path("media-tempo-conserto-servicos-por-tipo")
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
+    @Path("quantidade-km-rodado-com-servico-aberto/{codComponente}")
+    public TableComponent getQtdKmRodadoServicoAberto(@PathParam("codComponente") Integer codComponente,
+                                                      @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getQtdKmRodadoComServicoEmAberto(codComponente, codUnidades);
     }
 
     @GET
-    @Path("quantidade-km-rodado-com-servico-aberto")
-    public Map<String, Integer> getQtKmRodadoServicoAberto(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getQtKmRodadoServicoAberto(codUnidades);
+    @Path("media-tempo-conserto-servicos-por-tipo")
+    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
+        return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
     }
 
     @GET
