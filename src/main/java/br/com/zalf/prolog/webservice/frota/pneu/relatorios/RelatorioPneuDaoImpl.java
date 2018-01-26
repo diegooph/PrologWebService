@@ -936,17 +936,17 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Integer> resultados = new LinkedHashMap<>();
+        final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT vp.placa as placa_veiculo,\n" +
-                    "  sum(case when least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte\n" +
-                    "    then 1 else 0 end) as qt_pneus_abaixo_limite\n" +
-                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade\n" +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade\n" +
-                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
-                    "GROUP BY vp.placa\n" +
-                    "ORDER BY 2 DESC");
+            stmt = conn.prepareStatement("SELECT * FROM (SELECT vp.placa as placa_veiculo, " +
+                    "  sum(case when least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
+                    "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
+                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
+                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade " +
+                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
+                    "GROUP BY vp.placa " +
+                    "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
