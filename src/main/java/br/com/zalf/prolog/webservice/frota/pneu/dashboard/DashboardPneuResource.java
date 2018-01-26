@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
@@ -75,10 +76,10 @@ public final class DashboardPneuResource {
     }
 
     @GET
-    @Path("menor-sulco-pneus/{codComponente}")
-    public Map<String, Double> getMenorSulcoPneu(@PathParam("codComponente") Integer codComponente,
-                                                 @QueryParam("codUnidades") List<Long> codUnidades) {
-        return service.getMenorSulcoPneus(codComponente, codUnidades);
+    @Path("menor-sulco-e-pressao-pneus/{codComponente}")
+    public DensityChartComponent getMenorSulcoEPressaoPneu(@PathParam("codComponente") Integer codComponente,
+                                                           @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getMenorSulcoEPressaoPneu(codComponente, codUnidades);
     }
 
     @GET

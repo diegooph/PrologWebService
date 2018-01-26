@@ -986,14 +986,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return total;
     }
 
-    public Map<String, Double> getMenorSulcoPneus(List<Long> codUnidades) throws SQLException {
+    @Override
+    public List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final Map<String, Double> resultados = new LinkedHashMap<>();
+        final List<SulcoPressao> valores = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT p.codigo as cod_pneu, " +
+            stmt = conn.prepareStatement("SELECT trunc(p.pressao_atual::numeric, 2) as pressao_atual, " +
                     "trunc(least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno)::numeric, 2) as menor_sulco\n" +
                     "FROM pneu p\n" +
                     "WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
@@ -1001,13 +1002,13 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                resultados.put(
-                        rSet.getString("cod_pneu"),
-                        rSet.getDouble("menor_sulco"));
+                valores.add(new SulcoPressao(
+                        rSet.getDouble("menor_sulco"),
+                        rSet.getDouble("pressao_atual")));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return resultados;
+        return valores;
     }
 }

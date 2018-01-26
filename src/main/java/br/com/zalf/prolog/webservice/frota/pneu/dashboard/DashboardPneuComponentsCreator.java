@@ -10,6 +10,10 @@ import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboData;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityData;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
@@ -18,6 +22,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.StatusPlacasAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.SulcoPressao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
@@ -199,8 +204,32 @@ final class DashboardPneuComponentsCreator {
     }
 
     @NotNull
-    static Map<String, Double> createMenorSulcoPneus(@NotNull final ComponentDataHolder component,
-                                                     @NotNull final Map<String, Double> pneuMenorSulco) {
-        return null;
+    static DensityChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
+                                                               @NotNull final List<SulcoPressao> valores) {
+        final List<DensityEntry> entries = new ArrayList<>(valores.size());
+        valores.forEach(sulcoPressao -> entries.add(DensityEntry.create(
+                sulcoPressao.getValorPressao(),
+                String.valueOf(sulcoPressao.getValorPressao()),
+                sulcoPressao.getValorSulco(),
+                String.valueOf(sulcoPressao.getValorSulco()))));
+
+        final DensityGroup group = new DensityGroup(entries, "Pneus");
+        final List<DensityGroup> groups = new ArrayList<>(1);
+        groups.add(group);
+        final DensityData data = new DensityData(groups);
+
+        return new DensityChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withLabelEixoX(component.labelEixoX)
+                .withLabelEixoY(component.labelEixoY)
+                .withDensityData(data)
+                .build();
     }
 }

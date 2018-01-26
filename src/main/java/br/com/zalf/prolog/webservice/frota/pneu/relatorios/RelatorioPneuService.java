@@ -264,9 +264,9 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String, Double> getMenorSulcoPneus(List<Long> codUnidades) {
+    public List<SulcoPressao> getMenorSulcoPneus(List<Long> codUnidades) {
         try {
-            return dao.getMenorSulcoPneus(codUnidades);
+            return dao.getMenorSulcoEPressaoPneus(codUnidades);
         } catch (SQLException e){
             Log.e(TAG, String.format("Erro ao buscar a lista com o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades), e);

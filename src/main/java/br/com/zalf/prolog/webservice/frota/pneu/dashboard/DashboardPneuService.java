@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created on 1/22/18
@@ -127,12 +127,12 @@ public final class DashboardPneuService {
         }
     }
 
-    public Map<String, Double> getMenorSulcoPneus(@NotNull final Integer codComponente,
-                                                  @NotNull final List<Long> codUnidades) {
+    public DensityChartComponent getMenorSulcoEPressaoPneu(@NotNull final Integer codComponente,
+                                                           @NotNull final List<Long> codUnidades) {
         try {
-            return DashboardPneuComponentsCreator.createMenorSulcoPneus(
+            return DashboardPneuComponentsCreator.createMenorSulcoEPressaoPneus(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getMenorSulcoPneus(codUnidades));
+                    relatorioDao.getMenorSulcoEPressaoPneus(codUnidades));
         } catch (SQLException e){
             Log.e(TAG, String.format("Erro ao buscar o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades.toString()), e);
