@@ -15,9 +15,8 @@ import java.util.Set;
  * Classe VeiculoService responsavel por comunicar-se com a interface DAO
  */
 public class VeiculoService {
-
-    private final VeiculoDao dao = Injection.provideVeiculoDao();
     private static final String TAG = VeiculoService.class.getSimpleName();
+    private final VeiculoDao dao = Injection.provideVeiculoDao();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
