@@ -13,7 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 /**
  * Created by luiz on 26/04/17.
  */
-@Path("/checklists/ordens-servico/relatorio")
+@Path("/checklists/ordens-servico/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Zalf on 14/09/16.
  */
-@Path("/relatorio")
+@Path("/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.INDICADORES)

@@ -12,7 +12,7 @@ import javax.ws.rs.core.StreamingOutput;
  */
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Path("/solicitacoes-folga/relatorio")
+@Path("/solicitacoes-folga/relatorios")
 public class SolicitacaoFolgaRelatorioResource {
 
     SolicitacaoFolgaRelatorioService service = new SolicitacaoFolgaRelatorioService();
