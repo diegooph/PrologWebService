@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard.components.table;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 10/01/18.
@@ -10,37 +11,37 @@ import org.jetbrains.annotations.NotNull;
 public class TableItemHeader {
 
     @NotNull
-    private String valor;
-    @NotNull
+    private String nome;
+    @Nullable
     private String descricao;
 
-    public TableItemHeader(@NotNull String valor, @NotNull String descricao) {
-        this.valor = valor;
+    public TableItemHeader(@NotNull String nome, @Nullable String descricao) {
+        this.nome = nome;
         this.descricao = descricao;
     }
 
     @NotNull
-    public String getValor() {
-        return valor;
+    public String getNome() {
+        return nome;
     }
 
-    public void setValor(@NotNull String valor) {
-        this.valor = valor;
+    public void setNome(@NotNull String nome) {
+        this.nome = nome;
     }
 
-    @NotNull
+    @Nullable
     public String getDescricao() {
         return descricao;
     }
 
-    public void setDescricao(@NotNull String descricao) {
+    public void setDescricao(@Nullable String descricao) {
         this.descricao = descricao;
     }
 
     @Override
     public String toString() {
         return "TableItemHeader{" +
-                "valor='" + valor + '\'' +
+                "nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 '}';
     }

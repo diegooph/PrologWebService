@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponen
 import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -60,6 +61,13 @@ public final class DashboardPneuResource {
     }
 
     @GET
+    @Path("placas-com-pneus-abaixo-limite-milimetragem/{codComponente}")
+    public TableComponent getPlacasComPneuAbaixoLimiteMilimetragem(@PathParam("codComponente") Integer codComponente,
+                                                                   @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getPlacasComPneuAbaixoLimiteMilimetragem(codComponente, codUnidades);
+    }
+
+    @GET
     @Path("media-tempo-conserto-servicos-por-tipo")
     public Map<String, Integer> getMdTempoConsertoServicoPorTipo(@QueryParam("codUnidade") List<Long> codUnidades) {
         return relatorioPneuService.getMdTempoConsertoServicoPorTipo(codUnidades);
@@ -69,12 +77,6 @@ public final class DashboardPneuResource {
     @Path("quantidade-km-rodado-com-servico-aberto")
     public Map<String, Integer> getQtKmRodadoServicoAberto(@QueryParam("codUnidade") List<Long> codUnidades) {
         return relatorioPneuService.getQtKmRodadoServicoAberto(codUnidades);
-    }
-
-    @GET
-    @Path("placas-com-pneus-abaixo-limite-milimetragem")
-    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getPlacasComPneuAbaixoLimiteMilimetragem(codUnidades);
     }
 
     @GET

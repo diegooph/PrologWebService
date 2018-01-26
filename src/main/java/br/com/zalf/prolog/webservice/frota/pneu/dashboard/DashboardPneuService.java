@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponen
 import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,6 +97,19 @@ public final class DashboardPneuService {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida e no prazo. \n" +
                     "unidades: %s", codUnidades.toString()), e);
             throw new RuntimeException(e);
+        }
+    }
+
+    public TableComponent getPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final Integer codComponente,
+                                                                   @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createPlacasComPneuAbaixoLimiteMilimetragem(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getPlacasComPneuAbaixoLimiteMilimetragem(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a lista com as placas e qtd de pneus abaixo do limite. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException();
         }
     }
 }

@@ -2,12 +2,9 @@ package br.com.zalf.prolog.webservice.dashboard.components.table;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponentBuilder;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Created on 10/01/18.
@@ -15,14 +12,22 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class TableComponent extends DashboardComponent {
-
     @NotNull
     private TableHeader tableHeader;
     @NotNull
-    private List<TableLine> tableData;
+    private TableData tableData;
 
-    public TableComponent(@NotNull String titulo, @Nullable String subtitulo, @NotNull String descricao, @NotNull String urlEndpointDados, @NotNull Integer codTipoComponente, int qtdBlocosHorizontais, int qtdBlocosVerticais, int ordem, @NotNull TableHeader tableHeader, @NotNull List<TableLine> tableData) {
-        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+    private TableComponent(@NotNull String titulo,
+                           @Nullable String subtitulo,
+                           @NotNull String descricao,
+                           @NotNull String urlEndpointDados,
+                           @NotNull Integer codTipoComponente,
+                           int qtdBlocosHorizontais,
+                           int qtdBlocosVerticais,
+                           int ordemExibicao,
+                           @NotNull TableHeader tableHeader,
+                           @NotNull TableData tableData) {
+        super(titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
     }
@@ -37,11 +42,11 @@ public class TableComponent extends DashboardComponent {
     }
 
     @NotNull
-    public List<TableLine> getTableData() {
+    public TableData getTableData() {
         return tableData;
     }
 
-    public void setTableData(@NotNull List<TableLine> tableData) {
+    public void setTableData(@NotNull TableData tableData) {
         this.tableData = tableData;
     }
 
@@ -54,17 +59,11 @@ public class TableComponent extends DashboardComponent {
     }
 
     public static class Builder extends BaseComponentBuilder {
-        private String titulo;
-        private String subtitulo;
-        private String descricao;
         private TableHeader tableHeader;
-        private List<TableLine> tableData;
+        private TableData tableData;
 
-        public Builder() {}
+        public Builder() {
 
-        public Builder(@NotNull String titulo, @NotNull String descricao) {
-            this.titulo = titulo;
-            this.descricao = descricao;
         }
 
         @Override
@@ -86,13 +85,33 @@ public class TableComponent extends DashboardComponent {
         }
 
         @Override
-        public DashboardComponentBuilder withUrlEndpointDados(@NotNull String urlEndpointDados) {
-            return null;
+        public Builder withUrlEndpointDados(@NotNull String urlEndpointDados) {
+            super.withUrlEndpointDados(urlEndpointDados);
+            return this;
         }
 
         @Override
-        public DashboardComponentBuilder withCodTipoComponente(@NotNull Integer codTipoComponente) {
-            return null;
+        public Builder withCodTipoComponente(@NotNull Integer codTipoComponente) {
+            super.withCodTipoComponente(codTipoComponente);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosHorizontais(int qtdBlocosHorizontais) {
+            super.withQtdBlocosHorizontais(qtdBlocosHorizontais);
+            return this;
+        }
+
+        @Override
+        public Builder withQtdBlocosVerticais(int qtdBlocosVerticais) {
+            super.withQtdBlocosVerticais(qtdBlocosVerticais);
+            return this;
+        }
+
+        @Override
+        public Builder withOrdemExibicao(int ordemExibicao) {
+            super.withOrdemExibicao(ordemExibicao);
+            return this;
         }
 
         public Builder withTableHeader(@NotNull TableHeader tableHeader) {
@@ -100,16 +119,27 @@ public class TableComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withTableData(@NotNull List<TableLine> tableData) {
+        public Builder withTableData(@NotNull TableData tableData) {
             this.tableData = tableData;
             return this;
         }
 
         @Override
-        public DashboardComponent build() {
+        public TableComponent build() {
+            ensureNotNullValues();
             Preconditions.checkNotNull(tableHeader, "tableHeader deve ser instanciada com 'withTableHeader'");
             Preconditions.checkNotNull(tableData, "tableData deve ser instanciada com 'withTableData'");
-            return null;
+            return new TableComponent(
+                    titulo,
+                    subtitulo,
+                    descricao,
+                    urlEndpointDados,
+                    codTipoComponente,
+                    qtdBlocosHorizontais,
+                    qtdBlocosVerticais,
+                    ordemExibicao,
+                    tableHeader,
+                    tableData);
         }
     }
 }

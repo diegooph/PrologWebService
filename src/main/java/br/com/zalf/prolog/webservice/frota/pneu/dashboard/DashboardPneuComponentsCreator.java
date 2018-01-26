@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalCom
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieData;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
@@ -159,7 +160,7 @@ final class DashboardPneuComponentsCreator {
 
     @NotNull
     static PieChartComponent createStatusPlacaAfericao(@NotNull final ComponentDataHolder component,
-                                                               @NotNull final StatusPlacasAfericao statusPlacasAfericao) {
+                                                       @NotNull final StatusPlacasAfericao statusPlacasAfericao) {
         final List<PieEntry> entries = new ArrayList<>(2 /* Aferições vencidas e no prazo. */);
         entries.add(PieEntry.create(
                 "Placas vencidas",
@@ -182,6 +183,40 @@ final class DashboardPneuComponentsCreator {
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withPieData(pieData)
+                .build();
+    }
+
+    @NotNull
+    static TableComponent createPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final ComponentDataHolder component,
+                                                                      @NotNull final Map<String, Integer> placasQtdPneus) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Placa e quantidade de pneus. */);
+        itemHeaders.add(new TableItemHeader("Placa", null));
+        itemHeaders.add(new TableItemHeader("Quantidade de pneus", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = new ArrayList<>(placasQtdPneus.size());
+        placasQtdPneus.forEach((placa, quantidadePneus) -> {
+            // Colunas.
+            final List<TableColumn> columns = new ArrayList<>(2);
+            columns.add(new TableColumn(placa));
+            columns.add(new TableColumn(String.valueOf(quantidadePneus)));
+            lines.add(new TableLine(columns));
+        });
+
+        final TableData tableData = new TableData(lines);
+        return new TableComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withTableHeader(tableHeader)
+                .withTableData(tableData)
                 .build();
     }
 }
