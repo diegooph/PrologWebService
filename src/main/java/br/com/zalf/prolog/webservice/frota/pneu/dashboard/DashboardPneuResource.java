@@ -53,9 +53,10 @@ public final class DashboardPneuResource {
     }
 
     @GET
-    @Path("quantidade-placas-afericoes-vencidas")
-    public Map<String, Integer> getQtdPlacasAfericaoVencida(@QueryParam("codUnidade") List<Long> codUnidades) {
-        return relatorioPneuService.getQtdPlacasAfericaoVencida(codUnidades);
+    @Path("quantidade-placas-afericoes-vencidas-e-no-prazo/{codComponente}")
+    public PieChartComponent getStatusPlacasAfericao(@PathParam("codComponente") Integer codComponente,
+                                                     @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getStatusPlacasAfericao(codComponente, codUnidades);
     }
 
     @GET

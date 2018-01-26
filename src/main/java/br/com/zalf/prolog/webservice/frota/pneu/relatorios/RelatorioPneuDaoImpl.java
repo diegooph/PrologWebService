@@ -13,10 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 
@@ -833,11 +830,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException {
+    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Map<String, Integer> placasVencidas = new LinkedHashMap<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT sum(\n" +
@@ -869,22 +865,21 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
-            stmt.setString(1, TipoAfericao.SULCO_PRESSAO.toString());
-            stmt.setString(2, TipoAfericao.SULCO.toString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.toString());
-            stmt.setString(4, TipoAfericao.PRESSAO.toString());
+            stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(2, TipoAfericao.SULCO.asString());
+            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.PRESSAO.asString());
             stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                placasVencidas.put("Placas vencidas",
-                        rSet.getInt("total_vencidas"));
-                placasVencidas.put("Placas no prazo",
+                return new StatusPlacasAfericao(
+                        rSet.getInt("total_vencidas"),
                         rSet.getInt("total_placas") - rSet.getInt("total_vencidas"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return placasVencidas;
+        return null;
     }
 
     public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {

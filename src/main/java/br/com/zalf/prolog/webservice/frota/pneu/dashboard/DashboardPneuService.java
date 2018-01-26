@@ -85,4 +85,17 @@ public final class DashboardPneuService {
             throw new RuntimeException(e);
         }
     }
+
+    public PieChartComponent getStatusPlacasAfericao(@NotNull final Integer codComponente,
+                                                     @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createStatusPlacaAfericao(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getStatusPlacasAfericao(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida e no prazo. \n" +
+                    "unidades: %s", codUnidades.toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
 }

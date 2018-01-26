@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarData;
@@ -15,6 +16,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QuantidadeAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.StatusPlacasAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
 
@@ -152,6 +154,34 @@ final class DashboardPneuComponentsCreator {
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
                 .withBarData(barData)
+                .build();
+    }
+
+    @NotNull
+    static PieChartComponent createStatusPlacaAfericao(@NotNull final ComponentDataHolder component,
+                                                               @NotNull final StatusPlacasAfericao statusPlacasAfericao) {
+        final List<PieEntry> entries = new ArrayList<>(2 /* Aferições vencidas e no prazo. */);
+        entries.add(PieEntry.create(
+                "Placas vencidas",
+                statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
+                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
+                Color.RED));
+        entries.add(PieEntry.create(
+                "Placas no prazo",
+                statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
+                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
+                Color.GREEN));
+        final PieData pieData = new PieData(entries);
+        return new PieChartComponent.Builder()
+                .withTitulo(component.tituloComponente)
+                .withSubtitulo(component.subtituloComponente)
+                .withDescricao(component.descricaoComponente)
+                .withCodTipoComponente(component.codigoTipoComponente)
+                .withUrlEndpointDados(component.urlEndpointDados)
+                .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
+                .withQtdBlocosVerticais(component.qtdBlocosVerticais)
+                .withOrdemExibicao(component.ordemExibicao)
+                .withPieData(pieData)
                 .build();
     }
 }
