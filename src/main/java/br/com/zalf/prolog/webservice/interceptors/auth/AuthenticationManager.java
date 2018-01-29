@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Cache para os tokens.
  *
  * Como agora juntamente com os tokens também passamos as permissões necessárias para se executar determinado request,
- * essa cache não irá mais atender nossas necessidades. Portanto, @Deprecated.
+ * essa cache não irá mais atender nossas necessidades. Portanto, @deprecated.
  */
 @Deprecated
 public class AuthenticationManager {

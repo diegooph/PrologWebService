@@ -158,7 +158,7 @@ public class Colaborador {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
-		this.codEmpresa = (long) empresa.getCodigo();
+		this.codEmpresa = empresa.getCodigo();
 	}
 
 	public Regional getRegional() {
@@ -169,24 +169,12 @@ public class Colaborador {
 		this.regional = regional;
 	}
 
-	@Deprecated
 	public Long getCodEmpresa() {
-		return codEmpresa;
+		return empresa.getCodigo();
 	}
 
-	@Deprecated
-	public void setCodEmpresa(Long codEmpresa) {
-		this.codEmpresa = codEmpresa;
-	}
-
-	@Deprecated
 	public long getCodUnidade() {
 		return unidade.getCodigo();
-	}
-
-	@Deprecated
-	public void setCodUnidade(long codUnidade) {
-		this.codUnidade = codUnidade;
 	}
 
 	@Override

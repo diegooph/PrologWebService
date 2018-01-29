@@ -13,7 +13,8 @@ public enum OrigemDestinoRegras {
     ONE(OrigemDestinoConstants.VEICULO, OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.DESCARTE, OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.VEICULO),
     TWO(OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.VEICULO, OrigemDestinoConstants.DESCARTE, OrigemDestinoConstants.ANALISE),
     THREE(OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.DESCARTE),
-    FOUR(OrigemDestinoConstants.DESCARTE, null);
+    // Cast utilizado para remover alerta de parâmetro varargs.
+    FOUR(OrigemDestinoConstants.DESCARTE, (String) null);
 
     @NotNull
     private final String origem;

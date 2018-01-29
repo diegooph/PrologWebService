@@ -547,7 +547,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setFuncao(cargo);
 
         final Empresa empresa = new Empresa();
-        empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+        empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
         empresa.setNome(rSet.getString("NOME_EMPRESA"));
         empresa.setLogoThumbnailUrl(rSet.getString("LOGO_THUMBNAIL_URL"));
         c.setEmpresa(empresa);

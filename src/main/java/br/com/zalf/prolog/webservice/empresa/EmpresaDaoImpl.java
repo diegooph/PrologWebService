@@ -563,7 +563,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             while (rSet.next()) { // rset com os codigos e nomes da regionais
                 Regional regional = new Regional();
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
-                empresa.setCodigo(rSet.getInt("CODIGO_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("CODIGO_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
                 regional.setNome(rSet.getString("REGIAO"));
                 setUnidadesByRegional(regional, empresa.getCodigo());
@@ -595,7 +595,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
                 Regional regional = new Regional();
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
                 regional.setNome(rSet.getString("REGIAO"));
@@ -631,7 +631,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
 
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 regional.setCodigo(rSet.getLong("COD_REGIONAL"));
                 regional.setNome(rSet.getString("NOME_REGIONAL"));
@@ -673,7 +673,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
 
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 regional.setCodigo(rSet.getLong("COD_REGIONAL"));
                 regional.setNome(rSet.getString("NOME_REGIONAL"));
                 unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
@@ -697,7 +697,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return listEmpresa;
     }
 
-    private void setUnidadesByRegional(Regional regional, int codEmpresa) throws SQLException {
+    private void setUnidadesByRegional(Regional regional, Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -707,7 +707,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_UNIDADE_BY_REGIONAL);
             stmt.setLong(1, regional.getCodigo());
-            stmt.setInt(2, codEmpresa);
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
 
             while (rSet.next()) {

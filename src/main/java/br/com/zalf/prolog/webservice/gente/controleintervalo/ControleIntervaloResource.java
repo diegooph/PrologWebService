@@ -122,7 +122,7 @@ public class ControleIntervaloResource {
     }
 
     /**
-     * @Deprecated at 08/09/17
+     * @deprecated at 08/09/17
      */
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
@@ -138,7 +138,7 @@ public class ControleIntervaloResource {
     }
 
     /**
-     * @Deprecated at 08/09/17
+     * @deprecated at 08/09/17
      */
     @PUT
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
