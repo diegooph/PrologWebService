@@ -101,6 +101,12 @@ public interface RelatorioPneuDao {
     void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
                                               Date dataFinal) throws IOException, SQLException;
 
+    Report getPneusDescartadosReport(Long codUnidade, Long dataInicial,
+                                     Long dataFinal) throws SQLException;
+
+    void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
+                                Long dataFinal) throws IOException, SQLException;
+
     Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
     List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;

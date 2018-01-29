@@ -393,37 +393,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
-    private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsao_troca(?,?,?,?);");
-        stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setLong(3, codUnidade);
-        stmt.setString(4, Pneu.EM_USO);
-        return stmt;
-    }
-
-    private PreparedStatement getPrevisaoTrocaConsolidadoStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') AS \"DATA\",\n" +
-                "  VAP.\"MARCA\",\n" +
-                "  VAP.\"MODELO\",\n" +
-                "  VAP.\"MEDIDAS\",\n" +
-                "  COUNT(VAP.\"MODELO\") as \"QUANTIDADE\"\n" +
-                "FROM\n" +
-                "    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
-                "    VIEW_ANALISE_PNEUS VAP\n" +
-                "WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
-                "GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
-                "ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setString(4, Pneu.EM_USO);
-        return stmt;
-    }
-
     @Override
     public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
             throws IOException, SQLException {
@@ -453,6 +422,469 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @Override
+    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream)
+            throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
+                                                          Date dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
+                                                     Date dataFinal) throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusDescartadosStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial, Long dataFinal)
+            throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusDescartadosStatement(conn, codUnidade, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<StatusPneu, Integer> statusPneus = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT P.status, COUNT(P.CODIGO)\n" +
+                    "FROM PNEU P\n" +
+                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])\n" +
+                    "GROUP BY P.status\n" +
+                    "ORDER BY 1");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                statusPneus.put(
+                        StatusPneu.fromString(rSet.getString("status")),
+                        rSet.getInt("count"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return statusPneus;
+    }
+
+    @Override
+    public List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT a.data_hora::date as data,\n" +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
+                    "FROM afericao a " +
+                    "WHERE (SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)::text " +
+                    "like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ? \n" +
+                    "GROUP BY a.data_hora::DATE\n" +
+                    "ORDER BY a.data_hora::DATE ASC;");
+            stmt.setString(1, TipoAfericao.PRESSAO.asString());
+            stmt.setString(2, TipoAfericao.SULCO.asString());
+            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setArray(4, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setDate(5, dataInicial);
+            stmt.setDate(6, dataFinal);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                qtAfericoes.add(
+                        new QuantidadeAfericao(rSet.getDate("data"),
+                                rSet.getInt("qt_afericao_pressao"),
+                                rSet.getInt("qt_afericao_sulco"),
+                                rSet.getInt("qt_afericao_sulco_pressao")));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return qtAfericoes;
+    }
+
+    @Override
+    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<TipoServico, Integer> servicosAbertos = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT am.tipo_servico, count(am.tipo_servico)\n" +
+                    "FROM afericao_manutencao am\n" +
+                    "WHERE am.cpf_mecanico IS NULL AND am.cod_unidade::TEXT LIKE ANY(ARRAY[?])\n" +
+                    "GROUP BY am.tipo_servico;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                servicosAbertos.put(
+                        TipoServico.fromString(rSet.getString("tipo_servico")),
+                        rSet.getInt("count"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return servicosAbertos;
+    }
+
+    @Override
+    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT sum(\n" +
+                    "  case when (dados.intervalo_pressao > dados.periodo_afericao_pressao or dados.intervalo_pressao < 0) AND\n" +
+                    "    (dados.intervalo_sulco > dados.periodo_afericao_sulco or dados.intervalo_sulco < 0) then 1 else 0 end\n" +
+                    ") as total_vencidas,\n" +
+                    "count (dados.placa) as total_placas\n" +
+                    "FROM\n" +
+                    "  (SELECT\n" +
+                    "  V.placa,\n" +
+                    "  coalesce(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
+                    "  coalesce(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO,\n" +
+                    "  erp.periodo_afericao_pressao,\n" +
+                    "  erp.periodo_afericao_sulco\n" +
+                    "FROM VEICULO V\n" +
+                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
+                    "  LEFT JOIN\n" +
+                    "  (SELECT\n" +
+                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
+                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
+                    "   FROM AFERICAO\n" +
+                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
+                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
+                    "  LEFT JOIN\n" +
+                    "  (SELECT\n" +
+                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
+                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
+                    "   FROM AFERICAO\n" +
+                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
+                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
+                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
+            stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(2, TipoAfericao.SULCO.asString());
+            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.PRESSAO.asString());
+            stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new StatusPlacasAfericao(
+                        rSet.getInt("total_vencidas"),
+                        rSet.getInt("total_placas") - rSet.getInt("total_vencidas"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<TipoServico, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT am.tipo_servico, " +
+                    "avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas " +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo " +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
+                    "GROUP BY am.tipo_servico;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(
+                        TipoServico.fromString(rSet.getString("tipo_servico")),
+                        rSet.getInt("md_tempo_conserto_horas"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    @Override
+    public Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<String, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM (SELECT " +
+                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km " +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
+                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade " +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND " +
+                    "(am.tipo_servico LIKE ? OR am.tipo_servico like ?) " +
+                    "GROUP BY a.placa_veiculo " +
+                    "ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE total_km > 0;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
+            stmt.setString(3, TipoServico.INSPECAO.asString());
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(
+                        rSet.getString("placa_veiculo"),
+                        rSet.getInt("total_km"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    @Override
+    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<String, Integer> resultados = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM (SELECT vp.placa as placa_veiculo, " +
+                    "  sum(case when least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
+                    "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
+                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
+                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade " +
+                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
+                    "GROUP BY vp.placa " +
+                    "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                resultados.put(rSet.getString("placa_veiculo"),
+                        rSet.getInt("qt_pneus_abaixo_limite"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return resultados;
+    }
+
+    @Override
+    public List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<SulcoPressao> valores = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT trunc(p.pressao_atual::numeric, 2) as pressao_atual, " +
+                    "trunc(least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno)::numeric, 2) as menor_sulco\n" +
+                    "FROM pneu p\n" +
+                    "WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
+                    "ORDER BY menor_sulco ASC");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                valores.add(new SulcoPressao(
+                        rSet.getDouble("menor_sulco"),
+                        rSet.getDouble("pressao_atual")));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return valores;
+    }
+
+    @Override
+    public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        int total = 0;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
+                    "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.cpf_mecanico is null;");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
+            stmt.setString(3, TipoServico.INSPECAO.asString());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getInt("total");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return total;
+    }
+
+    private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_previsao_troca(?,?,?,?);");
+        stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setLong(3, codUnidade);
+        stmt.setString(4, Pneu.EM_USO);
+        return stmt;
+    }
+
+    private PreparedStatement getPneusDescartadosStatement(Connection conn, Long codUnidade, Long dataInicial, Long dataFinal)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("  SELECT * FROM func_relatorio_pneus_descartados(?,?,?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
+        return stmt;
+    }
+
+    private PreparedStatement getPrevisaoTrocaConsolidadoStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
+                "  to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') AS \"DATA\",\n" +
+                "  VAP.\"MARCA\",\n" +
+                "  VAP.\"MODELO\",\n" +
+                "  VAP.\"MEDIDAS\",\n" +
+                "  COUNT(VAP.\"MODELO\") as \"QUANTIDADE\"\n" +
+                "FROM\n" +
+                "    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
+                "    VIEW_ANALISE_PNEUS VAP\n" +
+                "WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
+                "GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
+                "ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
+        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(4, Pneu.EM_USO);
+        return stmt;
+    }
+
+    private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
+                "  P.codigo                                                                                   AS \"PNEU\",\n" +
+                "  map.nome                                                                                   AS \"MARCA\",\n" +
+                "  mp.nome                                                                                    AS \"MODELO\",\n" +
+                "  ((((dp.largura || '/' :: TEXT) || dp.altura) || ' R' :: TEXT) || dp.aro)                   AS \"MEDIDAS\",\n" +
+                "  coalesce(POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU, '-')                                     AS \"PLACA\",\n" +
+                "  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
+                "  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL INTERNO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL EXTERNO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
+                "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
+                "  P.vida_atual                                                                               AS \"VIDA\",\n" +
+                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
+                "FROM PNEU P\n" +
+                "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
+                "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
+                "  JOIN modelo_pneu mp ON mp.codigo = p.cod_modelo AND mp.cod_empresa = u.cod_empresa\n" +
+                "  JOIN marca_pneu map ON map.codigo = mp.cod_marca\n" +
+                "  LEFT JOIN\n" +
+                "  (SELECT\n" +
+                "     PON.nomenclatura AS POSICAO_PNEU,\n" +
+                "     VP.cod_pneu      AS CODIGO_PNEU,\n" +
+                "     VP.placa         AS PLACA_VEICULO_PNEU,\n" +
+                "     VP.cod_unidade   AS COD_UNIDADE_PNEU,\n" +
+                "     VT.nome          AS VEICULO_TIPO\n" +
+                "   FROM veiculo V\n" +
+                "     JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
+                "     JOIN veiculo_tipo vt ON v.cod_unidade = vt.cod_unidade AND v.cod_tipo = vt.codigo\n" +
+                "     JOIN pneu_ordem_nomenclatura_unidade pon ON pon.cod_unidade = v.cod_unidade AND pon.cod_tipo_veiculo = v.cod_tipo\n" +
+                "                                                 AND vp.posicao = pon.posicao_prolog\n" +
+                "   WHERE V.cod_unidade = ?\n" +
+                "   ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO\n" +
+                "    ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
+                "  LEFT JOIN\n" +
+                "  (SELECT\n" +
+                "     AV.cod_pneu,\n" +
+                "     AV.cod_unidade   AS COD_UNIDADE_DATA,\n" +
+                "     MAX(A.data_hora) AS ULTIMA_AFERICAO\n" +
+                "   FROM AFERICAO A\n" +
+                "     JOIN afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
+                "   GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO\n" +
+                "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
+                "WHERE P.cod_unidade = ?\n" +
+                "ORDER BY \"PNEU\"");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codUnidade);
+        return stmt;
     }
 
     private PreparedStatement getAderenciaPlacasStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
@@ -615,90 +1047,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
-    @Override
-    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream)
-            throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  P.codigo                                                                                   AS \"PNEU\",\n" +
-                "  map.nome                                                                                   AS \"MARCA\",\n" +
-                "  mp.nome                                                                                    AS \"MODELO\",\n" +
-                "  ((((dp.largura || '/' :: TEXT) || dp.altura) || ' R' :: TEXT) || dp.aro)                   AS \"MEDIDAS\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU, '-')                                     AS \"PLACA\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL EXTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
-                "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
-                "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
-                "FROM PNEU P\n" +
-                "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
-                "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
-                "  JOIN modelo_pneu mp ON mp.codigo = p.cod_modelo AND mp.cod_empresa = u.cod_empresa\n" +
-                "  JOIN marca_pneu map ON map.codigo = mp.cod_marca\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     PON.nomenclatura AS POSICAO_PNEU,\n" +
-                "     VP.cod_pneu      AS CODIGO_PNEU,\n" +
-                "     VP.placa         AS PLACA_VEICULO_PNEU,\n" +
-                "     VP.cod_unidade   AS COD_UNIDADE_PNEU,\n" +
-                "     VT.nome          AS VEICULO_TIPO\n" +
-                "   FROM veiculo V\n" +
-                "     JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
-                "     JOIN veiculo_tipo vt ON v.cod_unidade = vt.cod_unidade AND v.cod_tipo = vt.codigo\n" +
-                "     JOIN pneu_ordem_nomenclatura_unidade pon ON pon.cod_unidade = v.cod_unidade AND pon.cod_tipo_veiculo = v.cod_tipo\n" +
-                "                                                 AND vp.posicao = pon.posicao_prolog\n" +
-                "   WHERE V.cod_unidade = ?\n" +
-                "   ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO\n" +
-                "    ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     AV.cod_pneu,\n" +
-                "     AV.cod_unidade   AS COD_UNIDADE_DATA,\n" +
-                "     MAX(A.data_hora) AS ULTIMA_AFERICAO\n" +
-                "   FROM AFERICAO A\n" +
-                "     JOIN afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
-                "   GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO\n" +
-                "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
-                "WHERE P.cod_unidade = ?\n" +
-                "ORDER BY \"PNEU\"");
-        stmt.setLong(1, codUnidade);
-        stmt.setLong(2, codUnidade);
-        return stmt;
-    }
-
     private PreparedStatement getEstratificacaoServicosFechadosStatement(Connection conn, long codUnidade, Date dataInicial,
                                                                          Date dataFinal)
             throws SQLException {
@@ -707,310 +1055,5 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
         return stmt;
-    }
-
-    @Override
-    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
-                                                          Date dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
-                                                     Date dataFinal) throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<StatusPneu, Integer> statusPneus = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT P.status, COUNT(P.CODIGO)\n" +
-                    "FROM PNEU P\n" +
-                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])\n" +
-                    "GROUP BY P.status\n" +
-                    "ORDER BY 1");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                statusPneus.put(
-                        StatusPneu.fromString(rSet.getString("status")),
-                        rSet.getInt("count"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return statusPneus;
-    }
-
-    @Override
-    public List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT a.data_hora::date as data,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
-                    "FROM afericao a " +
-                    "WHERE (SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)::text " +
-                    "like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ? \n" +
-                    "GROUP BY a.data_hora::DATE\n" +
-                    "ORDER BY a.data_hora::DATE ASC;");
-            stmt.setString(1, TipoAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setArray(4, PostgresUtil.ListLongToArray(conn, codUnidades));
-            stmt.setDate(5, dataInicial);
-            stmt.setDate(6, dataFinal);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                qtAfericoes.add(
-                        new QuantidadeAfericao(rSet.getDate("data"),
-                                rSet.getInt("qt_afericao_pressao"),
-                                rSet.getInt("qt_afericao_sulco"),
-                                rSet.getInt("qt_afericao_sulco_pressao")));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return qtAfericoes;
-    }
-
-    @Override
-    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<TipoServico, Integer> servicosAbertos = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT am.tipo_servico, count(am.tipo_servico)\n" +
-                    "FROM afericao_manutencao am\n" +
-                    "WHERE am.cpf_mecanico IS NULL AND am.cod_unidade::TEXT LIKE ANY(ARRAY[?])\n" +
-                    "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                servicosAbertos.put(
-                        TipoServico.fromString(rSet.getString("tipo_servico")),
-                        rSet.getInt("count"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return servicosAbertos;
-    }
-
-    @Override
-    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT sum(\n" +
-                    "  case when (dados.intervalo_pressao > dados.periodo_afericao_pressao or dados.intervalo_pressao < 0) AND\n" +
-                    "    (dados.intervalo_sulco > dados.periodo_afericao_sulco or dados.intervalo_sulco < 0) then 1 else 0 end\n" +
-                    ") as total_vencidas,\n" +
-                    "count (dados.placa) as total_placas\n" +
-                    "FROM\n" +
-                    "  (SELECT\n" +
-                    "  V.placa,\n" +
-                    "  coalesce(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
-                    "  coalesce(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO,\n" +
-                    "  erp.periodo_afericao_pressao,\n" +
-                    "  erp.periodo_afericao_sulco\n" +
-                    "FROM VEICULO V\n" +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
-                    "  LEFT JOIN\n" +
-                    "  (SELECT\n" +
-                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
-                    "   FROM AFERICAO\n" +
-                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
-                    "  LEFT JOIN\n" +
-                    "  (SELECT\n" +
-                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
-                    "   FROM AFERICAO\n" +
-                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
-                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
-            stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(4, TipoAfericao.PRESSAO.asString());
-            stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return new StatusPlacasAfericao(
-                        rSet.getInt("total_vencidas"),
-                        rSet.getInt("total_placas") - rSet.getInt("total_vencidas"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<TipoServico, Integer> resultados = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT am.tipo_servico, " +
-                    "avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas " +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo " +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
-                    "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                resultados.put(
-                        TipoServico.fromString(rSet.getString("tipo_servico")),
-                        rSet.getInt("md_tempo_conserto_horas"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return resultados;
-    }
-
-    @Override
-    public Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<String, Integer> resultados = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM (SELECT " +
-                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km " +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
-                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade " +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND " +
-                    "(am.tipo_servico LIKE ? OR am.tipo_servico like ?) " +
-                    "GROUP BY a.placa_veiculo " +
-                    "ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE total_km > 0;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(3, TipoServico.INSPECAO.asString());
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                resultados.put(
-                        rSet.getString("placa_veiculo"),
-                        rSet.getInt("total_km"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return resultados;
-    }
-
-    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<String, Integer> resultados = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM (SELECT vp.placa as placa_veiculo, " +
-                    "  sum(case when least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
-                    "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
-                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade " +
-                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
-                    "GROUP BY vp.placa " +
-                    "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                resultados.put(rSet.getString("placa_veiculo"),
-                        rSet.getInt("qt_pneus_abaixo_limite"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return resultados;
-    }
-
-    public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        int total = 0;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
-                    "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.cpf_mecanico is null;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(3, TipoServico.INSPECAO.asString());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getInt("total");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return total;
-    }
-
-    @Override
-    public List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<SulcoPressao> valores = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT trunc(p.pressao_atual::numeric, 2) as pressao_atual, " +
-                    "trunc(least(p.altura_sulco_interno,p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno)::numeric, 2) as menor_sulco\n" +
-                    "FROM pneu p\n" +
-                    "WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
-                    "ORDER BY menor_sulco ASC");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                valores.add(new SulcoPressao(
-                        rSet.getDouble("menor_sulco"),
-                        rSet.getDouble("pressao_atual")));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return valores;
     }
 }

@@ -168,8 +168,8 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, long dataInicial,
-                                                     long dataFinal) throws RuntimeException {
+    public void getEstratificacaoServicosFechadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
+                                                     Long dataFinal) throws RuntimeException {
         try {
             dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, DateUtils.toSqlDate(new Date(dataInicial)),
                     DateUtils.toSqlDate(new Date(dataFinal)));
@@ -179,6 +179,30 @@ public class RelatorioPneuService {
                     "Data Inicial: %s \n" +
                     "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
             throw new RuntimeException();
+        }
+    }
+
+    public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            return dao.getPneusDescartadosReport(codUnidade, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
+                    "Unidade: %d \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            dao.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
+                    "Unidade: %d \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            throw new RuntimeException(e);
         }
     }
 
