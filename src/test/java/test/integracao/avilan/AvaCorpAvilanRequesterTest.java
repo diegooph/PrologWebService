@@ -128,8 +128,8 @@ public class AvaCorpAvilanRequesterTest {
                 1,
                 "",
                 "",
-                "2017-11-13",
-                "2017-12-23",
+                "2018-01-31",
+                "2018-01-31",
                 CPF,
                 DATA_NASCIMENTO);
         assertNotNull(checklistFiltro);
@@ -139,8 +139,8 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarChecklistsPorColaborador() throws Exception {
-        final String dataInicial = "2017-09-28";
-        final String dataFinal = "2017-10-11";
+        final String dataInicial = "2018-01-01";
+        final String dataFinal = "2018-01-31";
 
         final ArrayOfChecklistFiltro checklists = requester.getChecklistsByColaborador(
                 8,
@@ -149,15 +149,16 @@ public class AvaCorpAvilanRequesterTest {
                 "",
                 dataInicial,
                 dataFinal,
-                CPF,
-                DATA_NASCIMENTO);
+                "82511357020",
+                "1985-05-25");
 
         checklists.getChecklistFiltro().forEach(
-                checklistFiltro -> assertEquals(checklistFiltro.getColaborador().getCpf(), CPF));
+                checklistFiltro -> assertEquals(checklistFiltro.getColaborador().getCpf(), "82511357020"));
 
         System.out.println(GsonUtils.getGson().toJson(checklists));
         assertNotNull(checklists);
         assertTrue(!checklists.getChecklistFiltro().isEmpty());
+        System.out.println(checklists.getChecklistFiltro().size());
     }
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)

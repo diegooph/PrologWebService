@@ -106,7 +106,7 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Pneu.MOVIMENTAR})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR})
     @Path("/byTipo/{codUnidade}/{codTipo}")
     @UsedBy(platforms = Platform.ANDROID)
     public List<String> getVeiculosByTipo(@PathParam("codUnidade") Long codUnidade,
@@ -126,7 +126,7 @@ public class VeiculoResource {
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Pneu.MOVIMENTAR})
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR})
     @Path("/{codUnidade}/tipo")
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     public List<TipoVeiculo> getTipoVeiculosByUnidade(@HeaderParam("Authorization") String userToken,

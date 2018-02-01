@@ -158,7 +158,7 @@ public class EmpresaResource {
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
             Pilares.Frota.Afericao.REALIZAR,
             Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Pneu.MOVIMENTAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR,
             Pilares.Entrega.Produtividade.CONSOLIDADO,
             Pilares.Entrega.Indicadores.INDICADORES,
             Pilares.Entrega.Relatorios.INDICADORES,
