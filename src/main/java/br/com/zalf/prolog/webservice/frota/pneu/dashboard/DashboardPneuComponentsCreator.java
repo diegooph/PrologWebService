@@ -165,7 +165,7 @@ final class DashboardPneuComponentsCreator {
         // Header.
         final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Placa e quantidade de pneus. */);
         itemHeaders.add(new TableItemHeader("Placa", null));
-        itemHeaders.add(new TableItemHeader("Quantidade de pneus com problema", null));
+        itemHeaders.add(new TableItemHeader("Pneus com problema", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
         // Linhas.
