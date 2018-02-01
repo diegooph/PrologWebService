@@ -45,7 +45,13 @@ public final class Pilares {
             public static final int ALTERAR = 17;
             public static final int VINCULAR_VEICULO = 111;
             public static final int VISUALIZAR = 116;
-            public static final int MOVIMENTAR = 120;
+            public final class Movimentacao {
+                private Movimentacao() {}
+
+                public static final int MOVIMENTAR = 120;
+                public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
+                public static final int EDITAR_MOTIVOS_DESCARTE = 124;
+            }
         }
 
         public final class Afericao {
