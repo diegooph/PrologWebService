@@ -35,7 +35,7 @@ public class ControleIntervaloResource {
      * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
     @POST
-    @Secured(authType = AuthType.BASIC, considerOnlyActiveUsers = false)
+    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             Intervalo intervalo) {
