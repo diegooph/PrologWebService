@@ -6,6 +6,9 @@ import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -180,7 +183,8 @@ public class EmpresaResource {
     }
 
     @GET
-    @Secured
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = {AuthType.BASIC, AuthType.BEARER})
     @Path("/unidades/{codUnidade}/current-time")
     public Date getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) {
         // TODO: pegar o tempo de cada unidade de acordo com o TimeZone dela no Banco

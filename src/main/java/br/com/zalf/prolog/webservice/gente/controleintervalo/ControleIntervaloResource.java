@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
@@ -35,6 +37,7 @@ public class ControleIntervaloResource {
      * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
     @POST
+    @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
@@ -43,13 +46,43 @@ public class ControleIntervaloResource {
         return service.insertOrUpdateIntervalo(versaoDadosIntervalo, intervalo);
     }
 
+    /**
+     * Essa busca só é feita no app caso exista algum usuário logado, então podemos deixar o authType apenas como BEARER.
+     */
     @GET
-    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/offline-support")
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
             @PathParam("codUnidade") Long codUnidade) {
         return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Path("/abertos/{cpf}/{codTipoIntervalo}")
+    public Intervalo getIntervaloAberto(@PathParam("cpf") Long cpf, @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
+        TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(codTipoInvervalo);
+        return service.getIntervaloAberto(cpf ,tipoIntervalo);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.EDITAR_MARCACAO,
+            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO,
+            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
+    @Path("/{cpf}/{codTipoIntervalo}")
+    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf,
+                                                    @PathParam("codTipoIntervalo") String codTipo,
+                                                    @QueryParam("limit") long limit,
+                                                    @QueryParam("offset") long offset) {
+        return service.getIntervalosColaborador(cpf, codTipo, limit, offset);
     }
 
     @GET
@@ -97,28 +130,6 @@ public class ControleIntervaloResource {
     @Path("/tipos/{codUnidade}/resumidos")
     public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, false);
-    }
-
-    @GET
-    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
-    @Path("/abertos/{cpf}/{codTipoIntervalo}")
-    public Intervalo getIntervaloAberto(@PathParam("cpf") Long cpf, @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Exception {
-        TipoIntervalo tipoIntervalo = new TipoIntervalo();
-        tipoIntervalo.setCodigo(codTipoInvervalo);
-        return service.getIntervaloAberto(cpf ,tipoIntervalo);
-    }
-
-    @GET
-    @Path("/{cpf}/{codTipoIntervalo}")
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.EDITAR_MARCACAO,
-            Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO,
-            Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
-    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf, @PathParam("codTipoIntervalo") String codTipo,
-                                                    @QueryParam("limit") long limit, @QueryParam("offset") long offset) {
-        return service.getIntervalosColaborador(cpf, codTipo, limit, offset);
     }
 
     /**
