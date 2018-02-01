@@ -83,7 +83,7 @@ final class DashboardPneuComponentsCreator {
                     2));
 
             groups.add(ComboGroup.create(
-                    quantidadeAfericao.getData().toString(),
+                    quantidadeAfericao.getDataFormatada(),
                     entries));
         });
 
@@ -120,21 +120,21 @@ final class DashboardPneuComponentsCreator {
                 servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
                 String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
                 0,
-                TipoServico.CALIBRAGEM.asString(),
+                TipoServico.CALIBRAGEM.getLegend(),
                 null));
         // Inspeção.
         entries.add(BarEntry.create(
                 servicosAbertosPorTipo.get(TipoServico.INSPECAO),
                 String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
                 1,
-                TipoServico.INSPECAO.asString(),
+                TipoServico.INSPECAO.getLegend(),
                 null));
         // Movimentação.
         entries.add(BarEntry.create(
                 servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
                 String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
                 2,
-                TipoServico.MOVIMENTACAO.asString(),
+                TipoServico.MOVIMENTACAO.getLegend(),
                 null));
 
         final BarData barData = new BarData(entries);
@@ -232,21 +232,21 @@ final class DashboardPneuComponentsCreator {
                 tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
                 String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
                 0,
-                TipoServico.CALIBRAGEM.asString(),
+                TipoServico.CALIBRAGEM.getLegend(),
                 null));
         // Inspeção.
         entries.add(BarEntry.create(
                 tipoServicoHorasConserto.get(TipoServico.INSPECAO),
                 String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
                 1,
-                TipoServico.INSPECAO.asString(),
+                TipoServico.INSPECAO.getLegend(),
                 null));
         // Movimentação.
         entries.add(BarEntry.create(
                 tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
                 String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
                 2,
-                TipoServico.MOVIMENTACAO.asString(),
+                TipoServico.MOVIMENTACAO.getLegend(),
                 null));
 
         final BarData barData = new BarData(entries);

@@ -552,14 +552,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT a.data_hora::date as data,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
-                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
+            stmt = conn.prepareStatement("SELECT a.data_hora::date as data, to_char(a.data_hora, 'DD/MM/YYYY') as data_formatada, " +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao, " +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco, " +
+                    "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao " +
                     "FROM afericao a " +
                     "WHERE (SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)::text " +
-                    "like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ? \n" +
-                    "GROUP BY a.data_hora::DATE\n" +
+                    "like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ? " +
+                    "GROUP BY 1, 2 " +
                     "ORDER BY a.data_hora::DATE ASC;");
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
@@ -570,7 +570,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 qtAfericoes.add(
-                        new QuantidadeAfericao(rSet.getDate("data"),
+                        new QuantidadeAfericao(
+                                rSet.getDate("data"),
+                                rSet.getString("data_formatada"),
                                 rSet.getInt("qt_afericao_pressao"),
                                 rSet.getInt("qt_afericao_sulco"),
                                 rSet.getInt("qt_afericao_sulco_pressao")));
