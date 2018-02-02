@@ -96,6 +96,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  DC.COD_PILAR_PROLOG_COMPONENTE AS COD_PILAR_PROLOG_COMPONENTE, " +
                     "  DC.TITULO AS TITULO_COMPONENTE, " +
                     "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
+                    "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
                     "  DC.QTD_BLOCOS_HORIZONTAIS AS QTD_BLOCOS_HORIZONTAIS, " +
                     "  DC.QTD_BLOCOS_VERTICAIS AS QTD_BLOCOS_VERTICAIS, " +
                     "  DC.URL_ENDPOINT_DADOS AS URL_ENDPOINT_DADOS " +
@@ -113,7 +114,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     componentResumido.setCodigoComponente(rSet.getInt("CODIGO_COMPONENTE"));
                     componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
                     componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
-//                    componentResumido.setOrdemExibicao(rSet.getInt("ORDEM_COMPONENTE"));
+                    componentResumido.setDescricao(rSet.getString("DESCRICAO_COMPONENTE"));
                     componentResumido.setCodPilarProLog(rSet.getInt("COD_PILAR_PROLOG_COMPONENTE"));
                     componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
                     componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));

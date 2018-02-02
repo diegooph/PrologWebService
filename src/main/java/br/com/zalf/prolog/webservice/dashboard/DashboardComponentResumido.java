@@ -9,6 +9,7 @@ public final class DashboardComponentResumido {
     private Integer codigoComponente;
     private String titulo;
     private String subtitulo;
+    private String descricao;
     private String urlEndpointDados;
 
     private int codPilarProLog;
@@ -42,6 +43,14 @@ public final class DashboardComponentResumido {
 
     public void setSubtitulo(String subtitulo) {
         this.subtitulo = subtitulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public String getUrlEndpointDados() {
