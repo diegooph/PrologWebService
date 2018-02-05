@@ -31,7 +31,7 @@ public class AutenticacaoResource {
 	}
 
 	@DELETE
-	@Path("{token}")
+	@Path("/{token}")
 	@Secured
 	public Response delete(@PathParam("token") String token) {
 		if (service.delete(token)) {
