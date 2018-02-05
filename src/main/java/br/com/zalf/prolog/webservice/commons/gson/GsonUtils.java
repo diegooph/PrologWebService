@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
@@ -16,7 +17,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
@@ -41,6 +43,7 @@ public final class GsonUtils {
 				.serializeSpecialFloatingPointValues()
 				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.registerTypeAdapter(Color.class, new ColorSerializer())
 				.setExclusionStrategies(new AnnotationExclusionStrategy())
 				.enableComplexMapKeySerialization();
 
