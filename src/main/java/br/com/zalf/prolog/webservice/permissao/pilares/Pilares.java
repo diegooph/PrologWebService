@@ -48,7 +48,8 @@ public final class Pilares {
             public final class Movimentacao {
                 private Movimentacao() {}
 
-                public static final int MOVIMENTAR = 120;
+                public static final int MOVIMENTAR_GERAL = 120;
+                public static final int MOVIMENTAR_ANALISE_TO_DESCARTE = 125;
                 public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
                 public static final int EDITAR_MOTIVOS_DESCARTE = 124;
             }

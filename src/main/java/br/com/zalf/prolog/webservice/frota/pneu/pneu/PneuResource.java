@@ -96,7 +96,7 @@ public class PneuResource {
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})
@@ -107,7 +107,7 @@ public class PneuResource {
 
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/marcas/{codEmpresa}")
@@ -117,7 +117,7 @@ public class PneuResource {
 
     @POST
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR})
     @Path("/bandas/modelos/{codEmpresa}/{codMarcaBanda}")
@@ -160,7 +160,7 @@ public class PneuResource {
      */
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.CADASTRAR,
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.Pneu.VISUALIZAR})

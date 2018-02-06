@@ -107,7 +107,7 @@ public class ColaboradorService {
                 loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
                         colaborador.getUnidade().getCodigo(),
                         colaborador.getSetor().getCodigo()));
-            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR)) {
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
