@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.combochart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,6 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class VerticalComboChartComponent extends DashboardComponent {
-    private static final String TIPO = "GRAFICO_BARRAS_VERTICAIS_AGRUPADAS";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -39,7 +39,7 @@ public class VerticalComboChartComponent extends DashboardComponent {
                                         @Nullable Double meta,
                                         @NotNull ComboData comboData,
                                         @NotNull List<String> legendas) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
+        super(IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
                 qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;

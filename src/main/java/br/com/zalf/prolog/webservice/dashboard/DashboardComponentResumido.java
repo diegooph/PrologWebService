@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+
 /**
  * Created on 1/24/18
  *
@@ -16,6 +18,7 @@ public final class DashboardComponentResumido {
     private int qtdBlocosHorizontais;
     private int qtdBlocosVerticais;
     private int ordem;
+    private IdentificadorTipoComponente identificadorTipo;
 
     public DashboardComponentResumido() {
 
@@ -91,5 +94,13 @@ public final class DashboardComponentResumido {
 
     public void setOrdem(int ordem) {
         this.ordem = ordem;
+    }
+
+    public IdentificadorTipoComponente getIdentificadorTipo() {
+        return identificadorTipo;
+    }
+
+    public void setIdentificadorTipo(IdentificadorTipoComponente identificadorTipo) {
+        this.identificadorTipo = identificadorTipo;
     }
 }

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class DashboardComponent {
     @NotNull
-    private String tipo;
+    private IdentificadorTipoComponente identificadorTipo;
     @NotNull
     private String titulo;
     @Nullable
@@ -37,7 +37,7 @@ public abstract class DashboardComponent {
     private int qtdBlocosVerticais;
     private int ordemExibicao;
 
-    public DashboardComponent(@NotNull String tipo,
+    public DashboardComponent(@NotNull IdentificadorTipoComponente identificadorTipo,
                               @NotNull String titulo,
                               @Nullable String subtitulo,
                               @NotNull String descricao,
@@ -46,7 +46,7 @@ public abstract class DashboardComponent {
                               int qtdBlocosHorizontais,
                               int qtdBlocosVerticais,
                               int ordemExibicao) {
-        this.tipo = tipo;
+        this.identificadorTipo = identificadorTipo;
         this.titulo = titulo;
         this.subtitulo = subtitulo;
         this.descricao = descricao;

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.densitychart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class DensityChartComponent extends DashboardComponent {
-    private static final String TIPO = "GRAFICO_DENSIDADE";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -31,7 +31,7 @@ public class DensityChartComponent extends DashboardComponent {
                                  @NotNull String labelEixoX,
                                  @NotNull String labelEixoY,
                                  @NotNull DensityData data) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
         this.data = data;

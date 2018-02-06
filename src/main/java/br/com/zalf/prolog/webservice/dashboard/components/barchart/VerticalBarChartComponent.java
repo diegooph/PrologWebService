@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.barchart;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class VerticalBarChartComponent extends DashboardComponent {
-    private static final String TIPO = "GRAFICO_BARRAS_VERTICAIS";
     @NotNull
     private String labelEixoX;
     @NotNull
@@ -55,7 +55,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
                                       @NotNull String labelEixoY,
                                       @Nullable Double meta,
                                       @NotNull BarData barData) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
+        super(IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
                 qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;

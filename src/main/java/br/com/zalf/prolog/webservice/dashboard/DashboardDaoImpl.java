@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -93,6 +94,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "  DC.CODIGO AS CODIGO_COMPONENTE, " +
+                    "  DCT.IDENTIFICADOR_TIPO AS IDENTIFICADOR_TIPO, " +
                     "  DC.COD_PILAR_PROLOG_COMPONENTE AS COD_PILAR_PROLOG_COMPONENTE, " +
                     "  DC.TITULO AS TITULO_COMPONENTE, " +
                     "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
@@ -104,7 +106,8 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  JOIN PUBLIC.TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? " +
                     "  JOIN PUBLIC.COLABORADOR C ON TA.CPF_COLABORADOR = C.CPF " +
                     "  JOIN PUBLIC.CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE;");
+                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE " +
+                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO;");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
             final List<DashboardComponentResumido> components = new ArrayList<>();
@@ -119,6 +122,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
                     componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));
                     componentResumido.setUrlEndpointDados(rSet.getString("URL_ENDPOINT_DADOS"));
+                    componentResumido.setIdentificadorTipo(IdentificadorTipoComponente.fromString(rSet.getString("IDENTIFICADOR_TIPO")));
                     components.add(componentResumido);
                 } while (rSet.next());
             }

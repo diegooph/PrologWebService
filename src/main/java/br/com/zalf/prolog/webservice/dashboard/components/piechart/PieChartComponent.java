@@ -4,6 +4,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.piechart;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class PieChartComponent extends DashboardComponent {
-    private static final String TIPO = "GRAFICO_SETORES";
     @NotNull
     private PieData pieData;
 
@@ -42,7 +42,7 @@ public class PieChartComponent extends DashboardComponent {
                               int qtdBlocosVerticais,
                               int ordem,
                               @NotNull PieData pieData) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+        super(IdentificadorTipoComponente.GRAFICO_SETORES, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
         this.pieData = pieData;
     }
 

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class QuantidadeItemComponent extends DashboardComponent {
-    private static final String TIPO = "QUANTIDADE_ITENS";
     @NotNull
     private final String qtdItens;
     @NotNull
@@ -50,7 +50,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
                                     @NotNull String qtdItens,
                                     @NotNull String urlIcone,
                                     @NotNull Color backgroundColor) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(IdentificadorTipoComponente.QUANTIDADE_ITEM, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.qtdItens = qtdItens;
         this.urlIcone = urlIcone;
         this.backgroundColor = backgroundColor;

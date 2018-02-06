@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.dashboard.components.table;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
+import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,6 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class TableComponent extends DashboardComponent {
-    private static final String TIPO = "TABELA";
     @NotNull
     private TableHeader tableHeader;
     @NotNull
@@ -50,7 +50,7 @@ public class TableComponent extends DashboardComponent {
                            int ordemExibicao,
                            @NotNull TableHeader tableHeader,
                            @NotNull TableData tableData) {
-        super(TIPO, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(IdentificadorTipoComponente.TABELA, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
     }
