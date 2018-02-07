@@ -18,6 +18,9 @@ final class DashboardVeiculoComponentsCreator {
     @NotNull
     static QuantidadeItemComponent createQtdVeiculosAtivosComPneuAplicado(@NotNull final ComponentDataHolder component,
                                                                           final int qtdVeiculosAtivosComPneuAplicado) {
-        return QuantidadeItemComponent.createDefault(component, qtdVeiculosAtivosComPneuAplicado);
+        return QuantidadeItemComponent.createDefault(
+                component,
+                String.valueOf(qtdVeiculosAtivosComPneuAplicado),
+                "veículos ativos");
     }
 }

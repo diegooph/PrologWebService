@@ -57,7 +57,10 @@ final class DashboardPneuComponentsCreator {
     @NotNull
     static QuantidadeItemComponent createQtdPneusPressaoIncorreta(@NotNull final ComponentDataHolder component,
                                                                   final int qtdPneusPressaoIncorreta) {
-        return QuantidadeItemComponent.createDefault(component, qtdPneusPressaoIncorreta);
+        return QuantidadeItemComponent.createDefault(
+                component,
+                String.valueOf(qtdPneusPressaoIncorreta),
+                "pneus com pressão incorreta");
     }
 
     @NotNull

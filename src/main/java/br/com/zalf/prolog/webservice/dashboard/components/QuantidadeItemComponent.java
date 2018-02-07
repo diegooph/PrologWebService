@@ -18,12 +18,15 @@ public class QuantidadeItemComponent extends DashboardComponent {
     @NotNull
     private final String qtdItens;
     @NotNull
+    private final String descricaoQtdItens;
+    @NotNull
     private final String urlIcone;
     @NotNull
     private final Color backgroundColor;
 
     public static QuantidadeItemComponent createDefault(@NotNull final ComponentDataHolder component,
-                                                        final int qtdItens) {
+                                                        @NotNull final String qtdItens,
+                                                        @NotNull final String descricaoQtdItens) {
         return new QuantidadeItemComponent.Builder()
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
@@ -33,7 +36,8 @@ public class QuantidadeItemComponent extends DashboardComponent {
                 .withQtdBlocosHorizontais(component.qtdBlocosHorizontais)
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
-                .withQtdItens(String.valueOf(qtdItens))
+                .withQtdItens(qtdItens)
+                .withDescricaoQtdItens(descricaoQtdItens)
                 .withBackgroundColor(Color.fromHex(component.corBackgroundHex))
                 .withUrlIcone(component.urlIcone)
                 .build();
@@ -48,10 +52,12 @@ public class QuantidadeItemComponent extends DashboardComponent {
                                     int qtdBlocosVerticais,
                                     int ordemExibicao,
                                     @NotNull String qtdItens,
+                                    @NotNull String descricaoQtdItens,
                                     @NotNull String urlIcone,
                                     @NotNull Color backgroundColor) {
         super(IdentificadorTipoComponente.QUANTIDADE_ITEM, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.qtdItens = qtdItens;
+        this.descricaoQtdItens = descricaoQtdItens;
         this.urlIcone = urlIcone;
         this.backgroundColor = backgroundColor;
     }
@@ -82,6 +88,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
 
     public static class Builder extends BaseComponentBuilder {
         private String qtdItens;
+        private String descricaoQtdItens;
         private String urlIcone;
         private Color backgroundColor;
 
@@ -140,6 +147,11 @@ public class QuantidadeItemComponent extends DashboardComponent {
             return this;
         }
 
+        public Builder withDescricaoQtdItens(@NotNull String descricaoQtdItens) {
+            this.descricaoQtdItens = descricaoQtdItens;
+            return this;
+        }
+
         public Builder withUrlIcone(@NotNull String urlIcone) {
             this.urlIcone = urlIcone;
             return this;
@@ -154,6 +166,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
         public QuantidadeItemComponent build() {
             ensureNotNullValues();
             Preconditions.checkNotNull(qtdItens, "qtdItens deve ser instanciada com 'withQtdItens'");
+            Preconditions.checkNotNull(descricaoQtdItens, "descricaoQtdItens deve ser instanciada com 'withDescricaoQtdItens'");
             Preconditions.checkNotNull(urlIcone, "urlIcone deve ser instanciada com 'withUrlIcone'");
             Preconditions.checkNotNull(backgroundColor, "backgroundColor deve ser instanciada com 'withBackgroundColor'");
             return new QuantidadeItemComponent(
@@ -166,6 +179,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
                     qtdBlocosVerticais,
                     ordemExibicao,
                     qtdItens,
+                    descricaoQtdItens,
                     urlIcone,
                     backgroundColor);
         }
