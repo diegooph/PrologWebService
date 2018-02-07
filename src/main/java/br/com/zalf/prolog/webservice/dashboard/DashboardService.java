@@ -26,7 +26,7 @@ public class DashboardService {
         }
     }
 
-    public List<DashboardComponentResumido> getComponentesColaborador(@NotNull final String userToken) {
+    public List<DashboardPilarComponents> getComponentesColaborador(@NotNull final String userToken) {
         try {
             return dao.getComponentesColaborador(TokenCleaner.getOnlyToken(userToken));
         } catch (SQLException ex) {

@@ -86,7 +86,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
 
     @NotNull
     @Override
-    public List<DashboardComponentResumido> getComponentesColaborador(@NotNull String userToken) throws SQLException {
+    public List<DashboardPilarComponents> getComponentesColaborador(@NotNull String userToken) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -107,28 +107,49 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  JOIN PUBLIC.COLABORADOR C ON TA.CPF_COLABORADOR = C.CPF " +
                     "  JOIN PUBLIC.CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE " +
                     "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE " +
-                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO;");
+                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO " +
+                    "  GROUP BY 3,2,1;");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
-            final List<DashboardComponentResumido> components = new ArrayList<>();
-            if (rSet.next()) {
-                do {
-                    final DashboardComponentResumido componentResumido = new DashboardComponentResumido();
-                    componentResumido.setCodigoComponente(rSet.getInt("CODIGO_COMPONENTE"));
-                    componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
-                    componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
-                    componentResumido.setDescricao(rSet.getString("DESCRICAO_COMPONENTE"));
-                    componentResumido.setCodPilarProLog(rSet.getInt("COD_PILAR_PROLOG_COMPONENTE"));
-                    componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
-                    componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));
-                    componentResumido.setUrlEndpointDados(rSet.getString("URL_ENDPOINT_DADOS"));
-                    componentResumido.setIdentificadorTipo(IdentificadorTipoComponente.fromString(rSet.getString("IDENTIFICADOR_TIPO")));
-                    components.add(componentResumido);
-                } while (rSet.next());
+            final List<DashboardPilarComponents> componentsPilar = new ArrayList<>();
+            List<DashboardComponentResumido> components = new ArrayList<>();
+            int codPilarUltimoComponente = -1;
+            while (rSet.next()) {
+                if (components.isEmpty()) {
+                    components.add(createComponentResumido(rSet));
+                } else {
+                    final int codPilarResultSet = rSet.getInt("COD_PILAR_PROLOG_COMPONENTE");
+                    codPilarUltimoComponente = components.get(components.size() - 1).getCodPilarProLog();
+                    if (codPilarUltimoComponente == codPilarResultSet) {
+                        components.add(createComponentResumido(rSet));
+                    } else {
+                        // Trocou de pilar.
+                        componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));
+                        components = new ArrayList<>();
+                    }
+                }
             }
-            return components;
+            if (!components.isEmpty()) {
+                componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));
+            }
+            return componentsPilar;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    @NotNull
+    private DashboardComponentResumido createComponentResumido(@NotNull final ResultSet rSet) throws SQLException {
+        final DashboardComponentResumido componentResumido = new DashboardComponentResumido();
+        componentResumido.setCodigoComponente(rSet.getInt("CODIGO_COMPONENTE"));
+        componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
+        componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
+        componentResumido.setDescricao(rSet.getString("DESCRICAO_COMPONENTE"));
+        componentResumido.setCodPilarProLog(rSet.getInt("COD_PILAR_PROLOG_COMPONENTE"));
+        componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
+        componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));
+        componentResumido.setUrlEndpointDados(rSet.getString("URL_ENDPOINT_DADOS"));
+        componentResumido.setIdentificadorTipo(IdentificadorTipoComponente.fromString(rSet.getString("IDENTIFICADOR_TIPO")));
+        return componentResumido;
     }
 }
