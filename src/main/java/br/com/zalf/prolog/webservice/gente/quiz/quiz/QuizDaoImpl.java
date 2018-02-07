@@ -19,7 +19,9 @@ import java.util.List;
  */
 public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
 
-    private static final String TAG = QuizDaoImpl.class.getSimpleName();
+    public QuizDaoImpl() {
+
+    }
 
     @Override
     public boolean insert (Quiz quiz) throws SQLException{

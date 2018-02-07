@@ -14,6 +14,10 @@ import java.util.List;
 
 public class TreinamentoDaoImpl extends DatabaseConnection implements TreinamentoDao {
 
+    public TreinamentoDaoImpl() {
+
+    }
+
     @Override
     public List<Treinamento> getAll(Long dataInicial,
                                     Long dataFinal,

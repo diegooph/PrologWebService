@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -47,12 +48,8 @@ public class PneuResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
-    public Response insertModeloPneu(Modelo modelo, @PathParam("codEmpresa") long codEmpresa, @PathParam("codMarca") long codMarca) {
-        if (service.insertModeloPneu(modelo, codEmpresa, codMarca)) {
-            return Response.ok("Modelo de pneu inserido com sucesso.");
-        } else {
-            return Response.error("Erro ao inserir o modelo de pneu.");
-        }
+    public AbstractResponse insertModeloPneu(ModeloPneu modelo, @PathParam("codEmpresa") Long codEmpresa, @PathParam("codMarca") Long codMarca) {
+        return service.insertModeloPneu(modelo, codEmpresa, codMarca);
     }
 
     @GET
@@ -66,21 +63,21 @@ public class PneuResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/marcaModelos/{codEmpresa}")
     public List<Marca> getMarcaModeloPneuByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloPneuByCodEmpresa(codEmpresa);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/modelos/{codModelo}")
     public Modelo getModeloPneu(@PathParam("codModelo") Long codModelo) {
         return service.getModeloPneu(codModelo);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/dimensao")
     public List<Pneu.Dimensao> getDimensoes() {
         return service.getDimensoes();
@@ -98,9 +95,11 @@ public class PneuResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.MOVIMENTAR,
             Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR})
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/marcas/{codEmpresa}")
     public List<Marca> getMarcaModeloBanda(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloBanda(codEmpresa);
@@ -158,9 +157,11 @@ public class PneuResource {
      * @deprecated Use {@link #getMarcaModeloBanda(Long)} instead.
      */
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.MOVIMENTAR,
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.MOVIMENTAR,
             Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR})
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/bandas/{codEmpresa}")
     @Deprecated
     public List<Marca> DEPRECATED_GET_MARCA_MODELO_BANDA(@PathParam("codEmpresa") Long codEmpresa) {

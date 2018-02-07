@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -39,12 +40,12 @@ public class PneuService {
         }
     }
 
-    public boolean insertModeloPneu(Modelo modelo, long codEmpresa, long codMarca) {
+    public AbstractResponse insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) {
         try {
-            return dao.insertModeloPneu(modelo, codEmpresa, codMarca);
+            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(modelo, codEmpresa, codMarca));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
-            return false;
+            return Response.error("Erro ao inserir o modelo de pneu");
         }
     }
 

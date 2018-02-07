@@ -19,10 +19,12 @@ import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
 import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
 
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
-
     private static final String TAG = MapaDaoImpl.class.getSimpleName();
+    private static final Time EMPTY_TIME = new Time(0L);
 
-    public static final Time EMPTY_TIME = new Time(0L);
+    public MapaDaoImpl() {
+
+    }
 
     //TODO: se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
     // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,

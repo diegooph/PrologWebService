@@ -43,10 +43,42 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
+import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
+import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
+import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDao;
+import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloDao;
+import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios.QuizRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios.QuizRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDao;
+import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDaoImpl;
+import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
+import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
+import br.com.zalf.prolog.webservice.imports.mapa.MapaDao;
+import br.com.zalf.prolog.webservice.imports.mapa.MapaDaoImpl;
+import br.com.zalf.prolog.webservice.imports.tracking.TrackingDao;
+import br.com.zalf.prolog.webservice.imports.tracking.TrackingDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.log.LogDao;
+import br.com.zalf.prolog.webservice.log.LogDaoImpl;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
+import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
+import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDao;
+import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDaoImpl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -174,6 +206,86 @@ public final class Injection {
     @NotNull
     public static ContrachequeDao provideContrachequeDao() {
         return new ContrachequeDaoImpl();
+    }
+
+    @NotNull
+    public static ControleIntervaloDao provideControleIntervaloDao() {
+        return new ControleIntervaloDaoImpl();
+    }
+
+    @NotNull
+    public static ControleIntervaloRelatoriosDao provideControleIntervaloRelatoriosDao() {
+        return new ControleIntervaloRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static FaleConoscoDao provideFaleConoscoDao() {
+        return new FaleConoscoDaoImpl();
+    }
+
+    @NotNull
+    public static FaleConoscoRelatorioDao provideFaleConoscoRelatorioDao() {
+        return new FaleConoscoRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static ProntuarioCondutorDao provideProntuarioCondutorDao() {
+        return new ProntuarioCondutorDaoImpl();
+    }
+
+    @NotNull
+    public static QuizDao provideQuizDao() {
+        return new QuizDaoImpl();
+    }
+
+    @NotNull
+    public static QuizModeloDao provideQuizModeloDao() {
+        return new QuizModeloDaoImpl();
+    }
+
+    @NotNull
+    public static QuizRelatorioDao provideQuizRelatorioDao() {
+        return new QuizRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static SolicitacaoFolgaDao provideSolicitacaoFolgaDao() {
+        return new SolicitacaoFolgaDaoImpl();
+    }
+
+    @NotNull
+    public static SolicitacaoFolgaRelatorioDao provideSolicitacaoFolgaRelatorioDao() {
+        return new SolicitacaoFolgaRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static TreinamentoDao provideTreinamentoDao() {
+        return new TreinamentoDaoImpl();
+    }
+
+    @NotNull
+    public static MapaDao provideMapaDao() {
+        return new MapaDaoImpl();
+    }
+
+    @NotNull
+    public static TrackingDao provideTrackingDao() {
+        return new TrackingDaoImpl();
+    }
+
+    @NotNull
+    public static LogDao provideLogDao() {
+        return new LogDaoImpl();
+    }
+
+    @NotNull
+    public static RelatoDao provideRelatoDao() {
+        return new RelatoDaoImpl();
+    }
+
+    @NotNull
+    public static RelatoRelatorioDao provideRelatoRelatorioDao() {
+        return new RelatoRelatorioDaoImpl();
     }
 
     // ================================================

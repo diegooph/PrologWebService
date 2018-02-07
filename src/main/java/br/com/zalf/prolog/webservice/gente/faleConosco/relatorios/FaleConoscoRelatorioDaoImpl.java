@@ -17,7 +17,11 @@ import java.util.Date;
 /**
  * Created by Zart on 02/05/17.
  */
-public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements FaleConoscoRelatorioDao{
+public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements FaleConoscoRelatorioDao {
+
+    public FaleConoscoRelatorioDaoImpl() {
+
+    }
 
     @Override
     public void getResumoCsv(Long codUnidade, OutputStream outputStream, Date dataInicial, Date dataFinal)

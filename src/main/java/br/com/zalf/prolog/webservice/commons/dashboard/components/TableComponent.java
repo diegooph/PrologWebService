@@ -1,7 +1,11 @@
-package br.com.zalf.prolog.webservice.commons.dashboard;
+package br.com.zalf.prolog.webservice.commons.dashboard.components;
 
+import br.com.zalf.prolog.webservice.commons.dashboard.TableHeader;
+import br.com.zalf.prolog.webservice.commons.dashboard.TableLine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created on 10/01/18.
@@ -13,13 +17,13 @@ public class TableComponent extends DashboardComponent {
     @NotNull
     private TableHeader tableHeader;
     @NotNull
-    private TableLines tableData;
+    private List<TableLine> tableData;
 
     public TableComponent(@NotNull String titulo,
                           @Nullable String subtitulo,
                           @NotNull String descricao,
                           @NotNull TableHeader tableHeader,
-                          @NotNull TableLines tableData) {
+                          @NotNull List<TableLine> tableData) {
         super(titulo, subtitulo, descricao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
@@ -35,11 +39,11 @@ public class TableComponent extends DashboardComponent {
     }
 
     @NotNull
-    public TableLines getTableData() {
+    public List<TableLine> getTableData() {
         return tableData;
     }
 
-    public void setTableData(@NotNull TableLines tableData) {
+    public void setTableData(@NotNull List<TableLine> tableData) {
         this.tableData = tableData;
     }
 

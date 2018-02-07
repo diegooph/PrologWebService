@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class QuizModeloService {
 
-    private QuizModeloDao dao = new QuizModeloDaoImpl();
+    private QuizModeloDao dao = Injection.provideQuizModeloDao();
     private static final String TAG = QuizModeloService.class.getSimpleName();
 
     public List<ModeloQuiz> getModelosQuizDisponiveisByCodUnidadeByCodFuncao(Long codUnidade, Long codFuncaoColaborador) {

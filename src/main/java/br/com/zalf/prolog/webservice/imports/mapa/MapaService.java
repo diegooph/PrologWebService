@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.mapa;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -11,9 +12,8 @@ import java.text.ParseException;
  * Classe MapaService responsavel por comunicar-se com a interface DAO
  */
 public class MapaService {
-
-    private MapaDao dao = new MapaDaoImpl();
     private static final String TAG = MapaService.class.getSimpleName();
+    private final MapaDao dao = Injection.provideMapaDao();
 
     public Response insertOrUpdateMapa(String path, Long codUnidade) {
         try {

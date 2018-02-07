@@ -7,6 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * @deprecated Utilize {@link UsedBy} para denotar por qual plataforma o recurso está sendo utilizado.
+ *
  * Created by luiz on 8/2/16.
  *
  * Notação utilitária que informa apenas se um método, ou todos os métodos de uma classe, são usados

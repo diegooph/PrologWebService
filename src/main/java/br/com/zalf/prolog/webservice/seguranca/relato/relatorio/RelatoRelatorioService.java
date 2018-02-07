@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.relatorio;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 public class RelatoRelatorioService {
 
-    private RelatoRelatorioDao relatorioDao = new RelatoRelatorioDaoImpl();
+    private RelatoRelatorioDao relatorioDao = Injection.provideRelatoRelatorioDao();
     private static final String TAG = RelatoRelatorioService.class.getSimpleName();
 
     public void getRelatosEstratificadosCsv(Long codUnidade, Long dataInicial, Long dataFinal, String equipe, OutputStream out) {

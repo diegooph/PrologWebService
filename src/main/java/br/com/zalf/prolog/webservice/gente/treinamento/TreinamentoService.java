@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
@@ -14,9 +15,8 @@ import java.util.List;
  * Classe TreinamentoService responsavel por comunicar-se com a interface DAO
  */
 public class TreinamentoService {
-
-    private final TreinamentoDao dao = new TreinamentoDaoImpl();
     private static final String TAG = TreinamentoService.class.getSimpleName();
+    private final TreinamentoDao dao = Injection.provideTreinamentoDao();
 
     public List<Treinamento> getVistosByColaborador(Long cpf) {
         try {

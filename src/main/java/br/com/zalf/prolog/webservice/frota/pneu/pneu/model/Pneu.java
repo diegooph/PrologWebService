@@ -45,7 +45,6 @@ public class Pneu {
     private Dimensao dimensao;
     private double pressaoCorreta;
     private double pressaoAtual;
-    private Sulcos sulcosPneuNovo;
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
@@ -54,12 +53,12 @@ public class Pneu {
     /**
      * {@link Regional} onde o pneu se encontra.
      */
-    public Long codRegionalAlocado;
+    private Long codRegionalAlocado;
 
     /**
      * {@link Unidade} onde o pneu se encontra.
      */
-    public Long codUnidadeAlocado;
+    private Long codUnidadeAlocado;
 
     /**
      * O código DOT gravado na lateral do pneu indica sua conformidade com os padrões de segurança e fornece dados
@@ -160,14 +159,6 @@ public class Pneu {
         this.pressaoCorreta = pressaoCorreta;
     }
 
-    public Sulcos getSulcosPneuNovo() {
-        return sulcosPneuNovo;
-    }
-
-    public void setSulcosPneuNovo(Sulcos sulcosPneuNovo) {
-        this.sulcosPneuNovo = sulcosPneuNovo;
-    }
-
     public Sulcos getSulcosAtuais() {
         return sulcosAtuais;
     }
@@ -266,9 +257,8 @@ public class Pneu {
         }
     }
 
-    public Double getAlturaSulcoPneuNovo() {
-        // Os sulcos do de um pneu novo, são todos iguais. Por isso podemos pegar a altura de qualquer um dos sulcos.
-        return sulcosPneuNovo.getCentralInterno();
+    public boolean jaFoiRecapado() {
+        return vidaAtual > 1;
     }
 
     public Double getAlturaSulcoBandaPneu() {
@@ -302,7 +292,6 @@ public class Pneu {
                 ", dimensao=" + dimensao +
                 ", pressaoCorreta=" + pressaoCorreta +
                 ", pressaoAtual=" + pressaoAtual +
-                ", sulcosPneuNovo=" + sulcosPneuNovo +
                 ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
@@ -319,6 +308,7 @@ public class Pneu {
         public double aro;
 
         public Dimensao() {
+
         }
 
         @Override
