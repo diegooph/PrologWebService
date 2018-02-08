@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalCom
 import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -22,7 +21,6 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class DashboardPneuResource {
-    private final RelatorioPneuService relatorioPneuService = new RelatorioPneuService();
     private final DashboardPneuService service = new DashboardPneuService();
 
     @GET
