@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface DashboardComponentBuilder {
 
+    DashboardComponentBuilder withCodigo(@NotNull Integer codigo);
+
     DashboardComponentBuilder withTitulo(@NotNull String titulo);
 
     DashboardComponentBuilder withSubtitulo(@Nullable String subtitulo);

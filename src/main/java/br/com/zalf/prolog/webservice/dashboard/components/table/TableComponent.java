@@ -27,6 +27,7 @@ public class TableComponent extends DashboardComponent {
                                                @NotNull final TableHeader tableHeader,
                                                @NotNull final TableData tableData) {
         return new TableComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)
@@ -40,7 +41,8 @@ public class TableComponent extends DashboardComponent {
                 .build();
     }
 
-    private TableComponent(@NotNull String titulo,
+    private TableComponent(@NotNull Integer codigo,
+                           @NotNull String titulo,
                            @Nullable String subtitulo,
                            @NotNull String descricao,
                            @NotNull String urlEndpointDados,
@@ -50,7 +52,8 @@ public class TableComponent extends DashboardComponent {
                            int ordemExibicao,
                            @NotNull TableHeader tableHeader,
                            @NotNull TableData tableData) {
-        super(IdentificadorTipoComponente.TABELA, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(codigo, IdentificadorTipoComponente.TABELA, titulo, subtitulo, descricao, urlEndpointDados,
+                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
     }
@@ -99,6 +102,12 @@ public class TableComponent extends DashboardComponent {
 
         public Builder() {
 
+        }
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
         }
 
         @Override
@@ -165,6 +174,7 @@ public class TableComponent extends DashboardComponent {
             Preconditions.checkNotNull(tableHeader, "tableHeader deve ser instanciada com 'withTableHeader'");
             Preconditions.checkNotNull(tableData, "tableData deve ser instanciada com 'withTableData'");
             return new TableComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,

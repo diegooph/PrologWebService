@@ -43,7 +43,8 @@ public class QuantidadeItemComponent extends DashboardComponent {
                 .build();
     }
 
-    private QuantidadeItemComponent(@NotNull String titulo,
+    private QuantidadeItemComponent(@NotNull Integer codigo,
+                                    @NotNull String titulo,
                                     @Nullable String subtitulo,
                                     @NotNull String descricao,
                                     @NotNull String urlEndpointDados,
@@ -55,7 +56,8 @@ public class QuantidadeItemComponent extends DashboardComponent {
                                     @NotNull String descricaoQtdItens,
                                     @NotNull String urlIcone,
                                     @NotNull Color backgroundColor) {
-        super(IdentificadorTipoComponente.QUANTIDADE_ITEM, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+        super(codigo, IdentificadorTipoComponente.QUANTIDADE_ITEM, titulo, subtitulo, descricao, urlEndpointDados,
+                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.qtdItens = qtdItens;
         this.descricaoQtdItens = descricaoQtdItens;
         this.urlIcone = urlIcone;
@@ -65,6 +67,11 @@ public class QuantidadeItemComponent extends DashboardComponent {
     @NotNull
     public String getQtdItens() {
         return qtdItens;
+    }
+
+    @NotNull
+    public String getDescricaoQtdItens() {
+        return descricaoQtdItens;
     }
 
     @NotNull
@@ -81,8 +88,9 @@ public class QuantidadeItemComponent extends DashboardComponent {
     public String toString() {
         return "QuantidadeItemComponent{" +
                 "qtdItens='" + qtdItens + '\'' +
+                ", descricaoQtdItens='" + descricaoQtdItens + '\'' +
                 ", urlIcone='" + urlIcone + '\'' +
-                ", backgroundColor='" + backgroundColor + '\'' +
+                ", backgroundColor=" + backgroundColor +
                 '}';
     }
 
@@ -93,6 +101,12 @@ public class QuantidadeItemComponent extends DashboardComponent {
         private Color backgroundColor;
 
         public Builder() {}
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
+        }
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
@@ -170,6 +184,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
             Preconditions.checkNotNull(urlIcone, "urlIcone deve ser instanciada com 'withUrlIcone'");
             Preconditions.checkNotNull(backgroundColor, "backgroundColor deve ser instanciada com 'withBackgroundColor'");
             return new QuantidadeItemComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,

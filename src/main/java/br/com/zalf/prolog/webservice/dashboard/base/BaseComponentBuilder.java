@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class BaseComponentBuilder implements DashboardComponentBuilder {
     @NotNull
+    protected Integer codigo;
+    @NotNull
     protected String titulo;
     @Nullable
     protected String subtitulo;
@@ -23,6 +25,12 @@ public abstract class BaseComponentBuilder implements DashboardComponentBuilder 
     protected int qtdBlocosHorizontais;
     protected int qtdBlocosVerticais;
     protected int ordemExibicao;
+
+    @Override
+    public DashboardComponentBuilder withCodigo(@NotNull Integer codigo) {
+        this.codigo = codigo;
+        return this;
+    }
 
     @Override
     public DashboardComponentBuilder withTitulo(@NotNull String titulo) {
@@ -73,8 +81,9 @@ public abstract class BaseComponentBuilder implements DashboardComponentBuilder 
     }
 
     protected void ensureNotNullValues() {
+        Preconditions.checkNotNull(codigo, "codigo deve ser instanciado com 'withCodigo'");
         Preconditions.checkNotNull(titulo, "titulo deve ser instanciada com 'withTitulo'");
-        Preconditions.checkNotNull(descricao, "titulo deve ser instanciada com 'withDescricao'");
+        Preconditions.checkNotNull(descricao, "descricao deve ser instanciada com 'withDescricao'");
         Preconditions.checkNotNull(urlEndpointDados, "urlEndpointDados deve ser instanciada com 'withUrlEndpointDados'");
         Preconditions.checkNotNull(codTipoComponente, "codTipoComponente deve ser instanciada com 'withCodTipoComponente'");
     }

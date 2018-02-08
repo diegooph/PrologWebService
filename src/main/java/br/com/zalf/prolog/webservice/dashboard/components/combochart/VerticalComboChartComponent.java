@@ -26,7 +26,8 @@ public class VerticalComboChartComponent extends DashboardComponent {
     @NotNull
     private List<String> legendas;
 
-    private VerticalComboChartComponent(@NotNull String titulo,
+    private VerticalComboChartComponent(@NotNull Integer codigo,
+                                        @NotNull String titulo,
                                         @Nullable String subtitulo,
                                         @NotNull String descricao,
                                         @NotNull String urlEndpointDados,
@@ -39,8 +40,8 @@ public class VerticalComboChartComponent extends DashboardComponent {
                                         @Nullable Double meta,
                                         @NotNull ComboData comboData,
                                         @NotNull List<String> legendas) {
-        super(IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
-                qtdBlocosVerticais, ordemExibicao);
+        super(codigo, IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao,
+                urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
         this.meta = meta;
@@ -112,6 +113,12 @@ public class VerticalComboChartComponent extends DashboardComponent {
         private List<String> legendas;
 
         public Builder() {}
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
+        }
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
@@ -194,6 +201,7 @@ public class VerticalComboChartComponent extends DashboardComponent {
             Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
             Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
             return new VerticalComboChartComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,

@@ -20,18 +20,20 @@ public class DensityChartComponent extends DashboardComponent {
     @NotNull
     private DensityData data;
 
-    private DensityChartComponent(@NotNull String titulo,
-                                 @Nullable String subtitulo,
-                                 @NotNull String descricao,
-                                 @NotNull String urlEndpointDados,
-                                 @NotNull Integer codTipoComponente,
-                                 int qtdBlocosHorizontais,
-                                 int qtdBlocosVerticais,
-                                 int ordemExibicao,
-                                 @NotNull String labelEixoX,
-                                 @NotNull String labelEixoY,
-                                 @NotNull DensityData data) {
-        super(IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+    private DensityChartComponent(@NotNull Integer codigo,
+                                  @NotNull String titulo,
+                                  @Nullable String subtitulo,
+                                  @NotNull String descricao,
+                                  @NotNull String urlEndpointDados,
+                                  @NotNull Integer codTipoComponente,
+                                  int qtdBlocosHorizontais,
+                                  int qtdBlocosVerticais,
+                                  int ordemExibicao,
+                                  @NotNull String labelEixoX,
+                                  @NotNull String labelEixoY,
+                                  @NotNull DensityData data) {
+        super(codigo, IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados,
+                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
         this.data = data;
@@ -80,6 +82,12 @@ public class DensityChartComponent extends DashboardComponent {
 
         public Builder() {
 
+        }
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
         }
 
         @Override
@@ -152,6 +160,7 @@ public class DensityChartComponent extends DashboardComponent {
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
             Preconditions.checkNotNull(densityData, "densityData deve ser instanciada com 'withDensityData'");
             return new DensityChartComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,

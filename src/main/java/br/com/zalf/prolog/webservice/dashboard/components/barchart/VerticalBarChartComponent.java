@@ -28,6 +28,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
                                                           @NotNull final BarData barData,
                                                           @Nullable final Double meta) {
         return new VerticalBarChartComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)
@@ -43,7 +44,8 @@ public class VerticalBarChartComponent extends DashboardComponent {
                 .build();
     }
 
-    private VerticalBarChartComponent(@NotNull String titulo,
+    private VerticalBarChartComponent(@NotNull Integer codigo,
+                                      @NotNull String titulo,
                                       @Nullable String subtitulo,
                                       @NotNull String descricao,
                                       @NotNull String urlEndpointDados,
@@ -55,8 +57,8 @@ public class VerticalBarChartComponent extends DashboardComponent {
                                       @NotNull String labelEixoY,
                                       @Nullable Double meta,
                                       @NotNull BarData barData) {
-        super(IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais,
-                qtdBlocosVerticais, ordemExibicao);
+        super(codigo, IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS, titulo, subtitulo, descricao,
+                urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
         this.meta = meta;
@@ -68,6 +70,12 @@ public class VerticalBarChartComponent extends DashboardComponent {
         private String labelEixoY;
         private Double meta;
         private BarData barData;
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
+        }
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
@@ -144,6 +152,7 @@ public class VerticalBarChartComponent extends DashboardComponent {
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
             Preconditions.checkNotNull(barData, "barData deve ser instanciada com 'withBarData'");
             return new VerticalBarChartComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,

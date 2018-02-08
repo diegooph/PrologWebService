@@ -21,6 +21,7 @@ public class PieChartComponent extends DashboardComponent {
     public static PieChartComponent createDefault(@NotNull final ComponentDataHolder component,
                                                   @NotNull final PieData pieData) {
         return new PieChartComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)
@@ -33,7 +34,8 @@ public class PieChartComponent extends DashboardComponent {
                 .build();
     }
 
-    private PieChartComponent(@NotNull String titulo,
+    private PieChartComponent(@NotNull Integer codigo,
+                              @NotNull String titulo,
                               @Nullable String subtitulo,
                               @NotNull String descricao,
                               @NotNull String urlEndpointDados,
@@ -42,7 +44,8 @@ public class PieChartComponent extends DashboardComponent {
                               int qtdBlocosVerticais,
                               int ordem,
                               @NotNull PieData pieData) {
-        super(IdentificadorTipoComponente.GRAFICO_SETORES, titulo, subtitulo, descricao, urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
+        super(codigo, IdentificadorTipoComponente.GRAFICO_SETORES, titulo, subtitulo, descricao, urlEndpointDados,
+                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordem);
         this.pieData = pieData;
     }
 
@@ -66,6 +69,12 @@ public class PieChartComponent extends DashboardComponent {
         private PieData pieData;
 
         public Builder() {}
+
+        @Override
+        public Builder withCodigo(@NotNull Integer codigo) {
+            super.withCodigo(codigo);
+            return this;
+        }
 
         @Override
         public Builder withTitulo(@NotNull String titulo) {
@@ -123,6 +132,7 @@ public class PieChartComponent extends DashboardComponent {
         @Override
         public PieChartComponent build() {
             return new PieChartComponent(
+                    codigo,
                     titulo,
                     subtitulo,
                     descricao,
