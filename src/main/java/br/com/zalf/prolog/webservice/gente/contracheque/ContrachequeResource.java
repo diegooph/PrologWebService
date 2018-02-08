@@ -1,13 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.Contracheque;
 import br.com.zalf.prolog.webservice.gente.contracheque.model.ItemImportContracheque;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.Android;
-import br.com.zalf.prolog.webservice.commons.util.Site;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -32,8 +30,8 @@ public class ContrachequeResource {
     private ContrachequeService service = new ContrachequeService();
 
     @POST
-    @Site
     @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
+    @UsedBy(platforms = Platform.WEBSITE)
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     @Path("/import/{codUnidade}/{ano}/{mes}")
     public Response upload(@PathParam("codUnidade") Long codUnidade,
@@ -81,7 +79,7 @@ public class ContrachequeResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.PreContracheque.VISUALIZAR)
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/{codUnidade}/{cpf}/{ano}/{mes}")
     public Contracheque getContracheque(@PathParam("cpf") Long cpf,
                                         @PathParam("codUnidade") Long codUnidade,
@@ -99,23 +97,6 @@ public class ContrachequeResource {
                                                                   @PathParam("mes") int mes,
                                                                   @PathParam("cpf") String cpf) {
         return service.getItemImportContracheque(codUnidade, ano, mes, cpf);
-    }
-
-    @DELETE
-    @Secured(permissions = Pilares.Gente.PreContracheque.UPLOAD_E_EDICAO)
-    @Path("/dados/{codUnidade}/{ano}/{mes}/{cpf}")
-    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Deprecated
-    public Response DEPRECATED_DELETE_ITEM_CONTRACHEQUE(ItemImportContracheque item,
-                                                        @PathParam("ano") int ano,
-                                                        @PathParam("mes") int mes,
-                                                        @PathParam("codUnidade") Long codUnidade,
-                                                        @PathParam("cpf") Long cpf) {
-        if (service.deleteItemImportContracheque(item, ano, mes, codUnidade, cpf, item.getCodigo())) {
-            return Response.ok("Item excluido com sucesso.");
-        } else {
-            return Response.error("Erro ao excluir o item");
-        }
     }
 
     @DELETE

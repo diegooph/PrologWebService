@@ -54,6 +54,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
+            ensureCorrectAuthType(methodAnnot, authType);
             authenticator.validate(
                     value,
                     methodAnnot.permissions(),
@@ -64,11 +65,24 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         final Class<?> resourceClass = resourceInfo.getResourceClass();
         final Secured classAnnot = resourceClass.getAnnotation(Secured.class);
         if (classAnnot != null) {
+            ensureCorrectAuthType(classAnnot, authType);
             authenticator.validate(
                     value,
                     classAnnot.permissions(),
                     classAnnot.needsToHaveAllPermissions(),
                     classAnnot.considerOnlyActiveUsers());
         }
+    }
+
+    private void ensureCorrectAuthType(Secured methodAnnot, AuthType headerAuthType) {
+        final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < permitedAuthTypes.length; i++) {
+            final AuthType authType = permitedAuthTypes[i];
+            if (authType == headerAuthType) {
+                return;
+            }
+        }
+        throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthType);
     }
 }

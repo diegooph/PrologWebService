@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarEntryLegend;
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -10,10 +11,28 @@ import javax.annotation.Nonnull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum TipoServico {
-    CALIBRAGEM("calibragem"),
-    INSPECAO("inspecao"),
-    MOVIMENTACAO("movimentacao");
+public enum TipoServico implements BarEntryLegend {
+    CALIBRAGEM("calibragem") {
+        @NotNull
+        @Override
+        public String getLegend() {
+            return "Calibragens";
+        }
+    },
+    INSPECAO("inspecao") {
+        @NotNull
+        @Override
+        public String getLegend() {
+            return "Inspeções";
+        }
+    },
+    MOVIMENTACAO("movimentacao") {
+        @NotNull
+        @Override
+        public String getLegend() {
+            return "Movimentações";
+        }
+    };
 
     private final String stringRepresentation;
 

@@ -62,7 +62,7 @@ public final class PneuConverter {
 
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_ATUAL"));
-        pneu.setStatus(rSet.getString("STATUS"));
+        pneu.setStatus(StatusPneu.fromString(rSet.getString("STATUS")));
         pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
         pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
         return pneu;

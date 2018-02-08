@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
+import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
+import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
@@ -39,6 +41,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
@@ -286,6 +290,16 @@ public final class Injection {
     @NotNull
     public static RelatoRelatorioDao provideRelatoRelatorioDao() {
         return new RelatoRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static DashboardDao provideDashboardDao() {
+        return new DashboardDaoImpl();
+    }
+
+    @NotNull
+    public static RelatorioVeiculoDao provideRelatorioVeiculoDao() {
+        return new RelatorioVeiculoDaoImpl();
     }
 
     // ================================================

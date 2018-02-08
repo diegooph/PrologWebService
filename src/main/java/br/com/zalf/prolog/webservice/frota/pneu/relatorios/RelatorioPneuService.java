@@ -4,11 +4,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -170,8 +168,8 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, long dataInicial,
-                                                     long dataFinal) throws RuntimeException {
+    public void getEstratificacaoServicosFechadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
+                                                     Long dataFinal) throws RuntimeException {
         try {
             dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, DateUtils.toSqlDate(new Date(dataInicial)),
                     DateUtils.toSqlDate(new Date(dataFinal)));
@@ -184,7 +182,31 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String,Long> getQtPneusByStatus(List<Long> codUnidades) {
+    public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            return dao.getPneusDescartadosReport(codUnidade, dataInicial, dataFinal);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
+                    "Unidade: %d \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial, Long dataFinal) {
+        try {
+            dao.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
+                    "Unidade: %d \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) {
         try {
             return dao.getQtPneusByStatus(codUnidades);
         } catch (SQLException e) {
@@ -194,7 +216,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) {
+    public List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) {
         try {
             return dao.getQtAfericoesByTipoByData(DateUtils.toSqlDate(dataInicial), DateUtils.toSqlDate(dataFinal), codUnidades);
         } catch (SQLException e) {
@@ -206,19 +228,19 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) {
+    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) {
         try {
             return dao.getServicosEmAbertoByTipo(codUnidades);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
-                    "unidades:", codUnidades.toString()),e);
-            throw new RuntimeException();
+            Log.e(TAG, "Erro ao buscar os serivços em aberto agrupados por tipo. \n" +
+                    "unidades:" + codUnidades.toString(), e);
+            throw new RuntimeException(e);
         }
     }
 
-    public Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) {
+    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) {
         try {
-            return dao.getQtdPlacasAfericaoVencida(codUnidades);
+            return dao.getStatusPlacasAfericao(codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida. \n" +
                     "unidade: %s", codUnidades.toString()), e);
@@ -226,29 +248,19 @@ public class RelatorioPneuService {
         }
     }
 
-    public int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) {
+    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) {
         try {
-            return dao.getQtdVeiculosAtivosComPneuAplicado(codUnidades);
+            return dao.getMediaTempoConsertoServicoPorTipo(codUnidades);
         } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a qtd de veículos ativos com pneus aplicados. \n" +
-                    "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
-        }
-    }
-
-    public Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) {
-        try {
-            return dao.getMdTempoConsertoServicoPorTipo(codUnidades);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar a md de tempo de conserto dos serviços (pneus). \n" +
-                    "unidades: %s.", codUnidades), e);
-            throw new RuntimeException();
+            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos serviços (pneus). \n" +
+                    "unidades: %s.", codUnidades.toString()), e);
+            throw new RuntimeException(e);
         }
     }
 
     public Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) {
         try {
-            return dao.getQtKmRodadoServicoAberto(codUnidades);
+            return dao.getQtdKmRodadoComServicoEmAberto(codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
                     "unidades: %s", codUnidades.toString()), e);
@@ -276,9 +288,9 @@ public class RelatorioPneuService {
         }
     }
 
-    public Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) {
+    public List<SulcoPressao> getMenorSulcoPneus(List<Long> codUnidades) {
         try {
-            return dao.getMenorSulcoPneu(codUnidades);
+            return dao.getMenorSulcoEPressaoPneus(codUnidades);
         } catch (SQLException e){
             Log.e(TAG, String.format("Erro ao buscar a lista com o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades), e);

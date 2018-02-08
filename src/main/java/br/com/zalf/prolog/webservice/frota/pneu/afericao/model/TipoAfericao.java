@@ -58,4 +58,9 @@ public enum TipoAfericao {
 
         throw new IllegalArgumentException("Nenhum tipo de aferição encontrado para a string: " + string);
     }
+
+    @Override
+    public String toString() {
+        return asString();
+    }
 }

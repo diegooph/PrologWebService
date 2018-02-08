@@ -1,11 +1,8 @@
 package br.com.zalf.prolog.webservice.empresa;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
-import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -125,53 +122,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(1, equipe.getNome());
             stmt.setLong(2, codEquipe);
             stmt.setLong(3, codUnidade);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar a equipe");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean createEquipe(Request<Equipe> request) throws SQLException {
-        final AutenticacaoDao autenticacaoDao = Injection.provideAutenticacaoDao();
-        if (autenticacaoDao.verifyIfTokenExists(request.getToken(), true)) {
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            try {
-                conn = getConnection();
-
-                stmt = conn.prepareStatement("INSERT INTO EQUIPE "
-                        + "(NOME, COD_UNIDADE) VALUES "
-                        + "(?,?) ");
-                stmt.setString(1, request.getObject().getNome());
-                stmt.setLong(2, request.getCodUnidade());
-                int count = stmt.executeUpdate();
-                if (count == 0) {
-                    throw new SQLException("Erro ao inserir a equipe");
-                }
-            } finally {
-                closeConnection(conn, stmt, null);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean updateEquipe(Request<Equipe> request) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(UPDATE_EQUIPE);
-            stmt.setString(1, request.getObject().getNome());
-            stmt.setLong(2, request.getObject().getCodigo());
-            stmt.setLong(3, request.getCpf());
-            stmt.setString(4, request.getToken());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar a equipe");
@@ -613,7 +563,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             while (rSet.next()) { // rset com os codigos e nomes da regionais
                 Regional regional = new Regional();
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
-                empresa.setCodigo(rSet.getInt("CODIGO_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("CODIGO_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
                 regional.setNome(rSet.getString("REGIAO"));
                 setUnidadesByRegional(regional, empresa.getCodigo());
@@ -645,7 +595,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
                 Regional regional = new Regional();
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
                 regional.setNome(rSet.getString("REGIAO"));
@@ -681,7 +631,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
 
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 regional.setCodigo(rSet.getLong("COD_REGIONAL"));
                 regional.setNome(rSet.getString("NOME_REGIONAL"));
@@ -723,7 +673,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
 
-                empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+                empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 regional.setCodigo(rSet.getLong("COD_REGIONAL"));
                 regional.setNome(rSet.getString("NOME_REGIONAL"));
                 unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
@@ -747,7 +697,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return listEmpresa;
     }
 
-    private void setUnidadesByRegional(Regional regional, int codEmpresa) throws SQLException {
+    private void setUnidadesByRegional(Regional regional, Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -757,7 +707,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_UNIDADE_BY_REGIONAL);
             stmt.setLong(1, regional.getCodigo());
-            stmt.setInt(2, codEmpresa);
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
 
             while (rSet.next()) {
