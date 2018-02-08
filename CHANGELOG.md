@@ -1,8 +1,11 @@
 Change Log
 ==========
 
+<a name="v2.0.46"></a>
+## Version [v2.0.46](https://github.com/luizfp/PrologWebService/compare/v2.0.45...v2.0.46) (release-date) - [unreleased]
+
 <a name="v2.0.45"></a>
-## Version [v2.0.45](https://github.com/luizfp/PrologWebService/compare/v2.0.44...v2.0.45) (release-date) - [unreleased]
+## Version [v2.0.45](https://github.com/luizfp/PrologWebService/compare/v2.0.44...v2.0.45) (2018-02-08)
 
 ### Features
 * Implementa componentes da dashboard
