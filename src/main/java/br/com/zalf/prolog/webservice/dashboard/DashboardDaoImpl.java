@@ -108,7 +108,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     "  JOIN PUBLIC.CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE " +
                     "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE " +
                     "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO " +
-                    "  GROUP BY 3,2,1;");
+                    "  GROUP BY 1,2,3;");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
             final List<DashboardPilarComponents> componentsPilar = new ArrayList<>();
@@ -125,7 +125,9 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                     } else {
                         // Trocou de pilar.
                         componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));
+                        codPilarUltimoComponente = codPilarResultSet;
                         components = new ArrayList<>();
+                        components.add(createComponentResumido(rSet));
                     }
                 }
             }
