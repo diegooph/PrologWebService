@@ -97,6 +97,7 @@ final class DashboardPneuComponentsCreator {
 
         final ComboData comboData = new ComboData(groups);
         return new VerticalComboChartComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)
@@ -210,6 +211,7 @@ final class DashboardPneuComponentsCreator {
         final DensityData data = new DensityData(groups);
 
         return new DensityChartComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)

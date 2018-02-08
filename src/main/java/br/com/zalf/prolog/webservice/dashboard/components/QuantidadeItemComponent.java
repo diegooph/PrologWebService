@@ -28,6 +28,7 @@ public class QuantidadeItemComponent extends DashboardComponent {
                                                         @NotNull final String qtdItens,
                                                         @NotNull final String descricaoQtdItens) {
         return new QuantidadeItemComponent.Builder()
+                .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
                 .withDescricao(component.descricaoComponente)
