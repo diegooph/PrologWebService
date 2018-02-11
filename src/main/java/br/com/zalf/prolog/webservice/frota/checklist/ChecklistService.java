@@ -18,9 +18,8 @@ import java.util.Map;
  * Classe ChecklistService responsável por comunicar-se com a interface DAO
  */
 public class ChecklistService {
-
-    private final ChecklistDao dao = Injection.provideChecklistDao();
     private static final String TAG = ChecklistService.class.getSimpleName();
+    private final ChecklistDao dao = Injection.provideChecklistDao();
 
     public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) {
         try {

@@ -547,7 +547,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setFuncao(cargo);
 
         final Empresa empresa = new Empresa();
-        empresa.setCodigo(rSet.getInt("COD_EMPRESA"));
+        empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
         empresa.setNome(rSet.getString("NOME_EMPRESA"));
         empresa.setLogoThumbnailUrl(rSet.getString("LOGO_THUMBNAIL_URL"));
         c.setEmpresa(empresa);
@@ -574,14 +574,12 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
         c.setCpf(rSet.getLong("CPF"));
         c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
-        c.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         c.setNome(rSet.getString("NOME_COLABORADOR"));
         c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
         c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
         c.setCodPermissao(rSet.getInt("PERMISSAO"));
-        c.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         return c;
     }
 }

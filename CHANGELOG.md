@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+<a name="v2.0.45"></a>
+## Version [v2.0.45](https://github.com/luizfp/PrologWebService/compare/v2.0.44...v2.0.45) (release-date) - [unreleased]
+
+### Features
+* Implementa componentes da dashboard
+* Cria método para buscar os motivos de descarte de uma empresa
+* Cria método para cadastrar um motivo de descarte
+* Cria método para ativar/desativar um motivo de descarte
+* Cria teste para garantir que os códigos das permissões não se repetem dentro da classe `Pilares`
+* Cria permissão específica para visualizar os relatórios dos veículos
+
+### Refactor
+* Remove métodos deprecated das seguintes classes: `EmpresaService`, `EmpresaDao`, `ProntuarioCondutorResource`,
+`EmpresaDaoImpl`, `VeiculoResource`, `ProdutividadeResource`, `SolicitacaoFolgaDaoImpl`, `FaleConoscoDao`, 
+`RelatorioEntregaResource`, `VeiculoDaoImpl`, `IndicadorResource`, `OrdemServicoResource`, `ContrachequeResource`,
+`ImportResource`, `RelatorioPneuDaoImpl`
+* Altera métodos utilizados na marcação de intervalo para permitirem autenticação BASIC
+
+### Bug Fixes
+* Corrige update do veículo
+
 <a name="v2.0.44"></a>
 ## Version [v2.0.44](https://github.com/luizfp/PrologWebService/compare/v2.0.43-h1...v2.0.44) (2017-01-19)
 

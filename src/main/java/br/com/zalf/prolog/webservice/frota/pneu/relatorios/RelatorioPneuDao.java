@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.QtAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -103,23 +101,27 @@ public interface RelatorioPneuDao {
     void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
                                               Date dataFinal) throws IOException, SQLException;
 
-    Map<String, Long> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
+    Report getPneusDescartadosReport(Long codUnidade, Long dataInicial,
+                                     Long dataFinal) throws SQLException;
 
-    List<QtAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
+    void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
+                                Long dataFinal) throws IOException, SQLException;
 
-    Map<String, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
+    Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getQtdPlacasAfericaoVencida(List<Long> codUnidades) throws SQLException;
+    List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
 
-    int getQtdVeiculosAtivosComPneuAplicado(List<Long> codUnidades) throws SQLException;
+    Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getMdTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+    StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getQtKmRodadoServicoAberto(List<Long> codUnidades) throws SQLException;
+    Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+
+    Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException;
 
     Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException;
 
     int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Double> getMenorSulcoPneu(List<Long> codUnidades) throws SQLException;
+    List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException;
 }

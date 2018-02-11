@@ -98,7 +98,6 @@ public class AvaCorpAvilanConverterTest {
             assertNotNull(pneuProLog);
 
             assertTrue(pneuAvilan.getNumeroFogo().equals(pneuProLog.getCodigo()));
-            assertTrue(AvilanPosicaoPneuMapper.mapToProLog(pneuAvilan.getPosicao()) == pneuProLog.getPosicao());
             assertTrue(pneuAvilan.getSulco1() == pneuProLog.getSulcosAtuais().getExterno());
             assertTrue(pneuAvilan.getSulco2() == pneuProLog.getSulcosAtuais().getCentralExterno());
             assertTrue(pneuAvilan.getSulco3() == pneuProLog.getSulcosAtuais().getCentralInterno());

@@ -1,9 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.commons.util.Android;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,11 +18,10 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class OrdemServicoResource {
-
-    private OrdemServicoService service = new OrdemServicoService();
+    private final OrdemServicoService service = new OrdemServicoService();
 
     @POST
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/consertaItem/{placa}")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM)
     public Response consertaItem(ItemOrdemServico item,
@@ -34,7 +34,7 @@ public class OrdemServicoResource {
     }
 
     @GET
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
@@ -48,7 +48,7 @@ public class OrdemServicoResource {
     }
 
     @GET
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/manutencao/{placa}/{status}/{prioridade}")
     @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})
@@ -61,7 +61,7 @@ public class OrdemServicoResource {
     }
 
     @GET
-    @Android
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/manutencao/{codUnidade}/{tipoVeiculo}/{placa}/{status}")
     @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM})

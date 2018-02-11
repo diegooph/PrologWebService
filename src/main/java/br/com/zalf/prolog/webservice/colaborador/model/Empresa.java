@@ -13,13 +13,13 @@ import java.util.List;
  */
 public class Empresa {
 
-    private int codigo;
+    private Long codigo;
     private String nome;
     private List<Regional> listRegional;
     @Nullable
     private String logoThumbnailUrl;
 
-    public Empresa(int codigo, String nome, List<Regional> listRegional) {
+    public Empresa(Long codigo, String nome, List<Regional> listRegional) {
         this.codigo = codigo;
         this.nome = nome;
         this.listRegional = listRegional;
@@ -28,11 +28,11 @@ public class Empresa {
     public Empresa() {
     }
 
-    public int getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 

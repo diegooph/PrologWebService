@@ -48,7 +48,7 @@ public class Pneu {
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
-    private String status;
+    private StatusPneu status;
 
     /**
      * {@link Regional} onde o pneu se encontra.
@@ -167,11 +167,11 @@ public class Pneu {
         this.sulcosAtuais = sulcosAtuais;
     }
 
-    public String getStatus() {
+    public StatusPneu getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusPneu status) {
         this.status = status;
     }
 

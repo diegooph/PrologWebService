@@ -48,6 +48,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@GET
 	@Path("/liberacao/{codUnidade}")
 	@Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+	@Deprecated
 	public List<VeiculoLiberacao> getStatusLiberacaoVeiculos(@PathParam("codUnidade")Long codUnidade) {
 		return service.getStatusLiberacaoVeiculos(codUnidade);
 	}

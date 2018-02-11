@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.empresa;
 
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Request;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
@@ -45,26 +44,6 @@ public interface EmpresaDao {
      * @throws SQLException caso ocorrer algum erro no banco
      */
     boolean updateEquipe(@NotNull Long codUnidade, @NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException;
-
-    /**
-     * Cria uma equipe.
-     *
-     * @param request objeto que encapsula uma equipe
-     * @return valor da operação
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    @Deprecated
-    boolean createEquipe(Request<Equipe> request) throws SQLException;
-
-    /**
-     * Atualiza uma equipe.
-     *
-     * @param request objeto que encapsula uma equipe
-     * @return valor da operação
-     * @throws SQLException caso ocorrer erro no banco
-     */
-    @Deprecated
-    boolean updateEquipe(Request<Equipe> request) throws SQLException;
 
     /**
      * Cadastra um setor no banco de dados.
