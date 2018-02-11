@@ -42,8 +42,10 @@ public class DevPdvAcumulado extends IndicadorQtdAcumulado {
         nok = hl devolvidos
         resultado = nok / total
          */
-        this.setResultado(getTotal() > 0 ? (double) getTotalNok() / getTotal() : 0);
+        double valor = (double) getTotalNok() / getTotal();
+        this.setResultado(getTotal() > 0 ? Math.floor(((double) getTotalNok() / getTotal())*10000)/10000 : 0);
         super.setBateuMeta(this.getResultado() <= this.getMeta());
+        System.out.println(super.isBateuMeta());
     }
 
 }
