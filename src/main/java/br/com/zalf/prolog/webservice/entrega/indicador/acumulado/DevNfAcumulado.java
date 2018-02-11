@@ -41,7 +41,7 @@ public class DevNfAcumulado extends IndicadorQtdAcumulado {
         nok = hl devolvidos
         resultado = nok / total
          */
-        this.setResultado(getTotal() > 0 ? Math.floor(((double) getTotalNok() / getTotal())*10000)/10000 : 0);
+        z
         super.setBateuMeta(this.getResultado() <= this.getMeta());
     }
 
