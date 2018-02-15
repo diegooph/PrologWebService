@@ -118,28 +118,30 @@ final class DashboardPneuComponentsCreator {
                                                                   @NotNull final Map<TipoServico, Integer> servicosAbertosPorTipo) {
         final List<BarEntry> entries = new ArrayList<>(servicosAbertosPorTipo.size());
 
-        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
-        // Calibragem.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
-                0,
-                TipoServico.CALIBRAGEM.getLegend(),
-                null));
-        // Inspeção.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.INSPECAO),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
-                1,
-                TipoServico.INSPECAO.getLegend(),
-                null));
-        // Movimentação.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
-                2,
-                TipoServico.MOVIMENTACAO.getLegend(),
-                null));
+        if (!servicosAbertosPorTipo.isEmpty()) {
+            // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+            // Calibragem.
+            entries.add(BarEntry.create(
+                    servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
+                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
+                    0,
+                    TipoServico.CALIBRAGEM.getLegend(),
+                    null));
+            // Inspeção.
+            entries.add(BarEntry.create(
+                    servicosAbertosPorTipo.get(TipoServico.INSPECAO),
+                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
+                    1,
+                    TipoServico.INSPECAO.getLegend(),
+                    null));
+            // Movimentação.
+            entries.add(BarEntry.create(
+                    servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
+                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
+                    2,
+                    TipoServico.MOVIMENTACAO.getLegend(),
+                    null));
+        }
 
         final BarData barData = new BarData(entries);
         return VerticalBarChartComponent.createDefault(component, barData, null);
@@ -231,28 +233,30 @@ final class DashboardPneuComponentsCreator {
                                                                             @NotNull final Map<TipoServico, Integer> tipoServicoHorasConserto) {
         final List<BarEntry> entries = new ArrayList<>(tipoServicoHorasConserto.size());
 
-        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
-        // Calibragem.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
-                0,
-                TipoServico.CALIBRAGEM.getLegend(),
-                null));
-        // Inspeção.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.INSPECAO),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
-                1,
-                TipoServico.INSPECAO.getLegend(),
-                null));
-        // Movimentação.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
-                2,
-                TipoServico.MOVIMENTACAO.getLegend(),
-                null));
+        if (!tipoServicoHorasConserto.isEmpty()) {
+            // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+            // Calibragem.
+            entries.add(BarEntry.create(
+                    tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
+                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
+                    0,
+                    TipoServico.CALIBRAGEM.getLegend(),
+                    null));
+            // Inspeção.
+            entries.add(BarEntry.create(
+                    tipoServicoHorasConserto.get(TipoServico.INSPECAO),
+                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
+                    1,
+                    TipoServico.INSPECAO.getLegend(),
+                    null));
+            // Movimentação.
+            entries.add(BarEntry.create(
+                    tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
+                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
+                    2,
+                    TipoServico.MOVIMENTACAO.getLegend(),
+                    null));
+        }
 
         final BarData barData = new BarData(entries);
         return VerticalBarChartComponent.createDefault(component, barData, null);

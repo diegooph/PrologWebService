@@ -645,9 +645,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
             stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
+            stmt.setString(2, TipoAfericao.PRESSAO.asString());
             stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(4, TipoAfericao.PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.SULCO.asString());
             stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
