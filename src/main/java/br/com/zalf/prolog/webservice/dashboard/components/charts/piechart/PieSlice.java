@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.piechart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.piechart;
 
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import org.jetbrains.annotations.NotNull;

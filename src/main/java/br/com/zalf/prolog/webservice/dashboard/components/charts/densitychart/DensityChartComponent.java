@@ -1,52 +1,42 @@
-package br.com.zalf.prolog.webservice.dashboard.components.combochart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Created on 10/01/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class VerticalComboChartComponent extends DashboardComponent {
+public class DensityChartComponent extends ChartComponent {
     @NotNull
     private String labelEixoX;
     @NotNull
     private String labelEixoY;
-    @Nullable
-    private Double meta;
     @NotNull
-    private ComboData comboData;
-    @NotNull
-    private List<String> legendas;
+    private DensityData data;
 
-    private VerticalComboChartComponent(@NotNull Integer codigo,
-                                        @NotNull String titulo,
-                                        @Nullable String subtitulo,
-                                        @NotNull String descricao,
-                                        @NotNull String urlEndpointDados,
-                                        @NotNull Integer codTipoComponente,
-                                        int qtdBlocosHorizontais,
-                                        int qtdBlocosVerticais,
-                                        int ordemExibicao,
-                                        @NotNull String labelEixoX,
-                                        @NotNull String labelEixoY,
-                                        @Nullable Double meta,
-                                        @NotNull ComboData comboData,
-                                        @NotNull List<String> legendas) {
-        super(codigo, IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao,
-                urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+    private DensityChartComponent(@NotNull Integer codigo,
+                                  @NotNull String titulo,
+                                  @Nullable String subtitulo,
+                                  @NotNull String descricao,
+                                  @NotNull String urlEndpointDados,
+                                  @NotNull Integer codTipoComponente,
+                                  int qtdBlocosHorizontais,
+                                  int qtdBlocosVerticais,
+                                  int ordemExibicao,
+                                  @NotNull String labelEixoX,
+                                  @NotNull String labelEixoY,
+                                  @NotNull DensityData data) {
+        super(codigo, IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados,
+                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
-        this.meta = meta;
-        this.comboData = comboData;
-        this.legendas = legendas;
+        this.data = data;
     }
 
     @NotNull
@@ -67,52 +57,32 @@ public class VerticalComboChartComponent extends DashboardComponent {
         this.labelEixoY = labelEixoY;
     }
 
-    @Nullable
-    public Double getMeta() {
-        return meta;
-    }
-
-    public void setMeta(@Nullable Double meta) {
-        this.meta = meta;
-    }
-
     @NotNull
-    public ComboData getComboData() {
-        return comboData;
+    public DensityData getData() {
+        return data;
     }
 
-    public void setComboData(@NotNull ComboData comboData) {
-        this.comboData = comboData;
-    }
-
-    @NotNull
-    public List<String> getLegendas() {
-        return legendas;
-    }
-
-    public void setLegendas(@NotNull List<String> legendas) {
-        this.legendas = legendas;
+    public void setData(@NotNull DensityData data) {
+        this.data = data;
     }
 
     @Override
     public String toString() {
-        return "VerticalComboChartComponent{" +
+        return "DensityChartComponent{" +
                 "labelEixoX='" + labelEixoX + '\'' +
                 ", labelEixoY='" + labelEixoY + '\'' +
-                ", meta=" + meta +
-                ", comboData=" + comboData +
-                ", legendas=" + legendas +
+                ", densityData=" + data +
                 '}';
     }
 
     public static class Builder extends BaseComponentBuilder {
         private String labelEixoX;
         private String labelEixoY;
-        private Double meta;
-        private ComboData comboData;
-        private List<String> legendas;
+        private DensityData densityData;
 
-        public Builder() {}
+        public Builder() {
+
+        }
 
         @Override
         public Builder withCodigo(@NotNull Integer codigo) {
@@ -178,29 +148,18 @@ public class VerticalComboChartComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withMeta(@NotNull Double meta) {
-            this.meta = meta;
-            return this;
-        }
-
-        public Builder withComboData(@NotNull ComboData comboData) {
-            this.comboData = comboData;
-            return this;
-        }
-
-        public Builder withLegendas(@NotNull List<String> legendas) {
-            this.legendas = legendas;
+        public Builder withDensityData(@NotNull DensityData data) {
+            this.densityData = data;
             return this;
         }
 
         @Override
-        public VerticalComboChartComponent build() {
+        public DensityChartComponent build() {
             ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
-            Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
-            return new VerticalComboChartComponent(
+            Preconditions.checkNotNull(densityData, "densityData deve ser instanciada com 'withDensityData'");
+            return new DensityChartComponent(
                     codigo,
                     titulo,
                     subtitulo,
@@ -212,9 +171,7 @@ public class VerticalComboChartComponent extends DashboardComponent {
                     ordemExibicao,
                     labelEixoX,
                     labelEixoY,
-                    meta,
-                    comboData,
-                    legendas);
+                    densityData);
         }
     }
 }

@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.dashboard.components.piechart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.piechart;
 
 
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PieChartComponent extends DashboardComponent {
+public class PieChartComponent extends ChartComponent {
     @NotNull
     private PieData pieData;
 

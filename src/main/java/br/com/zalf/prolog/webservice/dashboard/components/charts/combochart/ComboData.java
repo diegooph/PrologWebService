@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.combochart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.combochart;
 
 import br.com.zalf.prolog.webservice.dashboard.base.Data;
 import org.jetbrains.annotations.NotNull;

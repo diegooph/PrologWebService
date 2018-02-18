@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.dashboard.components.barchart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.barchart;
 
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class VerticalBarChartComponent extends DashboardComponent {
+public class VerticalBarChartComponent extends ChartComponent {
     @NotNull
     private String labelEixoX;
     @NotNull

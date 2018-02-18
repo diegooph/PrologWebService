@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.densitychart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart;
 
 import org.jetbrains.annotations.NotNull;
 

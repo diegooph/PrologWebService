@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.barchart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.barchart;
 
 import org.jetbrains.annotations.NotNull;
 

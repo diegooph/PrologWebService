@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.barchart.VerticalBarChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combochart.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart.DensityChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.piechart.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
