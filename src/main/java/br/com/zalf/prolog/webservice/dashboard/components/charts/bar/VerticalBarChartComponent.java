@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.charts.barchart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.bar;
 
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.charts.piechart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.pie;
 
 
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;

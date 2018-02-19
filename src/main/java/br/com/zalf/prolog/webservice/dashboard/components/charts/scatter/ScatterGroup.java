@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.scatter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,24 +9,24 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DensityGroup {
+public class ScatterGroup {
 
     @NotNull
-    private List<DensityEntry> densityEntries;
+    private List<ScatterEntry> densityEntries;
     @NotNull
     private String descricaoGrupo;
 
-    public DensityGroup(@NotNull List<DensityEntry> densityEntries, @NotNull String descricaoGrupo) {
+    public ScatterGroup(@NotNull List<ScatterEntry> densityEntries, @NotNull String descricaoGrupo) {
         this.densityEntries = densityEntries;
         this.descricaoGrupo = descricaoGrupo;
     }
 
     @NotNull
-    public List<DensityEntry> getDensityEntries() {
+    public List<ScatterEntry> getDensityEntries() {
         return densityEntries;
     }
 
-    public void setDensityEntries(@NotNull List<DensityEntry> densityEntries) {
+    public void setDensityEntries(@NotNull List<ScatterEntry> densityEntries) {
         this.densityEntries = densityEntries;
     }
 
@@ -41,7 +41,7 @@ public class DensityGroup {
 
     @Override
     public String toString() {
-        return "DensityGroup{" +
+        return "ScatterGroup{" +
                 "densityEntries=" + densityEntries +
                 ", descricaoGrupo='" + descricaoGrupo + '\'' +
                 '}';

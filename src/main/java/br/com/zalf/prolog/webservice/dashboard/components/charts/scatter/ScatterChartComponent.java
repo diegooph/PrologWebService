@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.scatter;
 
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
@@ -12,15 +12,15 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DensityChartComponent extends ChartComponent {
+public class ScatterChartComponent extends ChartComponent {
     @NotNull
     private String labelEixoX;
     @NotNull
     private String labelEixoY;
     @NotNull
-    private DensityData data;
+    private ScatterData data;
 
-    private DensityChartComponent(@NotNull Integer codigo,
+    private ScatterChartComponent(@NotNull Integer codigo,
                                   @NotNull String titulo,
                                   @Nullable String subtitulo,
                                   @NotNull String descricao,
@@ -31,7 +31,7 @@ public class DensityChartComponent extends ChartComponent {
                                   int ordemExibicao,
                                   @NotNull String labelEixoX,
                                   @NotNull String labelEixoY,
-                                  @NotNull DensityData data) {
+                                  @NotNull ScatterData data) {
         super(codigo, IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados,
                 codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
@@ -58,27 +58,27 @@ public class DensityChartComponent extends ChartComponent {
     }
 
     @NotNull
-    public DensityData getData() {
+    public ScatterData getData() {
         return data;
     }
 
-    public void setData(@NotNull DensityData data) {
+    public void setData(@NotNull ScatterData data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return "DensityChartComponent{" +
+        return "ScatterChartComponent{" +
                 "labelEixoX='" + labelEixoX + '\'' +
                 ", labelEixoY='" + labelEixoY + '\'' +
-                ", densityData=" + data +
+                ", scatterData=" + data +
                 '}';
     }
 
     public static class Builder extends BaseComponentBuilder {
         private String labelEixoX;
         private String labelEixoY;
-        private DensityData densityData;
+        private ScatterData scatterData;
 
         public Builder() {
 
@@ -148,18 +148,18 @@ public class DensityChartComponent extends ChartComponent {
             return this;
         }
 
-        public Builder withDensityData(@NotNull DensityData data) {
-            this.densityData = data;
+        public Builder withScatterData(@NotNull ScatterData data) {
+            this.scatterData = data;
             return this;
         }
 
         @Override
-        public DensityChartComponent build() {
+        public ScatterChartComponent build() {
             ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(densityData, "densityData deve ser instanciada com 'withDensityData'");
-            return new DensityChartComponent(
+            Preconditions.checkNotNull(scatterData, "scatterData deve ser instanciada com 'withScatterData'");
+            return new ScatterChartComponent(
                     codigo,
                     titulo,
                     subtitulo,
@@ -171,7 +171,7 @@ public class DensityChartComponent extends ChartComponent {
                     ordemExibicao,
                     labelEixoX,
                     labelEixoY,
-                    densityData);
+                    scatterData);
         }
     }
 }

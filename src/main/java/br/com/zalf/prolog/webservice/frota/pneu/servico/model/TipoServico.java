@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
-import br.com.zalf.prolog.webservice.dashboard.components.charts.barchart.BarEntryLegend;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarEntryLegend;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 

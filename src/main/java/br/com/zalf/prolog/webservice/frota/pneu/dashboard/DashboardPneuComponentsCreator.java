@@ -3,20 +3,20 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.barchart.BarData;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.barchart.BarEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.barchart.VerticalBarChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.combochart.ComboData;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.combochart.ComboEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.combochart.ComboGroup;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.combochart.VerticalComboChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart.DensityChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart.DensityData;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart.DensityEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.densitychart.DensityGroup;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.piechart.PieChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.piechart.PieData;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.piechart.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboGroup;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
@@ -198,21 +198,21 @@ final class DashboardPneuComponentsCreator {
     }
 
     @NotNull
-    static DensityChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
+    static ScatterChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
                                                                @NotNull final List<SulcoPressao> valores) {
-        final List<DensityEntry> entries = new ArrayList<>(valores.size());
-        valores.forEach(sulcoPressao -> entries.add(DensityEntry.create(
+        final List<ScatterEntry> entries = new ArrayList<>(valores.size());
+        valores.forEach(sulcoPressao -> entries.add(ScatterEntry.create(
                 sulcoPressao.getValorPressao(),
                 String.valueOf(sulcoPressao.getValorPressao()),
                 sulcoPressao.getValorSulco(),
                 String.valueOf(sulcoPressao.getValorSulco()))));
 
-        final DensityGroup group = new DensityGroup(entries, "Pneus");
-        final List<DensityGroup> groups = new ArrayList<>(1);
+        final ScatterGroup group = new ScatterGroup(entries, "Pneus");
+        final List<ScatterGroup> groups = new ArrayList<>(1);
         groups.add(group);
-        final DensityData data = new DensityData(groups);
+        final ScatterData data = new ScatterData(groups);
 
-        return new DensityChartComponent.Builder()
+        return new ScatterChartComponent.Builder()
                 .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
@@ -224,7 +224,7 @@ final class DashboardPneuComponentsCreator {
                 .withOrdemExibicao(component.ordemExibicao)
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
-                .withDensityData(data)
+                .withScatterData(data)
                 .build();
     }
 
