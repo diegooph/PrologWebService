@@ -158,8 +158,8 @@ final class DashboardPneuComponentsCreator {
                 Color.RED));
         entries.add(PieEntry.create(
                 "Placas no prazo",
-                statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
-                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
+                statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo(),
+                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo()),
                 Color.GREEN));
         final PieData pieData = new PieData(entries);
         return PieChartComponent.createDefault(component, pieData);
