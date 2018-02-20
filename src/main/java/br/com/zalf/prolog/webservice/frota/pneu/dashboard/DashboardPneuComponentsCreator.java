@@ -70,10 +70,6 @@ final class DashboardPneuComponentsCreator {
     static VerticalComboChartComponent createQtdAfericoesUltimaSemana(@NotNull final ComponentDataHolder component,
                                                                       @NotNull final List<QuantidadeAfericao> quantidadeAfericoes) {
         final List<ComboGroup> groups = new ArrayList<>(quantidadeAfericoes.size());
-        quantidadeAfericoes.add(new QuantidadeAfericao(null, "21/02/2017", 5, 6, 10));
-        quantidadeAfericoes.add(new QuantidadeAfericao(null, "22/02/2017", 7, 10, 10));
-        quantidadeAfericoes.add(new QuantidadeAfericao(null, "23/02/2017", 8, 6, 7));
-        quantidadeAfericoes.add(new QuantidadeAfericao(null, "24/02/2017", 1, 20, 10));
         quantidadeAfericoes.forEach(quantidadeAfericao -> {
             final List<ComboEntry> entries = new ArrayList<>(3 /* 3 tipos de aferição */);
             // Sulco.

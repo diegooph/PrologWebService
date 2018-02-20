@@ -552,7 +552,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT a.data_hora::date as data, to_char(a.data_hora, 'DD/MM/YYYY') as data_formatada, " +
+            stmt = conn.prepareStatement("SELECT a.data_hora::date as data, to_char(a.data_hora, 'DD/MM') as data_formatada, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao " +
