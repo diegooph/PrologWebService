@@ -213,7 +213,7 @@ final class DashboardPneuComponentsCreator {
                 sulcoPressao.getValorSulco(),
                 String.valueOf(sulcoPressao.getValorSulco()))));
 
-        final ScatterGroup group = new ScatterGroup(entries, "Pneus");
+        final ScatterGroup group = new ScatterGroup(entries, "Pneus", Color.fromHex("#C12552"));
         final List<ScatterGroup> groups = new ArrayList<>(1);
         groups.add(group);
         final ScatterData data = new ScatterData(groups);
