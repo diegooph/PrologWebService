@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard.components.charts.combo;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
@@ -25,6 +26,8 @@ public class VerticalComboChartComponent extends ChartComponent {
     private ComboData comboData;
     @NotNull
     private List<String> legendas;
+    @NotNull
+    private List<Color> entryColors;
 
     private VerticalComboChartComponent(@NotNull Integer codigo,
                                         @NotNull String titulo,
@@ -39,7 +42,8 @@ public class VerticalComboChartComponent extends ChartComponent {
                                         @NotNull String labelEixoY,
                                         @Nullable Double meta,
                                         @NotNull ComboData comboData,
-                                        @NotNull List<String> legendas) {
+                                        @NotNull List<String> legendas,
+                                        @NotNull List<Color> entryColors) {
         super(codigo, IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao,
                 urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
@@ -47,6 +51,7 @@ public class VerticalComboChartComponent extends ChartComponent {
         this.meta = meta;
         this.comboData = comboData;
         this.legendas = legendas;
+        this.entryColors = entryColors;
     }
 
     @NotNull
@@ -111,6 +116,7 @@ public class VerticalComboChartComponent extends ChartComponent {
         private Double meta;
         private ComboData comboData;
         private List<String> legendas;
+        private List<Color> entryColors;
 
         public Builder() {}
 
@@ -193,6 +199,11 @@ public class VerticalComboChartComponent extends ChartComponent {
             return this;
         }
 
+        public Builder withEntryColors(@NotNull List<Color> entryColors) {
+            this.entryColors = entryColors;
+            return this;
+        }
+
         @Override
         public VerticalComboChartComponent build() {
             ensureNotNullValues();
@@ -200,6 +211,8 @@ public class VerticalComboChartComponent extends ChartComponent {
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
             Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
             Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
+            Preconditions.checkNotNull(entryColors, "legendas deve ser instanciada com 'withEntryColors'");
+
             return new VerticalComboChartComponent(
                     codigo,
                     titulo,
@@ -214,7 +227,8 @@ public class VerticalComboChartComponent extends ChartComponent {
                     labelEixoY,
                     meta,
                     comboData,
-                    legendas);
+                    legendas,
+                    entryColors);
         }
     }
 }

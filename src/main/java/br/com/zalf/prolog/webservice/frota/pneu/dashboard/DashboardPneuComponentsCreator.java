@@ -95,6 +95,11 @@ final class DashboardPneuComponentsCreator {
         legendas.add(TipoAfericao.PRESSAO.getLegibleString());
         legendas.add(TipoAfericao.SULCO_PRESSAO.getLegibleString());
 
+        final List<Color> colors = new ArrayList<>(3);
+        colors.add(Color.BLACK);
+        colors.add(Color.CYAN);
+        colors.add(Color.GREEN);
+
         final ComboData comboData = new ComboData(groups);
         return new VerticalComboChartComponent.Builder()
                 .withCodigo(component.codigoComponente)
@@ -107,6 +112,7 @@ final class DashboardPneuComponentsCreator {
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withLegendas(legendas)
+                .withEntryColors(colors)
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
                 .withComboData(comboData)
