@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboEntry;
@@ -122,34 +123,40 @@ final class DashboardPneuComponentsCreator {
     @NotNull
     static VerticalBarChartComponent createServicosEmAbertoByTipo(@NotNull final ComponentDataHolder component,
                                                                   @NotNull final Map<TipoServico, Integer> servicosAbertosPorTipo) {
-        final List<BarEntry> entries = new ArrayList<>(servicosAbertosPorTipo.size());
+        final List<BarGroup> groups = new ArrayList<>(servicosAbertosPorTipo.size());
 
         if (!servicosAbertosPorTipo.isEmpty()) {
             // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+
             // Calibragem.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+            entriesCalibragem.add(BarEntry.create(
                     servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
                     String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
                     0,
-                    TipoServico.CALIBRAGEM.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.CALIBRAGEM.getLegend(), entriesCalibragem, Color.BLACK));
+
             // Inspeção.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+            entriesInspecao.add(BarEntry.create(
                     servicosAbertosPorTipo.get(TipoServico.INSPECAO),
                     String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
                     1,
-                    TipoServico.INSPECAO.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.INSPECAO.getLegend(), entriesInspecao, Color.GREEN));
+
             // Movimentação.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+            entriesMovimentacao.add(BarEntry.create(
                     servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
                     String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
                     2,
-                    TipoServico.MOVIMENTACAO.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.MOVIMENTACAO.getLegend(), entriesMovimentacao, Color.BLUE));
         }
 
-        final BarData barData = new BarData(entries);
+        final BarData barData = new BarData(groups);
         return VerticalBarChartComponent.createDefault(component, barData, null);
     }
 
@@ -237,34 +244,40 @@ final class DashboardPneuComponentsCreator {
     @NotNull
     static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder component,
                                                                             @NotNull final Map<TipoServico, Integer> tipoServicoHorasConserto) {
-        final List<BarEntry> entries = new ArrayList<>(tipoServicoHorasConserto.size());
+        final List<BarGroup> groups = new ArrayList<>(tipoServicoHorasConserto.size());
 
         if (!tipoServicoHorasConserto.isEmpty()) {
             // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
+
             // Calibragem.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+            entriesCalibragem.add(BarEntry.create(
                     tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
                     String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
                     0,
-                    TipoServico.CALIBRAGEM.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.CALIBRAGEM.getLegend(), entriesCalibragem, Color.BLACK));
+
             // Inspeção.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+            entriesInspecao.add(BarEntry.create(
                     tipoServicoHorasConserto.get(TipoServico.INSPECAO),
                     String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
                     1,
-                    TipoServico.INSPECAO.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.INSPECAO.getLegend(), entriesInspecao, Color.GREEN));
+
             // Movimentação.
-            entries.add(BarEntry.create(
+            final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+            entriesMovimentacao.add(BarEntry.create(
                     tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
                     String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
                     2,
-                    TipoServico.MOVIMENTACAO.getLegend(),
                     null));
+            groups.add(new BarGroup(TipoServico.MOVIMENTACAO.getLegend(), entriesMovimentacao, Color.BLUE));
         }
 
-        final BarData barData = new BarData(entries);
+        final BarData barData = new BarData(groups);
         return VerticalBarChartComponent.createDefault(component, barData, null);
     }
 }

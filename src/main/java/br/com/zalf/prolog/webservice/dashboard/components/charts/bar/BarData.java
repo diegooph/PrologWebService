@@ -12,25 +12,25 @@ import java.util.List;
  */
 public class BarData extends Data {
     @NotNull
-    private List<BarEntry> barEntries;
+    private List<BarGroup> barGroups;
 
-    public BarData(@NotNull List<BarEntry> barEntries) {
-        this.barEntries = barEntries;
+    public BarData(@NotNull List<BarGroup> barGroups) {
+        this.barGroups = barGroups;
     }
 
     @NotNull
-    public List<BarEntry> getBarEntries() {
-        return barEntries;
+    public List<BarGroup> getBarEntries() {
+        return barGroups;
     }
 
-    public void setBarEntries(@NotNull List<BarEntry> barEntries) {
-        this.barEntries = barEntries;
+    public void setBarEntries(@NotNull List<BarGroup> barGroups) {
+        this.barGroups = barGroups;
     }
 
     @Override
     public String toString() {
         return "BarData{" +
-                "barEntries=" + barEntries +
+                "barGroups=" + barGroups +
                 '}';
     }
 }
