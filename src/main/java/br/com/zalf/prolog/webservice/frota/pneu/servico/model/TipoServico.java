@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarColor;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarEntryLegend;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -11,12 +13,18 @@ import javax.annotation.Nonnull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum TipoServico implements BarEntryLegend {
+public enum TipoServico implements BarEntryLegend, BarColor {
     CALIBRAGEM("calibragem") {
         @NotNull
         @Override
         public String getLegend() {
             return "Calibragens";
+        }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#FED976");
         }
     },
     INSPECAO("inspecao") {
@@ -25,12 +33,24 @@ public enum TipoServico implements BarEntryLegend {
         public String getLegend() {
             return "Inspeções";
         }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#FD8D3C");
+        }
     },
     MOVIMENTACAO("movimentacao") {
         @NotNull
         @Override
         public String getLegend() {
             return "Movimentações";
+        }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#BD0026");
         }
     };
 

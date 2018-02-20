@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarColor;
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -9,12 +12,18 @@ import javax.annotation.Nonnull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public enum TipoAfericao {
+public enum TipoAfericao implements BarColor {
     SULCO("SULCO") {
         @Nonnull
         @Override
         public String getLegibleString() {
             return "Sulco";
+        }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#A8DDB5");
         }
     },
     PRESSAO("PRESSAO") {
@@ -23,12 +32,24 @@ public enum TipoAfericao {
         public String getLegibleString() {
             return "Pressão";
         }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#4EB3D3");
+        }
     },
     SULCO_PRESSAO("SULCO_PRESSAO") {
         @Nonnull
         @Override
         public String getLegibleString() {
             return "Sulco e Pressão";
+        }
+
+        @NotNull
+        @Override
+        public Color getColor() {
+            return Color.fromHex("#08589E");
         }
     };
 

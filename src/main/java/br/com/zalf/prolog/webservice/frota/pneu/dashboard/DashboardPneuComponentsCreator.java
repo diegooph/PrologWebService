@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico.*;
+
 /**
  * Created on 1/22/18
  *
@@ -68,6 +70,10 @@ final class DashboardPneuComponentsCreator {
     static VerticalComboChartComponent createQtdAfericoesUltimaSemana(@NotNull final ComponentDataHolder component,
                                                                       @NotNull final List<QuantidadeAfericao> quantidadeAfericoes) {
         final List<ComboGroup> groups = new ArrayList<>(quantidadeAfericoes.size());
+        quantidadeAfericoes.add(new QuantidadeAfericao(null, "21/02/2017", 5, 6, 10));
+        quantidadeAfericoes.add(new QuantidadeAfericao(null, "22/02/2017", 7, 10, 10));
+        quantidadeAfericoes.add(new QuantidadeAfericao(null, "23/02/2017", 8, 6, 7));
+        quantidadeAfericoes.add(new QuantidadeAfericao(null, "24/02/2017", 1, 20, 10));
         quantidadeAfericoes.forEach(quantidadeAfericao -> {
             final List<ComboEntry> entries = new ArrayList<>(3 /* 3 tipos de aferição */);
             // Sulco.
@@ -97,9 +103,9 @@ final class DashboardPneuComponentsCreator {
         legendas.add(TipoAfericao.SULCO_PRESSAO.getLegibleString());
 
         final List<Color> colors = new ArrayList<>(3);
-        colors.add(Color.BLACK);
-        colors.add(Color.CYAN);
-        colors.add(Color.GREEN);
+        colors.add(TipoAfericao.SULCO.getColor());
+        colors.add(TipoAfericao.PRESSAO.getColor());
+        colors.add(TipoAfericao.SULCO_PRESSAO.getColor());
 
         final ComboData comboData = new ComboData(groups);
         return new VerticalComboChartComponent.Builder()
@@ -131,29 +137,29 @@ final class DashboardPneuComponentsCreator {
             // Calibragem.
             final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
             entriesCalibragem.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
-                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
+                    servicosAbertosPorTipo.get(CALIBRAGEM),
+                    String.valueOf(servicosAbertosPorTipo.get(CALIBRAGEM)),
                     0,
                     null));
-            groups.add(new BarGroup(TipoServico.CALIBRAGEM.getLegend(), entriesCalibragem, Color.BLACK));
+            groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
 
             // Inspeção.
             final List<BarEntry> entriesInspecao = new ArrayList<>(1);
             entriesInspecao.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(TipoServico.INSPECAO),
-                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
+                    servicosAbertosPorTipo.get(INSPECAO),
+                    String.valueOf(servicosAbertosPorTipo.get(INSPECAO)),
                     1,
                     null));
-            groups.add(new BarGroup(TipoServico.INSPECAO.getLegend(), entriesInspecao, Color.GREEN));
+            groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
 
             // Movimentação.
             final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
             entriesMovimentacao.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
-                    String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
+                    servicosAbertosPorTipo.get(MOVIMENTACAO),
+                    String.valueOf(servicosAbertosPorTipo.get(MOVIMENTACAO)),
                     2,
                     null));
-            groups.add(new BarGroup(TipoServico.MOVIMENTACAO.getLegend(), entriesMovimentacao, Color.BLUE));
+            groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
         }
 
         final BarData barData = new BarData(groups);
@@ -168,12 +174,12 @@ final class DashboardPneuComponentsCreator {
                 "Placas vencidas",
                 statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
                 String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
-                Color.RED));
+                Color.fromHex("#EC441B")));
         entries.add(PieEntry.create(
                 "Placas no prazo",
                 statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo(),
                 String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo()),
-                Color.GREEN));
+                Color.fromHex("#15C41F")));
         final PieData pieData = new PieData(entries);
         return PieChartComponent.createDefault(component, pieData);
     }
@@ -252,29 +258,29 @@ final class DashboardPneuComponentsCreator {
             // Calibragem.
             final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
             entriesCalibragem.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
-                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
+                    tipoServicoHorasConserto.get(CALIBRAGEM),
+                    String.valueOf(tipoServicoHorasConserto.get(CALIBRAGEM)),
                     0,
                     null));
-            groups.add(new BarGroup(TipoServico.CALIBRAGEM.getLegend(), entriesCalibragem, Color.BLACK));
+            groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
 
             // Inspeção.
             final List<BarEntry> entriesInspecao = new ArrayList<>(1);
             entriesInspecao.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(TipoServico.INSPECAO),
-                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
+                    tipoServicoHorasConserto.get(INSPECAO),
+                    String.valueOf(tipoServicoHorasConserto.get(INSPECAO)),
                     1,
                     null));
-            groups.add(new BarGroup(TipoServico.INSPECAO.getLegend(), entriesInspecao, Color.GREEN));
+            groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
 
             // Movimentação.
             final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
             entriesMovimentacao.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
-                    String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
+                    tipoServicoHorasConserto.get(MOVIMENTACAO),
+                    String.valueOf(tipoServicoHorasConserto.get(MOVIMENTACAO)),
                     2,
                     null));
-            groups.add(new BarGroup(TipoServico.MOVIMENTACAO.getLegend(), entriesMovimentacao, Color.BLUE));
+            groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
         }
 
         final BarData barData = new BarData(groups);
