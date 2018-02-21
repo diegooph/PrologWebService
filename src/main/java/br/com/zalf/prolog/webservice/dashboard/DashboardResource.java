@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Path("/dashboards")
+@Secured
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class DashboardResource {
