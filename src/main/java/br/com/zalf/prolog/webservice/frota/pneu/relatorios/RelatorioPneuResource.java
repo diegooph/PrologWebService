@@ -33,6 +33,7 @@ public class RelatorioPneuResource {
 	@GET
 	@Path("/resumoPressao")
 	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+	@Deprecated
 	public List<Faixa> getQtPneusByFaixaPressao(
 			@QueryParam("codUnidades") List<String> codUnidades,
 			@QueryParam("status") List<String> status){
@@ -42,6 +43,7 @@ public class RelatorioPneuResource {
 	@GET
 	@Path("/aderencia/{codUnidade}/{ano}/{mes}")
 	@Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+	@Deprecated
 	public List<Aderencia> getAderenciaByUnidade(
 			@PathParam("ano") int ano,
 			@PathParam("mes") int mes,

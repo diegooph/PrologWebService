@@ -32,6 +32,7 @@ public class RelatorioPneuService {
         }
     }
 
+    @Deprecated
     public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) {
         try {
             return dao.getQtPneusByFaixaPressao(codUnidades, status);
@@ -41,6 +42,7 @@ public class RelatorioPneuService {
         }
     }
 
+    @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) {
         try {
             return dao.getAderenciaByUnidade(ano, mes, codUnidade);

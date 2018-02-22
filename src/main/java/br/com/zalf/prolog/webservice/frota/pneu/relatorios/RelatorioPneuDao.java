@@ -36,6 +36,7 @@ public interface RelatorioPneuDao {
      * @return lista de aderencias
      * @throws SQLException se ocorrer erro no banco de dados
      */
+    @Deprecated
     List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException;
 
     /**
@@ -46,6 +47,7 @@ public interface RelatorioPneuDao {
      * @return lista de faixas
      * @throws SQLException se ocorrer erro no banco de dados
      */
+    @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
 
     /**
