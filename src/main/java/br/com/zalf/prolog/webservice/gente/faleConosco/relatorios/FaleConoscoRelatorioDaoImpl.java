@@ -56,7 +56,7 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
 
     private PreparedStatement getResumoStatement(Connection conn, long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT dados.total_geral as \"TOTAL\",\n" +
+        final PreparedStatement stmt = conn.prepareStatement("SELECT dados.total_geral as \"TOTAL\",\n" +
                 "  dados.total_sugestao as \"SUGESTÕES\",\n" +
                 "  dados.total_reclamacao as \"RECLAMAÇÕES\",\n" +
                 "  dados.total_respondidos as \"TOTAL RESPONDIDOS\",\n" +
@@ -77,7 +77,7 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
                 "  count(fc.data_hora_feedback) as total_respondidos,\n" +
                 "  trunc(extract(epoch from avg (data_hora_feedback - data_hora)) / 86400) as md_dias_feedback\n" +
                 "FROM fale_conosco fc\n" +
-                "WHERE cod_unidade= ? and data_hora BETWEEN ? and ?) as dados");
+                "WHERE cod_unidade= ? and data_hora::date >= ? and data_hora::date <= ?) as dados");
         stmt.setLong(1, codUnidade);
         stmt.setTimestamp(2, DateUtils.toTimestamp(dataInicial));
         stmt.setTimestamp(3, DateUtils.toTimestamp(dataFinal));
