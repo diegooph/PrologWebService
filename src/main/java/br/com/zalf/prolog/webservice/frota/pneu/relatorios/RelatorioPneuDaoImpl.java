@@ -893,8 +893,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
         stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 
