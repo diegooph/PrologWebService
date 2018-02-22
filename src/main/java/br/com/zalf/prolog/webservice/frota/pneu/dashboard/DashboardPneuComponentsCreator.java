@@ -11,13 +11,13 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboData
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterData;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
-import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
@@ -288,7 +288,7 @@ final class DashboardPneuComponentsCreator {
         qtPneusByStatus.remove(StatusPneu.DESCARTE);
         return QuantidadeItemComponent.createDefault(
                 component,
-                String.valueOf(qtPneusByStatus.size()),
+                String.valueOf(qtPneusByStatus.values().stream().mapToInt(Number::intValue).sum()),
                 "pneus cadastrados");
     }
 }
