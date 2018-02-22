@@ -53,6 +53,19 @@ public final class DashboardPneuService {
         }
     }
 
+    public QuantidadeItemComponent getQtdPneusCadastrados(@NotNull final Integer codComponente,
+                                                          @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createQtdPneusCadastrados(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtPneusByStatus(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus cadastrados. \n" +
+                    "Unidades: %s", codUnidades), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     public VerticalComboChartComponent getQtdAfericoesUltimaSemana(@NotNull final Integer codComponente,
                                                                    @NotNull final List<Long> codUnidades) {
         final Calendar calendar = Calendar.getInstance();

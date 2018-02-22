@@ -282,4 +282,13 @@ final class DashboardPneuComponentsCreator {
         final BarData barData = new BarData(groups);
         return VerticalBarChartComponent.createDefault(component, barData, null);
     }
+
+    static QuantidadeItemComponent createQtdPneusCadastrados(@NotNull final ComponentDataHolder component,
+                                                             @NotNull final Map<StatusPneu, Integer> qtPneusByStatus) {
+        qtPneusByStatus.remove(StatusPneu.DESCARTE);
+        return QuantidadeItemComponent.createDefault(
+                component,
+                String.valueOf(qtPneusByStatus.size()),
+                "pneus cadastrados");
+    }
 }

@@ -38,6 +38,13 @@ public final class DashboardPneuResource {
     }
 
     @GET
+    @Path("quantidade-pneus-cadastrados/{codComponente}")
+    public QuantidadeItemComponent getQtdPneusCadastrados(@PathParam("codComponente") Integer codComponente,
+                                                          @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getQtdPneusCadastrados(codComponente, codUnidades);
+    }
+
+    @GET
     @Path("/quantidade-afericoes-semana-atual/{codComponente}")
     public VerticalComboChartComponent getQtAfericoesByTipoByData(@PathParam("codComponente") Integer codComponente,
                                                                   @QueryParam("codUnidades") List<Long> codUnidades) {
