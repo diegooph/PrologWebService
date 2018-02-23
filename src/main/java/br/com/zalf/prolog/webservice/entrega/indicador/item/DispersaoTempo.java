@@ -73,12 +73,13 @@ public class DispersaoTempo extends IndicadorItem {
 
     public void calculaResultado(){
         disperso = realizado.minus(previsto);
-        if(!disperso.isZero() && !previsto.isZero()){
+        if(!realizado.isZero() && !previsto.isZero()){
             resultado = (float) realizado.minus(previsto).getSeconds() / previsto.getSeconds();
+            setBateuMeta(resultado <= meta);
         }else {
             resultado = 0;
+            setBateuMeta(false);
         }
-        setBateuMeta(resultado <= meta);
     }
 
     @Override
