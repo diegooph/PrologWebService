@@ -52,16 +52,16 @@ public class SolicitacaoFolgaRelatorioDaoImpl extends DatabaseConnection impleme
 
     private PreparedStatement getResumoFolgasConcedidasStatement(Connection conn, long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT ad.data,\n" +
-                "  count(codigo) AS total_concedidas,\n" +
-                "  sum(CASE WHEN sf.periodo LIKE 'MANHA' THEN 1 ELSE 0 end) as concedidas_manha,\n" +
-                "  sum(CASE WHEN sf.periodo LIKE 'TARDE' THEN 1 ELSE 0 end) as concedidas_tarde,\n" +
-                "  sum(CASE WHEN sf.periodo LIKE 'NOITE' THEN 1 ELSE 0 end) as concedidas_noite,\n" +
-                "  sum(CASE WHEN sf.periodo LIKE 'DIA_TODO' THEN 1 ELSE 0 end) as concedidas_dia_todo\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT TO_CHAR(AD.DATA, 'DD/MM/YYYY') AS \"DATA SOLICITAÇÃO\",\n" +
+                "  count(codigo) AS \"TOTAL CONCEDIDAS\",\n" +
+                "  sum(CASE WHEN sf.periodo LIKE 'MANHA' THEN 1 ELSE 0 end) as \"CONCEDIDAS MANHÃ\",\n" +
+                "  sum(CASE WHEN sf.periodo LIKE 'TARDE' THEN 1 ELSE 0 end) as \"CONCEDIDAS TARTE\",\n" +
+                "  sum(CASE WHEN sf.periodo LIKE 'NOITE' THEN 1 ELSE 0 end) as \"CONCEDIDAS NOITE\",\n" +
+                "  sum(CASE WHEN sf.periodo LIKE 'DIA_TODO' THEN 1 ELSE 0 end) as \"CONCEDIDAS DIA INTEIRO\"\n" +
                 "FROM aux_data ad\n" +
                 "  left JOIN solicitacao_folga sf on ad.data = sf.data_solicitacao AND SF.status = 'AUTORIZADA'\n" +
                 "  left JOIN  colaborador c on c.cpf = sf.cpf_colaborador and c.cod_unidade = ?\n" +
-                "  WHERE ad.data BETWEEN ? and ? \n" +
+                "  WHERE AD.DATA >= ? and AD.DATA <= ? \n" +
                 "  GROUP BY 1;");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
