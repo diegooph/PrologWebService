@@ -60,13 +60,13 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
                 "  dados.total_sugestao as \"SUGESTÕES\",\n" +
                 "  dados.total_reclamacao as \"RECLAMAÇÕES\",\n" +
                 "  dados.total_respondidos as \"TOTAL RESPONDIDOS\",\n" +
-                "  round((dados.total_respondidos / dados.total_geral::float)*100) || '%' as \"% RESPONDIDOS\",\n" +
-                "  round((dados.total_sugestao / dados.total_geral::float)*100) || '%' as \"% SUGESTÃO\",\n" +
+                "  (case when dados.total_geral = 0 then 0 else round((dados.total_respondidos / dados.total_geral::float)*100) end) || '%' as \"% RESPONDIDOS\",\n" +
+                "  (case when dados.total_geral = 0 then 0 else round((dados.total_sugestao / dados.total_geral::float)*100) end) || '%' as \"% SUGESTÃO\",\n" +
                 "  dados.total_sugestao_respondidos as \"SUGESTÕES RESPONDIDAS\",\n" +
-                "  round((dados.total_sugestao_respondidos / dados.total_geral::float)*100) || '%' as \"% SUGESTÃO RESPONDIDAS\",\n" +
-                "  round((dados.total_reclamacao / dados.total_geral::float)*100) || '%' as \"% RECLAMAÇÃO\",\n" +
+                "  (case when dados.total_geral = 0 then 0 else round((dados.total_sugestao_respondidos / dados.total_geral::float)*100) end ) || '%' as \"% SUGESTÃO RESPONDIDAS\",\n" +
+                "  (case when dados.total_geral = 0 then 0 else round((dados.total_reclamacao / dados.total_geral::float)*100) end) || '%' as \"% RECLAMAÇÃO\",\n" +
                 "  dados.total_reclamacao_respondidos as \"RECLAMAÇÕES RESPONDIDAS\",\n" +
-                "  round((dados.total_reclamacao_respondidos / dados.total_geral::float)*100) || '%' as \"% RECLAMAÇÃO RESPONDIDAS\"\n" +
+                "  (case when dados.total_geral = 0 then 0 else round((dados.total_reclamacao_respondidos / dados.total_geral::float)*100) end) || '%' as \"% RECLAMAÇÃO RESPONDIDAS\"\n" +
                 "FROM\n" +
                 "(SELECT\n" +
                 "  sum(case when categoria = 'S' then 1 end) as total_sugestao,\n" +
