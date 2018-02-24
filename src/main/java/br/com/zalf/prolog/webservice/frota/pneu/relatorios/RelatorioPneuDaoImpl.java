@@ -116,6 +116,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -190,6 +191,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    @Deprecated
     public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -552,7 +554,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT a.data_hora::date as data, to_char(a.data_hora, 'DD/MM/YYYY') as data_formatada, " +
+            stmt = conn.prepareStatement("SELECT a.data_hora::date as data, to_char(a.data_hora, 'DD/MM') as data_formatada, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco, " +
                     "  sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao " +
@@ -645,9 +647,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
             stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO.asString());
+            stmt.setString(2, TipoAfericao.PRESSAO.asString());
             stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(4, TipoAfericao.PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.SULCO.asString());
             stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -893,8 +895,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
         stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setDate(2, new Date(dataInicial));
+        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 

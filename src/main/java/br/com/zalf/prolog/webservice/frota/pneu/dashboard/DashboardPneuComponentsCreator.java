@@ -3,20 +3,21 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.ComponentDataHolder;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarData;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.BarEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboData;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.ComboGroup;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityData;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityEntry;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityGroup;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieData;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarGroup;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.ComboGroup;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterData;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
@@ -29,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico.*;
 
 /**
  * Created on 1/22/18
@@ -95,6 +98,11 @@ final class DashboardPneuComponentsCreator {
         legendas.add(TipoAfericao.PRESSAO.getLegibleString());
         legendas.add(TipoAfericao.SULCO_PRESSAO.getLegibleString());
 
+        final List<Color> colors = new ArrayList<>(3);
+        colors.add(TipoAfericao.SULCO.getColor());
+        colors.add(TipoAfericao.PRESSAO.getColor());
+        colors.add(TipoAfericao.SULCO_PRESSAO.getColor());
+
         final ComboData comboData = new ComboData(groups);
         return new VerticalComboChartComponent.Builder()
                 .withCodigo(component.codigoComponente)
@@ -107,6 +115,7 @@ final class DashboardPneuComponentsCreator {
                 .withQtdBlocosVerticais(component.qtdBlocosVerticais)
                 .withOrdemExibicao(component.ordemExibicao)
                 .withLegendas(legendas)
+                .withEntryColors(colors)
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
                 .withComboData(comboData)
@@ -116,32 +125,46 @@ final class DashboardPneuComponentsCreator {
     @NotNull
     static VerticalBarChartComponent createServicosEmAbertoByTipo(@NotNull final ComponentDataHolder component,
                                                                   @NotNull final Map<TipoServico, Integer> servicosAbertosPorTipo) {
-        final List<BarEntry> entries = new ArrayList<>(servicosAbertosPorTipo.size());
+        final List<BarGroup> groups = new ArrayList<>(servicosAbertosPorTipo.size());
 
-        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
-        // Calibragem.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.CALIBRAGEM)),
-                0,
-                TipoServico.CALIBRAGEM.getLegend(),
-                null));
-        // Inspeção.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.INSPECAO),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.INSPECAO)),
-                1,
-                TipoServico.INSPECAO.getLegend(),
-                null));
-        // Movimentação.
-        entries.add(BarEntry.create(
-                servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO),
-                String.valueOf(servicosAbertosPorTipo.get(TipoServico.MOVIMENTACAO)),
-                2,
-                TipoServico.MOVIMENTACAO.getLegend(),
-                null));
+        if (!servicosAbertosPorTipo.isEmpty()) {
+            // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
 
-        final BarData barData = new BarData(entries);
+            // Calibragem.
+            if (servicosAbertosPorTipo.containsKey(CALIBRAGEM)) {
+                final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+                entriesCalibragem.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(CALIBRAGEM),
+                        String.valueOf(servicosAbertosPorTipo.get(CALIBRAGEM)),
+                        0,
+                        null));
+                groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            }
+
+            // Inspeção.
+            if (servicosAbertosPorTipo.containsKey(INSPECAO)) {
+                final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+                entriesInspecao.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(INSPECAO),
+                        String.valueOf(servicosAbertosPorTipo.get(INSPECAO)),
+                        1,
+                        null));
+                groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            }
+
+            // Movimentação.
+            if (servicosAbertosPorTipo.containsKey(MOVIMENTACAO)) {
+                final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+                entriesMovimentacao.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(MOVIMENTACAO),
+                        String.valueOf(servicosAbertosPorTipo.get(MOVIMENTACAO)),
+                        2,
+                        null));
+                groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            }
+        }
+
+        final BarData barData = new BarData(groups);
         return VerticalBarChartComponent.createDefault(component, barData, null);
     }
 
@@ -153,12 +176,12 @@ final class DashboardPneuComponentsCreator {
                 "Placas vencidas",
                 statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
                 String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
-                Color.RED));
+                Color.fromHex("#EC441B")));
         entries.add(PieEntry.create(
                 "Placas no prazo",
-                statusPlacasAfericao.getQtdPlacasAfericaoVencida(),
-                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoVencida()),
-                Color.GREEN));
+                statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo(),
+                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo()),
+                Color.fromHex("#15C41F")));
         final PieData pieData = new PieData(entries);
         return PieChartComponent.createDefault(component, pieData);
     }
@@ -196,21 +219,21 @@ final class DashboardPneuComponentsCreator {
     }
 
     @NotNull
-    static DensityChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
+    static ScatterChartComponent createMenorSulcoEPressaoPneus(@NotNull final ComponentDataHolder component,
                                                                @NotNull final List<SulcoPressao> valores) {
-        final List<DensityEntry> entries = new ArrayList<>(valores.size());
-        valores.forEach(sulcoPressao -> entries.add(DensityEntry.create(
+        final List<ScatterEntry> entries = new ArrayList<>(valores.size());
+        valores.forEach(sulcoPressao -> entries.add(ScatterEntry.create(
                 sulcoPressao.getValorPressao(),
                 String.valueOf(sulcoPressao.getValorPressao()),
                 sulcoPressao.getValorSulco(),
                 String.valueOf(sulcoPressao.getValorSulco()))));
 
-        final DensityGroup group = new DensityGroup(entries, "Pneus");
-        final List<DensityGroup> groups = new ArrayList<>(1);
+        final ScatterGroup group = new ScatterGroup(entries, "Pneus", Color.fromHex("#C12552"));
+        final List<ScatterGroup> groups = new ArrayList<>(1);
         groups.add(group);
-        final DensityData data = new DensityData(groups);
+        final ScatterData data = new ScatterData(groups);
 
-        return new DensityChartComponent.Builder()
+        return new ScatterChartComponent.Builder()
                 .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
                 .withSubtitulo(component.subtituloComponente)
@@ -222,39 +245,62 @@ final class DashboardPneuComponentsCreator {
                 .withOrdemExibicao(component.ordemExibicao)
                 .withLabelEixoX(component.labelEixoX)
                 .withLabelEixoY(component.labelEixoY)
-                .withDensityData(data)
+                .withScatterData(data)
                 .build();
     }
 
     @NotNull
     static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder component,
                                                                             @NotNull final Map<TipoServico, Integer> tipoServicoHorasConserto) {
-        final List<BarEntry> entries = new ArrayList<>(tipoServicoHorasConserto.size());
+        final List<BarGroup> groups = new ArrayList<>(tipoServicoHorasConserto.size());
 
-        // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
-        // Calibragem.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.CALIBRAGEM)),
-                0,
-                TipoServico.CALIBRAGEM.getLegend(),
-                null));
-        // Inspeção.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.INSPECAO),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.INSPECAO)),
-                1,
-                TipoServico.INSPECAO.getLegend(),
-                null));
-        // Movimentação.
-        entries.add(BarEntry.create(
-                tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO),
-                String.valueOf(tipoServicoHorasConserto.get(TipoServico.MOVIMENTACAO)),
-                2,
-                TipoServico.MOVIMENTACAO.getLegend(),
-                null));
+        if (!tipoServicoHorasConserto.isEmpty()) {
+            // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
 
-        final BarData barData = new BarData(entries);
+            // Calibragem.
+            if (tipoServicoHorasConserto.containsKey(CALIBRAGEM)) {
+                final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+                entriesCalibragem.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(CALIBRAGEM),
+                        String.valueOf(tipoServicoHorasConserto.get(CALIBRAGEM)),
+                        0,
+                        null));
+                groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            }
+
+            // Inspeção.
+            if (tipoServicoHorasConserto.containsKey(INSPECAO)) {
+                final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+                entriesInspecao.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(INSPECAO),
+                        String.valueOf(tipoServicoHorasConserto.get(INSPECAO)),
+                        1,
+                        null));
+                groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            }
+
+            // Movimentação.
+            if (tipoServicoHorasConserto.containsKey(MOVIMENTACAO)) {
+                final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+                entriesMovimentacao.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(MOVIMENTACAO),
+                        String.valueOf(tipoServicoHorasConserto.get(MOVIMENTACAO)),
+                        2,
+                        null));
+                groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            }
+        }
+
+        final BarData barData = new BarData(groups);
         return VerticalBarChartComponent.createDefault(component, barData, null);
+    }
+
+    static QuantidadeItemComponent createQtdPneusCadastrados(@NotNull final ComponentDataHolder component,
+                                                             @NotNull final Map<StatusPneu, Integer> qtPneusByStatus) {
+        qtPneusByStatus.remove(StatusPneu.DESCARTE);
+        return QuantidadeItemComponent.createDefault(
+                component,
+                String.valueOf(qtPneusByStatus.values().stream().mapToInt(Number::intValue).sum()),
+                "pneus cadastrados");
     }
 }

@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -35,6 +35,13 @@ public final class DashboardPneuResource {
     public QuantidadeItemComponent getQtdPneusPressaoIncorreta(@PathParam("codComponente") Integer codComponente,
                                                                @QueryParam("codUnidades") List<Long> codUnidades) {
         return service.getQtdPneusPressaoIncorreta(codComponente, codUnidades);
+    }
+
+    @GET
+    @Path("quantidade-pneus-cadastrados/{codComponente}")
+    public QuantidadeItemComponent getQtdPneusCadastrados(@PathParam("codComponente") Integer codComponente,
+                                                          @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getQtdPneusCadastrados(codComponente, codUnidades);
     }
 
     @GET
@@ -74,7 +81,7 @@ public final class DashboardPneuResource {
 
     @GET
     @Path("menor-sulco-e-pressao-pneus/{codComponente}")
-    public DensityChartComponent getMenorSulcoEPressaoPneu(@PathParam("codComponente") Integer codComponente,
+    public ScatterChartComponent getMenorSulcoEPressaoPneu(@PathParam("codComponente") Integer codComponente,
                                                            @QueryParam("codUnidades") List<Long> codUnidades) {
         return service.getMenorSulcoEPressaoPneu(codComponente, codUnidades);
     }

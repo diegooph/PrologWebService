@@ -1,42 +1,57 @@
-package br.com.zalf.prolog.webservice.dashboard.components.densitychart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.combo;
 
+import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.base.BaseComponentBuilder;
-import br.com.zalf.prolog.webservice.dashboard.base.DashboardComponent;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.ChartComponent;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created on 10/01/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DensityChartComponent extends DashboardComponent {
+public class VerticalComboChartComponent extends ChartComponent {
     @NotNull
     private String labelEixoX;
     @NotNull
     private String labelEixoY;
+    @Nullable
+    private Double meta;
     @NotNull
-    private DensityData data;
+    private ComboData comboData;
+    @NotNull
+    private List<String> legendas;
+    @NotNull
+    private List<Color> entryColors;
 
-    private DensityChartComponent(@NotNull Integer codigo,
-                                  @NotNull String titulo,
-                                  @Nullable String subtitulo,
-                                  @NotNull String descricao,
-                                  @NotNull String urlEndpointDados,
-                                  @NotNull Integer codTipoComponente,
-                                  int qtdBlocosHorizontais,
-                                  int qtdBlocosVerticais,
-                                  int ordemExibicao,
-                                  @NotNull String labelEixoX,
-                                  @NotNull String labelEixoY,
-                                  @NotNull DensityData data) {
-        super(codigo, IdentificadorTipoComponente.GRAFICO_DENSIDADE, titulo, subtitulo, descricao, urlEndpointDados,
-                codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
+    private VerticalComboChartComponent(@NotNull Integer codigo,
+                                        @NotNull String titulo,
+                                        @Nullable String subtitulo,
+                                        @NotNull String descricao,
+                                        @NotNull String urlEndpointDados,
+                                        @NotNull Integer codTipoComponente,
+                                        int qtdBlocosHorizontais,
+                                        int qtdBlocosVerticais,
+                                        int ordemExibicao,
+                                        @NotNull String labelEixoX,
+                                        @NotNull String labelEixoY,
+                                        @Nullable Double meta,
+                                        @NotNull ComboData comboData,
+                                        @NotNull List<String> legendas,
+                                        @NotNull List<Color> entryColors) {
+        super(codigo, IdentificadorTipoComponente.GRAFICO_BARRAS_VERTICAIS_AGRUPADAS, titulo, subtitulo, descricao,
+                urlEndpointDados, codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.labelEixoX = labelEixoX;
         this.labelEixoY = labelEixoY;
-        this.data = data;
+        this.meta = meta;
+        this.comboData = comboData;
+        this.legendas = legendas;
+        this.entryColors = entryColors;
     }
 
     @NotNull
@@ -57,32 +72,53 @@ public class DensityChartComponent extends DashboardComponent {
         this.labelEixoY = labelEixoY;
     }
 
-    @NotNull
-    public DensityData getData() {
-        return data;
+    @Nullable
+    public Double getMeta() {
+        return meta;
     }
 
-    public void setData(@NotNull DensityData data) {
-        this.data = data;
+    public void setMeta(@Nullable Double meta) {
+        this.meta = meta;
+    }
+
+    @NotNull
+    public ComboData getComboData() {
+        return comboData;
+    }
+
+    public void setComboData(@NotNull ComboData comboData) {
+        this.comboData = comboData;
+    }
+
+    @NotNull
+    public List<String> getLegendas() {
+        return legendas;
+    }
+
+    public void setLegendas(@NotNull List<String> legendas) {
+        this.legendas = legendas;
     }
 
     @Override
     public String toString() {
-        return "DensityChartComponent{" +
+        return "VerticalComboChartComponent{" +
                 "labelEixoX='" + labelEixoX + '\'' +
                 ", labelEixoY='" + labelEixoY + '\'' +
-                ", densityData=" + data +
+                ", meta=" + meta +
+                ", comboData=" + comboData +
+                ", legendas=" + legendas +
                 '}';
     }
 
     public static class Builder extends BaseComponentBuilder {
         private String labelEixoX;
         private String labelEixoY;
-        private DensityData densityData;
+        private Double meta;
+        private ComboData comboData;
+        private List<String> legendas;
+        private List<Color> entryColors;
 
-        public Builder() {
-
-        }
+        public Builder() {}
 
         @Override
         public Builder withCodigo(@NotNull Integer codigo) {
@@ -148,18 +184,36 @@ public class DensityChartComponent extends DashboardComponent {
             return this;
         }
 
-        public Builder withDensityData(@NotNull DensityData data) {
-            this.densityData = data;
+        public Builder withMeta(@NotNull Double meta) {
+            this.meta = meta;
+            return this;
+        }
+
+        public Builder withComboData(@NotNull ComboData comboData) {
+            this.comboData = comboData;
+            return this;
+        }
+
+        public Builder withLegendas(@NotNull List<String> legendas) {
+            this.legendas = legendas;
+            return this;
+        }
+
+        public Builder withEntryColors(@NotNull List<Color> entryColors) {
+            this.entryColors = entryColors;
             return this;
         }
 
         @Override
-        public DensityChartComponent build() {
+        public VerticalComboChartComponent build() {
             ensureNotNullValues();
             Preconditions.checkNotNull(labelEixoX, "labelEixoX deve ser instanciada com 'withLabelEixoX'");
             Preconditions.checkNotNull(labelEixoY, "labelEixoY deve ser instanciada com 'withLabelEixoY'");
-            Preconditions.checkNotNull(densityData, "densityData deve ser instanciada com 'withDensityData'");
-            return new DensityChartComponent(
+            Preconditions.checkNotNull(comboData, "comboData deve ser instanciada com 'withComboData'");
+            Preconditions.checkNotNull(legendas, "legendas deve ser instanciada com 'withLegendas'");
+            Preconditions.checkNotNull(entryColors, "legendas deve ser instanciada com 'withEntryColors'");
+
+            return new VerticalComboChartComponent(
                     codigo,
                     titulo,
                     subtitulo,
@@ -171,7 +225,10 @@ public class DensityChartComponent extends DashboardComponent {
                     ordemExibicao,
                     labelEixoX,
                     labelEixoY,
-                    densityData);
+                    meta,
+                    comboData,
+                    legendas,
+                    entryColors);
         }
     }
 }

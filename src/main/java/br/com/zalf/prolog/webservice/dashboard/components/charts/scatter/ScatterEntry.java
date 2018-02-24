@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.dashboard.components.densitychart;
+package br.com.zalf.prolog.webservice.dashboard.components.charts.scatter;
 
 import br.com.zalf.prolog.webservice.dashboard.base.Entry;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class DensityEntry extends Entry {
+public class ScatterEntry extends Entry {
     private double x;
     @NotNull
     private String representacaoX;
@@ -16,14 +16,14 @@ public class DensityEntry extends Entry {
     @NotNull
     private String representacaoY;
 
-    public static DensityEntry create(final double x,
+    public static ScatterEntry create(final double x,
                                       @NotNull final String representacaoX,
                                       final double y,
                                       @NotNull final String representacaoY) {
-        return new DensityEntry(x, representacaoX, y, representacaoY);
+        return new ScatterEntry(x, representacaoX, y, representacaoY);
     }
 
-    private DensityEntry(final double x,
+    private ScatterEntry(final double x,
                          @NotNull final String representacaoX,
                          final double y,
                          @NotNull final String representacaoY) {
@@ -69,7 +69,7 @@ public class DensityEntry extends Entry {
 
     @Override
     public String toString() {
-        return "DensityEntry{" +
+        return "ScatterEntry{" +
                 "x=" + x +
                 ", representacaoX='" + representacaoX + '\'' +
                 ", y=" + y +

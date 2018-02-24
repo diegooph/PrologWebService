@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.barchart.VerticalBarChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.combochart.VerticalComboChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.densitychart.DensityChartComponent;
-import br.com.zalf.prolog.webservice.dashboard.components.piechart.PieChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterChartComponent;
+import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.table.TableComponent;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +48,19 @@ public final class DashboardPneuService {
                     relatorioDao.getQtdPneusPressaoIncorreta(codUnidades));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus com pressão incorreta. \n" +
+                    "Unidades: %s", codUnidades), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public QuantidadeItemComponent getQtdPneusCadastrados(@NotNull final Integer codComponente,
+                                                          @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createQtdPneusCadastrados(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQtPneusByStatus(codUnidades));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus cadastrados. \n" +
                     "Unidades: %s", codUnidades), e);
             throw new RuntimeException(e);
         }
@@ -127,7 +140,7 @@ public final class DashboardPneuService {
         }
     }
 
-    public DensityChartComponent getMenorSulcoEPressaoPneu(@NotNull final Integer codComponente,
+    public ScatterChartComponent getMenorSulcoEPressaoPneu(@NotNull final Integer codComponente,
                                                            @NotNull final List<Long> codUnidades) {
         try {
             return DashboardPneuComponentsCreator.createMenorSulcoEPressaoPneus(
