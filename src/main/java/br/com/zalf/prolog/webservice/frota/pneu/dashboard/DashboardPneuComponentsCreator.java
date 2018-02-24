@@ -131,31 +131,37 @@ final class DashboardPneuComponentsCreator {
             // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
 
             // Calibragem.
-            final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
-            entriesCalibragem.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(CALIBRAGEM),
-                    String.valueOf(servicosAbertosPorTipo.get(CALIBRAGEM)),
-                    0,
-                    null));
-            groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            if (servicosAbertosPorTipo.containsKey(CALIBRAGEM)) {
+                final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+                entriesCalibragem.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(CALIBRAGEM),
+                        String.valueOf(servicosAbertosPorTipo.get(CALIBRAGEM)),
+                        0,
+                        null));
+                groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            }
 
             // Inspeção.
-            final List<BarEntry> entriesInspecao = new ArrayList<>(1);
-            entriesInspecao.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(INSPECAO),
-                    String.valueOf(servicosAbertosPorTipo.get(INSPECAO)),
-                    1,
-                    null));
-            groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            if (servicosAbertosPorTipo.containsKey(INSPECAO)) {
+                final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+                entriesInspecao.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(INSPECAO),
+                        String.valueOf(servicosAbertosPorTipo.get(INSPECAO)),
+                        1,
+                        null));
+                groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            }
 
             // Movimentação.
-            final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
-            entriesMovimentacao.add(BarEntry.create(
-                    servicosAbertosPorTipo.get(MOVIMENTACAO),
-                    String.valueOf(servicosAbertosPorTipo.get(MOVIMENTACAO)),
-                    2,
-                    null));
-            groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            if (servicosAbertosPorTipo.containsKey(MOVIMENTACAO)) {
+                final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+                entriesMovimentacao.add(BarEntry.create(
+                        servicosAbertosPorTipo.get(MOVIMENTACAO),
+                        String.valueOf(servicosAbertosPorTipo.get(MOVIMENTACAO)),
+                        2,
+                        null));
+                groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            }
         }
 
         final BarData barData = new BarData(groups);
@@ -252,31 +258,37 @@ final class DashboardPneuComponentsCreator {
             // Não utilizamos um for para garantir que as barras do gráfico sempre irão na mesma ordem de exibição.
 
             // Calibragem.
-            final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
-            entriesCalibragem.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(CALIBRAGEM),
-                    String.valueOf(tipoServicoHorasConserto.get(CALIBRAGEM)),
-                    0,
-                    null));
-            groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            if (tipoServicoHorasConserto.containsKey(CALIBRAGEM)) {
+                final List<BarEntry> entriesCalibragem = new ArrayList<>(1);
+                entriesCalibragem.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(CALIBRAGEM),
+                        String.valueOf(tipoServicoHorasConserto.get(CALIBRAGEM)),
+                        0,
+                        null));
+                groups.add(new BarGroup(CALIBRAGEM.getLegend(), entriesCalibragem, CALIBRAGEM.getColor()));
+            }
 
             // Inspeção.
-            final List<BarEntry> entriesInspecao = new ArrayList<>(1);
-            entriesInspecao.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(INSPECAO),
-                    String.valueOf(tipoServicoHorasConserto.get(INSPECAO)),
-                    1,
-                    null));
-            groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            if (tipoServicoHorasConserto.containsKey(INSPECAO)) {
+                final List<BarEntry> entriesInspecao = new ArrayList<>(1);
+                entriesInspecao.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(INSPECAO),
+                        String.valueOf(tipoServicoHorasConserto.get(INSPECAO)),
+                        1,
+                        null));
+                groups.add(new BarGroup(INSPECAO.getLegend(), entriesInspecao, INSPECAO.getColor()));
+            }
 
             // Movimentação.
-            final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
-            entriesMovimentacao.add(BarEntry.create(
-                    tipoServicoHorasConserto.get(MOVIMENTACAO),
-                    String.valueOf(tipoServicoHorasConserto.get(MOVIMENTACAO)),
-                    2,
-                    null));
-            groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            if (tipoServicoHorasConserto.containsKey(MOVIMENTACAO)) {
+                final List<BarEntry> entriesMovimentacao = new ArrayList<>(1);
+                entriesMovimentacao.add(BarEntry.create(
+                        tipoServicoHorasConserto.get(MOVIMENTACAO),
+                        String.valueOf(tipoServicoHorasConserto.get(MOVIMENTACAO)),
+                        2,
+                        null));
+                groups.add(new BarGroup(MOVIMENTACAO.getLegend(), entriesMovimentacao, MOVIMENTACAO.getColor()));
+            }
         }
 
         final BarData barData = new BarData(groups);
