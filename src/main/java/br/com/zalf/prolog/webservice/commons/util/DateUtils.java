@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -70,6 +72,13 @@ public class DateUtils {
 	 */
 	public static LocalDate toLocalDate(Date utilDate) {
 		return toSqlDate(utilDate).toLocalDate();
+	}
+
+	public static LocalDate toLocalDate(final long dateMillis, @NotNull final ZoneId zoneId) {
+		return Instant
+				.ofEpochMilli(dateMillis)
+				.atZone(zoneId)
+				.toLocalDate();
 	}
 
 	/**
