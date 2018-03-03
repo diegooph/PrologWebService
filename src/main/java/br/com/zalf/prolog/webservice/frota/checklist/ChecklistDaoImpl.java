@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
@@ -38,7 +39,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO, COD_UNIDADE");
 			stmt.setString(1, checklist.getPlacaVeiculo());
 			stmt.setLong(2, checklist.getCodModelo());
-			stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			stmt.setObject(3, TimeZoneManager.getZonedLocalDateTimeForCpf(checklist.getColaborador().getCpf(), conn));
 			stmt.setLong(4, checklist.getColaborador().getCpf());
 			stmt.setString(5, checklist.getPlacaVeiculo());
 			stmt.setString(6, String.valueOf(checklist.getTipo()));
