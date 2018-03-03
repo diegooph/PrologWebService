@@ -4,8 +4,8 @@ package br.com.zalf.prolog.webservice.frota.checklist.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
 import javax.annotation.Nonnull;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 /** 29/02/2016
@@ -18,7 +18,7 @@ public class Checklist {
 	private Long codModelo;
 	private Long codigo;
 	private Colaborador colaborador;
-	private Date data;
+	private LocalDateTime data;
 	private String placaVeiculo;
 	private List<PerguntaRespostaChecklist> listRespostas;
 	/**
@@ -85,11 +85,11 @@ public class Checklist {
 		this.colaborador = colaborador;
 	}
 
-	public Date getData() {
+	public LocalDateTime getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
 
