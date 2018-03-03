@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.produtividade;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -61,7 +62,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 					" (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
 			stmt.setLong(1, cpf);
 			stmt.setLong(2, cpf);
-			stmt.setTimestamp(3, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+			stmt.setObject(3, TimeZoneManager.getZonedLocalDateTimeForCpf(cpf, conn));
 			stmt.setString(4, mes + "/" + ano);
 			int count = stmt.executeUpdate();
 			if(count == 0){
