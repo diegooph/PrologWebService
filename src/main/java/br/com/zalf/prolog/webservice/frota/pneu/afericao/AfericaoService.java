@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.CronogramaAfericao;
@@ -21,8 +22,8 @@ public class AfericaoService {
     private static final String TAG = AfericaoService.class.getSimpleName();
 
     public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
-        afericao.setDataHora(new Date(System.currentTimeMillis()));
         try {
+            afericao.setDataHora(TimeZoneManager.getZonedLocalDateTimeForCodUnidade(codUnidade));
             return RouterAfericao
                     .create(dao, userToken)
                     .insertAfericao(afericao, codUnidade);

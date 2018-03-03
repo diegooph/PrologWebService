@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
@@ -17,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +44,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
                     + "TEMPO_REALIZACAO, TIPO_AFERICAO) "
                     + "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(afericao.getDataHora()));
+            stmt.setObject(1,afericao.getDataHora());
             stmt.setString(2, afericao.getVeiculo().getPlaca());
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
@@ -530,7 +532,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException {
         final Afericao afericao = new Afericao();
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
-        afericao.setDataHora(rSet.getTimestamp("DATA_HORA"));
+        afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericao.setTipoAfericao(TipoAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
@@ -553,7 +555,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
                     + "COD_AFERICAO, PLACA, COD_PNEU_CORRETO, COD_PNEU_INCORRETO, POSICAO, COD_UNIDADE) VALUES (?,?,?,?,?,?,?)");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(1, TimeZoneManager.getZonedLocalDateTimeForCodUnidade(codUnidade, conn));
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
             stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
