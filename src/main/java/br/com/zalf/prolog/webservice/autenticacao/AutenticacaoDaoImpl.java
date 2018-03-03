@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 
@@ -37,7 +38,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 					"AND (SELECT C.STATUS_ATIVO " +
 						 "FROM COLABORADOR C " +
 						 "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?");
-			stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+			stmt.setObject(1, TimeZoneManager.getZonedLocalDateTimeForToken(token, conn));
 			stmt.setString(2, token);
 			stmt.setString(3, token);
 			stmt.setString(4, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
