@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
@@ -17,6 +18,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +66,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "observacao) " +
                     "VALUES (?,?,?,?) RETURNING codigo;");
             stmt.setLong(1, processoMovimentacao.getUnidade().getCodigo());
-            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(2, TimeZoneManager.getZonedLocalDateTimeForCodUnidade(processoMovimentacao.getUnidade().getCodigo(), conn));
             stmt.setLong(3, processoMovimentacao.getColaborador().getCpf());
             stmt.setString(4, processoMovimentacao.getObservacao());
             rSet = stmt.executeQuery();
@@ -93,9 +96,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, motivo.getMotivo());
             stmt.setBoolean(3, true);
-            stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            stmt.setObject(4, LocalDateTime.now(Clock.systemUTC()));
             // Ao inserir um motivo setamos a data de alteração como a data atual
-            stmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+            stmt.setObject(5, LocalDateTime.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -143,7 +146,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "SET ativo = ?, data_hora_ultima_alteracao = ?" +
                     " WHERE cod_empresa = ? AND codigo = ?");
             stmt.setBoolean(1, motivo.isAtivo());
-            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setObject(2, LocalDateTime.now(Clock.systemUTC()));
             stmt.setLong(3, codEmpresa);
             stmt.setLong(4, codMotivo);
             if (stmt.executeUpdate() == 0) {
