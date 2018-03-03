@@ -40,12 +40,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
+    @NotNull
+    private final String userToken;
 
-    private IntegradorProLog(VeiculoDao veiculoDao,
+    private IntegradorProLog(@NotNull final String userToken,
+                             VeiculoDao veiculoDao,
                              ChecklistDao checklistDao,
                              AfericaoDao afericaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
+        this.userToken = userToken;
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
@@ -54,8 +58,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @VisibleForTesting
-    public static IntegradorProLog full() {
+    public static IntegradorProLog full(@NotNull final String userToken) {
         return new IntegradorProLog(
+                userToken,
                 Injection.provideVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideAfericaoDao(),
@@ -205,8 +210,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Checklist getChecklistByCodigo(@NotNull Long codChecklist) throws Exception {
-        return checklistDao.getByCod(codChecklist);
+    public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
+        return checklistDao.getByCod(codChecklist, userToken);
     }
 
     @NotNull
@@ -246,9 +251,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private AfericaoDao afericaoDao;
         private ColaboradorDao colaboradorDao;
         private IntegracaoDao integracaoDao;
+        private final String userToken;
 
-        public Builder() {
-
+        public Builder(@NotNull final String userToken) {
+            this.userToken = userToken;
         }
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
@@ -277,7 +283,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
+            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
         }
     }
 }

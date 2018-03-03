@@ -15,7 +15,7 @@ public final class RouterChecklists extends Router {
     public static RouterChecklists create(@NotNull ChecklistDao checklistDao, @NotNull String userToken) {
         return new RouterChecklists(
                 Injection.provideIntegracaoDao(),
-                new IntegradorProLog.Builder()
+                new IntegradorProLog.Builder(userToken)
                         .withChecklistDao(checklistDao)
                         .build(),
                 userToken,

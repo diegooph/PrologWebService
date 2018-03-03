@@ -12,7 +12,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-		checklist.setData(new Date(System.currentTimeMillis()));
 		final Long codChecklist = service.insert(checklist, userToken);
 		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");

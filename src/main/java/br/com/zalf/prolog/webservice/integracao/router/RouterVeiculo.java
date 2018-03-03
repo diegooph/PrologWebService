@@ -15,7 +15,7 @@ public final class RouterVeiculo extends Router {
     public static RouterVeiculo create(@NotNull VeiculoDao veiculoDao, @NotNull String userToken) {
         return new RouterVeiculo(
                 Injection.provideIntegracaoDao(),
-                new IntegradorProLog.Builder()
+                new IntegradorProLog.Builder(userToken)
                         .withVeiculoDao(veiculoDao)
                         .build(),
                 userToken,

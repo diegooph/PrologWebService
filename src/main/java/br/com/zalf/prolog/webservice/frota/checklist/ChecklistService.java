@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -32,6 +33,7 @@ public class ChecklistService {
 
     public Long insert(Checklist checklist, String userToken) {
         try {
+            checklist.setData(TimeZoneManager.getZonedLocalDateTimeForToken(userToken));
             return RouterChecklists
                     .create(dao, userToken)
                     .insertChecklist(checklist);

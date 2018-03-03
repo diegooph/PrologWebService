@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Date;
 
@@ -63,17 +64,18 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 	}
 
 	@Override
-	public Checklist getByCod(long codChecklist) throws SQLException {
+	public Checklist getByCod(Long codChecklist, String userToken) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA, C.KM_VEICULO, "
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA AT TIME ZONE ?, C.KM_VEICULO, "
 					+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
 					+ "C.TIPO, CO.NOME FROM CHECKLIST C JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "WHERE C.CODIGO =  ? ");
-			stmt.setLong(1, codChecklist);
+			stmt.setObject(1, TimeZoneManager.getZonedLocalDateTimeForToken(userToken, conn));
+			stmt.setLong(2, codChecklist);
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
 				return createChecklist(rSet, false);
@@ -341,7 +343,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			colaboradorSaida.setNome(rSet.getString("COLABORADOR_SAIDA"));
 			checkSaida.setCodigo(codChecklistSaida);
 			checkSaida.setColaborador(colaboradorSaida);
-			checkSaida.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_SAIDA"));
+			checkSaida.setData(rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_SAIDA", LocalDateTime.class));
 		}
 		Checklist checkRetorno = null;
 		Long codChecklistRetorno = rSet.getLong("COD_CHECKLIST_RETORNO");
@@ -351,7 +353,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 			colaboradorRetorno.setNome(rSet.getString("COLABORADOR_RETORNO"));
 			checkRetorno.setCodigo(codChecklistRetorno);
 			checkRetorno.setColaborador(colaboradorRetorno);
-			checkRetorno.setData(rSet.getTimestamp("DATA_HORA_ULTIMO_CHECKLIST_RETORNO"));
+			checkRetorno.setData(rSet.getObject("DATA_HORA_ULTIMO_CHECKLIST_RETORNO", LocalDateTime.class));
 		}
 		Veiculo veiculo = new Veiculo();
 		veiculo.setPlaca(rSet.getString("PLACA"));
@@ -513,7 +515,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		checklist.setCodigo(rSet.getLong("CODIGO"));
 		checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
 		checklist.setColaborador(createColaborador(rSet.getLong("CPF_COLABORADOR"), rSet.getString("NOME")));
-		checklist.setData(rSet.getTimestamp("DATA_HORA"));
+		checklist.setData(rSet.getObject("DATA_HORA", LocalDateTime.class));
 		checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
 		checklist.setTipo(rSet.getString("TIPO").charAt(0));
 		checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO"));
