@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -17,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -295,7 +297,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(2, item.getTempoRealizacaoConserto().toMillis());
             stmt.setLong(3, item.getKmVeiculoFechamento());
             stmt.setString(4, ItemOrdemServico.Status.RESOLVIDO.asString());
-            stmt.setTimestamp(5, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(5, TimeZoneManager.getZonedLocalDateTimeForCpf(item.getMecanico().getCpf(), conn));
             stmt.setString(6, item.getFeedbackResolucao().trim());
             stmt.setString(7, placa);
             stmt.setLong(8, item.getCodOs());
@@ -303,7 +305,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setLong(10, item.getPergunta().getAlternativasResposta().get(0).codigo);
             int count = stmt.executeUpdate();
             if (count > 0){
-                updateStatusOs(placa, item.getCodOs(), conn);
+                updateStatusOs(placa, item.getCodOs(), item.getMecanico().getCpf(), conn);
                 veiculoDao.updateKmByPlaca(placa, item.getKmVeiculoFechamento(), conn);
             }else{
                 throw new SQLException("Erro ao consertar o item");
@@ -322,7 +324,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      */
     private void setTempoRestante(ItemOrdemServico itemManutencao, int prazoHoras) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(itemManutencao.getDataApontamento());
+        //TODO CORRIGIR LINHA ABAIXO
+//        calendar.setTime(itemManutencao.getDataApontamento());
         calendar.add(Calendar.HOUR, prazoHoras);// data apontamento + prazo
         Date dataMaxima = calendar.getTime(); // data máxima de resolução
         long tempoRestante = dataMaxima.getTime() - System.currentTimeMillis();
@@ -485,7 +488,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 pergunta.setAlternativasResposta(alternativas);
                 item.setPergunta(pergunta);
                 item.setPlaca(rSet.getString("placa_veiculo"));
-                item.setDataApontamento(rSet.getTimestamp("data_hora"));
+                item.setDataApontamento(rSet.getObject("data_hora", LocalDateTime.class));
                 item.setTempoLimiteResolucao(Duration.ofHours(rSet.getLong("PRAZO")));
                 setTempoRestante(item, rSet.getInt("prazo"));
                 item.setQtdApontamentos(rSet.getInt("qt_apontamentos"));
@@ -573,14 +576,14 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         return null;
     }
 
-    private void updateStatusOs (String placa, Long codOs, Connection conn) throws SQLException{
+    private void updateStatusOs (String placa, Long codOs, Long cpf, Connection conn) throws SQLException{
         PreparedStatement stmt = null;
         try{
             stmt = conn.prepareStatement("UPDATE checklist_ordem_servico SET status = ?, DATA_HORA_FECHAMENTO = ? WHERE\n" +
                     "    COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND CODIGO = ? AND (SELECT count(*) FROM checklist_ordem_servico_itens\n" +
                     "    WHERE COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE placa = ?) AND COD_OS = ? AND status_resolucao = ?) = 0");
             stmt.setString(1, OrdemServico.Status.FECHADA.asString());
-            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(2, TimeZoneManager.getZonedLocalDateTimeForCpf(cpf, conn));
             stmt.setString(3, placa);
             stmt.setLong(4, codOs);
             stmt.setString(5, placa);

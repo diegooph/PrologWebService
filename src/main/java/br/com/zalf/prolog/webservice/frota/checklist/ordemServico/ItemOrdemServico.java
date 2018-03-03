@@ -2,9 +2,11 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.seguranca.relato.model.Local;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -50,7 +52,7 @@ public class ItemOrdemServico {
     /**
      * Data em que o item foi apontado pela primeira vez
      */
-    private Date dataApontamento;
+    private LocalDateTime dataApontamento;
     /**
      * data e hora em que o item foi marcado como consertado
      */
@@ -159,11 +161,11 @@ public class ItemOrdemServico {
         this.placa = placa;
     }
 
-    public Date getDataApontamento() {
+    public LocalDateTime getDataApontamento() {
         return dataApontamento;
     }
 
-    public void setDataApontamento(Date dataApontamento) {
+    public void setDataApontamento(LocalDateTime dataApontamento) {
         this.dataApontamento = dataApontamento;
     }
 
