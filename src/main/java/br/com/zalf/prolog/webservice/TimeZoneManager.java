@@ -61,6 +61,27 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    public static ZoneId getZoneIdForToken(@NotNull final String token,
+                                           @NotNull final Connection connection) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement("SELECT TIMEZONE FROM UNIDADE U " +
+                    "  JOIN COLABORADOR C ON U.CODIGO = C.COD_UNIDADE " +
+                    "  JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?;");
+            statement.setString(1, TokenCleaner.getOnlyToken(token));
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return ZoneId.of(resultSet.getString("TIMEZONE"));
+            } else {
+                throw new SQLException("Erro ao buscar o timezone para o token: " + token);
+            }
+        } finally {
+            closeConnection(null, statement, resultSet);
+        }
+    }
+
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCpf(@NotNull final Long cpf) throws SQLException {
         Connection connection = null;
         try {
@@ -104,7 +125,8 @@ public final class TimeZoneManager extends DatabaseConnection {
 
     @NotNull
     public static LocalDateTime getZonedLocalDateTimeForToken(@NotNull final String token,
-                                                              @NotNull final Connection connection) throws SQLException {
+                                                              @NotNull final Connection connection) throws
+            SQLException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
@@ -136,7 +158,8 @@ public final class TimeZoneManager extends DatabaseConnection {
 
     @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCodUnidade(@NotNull final Long codUnidade,
-                                                                   @NotNull final Connection connection) throws SQLException {
+                                                                   @NotNull final Connection connection) throws
+            SQLException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
