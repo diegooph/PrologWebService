@@ -16,7 +16,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.Date;
 
@@ -40,7 +42,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "VALUES ((SELECT COD_UNIDADE FROM VEICULO WHERE PLACA = ?),?,?,?,?,?,?,?) RETURNING CODIGO, COD_UNIDADE");
 			stmt.setString(1, checklist.getPlacaVeiculo());
 			stmt.setLong(2, checklist.getCodModelo());
-			stmt.setObject(3, TimeZoneManager.getZonedLocalDateTimeForCpf(checklist.getColaborador().getCpf(), conn));
+			stmt.setObject(3, Instant.now().atOffset(ZoneOffset.UTC));
 			stmt.setLong(4, checklist.getColaborador().getCpf());
 			stmt.setString(5, checklist.getPlacaVeiculo());
 			stmt.setString(6, String.valueOf(checklist.getTipo()));
@@ -103,7 +105,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA, C.cod_checklist_modelo, C.KM_VEICULO, "
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
+					+ "C.cod_checklist_modelo, C.KM_VEICULO, "
 					+ "C.TEMPO_REALIZACAO,C.CPF_COLABORADOR, C.PLACA_VEICULO, "
 					+ "C.TIPO, CO.NOME FROM CHECKLIST C "
 					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
@@ -118,34 +121,35 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "ORDER BY DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
 
-			stmt.setDate(1, new java.sql.Date(dataInicial));
-			stmt.setDate(2, new java.sql.Date(dataFinal));
-			stmt.setLong(3, codUnidade);
+			stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+			stmt.setDate(2, new java.sql.Date(dataInicial));
+			stmt.setDate(3, new java.sql.Date(dataFinal));
+			stmt.setLong(4, codUnidade);
 			if (codEquipe == null) {
-				stmt.setInt(4, 1);
 				stmt.setInt(5, 1);
+				stmt.setInt(6, 1);
 			} else {
-				stmt.setInt(4, 0);
-				stmt.setLong(5, codEquipe);
+				stmt.setInt(5, 0);
+				stmt.setLong(6, codEquipe);
 			}
 
 			if (codTipoVeiculo == null) {
-				stmt.setInt(6, 1);
 				stmt.setInt(7, 1);
+				stmt.setInt(8, 1);
 			} else {
-				stmt.setInt(6, 0);
-				stmt.setLong(7, codTipoVeiculo);
+				stmt.setInt(7, 0);
+				stmt.setLong(8, codTipoVeiculo);
 			}
 
 			if (placaVeiculo == null) {
-				stmt.setInt(8, 1);
-				stmt.setString(9, "");
+				stmt.setInt(9, 1);
+				stmt.setString(10, "");
 			} else {
-				stmt.setInt(8, 0);
-				stmt.setString(9, placaVeiculo);
+				stmt.setInt(9, 0);
+				stmt.setString(10, placaVeiculo);
 			}
-			stmt.setInt(10, limit);
-			stmt.setLong(11, offset);
+			stmt.setInt(11, limit);
+			stmt.setLong(12, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet, resumido);
@@ -166,7 +170,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 		ResultSet rSet = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA, "
+			stmt = conn.prepareStatement("SELECT C.CODIGO, C.COD_CHECKLIST_MODELO, C.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
 					+ "C.CPF_COLABORADOR, C.PLACA_VEICULO, C.KM_VEICULO, C.TIPO , C.TEMPO_REALIZACAO, CO.NOME FROM CHECKLIST C "
 					+ "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
 					+ "WHERE C.CPF_COLABORADOR = ? "
@@ -174,20 +178,21 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					+ "AND (? = 1 OR C.DATA_HORA::DATE <= ?) "
 					+ "ORDER BY C.DATA_HORA DESC "
 					+ "LIMIT ? OFFSET ?");
-			stmt.setLong(1, cpf);
+			stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
+			stmt.setLong(2, cpf);
 			if (dataInicial == null || dataFinal == null) {
-				stmt.setInt(2, 1);
-				stmt.setNull(3, Types.DATE);
-				stmt.setInt(4, 1);
-				stmt.setNull(5, Types.DATE);
+				stmt.setInt(3, 1);
+				stmt.setNull(4, Types.DATE);
+				stmt.setInt(5, 1);
+				stmt.setNull(6, Types.DATE);
 			} else {
-				stmt.setInt(2, 0);
-				stmt.setDate(3, new java.sql.Date(dataInicial));
-				stmt.setInt(4, 0);
-				stmt.setDate(5, new java.sql.Date(dataFinal));
+				stmt.setInt(3, 0);
+				stmt.setDate(4, new java.sql.Date(dataInicial));
+				stmt.setInt(5, 0);
+				stmt.setDate(6, new java.sql.Date(dataFinal));
 			}
-			stmt.setInt(6, limit);
-			stmt.setLong(7, offset);
+			stmt.setInt(7, limit);
+			stmt.setLong(8, offset);
 			rSet = stmt.executeQuery();
 			while (rSet.next()) {
 				Checklist checklist = createChecklist(rSet, resumido);

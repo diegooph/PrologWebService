@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public final class GsonUtils {
 
@@ -43,6 +44,8 @@ public final class GsonUtils {
 				.serializeSpecialFloatingPointValues()
 				.registerTypeAdapter(Duration.class, new DurationDeserializer())
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
 				.registerTypeAdapter(Color.class, new ColorSerializer())
 				.setExclusionStrategies(new AnnotationExclusionStrategy())
 				.enableComplexMapKeySerialization();

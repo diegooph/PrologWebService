@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -20,6 +21,46 @@ public final class TimeZoneManager extends DatabaseConnection {
         throw new IllegalStateException(TimeZoneManager.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    @NotNull
+    public static ZoneId getZoneIdForCodUnidade(@NotNull final Long codUnidade,
+                                                @NotNull final Connection connection) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement("SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = ?;");
+            statement.setLong(1, codUnidade);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return ZoneId.of(resultSet.getString("TIMEZONE"));
+            } else {
+                throw new SQLException("Erro ao buscar o timezone para a unidade: " + codUnidade);
+            }
+        } finally {
+            closeConnection(null, statement, resultSet);
+        }
+    }
+
+    @NotNull
+    public static ZoneId getZoneIdForCpf(@NotNull final Long cpf,
+                                         @NotNull final Connection connection) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement("SELECT TIMEZONE FROM UNIDADE U " +
+                    "JOIN COLABORADOR C ON U.CODIGO = C.COD_UNIDADE WHERE C.CPF = ?;");
+            statement.setLong(1, cpf);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return ZoneId.of(resultSet.getString("TIMEZONE"));
+            } else {
+                throw new SQLException("Erro ao buscar o timezone para o cpf: " + cpf);
+            }
+        } finally {
+            closeConnection(null, statement, resultSet);
+        }
+    }
+
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCpf(@NotNull final Long cpf) throws SQLException {
         Connection connection = null;
         try {
@@ -30,6 +71,7 @@ public final class TimeZoneManager extends DatabaseConnection {
         }
     }
 
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCpf(@NotNull final Long cpf,
                                                             @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;
@@ -49,6 +91,7 @@ public final class TimeZoneManager extends DatabaseConnection {
         }
     }
 
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForToken(@NotNull final String token) throws SQLException {
         Connection connection = null;
         try {
@@ -59,6 +102,7 @@ public final class TimeZoneManager extends DatabaseConnection {
         }
     }
 
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForToken(@NotNull final String token,
                                                               @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;
@@ -67,7 +111,7 @@ public final class TimeZoneManager extends DatabaseConnection {
             statement = connection.prepareStatement("SELECT TIMEZONE FROM UNIDADE U " +
                     "  JOIN COLABORADOR C ON U.CODIGO = C.COD_UNIDADE " +
                     "  JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR WHERE TA.TOKEN = ?;");
-            statement.setString(1, token);
+            statement.setString(1, TokenCleaner.getOnlyToken(token));
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return LocalDateTime.now(ZoneId.of(resultSet.getString("TIMEZONE")));
@@ -79,6 +123,7 @@ public final class TimeZoneManager extends DatabaseConnection {
         }
     }
 
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCodUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection connection = null;
         try {
@@ -89,6 +134,7 @@ public final class TimeZoneManager extends DatabaseConnection {
         }
     }
 
+    @NotNull
     public static LocalDateTime getZonedLocalDateTimeForCodUnidade(@NotNull final Long codUnidade,
                                                                    @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;

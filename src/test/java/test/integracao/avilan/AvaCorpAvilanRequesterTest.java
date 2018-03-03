@@ -3,6 +3,7 @@ package test.integracao.avilan;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
@@ -22,8 +23,8 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -247,7 +248,7 @@ public class AvaCorpAvilanRequesterTest {
 
                 final ArrayOfQuestionarioVeiculos questionarios = requester.getSelecaoModeloChecklistPlacaVeiculo(
                         colaborador.getCpfAsString(),
-                        AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento()));
+                        AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(colaborador.getDataNascimento().getTime(), ZoneId.systemDefault())));
                 assertNotNull(questionarios);
                 assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
                 assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());
@@ -494,7 +495,7 @@ public class AvaCorpAvilanRequesterTest {
         incluirMedida2.setVeiculo(VEICULO_COM_PNEUS);
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(642666);
-        incluirMedida2.setDataMedida(AvaCorpAvilanUtils.createDatePattern(new Date(System.currentTimeMillis())));
+        incluirMedida2.setDataMedida("yyyy-MM-dd");
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo()
 

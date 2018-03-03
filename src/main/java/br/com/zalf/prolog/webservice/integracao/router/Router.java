@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -54,9 +55,7 @@ public abstract class Router implements OperacoesIntegradas {
         checkNotNull(userToken, "userToken não pode ser null!");
         this.integracaoDao = checkNotNull(integracaoDao, "integracaoDao não pode ser null!");
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser null!");
-        // Remove o "Bearer " de antes do token
-        // TODO: tirar essa remoção daqui e do AuthorizationFilter tbm, botar em uma Utils.
-        this.userToken = userToken.substring("Bearer".length()).trim();
+        this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 

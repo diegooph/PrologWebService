@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -49,7 +50,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              AfericaoDao afericaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
-        this.userToken = userToken;
+        this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;

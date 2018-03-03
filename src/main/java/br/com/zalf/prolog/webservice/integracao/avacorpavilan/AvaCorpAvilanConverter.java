@@ -360,8 +360,8 @@ public final class AvaCorpAvilanConverter {
                 for (ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
-                    itemOrdemServico.setDataApontamento(
-                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
+//                    itemOrdemServico.setDataApontamento(
+//                            AvaCorpAvilanUtils.createDateTimePattern(itemCritico.getData()));
 
                     // Seta o nome do item com problema.
                     // Alternativa.
