@@ -561,7 +561,7 @@ public final class AvaCorpAvilanConverter {
             // setada.
             afericao.setDataHora(AvaCorpAvilanUtils.createDateTimePattern(afericaoFiltro.getDataRealizacao()));
         } else {
-            afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()));
+            afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()).atStartOfDay());
         }
 
         final Colaborador colaborador = new Colaborador();
@@ -616,7 +616,7 @@ public final class AvaCorpAvilanConverter {
             if (c.getTipo() == tipoChecklist) {
                 if (checklist == null) {
                     checklist = c;
-                } else if (c.getData().after(checklist.getData())){
+                } else if (c.getData().isAfter(checklist.getData())){
                     checklist = c;
                 }
             }
