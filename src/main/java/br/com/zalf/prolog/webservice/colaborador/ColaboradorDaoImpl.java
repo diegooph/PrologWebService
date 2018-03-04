@@ -22,7 +22,6 @@ import java.util.List;
  * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
  */
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
-    private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
     @Override
     public void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
