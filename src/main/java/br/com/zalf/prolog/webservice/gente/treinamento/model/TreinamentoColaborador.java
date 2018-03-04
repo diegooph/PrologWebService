@@ -4,7 +4,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Classe usada para armazenar a data de visualização de um treinamento por determinado colaborador.
@@ -13,15 +13,10 @@ import java.util.Date;
 public class TreinamentoColaborador {
     private Long codTreinamento;
     private Colaborador colaborador;
-    private Date dataVisualizacao;
+    private LocalDateTime dataVisualizacao;
 
     public TreinamentoColaborador() {
-    }
 
-    public TreinamentoColaborador(Long codTreinamento, Colaborador colaborador, Date dataVisualizacao) {
-        this.codTreinamento = codTreinamento;
-        this.colaborador = colaborador;
-        this.dataVisualizacao = dataVisualizacao;
     }
 
     public Long getCodTreinamento() {
@@ -40,11 +35,11 @@ public class TreinamentoColaborador {
         this.colaborador = colaborador;
     }
 
-    public Date getDataVisualizacao() {
+    public LocalDateTime getDataVisualizacao() {
         return dataVisualizacao;
     }
 
-    public void setDataVisualizacao(Date dataVisualizacao) {
+    public void setDataVisualizacao(LocalDateTime dataVisualizacao) {
         this.dataVisualizacao = dataVisualizacao;
     }
 

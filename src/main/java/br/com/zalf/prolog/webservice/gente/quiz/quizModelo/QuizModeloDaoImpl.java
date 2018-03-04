@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
+import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
@@ -7,9 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
-import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -49,7 +48,10 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
                 modelo.setFuncoesLiberadas(getFuncoesLiberadas(modelo.getCodigo(), codUnidade, conn));
                 modelo.setPerguntas(getPerguntasQuiz(modelo.getCodigo(), codUnidade, conn));
-                modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(rSet.getLong("COD_TREINAMENTO"), codUnidade));
+                final long codTreinamento = rSet.getLong("COD_TREINAMENTO");
+                if (codTreinamento != 0) {
+                    modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(codTreinamento, codUnidade, false));
+                }
                 modelos.add(modelo);
             }
         } finally {
@@ -80,7 +82,10 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 modelo = QuizModeloConverter.createModeloQuiz(rSet);
                 modelo.setFuncoesLiberadas(getFuncoesLiberadas(modelo.getCodigo(), codUnidade, conn));
                 modelo.setPerguntas(getPerguntasQuiz(modelo.getCodigo(), codUnidade, conn));
-                modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(rSet.getLong("COD_TREINAMENTO"), codUnidade));
+                final long codTreinamento = rSet.getLong("COD_TREINAMENTO");
+                if (codTreinamento != 0) {
+                    modelo.setMaterialApoio(treinamentoDao.getTreinamentoByCod(codTreinamento, codUnidade, false));
+                }
             }
         } finally {
             closeConnection(conn, stmt, rSet);
