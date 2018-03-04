@@ -30,7 +30,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     + "(SELECT COD_SETOR FROM COLABORADOR WHERE CPF = ?),?,?,?)");
             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCpf(relato.getColaboradorRelato().getCpf(), conn);
             stmt.setObject(1, relato.getDataLocal().atZone(unidadeZoneId).toOffsetDateTime());
-            stmt.setObject(2, LocalDateTime.now(Clock.systemUTC()).atOffset(ZoneOffset.UTC));
+            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(3, relato.getLatitude());
             stmt.setString(4, relato.getLongitude());
             stmt.setString(5, relato.getUrlFoto1());
