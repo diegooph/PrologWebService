@@ -22,6 +22,17 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    public static ZoneId getZoneIdForCodUnidade(@NotNull final Long codUnidade) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            return getZoneIdForCodUnidade(codUnidade, connection);
+        } finally {
+            closeConnection(connection, null, null);
+        }
+    }
+
+    @NotNull
     public static ZoneId getZoneIdForCodUnidade(@NotNull final Long codUnidade,
                                                 @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;
@@ -82,6 +93,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForCpf(@NotNull final Long cpf) throws SQLException {
         Connection connection = null;
         try {
@@ -93,6 +105,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForCpf(@NotNull final Long cpf,
                                                             @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;
@@ -113,6 +126,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForToken(@NotNull final String token) throws SQLException {
         Connection connection = null;
         try {
@@ -124,6 +138,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForToken(@NotNull final String token,
                                                               @NotNull final Connection connection) throws
             SQLException {
@@ -146,6 +161,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForCodUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection connection = null;
         try {
@@ -157,6 +173,7 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    @Deprecated
     public static LocalDateTime getZonedLocalDateTimeForCodUnidade(@NotNull final Long codUnidade,
                                                                    @NotNull final Connection connection) throws
             SQLException {

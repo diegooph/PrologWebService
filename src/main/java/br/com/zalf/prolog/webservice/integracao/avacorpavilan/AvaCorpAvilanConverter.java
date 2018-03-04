@@ -425,7 +425,7 @@ public final class AvaCorpAvilanConverter {
         colaborador.setNome(checklistFiltro.getColaborador().getNome());
         checklist.setColaborador(colaborador);
 
-        checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
+        checklist.setData(createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
@@ -559,7 +559,7 @@ public final class AvaCorpAvilanConverter {
             // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da
             // String for menor ou igual ao pattern de data, então essa é uma aferição antiga que tem apenas a data
             // setada.
-            afericao.setDataHora(AvaCorpAvilanUtils.createDateTimePattern(afericaoFiltro.getDataRealizacao()));
+            afericao.setDataHora(createDateTimePattern(afericaoFiltro.getDataRealizacao()));
         } else {
             afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()).atStartOfDay());
         }
@@ -597,7 +597,7 @@ public final class AvaCorpAvilanConverter {
             checklist.setTipo(avaliacao.getTipo().equals(AvacorpAvilanTipoChecklist.SAIDA)
                     ? Checklist.TIPO_SAIDA
                     : Checklist.TIPO_RETORNO);
-            checklist.setData(AvaCorpAvilanUtils.createDateTimePattern(avaliacao.getData()));
+            checklist.setData(createDateTimePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();
             colaborador.setNome(avaliacao.getUsuario());
             checklist.setColaborador(colaborador);

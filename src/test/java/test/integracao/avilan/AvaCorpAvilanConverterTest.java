@@ -10,7 +10,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
@@ -25,6 +27,7 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -117,7 +120,7 @@ public class AvaCorpAvilanConverterTest {
         colaborador.setCpf(Long.parseLong(CPF));
         colaborador.setDataNascimento(parseDate(DATA_NASCIMENTO));
         afericao.setColaborador(colaborador);
-        afericao.setDataHora(LocalDateTime.now());
+        afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
         afericao.setKmMomentoAfericao(kmVeiculo);
         afericao.setTempoRealizacaoAfericaoInMillis(tempoRealizacaoMillis);
 
