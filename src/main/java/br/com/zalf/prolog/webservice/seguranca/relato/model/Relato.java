@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.model;
 
 
-import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.Pdv;
 import com.sun.istack.internal.Nullable;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Relato de incidente, dados do apontador, local e fotos do ocorrido.
@@ -46,7 +46,7 @@ public class Relato {
 	/**
 	 * Data em que esse relato foi fechado ou marcado como inválido
 	 */
-	private Date dataFechamento;
+	private LocalDateTime dataFechamento;
 	/**
 	 * Pessoa responsável por fechar ou marcar como inválido esse relato
 	 */
@@ -55,7 +55,7 @@ public class Relato {
 	/**
 	 * Data em que esse relato foi fechado ou marcado como inválido
 	 */
-	private Date dataClassificacao;
+	private LocalDateTime dataClassificacao;
 	/**
 	 * Pessoa responsável por fechar ou marcar como inválido esse relato
 	 */
@@ -74,8 +74,8 @@ public class Relato {
 	private String descricao;
 
 	private Long codigo;
-	private Date dataLocal;
-	private Date dataDatabase;
+	private LocalDateTime dataLocal;
+	private LocalDateTime dataDatabase;
 	private String latitude;
 	private String longitude;
 	private String urlFoto1;
@@ -137,19 +137,19 @@ public class Relato {
 		this.feedbackFechamento = feedbackFechamento;
 	}
 
-	public Date getDataFechamento() {
+	public LocalDateTime getDataFechamento() {
 		return dataFechamento;
 	}
 
-	public void setDataFechamento(Date dataFechamento) {
+	public void setDataFechamento(LocalDateTime dataFechamento) {
 		this.dataFechamento = dataFechamento;
 	}
 
-	public Date getDataClassificacao() {
+	public LocalDateTime getDataClassificacao() {
 		return dataClassificacao;
 	}
 
-	public void setDataClassificacao(Date dataClassificacao) {
+	public void setDataClassificacao(LocalDateTime dataClassificacao) {
 		this.dataClassificacao = dataClassificacao;
 	}
 
@@ -161,19 +161,19 @@ public class Relato {
 		this.codigo = codigo;
 	}
 
-	public Date getDataLocal() {
+	public LocalDateTime getDataLocal() {
 		return dataLocal;
 	}
 
-	public void setDataLocal(Date dataLocal) {
+	public void setDataLocal(LocalDateTime dataLocal) {
 		this.dataLocal = dataLocal;
 	}
 
-	public Date getDataDatabase() {
+	public LocalDateTime getDataDatabase() {
 		return dataDatabase;
 	}
 
-	public void setDataDatabase(Date dataDatabase) {
+	public void setDataDatabase(LocalDateTime dataDatabase) {
 		this.dataDatabase = dataDatabase;
 	}
 
