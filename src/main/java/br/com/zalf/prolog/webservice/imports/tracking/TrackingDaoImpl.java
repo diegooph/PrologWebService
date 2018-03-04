@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.imports.tracking;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -13,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
@@ -214,7 +214,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
             stmt.setString(42, tracking.aderenciaJanelaEntrega);
             stmt.setString(43, tracking.pdvLacrado);
             stmt.setLong(44, codUnidade);
-            stmt.setTimestamp(45, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(45, Now.timestampUtc());
             stmt.setInt(46, tracking.mapa);
             stmt.setDate(47, DateUtils.toSqlDate(tracking.data));
             stmt.setString(48, tracking.placa);

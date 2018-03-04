@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import java.sql.Timestamp;
+
 /**
  * Created on 04/03/2018
  *
@@ -13,5 +15,9 @@ public final class Now {
 
     public static long utcMillis() {
         return System.currentTimeMillis();
+    }
+
+    public static Timestamp timestampUtc() {
+        return new Timestamp(utcMillis());
     }
 }
