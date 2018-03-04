@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
@@ -122,13 +121,6 @@ public class ColaboradorResource {
 												@FormParam("dataNascimento") long dataNascimento) {
 		
 		Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-		if (new AutenticacaoService().verifyIfUserExists(cpf, dataNascimento, true)) {
-			AutenticacaoService autenticacaoService = new AutenticacaoService();
-			Autenticacao autenticacao = autenticacaoService.insertOrUpdate(cpf);
-			Log.d(TAG, autenticacao.getToken());
-			return autenticacao;
-		} else {
-			return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
-		}
+		return new AutenticacaoResource().verifyLogin(cpf, dataNascimento);
 	}
 }
