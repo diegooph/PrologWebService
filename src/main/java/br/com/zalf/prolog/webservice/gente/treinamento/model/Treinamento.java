@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -24,31 +25,19 @@ public class Treinamento {
 	 */
 	private List<String> urlsImagensArquivo;
 	private Date dataLiberacao;
-	private Date dataHoraCadastro;
 	private Date dataFechamento;
+	private LocalDateTime dataHoraCadastro;
 	private List<Cargo> cargosLiberados;
 
 	public Treinamento() {
 		
 	}
 
-	public Treinamento(Long codigo, Long codUnidade, String titulo, String descricao, String urlArquivo,
-			Date dataLiberacao, List<Cargo> cargosLiberados) {
-		super();
-		this.codigo = codigo;
-		this.codUnidade = codUnidade;
-		this.titulo = titulo;
-		this.descricao = descricao;
-		this.urlArquivo = urlArquivo;
-		this.dataLiberacao = dataLiberacao;
-		this.cargosLiberados = cargosLiberados;
-	}
-
-	public Date getDataHoraCadastro() {
+	public LocalDateTime getDataHoraCadastro() {
 		return dataHoraCadastro;
 	}
 
-	public void setDataHoraCadastro(Date dataHoraCadastro) {
+	public void setDataHoraCadastro(LocalDateTime dataHoraCadastro) {
 		this.dataHoraCadastro = dataHoraCadastro;
 	}
 
