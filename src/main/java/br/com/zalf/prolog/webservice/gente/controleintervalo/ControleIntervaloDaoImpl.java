@@ -520,14 +520,14 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 stmt.setObject(4, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
                 stmt.setString(5, intervalo.getFonteDataHoraInicio().key());
             } else {
-                stmt.setNull(4, Types.TIMESTAMP);
+                stmt.setNull(4, Types.TIMESTAMP_WITH_TIMEZONE);
                 stmt.setNull(5, Types.VARCHAR);
             }
             if (intervalo.getDataHoraFim() != null) {
                 stmt.setObject(6, intervalo.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
                 stmt.setString(7, intervalo.getFonteDataHoraInicio().key());
             } else {
-                stmt.setNull(6, Types.TIMESTAMP);
+                stmt.setNull(6, Types.TIMESTAMP_WITH_TIMEZONE);
                 stmt.setNull(7, Types.VARCHAR);
             }
             final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
