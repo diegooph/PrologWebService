@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDele
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyIfUserExists(long cpf, long dataNascimento, boolean apenasUsuariosAtivos) throws SQLException {
+	public boolean verifyIfUserExists(Long cpf, LocalDate dataNascimento, boolean apenasUsuariosAtivos) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -61,7 +62,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM COLABORADOR C WHERE C.CPF = ? " +
 					"AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?);");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setObject(2, dataNascimento);
 			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
@@ -98,7 +99,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
+	public boolean userHasPermission(Long cpf, LocalDate dataNascimento, @NotNull int[] permissions,
 									 boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos) throws SQLException {
 
 		Connection conn = null;
@@ -111,7 +112,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			conn = getConnection();
 			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setObject(2, dataNascimento);
 			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
 			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());

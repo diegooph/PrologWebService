@@ -15,7 +15,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
-import java.util.Date;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @DebugLog
@@ -157,7 +158,7 @@ public class TreinamentoResource {
     @Secured
     @Deprecated
     public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(TreinamentoColaborador treinamentoColaborador) {
-        treinamentoColaborador.setDataVisualizacao(new Date(System.currentTimeMillis()));
+        treinamentoColaborador.setDataVisualizacao(LocalDateTime.now(Clock.systemUTC()));
         if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
                 treinamentoColaborador.getColaborador().getCpf())) {
             return Response.ok("Treinamento marcado com sucesso");
@@ -168,11 +169,11 @@ public class TreinamentoResource {
 
     @DELETE
     @Path("/{codTreinamento}")
-//    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
+    @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     public Response deleteTreinamento(@PathParam("codTreinamento") Long codTreinamento) {
-        if(service.deleteTreinamento(codTreinamento)){
+        if (service.deleteTreinamento(codTreinamento)) {
             return Response.ok("Treinamento deletado com sucesso");
-        }else {
+        } else {
             return Response.error("Erro ao deletar o treinamento");
         }
     }
