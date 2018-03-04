@@ -2,8 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
@@ -20,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.*;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,7 +64,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "observacao) " +
                     "VALUES (?,?,?,?) RETURNING codigo;");
             stmt.setLong(1, processoMovimentacao.getUnidade().getCodigo());
-            stmt.setObject(2, TimeZoneManager.getZonedLocalDateTimeForCodUnidade(processoMovimentacao.getUnidade().getCodigo(), conn));
+            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setLong(3, processoMovimentacao.getColaborador().getCpf());
             stmt.setString(4, processoMovimentacao.getObservacao());
             rSet = stmt.executeQuery();
@@ -96,9 +94,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, motivo.getMotivo());
             stmt.setBoolean(3, true);
-            stmt.setObject(4, LocalDateTime.now(Clock.systemUTC()));
-            // Ao inserir um motivo setamos a data de alteração como a data atual
-            stmt.setObject(5, LocalDateTime.now(Clock.systemUTC()));
+            final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            stmt.setObject(4, now);
+            // Ao inserir um motivo setamos a data de alteração como a data atual.
+            stmt.setObject(5, now);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
