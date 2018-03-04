@@ -18,8 +18,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,11 +74,11 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         Connection conn = null;
         try {
             conn = getConnection();
-            Reader in = new FileReader(path);
-            List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+            final Reader in = new FileReader(path);
+            final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             createIndices(tabela);
             for (int i = LINHA_INICIAL; i < tabela.size(); i++) {
-                ProntuarioCondutor prontuario = createProntuarioFromCsv(tabela.get(i));
+                final ProntuarioCondutor prontuario = createProntuarioFromCsv(tabela.get(i));
                 if (prontuario != null) {
                     if (updateProntuario(prontuario, conn)) {
                         // Prontuário ja existia e foi atualizado
@@ -97,8 +98,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
 
     private void createIndices(List<CSVRecord> tabela) {
         indices = new ArrayList<>();
-        CSVRecord linhaValidacao1 = tabela.get(LINHA_VALIDACAO_1);
-        CSVRecord linhaValidacao2 = tabela.get(LINHA_VALIDACAO_2);
+        final CSVRecord linhaValidacao1 = tabela.get(LINHA_VALIDACAO_1);
+        final CSVRecord linhaValidacao2 = tabela.get(LINHA_VALIDACAO_2);
         for (int i = 0; i < linhaValidacao1.size(); i++) {
             if (!linhaValidacao1.get(i).isEmpty() || !linhaValidacao2.get(i).isEmpty()) {
                 indices.add(i);
@@ -131,7 +132,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<ProntuarioCondutor> prontuarios = new ArrayList<>();
+        final List<ProntuarioCondutor> prontuarios = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT c.cpf, initcap(c.nome) as nome, pc.PONTUACAO_PONDERADA, " +
@@ -165,18 +166,18 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
     }
 
     private ProntuarioCondutor createProntuarioFromCsv(CSVRecord linha) throws ParseException {
-        ProntuarioCondutor prontuario = new ProntuarioCondutor();
+        final ProntuarioCondutor prontuario = new ProntuarioCondutor();
         if (linha.get(0).isEmpty()) {
             return null;
         } else {
-            Colaborador colaborador = new Colaborador();
+            final Colaborador colaborador = new Colaborador();
             colaborador.setCpf(Long.parseLong(linha.get(indices.get(COLUMN_CPF)).replace(".", "").replace("-", "")));
 
-            Situacao situacao = new Situacao();
+            final Situacao situacao = new Situacao();
             situacao.setStatus(linha.get(indices.get(COLUMN_STATUS)));
             situacao.setMotivo(linha.get(indices.get(COLUMN_MOTIVO)));
 
-            Cnh cnh = new Cnh();
+            final Cnh cnh = new Cnh();
             if (linha.get(indices.get(COLUMN_PONTUACAO_CNH)).isEmpty()) {
                 cnh.setPontuacao(0);
             } else {
@@ -184,7 +185,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             }
             cnh.setVencimento(ImportUtils.toTimestamp(linha.get(indices.get(COLUMN_VENCIMENTO_CNH))));
 
-            Documento documento = new Documento();
+            final Documento documento = new Documento();
             documento.setRs(linha.get(indices.get(COLUMN_DOCUMENTOS_RS)));
             documento.setEc(linha.get(indices.get(COLUMN_DOCUMENTOS_EC)));
             documento.setIt(linha.get(indices.get(COLUMN_DOCUMENTOS_IT)));
@@ -192,38 +193,38 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             prontuario.setPontuacaoTotalPonderada(Double.parseDouble(linha.get(indices.get
                     (COLUMN_PONTUACAO_PONDERADA)).replace(",", ".")));
 
-            AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
+            final AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
             acidentesTrabalho.setFai(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_FAI))));
             acidentesTrabalho.setLti(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_LTI))));
             acidentesTrabalho.setMdi(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_MDI))));
             acidentesTrabalho.setMti(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRABALHO_MTI))));
 
-            AcidentesTransito acidentesTransito = new AcidentesTransito();
+            final AcidentesTransito acidentesTransito = new AcidentesTransito();
             acidentesTransito.setCapotamentos(Integer.parseInt(linha.get(indices.get
                     (COLUMN_ACIDENTES_TRANSITO_CAPOTAMENTOS))));
             acidentesTransito.setColisoes(Integer.parseInt(linha.get(indices.get(COLUMN_ACIDENTES_TRANSITO_COLISOES))));
             acidentesTransito.setTombamentos(Integer.parseInt(linha.get(indices.get
                     (COLUMN_ACIDENTES_TRANSITO_TOMBAMENTOS))));
 
-            Multas multas = new Multas();
+            final Multas multas = new Multas();
             multas.setGrave(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_GRAVE))));
             multas.setGravissima(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_GRAVISSIMA))));
             multas.setLeve(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_LEVE))));
             multas.setMedia(Integer.parseInt(linha.get(indices.get(COLUMN_MULTAS_MEDIA))));
 
-            Sac sac = new Sac();
+            final Sac sac = new Sac();
             sac.setImpericia(Integer.parseInt(linha.get(indices.get(COLUMN_SAC_IMPERICIA))));
             sac.setImprudencia(Integer.parseInt(linha.get(indices.get(COLUMN_SAC_IMPRUDENCIA))));
 
-            Indisciplina indisciplina = new Indisciplina();
+            final Indisciplina indisciplina = new Indisciplina();
             indisciplina.setAdvertencias(Integer.parseInt(linha.get(indices.get(COLUMN_INDISCIPLINA_ADVERTENCIAS))));
             indisciplina.setSuspensoes(Integer.parseInt(linha.get(indices.get(COLUMN_INDISCIPLINA_SUSPENSOES))));
 
-            Sav sav = new Sav();
+            final Sav sav = new Sav();
             sav.setImpericia(Integer.parseInt(linha.get(indices.get(COLUMN_SAV_IMPERICIA))));
             sav.setImprudencia(Integer.parseInt(linha.get(indices.get(COLUMN_SAV_IMPRUDENCIA))));
 
-            Telemetria telemetria = new Telemetria();
+            final Telemetria telemetria = new Telemetria();
             telemetria.setExcessoVelocidade1(Integer.parseInt(linha.get(indices.get
                     (COLUMN_TELEMETRIA_EXCESSO_VELOCIDADE_1))));
             telemetria.setExcessoVelocidade2(Integer.parseInt(linha.get(indices.get
@@ -285,7 +286,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setTimestamp(32, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(32, Instant.now().atOffset(ZoneOffset.UTC));
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador()
@@ -365,7 +366,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setTimestamp(32, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(32, Instant.now().atOffset(ZoneOffset.UTC));
             stmt.setLong(33, prontuario.getColaborador().getCpf());
             int count = stmt.executeUpdate();
             if (count == 0) {
@@ -381,58 +382,58 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        ProntuarioCondutor prontuario = new ProntuarioCondutor();
+        final ProntuarioCondutor prontuario = new ProntuarioCondutor();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PRONTUARIO_CONDUTOR_CONSOLIDADO WHERE CPF_COLABORADOR = ?");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Situacao situacao = new Situacao();
+                final Situacao situacao = new Situacao();
                 situacao.setStatus(rSet.getString("STATUS"));
                 situacao.setMotivo(rSet.getString("MOTIVO"));
 
-                Cnh cnh = new Cnh();
+                final Cnh cnh = new Cnh();
                 cnh.setPontuacao(rSet.getInt("PONTUACAO"));
                 cnh.setVencimento(rSet.getDate("VENCIMENTO_CNH"));
 
-                Documento documento = new Documento();
+                final Documento documento = new Documento();
                 documento.setRs(rSet.getString("DOCUMENTOS_RS"));
                 documento.setEc(rSet.getString("DOCUMENTOS_EC"));
                 documento.setIt(rSet.getString("DOCUMENTOS_IT"));
 
                 prontuario.setPontuacaoTotalPonderada(rSet.getDouble("PONTUACAO_PONDERADA"));
 
-                AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
+                final AcidentesTrabalho acidentesTrabalho = new AcidentesTrabalho();
                 acidentesTrabalho.setFai(rSet.getInt("ACIDENTES_FAI"));
                 acidentesTrabalho.setLti(rSet.getInt("ACIDENTES_LTI"));
                 acidentesTrabalho.setMdi(rSet.getInt("ACIDENTES_MDI"));
                 acidentesTrabalho.setMti(rSet.getInt("ACIDENTES_MTI"));
 
-                AcidentesTransito acidentesTransito = new AcidentesTransito();
+                final AcidentesTransito acidentesTransito = new AcidentesTransito();
                 acidentesTransito.setCapotamentos(rSet.getInt("CAPOTAMENTOS"));
                 acidentesTransito.setColisoes(rSet.getInt("COLISOES"));
                 acidentesTransito.setTombamentos(rSet.getInt("TOMBAMENTOS"));
 
-                Multas multas = new Multas();
+                final Multas multas = new Multas();
                 multas.setGrave(rSet.getInt("MULTAS_GRAVE"));
                 multas.setGravissima(rSet.getInt("MULTAS_GRAVISSIMA"));
                 multas.setLeve(rSet.getInt("MULTAS_LEVE"));
                 multas.setMedia(rSet.getInt("MULTAS_MEDIA"));
 
-                Sac sac = new Sac();
+                final Sac sac = new Sac();
                 sac.setImpericia(rSet.getInt("SAC_IMPERICIA"));
                 sac.setImprudencia(rSet.getInt("SAC_IMPRUDENCIA"));
 
-                Indisciplina indisciplina = new Indisciplina();
+                final Indisciplina indisciplina = new Indisciplina();
                 indisciplina.setAdvertencias(rSet.getInt("ADVERTENCIAS"));
                 indisciplina.setSuspensoes(rSet.getInt("SUSPENSOES"));
 
-                Sav sav = new Sav();
+                final Sav sav = new Sav();
                 sav.setImpericia(rSet.getInt("SAV_IMPERICIA"));
                 sav.setImprudencia(rSet.getInt("SAV_IMPRUDENCIA"));
 
-                Telemetria telemetria = new Telemetria();
+                final Telemetria telemetria = new Telemetria();
                 telemetria.setExcessoVelocidade1(rSet.getInt("EXCESSO_VELOCIDADE_1"));
                 telemetria.setExcessoVelocidade2(rSet.getInt("EXCESSO_VELOCIDADE_2"));
                 telemetria.setExcessoVelocidade3(rSet.getInt("EXCESSO_VELOCIDADE_3"));
