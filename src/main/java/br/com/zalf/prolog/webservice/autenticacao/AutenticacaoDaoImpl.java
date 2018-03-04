@@ -17,13 +17,12 @@ import java.util.stream.Collectors;
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
 	public AutenticacaoDaoImpl() {
-
 	}
 
 	@Override
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {
-		SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
-		String token = tokenGenerador.nextSessionId();
+		final SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
+		final String token = tokenGenerador.nextSessionId();
 		return insert(cpf, token);
 	}
 
@@ -42,7 +41,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt.setString(2, token);
 			stmt.setString(3, token);
 			stmt.setString(4, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
-			int count =  stmt.executeUpdate();
+			final int count =  stmt.executeUpdate();
 			if (count > 0) {
 				return true;
 			}

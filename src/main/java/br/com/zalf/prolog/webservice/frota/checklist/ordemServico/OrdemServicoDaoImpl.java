@@ -65,7 +65,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
 
         try{
             conn = getConnection();
-            /**
+            /*
              * query que busca apenas os dados da OS, e não os itens
              */
             String query = "SELECT cos.codigo as cod_os, cos.cod_checklist, cos.data_hora_fechamento, cos.status, C.placa_veiculo, V.km, c.data_hora " +
@@ -74,7 +74,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                     "JOIN VEICULO V ON V.placa = C.placa_veiculo\n" +
                     "JOIN veiculo_tipo VT ON VT.cod_unidade = C.cod_unidade AND v.cod_tipo = vt.codigo\n" +
                     "where c.placa_veiculo LIKE ? and cos.status LIKE ? and c.cod_unidade = ? AND " +
-                    "VT.codigo::TEXT LIKE ? \n "  +
+                    "VT.codigo::TEXT LIKE ? \n " +
                     "ORDER BY cos.codigo desc\n" +
                     "%s";
             if (limit != null && offset != null){
@@ -90,7 +90,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             rSet = stmt.executeQuery();
             while(rSet.next()){
                 OrdemServico os = createOrdemServico(rSet);
-                /**
+                /*
                  * seta os itens da ordem de serviço.
                  */
                 os.setItens(getItensOs(os.getVeiculo().getPlaca(), String.valueOf(os.getCodigo()), "%", conn, codUnidade));

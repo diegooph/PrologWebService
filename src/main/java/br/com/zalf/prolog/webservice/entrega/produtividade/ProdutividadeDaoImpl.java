@@ -26,7 +26,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		try{
 			conn = getConnection();
 			stmt = conn.prepareStatement("select * from func_get_produtividade_colaborador(?,?,?)");
-            /**
+            /*
              * O motivo de subtrairmos 1 do mês é devido aos colaboradores estarem acostumados a buscar pelo fim do período
              * da produtividade, exemplo: Selecionado no app Novembro 2017, o normal é aparecer de 21/10 a 20/11.
              */

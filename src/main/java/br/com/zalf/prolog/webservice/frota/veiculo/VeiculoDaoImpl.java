@@ -695,5 +695,4 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         }
         return veiculos;
     }
-
 }
