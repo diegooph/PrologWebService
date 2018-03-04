@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -9,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias).
+            // Verifica se a folga esta sendo solicitada com 48h de antecedência (2 dias).
             if (ChronoUnit.DAYS.between(LocalDate.now(), DateUtils.toLocalDate(s.getDataFolga())) < 2) {
                 return Response.error("Erro ao inserir a solicitação de folga");
             }
@@ -29,9 +31,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
                     + "CPF_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
                     + "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(s.getColaborador().getCpf(), conn);
             stmt.setLong(1, s.getColaborador().getCpf());
-            stmt.setDate(2, new Date(System.currentTimeMillis()));
-            stmt.setDate(3, DateUtils.toSqlDate(s.getDataFolga()));
+            stmt.setObject(2, LocalDate.now(zoneId));
+            stmt.setObject(3, s.getDataFolga().toInstant().atZone(zoneId).toLocalDate());
             stmt.setString(4, s.getMotivoFolga());
             stmt.setString(5, SolicitacaoFolga.STATUS_PENDENTE);
             stmt.setString(6, s.getPeriodo());
@@ -72,19 +75,20 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                 stmt.setNull(2, java.sql.Types.BIGINT);
             }
             if (solicitacaoFolga.getDataSolicitacao() != null) {
-                stmt.setDate(3, DateUtils.toSqlDate(solicitacaoFolga.getDataSolicitacao()));
+                stmt.setObject(3, DateUtils.toLocalDate(solicitacaoFolga.getDataSolicitacao()));
             } else {
                 stmt.setDate(3, null);
             }
             if (solicitacaoFolga.getDataFolga() != null) {
-                stmt.setDate(4, DateUtils.toSqlDate(solicitacaoFolga.getDataFolga()));
+                stmt.setObject(4, DateUtils.toLocalDate(solicitacaoFolga.getDataFolga()));
             } else {
                 stmt.setDate(4, null);
             }
             if (solicitacaoFolga.getDataFeedback() != null) {
-                stmt.setDate(5, DateUtils.toSqlDate(solicitacaoFolga.getDataFeedback()));
+                stmt.setObject(5, DateUtils.toLocalDate(solicitacaoFolga.getDataFeedback()));
             } else {
-                stmt.setDate(5, new Date(System.currentTimeMillis()));
+                final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(solicitacaoFolga.getColaborador().getCpf(), conn);
+                stmt.setObject(5, LocalDate.now(zoneId));
             }
             stmt.setString(6, solicitacaoFolga.getMotivoFolga());
             stmt.setString(7, solicitacaoFolga.getJustificativaFeedback());
@@ -126,8 +130,20 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         final List<SolicitacaoFolga> list = new ArrayList<>();
         try {
             conn = getConnection();
-            String query = "SELECT SF.*, C.NOME AS NOME_SOLICITANTE, C_FEEDBACK.NOME AS NOME_FEEDBACK FROM "
-                    + "SOLICITACAO_FOLGA SF "
+            final String query = "SELECT " +
+                    "SF.CODIGO AS CODIGO, " +
+                    "SF.CPF_COLABORADOR AS CPF_COLABORADOR, " +
+                    "SF.CPF_FEEDBACK AS CPF_FEEDBACK, " +
+                    "SF.DATA_FEEDBACK AS DATA_FEEDBACK, " +
+                    "SF.DATA_FOLGA AS DATA_FOLGA, " +
+                    "SF.DATA_SOLICITACAO AS DATA_SOLICITACAO, " +
+                    "SF.MOTIVO_FOLGA AS MOTIVO_FOLGA, " +
+                    "SF.JUSTIFICATIVA_FEEDBACK AS JUSTIFICATIVA_FEEDBACK, " +
+                    "SF.PERIODO AS PERIODO, " +
+                    "SF.STATUS AS STATUS, " +
+                    "C.NOME AS NOME_SOLICITANTE, " +
+                    "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
+                    "FROM SOLICITACAO_FOLGA SF "
                     + "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
                     + "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CPF = SF.CPF_FEEDBACK "
                     + "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
@@ -139,8 +155,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     + "ORDER BY SF.DATA_SOLICITACAO";
 
             stmt = conn.prepareStatement(query);
-            stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
-            stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+            stmt.setObject(1, dataInicial);
+            stmt.setObject(2, dataFinal);
             stmt.setLong(3, codUnidade);
             stmt.setString(4, codEquipe);
             stmt.setString(5, status);
@@ -163,10 +179,18 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT SF.CODIGO, SF.CPF_COLABORADOR, " +
-                    "SF.CPF_FEEDBACK, SF.DATA_FEEDBACK, SF.DATA_FOLGA, " +
-                    "SF.DATA_SOLICITACAO, SF.MOTIVO_FOLGA, " +
-                    "SF.JUSTIFICATIVA_FEEDBACK, SF.PERIODO, SF.STATUS, C.NOME AS NOME_SOLICITANTE, " +
+            stmt = conn.prepareStatement("SELECT " +
+                    "SF.CODIGO, " +
+                    "SF.CPF_COLABORADOR, " +
+                    "SF.CPF_FEEDBACK, " +
+                    "SF.DATA_FEEDBACK, " +
+                    "SF.DATA_FOLGA, " +
+                    "SF.DATA_SOLICITACAO, " +
+                    "SF.MOTIVO_FOLGA, " +
+                    "SF.JUSTIFICATIVA_FEEDBACK, " +
+                    "SF.PERIODO, " +
+                    "SF.STATUS, " +
+                    "C.NOME AS NOME_SOLICITANTE, " +
                     "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
                     "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
                     "SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
