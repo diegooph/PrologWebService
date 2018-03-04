@@ -83,7 +83,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "um.meta_tempo_largada_mapas,um.meta_dev_nf\n" +
             "ORDER BY 1 %s;";
     
-    public static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
+    private  static final String FRAGMENTO_BUSCA_EXTRATO_DIA = IndicadorDaoImpl.COLUNAS_EXTRATO +
             " FROM MAPA M \n" +
             "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador c1 on c1.matricula_ambev = m.matricmotorista and c1.cod_unidade = m.cod_unidade\n" +
