@@ -2,12 +2,10 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.seguranca.relato.model.Local;
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Created by jean on 25/07/16.
@@ -56,7 +54,7 @@ public class ItemOrdemServico {
     /**
      * data e hora em que o item foi marcado como consertado
      */
-    private Date dataHoraConserto;
+    private LocalDateTime dataHoraConserto;
     /**
      * Km do veículo no momento em que o item foi fechado
      */
@@ -177,11 +175,11 @@ public class ItemOrdemServico {
         this.tempoLimiteResolucao = tempoLimiteResolucao;
     }
 
-    public Date getDataHoraConserto() {
+    public LocalDateTime getDataHoraConserto() {
         return dataHoraConserto;
     }
 
-    public void setDataHoraConserto(Date dataHoraConserto) {
+    public void setDataHoraConserto(LocalDateTime dataHoraConserto) {
         this.dataHoraConserto = dataHoraConserto;
     }
 
