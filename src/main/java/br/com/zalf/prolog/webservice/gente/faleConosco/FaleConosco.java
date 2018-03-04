@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.faleConosco;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Informações do formulário fale conosco.
@@ -19,7 +19,7 @@ public class FaleConosco {
 	public static final String STATUS_RESPONDIDO = "RESPONDIDO";
 	private Long codigo;
 	private Colaborador colaborador;
-	private Date data;
+	private LocalDateTime data;
 	private Categoria categoria;
 	private String descricao;
     private String status;
@@ -28,7 +28,7 @@ public class FaleConosco {
 	 * Colaborador responsável por fornecer um feedback
      */
 	private Colaborador colaboradorFeedback;
-	private Date dataFeedback;
+	private LocalDateTime dataFeedback;
 	private String feedback;
 
 	public enum Categoria {
@@ -61,17 +61,6 @@ public class FaleConosco {
 
 	}
 
-	public FaleConosco(Long codigo, Colaborador colaborador, Date data, Categoria categoria, String descricao, Colaborador colaboradorFeedback, Date dataFeedback, String feedback) {
-		this.codigo = codigo;
-		this.colaborador = colaborador;
-		this.data = data;
-		this.categoria = categoria;
-		this.descricao = descricao;
-		this.colaboradorFeedback = colaboradorFeedback;
-		this.dataFeedback = dataFeedback;
-		this.feedback = feedback;
-	}
-
 	public Colaborador getColaborador() {
 		return colaborador;
 	}
@@ -88,11 +77,11 @@ public class FaleConosco {
 		this.codigo = codigo;
 	}
 
-	public Date getData() {
+	public LocalDateTime getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
 
@@ -136,11 +125,11 @@ public class FaleConosco {
 		this.colaboradorFeedback = colaboradorFeedback;
 	}
 
-	public Date getDataFeedback() {
+	public LocalDateTime getDataFeedback() {
 		return dataFeedback;
 	}
 
-	public void setDataFeedback(Date dataFeedback) {
+	public void setDataFeedback(LocalDateTime dataFeedback) {
 		this.dataFeedback = dataFeedback;
 	}
 
