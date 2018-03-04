@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.seguranca.gsd.pdv.Pdv;
+import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import com.sun.istack.internal.Nullable;
 
 import java.time.LocalDateTime;

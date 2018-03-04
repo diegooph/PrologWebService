@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.seguranca.gsd.pdv;
+package br.com.zalf.prolog.webservice.seguranca.pdv;
 
 import java.sql.SQLException;
 import java.util.List;
