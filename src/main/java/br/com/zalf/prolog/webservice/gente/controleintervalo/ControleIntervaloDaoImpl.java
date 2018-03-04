@@ -439,7 +439,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             colaborador.setCpf(cpf);
             intervalo.setTipo(tipoIntervalo);
             intervalo.setColaborador(colaborador);
-            intervalo.setDataHoraInicio(LocalDateTime.now(Clock.systemUTC()));
+            intervalo.setDataHoraInicio(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
             intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
             return insertIntervalo(intervalo, codUnidade, conn);
         } finally {
@@ -463,7 +463,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 }
             } else {
                 intervalo.setDataHoraInicio(null);
-                intervalo.setDataHoraFim(LocalDateTime.now(Clock.systemUTC()));
+                intervalo.setDataHoraFim(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
                 Long codigo = insertIntervalo(intervalo, codUnidade, conn);
                 if (codigo != null) {
                     return true;
