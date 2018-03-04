@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.quiz.quiz.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Quiz {
@@ -10,7 +10,7 @@ public class Quiz {
 	private Long codModeloQuiz;
 	private String nome;
 	private Colaborador colaborador;
-	private Date dataHoraRealizacao;
+	private LocalDateTime dataHoraRealizacao;
 	private List<PerguntaQuiz> perguntas;
 	private int qtdRespostasCorretas;
 	private int qtdRespostasErradas;
@@ -53,11 +53,11 @@ public class Quiz {
 		this.colaborador = colaborador;
 	}
 
-	public Date getDataHoraRealizacao() {
+	public LocalDateTime getDataHoraRealizacao() {
 		return dataHoraRealizacao;
 	}
 
-	public void setDataHoraRealizacao(Date dataHoraRealizacao) {
+	public void setDataHoraRealizacao(LocalDateTime dataHoraRealizacao) {
 		this.dataHoraRealizacao = dataHoraRealizacao;
 	}
 
