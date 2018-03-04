@@ -73,8 +73,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @Override
     public void calibragemToInspecao(String codPneu, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
+        PreparedStatement stmt =
+                conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND "
                 + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -135,7 +135,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
         final List<Servico> servicos = getServicosAbertosByPlaca(placa, null);
         holder.setServicos(servicos);
-        //  Se não existirem serviços para placa buscada, nada mais será setado no Holder.
+        //  Se não existirem serviços para a placa buscada, nada mais será setado no Holder.
         if (!servicos.isEmpty()) {
             Log.d(TAG, "Existem serviços para a placa: " + placa);
 
@@ -201,7 +201,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
                     // Como impedimos o processo de movimentação de fechar automaticamente todos os serviços,
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
-                    // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos e necessária e não deve
+                    // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos é necessária e não deve
                     // ser alterada!
                     fechaMovimentacao(movimentacao, codUnidade, pneuDao, conn);
                     final String codPneu = servico.getPneuComProblema().getCodigo();
@@ -401,7 +401,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
                 // Fazemos direto um get() no Optional pois se não existir diagrama é melhor da crash aqui do que no
                 // aplicativo, por exemplo.
-                //noinspection ConstantConditions
+                //noinspection OptionalGetWithoutIsPresent
                 veiculo.setDiagrama(diagrama.get());
                 return veiculo;
             } else {
@@ -475,7 +475,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt = ServicoQueryBinder.getAlternativasInspecao(conn);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                AlternativaChecklist alternativa = new AlternativaChecklist();
+                final AlternativaChecklist alternativa = new AlternativaChecklist();
                 alternativa.codigo = rSet.getLong("CODIGO");
                 alternativa.alternativa = rSet.getString("ALTERNATIVA");
                 listAlternativas.add(alternativa);

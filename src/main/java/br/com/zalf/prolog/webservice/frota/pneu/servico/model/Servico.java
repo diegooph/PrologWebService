@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovim
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import com.google.gson.Gson;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by jean on 04/04/16.
@@ -20,8 +20,8 @@ public abstract class Servico {
      * O código da {@link Afericao} que originou esse serviço.
      */
     private Long codAfericao;
-    private Date dataHoraAbertura;
-    private Date dataHoraFechamento;
+    private LocalDateTime dataHoraAbertura;
+    private LocalDateTime dataHoraFechamento;
     private Pneu pneuComProblema;
     private Colaborador colaboradorResponsavelFechamento;
     private int qtdApontamentos;
@@ -82,19 +82,19 @@ public abstract class Servico {
         this.tipoServico = tipoServico;
     }
 
-    public Date getDataHoraAbertura() {
+    public LocalDateTime getDataHoraAbertura() {
         return dataHoraAbertura;
     }
 
-    public void setDataHoraAbertura(Date dataHoraAbertura) {
+    public void setDataHoraAbertura(LocalDateTime dataHoraAbertura) {
         this.dataHoraAbertura = dataHoraAbertura;
     }
 
-    public Date getDataHoraFechamento() {
+    public LocalDateTime getDataHoraFechamento() {
         return dataHoraFechamento;
     }
 
-    public void setDataHoraFechamento(Date dataHoraFechamento) {
+    public void setDataHoraFechamento(LocalDateTime dataHoraFechamento) {
         this.dataHoraFechamento = dataHoraFechamento;
     }
 

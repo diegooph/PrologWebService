@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 /**
  * Essa classe mantém todas as queries utilizadas na {@link ServicoDaoImpl} e faz o bind na query dos atributos
@@ -23,7 +27,7 @@ final class ServicoQueryBinder {
     private static final String BASE_QUERY_BUSCA_SERVICOS = "SELECT "
             + "AM.CODIGO AS CODIGO_SERVICO, "
             + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
-            + "AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, "
+            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_FECHAMENTO, "
             + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
             + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
             + "AM.COD_UNIDADE AS COD_UNIDADE, "
@@ -31,7 +35,7 @@ final class ServicoQueryBinder {
             + "AM.QT_APONTAMENTOS, "
             + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
             + "AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, "
-            + "A.DATA_HORA AS DATA_HORA_ABERTURA, "
+            + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -146,7 +150,7 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "   AM.CODIGO AS CODIGO_SERVICO, " +
                 "   AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, " +
-                "   AM.DATA_HORA_RESOLUCAO AS DATA_HORA_FECHAMENTO, " +
+                "   AM.DATA_HORA_RESOLUCAO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                 "   AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, " +
                 "   AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, " +
                 "   AM.COD_UNIDADE AS COD_UNIDADE, " +
@@ -162,7 +166,7 @@ final class ServicoQueryBinder {
                 "   M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
                 "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
-                "   A.DATA_HORA AS DATA_HORA_ABERTURA, " +
+                "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
                 "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
@@ -185,8 +189,11 @@ final class ServicoQueryBinder {
                 "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
                 "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
                 "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
-        stmt.setLong(1, codUnidade);
-        stmt.setLong(2, codServico);
+        final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection);
+        stmt.setString(1, zoneId.getId());
+        stmt.setString(2, zoneId.getId());
+        stmt.setLong(3, codUnidade);
+        stmt.setLong(4, codServico);
         return stmt;
     }
 
@@ -289,7 +296,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -311,7 +318,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
@@ -335,7 +342,7 @@ final class ServicoQueryBinder {
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
@@ -369,7 +376,7 @@ final class ServicoQueryBinder {
                 + "WHERE COD_UNIDADE = ? "
                 + "AND COD_PNEU = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+        stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
         stmt.setLong(2, codProcessoMovimentacao);
         stmt.setLong(3, codUnidade);
         stmt.setString(4, codPneu);
