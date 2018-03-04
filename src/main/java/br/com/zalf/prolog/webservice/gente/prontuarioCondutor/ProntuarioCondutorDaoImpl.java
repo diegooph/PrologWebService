@@ -18,8 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.Clock;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -286,7 +286,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setObject(32, Instant.now().atOffset(ZoneOffset.UTC));
+            stmt.setObject(32, OffsetDateTime.now(Clock.systemUTC()));
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o prontuário do colaborador: " + prontuario.getColaborador()
@@ -366,7 +366,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             stmt.setInt(29, prontuario.getTelemetria().getExcessoVelocidade3());
             stmt.setInt(30, prontuario.getTelemetria().getForcaG());
             stmt.setInt(31, prontuario.getTelemetria().getFrenagemBrusca());
-            stmt.setObject(32, Instant.now().atOffset(ZoneOffset.UTC));
+            stmt.setObject(32, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setLong(33, prontuario.getColaborador().getCpf());
             int count = stmt.executeUpdate();
             if (count == 0) {
