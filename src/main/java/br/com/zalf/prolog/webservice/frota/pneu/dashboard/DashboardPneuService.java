@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
@@ -69,12 +70,13 @@ public final class DashboardPneuService {
     public VerticalComboChartComponent getQtdAfericoesUltimaSemana(@NotNull final Integer codComponente,
                                                                    @NotNull final List<Long> codUnidades) {
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        final long now = Now.utcMillis();
+        calendar.setTimeInMillis(now);
         while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
             calendar.add(Calendar.DAY_OF_YEAR, -1);
         }
         final java.sql.Date dataInicial = new java.sql.Date(calendar.getTimeInMillis());
-        final java.sql.Date dataFinal = new java.sql.Date(System.currentTimeMillis());
+        final java.sql.Date dataFinal = new java.sql.Date(now);
         try {
             return DashboardPneuComponentsCreator.createQtdAfericoesUltimaSemana(
                     dashDao.getComponenteByCodigo(codComponente),

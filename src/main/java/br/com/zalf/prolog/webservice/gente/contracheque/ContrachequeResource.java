@@ -41,7 +41,7 @@ public class ContrachequeResource {
                            @FormDataParam("file") FormDataContentDisposition fileDetail) {
 
         try {
-            String fileName =  String.valueOf(System.currentTimeMillis()) + "_" + mes + "_" + ano + "_" + codUnidade
+            String fileName =  String.valueOf(Now.utcMillis()) + "_" + mes + "_" + ano + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
             Log.d(TAG, "fileName: " + fileName);
             // Pasta temporária da JVM

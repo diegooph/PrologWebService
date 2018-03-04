@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
@@ -417,7 +418,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "order by e.placa_veiculo) AS PLACAS_MANUTENCAO ON PLACA_MANUTENCAO = V.PLACA\n" +
                     "WHERE V.COD_UNIDADE = ?\n" +
                     "ORDER BY V.PLACA, PLACAS_MANUTENCAO.ITEM_MANUTENCAO;");
-            stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
+            stmt.setDate(1, new java.sql.Date(Now.utcMillis()));
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codUnidade);
             stmt.setLong(4, codUnidade);

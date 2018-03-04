@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
@@ -145,7 +146,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 				null,
 				null,
 				calendar.getTimeInMillis(),
-				System.currentTimeMillis(),
+				Now.utcMillis(),
 				limit,
 				offset,
 				true,
