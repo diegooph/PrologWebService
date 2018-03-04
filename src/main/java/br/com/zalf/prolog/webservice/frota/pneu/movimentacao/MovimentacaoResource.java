@@ -23,9 +23,12 @@ import java.util.List;
 public class MovimentacaoResource {
     private final MovimentacaoService service = new MovimentacaoService();
 
-    @Secured
     @POST
-    public AbstractResponse insert(ProcessoMovimentacao movimentacao){
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    public AbstractResponse insert(ProcessoMovimentacao movimentacao) {
         return service.insert(movimentacao);
     }
 
@@ -35,17 +38,6 @@ public class MovimentacaoResource {
     @Path("/motivos-descarte/{codEmpresa}")
     public AbstractResponse insert(@Required Motivo motivo, @PathParam("codEmpresa") @Required Long codEmpresa) {
         return service.insertMotivo(motivo, codEmpresa);
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @Path("/motivos-descarte/{codEmpresa}")
-    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required Long codEmpresa,
-                                         @QueryParam("apenasAtivos") @Required Boolean apenasAtivos) {
-        return service.getMotivos(codEmpresa, apenasAtivos);
     }
 
     @PUT
@@ -60,5 +52,16 @@ public class MovimentacaoResource {
         } else {
             return Response.error("Erro ao atualizar motivo");
         }
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/motivos-descarte/{codEmpresa}")
+    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required Long codEmpresa,
+                                         @QueryParam("apenasAtivos") @Required Boolean apenasAtivos) {
+        return service.getMotivos(codEmpresa, apenasAtivos);
     }
 }
