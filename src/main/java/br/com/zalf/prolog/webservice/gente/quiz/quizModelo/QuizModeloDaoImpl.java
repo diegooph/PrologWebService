@@ -2,17 +2,19 @@ package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 
 import java.sql.*;
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,8 +22,7 @@ import java.util.List;
  */
 public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloDao {
 
-    private static final String TAG = QuizModeloDaoImpl.class.getSimpleName();
-
+    @Override
     public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -30,22 +31,33 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         final TreinamentoDao treinamentoDao = Injection.provideTreinamentoDao();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
-                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
-                    "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "  LEFT JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
-                    "    QMT.cod_unidade = QM.cod_unidade\n" +
-                    "WHERE QM.data_hora_abertura <= ?\n" +
-                    "  AND data_hora_fechamento >= ?\n" +
-                    "  AND QMF.cod_unidade = ?\n" +
-                    "  AND QMF.cod_funcao_colaborador = ?;");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setTimestamp(2, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
-            stmt.setLong(3, codUnidade);
-            stmt.setLong(4, codFuncaoColaborador);
+            stmt = conn.prepareStatement("SELECT " +
+                    "QM.CODIGO AS CODIGO, " +
+                    "QM.DATA_HORA_ABERTURA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
+                    "QM.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
+                    "QM.DESCRICAO AS DESCRICAO, " +
+                    "QM.NOME AS NOME, " +
+                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO " +
+                    "QMT.COD_TREINAMENTO FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
+                    "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
+                    "  AND QM.CODIGO = QMF.COD_MODELO " +
+                    "  LEFT JOIN QUIZ_MODELO_TREINAMENTO QMT ON QMT.COD_MODELO_QUIZ = QM.CODIGO AND " +
+                    "    QMT.COD_UNIDADE = QM.COD_UNIDADE " +
+                    "WHERE QM.DATA_HORA_ABERTURA <= ? " +
+                    "  AND QM.DATA_HORA_FECHAMENTO >= ? " +
+                    "  AND QMF.COD_UNIDADE = ? " +
+                    "  AND QMF.COD_FUNCAO_COLABORADOR = ?;");
+            final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(1, zoneId.getId());
+            stmt.setString(2, zoneId.getId());
+            stmt.setObject(3, now);
+            stmt.setObject(4, now);
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, codFuncaoColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
+                final ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);
                 modelo.setFuncoesLiberadas(getFuncoesLiberadas(modelo.getCodigo(), codUnidade, conn));
                 modelo.setPerguntas(getPerguntasQuiz(modelo.getCodigo(), codUnidade, conn));
                 final long codTreinamento = rSet.getLong("COD_TREINAMENTO");
@@ -60,6 +72,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelos;
     }
 
+    @Override
     public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -68,15 +81,25 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         final TreinamentoDao treinamentoDao = Injection.provideTreinamentoDao();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT QM.*, QMT.cod_treinamento FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
-                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
-                    "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "  LEFT JOIN quiz_modelo_treinamento QMT ON QMT.cod_modelo_quiz = QM.CODIGO AND\n" +
-                    "    QMT.cod_unidade = QM.cod_unidade\n" +
-                    " WHERE \n" +
-                    "  QMF.cod_unidade = ? and qm.codigo = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModeloQuiz);
+            stmt = conn.prepareStatement("SELECT " +
+                    "QM.CODIGO AS CODIGO, " +
+                    "QM.DATA_HORA_ABERTURA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
+                    "QM.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
+                    "QM.DESCRICAO AS DESCRICAO, " +
+                    "QM.NOME AS NOME, " +
+                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO " +
+                    "QMT.COD_TREINAMENTO FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
+                    "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
+                    "  AND QM.CODIGO = QMF.COD_MODELO " +
+                    "  LEFT JOIN QUIZ_MODELO_TREINAMENTO QMT ON QMT.COD_MODELO_QUIZ = QM.CODIGO AND " +
+                    "    QMT.COD_UNIDADE = QM.COD_UNIDADE " +
+                    " WHERE " +
+                    "  QMF.COD_UNIDADE = ? AND QM.CODIGO = ?;");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(1, zoneId.getId());
+            stmt.setString(2, zoneId.getId());
+            stmt.setLong(3, codUnidade);
+            stmt.setLong(4, codModeloQuiz);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 modelo = QuizModeloConverter.createModeloQuiz(rSet);
@@ -93,102 +116,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelo;
     }
 
-    private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<Cargo> funcoes = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT F.* FROM quiz_modelo QM JOIN quiz_modelo_funcao QMF\n" +
-                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
-                    "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "    JOIN UNIDADE_FUNCAO UF ON UF.cod_funcao = QMF.cod_funcao_colaborador AND UF.cod_unidade = QMF.cod_unidade\n" +
-                    "    JOIN FUNCAO F ON F.codigo = UF.cod_funcao\n" +
-                    "WHERE QMF.cod_unidade = ?\n" +
-                    "  AND QMF.cod_modelo = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModeloQuiz);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                Cargo cargo = new Cargo();
-                cargo.setCodigo(rSet.getLong("CODIGO"));
-                cargo.setNome(rSet.getString("NOME"));
-                funcoes.add(cargo);
-            }
-        } finally {
-            closeConnection(null, stmt, rSet);
-        }
-        return funcoes;
-    }
-
-    private List<PerguntaQuiz> getPerguntasQuiz(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<PerguntaQuiz> perguntas = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM quiz_perguntas QP\n" +
-                    "WHERE QP.cod_modelo = ? AND QP. cod_unidade = ?\n" +
-                    "ORDER BY QP.ordem");
-            stmt.setLong(1, codModeloQuiz);
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                PerguntaQuiz pergunta = QuizModeloConverter.createPerguntaQuiz(rSet);
-                pergunta.setAlternativas(getAlternativasPerguntaQuiz(codModeloQuiz, codUnidade, pergunta.getCodigo(),
-                        pergunta.getTipo(), conn));
-                perguntas.add(pergunta);
-            }
-        } finally {
-            closeConnection(null, stmt, rSet);
-        }
-        return perguntas;
-    }
-
-    private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta,
-                                                          String tipoPergunta, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<Alternativa> alternativas = new ArrayList<>();
-        try {
-            stmt = conn.prepareStatement("SELECT *, NULL AS SELECIONADA, NULL AS ORDEM_SELECIONADA FROM quiz_alternativa_pergunta\n" +
-                    "WHERE cod_modelo = ? AND cod_unidade = ? AND cod_pergunta = ?\n" +
-                    "ORDER BY ordem");
-            stmt.setLong(1, codModeloQuiz);
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codPergunta);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                alternativas.add(QuizModeloConverter.createAlternativa(rSet, tipoPergunta));
-            }
-        } finally {
-            closeConnection(null, stmt, rSet);
-        }
-        return alternativas;
-    }
-
     @Override
-    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<ModeloQuiz> quizzes = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT codigo, nome FROM quiz_modelo WHERE cod_unidade = ? order by 1");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                ModeloQuiz modeloQuiz = new ModeloQuiz();
-                modeloQuiz.setCodigo(rSet.getLong("CODIGO"));
-                modeloQuiz.setNome(rSet.getString("NOME"));
-                quizzes.add(modeloQuiz);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return quizzes;
-    }
-
-
     public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -196,13 +124,14 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO quiz_modelo(cod_unidade, nome, descricao, data_hora_abertura, " +
-                    "data_hora_fechamento, porcentagem_aprovacao) VALUES (?,?,?,?,?,?) RETURNING codigo;");
+            stmt = conn.prepareStatement("INSERT INTO QUIZ_MODELO(COD_UNIDADE, NOME, DESCRICAO, DATA_HORA_ABERTURA, " +
+                    "DATA_HORA_FECHAMENTO, PORCENTAGEM_APROVACAO) VALUES (?,?,?,?,?,?) RETURNING CODIGO;");
+            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
             stmt.setString(2, modeloQuiz.getNome());
             stmt.setString(3, modeloQuiz.getDescricao());
-            stmt.setTimestamp(4, DateUtils.toTimestamp(modeloQuiz.getDataHoraAbertura()));
-            stmt.setTimestamp(5, DateUtils.toTimestamp(modeloQuiz.getDataHoraFechamento()));
+            stmt.setObject(4, modeloQuiz.getDataHoraAbertura().atZone(unidadeZoneId).toOffsetDateTime());
+            stmt.setObject(5, modeloQuiz.getDataHoraFechamento().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setDouble(6, modeloQuiz.getPorcentagemAprovacao());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -233,13 +162,147 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return null;
     }
 
+    @Override
+    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<ModeloQuiz> quizzes = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO, NOME FROM QUIZ_MODELO WHERE COD_UNIDADE = ? ORDER BY 1;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final ModeloQuiz modeloQuiz = new ModeloQuiz();
+                modeloQuiz.setCodigo(rSet.getLong("CODIGO"));
+                modeloQuiz.setNome(rSet.getString("NOME"));
+                quizzes.add(modeloQuiz);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return quizzes;
+    }
+
+    @Override
+    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE QUIZ_MODELO SET NOME = ?, DESCRICAO = ?, DATA_HORA_ABERTURA = " +
+                    "?, DATA_HORA_FECHAMENTO = ?, PORCENTAGEM_APROVACAO = ? WHERE CODIGO = ? AND COD_UNIDADE = ?");
+            final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(1, modeloQuiz.getNome());
+            stmt.setString(2, modeloQuiz.getDescricao());
+            stmt.setObject(3, modeloQuiz.getDataHoraAbertura().atZone(unidadeZoneId).toOffsetDateTime());
+            stmt.setObject(4, modeloQuiz.getDataHoraFechamento().atZone(unidadeZoneId).toOffsetDateTime());
+            stmt.setDouble(5, modeloQuiz.getPorcentagemAprovacao());
+            stmt.setLong(6, modeloQuiz.getCodigo());
+            stmt.setLong(7, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    @Override
+    public boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM QUIZ_MODELO_FUNCAO WHERE COD_UNIDADE = ? AND COD_MODELO = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModeloQuiz);
+            stmt.executeUpdate();
+            insertCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade, conn);
+            return true;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
+    private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Cargo> funcoes = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT F.* FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF;" +
+                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
+                    "  AND QM.codigo = QMF.cod_modelo\n" +
+                    "    JOIN UNIDADE_FUNCAO UF ON UF.cod_funcao = QMF.cod_funcao_colaborador AND UF.cod_unidade = QMF.cod_unidade\n" +
+                    "    JOIN FUNCAO F ON F.codigo = UF.cod_funcao\n" +
+                    "WHERE QMF.cod_unidade = ?\n" +
+                    "  AND QMF.cod_modelo = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModeloQuiz);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final Cargo cargo = new Cargo();
+                cargo.setCodigo(rSet.getLong("CODIGO"));
+                cargo.setNome(rSet.getString("NOME"));
+                funcoes.add(cargo);
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return funcoes;
+    }
+
+    private List<PerguntaQuiz> getPerguntasQuiz(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<PerguntaQuiz> perguntas = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM QUIZ_PERGUNTAS QP " +
+                    "WHERE QP.COD_MODELO = ? AND QP. COD_UNIDADE = ? " +
+                    "ORDER BY QP.ORDEM;");
+            stmt.setLong(1, codModeloQuiz);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final PerguntaQuiz pergunta = QuizModeloConverter.createPerguntaQuiz(rSet);
+                pergunta.setAlternativas(getAlternativasPerguntaQuiz(codModeloQuiz, codUnidade, pergunta.getCodigo(),
+                        pergunta.getTipo(), conn));
+                perguntas.add(pergunta);
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return perguntas;
+    }
+
+    private List<Alternativa> getAlternativasPerguntaQuiz(Long codModeloQuiz, Long codUnidade, Long codPergunta,
+                                                          String tipoPergunta, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<Alternativa> alternativas = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT *, NULL AS SELECIONADA, NULL AS ORDEM_SELECIONADA FROM QUIZ_ALTERNATIVA_PERGUNTA " +
+                    "WHERE COD_MODELO = ? AND COD_UNIDADE = ? AND COD_PERGUNTA = ? " +
+                    "ORDER BY ORDEM;");
+            stmt.setLong(1, codModeloQuiz);
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codPergunta);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                alternativas.add(QuizModeloConverter.createAlternativa(rSet, tipoPergunta));
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return alternativas;
+    }
+
     private void insertPerguntasModeloQuiz(List<PerguntaQuiz> perguntas, Long codModeloQuiz, Long codUnidade,
                                            Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO quiz_perguntas(cod_modelo, cod_unidade, pergunta, ordem, " +
-                    "tipo, url_imagem) VALUES (?,?,?,?,?,?) RETURNING codigo;");
+            stmt = conn.prepareStatement("INSERT INTO QUIZ_PERGUNTAS(COD_MODELO, COD_UNIDADE, PERGUNTA, ORDEM, " +
+                    "TIPO, URL_IMAGEM) VALUES (?,?,?,?,?,?) RETURNING CODIGO;");
             stmt.setLong(1, codModeloQuiz);
             stmt.setLong(2, codUnidade);
             for (PerguntaQuiz pergunta : perguntas) {
@@ -252,7 +315,6 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                     pergunta.setCodigo(rSet.getLong("CODIGO"));
                     insertAlternativasPerguntaModeloQuiz(pergunta.getAlternativas(), codModeloQuiz, pergunta.getCodigo(),
                             codUnidade, pergunta.getTipo(), conn);
-//                    insert treinamento do quiz
                 } else {
                     throw new SQLException("Erro ao inserir a pergunta");
                 }
@@ -267,8 +329,8 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO quiz_alternativa_pergunta(cod_modelo, cod_unidade, cod_pergunta, " +
-                    "alternativa, ordem, correta) VALUES (?,?,?,?,?,?) RETURNING codigo");
+            stmt = conn.prepareStatement("INSERT INTO QUIZ_ALTERNATIVA_PERGUNTA(COD_MODELO, COD_UNIDADE, COD_PERGUNTA, " +
+                    "ALTERNATIVA, ORDEM, CORRETA) VALUES (?,?,?,?,?,?) RETURNING CODIGO");
             stmt.setLong(1, codModeloQuiz);
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codPergunta);
@@ -299,7 +361,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                                         Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO quiz_modelo_funcao(cod_unidade, cod_modelo, cod_funcao_colaborador) VALUES (?,?,?);");
+            stmt = conn.prepareStatement("INSERT INTO QUIZ_MODELO_FUNCAO(COD_UNIDADE, COD_MODELO, COD_FUNCAO_COLABORADOR) VALUES (?,?,?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloQuiz);
             for (Cargo cargo : funcoesLiberadas) {
@@ -318,7 +380,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO quiz_modelo_treinamento(cod_modelo_quiz, cod_unidade, cod_treinamento) VALUES (?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO QUIZ_MODELO_TREINAMENTO(COD_MODELO_QUIZ, COD_UNIDADE, COD_TREINAMENTO) VALUES (?,?,?)");
             stmt.setLong(1, codModeloQuiz);
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codTreinamento);
@@ -327,42 +389,6 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
             }
         } finally {
             closeConnection(null, stmt, null);
-        }
-    }
-
-    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE quiz_modelo SET nome = ?, descricao = ?, data_hora_abertura = " +
-                    "?, data_hora_fechamento = ?, porcentagem_aprovacao = ? WHERE codigo = ? AND cod_unidade = ?");
-            stmt.setString(1, modeloQuiz.getNome());
-            stmt.setString(2, modeloQuiz.getDescricao());
-            stmt.setTimestamp(3, DateUtils.toTimestamp(modeloQuiz.getDataHoraAbertura()));
-            stmt.setTimestamp(4, DateUtils.toTimestamp(modeloQuiz.getDataHoraFechamento()));
-            stmt.setDouble(5, modeloQuiz.getPorcentagemAprovacao());
-            stmt.setLong(6, modeloQuiz.getCodigo());
-            stmt.setLong(7, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
-    public boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM quiz_modelo_funcao WHERE cod_unidade = ? AND cod_modelo = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModeloQuiz);
-            stmt.executeUpdate();
-            insertCargosModeloQuiz(funcoes, codModeloQuiz, codUnidade, conn);
-            return true;
-        } finally {
-            closeConnection(conn, stmt, null);
         }
     }
 }
