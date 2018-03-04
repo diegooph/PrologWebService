@@ -26,7 +26,7 @@ public class ChecklistTest extends TestCase {
 //	public void testSalvarDeletarCheckList() {
 //		Checklist c = new ChecklistSaida();
 //		c.setCpfColaborador(12345678987L);
-//		Date date = new Date(System.currentTimeMillis());
+//		Date date = new Date(Now.utcMillis());
 //		c.setData(date);
 //		c.setPlacaVeiculo("MKE2501");
 //		c.setTipo('s');
