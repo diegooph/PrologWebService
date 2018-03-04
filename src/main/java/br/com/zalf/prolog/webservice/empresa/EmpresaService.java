@@ -178,7 +178,7 @@ public class EmpresaService {
 
     public AbstractResponse insertFuncao(Cargo cargo, Long codUnidade) {
         try {
-            Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
+            final Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
             if (codFuncaoInserida != null) {
                 return ResponseWithCod.ok("Cargo inserido com sucesso", codFuncaoInserida);
             } else {
