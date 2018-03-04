@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -33,8 +33,8 @@ public class OrdemServico {
 
     private Long codigo;
     private Veiculo veiculo;
-    private Date dataAbertura;
-    private Date dataFechamento;
+    private LocalDateTime dataAbertura;
+    private LocalDateTime dataFechamento;
     private Long codChecklist;
     private Status status;
     private List<ItemOrdemServico> itens;
@@ -42,19 +42,19 @@ public class OrdemServico {
     public OrdemServico() {
     }
 
-    public Date getDataFechamento() {
+    public LocalDateTime getDataFechamento() {
         return dataFechamento;
     }
 
-    public void setDataFechamento(Date dataFechamento) {
+    public void setDataFechamento(LocalDateTime dataFechamento) {
         this.dataFechamento = dataFechamento;
     }
 
-    public Date getDataAbertura() {
+    public LocalDateTime getDataAbertura() {
         return dataAbertura;
     }
 
-    public void setDataAbertura(Date dataAbertura) {
+    public void setDataAbertura(LocalDateTime dataAbertura) {
         this.dataAbertura = dataAbertura;
     }
 
