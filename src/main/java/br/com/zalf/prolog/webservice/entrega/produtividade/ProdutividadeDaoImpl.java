@@ -35,7 +35,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 			stmt.setLong(3, cpf);
 			rSet = stmt.executeQuery();
 			while(rSet.next()){
-				ItemProdutividade item = new ItemProdutividade();
+				final ItemProdutividade item = new ItemProdutividade();
 				item.setData(rSet.getDate("DATA"));
 				item.setValor((double) Math.round(rSet.getDouble("VALOR")*100)/100);
 				item.setMapa(rSet.getInt("MAPA"));
@@ -48,7 +48,7 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 				itens.add(item);
 			}
 			if(salvaLog){
-				insertMesAnoConsultaProdutividade(ano, mes, conn, stmt, cpf);
+				insertMesAnoConsultaProdutividade(ano, mes, conn, cpf);
 			}
 		}finally {
 			closeConnection(conn,stmt,rSet);
@@ -56,21 +56,18 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 		return itens;
 	}
 
-	private void insertMesAnoConsultaProdutividade(int ano, int mes, Connection conn, PreparedStatement stmt, Long cpf) throws SQLException{
-		try{
-			stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
-					" (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
-			stmt.setLong(1, cpf);
-			stmt.setLong(2, cpf);
-			stmt.setObject(3, TimeZoneManager.getZonedLocalDateTimeForCpf(cpf, conn));
-			stmt.setString(4, mes + "/" + ano);
-			int count = stmt.executeUpdate();
-			if(count == 0){
-				throw new SQLException("Erro ao inserir o log de consulta");
-			}
-		}finally {
-		}
-	}
+	private void insertMesAnoConsultaProdutividade(int ano, int mes, Connection conn, Long cpf) throws SQLException{
+        final PreparedStatement stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
+                " (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
+        stmt.setLong(1, cpf);
+        stmt.setLong(2, cpf);
+        stmt.setObject(3, TimeZoneManager.getZonedLocalDateTimeForCpf(cpf, conn));
+        stmt.setString(4, mes + "/" + ano);
+        int count = stmt.executeUpdate();
+        if(count == 0){
+            throw new SQLException("Erro ao inserir o log de consulta");
+        }
+    }
 
 	public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
 																			long dataInicial, long dataFinal) throws SQLException{
