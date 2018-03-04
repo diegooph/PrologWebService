@@ -287,6 +287,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
             stmt.setString(3, treinamento.getUrlArquivo());
+            // Colunas são DATE no banco, não precisamos nos preocupar com time zone.
             stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
             stmt.setDate(5, DateUtils.toSqlDate(treinamento.getDataFechamento()));
             stmt.setLong(6, treinamento.getCodUnidade());
@@ -326,6 +327,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "data_fechamento = ? WHERE codigo = ?");
             stmt.setString(1, treinamento.getTitulo());
             stmt.setString(2, treinamento.getDescricao());
+            // Colunas são DATE no banco, não precisamos nos preocupar com time zone.
             stmt.setDate(3, DateUtils.toSqlDate(treinamento.getDataLiberacao()));
             stmt.setDate(4, DateUtils.toSqlDate(treinamento.getDataFechamento()));
             stmt.setLong(5, treinamento.getCodigo());
