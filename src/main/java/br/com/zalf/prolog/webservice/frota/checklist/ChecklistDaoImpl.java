@@ -16,7 +16,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -45,7 +44,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					"COD_UNIDADE");
             stmt.setString(1, checklist.getPlacaVeiculo());
             stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, Instant.now().atOffset(ZoneOffset.UTC));
+            stmt.setObject(3, checklist.getData().atOffset(ZoneOffset.UTC));
             stmt.setLong(4, checklist.getColaborador().getCpf());
             stmt.setString(5, checklist.getPlacaVeiculo());
             stmt.setString(6, String.valueOf(checklist.getTipo()));
