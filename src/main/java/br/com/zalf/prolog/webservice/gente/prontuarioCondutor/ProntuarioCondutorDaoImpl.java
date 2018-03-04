@@ -183,6 +183,8 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
             } else {
                 cnh.setPontuacao(Integer.parseInt(linha.get(indices.get(COLUMN_PONTUACAO_CNH))));
             }
+            // Podemos ignorar o uso de toTimestamp aqui. No banco, a columa é um DATE (que é o que importa para o
+            // vencimento de CNH) então não teremos problema com time zone nesse caso.
             cnh.setVencimento(ImportUtils.toTimestamp(linha.get(indices.get(COLUMN_VENCIMENTO_CNH))));
 
             final Documento documento = new Documento();
