@@ -3,7 +3,6 @@ package test.integracao.avilan;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
@@ -23,7 +22,6 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -248,7 +246,7 @@ public class AvaCorpAvilanRequesterTest {
 
                 final ArrayOfQuestionarioVeiculos questionarios = requester.getSelecaoModeloChecklistPlacaVeiculo(
                         colaborador.getCpfAsString(),
-                        AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(colaborador.getDataNascimento().getTime(), ZoneId.systemDefault())));
+                        AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento()));
                 assertNotNull(questionarios);
                 assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
                 assertNotNull(questionarios.getQuestionarioVeiculos().get(0).getQuestionario());

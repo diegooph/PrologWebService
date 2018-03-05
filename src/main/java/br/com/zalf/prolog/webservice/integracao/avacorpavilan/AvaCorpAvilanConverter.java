@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
@@ -23,11 +24,14 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAv
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.MoreCollectors;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +39,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.createDateTimePattern;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -75,9 +79,11 @@ public final class AvaCorpAvilanConverter {
 
     @VisibleForTesting
     public static CronogramaAfericao convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo,
-                                             @NotNull final Restricao restricao) {
+                                             @NotNull final Restricao restricao,
+                                             @NotNull final Long codUnidade) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
         checkNotNull(restricao, "restricao não pode ser null!");
+        checkNotNull(codUnidade, "codUnidade não pode ser null!");
 
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
@@ -89,6 +95,13 @@ public final class AvaCorpAvilanConverter {
                         .getVeiculo()
                         .stream()
                         .collect(Collectors.groupingBy(v -> v.getModelo()));
+
+        LocalDateTime dataHoraUnidade;
+        try {
+            dataHoraUnidade = LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         modelosVeiculos.forEach((modeloVeiculo, veiculos) -> {
             final ModeloPlacasAfericao modeloHolder = new ModeloPlacasAfericao();
@@ -105,8 +118,8 @@ public final class AvaCorpAvilanConverter {
                     placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
                     placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
                 } else {
-                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
-                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao()));
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
                 }
                 placas.add(placaAfericao);
             }
@@ -136,7 +149,7 @@ public final class AvaCorpAvilanConverter {
         incluirMedida2.setVeiculo(afericao.getVeiculo().getPlaca());
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(Math.toIntExact(afericao.getVeiculo().getKmAtual()));
-        incluirMedida2.setDataMedida(createDateTimePattern(afericao.getDataHora()));
+        incluirMedida2.setDataMedida(createDateTimePattern(Timestamp.valueOf(afericao.getDataHora())));
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo().
 
@@ -425,7 +438,7 @@ public final class AvaCorpAvilanConverter {
         colaborador.setNome(checklistFiltro.getColaborador().getNome());
         checklist.setColaborador(colaborador);
 
-        checklist.setData(createDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
+        checklist.setData(createLocalDateTimePattern(checklistFiltro.getDataHoraRealizacao()));
         checklist.setKmAtualVeiculo(checklistFiltro.getOdometro());
         checklist.setPlacaVeiculo(checklistFiltro.getPlaca());
         checklist.setTipo(checklistFiltro.getTipo().asTipoProLog());
@@ -559,9 +572,9 @@ public final class AvaCorpAvilanConverter {
             // Antes da integração, não era salvo no ERP da Avilan a hora da aferição, apenas a data. Se o tamanho da
             // String for menor ou igual ao pattern de data, então essa é uma aferição antiga que tem apenas a data
             // setada.
-            afericao.setDataHora(createDateTimePattern(afericaoFiltro.getDataRealizacao()));
+            afericao.setDataHora(createLocalDateTimePattern(afericaoFiltro.getDataRealizacao()));
         } else {
-            afericao.setDataHora(AvaCorpAvilanUtils.createDatePattern(afericaoFiltro.getDataRealizacao()).atStartOfDay());
+            afericao.setDataHora(createLocalDatePattern(afericaoFiltro.getDataRealizacao()).atStartOfDay());
         }
 
         final Colaborador colaborador = new Colaborador();
@@ -597,7 +610,7 @@ public final class AvaCorpAvilanConverter {
             checklist.setTipo(avaliacao.getTipo().equals(AvacorpAvilanTipoChecklist.SAIDA)
                     ? Checklist.TIPO_SAIDA
                     : Checklist.TIPO_RETORNO);
-            checklist.setData(createDateTimePattern(avaliacao.getData()));
+            checklist.setData(createLocalDateTimePattern(avaliacao.getData()));
             final Colaborador colaborador = new Colaborador();
             colaborador.setNome(avaliacao.getUsuario());
             checklist.setColaborador(colaborador);

@@ -123,19 +123,22 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getItensMaiorQuantidadeNok(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT cp.pergunta AS \"PERGUNTA\", cap.alternativa AS \"ALTERNATIVA\", prioridade AS \"PRIORIDADE\",\n" +
-                "sum( case when cr.resposta <> 'OK' then 1 else 0 end ) as \"TOTAL MARCAÇÕES NOK\",\n" +
-                "count(cp.pergunta) as \"TOTAL REALIZAÇÕES\",\n" +
-                "trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) || '%' as \"PROPORÇÃO\" \n" +
-                "FROM checklist c\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT " +
+                "cp.pergunta AS \"PERGUNTA\", " +
+                "cap.alternativa AS \"ALTERNATIVA\", " +
+                "prioridade AS \"PRIORIDADE\", " +
+                "sum(case when cr.resposta <> 'OK' then 1 else 0 end ) as \"TOTAL MARCAÇÕES NOK\", " +
+                "count(cp.pergunta) as \"TOTAL REALIZAÇÕES\", " +
+                "trunc((sum(case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) || '%' as \"PROPORÇÃO\" " +
+                "FROM checklist c " +
                 "JOIN checklist_respostas cr ON c.cod_unidade = cr.cod_unidade AND cr.cod_checklist_modelo = c.cod_checklist_modelo\n" +
-                "JOIN checklist_perguntas cp ON cp.cod_unidade = C.cod_unidade AND cp.codigo = CR.cod_pergunta AND cp.cod_checklist_modelo = cr.cod_checklist_modelo\n" +
-                "JOIN veiculo v ON v.placa::text = c.placa_veiculo::text\n" +
-                "JOIN checklist_alternativa_pergunta cap ON cap.cod_unidade = cp.cod_unidade AND cap.cod_checklist_modelo = cp.cod_checklist_modelo\n" +
-                "AND cap.cod_pergunta = cp.codigo AND cap.codigo = cr.cod_alternativa\n" +
-                "AND cr.cod_checklist = c.codigo AND cr.cod_pergunta = cp.codigo AND cr.cod_alternativa = cap.codigo\n" +
-                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ?\n" +
-                "GROUP BY 1, 2, 3\n" +
+                "JOIN checklist_perguntas cp ON cp.cod_unidade = C.cod_unidade AND cp.codigo = CR.cod_pergunta AND cp.cod_checklist_modelo = cr.cod_checklist_modelo " +
+                "JOIN veiculo v ON v.placa::text = c.placa_veiculo::text " +
+                "JOIN checklist_alternativa_pergunta cap ON cap.cod_unidade = cp.cod_unidade AND cap.cod_checklist_modelo = cp.cod_checklist_modelo " +
+                "AND cap.cod_pergunta = cp.codigo AND cap.codigo = cr.cod_alternativa " +
+                "AND cr.cod_checklist = c.codigo AND cr.cod_pergunta = cp.codigo AND cr.cod_alternativa = cap.codigo " +
+                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ? " +
+                "GROUP BY 1, 2, 3 " +
                 "ORDER BY trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) desc");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
@@ -146,27 +149,30 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getMediaTempoConsertoItem(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT pergunta, alternativa, prioridade, prazo_conserto_em_horas AS \"PRAZO CONSERTO EM HORAS\",     \n" +
-                "qt_apontados AS \"QT APONTADOS\", qt_resolvidos_dentro_prazo AS \"QT RESOLVIDOS DENTRO PRAZO\",\n" +
-                "trunc(md_tempo_conserto_segundos/3600) || ' / ' ||  \n" +
-                "trunc(md_tempo_conserto_segundos/60) as \"MD TEMPO CONSERTO HORAS/MINUTOS\",\n" +
-                "round((qt_resolvidos_dentro_prazo/qt_apontados::float)*100) || '%' as \n" +
-                " \"PORCENTAGEM\"\n" +
-                "FROM\n" +
-                "(SELECT pergunta,\n" +
-                "alternativa,\n" +
-                "prioridade,\n" +
-                "prazo as prazo_conserto_em_horas,\n" +
-                "count(pergunta) as qt_apontados,\n" +
-                "sum(case when (extract(epoch from (data_hora_conserto - \n" +
-                "data_hora))/3600) <= prazo then 1 else 0 end) as \n" +
-                "qt_resolvidos_dentro_prazo,\n" +
-                "trunc(extract( epoch from avg(data_hora_conserto - \n" +
-                "estratificacao_os.data_hora))) as md_tempo_conserto_segundos\n" +
-                "FROM estratificacao_os\n" +
-                "WHERE cod_unidade = ? AND data_hora BETWEEN ? AND ?\n" +
-                "GROUP BY 1, 2, 3, 4) as dados\n" +
-                "ORDER BY round((qt_resolvidos_dentro_prazo/qt_apontados::float)*100) \n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT " +
+                "pergunta, " +
+                "alternativa, " +
+                "prioridade, " +
+                "prazo_conserto_em_horas AS \"PRAZO CONSERTO EM HORAS\"," +
+                "qt_apontados AS \"QT APONTADOS\", " +
+                "qt_resolvidos_dentro_prazo AS \"QT RESOLVIDOS DENTRO PRAZO\", " +
+                "trunc(md_tempo_conserto_segundos/3600) || ' / ' || " +
+                "trunc(md_tempo_conserto_segundos/60) as \"MD TEMPO CONSERTO HORAS/MINUTOS\", " +
+                "round((qt_resolvidos_dentro_prazo/qt_apontados::float)*100) || '%' as \"PORCENTAGEM\" " +
+                "FROM " +
+                "   (SELECT pergunta, " +
+                "   alternativa, " +
+                "   prioridade, " +
+                "   prazo as prazo_conserto_em_horas, " +
+                "   count(pergunta) as qt_apontados, " +
+                "   sum(case when (extract(epoch from (data_hora_conserto - data_hora)) / 3600) <= prazo then 1 else 0 end) as " +
+                "   qt_resolvidos_dentro_prazo, " +
+                "   trunc(extract(epoch from avg(data_hora_conserto - " +
+                "   estratificacao_os.data_hora))) as md_tempo_conserto_segundos " +
+                "FROM estratificacao_os " +
+                "WHERE cod_unidade = ? AND data_hora BETWEEN ? AND ? " +
+                "GROUP BY 1, 2, 3, 4) as dados " +
+                "ORDER BY round((qt_resolvidos_dentro_prazo / qt_apontados::float) * 100) " +
                 "desc;");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
@@ -177,14 +183,16 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getProdutividadeMecanicos(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT nome_mecanico AS \"MECÂNICO\", count(nome_mecanico) as \"CONSERTOS\",\n" +
-                "  sum(tempo_realizacao/3600000) as \"HORAS\",\n" +
-                "  round(avg(tempo_realizacao/3600000)) as \"HORAS POR CONSERTO\"\n" +
-                "  FROM estratificacao_os\n" +
-                "  WHERE tempo_realizacao is not null and tempo_realizacao > 0 and\n" +
-                "  cod_unidade = ? and data_hora BETWEEN ? AND ?\n" +
-                "  GROUP BY 1\n" +
-                "  ORDER BY nome_mecanico");
+        PreparedStatement stmt = conn.prepareStatement("SELECT " +
+                "nome_mecanico AS \"MECÂNICO\", " +
+                "count(nome_mecanico) as \"CONSERTOS\", " +
+                "sum(tempo_realizacao/3600000) as \"HORAS\", " +
+                "round(avg(tempo_realizacao/3600000)) as \"HORAS POR CONSERTO\" " +
+                "FROM estratificacao_os " +
+                "WHERE tempo_realizacao is not null and tempo_realizacao > 0 and " +
+                "cod_unidade = ? and data_hora BETWEEN ? AND ? " +
+                "GROUP BY 1 " +
+                "ORDER BY nome_mecanico;");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
         stmt.setDate(3, dataFinal);
@@ -194,41 +202,34 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getEstratificacaoOs(Connection conn, Long codUnidade, String placa, Date dataInicial,
                                                   Date dataFinal, String statusOs, String statusItem) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT " +
                 "  cod_os                                                                    AS OS,\n" +
-                "  to_char(data_hora, 'DD/MM/YYYY HH24:MI')                                  AS \"ABERTURA OS\",\n" +
-                "  to_char(data_hora + (prazo || ' hour') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS \"DATA LIMITE CONSERTO\",\n" +
+                "  to_char(data_hora, 'DD/MM/YYYY HH24:MI')                                  AS \"ABERTURA OS\", " +
+                "  to_char(data_hora + (prazo || ' hour') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS \"DATA LIMITE CONSERTO\", " +
                 "  CASE WHEN status_os = 'A'\n" +
                 "    THEN 'ABERTA'\n" +
-                "  ELSE 'FECHADA' END                                                        AS \"STATUS OS\",\n" +
-                "  placa_veiculo                                                             AS \"PLACA\",\n" +
-                "  pergunta                                                                  AS \"PERGUNTA\",\n" +
-                "  alternativa                                                               AS \"ALTERNATIVA\",\n" +
-                "  prioridade                                                                AS \"PRIORIDADE\",\n" +
-                "  prazo                                                                     AS \"PRAZO EM HORAS\",\n" +
-                "  resposta                                                                  AS \"DESCRIÇÃO\",\n" +
+                "  ELSE 'FECHADA' END                                                        AS \"STATUS OS\", " +
+                "  placa_veiculo                                                             AS \"PLACA\", " +
+                "  pergunta                                                                  AS \"PERGUNTA\", " +
+                "  alternativa                                                               AS \"ALTERNATIVA\", " +
+                "  prioridade                                                                AS \"PRIORIDADE\", " +
+                "  prazo                                                                     AS \"PRAZO EM HORAS\", " +
+                "  resposta                                                                  AS \"DESCRIÇÃO\", " +
                 "  CASE WHEN status_ITEM = 'P'\n" +
                 "    THEN 'PENDENTE'\n" +
-                "  ELSE 'RESOLVIDO' END                                                      AS \"STATUS ITEM\",\n" +
-                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH24:MI')                           AS \"DATA CONSERTO\",\n" +
+                "  ELSE 'RESOLVIDO' END                                                      AS \"STATUS ITEM\", " +
+                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH24:MI')                           AS \"DATA CONSERTO\", " +
                 "  nome_mecanico                                                            AS \"MECÂNICO\",\n" +
-                "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\",\n" +
-                "  --   PASSAR PRA MINUTOS\n" +
-                "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\",\n" +
-//                "  CASE WHEN data_hora_conserto IS NULL\n" +
-//                "    THEN '-'\n" +
-//                "  ELSE\n" +
-//                "    CASE WHEN data_hora_conserto <= data_hora + (prazo || ' hour') :: INTERVAL\n" +
-//                "      THEN 'SIM'\n" +
-//                "    ELSE 'NÃO' END\n" +
-//                "  END                                                                       AS \"CUMPRIU PRAZO\",\n" +
-                "  km                                                                        AS \"KM ABERTURA\",\n" +
-                "  km_fechamento                                                             AS \"KM FECHAMENTO\",\n" +
-                "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\"\n" +
-                "FROM estratificacao_os\n" +
-                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora :: DATE BETWEEN ? AND ?) AND\n" +
-                "      status_os LIKE ? AND\n" +
-                "      status_item LIKE ?\n" +
+                "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\", " +
+                // PASSAR PRA MINUTOS
+                "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\", " +
+                "  km                                                                        AS \"KM ABERTURA\", " +
+                "  km_fechamento                                                             AS \"KM FECHAMENTO\", " +
+                "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\" " +
+                "FROM estratificacao_os " +
+                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora::DATE BETWEEN ? AND ?) AND " +
+                "      status_os LIKE ? AND " +
+                "      status_item LIKE ? " +
                 "ORDER BY OS, \"PRAZO EM HORAS\";");
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placa);
