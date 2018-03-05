@@ -37,7 +37,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT " +
+            stmt = conn.prepareStatement("SELECT " +
                     "T.CODIGO AS CODIGO, " +
                     "T.TITULO AS TITULO, " +
                     "T.DESCRICAO AS DESCRICAO, " +
@@ -53,6 +53,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "AND (? = 1 OR RT.COD_FUNCAO::TEXT LIKE ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= ?) " +
+                    "GROUP BY T.CODIGO " +
                     "ORDER BY T.DATA_HORA_CADASTRO " +
                     "LIMIT ? OFFSET ?;");
 
