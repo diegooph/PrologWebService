@@ -48,9 +48,9 @@ public class TreinamentoService {
         }
     }
 
-    public Treinamento getByCod(Long codUnidade, Long codTreinamento) {
+    public Treinamento getByCod(Long codTreinamento, Long codUnidade) {
         try {
-            return dao.getTreinamentoByCod(codUnidade, codTreinamento, true);
+            return dao.getTreinamentoByCod(codTreinamento, codUnidade, true);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o treinamento. \n" +
                     "codUnidade: %d \n" +
