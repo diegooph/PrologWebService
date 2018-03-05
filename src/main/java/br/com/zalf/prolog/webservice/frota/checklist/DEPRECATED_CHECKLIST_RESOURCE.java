@@ -60,17 +60,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	}
 
 	@GET
-	@Path("/colaborador/{cpf}")
-	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-	public List<Checklist> getByColaborador(
-			@PathParam("cpf") Long cpf,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset,
-			@HeaderParam("Authorization") String userToken) {
-		return service.getByColaborador(cpf, null, null, limit, offset, false, userToken);
-	}
-
-	@GET
 	@Path("{codUnidade}/{equipe}/{placa}")
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public List<Checklist> getAll(

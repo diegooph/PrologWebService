@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogErrorCodes;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
@@ -34,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -171,15 +168,11 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
-                                                      @Nullable Long dataInicialLong,
-                                                      @Nullable Long dataFinalLong,
+                                                      @NotNull Long dataInicialLong,
+                                                      @NotNull Long dataFinalLong,
                                                       final int limit,
-                                                      final long offset, boolean resumido) throws Exception {
-
-        // TODO: TIMEZONE -- NULL
-        final LocalDate dataInicial = DateUtils.toLocalDate(dataInicialLong, ZoneId.systemDefault());
-        final LocalDate dataFinal = DateUtils.toLocalDate(dataFinalLong, ZoneId.systemDefault());
-
+                                                      final long offset,
+                                                      boolean resumido) throws Exception {
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(getCodUnidade());
         final List<ChecklistFiltro> checklistsFiltro = requester.getChecklistsByColaborador(
@@ -187,8 +180,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
                 "",
-                AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicialLong)),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinalLong)),
                 getCpf(),
                 getDataNascimento()).getChecklistFiltro();
 
@@ -224,8 +217,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo != null ? dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTipoVeiculo) : "",
                 placaVeiculo != null ? placaVeiculo : "",
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataInicial, ZoneId.systemDefault())),
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataFinal, ZoneId.systemDefault())),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 cpf,
                 dataNascimento).getChecklistFiltro();
 
@@ -245,8 +238,8 @@ public final class AvaCorpAvilan extends Sistema {
         final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataInicial.getTime(), ZoneId.systemDefault())),
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataFinal.getTime(), ZoneId.systemDefault())),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
                 itensCriticosRetroativos,
                 getCpf(),
                 getDataNascimento());
@@ -260,7 +253,7 @@ public final class AvaCorpAvilan extends Sistema {
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
-                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
+                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidade);
         cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
         cronograma.calcularTotalVeiculos(cronograma);
         return cronograma;
@@ -366,8 +359,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
                 placaVeiculo.equals("%") ? "" : placaVeiculo,
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataInicial, ZoneId.systemDefault())),
-                AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(dataFinal, ZoneId.systemDefault())),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 limit,
                 Math.toIntExact(offset),
                 getCpf(),
@@ -421,7 +414,7 @@ public final class AvaCorpAvilan extends Sistema {
             colaborador = getIntegradorProLog().getColaboradorByToken(getUserToken());
         }
 
-        return AvaCorpAvilanUtils.createDatePattern(DateUtils.toLocalDate(colaborador.getDataNascimento().getTime(), ZoneId.systemDefault()));
+        return AvaCorpAvilanUtils.createDatePattern(colaborador.getDataNascimento());
     }
 
     @NotNull

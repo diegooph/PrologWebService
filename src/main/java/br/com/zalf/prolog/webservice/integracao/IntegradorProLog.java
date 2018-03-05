@@ -217,8 +217,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@NotNull Long cpf, Long dataInicial, Long dataFinal, int limit,
-                                                      long offset, boolean resumido) throws Exception {
+    public List<Checklist> getChecklistsByColaborador(@NotNull Long cpf,
+                                                      @NotNull Long dataInicial,
+                                                      @NotNull Long dataFinal,
+                                                      int limit,
+                                                      long offset,
+                                                      boolean resumido) throws Exception {
         return checklistDao.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
