@@ -13,7 +13,7 @@ public final class AuthenticatorFactory {
 
     @NotNull
     public static Authenticator createAuthenticator(@NotNull final AuthType authType,
-                                             @NotNull final AutenticacaoService service) {
+                                                    @NotNull final AutenticacaoService service) {
         Preconditions.checkNotNull(authType);
 
         switch (authType) {

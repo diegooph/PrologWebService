@@ -168,23 +168,11 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
-                                                      @Nullable Long dataInicialLong,
-                                                      @Nullable Long dataFinalLong,
+                                                      @NotNull Long dataInicialLong,
+                                                      @NotNull Long dataFinalLong,
                                                       final int limit,
-                                                      final long offset, boolean resumido) throws Exception {
-        Date dataInicial;
-        Date dataFinal;
-        if (dataInicialLong == null || dataFinalLong == null) {
-            dataInicial = new Date(System.currentTimeMillis());
-            final Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dataInicial);
-            calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
-            dataFinal = new Date(System.currentTimeMillis());
-        } else {
-            dataInicial = new Date(dataInicialLong);
-            dataFinal = new Date(dataFinalLong);
-        }
-
+                                                      final long offset,
+                                                      boolean resumido) throws Exception {
         final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
                 .getFilialUnidadeAvilanByCodUnidadeProLog(getCodUnidade());
         final List<ChecklistFiltro> checklistsFiltro = requester.getChecklistsByColaborador(
@@ -192,8 +180,8 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodUnidadeAvilan(),
                 "",
                 "",
-                AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataInicialLong)),
+                AvaCorpAvilanUtils.createDatePattern(new Date(dataFinalLong)),
                 getCpf(),
                 getDataNascimento()).getChecklistFiltro();
 
@@ -265,7 +253,7 @@ public final class AvaCorpAvilan extends Sistema {
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
-                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao);
+                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidade);
         cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
         cronograma.calcularTotalVeiculos(cronograma);
         return cronograma;

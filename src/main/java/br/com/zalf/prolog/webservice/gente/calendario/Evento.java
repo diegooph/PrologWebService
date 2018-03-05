@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 public class Evento {
     private long codigo;
-    private Date data;
+    private LocalDateTime data;
     private String descricao;
     private String local;
     private Equipe equipe;
@@ -22,7 +23,7 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(long codigo, Date data, String descricao, String local) {
+    public Evento(long codigo, LocalDateTime data, String descricao, String local) {
         this.codigo = codigo;
         this.data = data;
         this.descricao = descricao;
@@ -61,11 +62,11 @@ public class Evento {
         this.codigo = codigo;
     }
 
-    public Date getData() {
+    public LocalDateTime getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDateTime data) {
         this.data = data;
     }
 

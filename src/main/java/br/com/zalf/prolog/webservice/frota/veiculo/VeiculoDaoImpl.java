@@ -561,7 +561,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(Short codDiagrama) throws SQLException {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull Short codDiagrama) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -695,5 +695,4 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         }
         return veiculos;
     }
-
 }

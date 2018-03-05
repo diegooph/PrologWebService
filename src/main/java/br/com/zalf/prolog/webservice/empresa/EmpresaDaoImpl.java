@@ -144,7 +144,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codEquipe);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Equipe equipe = new Equipe();
+                final Equipe equipe = new Equipe();
                 equipe.setCodigo(rSet.getLong("CODIGO"));
                 equipe.setNome(rSet.getString("NOME"));
                 return equipe;
@@ -188,7 +188,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(2, codSetor);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Setor setor = new Setor();
+                final Setor setor = new Setor();
                 setor.setCodigo(rSet.getLong("CODIGO"));
                 setor.setNome(rSet.getString("NOME"));
                 return setor;
@@ -221,7 +221,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public List<Equipe> getEquipesByCodUnidade(Long codUnidade) throws SQLException {
-        List<Equipe> listEquipe = new ArrayList<>();
+        final List<Equipe> listEquipe = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -241,7 +241,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public List<Cargo> getCargosByCodUnidade(Long codUnidade) throws SQLException {
-        List<Cargo> listCargo = new ArrayList<>();
+        final List<Cargo> listCargo = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -294,7 +294,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
-        List<Pilar> pilares;
+        final List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -313,13 +313,13 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
 
-        Visao visao = new Visao();
+        final Visao visao = new Visao();
         visao.setPilares(pilares);
         return visao;
     }
 
     private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
-        List<Pilar> pilares;
+        final List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -343,7 +343,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     @Override
     public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
-        List<Pilar> pilares = new ArrayList<>();
+        final List<Pilar> pilares = new ArrayList<>();
         List<FuncaoProLog> funcoes = new ArrayList<>();
         Pilar pilar = null;
         while (rSet.next()) {
@@ -370,14 +370,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     private FuncaoProLog createFuncaoProLog(ResultSet rSet) throws SQLException {
-        FuncaoProLog funcao = new FuncaoProLog();
+        final FuncaoProLog funcao = new FuncaoProLog();
         funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
         funcao.setDescricao(rSet.getString("FUNCAO"));
         return funcao;
     }
 
     private Pilar createPilar(ResultSet rSet) throws SQLException {
-        Pilar pilar = new Pilar();
+        final Pilar pilar = new Pilar();
         pilar.codigo = rSet.getInt("COD_PILAR");
         pilar.nome = rSet.getString("PILAR");
         return pilar;
@@ -388,8 +388,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Setor> setores = new ArrayList<>();
-        Setor setor = null;
+        final List<Setor> setores = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM setor WHERE cod_unidade = ?\n" +
@@ -397,7 +396,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                setor = new Setor();
+                final Setor setor = new Setor();
                 setor.setCodigo(rSet.getLong("codigo"));
                 setor.setNome(rSet.getString("nome"));
                 setores.add(setor);
@@ -416,9 +415,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         List<HolderMapaTracking> holders = null;
         HolderMapaTracking holder = null;
         List<MapaTracking> mapas = null;
-        MapaTracking mapa = null;
-        Integer tempMapa = null;
-        Integer tempTracking = null;
+        MapaTracking mapa;
 
         try {
             conn = getConnection();
@@ -435,8 +432,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             Log.d(TAG, stmt.toString());
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                tempMapa = rSet.getInt("mapa");
-                tempTracking = rSet.getInt("mapa_tracking");
+                Integer tempMapa = rSet.getInt("mapa");
+                Integer tempTracking = rSet.getInt("mapa_tracking");
                 if (tempMapa == 0) {
                     tempMapa = null;
                 }
@@ -532,14 +529,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     private Equipe createEquipe(ResultSet rset) throws SQLException {
-        Equipe equipe = new Equipe();
+        final Equipe equipe = new Equipe();
         equipe.setCodigo(rset.getLong("CODIGO"));
         equipe.setNome(rset.getString("NOME"));
         return equipe;
     }
 
     private Cargo createCargo(ResultSet rSet) throws SQLException {
-        Cargo cargo = new Cargo();
+        final Cargo cargo = new Cargo();
         cargo.setCodigo(rSet.getLong("CODIGO"));
         cargo.setNome(rSet.getString("NOME"));
         return cargo;
@@ -547,9 +544,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     // buscar permisões para colaboradores com permissão = 3 = tudo
     private List<Empresa> getPermissao3(Long cpf) throws SQLException {
-        List<Empresa> listEmpresa = new ArrayList<>();
-        Empresa empresa = new Empresa();
-        List<Regional> listRegional = new ArrayList<>();
+        final List<Empresa> listEmpresa = new ArrayList<>();
+        final Empresa empresa = new Empresa();
+        final List<Regional> listRegional = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -561,7 +558,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             rSet = stmt.executeQuery();
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
-                Regional regional = new Regional();
+                final Regional regional = new Regional();
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 empresa.setCodigo(rSet.getLong("CODIGO_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
@@ -840,13 +837,13 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(1, cargo.getNome());
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
-            if(rSet.next()){
+            if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             conn.rollback();
             throw e;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, rSet);
         }
         return null;

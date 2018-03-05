@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -66,7 +68,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
             stmt = conn.prepareStatement("SELECT COUNT(R.CODIGO) AS TOTAL FROM RELATO R " +
                     "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND R.DATA_HORA_DATABASE::DATE = ?;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
-            stmt.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+            stmt.setObject(2, LocalDate.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getInt("total");
@@ -77,15 +79,13 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
         return 0;
     }
 
-    private PreparedStatement getRelatosEstratificadosStmt (Long codUnidade, Date dataInicial, Date dataFinal, String equipe, Connection conn)
+    private PreparedStatement getRelatosEstratificadosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String equipe, Connection conn)
             throws SQLException {
-        PreparedStatement stmt = null;
-        stmt = conn.prepareStatement("SELECT * FROM func_relatorio_extrato_relatos(?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_extrato_relatos(?,?,?,?)");
         stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
         stmt.setLong(3, codUnidade);
         stmt.setString(4, equipe);
         return stmt;
     }
-
 }

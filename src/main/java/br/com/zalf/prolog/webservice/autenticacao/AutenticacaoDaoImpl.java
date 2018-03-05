@@ -6,6 +6,9 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDele
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +19,12 @@ import java.util.stream.Collectors;
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
 	public AutenticacaoDaoImpl() {
-
 	}
 
 	@Override
 	public Autenticacao insertOrUpdate(Long cpf) throws SQLException {
-		SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
-		String token = tokenGenerador.nextSessionId();
+		final SessionIdentifierGenerator tokenGenerador = new SessionIdentifierGenerator();
+		final String token = tokenGenerador.nextSessionId();
 		return insert(cpf, token);
 	}
 
@@ -37,11 +39,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 					"AND (SELECT C.STATUS_ATIVO " +
 						 "FROM COLABORADOR C " +
 						 "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?");
-			stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+			stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
 			stmt.setString(2, token);
 			stmt.setString(3, token);
 			stmt.setString(4, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
-			int count =  stmt.executeUpdate();
+			final int count =  stmt.executeUpdate();
 			if (count > 0) {
 				return true;
 			}
@@ -52,7 +54,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean verifyIfUserExists(long cpf, long dataNascimento, boolean apenasUsuariosAtivos) throws SQLException {
+	public boolean verifyIfUserExists(Long cpf, LocalDate dataNascimento, boolean apenasUsuariosAtivos) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -61,7 +63,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM COLABORADOR C WHERE C.CPF = ? " +
 					"AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?);");
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setObject(2, dataNascimento);
 			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
 			if (rSet.next()) {
@@ -90,7 +92,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			stmt.setString(1, token);
 			stmt.setString(2, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
-			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			final List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
 			return verifyPermissions(needsToHaveAllPermissions, permissoes, rSet);
 		} finally {
 			closeConnection(conn, stmt, rSet);
@@ -98,7 +100,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	}
 
 	@Override
-	public boolean userHasPermission(long cpf, long dataNascimento, @NotNull int[] permissions,
+	public boolean userHasPermission(Long cpf, LocalDate dataNascimento, @NotNull int[] permissions,
 									 boolean needsToHaveAllPermissions, boolean apenasUsuariosAtivos) throws SQLException {
 
 		Connection conn = null;
@@ -111,10 +113,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 			conn = getConnection();
 			stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			stmt.setLong(1, cpf);
-			stmt.setDate(2, new Date(dataNascimento));
+			stmt.setObject(2, dataNascimento);
 			stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
 			rSet = stmt.executeQuery();
-			List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
+			final List<Integer> permissoes = Arrays.stream(permissions).boxed().collect(Collectors.toList());
 			return verifyPermissions(needsToHaveAllPermissions, permissoes, rSet);
 		}finally {
 			closeConnection(conn, stmt, rSet);
@@ -144,7 +146,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 	private Autenticacao insert(Long cpf, String token) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		Autenticacao autenticacao = new Autenticacao();
+		final Autenticacao autenticacao = new Autenticacao();
 		autenticacao.setCpf(cpf);
 		autenticacao.setToken(token);
 		try {

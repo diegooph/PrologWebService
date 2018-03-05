@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -35,9 +36,9 @@ public class RelatoService {
         }
     }
 
-    public Relato getByCod(Long codigo) {
+    public Relato getByCod(@NotNull final Long codigo, @NotNull final String userToken) {
         try {
-            return dao.getByCod(codigo);
+            return dao.getByCod(codigo, userToken);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relato. \n" +
                     "codigo: %d", codigo), e);

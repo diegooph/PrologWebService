@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
@@ -60,7 +61,7 @@ public class ProntuarioCondutorResource {
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @PathParam("codUnidade") Long codUnidade) {
         try {
-            String fileName = String.valueOf(System.currentTimeMillis()) + "_" +
+            String fileName = String.valueOf(Now.utcMillis()) + "_" +
                     String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
             File tmpDir = new File(System.getProperty("java.io.tmpdir"), "mapas");
             if (!tmpDir.exists()) {

@@ -1,8 +1,13 @@
 Change Log
 ==========
 
+<a name="v2.0.47"></a>
+## Version [v2.0.47](https://github.com/luizfp/PrologWebService/compare/v2.0.46...v2.0.47) (release-date) - [unreleased]
+
+
+
 <a name="v2.0.46"></a>
-## Version [v2.0.46](https://github.com/luizfp/PrologWebService/compare/v2.0.45...v2.0.46) (release-date) - [unreleased]
+## Version [v2.0.46](https://github.com/luizfp/PrologWebService/compare/v2.0.45...v2.0.46) (2018-02-23)
 
 ### Bug Fixes
 * Corrige calculo do resultado de alguns indicadores (HL/PDV/NF)

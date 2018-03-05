@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public interface RelatoDao {
 	 * @return um Relato
 	 * @throws SQLException caso não seja possível realizar a busca
 	 */
-	Relato getByCod(Long codRelato) throws SQLException;
+	Relato getByCod(@NotNull final Long codRelato, @NotNull final String userToken) throws SQLException;
 
 	//TODO - completar os javadoc
 

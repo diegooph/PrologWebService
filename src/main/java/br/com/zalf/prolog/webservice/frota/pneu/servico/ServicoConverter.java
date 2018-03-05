@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,8 +160,8 @@ final class ServicoConverter {
         colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
         colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
         servico.setColaboradorResponsavelFechamento(colaborador);
-        servico.setDataHoraAbertura(resultSet.getTimestamp("DATA_HORA_ABERTURA"));
-        servico.setDataHoraFechamento(resultSet.getTimestamp("DATA_HORA_FECHAMENTO"));
+        servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
+        servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
 

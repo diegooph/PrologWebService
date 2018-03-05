@@ -9,7 +9,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,8 +22,8 @@ public class AfericaoService {
     private static final String TAG = AfericaoService.class.getSimpleName();
 
     public boolean insert(Afericao afericao, Long codUnidade, String userToken) {
-        afericao.setDataHora(new Date(System.currentTimeMillis()));
         try {
+            afericao.setDataHora(LocalDateTime.now(Clock.systemUTC()));
             return RouterAfericao
                     .create(dao, userToken)
                     .insertAfericao(afericao, codUnidade);

@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaCheck
 import com.google.gson.annotations.SerializedName;
 
 import java.time.Duration;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by jean on 25/07/16.
@@ -50,11 +50,11 @@ public class ItemOrdemServico {
     /**
      * Data em que o item foi apontado pela primeira vez
      */
-    private Date dataApontamento;
+    private LocalDateTime dataApontamento;
     /**
      * data e hora em que o item foi marcado como consertado
      */
-    private Date dataHoraConserto;
+    private LocalDateTime dataHoraConserto;
     /**
      * Km do veículo no momento em que o item foi fechado
      */
@@ -159,11 +159,11 @@ public class ItemOrdemServico {
         this.placa = placa;
     }
 
-    public Date getDataApontamento() {
+    public LocalDateTime getDataApontamento() {
         return dataApontamento;
     }
 
-    public void setDataApontamento(Date dataApontamento) {
+    public void setDataApontamento(LocalDateTime dataApontamento) {
         this.dataApontamento = dataApontamento;
     }
 
@@ -175,11 +175,11 @@ public class ItemOrdemServico {
         this.tempoLimiteResolucao = tempoLimiteResolucao;
     }
 
-    public Date getDataHoraConserto() {
+    public LocalDateTime getDataHoraConserto() {
         return dataHoraConserto;
     }
 
-    public void setDataHoraConserto(Date dataHoraConserto) {
+    public void setDataHoraConserto(LocalDateTime dataHoraConserto) {
         this.dataHoraConserto = dataHoraConserto;
     }
 

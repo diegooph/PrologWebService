@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -40,12 +41,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
+    @NotNull
+    private final String userToken;
 
-    private IntegradorProLog(VeiculoDao veiculoDao,
+    private IntegradorProLog(@NotNull final String userToken,
+                             VeiculoDao veiculoDao,
                              ChecklistDao checklistDao,
                              AfericaoDao afericaoDao,
                              ColaboradorDao colaboradorDao,
                              IntegracaoDao integracaoDao) {
+        this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
         this.checklistDao = checklistDao;
         this.afericaoDao = afericaoDao;
@@ -54,8 +59,9 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @VisibleForTesting
-    public static IntegradorProLog full() {
+    public static IntegradorProLog full(@NotNull final String userToken) {
         return new IntegradorProLog(
+                userToken,
                 Injection.provideVeiculoDao(),
                 Injection.provideChecklistDao(),
                 Injection.provideAfericaoDao(),
@@ -205,14 +211,18 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Checklist getChecklistByCodigo(@NotNull Long codChecklist) throws Exception {
-        return checklistDao.getByCod(codChecklist);
+    public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
+        return checklistDao.getByCod(codChecklist, userToken);
     }
 
     @NotNull
     @Override
-    public List<Checklist> getChecklistsByColaborador(@NotNull Long cpf, Long dataInicial, Long dataFinal, int limit,
-                                                      long offset, boolean resumido) throws Exception {
+    public List<Checklist> getChecklistsByColaborador(@NotNull Long cpf,
+                                                      @NotNull Long dataInicial,
+                                                      @NotNull Long dataFinal,
+                                                      int limit,
+                                                      long offset,
+                                                      boolean resumido) throws Exception {
         return checklistDao.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
@@ -246,9 +256,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private AfericaoDao afericaoDao;
         private ColaboradorDao colaboradorDao;
         private IntegracaoDao integracaoDao;
+        private final String userToken;
 
-        public Builder() {
-
+        public Builder(@NotNull final String userToken) {
+            this.userToken = userToken;
         }
 
         public Builder withVeiculoDao(VeiculoDao veiculoDao) {
@@ -277,7 +288,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         }
 
         public IntegradorProLog build() {
-            return new IntegradorProLog(veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
+            return new IntegradorProLog(userToken, veiculoDao, checklistDao, afericaoDao, colaboradorDao, integracaoDao);
         }
     }
 }

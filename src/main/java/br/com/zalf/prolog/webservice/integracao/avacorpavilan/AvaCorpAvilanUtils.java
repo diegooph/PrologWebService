@@ -2,15 +2,15 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by luiz on 7/24/17.
@@ -21,6 +21,8 @@ public class AvaCorpAvilanUtils {
     public static final int AVILAN_DATE_PATTERN_STRING_SIZE = 10;
     private static final SimpleDateFormat AVILAN_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat AVILAN_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter AVILAN_LOCAL_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter AVILAN_LOCAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private AvaCorpAvilanUtils() {
         throw new IllegalStateException(AvaCorpAvilanUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -59,15 +61,22 @@ public class AvaCorpAvilanUtils {
         return AVILAN_DATE_TIME_FORMAT.parse(dateTimeString);
     }
 
-    public static int calculateDaysBetweenDateAndNow(@NotNull final String stringDate) {
+    @NotNull
+    public static LocalDateTime createLocalDateTimePattern(@NotNull final String dateTimeString) {
+        return LocalDateTime.parse(dateTimeString, AVILAN_LOCAL_DATE_TIME_FORMAT);
+    }
+
+    @NotNull
+    public static LocalDate createLocalDatePattern(@NotNull final String dateTimeString) {
+        return LocalDate.parse(dateTimeString, AVILAN_LOCAL_DATE_FORMAT);
+    }
+
+    public static int calculateDaysBetweenDateAndNow(@NotNull final String stringDate, @NotNull final LocalDateTime dataHoraUnidade) {
         Preconditions.checkNotNull(stringDate, "stringDate não pode ser nula!");
 
-        final DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("dd/MM/yyyy hh:mm:ss")
-                .withLocale(Locale.getDefault());
-        final LocalDate date = LocalDate.parse(stringDate, formatter);
-        final LocalDate now = LocalDate.now();
+        // TODO: Isso aqui precisa ser testado.
+        final LocalDateTime date = LocalDateTime.parse(stringDate, AVILAN_LOCAL_DATE_TIME_FORMAT);
 
-        return (int) ChronoUnit.DAYS.between(date, now);
+        return (int) ChronoUnit.DAYS.between(date, dataHoraUnidade);
     }
 }

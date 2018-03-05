@@ -12,16 +12,16 @@ import com.google.common.base.Preconditions;
 import com.sun.istack.internal.NotNull;
 
 import java.sql.*;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Classe ColaboradorDaoImpl, responsavel pela execução da lógica e comunicação com a interface de dados
  */
 public class ColaboradorDaoImpl extends DatabaseConnection implements ColaboradorDao {
-    private static final String TAG = ColaboradorDaoImpl.class.getSimpleName();
 
     @Override
     public void insert(Colaborador colaborador, DadosIntervaloChangedListener listener) throws Throwable {
@@ -162,7 +162,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt = conn.prepareStatement("UPDATE COLABORADOR SET "
                     + "STATUS_ATIVO = FALSE, data_demissao = ? "
                     + "WHERE CPF = ?;");
-            stmt.setDate(1, DateUtils.toSqlDate(new Date(System.currentTimeMillis())));
+            stmt.setObject(1, LocalDate.now(Clock.systemUTC()));
             stmt.setLong(2, cpf);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);

@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import com.sun.istack.internal.Nullable;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -14,18 +14,18 @@ public class ModeloQuiz {
 	private String nome;
 	@Nullable
 	private String descricao;
-	private Date dataHoraAbertura;
-	private Date dataHoraFechamento;
+	private LocalDateTime dataHoraAbertura;
+	private LocalDateTime dataHoraFechamento;
 	/**
-	 * Fun��es (cargos) que t�m acesso a este modelo de quiz.
+	 * Funções (cargos) que têm acesso a este modelo de quiz.
 	 */
 	private List<Cargo> funcoesLiberadas;
 
 	private List<PerguntaQuiz> perguntas;
 
 	/**
-	 * Um material de apoio para estudo pr�vio.
-	 * Pode ser null pois a unidade pode ou n�o disponibilizar esse material.
+	 * Um material de apoio para estudo prévio.
+	 * Pode ser null pois a unidade pode ou não disponibilizar esse material.
 	 */
 	@Nullable
 	private Treinamento materialApoio;
@@ -64,19 +64,19 @@ public class ModeloQuiz {
 		this.descricao = descricao;
 	}
 
-	public Date getDataHoraAbertura() {
+	public LocalDateTime getDataHoraAbertura() {
 		return dataHoraAbertura;
 	}
 
-	public void setDataHoraAbertura(Date dataHoraAbertura) {
+	public void setDataHoraAbertura(LocalDateTime dataHoraAbertura) {
 		this.dataHoraAbertura = dataHoraAbertura;
 	}
 
-	public Date getDataHoraFechamento() {
+	public LocalDateTime getDataHoraFechamento() {
 		return dataHoraFechamento;
 	}
 
-	public void setDataHoraFechamento(Date dataHoraFechamento) {
+	public void setDataHoraFechamento(LocalDateTime dataHoraFechamento) {
 		this.dataHoraFechamento = dataHoraFechamento;
 	}
 

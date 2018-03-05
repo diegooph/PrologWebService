@@ -34,8 +34,6 @@ public interface TreinamentoDao {
                              long limit,
                              long offset) throws SQLException;
 
-    Treinamento getByCod(Long codUnidade, Long codTreinamento) throws SQLException;
-
     /**
      * Busca os treinamentos ainda não visualizados por um colaborador específico
      *
@@ -92,7 +90,7 @@ public interface TreinamentoDao {
      * @return um Treinamento
      * @throws SQLException caso não seja possível realizar a busca
      */
-    public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade) throws SQLException;
+    Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade, boolean comCargosLiberados) throws SQLException;
 
     /**
      * Atualiza os dados gerais de um treinamento
@@ -101,7 +99,7 @@ public interface TreinamentoDao {
      * @return
      * @throws SQLException
      */
-    public boolean updateTreinamento(Treinamento treinamento) throws SQLException;
+    boolean updateTreinamento(Treinamento treinamento) throws SQLException;
 
     /**
      * Atualiza as URLs de um treinamento
@@ -111,7 +109,7 @@ public interface TreinamentoDao {
      * @return
      * @throws SQLException
      */
-    public boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) throws SQLException;
+    boolean updateUrlImagensTreinamento(List<String> urls, Long codTreinamento) throws SQLException;
 
     /**
      * Deleta todos os dados de um treinamento (visualizaçoes, urls, funcoes..)
@@ -120,5 +118,5 @@ public interface TreinamentoDao {
      * @return
      * @throws SQLException
      */
-    public boolean deleteTreinamento(Long codTreinamento) throws SQLException;
+    boolean deleteTreinamento(Long codTreinamento) throws SQLException;
 }

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.empresa;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
@@ -15,7 +16,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -186,8 +187,7 @@ public class EmpresaResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = {AuthType.BASIC, AuthType.BEARER})
     @Path("/unidades/{codUnidade}/current-time")
-    public Date getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) {
-        // TODO: pegar o tempo de cada unidade de acordo com o TimeZone dela no Banco
-        return new Date(System.currentTimeMillis());
+    public LocalDateTime getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) throws Exception {
+        return LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade));
     }
 }

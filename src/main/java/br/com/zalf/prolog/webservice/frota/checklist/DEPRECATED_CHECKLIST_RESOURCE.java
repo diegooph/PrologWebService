@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
@@ -12,7 +13,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public Response insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-		checklist.setData(new Date(System.currentTimeMillis()));
 		final Long codChecklist = service.insert(checklist, userToken);
 		if (codChecklist != null) {
 			return Response.ok("Checklist inserido com sucesso");
@@ -58,17 +57,6 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public Checklist getByCod(@PathParam("codigo") Long codigo, @HeaderParam("Authorization") String userToken) {
 		return service.getByCod(codigo, userToken);
-	}
-
-	@GET
-	@Path("/colaborador/{cpf}")
-	@Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-	public List<Checklist> getByColaborador(
-			@PathParam("cpf") Long cpf,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset,
-			@HeaderParam("Authorization") String userToken) {
-		return service.getByColaborador(cpf, null, null, limit, offset, false, userToken);
 	}
 
 	@GET
@@ -147,7 +135,7 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 				null,
 				null,
 				calendar.getTimeInMillis(),
-				System.currentTimeMillis(),
+				Now.utcMillis(),
 				limit,
 				offset,
 				true,

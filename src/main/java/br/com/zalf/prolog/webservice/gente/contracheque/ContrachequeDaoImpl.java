@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,73 +36,65 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException {
         Connection conn = null;
         Contracheque contracheque = null;
-        RestricoesContracheque restricoes = null;
         final ProdutividadeDao produtividadeDao = Injection.provideProdutividadeDao();
         try {
             conn = getConnection();
-            List<ItemContracheque> itens = getItensContracheque(conn, cpf, ano, mes, codUnidade);
-            restricoes = getRestricaoCalculoContracheque(conn, cpf);
+            final List<ItemContracheque> itens = getItensContracheque(conn, cpf, ano, mes, codUnidade);
+            final RestricoesContracheque restricoes = getRestricaoCalculoContracheque(conn, cpf);
 
-            //primeiro é verificado se existem itens para o período selecionado
+            // Primeiro é verificado se existem itens para o período selecionado.
             if (itens != null) {
                 contracheque = new Contracheque();
-                // depois é verificado se o colaborador recebe premio, ou seja, é um motorista ou um ajudante
+                // Depois é verificado se o colaborador recebe prêmio, ou seja, é um motorista ou um ajudante.
                 if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoAjudante || restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                     double bonus;
-//                    para algumas unidades, a recarga compoe o calculo do premio, para outra é uma verba separada
-                    if(recebeBonus(ano, mes, cpf, restricoes.indicadorBonus)) {
-                        if(restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista){
+                    // Para algumas unidades, a recarga compõem o cálculo do prêmio, para outra é uma verba separada.
+                    if (recebeBonus(ano, mes, cpf, restricoes.indicadorBonus)) {
+                        if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                             bonus = restricoes.valorBonusMotorista;
-                        }else {
+                        } else {
                             bonus = restricoes.valorBonusAjudante;
                         }
-                    }else{
+                    } else {
                         bonus = 0;
                     }
+                    // Agora temos o valor do bônus para compor o calculo do prêmio.
+                    // Calcularemos agora o valor das recargas e da produtividade.
+                    final List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
+                    final int qtRecargas = getQtRecargas(itensProdutividade);
+                    final double valorRecargas = getValorTotalRecargas(itensProdutividade);
+                    final double produtividade = getTotalItens(itensProdutividade) - valorRecargas;
 
-//                    agora temos o valor do bonus para compor o calculo do premio
-
-//                    calcularemos agora o valor das recargas e da produtividade
-
-                    double produtividade;
-                    double valorRecargas;
-                    int qtRecargas;
-
-                    List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
-                    valorRecargas = getValorTotalRecargas(itensProdutividade);
-                    qtRecargas = getQtRecargas(itensProdutividade);
-                    produtividade = getTotalItens(itensProdutividade) - valorRecargas;
-
-//                    a partir daqui temos todos os valores para realizar o calculo do premio
+                    // A partir daqui temos todos os valores para realizar o cálculo do prêmio.
                     double premio;
-                    if(restricoes.recargaPartePremio) {
+                    if (restricoes.recargaPartePremio) {
                         premio = getPremio(conn, codUnidade, itens, bonus, valorRecargas, produtividade);
-                        ItemContracheque itemPremio = new ItemContracheque();
+                        final ItemContracheque itemPremio = new ItemContracheque();
                         itemPremio.setDescricao("Prêmio");
                         itemPremio.setSubDescricao("Produtividade + " + qtRecargas + " recargas + Bônus NS R$" + bonus);
                         itemPremio.setValor(premio);
                         itens.add(itemPremio);
-                    }else {
+                    } else {
                         premio = getPremio(conn, codUnidade, itens, bonus, 0, produtividade);
-                        ItemContracheque itemPremio = new ItemContracheque();
+                        final ItemContracheque itemPremio = new ItemContracheque();
                         itemPremio.setDescricao("Prêmio");
                         itemPremio.setSubDescricao("Produtividade + Bônus: R$" + bonus);
                         itemPremio.setValor(premio);
                         itens.add(itemPremio);
-                        if(valorRecargas > 0){
-                            ItemContracheque itemRecargas = new ItemContracheque();
+                        if (valorRecargas > 0) {
+                            final ItemContracheque itemRecargas = new ItemContracheque();
                             itemRecargas.setDescricao("Recargas");
                             itemRecargas.setSubDescricao(qtRecargas + " recargas realizadas");
                             itemRecargas.setValor(valorRecargas);
                             itens.add(itemRecargas);
                         }
                     }
-                    //caso ele não receba premio, repassamos diretamente os itens
                 } else {
+                    // Caso ele não receba prêmio, repassamos diretamente os itens
                     contracheque.setItens(itens);
                     return contracheque;
                 }
-                Collections.sort(itens, new CustomComparator());
+                itens.sort(new CustomComparator());
                 contracheque.setItens(itens);
             }
         } finally {
@@ -115,7 +106,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     private List<ItemContracheque> getItensContracheque(Connection conn, Long cpf, int ano, int mes, Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<ItemContracheque> itens = new ArrayList<>();
+        final List<ItemContracheque> itens = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT codigo_item, descricao, sub_descricao, valor\n" +
                     "FROM pre_contracheque_itens\n" +
@@ -137,7 +128,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     private ItemContracheque createItemContracheque(ResultSet rSet) throws SQLException {
-        ItemContracheque item = new ItemContracheque();
+        final ItemContracheque item = new ItemContracheque();
         item.setCodigo(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
@@ -147,8 +138,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     private RestricoesContracheque getRestricaoCalculoContracheque(Connection conn, Long cpf) throws SQLException {
         ResultSet rSet;
-        RestricoesContracheque restricoes = new RestricoesContracheque();
-        PreparedStatement stmt = conn.prepareStatement("SELECT pc.*, c.cod_funcao as COD_FUNCAO_SOLICITANTE\n" +
+        final RestricoesContracheque restricoes = new RestricoesContracheque();
+        final PreparedStatement stmt = conn.prepareStatement("SELECT pc.*, c.cod_funcao as COD_FUNCAO_SOLICITANTE\n" +
                 "FROM colaborador c JOIN pre_contracheque_informacoes pc on c.cod_unidade = pc.cod_unidade\n" +
                 "WHERE c.cpf = ?");
         stmt.setLong(1, cpf);
@@ -165,7 +156,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return restricoes;
     }
 
-    private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException{
+    private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException {
         final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
         final ProdutividadeService produtividadeService = new ProdutividadeService();
         final PeriodoProdutividade periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
@@ -173,21 +164,20 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 indicadorDao.getAcumuladoIndicadoresIndividual(periodoProdutividade.getDataInicio().getTime(),
                         periodoProdutividade.getDataTermino().getTime(), cpf);
 
-        for(IndicadorAcumulado indicadorAcumulado : indicadores) {
-            if(indicadorAcumulado.getTipo().equals(indicador)){
+        for (IndicadorAcumulado indicadorAcumulado : indicadores) {
+            if (indicadorAcumulado.getTipo().equals(indicador)) {
                 return indicadorAcumulado.isBateuMeta();
             }
         }
         return false;
     }
 
-    private double getPremio(Connection conn, Long codUnidade, List<ItemContracheque> itensContracheque, double bonus, double recarga, double produtividade) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<String> codigosPremio = new ArrayList<>();
-        double acumuladoProdutividade = bonus + recarga + produtividade;
-        double outrasVerbas = 0;
-        double valorPremio;
+    private double getPremio(Connection conn, Long codUnidade, List<ItemContracheque> itensContracheque,
+                             double bonus, double recarga, double produtividade) throws SQLException {
+        PreparedStatement stmt;
+        ResultSet rSet;
+        final List<String> codigosPremio = new ArrayList<>();
+        final double acumuladoProdutividade = bonus + recarga + produtividade;
 
         stmt = conn.prepareStatement("SELECT *\n" +
                 "FROM pre_contracheque_calculo_premio\n" +
@@ -198,15 +188,17 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             codigosPremio.add(rSet.getString("COD_ITEM"));
         }
 
-        for(ItemContracheque item : itensContracheque) {
-            if(codigosPremio.contains(item.getCodigo())){
+        double outrasVerbas = 0;
+        for (ItemContracheque item : itensContracheque) {
+            if (codigosPremio.contains(item.getCodigo())) {
                 outrasVerbas += item.getValor();
             }
         }
 
-        if(outrasVerbas >= acumuladoProdutividade){
+        final double valorPremio;
+        if (outrasVerbas >= acumuladoProdutividade) {
             valorPremio = 0;
-        }else{
+        } else {
             valorPremio = acumuladoProdutividade - outrasVerbas;
         }
 
@@ -325,7 +317,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<ItemImportContracheque> itens = new ArrayList<>();
+        final List<ItemImportContracheque> itens = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT pc.*, c.nome FROM pre_contracheque_itens pc left join colaborador c ON\n" +
@@ -350,7 +342,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException {
-        ItemImportContracheque item = new ItemImportContracheque();
+        final ItemImportContracheque item = new ItemImportContracheque();
         item.setCodigo(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
         item.setSubDescricao(rSet.getString("SUB_DESCRICAO"));
@@ -366,29 +358,29 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return item;
     }
 
-    public double getTotalItens(List<ItemProdutividade> itens){
+    private double getTotalItens(List<ItemProdutividade> itens) {
         double total = 0;
-        for(ItemProdutividade item : itens){
+        for (ItemProdutividade item : itens) {
             total += item.getValor();
         }
         return total;
     }
 
-    public double getValorTotalRecargas(List<ItemProdutividade> itens){
+    private double getValorTotalRecargas(List<ItemProdutividade> itens) {
         double total = 0;
-        for(ItemProdutividade item : itens){
-            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
+        for (ItemProdutividade item : itens) {
+            if (item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)) {
                 total += item.getValor();
             }
         }
         return total;
     }
 
-    public int getQtRecargas(List<ItemProdutividade> itens){
+    private int getQtRecargas(List<ItemProdutividade> itens) {
         int quantidade = 0;
-        for(ItemProdutividade item : itens){
-            if(item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)){
-                quantidade ++;
+        for (ItemProdutividade item : itens) {
+            if (item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)) {
+                quantidade++;
             }
         }
         return quantidade;

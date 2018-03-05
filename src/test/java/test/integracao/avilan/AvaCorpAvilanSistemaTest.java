@@ -26,7 +26,7 @@ import static test.integracao.avilan.AvaCorpAvilanConstants.*;
 public class AvaCorpAvilanSistemaTest {
     private final Sistema sistema = SistemasFactory.createSistema(
             SistemaKey.AVACORP_AVILAN,
-            IntegradorProLog.full(),
+            IntegradorProLog.full(PROLOG_TOKEN),
             PROLOG_TOKEN);
 
     @Before

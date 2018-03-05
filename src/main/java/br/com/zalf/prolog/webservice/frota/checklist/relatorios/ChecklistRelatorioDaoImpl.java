@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 
 import javax.validation.constraints.NotNull;
@@ -138,26 +139,27 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getExtratoChecklistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(c.data_hora::date, 'DD/MM/YYYY') as \"DATA\",\n" +
-                "c.placa_veiculo AS \"PLACA\",\n" +
-                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\",\n" +
-                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\"\n" +
-                "FROM checklist c\n" +
-                "LEFT JOIN\n" +
-                "(SELECT m.data as data_mapa, m.mapa, m.placa\n" +
-                "FROM mapa m\n" +
-                "JOIN veiculo v on v.placa = m.placa\n" +
-                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ?\n" +
-                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date and dia_mapas.placa = c.placa_veiculo\n" +
-                "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ?\n" +
-                "GROUP BY c.data_hora::date, 2\n" +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char((c.data_hora AT TIME ZONE ?)::date, 'DD/MM/YYYY') as \"DATA\", " +
+                "c.placa_veiculo AS \"PLACA\"," +
+                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\", " +
+                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\" " +
+                "FROM checklist c " +
+                "LEFT JOIN " +
+                "(SELECT m.data as data_mapa, m.mapa, m.placa " +
+                "FROM mapa m " +
+                "JOIN veiculo v on v.placa = m.placa " +
+                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ? " +
+                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date and dia_mapas.placa = c.placa_veiculo " +
+                "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ? " +
+                "GROUP BY c.data_hora, 2 " +
                 "ORDER BY c.data_hora::date;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
-        stmt.setLong(4, codUnidade);
-        stmt.setDate(5, dataInicial);
-        stmt.setDate(6, dataFinal);
+        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(2, codUnidade);
+        stmt.setDate(3, dataInicial);
+        stmt.setDate(4, dataFinal);
+        stmt.setLong(5, codUnidade);
+        stmt.setDate(6, dataInicial);
+        stmt.setDate(7, dataFinal);
         return stmt;
     }
 
@@ -202,10 +204,10 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     }
 
     public void getResumoChecklistCsv(@NotNull OutputStream outputStream,
-                               @NotNull Long codUnidade,
-                               @NotNull Date dataInicial,
-                               @NotNull Date dataFinal,
-                               @NotNull String placa) throws SQLException, IOException {
+                                      @NotNull Long codUnidade,
+                                      @NotNull Date dataInicial,
+                                      @NotNull Date dataFinal,
+                                      @NotNull String placa) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

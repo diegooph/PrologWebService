@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.imports.mapa;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -26,20 +27,19 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
 
     }
 
-    //TODO: se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
+    // TODO: Se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
     // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
-    // a equipe antiga continuará na tabela, recebendo por um mapa que não realizo
-
+    // a equipe antiga continuará na tabela, recebendo por um mapa que não realizou.
     public boolean insertOrUpdateMapa(String path, Long codUnidade) throws SQLException, IOException, ParseException {
 
         Connection conn = null;
         try {
             conn = getConnection();
-            Reader in = new FileReader(path);
-            List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+            final Reader in = new FileReader(path);
+            final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             //List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
             for (int i = 1; i < tabela.size(); i++) {
-                MapaImport mapa = createMapa(tabela.get(i));
+                final MapaImport mapa = createMapa(tabela.get(i));
                 if (mapa != null) {
                     if (updateMapa(mapa, codUnidade, conn)) {
                         // Mapa ja existia e foi atualizado
@@ -169,7 +169,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setDouble(83, mapa.capacidadeVeiculoKg);
             stmt.setDouble(84, mapa.pesoCargaKg);
             stmt.setLong(85, codUnidade);
-            stmt.setTimestamp(86, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(86, Now.timestampUtc());
             stmt.setInt(87, mapa.capacVeiculoCx);
             stmt.setInt(88, mapa.entregasCompletas);
             stmt.setInt(89, mapa.entregasParciais);
@@ -446,7 +446,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setTimestamp(100, DateUtils.toTimestamp(mapa.hrPCFinanceira));
             stmt.setString(101, mapa.stMapa);
             stmt.setLong(102, codUnidade);
-            stmt.setTimestamp(103, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setTimestamp(103, Now.timestampUtc());
             // condição do where:
             stmt.setInt(104, mapa.mapa);
             stmt.setLong(105, codUnidade);
@@ -461,9 +461,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     }
 
     private MapaImport createMapa(CSVRecord linha) throws ParseException {
-        MapaImport mapa = new MapaImport();
+        final MapaImport mapa = new MapaImport();
 //        caso a data esteja vazia, retorna null para essa linha inteira, evitando erros nos inserts/update
-        if(linha.get(0).isEmpty()){
+        if (linha.get(0).isEmpty()) {
             return null;
         }
         mapa.data = toDate(linha.get(0));
@@ -560,7 +560,6 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.qtNfEntregues = Integer.parseInt(linha.get(61));
         mapa.indDevCx = Double.parseDouble(linha.get(62).replace(",", "."));
         mapa.indDevNf = Double.parseDouble(linha.get(63).replace(",", "."));
-        ;
         mapa.fator = Double.parseDouble(linha.get(64).replace(",", "."));
         mapa.recarga = linha.get(65).replace(" ", "");
         mapa.hrMatinal = toTime(linha.get(66));
@@ -612,23 +611,20 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
      * @param data uma String contendo uma data
      * @return um Date
      */
-    public static Date toDate(String data) {
-
-        String date = String.valueOf(data);
+    private static Date toDate(String data) {
         int ano;
         int mes;
         int dia;
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
 
-        if (date.length() == 7) {
-            ano = Integer.parseInt(date.substring(3, 7));
-            mes = Integer.parseInt(date.substring(1, 3));
-            dia = Integer.parseInt(date.substring(0, 1));
-
+        if (data.length() == 7) {
+            ano = Integer.parseInt(data.substring(3, 7));
+            mes = Integer.parseInt(data.substring(1, 3));
+            dia = Integer.parseInt(data.substring(0, 1));
         } else {
-            ano = Integer.parseInt(date.substring(4, 8));
-            mes = Integer.parseInt(date.substring(2, 4));
-            dia = Integer.parseInt(date.substring(0, 2));
+            ano = Integer.parseInt(data.substring(4, 8));
+            mes = Integer.parseInt(data.substring(2, 4));
+            dia = Integer.parseInt(data.substring(0, 2));
         }
         calendar.set(Calendar.YEAR, ano);
         // calendario no java começa em 0, no 2art o mês começa em 1

@@ -57,7 +57,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getConsolidadoProdutividade(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_consolidado_produtividade(?, ?, ?)");
+        final PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_consolidado_produtividade(?, ?, ?)");
         stmt.setDate(1, dataInicial);
         stmt.setDate(2, dataFinal);
         stmt.setLong(3, codUnidade);
@@ -100,7 +100,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
 
     private PreparedStatement getExtratoIndividualProdutividade(Connection conn, String cpf, Long codUnidade,
                                                                 Date dataInicial, Date dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
+        final PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
                 "   to_char(data, 'DD/MM/YYYY') AS \"DATA\",\n" +
                 "  nome_colaborador AS \"COLABORADOR\",\n" +
                 "   placa AS \"PLACA\",\n" +
@@ -143,7 +143,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public Report getAcessosProdutividadeReport(String cpf,Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException {
+    public Report getAcessosProdutividadeReport(String cpf, Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -158,8 +158,8 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     }
 
     private PreparedStatement getAcessosProdutividadeStatement(Connection conn, String cpf, Long codUnidade,
-                                                                Date dataInicial, Date dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_acessos_produtividade_estratificado" +
+                                                               Date dataInicial, Date dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_acessos_produtividade_estratificado" +
                 "(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);

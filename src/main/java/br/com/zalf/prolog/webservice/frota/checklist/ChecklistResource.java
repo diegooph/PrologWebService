@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -12,7 +13,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,6 @@ public class ChecklistResource {
     @POST
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public AbstractResponse insert(Checklist checklist, @HeaderParam("Authorization") String userToken) {
-        checklist.setData(new Date(System.currentTimeMillis()));
         final Long codChecklist = service.insert(checklist, userToken);
         if (codChecklist != null) {
             return ResponseWithCod.ok("Checklist inserido com sucesso", codChecklist);
@@ -93,20 +92,20 @@ public class ChecklistResource {
     @GET
     @Path("/farois/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
-                                    @QueryParam("dataInicial") long dataInicial,
-                                    @QueryParam("dataFinal") long dataFinal,
-                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
-                                    @HeaderParam("Authorization") String userToken) {
+    public FarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                            @QueryParam("dataInicial") long dataInicial,
+                                            @QueryParam("dataFinal") long dataFinal,
+                                            @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                            @HeaderParam("Authorization") String userToken) {
         return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
     }
 
     @GET
     @Path("/farois/{codUnidade}/hoje")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public Object getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
-                                    @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
-                                    @HeaderParam("Authorization") String userToken) {
+    public FarolChecklist getFarolChecklist(@PathParam("codUnidade") Long codUnidade,
+                                            @QueryParam("itensCriticosRetroativos") boolean itensCriticosRetroativos,
+                                            @HeaderParam("Authorization") String userToken) {
         return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
     }
 
@@ -172,54 +171,5 @@ public class ChecklistResource {
                 offset,
                 false,
                 userToken);
-    }
-
-    /**
-     * @deprecated em 17/10/2017.
-     *
-     * No Android não é mais utilizado esse método, utiliza-se o com path base diferente (checklist). Porém, ele ainda
-     * é utilizado na Web para buscar os checklists. Após a troca para utilizar
-     * {@link #getByColaboradorResumidos(Long, Long, Long, int, long, String)}, este método pode ser removido.
-     */
-    @GET
-    @Path("/colaborador/{cpf}")
-    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-    @Deprecated
-    public List<Checklist> DEPRECATED_GET_BY_COLABORADOR(@PathParam("cpf") Long cpf,
-                                                         @QueryParam("limit") int limit,
-                                                         @QueryParam("offset") long offset,
-                                                         @HeaderParam("Authorization") String userToken) {
-        return service.getByColaborador(cpf, null, null, limit, offset, false, userToken);
-    }
-
-    /**
-     * @deprecated em 17/10/2017.
-     *
-     * Este método esteve em produção no Android nas versões v1.1.26 e v1.1.26-h1. Após essas versões não estarem mais
-     * ativas e sem usuários, pode ser removido.
-     */
-    @GET
-    @Path("{codUnidade}/{equipe}/{placa}/resumidos")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
-    public List<Checklist> DEPRECATED_GET_ALL_RESUMIDO(@PathParam("codUnidade") Long codUnidade,
-                                                       @PathParam("equipe") String equipe,
-                                                       @PathParam("placa") String placa,
-                                                       @QueryParam("dataInicial") long dataInicial,
-                                                       @QueryParam("dataFinal") long dataFinal,
-                                                       @QueryParam("limit") int limit,
-                                                       @QueryParam("offset") long offset,
-                                                       @HeaderParam("Authorization") String userToken) {
-        return service.getAll(
-                codUnidade,
-                null,
-                null,
-                placa.equals("%") ? null : placa,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                true,
-                userToken);
-
     }
 }

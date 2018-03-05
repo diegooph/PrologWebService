@@ -1,17 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by jean on 04/04/16.
  */
 public class Afericao {
-
     private Long codigo;
-    private Date dataHora;
+    private LocalDateTime dataHora;
 
     /**
      * O {@link Veiculo veiculo} no qual a aferição foi realizada.
@@ -52,11 +51,11 @@ public class Afericao {
         this.codigo = codigo;
     }
 
-    public Date getDataHora() {
+    public LocalDateTime getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(Date dataHora) {
+    public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
 

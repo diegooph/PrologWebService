@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -494,7 +493,7 @@ public class AvaCorpAvilanRequesterTest {
         incluirMedida2.setVeiculo(VEICULO_COM_PNEUS);
         incluirMedida2.setTipoMarcador(AvaCorpAvilanTipoMarcador.HODOMETRO);
         incluirMedida2.setMarcador(642666);
-        incluirMedida2.setDataMedida(AvaCorpAvilanUtils.createDatePattern(new Date(System.currentTimeMillis())));
+        incluirMedida2.setDataMedida("yyyy-MM-dd");
         // Placas carreta 1, 2 e 3 nunca serão setadas. No ProLog apenas um veículo será aferido por vez. Caso a carreta
         // seja aferida, então a placa dela será setada em .setVeiculo()
 

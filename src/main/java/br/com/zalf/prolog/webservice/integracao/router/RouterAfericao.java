@@ -15,7 +15,7 @@ public class RouterAfericao extends Router {
     public static RouterAfericao create(@NotNull AfericaoDao afericaoDao, @NotNull String userToken) {
         return new RouterAfericao(
                 Injection.provideIntegracaoDao(),
-                new IntegradorProLog.Builder()
+                new IntegradorProLog.Builder(userToken)
                         .withAfericaoDao(afericaoDao)
                         .build(),
                 userToken,

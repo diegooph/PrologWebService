@@ -21,7 +21,6 @@ public class RelatoResource {
     @POST
     @Secured(permissions = Pilares.Seguranca.Relato.REALIZAR)
     public Response insert(Relato relato) {
-        relato.setDataDatabase(new Date(System.currentTimeMillis()));
         if (service.insert(relato)) {
             return Response.ok("Relato inserido com sucesso");
         } else {
@@ -35,8 +34,8 @@ public class RelatoResource {
             Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR,
             Pilares.Seguranca.Relato.FECHAR})
-    public Relato getByCod(@PathParam("codigo") Long codigo) {
-        return service.getByCod(codigo);
+    public Relato getByCod(@PathParam("codigo") Long codigo, @HeaderParam("Authorization") String userToken) {
+        return service.getByCod(codigo, userToken);
     }
 
     @GET

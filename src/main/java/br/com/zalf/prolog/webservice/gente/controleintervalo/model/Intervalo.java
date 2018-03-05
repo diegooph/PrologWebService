@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 
 import java.time.Duration;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -13,9 +13,9 @@ import java.util.List;
 public class Intervalo {
     private Long codigo;
     private TipoIntervalo tipo;
-    private Date dataHoraInicio;
+    private LocalDateTime dataHoraInicio;
     private FonteDataHora fonteDataHoraInicio;
-    private Date dataHoraFim;
+    private LocalDateTime dataHoraFim;
     private FonteDataHora fonteDataHoraFim;
     private Colaborador colaborador;
     private List<EdicaoIntervalo> edicoes;
@@ -80,16 +80,20 @@ public class Intervalo {
         this.tipo = tipo;
     }
 
-    public Date getDataHoraInicio() {
+    public LocalDateTime getDataHoraInicio() {
         return dataHoraInicio;
     }
 
-    public void setDataHoraInicio(Date dataHoraInicio) {
+    public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
         this.dataHoraInicio = dataHoraInicio;
     }
 
-    public Date getDataHoraFim() {
+    public LocalDateTime getDataHoraFim() {
         return dataHoraFim;
+    }
+
+    public void setDataHoraFim(LocalDateTime dataHoraFim) {
+        this.dataHoraFim = dataHoraFim;
     }
 
     public Localizacao getLocalizacaoInicio() {
@@ -106,10 +110,6 @@ public class Intervalo {
 
     public void setLocalizacaoFim(Localizacao localizacaoFim) {
         this.localizacaoFim = localizacaoFim;
-    }
-
-    public void setDataHoraFim(Date dataHoraFim) {
-        this.dataHoraFim = dataHoraFim;
     }
 
     public Colaborador getColaborador() {

@@ -2,9 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.LogDatabase;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -17,8 +16,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
@@ -31,7 +32,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @Override
     public boolean insert(Afericao afericao, Long codUnidade) throws SQLException {
-        LogDatabase.insertLog(afericao);
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -42,7 +42,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
                     + "TEMPO_REALIZACAO, TIPO_AFERICAO) "
                     + "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(afericao.getDataHora()));
+            stmt.setObject(1, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setString(2, afericao.getVeiculo().getPlaca());
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
@@ -159,6 +159,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
         try {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
+            // TODO: Como lidar com o now() em banco? Podemos solicitar que seja em UTC?
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.placa,\n" +
                     " M.nome,\n" +
@@ -239,7 +240,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA, "
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
                     + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
@@ -250,13 +251,14 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "AND A.DATA_HORA::DATE BETWEEN ? AND ? "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codTipoVeiculo);
-            stmt.setString(3, placaVeiculo);
-            stmt.setDate(4, new java.sql.Date(dataInicial));
-            stmt.setDate(5, new java.sql.Date(dataFinal));
-            stmt.setInt(6, limit);
-            stmt.setLong(7, offset);
+            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, codTipoVeiculo);
+            stmt.setString(4, placaVeiculo);
+            stmt.setDate(5, new java.sql.Date(dataInicial));
+            stmt.setDate(6, new java.sql.Date(dataFinal));
+            stmt.setInt(7, limit);
+            stmt.setLong(8, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 afericoes.add(createAfericaoResumida(rSet));
@@ -280,7 +282,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("SELECT " +
                     "A.KM_VEICULO, " +
                     "A.CODIGO AS COD_AFERICAO, " +
-                    "A.DATA_HORA, " +
+                    "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
                     "A.PLACA_VEICULO, " +
                     "A.KM_VEICULO, " +
                     "A.TEMPO_REALIZACAO, " +
@@ -306,8 +308,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR " +
                     "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? " +
                     "ORDER BY PO.ORDEM_EXIBICAO ASC");
-            stmt.setLong(1, codAfericao);
-            stmt.setLong(2, codUnidade);
+            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt.setLong(2, codAfericao);
+            stmt.setLong(3, codUnidade);
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
@@ -355,7 +358,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA, "
+            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, "
+                    + "A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = V.COD_UNIDADE) AS DATA_HORA, "
                     + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
@@ -530,7 +534,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException {
         final Afericao afericao = new Afericao();
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
-        afericao.setDataHora(rSet.getTimestamp("DATA_HORA"));
+        afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericao.setTipoAfericao(TipoAfericao.fromString(rSet.getString("TIPO_AFERICAO")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
@@ -553,7 +557,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "
                     + "COD_AFERICAO, PLACA, COD_PNEU_CORRETO, COD_PNEU_INCORRETO, POSICAO, COD_UNIDADE) VALUES (?,?,?,?,?,?,?)");
-            stmt.setTimestamp(1, DateUtils.toTimestamp(new Date(System.currentTimeMillis())));
+            stmt.setObject(1, Instant.now().atOffset(ZoneOffset.UTC));
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
             stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão

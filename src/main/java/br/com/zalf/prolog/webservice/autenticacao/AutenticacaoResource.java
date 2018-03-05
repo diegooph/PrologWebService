@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Path("/autenticacao")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -15,12 +17,10 @@ public class AutenticacaoResource {
 	private AutenticacaoService service = new AutenticacaoService();
 
 	@POST
-	@Path("/verifyLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
-									@FormParam("dataNascimento") long dataNascimento) {
-
-		Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
+	public Autenticacao authenticate(@FormParam("cpf") Long cpf,
+									 @FormParam("dataNascimento") String dataNascimento) {
+		Log.d(TAG, "CPF: " + cpf + "\nData: " + dataNascimento);
 		if (service.verifyIfUserExists(cpf, dataNascimento, true)) {
 			Autenticacao autenticacao = service.insertOrUpdate(cpf);
 			Log.d(TAG, autenticacao.getToken());
@@ -47,4 +47,16 @@ public class AutenticacaoResource {
         // Verifica se um token é valido, retornando true, caso contrario retorna 401.
 		return true;
 	}
+
+	@POST
+	@Path("/verifyLogin")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Deprecated
+	public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
+									@FormParam("dataNascimento") long dataNascimento) {
+		Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
+		return authenticate(cpf, FORMAT.format(new Date(dataNascimento)));
+	}
+	@Deprecated
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 }

@@ -33,10 +33,11 @@ public interface ChecklistDao {
 	/**
 	 * Busca um checklist pelo seu código único
 	 * @param codChecklist codigo do checklist a ser buscado
+	 * @param userToken token do usuário que está realizando a busca
 	 * @return um checklist
 	 * @throws SQLException caso não consiga buscar o checklist no banco de dados
 	 */
-	Checklist getByCod(long codChecklist) throws SQLException;
+	Checklist getByCod(Long codChecklist, String userToken) throws SQLException;
 
 	/**
 	 * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
