@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.imports;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.imports.mapa.MapaService;
@@ -39,7 +40,7 @@ public class ImportResource {
 			// Salva o arquivo
 			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
 			// ser que substitua enquanto está ainda usando o arquivo
-			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+			String fileName =  String.valueOf(Now.utcMillis()) + "_" +
 					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
 			Log.d(TAG, "fileName: " + fileName);
 			Log.d(TAG, "CodUnidade: " + codUnidade);
@@ -75,7 +76,7 @@ public class ImportResource {
 			// Salva o arquivo
 			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
 			// ser que substitua enquanto está ainda usando o arquivo
-			String fileName =  String.valueOf(System.currentTimeMillis()) + "_" +
+			String fileName =  String.valueOf(Now.utcMillis()) + "_" +
 					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
 			Log.d(TAG, "fileName: " + fileName);
 			Log.d(TAG, "Colaborador");
