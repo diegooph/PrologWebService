@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
@@ -138,8 +139,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getExtratoChecklistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(c.data_hora AT TIME ZONE " +
-                "(SELECT TIMEZONE FROM func_get_time_zone_unidade(c.cod_unidade))::date, 'DD/MM/YYYY') as \"DATA\"," +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(c.data_hora AT TIME ZONE ? ::date, 'DD/MM/YYYY') as \"DATA\"," +
                 "c.placa_veiculo AS \"PLACA\"," +
                 "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\"," +
                 "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\"" +
@@ -153,12 +153,13 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                 "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ?" +
                 "GROUP BY c.data_hora::date, 2" +
                 "ORDER BY c.data_hora::date;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
-        stmt.setLong(4, codUnidade);
-        stmt.setDate(5, dataInicial);
-        stmt.setDate(6, dataFinal);
+        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(2, codUnidade);
+        stmt.setDate(3, dataInicial);
+        stmt.setDate(4, dataFinal);
+        stmt.setLong(5, codUnidade);
+        stmt.setDate(6, dataInicial);
+        stmt.setDate(7, dataFinal);
         return stmt;
     }
 
