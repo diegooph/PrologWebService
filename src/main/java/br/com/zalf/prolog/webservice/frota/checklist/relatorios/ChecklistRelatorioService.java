@@ -20,9 +20,9 @@ class ChecklistRelatorioService {
     private final ChecklistRelatorioDao dao = Injection.provideChecklistRelatorioDao();
 
     void getChecklistsRealizadosDiaCsv(@NotNull OutputStream outputStream,
-                                        @NotNull Long codUnidade,
-                                        @NotNull long dataInicial,
-                                        @NotNull long dataFinal) {
+                                       @NotNull Long codUnidade,
+                                       @NotNull long dataInicial,
+                                       @NotNull long dataFinal) {
         try {
             dao.getChecklistsRealizadosDiaCsv(outputStream, codUnidade, new Date(dataInicial), new Date(dataFinal));
         } catch (SQLException | IOException e) {
@@ -115,20 +115,20 @@ class ChecklistRelatorioService {
 
     @NotNull
     public Report getEstratificacaoRespostasNokChecklistReport(@NotNull Long codUnidade, @NotNull String placa,
-                                            @NotNull Long dataInicial, @NotNull Long dataFinal) {
+                                                               @NotNull Long dataInicial, @NotNull Long dataFinal) {
         try {
             return dao.getEstratificacaoRespostasNokChecklistReport(codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (REPORT)", e);
             return null;
         }
     }
 
     public void getEstratificacaoRespostasNokChecklistCsv(@NotNull OutputStream outputStream, @NotNull Long codUnidade, @NotNull String placa,
-                                       @NotNull Long dataInicial, @NotNull Long dataFinal) {
+                                                          @NotNull Long dataInicial, @NotNull Long dataFinal) {
         try {
             dao.getEstratificacaoRespostasNokChecklistCsv(outputStream, codUnidade, placa, new Date(dataInicial), new Date(dataFinal));
-        }catch (SQLException | IOException e){
+        } catch (SQLException | IOException e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (CSV)", e);
         }
     }
