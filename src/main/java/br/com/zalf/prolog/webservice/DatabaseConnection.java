@@ -35,7 +35,7 @@ public class DatabaseConnection {
 //	private static final String TESTE_URL = "jdbc:postgresql://"
 //			+ "prolog-db-instance.csg59phgb0xp.sa-east-1.rds.amazonaws.com:"
 //			+ "5432/prolog_database_testes_janeiro";
-	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prologDezembro";
+	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/DUMP_PRE_TIMEZONE";
 //	private static final String TESTE_URL = "jdbc:postgresql://localhost:5433/postgresSetembro";
 	private static final String TESTE_USUARIO = "postgres";
 	private static final String TESTE_SENHA = "postgres";
@@ -52,8 +52,8 @@ public class DatabaseConnection {
 		Connection conexao = null;
 		try {
 			Class.forName(DRIVER);
-//			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
-			conexao = DriverManager.getConnection(TESTE_URL, TESTE_USUARIO, TESTE_SENHA);
+			conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
+//			conexao = DriverManager.getConnection(TESTE_URL, TESTE_USUARIO, TESTE_SENHA);
 		} catch(Exception e) {
 		    Log.e(TAG, String.format("Erro ao abrir conexão com o banco: %s", URL), e);
 		}
