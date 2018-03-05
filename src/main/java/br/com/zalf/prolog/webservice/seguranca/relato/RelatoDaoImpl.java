@@ -90,8 +90,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "R.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                     "R.CPF_CLASSIFICACAO AS CPF_CLASSIFICACAO, " +
                     "R.CPF_FECHAMENTO AS CPF_FECHAMENTO, " +
-                    "R.DATA_HORA_CLASSIFICACAO AS DATA_HORA_CLASSIFICACAO, " +
-                    "R.DATA_HORA_FECHAMENTO AS DATA_HORA_FECHAMENTO, " +
+                    "R.DATA_HORA_CLASSIFICACAO AT TIME ZONE ? AS DATA_HORA_CLASSIFICACAO, " +
+                    "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                     "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                     "R.STATUS AS STATUS, " +
                     "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
@@ -110,7 +110,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setLong(3, codRelato);
+            stmt.setString(3, zoneId.getId());
+            stmt.setString(4, zoneId.getId());
+            stmt.setLong(5, codRelato);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createRelato(rSet);
@@ -130,8 +132,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         ResultSet rSet = null;
         String query = "SELECT " +
                 "R.CODIGO AS CODIGO, " +
-                "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                 "R.LATITUDE AS LATITUDE, " +
                 "R.LONGITUDE AS LONGITUDE, " +
                 "R.URL_FOTO_1 AS URL_FOTO_1, " +
@@ -140,12 +142,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 "R.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                 "R.CPF_CLASSIFICACAO AS CPF_CLASSIFICACAO, " +
                 "R.CPF_FECHAMENTO AS CPF_FECHAMENTO, " +
-                "R.DATA_HORA_CLASSIFICACAO AS DATA_HORA_CLASSIFICACAO, " +
-                "R.DATA_HORA_FECHAMENTO AS DATA_HORA_FECHAMENTO, " +
+                "R.DATA_HORA_CLASSIFICACAO AT TIME ZONE ? AS DATA_HORA_CLASSIFICACAO, " +
+                "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                 "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                 "R.STATUS AS STATUS, " +
                 "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
                 "R.COD_PDV AS COD_PDV, " +
+                "R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
+                "RA.ALTERNATIVA AS ALTERNATIVA, " +
                 "C.NOME AS NOME, " +
                 "C2.NOME AS NOME_CLASSIFICACAO, " +
                 "C3.NOME AS NOME_FECHAMENTO, " +
@@ -170,12 +174,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setDouble(3, longitude);
-            stmt.setDouble(4, latitude);
-            stmt.setLong(5, codUnidade);
-            stmt.setString(6, status);
-            stmt.setInt(7, limit);
-            stmt.setLong(8, offset);
+            stmt.setString(3, zoneId.getId());
+            stmt.setString(4, zoneId.getId());
+            stmt.setDouble(5, longitude);
+            stmt.setDouble(6, latitude);
+            stmt.setLong(7, codUnidade);
+            stmt.setString(8, status);
+            stmt.setInt(9, limit);
+            stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 relatos.add(createRelato(rSet));
@@ -196,8 +202,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         ResultSet rSet = null;
         String query = "SELECT " +
                 "R.CODIGO AS CODIGO, " +
-                "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                 "R.LATITUDE AS LATITUDE, " +
                 "R.LONGITUDE AS LONGITUDE, " +
                 "R.URL_FOTO_1 AS URL_FOTO_1, " +
@@ -206,12 +212,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 "R.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                 "R.CPF_CLASSIFICACAO AS CPF_CLASSIFICACAO, " +
                 "R.CPF_FECHAMENTO AS CPF_FECHAMENTO, " +
-                "R.DATA_HORA_CLASSIFICACAO AS DATA_HORA_CLASSIFICACAO, " +
-                "R.DATA_HORA_FECHAMENTO AS DATA_HORA_FECHAMENTO, " +
+                "R.DATA_HORA_CLASSIFICACAO AT TIME ZONE ? AS DATA_HORA_CLASSIFICACAO, " +
+                "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                 "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                 "R.STATUS AS STATUS, " +
                 "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
+                "R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
                 "R.COD_PDV AS COD_PDV, " +
+                "RA.ALTERNATIVA AS ALTERNATIVA, " +
                 "C.NOME AS NOME, " +
                 "C2.NOME AS NOME_CLASSIFICACAO, " +
                 "C3.NOME AS NOME_FECHAMENTO, "
@@ -235,12 +243,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setDouble(3, longitude);
-            stmt.setDouble(4, latitude);
-            stmt.setLong(5, cpf);
-            stmt.setString(6, status);
-            stmt.setInt(7, limit);
-            stmt.setLong(8, offset);
+            stmt.setString(3, zoneId.getId());
+            stmt.setString(4, zoneId.getId());
+            stmt.setDouble(5, longitude);
+            stmt.setDouble(6, latitude);
+            stmt.setLong(7, cpf);
+            stmt.setString(8, status);
+            stmt.setInt(9, limit);
+            stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 relatos.add(createRelato(rSet));
@@ -260,8 +270,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         ResultSet rSet = null;
         String query = "SELECT " +
                 "R.CODIGO AS CODIGO, " +
-                "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                 "R.LATITUDE AS LATITUDE, " +
                 "R.LONGITUDE AS LONGITUDE, " +
                 "R.URL_FOTO_1 AS URL_FOTO_1, " +
@@ -270,15 +280,18 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 "R.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                 "R.CPF_CLASSIFICACAO AS CPF_CLASSIFICACAO, " +
                 "R.CPF_FECHAMENTO AS CPF_FECHAMENTO, " +
-                "R.DATA_HORA_CLASSIFICACAO AS DATA_HORA_CLASSIFICACAO, " +
-                "R.DATA_HORA_FECHAMENTO AS DATA_HORA_FECHAMENTO, " +
+                "R.DATA_HORA_CLASSIFICACAO AT TIME ZONE ? AS DATA_HORA_CLASSIFICACAO, " +
+                "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                 "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                 "R.STATUS AS STATUS, " +
                 "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
+                "R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
                 "R.COD_PDV AS COD_PDV, " +
+                "RA.ALTERNATIVA AS ALTERNATIVA, " +
                 "C.NOME AS NOME, " +
                 "C2.NOME AS NOME_CLASSIFICACAO, " +
-                "C3.NOME AS NOME_FECHAMENTO, ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
+                "C3.NOME AS NOME_FECHAMENTO, " +
+                "ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as distancia "
                 + " FROM RELATO R JOIN "
                 + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                 + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT " +
@@ -301,13 +314,15 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setDouble(3, longitude);
-            stmt.setDouble(4, latitude);
-            stmt.setLong(5, cpf);
-            stmt.setString(6, status);
+            stmt.setString(3, zoneId.getId());
+            stmt.setString(4, zoneId.getId());
+            stmt.setDouble(5, longitude);
+            stmt.setDouble(6, latitude);
             stmt.setLong(7, cpf);
-            stmt.setInt(8, limit);
-            stmt.setLong(9, offset);
+            stmt.setString(8, status);
+            stmt.setLong(9, cpf);
+            stmt.setInt(10, limit);
+            stmt.setLong(11, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 relatos.add(createRelato(rSet));
@@ -330,8 +345,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "R.CODIGO AS CODIGO, " +
-                    "R.DATA_HORA_LOCAL AS DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
-                    "R.DATA_HORA_DATABASE AS DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
+                    "R.DATA_HORA_LOCAL AT TIME ZONE ? AS DATA_HORA_LOCAL, " +
+                    "R.DATA_HORA_DATABASE AT TIME ZONE ? AS DATA_HORA_DATABASE, " +
                     "R.LATITUDE AS LATITUDE, " +
                     "R.LONGITUDE AS LONGITUDE, " +
                     "R.URL_FOTO_1 AS URL_FOTO_1, " +
@@ -340,17 +355,19 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "R.CPF_COLABORADOR AS CPF_COLABORADOR, " +
                     "R.CPF_CLASSIFICACAO AS CPF_CLASSIFICACAO, " +
                     "R.CPF_FECHAMENTO AS CPF_FECHAMENTO, " +
-                    "R.DATA_HORA_CLASSIFICACAO AS DATA_HORA_CLASSIFICACAO, " +
-                    "R.DATA_HORA_FECHAMENTO AS DATA_HORA_FECHAMENTO, " +
+                    "R.DATA_HORA_CLASSIFICACAO AT TIME ZONE ? AS DATA_HORA_CLASSIFICACAO, " +
+                    "R.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                     "R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                     "R.STATUS AS STATUS, " +
                     "R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
+                    "R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
                     "R.COD_PDV AS COD_PDV, " +
+                    "RA.ALTERNATIVA AS ALTERNATIVA, " +
                     "C.NOME AS NOME, " +
-                    "NULL AS DISTANCIA, " +
                     "C2.NOME AS NOME_CLASSIFICACAO, " +
-                    "C3.NOME AS NOME_FECHAMENTO "
-                    + " FROM RELATO R JOIN  "
+                    "C3.NOME AS NOME_FECHAMENTO, " +
+                    "NULL AS DISTANCIA " +
+                    " FROM RELATO R JOIN  "
                     + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                     + "EQUIPE E ON E.CODIGO = C.COD_EQUIPE JOIN "
                     + "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA" +
@@ -365,13 +382,15 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setLong(3, codUnidade);
-            stmt.setString(4, status);
-            stmt.setString(5, equipe);
-            stmt.setDate(6, DateUtils.toSqlDate(dataInicial));
-            stmt.setDate(7, DateUtils.toSqlDate(dataFinal));
-            stmt.setLong(8, limit);
-            stmt.setLong(9, offset);
+            stmt.setString(3, zoneId.getId());
+            stmt.setString(4, zoneId.getId());
+            stmt.setLong(5, codUnidade);
+            stmt.setString(6, status);
+            stmt.setString(7, equipe);
+            stmt.setDate(8, DateUtils.toSqlDate(dataInicial));
+            stmt.setDate(9, DateUtils.toSqlDate(dataFinal));
+            stmt.setLong(10, limit);
+            stmt.setLong(11, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 Relato relato = createRelato(rSet);
@@ -394,7 +413,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     + " WHERE CODIGO = ?");
 
             stmt.setLong(1, relato.getColaboradorClassificacao().getCpf());
-            stmt.setObject(2, LocalDateTime.now(Clock.systemUTC()).atOffset(ZoneOffset.UTC));
+            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(3, relato.getStatus());
             stmt.setLong(4, relato.getAlternativa().codigo);
             stmt.setString(5, relato.getDescricao());
@@ -419,7 +438,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     + " WHERE CODIGO = ?");
 
             stmt.setLong(1, relato.getColaboradorFechamento().getCpf());
-            stmt.setObject(2, LocalDateTime.now(Clock.systemUTC()).atOffset(ZoneOffset.UTC));
+            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(3, Relato.FECHADO);
             stmt.setString(4, relato.getFeedbackFechamento());
             stmt.setLong(5, relato.getCodigo());
