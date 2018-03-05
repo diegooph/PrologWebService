@@ -24,6 +24,8 @@ public class AvaCorpAvilanUtils {
     private static final DateTimeFormatter AVILAN_LOCAL_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter AVILAN_LOCAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private static final DateTimeFormatter FORMATTER_CALCULO_DIAS_AFERICAO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
     private AvaCorpAvilanUtils() {
         throw new IllegalStateException(AvaCorpAvilanUtils.class.getSimpleName() + " cannot be instantiated!");
     }
@@ -74,9 +76,8 @@ public class AvaCorpAvilanUtils {
     public static int calculateDaysBetweenDateAndNow(@NotNull final String stringDate, @NotNull final LocalDateTime dataHoraUnidade) {
         Preconditions.checkNotNull(stringDate, "stringDate não pode ser nula!");
 
-        // TODO: Isso aqui precisa ser testado.
-        final LocalDateTime date = LocalDateTime.parse(stringDate, AVILAN_LOCAL_DATE_TIME_FORMAT);
+        final LocalDate date = LocalDate.parse(stringDate, FORMATTER_CALCULO_DIAS_AFERICAO);
 
-        return (int) ChronoUnit.DAYS.between(date, dataHoraUnidade);
+        return (int) ChronoUnit.DAYS.between(date, dataHoraUnidade.toLocalDate());
     }
 }

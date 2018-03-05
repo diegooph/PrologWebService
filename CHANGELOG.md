@@ -1,10 +1,15 @@
 Change Log
 ==========
 
+<a name="v2.0.47-h1"></a>
+## Version [v2.0.47-h1](https://github.com/luizfp/PrologWebService/compare/v2.0.47...v2.0.47-h1) (2018-03-05)
+
+### Bug Fixes
+* Corrige queries de busca dos relatos
+* Corrige cálculo de dias desde a última aferição na integração com a Avilan
+
 <a name="v2.0.47"></a>
-## Version [v2.0.47](https://github.com/luizfp/PrologWebService/compare/v2.0.46...v2.0.47) (release-date) - [unreleased]
-
-
+## Version [v2.0.47](https://github.com/luizfp/PrologWebService/compare/v2.0.46...v2.0.47) (2018-03-05)
 
 <a name="v2.0.46"></a>
 ## Version [v2.0.46](https://github.com/luizfp/PrologWebService/compare/v2.0.45...v2.0.46) (2018-02-23)
