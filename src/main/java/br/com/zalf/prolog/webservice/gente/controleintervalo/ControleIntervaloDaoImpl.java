@@ -283,14 +283,14 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 stmt.setObject(5, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
             } else {
                 stmt.setNull(4, Types.VARCHAR);
-                stmt.setNull(5, Types.TIMESTAMP);
+                stmt.setNull(5, Types.TIMESTAMP_WITH_TIMEZONE);
             }
             if (intervalo.getDataHoraFim() != null) {
                 stmt.setString(6, intervalo.getFonteDataHoraFim().key());
                 stmt.setObject(7, intervalo.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
             } else {
                 stmt.setNull(6, Types.VARCHAR);
-                stmt.setNull(7, Types.TIMESTAMP);
+                stmt.setNull(7, Types.TIMESTAMP_WITH_TIMEZONE);
             }
             stmt.setString(8, intervalo.getJustificativaEstouro());
             stmt.setString(9, intervalo.getJustificativaTempoRecomendado());
@@ -311,8 +311,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 stmt.setNull(11, Types.VARCHAR);
                 stmt.setNull(13, Types.VARCHAR);
             }
-            int count = stmt.executeUpdate();
-            if (count == 0) {
+            if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o intervalo");
             }
         } finally {
