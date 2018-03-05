@@ -60,7 +60,7 @@ public class TreinamentoResource {
     @Path("/{codUnidade}/{codTreinamento}")
     public Treinamento getTreinamentoByCod(@PathParam("codUnidade") Long codUnidade,
                                            @PathParam("codTreinamento") Long codTreinamento) {
-        return service.getByCod(codUnidade, codTreinamento);
+        return service.getByCod(codTreinamento, codUnidade);
     }
 
     @PUT

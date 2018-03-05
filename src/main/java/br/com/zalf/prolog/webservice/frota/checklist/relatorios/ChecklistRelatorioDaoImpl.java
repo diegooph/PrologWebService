@@ -139,19 +139,19 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getExtratoChecklistRealizadosDia(Connection conn, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT to_char(c.data_hora AT TIME ZONE ? ::date, 'DD/MM/YYYY') as \"DATA\"," +
+        PreparedStatement stmt = conn.prepareStatement("SELECT to_char((c.data_hora AT TIME ZONE ?)::date, 'DD/MM/YYYY') as \"DATA\", " +
                 "c.placa_veiculo AS \"PLACA\"," +
-                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\"," +
-                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\"" +
-                "FROM checklist c" +
-                "LEFT JOIN" +
-                "(SELECT m.data as data_mapa, m.mapa, m.placa" +
-                "FROM mapa m" +
-                "JOIN veiculo v on v.placa = m.placa" +
-                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ?" +
-                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date and dia_mapas.placa = c.placa_veiculo" +
-                "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ?" +
-                "GROUP BY c.data_hora::date, 2" +
+                "sum(case when c.tipo = 'S' then 1 else 0 end) as \"CHECKS SAÍDA\", " +
+                "sum(case when c.tipo = 'R' then 1 else 0 end) as \"CHECKS RETORNO\" " +
+                "FROM checklist c " +
+                "LEFT JOIN " +
+                "(SELECT m.data as data_mapa, m.mapa, m.placa " +
+                "FROM mapa m " +
+                "JOIN veiculo v on v.placa = m.placa " +
+                "WHERE m.cod_unidade = ? and m.data BETWEEN ? and ? " +
+                "ORDER BY m.data asc) as dia_mapas ON dia_mapas.data_mapa = c.data_hora::date and dia_mapas.placa = c.placa_veiculo " +
+                "WHERE c.cod_unidade = ? and c.data_hora::date BETWEEN ? and ? " +
+                "GROUP BY c.data_hora, 2 " +
                 "ORDER BY c.data_hora::date;");
         stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         stmt.setLong(2, codUnidade);

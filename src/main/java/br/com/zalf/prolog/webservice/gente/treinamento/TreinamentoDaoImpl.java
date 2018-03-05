@@ -37,7 +37,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT " +
+            stmt = conn.prepareStatement("SELECT " +
                     "T.CODIGO AS CODIGO, " +
                     "T.TITULO AS TITULO, " +
                     "T.DESCRICAO AS DESCRICAO, " +
@@ -53,6 +53,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "AND (? = 1 OR RT.COD_FUNCAO::TEXT LIKE ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= ?) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= ?) " +
+                    "GROUP BY T.CODIGO " +
                     "ORDER BY T.DATA_HORA_CADASTRO " +
                     "LIMIT ? OFFSET ?;");
 
@@ -105,7 +106,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
-    public Treinamento getTreinamentoByCod(Long codUnidade, Long codTreinamento, boolean comCargosLiberados) throws SQLException {
+    public Treinamento getTreinamentoByCod(Long codTreinamento, Long codUnidade, boolean comCargosLiberados) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
