@@ -52,25 +52,34 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * \n" +
-                    "FROM\n" +
-                    "  INTERVALO I\n" +
-                    "WHERE I.CPF_COLABORADOR = ? AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE\n" +
-                    "                                                                                     FROM COLABORADOR\n" +
-                    "                                                                                     WHERE CPF = ?) AND\n" +
-                    "      DATA_HORA_FIM IS NULL\n" +
-                    "      AND DATA_HORA_INICIO >= (SELECT MAX(DATA_HORA_INICIO)\n" +
-                    "                               FROM INTERVALO I\n" +
-                    "                               WHERE I.CPF_COLABORADOR = ?\n" +
-                    "                                     AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE\n" +
-                    "                                                                                       FROM COLABORADOR\n" +
+            stmt = conn.prepareStatement("SELECT " +
+                    "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
+                    "I.CODIGO AS CODIGO, " +
+                    "I.DATA_HORA_INICIO AT TIME ZONE ? AS DATA_HORA_INICIO, " +
+                    "I.VALIDO AS VALIDO, " +
+                    "I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
+                    "I.LATITUDE_INICIO AS LATITUDE_INICIO, " +
+                    "I.LONGITUDE_INICIO AS LONGITUDE_INICIO, " +
+                    "I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO " +
+                    "FROM INTERVALO I " +
+                    "WHERE I.CPF_COLABORADOR = ? AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE " +
+                    "                                                                                     FROM COLABORADOR " +
+                    "                                                                                     WHERE CPF = ?) AND " +
+                    "      DATA_HORA_FIM IS NULL " +
+                    "      AND DATA_HORA_INICIO >= (SELECT MAX(DATA_HORA_INICIO) " +
+                    "                               FROM INTERVALO I " +
+                    "                               WHERE I.CPF_COLABORADOR = ? " +
+                    "                                     AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE " +
+                    "                                                                                       FROM COLABORADOR " +
                     "                                                                                       WHERE CPF = ?));");
-            stmt.setLong(1, cpf);
-            stmt.setLong(2, tipoInvervalo.getCodigo());
-            stmt.setLong(3, cpf);
+
+            stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
+            stmt.setLong(2, cpf);
+            stmt.setLong(3, tipoInvervalo.getCodigo());
             stmt.setLong(4, cpf);
-            stmt.setLong(5, tipoInvervalo.getCodigo());
-            stmt.setLong(6, cpf);
+            stmt.setLong(5, cpf);
+            stmt.setLong(6, tipoInvervalo.getCodigo());
+            stmt.setLong(7, cpf);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createIntervaloAberto(rSet, conn);
@@ -329,8 +338,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                     " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ?, " +
                     "LATITUDE_INICIO = ?, LONGITUDE_INICIO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? " +
                     "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
-            final Long codUnidade = intervalo.getColaborador().getUnidade().getCodigo();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            final Long cpf = intervalo.getColaborador().getCpf();
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
             stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
             stmt.setObject(2, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
             stmt.setString(3, intervalo.getFonteDataHoraFim().key());
@@ -355,7 +364,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
                 stmt.setNull(10, Types.VARCHAR);
             }
 
-            stmt.setLong(11, intervalo.getColaborador().getCpf());
+            stmt.setLong(11, cpf);
             stmt.setLong(12, intervalo.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
