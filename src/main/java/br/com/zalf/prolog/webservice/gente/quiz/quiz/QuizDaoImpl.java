@@ -67,10 +67,11 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
         final List<Quiz> quizes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT Q.CODIGO AS CODIGO, " +
+            stmt = conn.prepareStatement("SELECT " +
+                    "Q.CODIGO AS CODIGO, " +
                     "Q.COD_MODELO AS COD_MODELO, " +
                     "Q.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "Q.NOME AS NOME, " +
+                    "QM.NOME AS NOME, " +
                     "Q.QT_CORRETAS AS QT_CORRETAS, " +
                     "Q.QT_ERRADAS AS QT_ERRADAS, " +
                     "Q.TEMPO_REALIZACAO AS TEMPO_REALIZACAO, " +
@@ -105,7 +106,7 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
             stmt = conn.prepareStatement("SELECT Q.CODIGO AS CODIGO, " +
                     "Q.COD_MODELO AS COD_MODELO, " +
                     "Q.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "Q.NOME AS NOME, " +
+                    "QM.NOME AS NOME, " +
                     "Q.QT_CORRETAS AS QT_CORRETAS, " +
                     "Q.QT_ERRADAS AS QT_ERRADAS, " +
                     "Q.TEMPO_REALIZACAO AS TEMPO_REALIZACAO, " +

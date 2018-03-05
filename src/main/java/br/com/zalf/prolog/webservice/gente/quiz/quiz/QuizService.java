@@ -30,7 +30,7 @@ public class QuizService {
             Log.e(TAG, String.format("Erro ao buscar os quizzes realizados do colaborador. \n" +
                     "cpf: %d \n" +
                     "limit: %d \n" +
-                    "offset: %d", cpf, limit, offset));
+                    "offset: %d", cpf, limit, offset), e);
             return null;
         }
     }
