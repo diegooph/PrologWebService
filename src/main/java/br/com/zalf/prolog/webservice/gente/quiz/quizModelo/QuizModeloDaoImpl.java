@@ -37,8 +37,9 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                     "QM.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                     "QM.DESCRICAO AS DESCRICAO, " +
                     "QM.NOME AS NOME, " +
-                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO " +
-                    "QMT.COD_TREINAMENTO FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
+                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO, " +
+                    "QMT.COD_TREINAMENTO " +
+                    "FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
                     "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
                     "  AND QM.CODIGO = QMF.COD_MODELO " +
                     "  LEFT JOIN QUIZ_MODELO_TREINAMENTO QMT ON QMT.COD_MODELO_QUIZ = QM.CODIGO AND " +
@@ -87,7 +88,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                     "QM.DATA_HORA_FECHAMENTO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
                     "QM.DESCRICAO AS DESCRICAO, " +
                     "QM.NOME AS NOME, " +
-                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO " +
+                    "QM.PORCENTAGEM_APROVACAO AS PORCENTAGEM_APROVACAO, " +
                     "QMT.COD_TREINAMENTO FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
                     "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
                     "  AND QM.CODIGO = QMF.COD_MODELO " +
@@ -229,13 +230,13 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         ResultSet rSet = null;
         List<Cargo> funcoes = new ArrayList<>();
         try {
-            stmt = conn.prepareStatement("SELECT F.* FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF;" +
-                    "  ON QM.cod_unidade = QMF.cod_unidade\n" +
-                    "  AND QM.codigo = QMF.cod_modelo\n" +
-                    "    JOIN UNIDADE_FUNCAO UF ON UF.cod_funcao = QMF.cod_funcao_colaborador AND UF.cod_unidade = QMF.cod_unidade\n" +
-                    "    JOIN FUNCAO F ON F.codigo = UF.cod_funcao\n" +
-                    "WHERE QMF.cod_unidade = ?\n" +
-                    "  AND QMF.cod_modelo = ?");
+            stmt = conn.prepareStatement("SELECT F.* FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
+                    "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
+                    "  AND QM.CODIGO = QMF.COD_MODELO " +
+                    "    JOIN UNIDADE_FUNCAO UF ON UF.COD_FUNCAO = QMF.COD_FUNCAO_COLABORADOR AND UF.COD_UNIDADE = QMF.COD_UNIDADE " +
+                    "    JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO " +
+                    "WHERE QMF.COD_UNIDADE = ? " +
+                    "  AND QMF.COD_MODELO = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloQuiz);
             rSet = stmt.executeQuery();
