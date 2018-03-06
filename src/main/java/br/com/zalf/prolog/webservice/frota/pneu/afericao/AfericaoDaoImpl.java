@@ -40,14 +40,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
-                    + "TEMPO_REALIZACAO, TIPO_AFERICAO) "
-                    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+                    + "TEMPO_REALIZACAO, TIPO_AFERICAO, COD_UNIDADE) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
             stmt.setObject(1, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setString(2, afericao.getVeiculo().getPlaca());
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
             stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
             stmt.setString(6, afericao.getTipoAfericao().asString());
+            stmt.setLong(7, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 afericao.setCodigo(rSet.getLong("CODIGO"));
