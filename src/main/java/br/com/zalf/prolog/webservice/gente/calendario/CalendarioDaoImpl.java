@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.calendario;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
@@ -28,28 +29,28 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
      * 4 - Busca os eventos exclusivos para uma unidade, independente da função e da equipe
      * 5 - Faz um union com todos os resultados
      */
-    private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+    private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
             + "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
             + "AND CAL.COD_EQUIPE IS NULL "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO IS NULL "
             + "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO IS NULL "
@@ -69,10 +70,15 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_EVENTOS);
-            stmt.setLong(1, cpf);
+            final String zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, cpf);
-            stmt.setLong(3, cpf);
+            stmt.setString(3, zoneId);
             stmt.setLong(4, cpf);
+            stmt.setString(5, zoneId);
+            stmt.setLong(6, cpf);
+            stmt.setString(7, zoneId);
+            stmt.setLong(8, cpf);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Evento evento = new Evento();
