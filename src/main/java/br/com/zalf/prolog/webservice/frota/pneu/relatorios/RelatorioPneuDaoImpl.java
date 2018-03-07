@@ -34,7 +34,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
     private static final String PNEUS_RESUMO_SULCOS = "SELECT COALESCE(ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_INTERNO, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
-            + "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
+            + "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) ORDER BY 1 DESC";
 
     private static final String RESUMO_SERVICOS = "SELECT AD.DATA,\n" +
             "       CAL.CAL_ABERTAS,\n" +
@@ -868,7 +868,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
                 "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
                 "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
+                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO AT TIME ZONE ?, 'DD/MM/YYYY HH:MM'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
                 "FROM PNEU P\n" +
                 "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
                 "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
@@ -900,8 +900,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
                 "WHERE P.cod_unidade = ?\n" +
                 "ORDER BY \"PNEU\"");
-        stmt.setLong(1, codUnidade);
+        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         stmt.setLong(2, codUnidade);
+        stmt.setLong(3, codUnidade);
         return stmt;
     }
 
