@@ -16,9 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,11 +167,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
                     "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
@@ -184,15 +182,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
                     "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
 
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             // Seta para calcular informações de pressão.
-            stmt.setString(1, TipoAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setString(2, zoneId.getId());
+            stmt.setString(3, TipoAfericao.PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
 
             // Seta para calcular informações de sulco.
-            stmt.setString(3, TipoAfericao.SULCO.asString());
-            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, codUnidade);
+            stmt.setObject(5, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setString(6, zoneId.getId());
+            stmt.setString(7, TipoAfericao.SULCO.asString());
+            stmt.setString(8, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setLong(9, codUnidade);
+            stmt.setLong(10, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (placas.size() == 0) {
