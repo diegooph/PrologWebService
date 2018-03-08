@@ -158,7 +158,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
         try {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
-            // TODO: Como lidar com o now() em banco? Podemos solicitar que seja em UTC?
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.placa,\n" +
                     " M.nome,\n" +
