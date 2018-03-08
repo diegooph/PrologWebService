@@ -33,7 +33,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
-                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE) VALUES "
+                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE, PIS) VALUES "
                     + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
@@ -57,6 +57,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(12, colaborador.getCodPermissao());
             stmt.setLong(13, colaborador.getCodEmpresa());
             stmt.setLong(14, colaborador.getEquipe().getCodigo());
+            stmt.setString(15, colaborador.getPis());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o colaborador");
@@ -89,7 +90,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "DATA_NASCIMENTO = ?, DATA_ADMISSAO = ?, "
                     + "STATUS_ATIVO = ?, NOME = ?, COD_SETOR = ?, "
                     + "COD_FUNCAO = ?, COD_UNIDADE = ?, COD_PERMISSAO = ?, "
-                    + "COD_EMPRESA = ?, COD_EQUIPE = ? "
+                    + "COD_EMPRESA = ?, COD_EQUIPE = ?, PIS = ? "
                     + "WHERE CPF = ?;");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
@@ -112,7 +113,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(11, colaborador.getCodPermissao());
             stmt.setLong(12, colaborador.getEmpresa().getCodigo());
             stmt.setLong(13, colaborador.getEquipe().getCodigo());
-            stmt.setLong(14, cpfAntigo);
+            stmt.setString(14, colaborador.getPis());
+            stmt.setLong(15, cpfAntigo);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o colaborador com CPF: " + cpfAntigo);
@@ -190,7 +192,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+            stmt = conn.prepareStatement("SELECT C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
                     + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
                     + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
                     ".LOGO_THUMBNAIL_URL, "
@@ -235,7 +237,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+            stmt = conn.prepareStatement("SELECT C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
                     + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
                     + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
                     ".LOGO_THUMBNAIL_URL, "
@@ -274,6 +276,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT\n" +
                     "  C.CPF,\n" +
+                    "  C.PIS,\n" +
                     "  C.MATRICULA_AMBEV,\n" +
                     "  C.MATRICULA_TRANS,\n" +
                     "  C.DATA_NASCIMENTO,\n" +
@@ -336,6 +339,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT\n" +
                     "  C.CPF,\n" +
+                    "  C.PIS,\n" +
                     "  C.MATRICULA_AMBEV,\n" +
                     "  C.MATRICULA_TRANS,\n" +
                     "  C.DATA_NASCIMENTO,\n" +
@@ -573,6 +577,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setSetor(setor);
 
         c.setCpf(rSet.getLong("CPF"));
+        c.setPis(rSet.getString("PIS"));
         c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
         c.setNome(rSet.getString("NOME_COLABORADOR"));
         c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
