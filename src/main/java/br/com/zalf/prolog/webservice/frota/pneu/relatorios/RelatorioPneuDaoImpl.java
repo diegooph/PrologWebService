@@ -905,9 +905,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
                 "WHERE P.cod_unidade = ?\n" +
                 "ORDER BY \"PNEU\"");
-        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(1, codUnidade);
         stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(3, codUnidade);
         stmt.setLong(3, codUnidade);
         return stmt;
     }
