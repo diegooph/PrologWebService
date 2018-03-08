@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
@@ -566,9 +567,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT (a.data_hora AT TIME ZONE (\n" +
-                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade((SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1))))::date as data,\n" +
+                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))::date as data,\n" +
                     "       to_char((a.data_hora AT TIME ZONE (\n" +
-                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade((SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)))), 'DD/MM') as data_formatada,\n" +
+                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade))), 'DD/MM') as data_formatada,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
@@ -632,39 +633,43 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT sum(\n" +
-                    "  case when (dados.intervalo_pressao > dados.periodo_afericao_pressao or dados.intervalo_pressao < 0) AND\n" +
-                    "    (dados.intervalo_sulco > dados.periodo_afericao_sulco or dados.intervalo_sulco < 0) then 1 else 0 end\n" +
-                    ") as total_vencidas,\n" +
-                    "count (dados.placa) as total_placas\n" +
+                    "           case when (dados.intervalo_pressao > dados.periodo_afericao_pressao or dados.intervalo_pressao < 0) AND\n" +
+                    "                     (dados.intervalo_sulco > dados.periodo_afericao_sulco or dados.intervalo_sulco < 0) then 1 else 0 end\n" +
+                    "       ) as total_vencidas,\n" +
+                    "       count (dados.placa) as total_placas\n" +
                     "FROM\n" +
-                    "  (SELECT\n" +
-                    "  V.placa,\n" +
-                    "  coalesce(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
-                    "  coalesce(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO,\n" +
-                    "  erp.periodo_afericao_pressao,\n" +
-                    "  erp.periodo_afericao_sulco\n" +
-                    "FROM VEICULO V\n" +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
-                    "  LEFT JOIN\n" +
-                    "  (SELECT\n" +
-                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
-                    "   FROM AFERICAO\n" +
-                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
-                    "  LEFT JOIN\n" +
-                    "  (SELECT\n" +
-                    "     PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "     EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO\n" +
-                    "   FROM AFERICAO\n" +
-                    "   WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "   GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
-                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
-            stmt.setString(1, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.PRESSAO.asString());
-            stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setString(4, TipoAfericao.SULCO.asString());
-            stmt.setArray(5, PostgresUtil.ListLongToArray(conn, codUnidades));
+                    "       (SELECT\n" +
+                    "               V.placa,\n" +
+                    "               coalesce(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
+                    "               coalesce(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO,\n" +
+                    "               erp.periodo_afericao_pressao,\n" +
+                    "               erp.periodo_afericao_sulco\n" +
+                    "        FROM VEICULO V\n" +
+                    "               JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
+                    "               LEFT JOIN\n" +
+                    "               (SELECT\n" +
+                    "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
+                    "                       EXTRACT(DAYS FROM ((? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(AF.cod_unidade)))\n" +
+                    "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
+                    "                FROM AFERICAO AF\n" +
+                    "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
+                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
+                    "               LEFT JOIN\n" +
+                    "               (SELECT\n" +
+                    "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
+                    "                       EXTRACT(DAYS FROM ((? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(AF.cod_unidade)))\n" +
+                    "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
+                    "                FROM AFERICAO AF\n" +
+                    "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
+                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
+                    "        WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
+            stmt.setDate(1, new Date(Now.utcMillis()));
+            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(3, TipoAfericao.PRESSAO.asString());
+            stmt.setDate(4, new Date(Now.utcMillis()));
+            stmt.setString(5, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setString(6, TipoAfericao.SULCO.asString());
+            stmt.setArray(7, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
@@ -893,7 +898,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "  (SELECT\n" +
                 "     AV.cod_pneu,\n" +
                 "     AV.cod_unidade   AS COD_UNIDADE_DATA,\n" +
-                "     MAX(A.data_hora) AS ULTIMA_AFERICAO\n" +
+                "     MAX(A.data_hora AT TIME ZONE ?) AS ULTIMA_AFERICAO\n" +
                 "   FROM AFERICAO A\n" +
                 "     JOIN afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
                 "   GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO\n" +
@@ -901,7 +906,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "WHERE P.cod_unidade = ?\n" +
                 "ORDER BY \"PNEU\"");
         stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(2, codUnidade);
+        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(3, codUnidade);
         stmt.setLong(3, codUnidade);
         return stmt;
     }
