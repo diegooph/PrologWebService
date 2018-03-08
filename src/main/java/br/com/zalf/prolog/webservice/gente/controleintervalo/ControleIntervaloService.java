@@ -21,7 +21,7 @@ import java.util.Optional;
 public class ControleIntervaloService {
 
     private static final String TAG = ControleIntervaloService.class.getSimpleName();
-    private ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
+    private DeprecatedControleIntervaloDao dao = Injection.provideControleIntervaloDao();
 
     public List<TipoIntervalo> getTiposIntervalos(Long codUnidade, boolean withCargos) {
         try {

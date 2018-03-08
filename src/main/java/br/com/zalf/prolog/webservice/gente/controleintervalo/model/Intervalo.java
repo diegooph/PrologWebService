@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by Zart on 18/08/2017.
  */
+@Deprecated
 public class Intervalo {
     private Long codigo;
     private TipoIntervalo tipo;

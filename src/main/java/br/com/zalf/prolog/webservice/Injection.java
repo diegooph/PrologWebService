@@ -47,8 +47,8 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DeprecatedControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DeprecatedControleIntervaloDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
@@ -213,8 +213,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static ControleIntervaloDao provideControleIntervaloDao() {
-        return new ControleIntervaloDaoImpl();
+    public static DeprecatedControleIntervaloDao provideControleIntervaloDao() {
+        return new DeprecatedControleIntervaloDaoImpl();
     }
 
     @NotNull
