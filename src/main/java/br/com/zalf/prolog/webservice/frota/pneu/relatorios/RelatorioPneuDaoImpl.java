@@ -574,9 +574,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
                     "FROM afericao a\n" +
-                    "WHERE (SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)::text\n" +
+                    "WHERE a.cod_unidade::text\n" +
                     "      like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ?\n" +
-                    "GROUP BY 1, 2\n" +
+                    "GROUP BY a.data_hora, data_formatada, a.cod_unidade\n" +
                     "ORDER BY a.data_hora::DATE ASC;");
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
@@ -653,7 +653,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
                     "                FROM AFERICAO AF\n" +
                     "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
+                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "               LEFT JOIN\n" +
                     "               (SELECT\n" +
                     "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
@@ -661,7 +661,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
                     "                FROM AFERICAO AF\n" +
                     "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
+                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "        WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
             stmt.setDate(1, new Date(Now.utcMillis()));
             stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
@@ -905,9 +905,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
                 "WHERE P.cod_unidade = ?\n" +
                 "ORDER BY \"PNEU\"");
-        stmt.setLong(1, codUnidade);
-        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(3, codUnidade);
+        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(2, codUnidade);
+        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(4, codUnidade);
         return stmt;
     }
 
