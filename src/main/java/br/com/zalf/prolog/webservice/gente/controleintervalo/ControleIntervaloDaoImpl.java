@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import org.jetbrains.annotations.NotNull;
@@ -100,41 +101,31 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         return null;
     }
 
+    @NotNull
     @Override
-    public List<IntervaloMarcacao> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
-                                                                    @NotNull final String codTipo,
-                                                                    final long limit,
-                                                                    final long offset) throws SQLException {
+    public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
+                                                            @NotNull final String codTipo,
+                                                            final long limit,
+                                                            final long offset) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<IntervaloMarcacao> intervalos = new ArrayList<>();
+        final List<Intervalo> intervalos = new ArrayList<>();
         try {
-//            conn = getConnection();
-//            stmt = conn.prepareStatement("SELECT i.codigo as cod_intervalo, it.CODIGO as codigo_tipo_intervalo, i.DATA_HORA_INICIO, i.DATA_HORA_FIM,\n" +
-//                    "i.JUSTIFICATIVA_ESTOURO, i.VALIDO, it.nome as nome_tipo_intervalo, it.ICONE, it.TEMPO_RECOMENDADO_MINUTOS, it.TEMPO_ESTOURO_MINUTOS,\n" +
-//                    "it.HORARIO_SUGERIDO,i.cod_unidade, it.ativo, ULTIMA_ABERTURA.*,\n" +
-//                    "  CASE WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO = ULTIMA_ABERTURA.ULTIMO_INICIO THEN\n" +
-//                    "  EXTRACT(EPOCH FROM now() - i.DATA_HORA_INICIO)\n" +
-//                    "  WHEN I.DATA_HORA_INICIO IS NULL THEN NULL\n" +
-//                    "  WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO <> ULTIMA_ABERTURA.ULTIMO_INICIO THEN NULL\n" +
-//                    "    ELSE EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) END  AS TEMPO_DECORRIDO\n" +
-//                    "FROM\n" +
-//                    "  INTERVALO I JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO\n" +
-//                    "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = ? \n" +
-//                    "GROUP BY 1,2) AS ULTIMA_ABERTURA ON ULTIMA_ABERTURA.COD_UNIDADE = I.COD_UNIDADE AND ULTIMA_ABERTURA.COD_TIPO_ULTIMO_INICIO = I.COD_TIPO_INTERVALO\n" +
-//                    "WHERE I.CPF_COLABORADOR = ? and i.cod_tipo_intervalo::text like ?\n" +
-//                    "ORDER BY cod_intervalo DESC " +
-//                    "LIMIT ? OFFSET ?;");
-//            stmt.setLong(1, cpf);
-//            stmt.setLong(2, cpf);
-//            stmt.setString(3, codTipo);
-//            stmt.setLong(4, limit);
-//            stmt.setLong(5, offset);
-//            rSet = stmt.executeQuery();
-//            while (rSet.next()){
-//                intervalos.add(createIntervalo(rSet, conn));
-//            }
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?) LIMIT ? OFFSET ?;");
+            stmt.setLong(1, cpf);
+            if (codTipo.equals("%")) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.valueOf(codTipo));
+            }
+            stmt.setLong(4, limit);
+            stmt.setLong(5, offset);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                intervalos.add(createIntervaloAgrupado(rSet));
+            }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -360,6 +351,44 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         } finally {
             closeConnection(null, stmt, null);
         }
+    }
+
+    @NotNull
+    private Intervalo createIntervaloAgrupado(@NotNull final ResultSet rSet) throws SQLException {
+        final Intervalo intervalo = new Intervalo();
+
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
+        intervalo.setColaborador(colaborador);
+
+        final TipoIntervalo tipoIntervalo = new TipoIntervalo();
+        tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
+        intervalo.setTipo(tipoIntervalo);
+
+        intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
+        intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
+        intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_INICIO")));
+        intervalo.setFonteDataHoraFim(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_FIM")));
+        intervalo.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
+        intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
+
+        final String latitudeInicio = rSet.getString("LATITUDE_MARCACAO_INICIO");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacao = new Localizacao();
+            localizacao.setLatitude(latitudeInicio);
+            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_INICIO"));
+            intervalo.setLocalizacaoInicio(localizacao);
+        }
+
+        final String latitudeFim = rSet.getString("LATITUDE_MARCACAO_FIM");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacao = new Localizacao();
+            localizacao.setLatitude(latitudeFim);
+            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_FIM"));
+            intervalo.setLocalizacaoFim(localizacao);
+        }
+
+        return intervalo;
     }
 
     private void associaCargosTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,

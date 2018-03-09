@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +25,12 @@ public interface ControleIntervaloDao {
                                                         @NotNull final Long cpf,
                                                         @NotNull final TipoIntervalo tipoInvervalo) throws SQLException;
 
-    List<IntervaloMarcacao> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
-                                                             @NotNull final String codTipo,
-                                                             final long limit,
-                                                             final long offset) throws SQLException;
+    @Nonnull
+    @NotNull
+    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
+                                                     @NotNull final String codTipo,
+                                                     final long limit,
+                                                     final long offset) throws SQLException;
 
     @NotNull
     Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,

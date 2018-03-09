@@ -65,7 +65,7 @@ public class ControleIntervaloService {
         }
     }
 
-    public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo,long limit ,long offset) {
+    public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo, long limit , long offset) {
         try {
             return dao.getIntervalosColaborador(cpf, codTipo, limit, offset);
         } catch (SQLException e) {
