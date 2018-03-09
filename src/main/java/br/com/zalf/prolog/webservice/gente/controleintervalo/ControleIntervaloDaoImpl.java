@@ -103,7 +103,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 
     @NotNull
     @Override
-    public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
+    public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
+                                                            @NotNull final Long cpf,
                                                             @NotNull final String codTipo,
                                                             final long limit,
                                                             final long offset) throws SQLException {

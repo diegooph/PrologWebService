@@ -91,7 +91,8 @@ public class DeprecatedControleIntervaloResource {
                                                     @PathParam("codTipoIntervalo") String codTipo,
                                                     @QueryParam("limit") long limit,
                                                     @QueryParam("offset") long offset) {
-        return service.getMarcacoesIntervaloColaborador(cpf, codTipo, limit, offset);
+        final Long codUnidade = new ColaboradorService().getCodUnidadeByCpf(cpf);
+        return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
     }
 
     @GET

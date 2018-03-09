@@ -65,9 +65,9 @@ public class ControleIntervaloService {
         }
     }
 
-    public List<Intervalo> getMarcacoesIntervaloColaborador(Long cpf, String codTipo, long limit , long offset) {
+    public List<Intervalo> getMarcacoesIntervaloColaborador(Long codUnidade, Long cpf, String codTipo, long limit, long offset) {
         try {
-            return dao.getMarcacoesIntervaloColaborador(cpf, codTipo, limit, offset);
+            return dao.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
                     "cpf: %s \n" +

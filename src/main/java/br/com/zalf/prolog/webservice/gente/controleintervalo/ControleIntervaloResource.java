@@ -73,12 +73,13 @@ public final class ControleIntervaloResource {
             Pilares.Gente.Intervalo.EDITAR_MARCACAO,
             Pilares.Gente.Intervalo.VALIDAR_INVALIDAR_MARCACAO,
             Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
-    @Path("/{cpf}/{codTipoIntervalo}")
-    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf,
+    @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
+    public List<Intervalo> getIntervalosColaborador(@PathParam("codUnidade") Long codUnidade,
+                                                    @PathParam("cpf") Long cpf,
                                                     @PathParam("codTipoIntervalo") String codTipo,
                                                     @QueryParam("limit") long limit,
                                                     @QueryParam("offset") long offset) {
-        return service.getMarcacoesIntervaloColaborador(cpf, codTipo, limit, offset);
+        return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
     }
 
     @GET

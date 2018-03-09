@@ -27,7 +27,8 @@ public interface ControleIntervaloDao {
 
     @Nonnull
     @NotNull
-    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long cpf,
+    List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
+                                                     @NotNull final Long cpf,
                                                      @NotNull final String codTipo,
                                                      final long limit,
                                                      final long offset) throws SQLException;
