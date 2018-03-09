@@ -21,14 +21,6 @@ public interface FaleConoscoDao {
 	Long insert(FaleConosco faleConosco, Long codUnidade) throws SQLException;
 
 	/**
-	 * Atualiza/Edita um FaleConosco existente no banco de dados
-	 * @param faleConosco contém o FaleConosco
-	 * @return resultado da requisição
-	 * @throws SQLException caso não seja possível atualizar/editar
-	 */
-	boolean update(FaleConosco faleConosco) throws SQLException;
-
-	/**
 	 * Busca um FaleConosco pelo código
 	 * @param codigo código do faleConosco
 	 * @param codUnidade código da unidade
