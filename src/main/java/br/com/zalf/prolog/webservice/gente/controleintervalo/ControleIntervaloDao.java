@@ -23,7 +23,7 @@ public interface ControleIntervaloDao {
     @Nullable
     IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
                                                         @NotNull final Long cpf,
-                                                        @NotNull final TipoIntervalo tipoInvervalo) throws SQLException;
+                                                        @NotNull final Long codTipoIntervalo) throws SQLException;
 
     @Nonnull
     @NotNull

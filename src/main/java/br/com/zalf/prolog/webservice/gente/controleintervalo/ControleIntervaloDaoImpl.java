@@ -50,7 +50,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
     @Override
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
                                                                @NotNull final Long cpf,
-                                                               @NotNull final TipoIntervalo tipoInvervalo)
+                                                               @NotNull final Long codTipoIntervalo)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -85,11 +85,11 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, cpf);
-            stmt.setLong(4, tipoInvervalo.getCodigo());
+            stmt.setLong(4, codTipoIntervalo);
             stmt.setString(5, TipoMarcacaoIntervalo.MARCACAO_INICIO.asString());
             stmt.setLong(6, codUnidade);
             stmt.setLong(7, cpf);
-            stmt.setLong(8, tipoInvervalo.getCodigo());
+            stmt.setLong(8, codTipoIntervalo);
             stmt.setString(9, TipoMarcacaoIntervalo.MARCACAO_FIM.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
