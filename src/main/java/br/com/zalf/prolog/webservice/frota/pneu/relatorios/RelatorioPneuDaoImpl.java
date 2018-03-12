@@ -691,8 +691,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT am.tipo_servico, " +
-                    "avg(extract(epoch from am.data_hora_resolucao - a.data_hora) / 3600)::INT as md_tempo_conserto_horas " +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.codigo " +
+                    "avg(extract(epoch from (am.data_hora_resolucao - a.data_hora)) / 3600)::INT as md_tempo_conserto_horas " +
+                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
                     "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
                     "GROUP BY am.tipo_servico;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
