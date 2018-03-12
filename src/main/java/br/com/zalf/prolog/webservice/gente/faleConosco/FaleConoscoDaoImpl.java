@@ -114,8 +114,8 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                     "      AND F.status LIKE ? " +
                     "      AND F.categoria LIKE ? " +
                     "      AND C.CPF::TEXT LIKE ? " +
-                    "      AND (F.DATA_HORA AT TIME ZONE ?)::date >= ?::date " +
-                    "      AND (F.DATA_HORA AT TIME ZONE ?)::date <= ?::date " +
+                    "      AND F.DATA_HORA::date >= (? AT TIME ZONE ?)::date " +
+                    "      AND F.DATA_HORA::date <= (? AT TIME ZONE ?)::date " +
                     "ORDER BY F.DATA_HORA " +
                     "LIMIT ? OFFSET ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
@@ -127,8 +127,8 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
             stmt.setString(6, categoria);
             stmt.setString(7, cpf);
             stmt.setDate(8, new java.sql.Date(dataInicial));
-            stmt.setDate(9, new java.sql.Date(dataFinal));
-            stmt.setString(10, zoneId.getId());
+            stmt.setString(9, zoneId.getId());
+            stmt.setDate(10, new java.sql.Date(dataFinal));
             stmt.setString(11, zoneId.getId());
             stmt.setInt(12, limit);
             stmt.setInt(13, offset);
