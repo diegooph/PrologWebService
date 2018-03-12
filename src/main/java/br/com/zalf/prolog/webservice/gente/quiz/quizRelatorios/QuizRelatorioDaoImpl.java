@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
@@ -47,14 +48,17 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection implements QuizRela
                 "  ) AS QT_APROVADOS, MAX(Q.qt_corretas) AS MAX_ACERTOS, MIN(q.qt_corretas) as MIN_ACERTOS FROM\n" +
                 "  COLABORADOR C LEFT JOIN QUIZ Q ON Q.cpf_colaborador = C.CPF\n" +
                 "  JOIN QUIZ_MODELO QM ON QM.CODIGO = Q.COD_MODELO AND QM.COD_UNIDADE = Q.COD_UNIDADE\n" +
-                "  WHERE Q.cod_modelo::TEXT LIKE ? and q.data_hora::DATE BETWEEN ? and ?\n" +
+                "  WHERE Q.cod_modelo::TEXT LIKE ? and q.data_hora::DATE BETWEEN (? AT TIME ZONE ?) and (? AT TIME ZONE ?)\n" +
                 "GROUP BY 1) AS REALIZADOS ON CPF_REALIZADOS = C.CPF\n" +
                 "WHERE c.status_ativo = true AND C.cod_unidade = ? AND C.status_ativo = TRUE\n" +
                 "ORDER BY \"REALIZADOS\" DESC;");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setString(1, codModeloQuiz);
         stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setLong(4, codUnidade);
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(5, zoneId);
+        stmt.setLong(6, codUnidade);
         return stmt;
     }
 
@@ -197,11 +201,14 @@ public class QuizRelatorioDaoImpl extends DatabaseConnection implements QuizRela
                 "join colaborador c on c.cpf = q.cpf_colaborador and c.cod_unidade = q.cod_unidade\n" +
                 "  join unidade u on u.codigo = c.cod_unidade and u.codigo = q.cod_unidade\n" +
                 "join funcao f on f.codigo = c.cod_funcao and f.cod_empresa = u.cod_empresa\n" +
-                "  WHERE Q.cod_unidade = ? AND Q.data_hora::DATE BETWEEN ? AND ?\n" +
+                "  WHERE Q.cod_unidade = ? AND Q.data_hora::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?)\n" +
                 "order by q.data_hora desc");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, DateUtils.toSqlDate(new Date(dataFinal)));
+        stmt.setString(5, zoneId);
         return stmt;
     }
 
