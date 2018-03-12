@@ -873,7 +873,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
                 "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
                 "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH:MM'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
+                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH24:MI'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
                 "FROM PNEU P\n" +
                 "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
                 "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
