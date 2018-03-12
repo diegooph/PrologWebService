@@ -59,6 +59,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "  I.CODIGO                          AS CODIGO, " +
+                    "  I.CODIGO_MARCACAO_POR_UNIDADE     AS COD_MARCACAO_POR_UNIDADE, " +
                     "  I.COD_UNIDADE                     AS COD_UNIDADE, " +
                     "  I.COD_TIPO_INTERVALO              AS COD_TIPO_INTERVALO, " +
                     "  I.CPF_COLABORADOR                 AS CPF_COLABORADOR, " +
@@ -69,7 +70,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                     "  I.JUSTIFICATIVA_ESTOURO           AS JUSTIFICATIVA_ESTOURO, " +
                     "  I.LATITUDE_MARCACAO               AS LATITUDE_MARCACAO, " +
                     "  I.LONGITUDE_MARCACAO              AS LONGITUDE_MARCACAO " +
-                    "FROM INTERVALO I " +
+                    "FROM VIEW_INTERVALO I " +
                     "WHERE I.COD_UNIDADE = ? " +
                     "      AND I.CPF_COLABORADOR = ? " +
                     "      AND I.COD_TIPO_INTERVALO = ? " +
