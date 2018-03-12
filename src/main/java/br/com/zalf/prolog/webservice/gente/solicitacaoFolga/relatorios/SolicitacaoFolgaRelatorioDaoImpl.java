@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
@@ -61,11 +62,14 @@ public class SolicitacaoFolgaRelatorioDaoImpl extends DatabaseConnection impleme
                 "FROM aux_data ad\n" +
                 "  left JOIN solicitacao_folga sf on ad.data = sf.data_solicitacao AND SF.status = 'AUTORIZADA'\n" +
                 "  left JOIN  colaborador c on c.cpf = sf.cpf_colaborador and c.cod_unidade = ?\n" +
-                "  WHERE AD.DATA >= ? and AD.DATA <= ? \n" +
+                "  WHERE AD.DATA >= (? AT TIME ZONE ?) and AD.DATA <= (? AT TIME ZONE ?) \n" +
                 "  GROUP BY 1;");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(5, zoneId);
         return stmt;
     }
 

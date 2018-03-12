@@ -147,20 +147,22 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     + "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
                     + "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CPF = SF.CPF_FEEDBACK "
                     + "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
-                    + "WHERE SF.DATA_FOLGA BETWEEN ? AND ? "
+                    + "WHERE SF.DATA_FOLGA BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
                     + "AND C.COD_UNIDADE = ? "
                     + "AND E.CODIGO::TEXT LIKE ? "
                     + "AND SF.STATUS LIKE ? "
                     + "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
                     + "ORDER BY SF.DATA_SOLICITACAO";
-
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt = conn.prepareStatement(query);
             stmt.setObject(1, dataInicial);
-            stmt.setObject(2, dataFinal);
-            stmt.setLong(3, codUnidade);
-            stmt.setString(4, codEquipe);
-            stmt.setString(5, status);
-            stmt.setString(6, cpfColaborador);
+            stmt.setString(2, zoneId);
+            stmt.setObject(3, dataFinal);
+            stmt.setString(4, zoneId);
+            stmt.setLong(5, codUnidade);
+            stmt.setString(6, codEquipe);
+            stmt.setString(7, status);
+            stmt.setString(8, cpfColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 list.add(createSolicitacaoFolga(rSet));
