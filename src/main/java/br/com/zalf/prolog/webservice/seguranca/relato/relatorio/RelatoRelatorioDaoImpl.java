@@ -66,7 +66,8 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT COUNT(R.CODIGO) AS TOTAL FROM RELATO R " +
-                    "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND R.DATA_HORA_DATABASE::DATE = ?;");
+                    "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "AND R.DATA_HORA_DATABASE::DATE = (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(R.COD_UNIDADE)));");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             stmt.setObject(2, LocalDate.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
