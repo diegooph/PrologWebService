@@ -63,6 +63,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                     "  I.COD_UNIDADE                     AS COD_UNIDADE, " +
                     "  I.COD_TIPO_INTERVALO              AS COD_TIPO_INTERVALO, " +
                     "  I.CPF_COLABORADOR                 AS CPF_COLABORADOR, " +
+                    "  C.DATA_NASCIMENTO                 AS DATA_NASCIMENTO_COLABORADOR, " +
                     "  I.DATA_HORA AT TIME ZONE ?        AS DATA_HORA, " +
                     "  I.TIPO_MARCACAO                   AS TIPO_MARCACAO, " +
                     "  I.FONTE_DATA_HORA                 AS FONTE_DATA_HORA, " +
@@ -71,6 +72,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                     "  I.LATITUDE_MARCACAO               AS LATITUDE_MARCACAO, " +
                     "  I.LONGITUDE_MARCACAO              AS LONGITUDE_MARCACAO " +
                     "FROM VIEW_INTERVALO I " +
+                    "JOIN COLABORADOR C ON I.CPF_COLABORADOR = C.CPF " +
                     "WHERE I.COD_UNIDADE = ? " +
                     "      AND I.CPF_COLABORADOR = ? " +
                     "      AND I.COD_TIPO_INTERVALO = ? " +
@@ -485,6 +487,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         intervaloMarcacao.setCodMarcacaoPorUnidade(rSet.getLong("COD_MARCACAO_POR_UNIDADE"));
         intervaloMarcacao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         intervaloMarcacao.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
+        intervaloMarcacao.setDataNascimentoColaborador(rSet.getDate("DATA_NASCIMENTO_COLABORADOR"));
         intervaloMarcacao.setCodTipoIntervalo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervaloMarcacao.setDataHoraMaracao(rSet.getObject("DATA_HORA", LocalDateTime.class));
         intervaloMarcacao.setFonteDataHora(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA")));

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created on 08/03/2018
@@ -21,6 +22,8 @@ public final class IntervaloMarcacao {
     private Long codUnidade;
     @NotNull
     private Long cpfColaborador;
+    @NotNull
+    private Date dataNascimentoColaborador;
     @NotNull
     private LocalDateTime dataHoraMaracao;
     @NotNull
@@ -81,6 +84,15 @@ public final class IntervaloMarcacao {
 
     public void setCpfColaborador(@NotNull Long cpfColaborador) {
         this.cpfColaborador = cpfColaborador;
+    }
+
+    @NotNull
+    public Date getDataNascimentoColaborador() {
+        return dataNascimentoColaborador;
+    }
+
+    public void setDataNascimentoColaborador(@NotNull final Date dataNascimentoColaborador) {
+        this.dataNascimentoColaborador = dataNascimentoColaborador;
     }
 
     @NotNull
@@ -145,6 +157,7 @@ public final class IntervaloMarcacao {
                 ", codTipoIntervalo=" + codTipoIntervalo +
                 ", codUnidade=" + codUnidade +
                 ", cpfColaborador=" + cpfColaborador +
+                ", dataNascimentoColaborador='" + dataNascimentoColaborador + '\'' +
                 ", dataHoraMaracao=" + dataHoraMaracao +
                 ", fonteDataHora=" + fonteDataHora +
                 ", tipoMarcacaoIntervalo=" + tipoMarcacaoIntervalo +
