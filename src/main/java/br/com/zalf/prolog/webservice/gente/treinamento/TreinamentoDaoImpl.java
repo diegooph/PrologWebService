@@ -49,47 +49,53 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "FROM TREINAMENTO T " +
                     "LEFT JOIN RESTRICAO_TREINAMENTO RT ON T.CODIGO = RT.COD_TREINAMENTO " +
                     "WHERE T.COD_UNIDADE = ? " +
-                    "AND (? = 1 OR T.DATA_LIBERACAO::DATE <= ?) " +
+                    "AND (? = 1 OR T.DATA_LIBERACAO::DATE <= (? AT TIME ZONE ?)) " +
                     "AND (? = 1 OR RT.COD_FUNCAO::TEXT LIKE ?) " +
-                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= ?) " +
-                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= ?) " +
+                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= (? AT TIME ZONE ?)) " +
+                    "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= (? AT TIME ZONE ?)) " +
                     "GROUP BY T.CODIGO " +
                     "ORDER BY T.DATA_HORA_CADASTRO " +
                     "LIMIT ? OFFSET ?;");
-
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, codUnidade);
 
             if (apenasTreinamentosLiberados) {
                 stmt.setInt(3, 0);
                 stmt.setObject(4, LocalDate.now(Clock.systemUTC()));
+                stmt.setString(5, zoneId);
             } else {
                 stmt.setInt(3, 1);
                 stmt.setNull(4, Types.DATE);
+                stmt.setNull(5, Types.CHAR);
             }
 
             if (codFuncao == null) {
-                stmt.setInt(5, 1);
-                stmt.setString(6, "");
+                stmt.setInt(6, 1);
+                stmt.setString(7, "");
             } else {
-                stmt.setInt(5, 0);
-                stmt.setString(6, String.valueOf(codFuncao));
+                stmt.setInt(6, 0);
+                stmt.setString(7, String.valueOf(codFuncao));
             }
 
             if (dataInicial == null || dataFinal == null) {
-                stmt.setInt(7, 1);
-                stmt.setNull(8, Types.DATE);
-                stmt.setInt(9, 1);
-                stmt.setNull(10, Types.DATE);
+                stmt.setInt(8, 1);
+                stmt.setNull(9, Types.DATE);
+                stmt.setNull(10, Types.CHAR);
+                stmt.setInt(11, 1);
+                stmt.setNull(12, Types.DATE);
+                stmt.setNull(13, Types.CHAR);
             } else {
-                stmt.setInt(7, 0);
-                stmt.setDate(8, new java.sql.Date(dataInicial));
-                stmt.setInt(9, 0);
-                stmt.setDate(10, new java.sql.Date(dataFinal));
+                stmt.setInt(8, 0);
+                stmt.setDate(9, new java.sql.Date(dataInicial));
+                stmt.setString(10, zoneId);
+                stmt.setInt(11, 0);
+                stmt.setDate(12, new java.sql.Date(dataFinal));
+                stmt.setString(13, zoneId);
             }
 
-            stmt.setLong(11, limit);
-            stmt.setLong(12, offset);
+            stmt.setLong(14, limit);
+            stmt.setLong(15, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Treinamento t = createTreinamento(rSet);
