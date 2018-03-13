@@ -251,17 +251,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
-                    + "AND A.DATA_HORA::DATE BETWEEN ? AND ? "
+                    + "AND A.DATA_HORA::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, codTipoVeiculo);
             stmt.setString(4, placaVeiculo);
             stmt.setDate(5, new java.sql.Date(dataInicial));
-            stmt.setDate(6, new java.sql.Date(dataFinal));
-            stmt.setInt(7, limit);
-            stmt.setLong(8, offset);
+            stmt.setString(6, zoneId);
+            stmt.setDate(7, new java.sql.Date(dataFinal));
+            stmt.setString(8, zoneId);
+            stmt.setInt(9, limit);
+            stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 afericoes.add(createAfericaoResumida(rSet));
