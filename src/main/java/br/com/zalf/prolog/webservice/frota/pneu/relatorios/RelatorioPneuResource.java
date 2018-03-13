@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.ResumoServicos;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
@@ -46,14 +45,6 @@ public class RelatorioPneuResource {
                                                  @PathParam("mes") int mes,
                                                  @PathParam("codUnidade") Long codUnidade) {
         return service.getAderenciaByUnidade(ano, mes, codUnidade);
-    }
-
-    @GET
-    @Path("resumoServicos/{ano}/{mes}")
-    public List<ResumoServicos> getResumoServicosByUnidades(@PathParam("ano") int ano,
-                                                            @PathParam("mes") int mes,
-                                                            @QueryParam("codUnidades") List<String> codUnidades) {
-        return service.getResumoServicosByUnidades(ano, mes, codUnidades);
     }
 
     @GET

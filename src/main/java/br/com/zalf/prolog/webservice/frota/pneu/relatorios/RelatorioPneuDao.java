@@ -51,17 +51,6 @@ public interface RelatorioPneuDao {
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
 
     /**
-     * busca um resumo de serviços com base em um filtro
-     *
-     * @param ano         ano a ser buscado
-     * @param mes         mes a ser buscado
-     * @param codUnidades código da unidade
-     * @return lista de serviços
-     * @throws SQLException se ocorrer erro no banco de dados
-     */
-    List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException;
-
-    /**
      * /**
      * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
      *
