@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico.relatorios;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
@@ -137,12 +138,15 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "JOIN checklist_alternativa_pergunta cap ON cap.cod_unidade = cp.cod_unidade AND cap.cod_checklist_modelo = cp.cod_checklist_modelo " +
                 "AND cap.cod_pergunta = cp.codigo AND cap.codigo = cr.cod_alternativa " +
                 "AND cr.cod_checklist = c.codigo AND cr.cod_pergunta = cp.codigo AND cr.cod_alternativa = cap.codigo " +
-                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN ? and ? " +
+                "WHERE c.cod_unidade = ? and c.data_hora BETWEEN (? AT TIME ZONE ?) and (? AT TIME ZONE ?) " +
                 "GROUP BY 1, 2, 3 " +
                 "ORDER BY trunc((sum( case when cr.resposta <> 'OK' then 1 else 0 end ) / count(cp.pergunta)::float) * 100) desc");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, dataFinal);
+        stmt.setString(5, zoneId);
         return stmt;
     }
 
@@ -170,13 +174,16 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "   trunc(extract(epoch from avg(data_hora_conserto - " +
                 "   estratificacao_os.data_hora))) as md_tempo_conserto_segundos " +
                 "FROM estratificacao_os " +
-                "WHERE cod_unidade = ? AND data_hora BETWEEN ? AND ? " +
+                "WHERE cod_unidade = ? AND data_hora BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
                 "GROUP BY 1, 2, 3, 4) as dados " +
                 "ORDER BY round((qt_resolvidos_dentro_prazo / qt_apontados::float) * 100) " +
                 "desc;");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, dataFinal);
+        stmt.setString(5, zoneId);
         return stmt;
     }
 
@@ -190,12 +197,15 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "round(avg(tempo_realizacao/3600000)) as \"HORAS POR CONSERTO\" " +
                 "FROM estratificacao_os " +
                 "WHERE tempo_realizacao is not null and tempo_realizacao > 0 and " +
-                "cod_unidade = ? and data_hora BETWEEN ? AND ? " +
+                "cod_unidade = ? and data_hora BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
                 "GROUP BY 1 " +
                 "ORDER BY nome_mecanico;");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
+        stmt.setString(3, zoneId);
+        stmt.setDate(4, dataFinal);
+        stmt.setString(5, zoneId);
         return stmt;
     }
 
@@ -227,16 +237,19 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
                 "  km_fechamento                                                             AS \"KM FECHAMENTO\", " +
                 "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\" " +
                 "FROM estratificacao_os " +
-                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora::DATE BETWEEN ? AND ?) AND " +
+                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?)) AND " +
                 "      status_os LIKE ? AND " +
                 "      status_item LIKE ? " +
                 "ORDER BY OS, \"PRAZO EM HORAS\";");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placa);
         stmt.setDate(3, dataInicial);
-        stmt.setDate(4, dataFinal);
-        stmt.setString(5, statusOs);
-        stmt.setString(6, statusItem);
+        stmt.setString(4, zoneId);
+        stmt.setDate(5, dataFinal);
+        stmt.setString(6, zoneId);
+        stmt.setString(7, statusOs);
+        stmt.setString(8, statusItem);
         return stmt;
     }
 
