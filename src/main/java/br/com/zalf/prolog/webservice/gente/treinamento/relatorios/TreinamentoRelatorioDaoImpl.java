@@ -33,7 +33,8 @@ public class TreinamentoRelatorioDaoImpl extends DatabaseConnection implements T
             stmt = conn.prepareStatement("SELECT " +
                     "LPAD(tc.cpf_colaborador :: TEXT, 11, '0')                          AS CPF, " +
                     "c.nome                                                             AS COLABORADOR, " +
-                    "t.descricao                                                        AS TREINAMENTO, " +
+                    "t.titulo                                                           AS TITULO_TREINAMENTO, " +
+                    "t.descricao                                                        AS DESCRICAO_TREINAMENTO, " +
                     "to_char(tc.data_visualizacao AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') AS ULTIMA_VISUALIZACAO " +
                     "FROM treinamento_colaborador tc " +
                     "JOIN treinamento t ON tc.cod_treinamento = t.codigo " +
