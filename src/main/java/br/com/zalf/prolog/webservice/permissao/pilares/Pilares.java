@@ -139,6 +139,7 @@ public final class Pilares {
             public static final int FALE_CONOSCO = 331;
             public static final int SOLICITACAO_FOLGA = 332;
             public static final int INTERVALOS = 342;
+            public static final int TREINAMENTOS = 343;
         }
 
         public final class Treinamentos {
