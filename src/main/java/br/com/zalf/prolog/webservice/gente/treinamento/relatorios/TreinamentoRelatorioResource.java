@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -22,12 +23,12 @@ public class TreinamentoRelatorioResource {
     private final TreinamentoRelatorioService service = new TreinamentoRelatorioService();
 
     @GET
-    @Path("visualizados/{codUnidade}/csv")
-    @Secured()
+    @Path("visualizados-por-colaborador/{codUnidade}/csv")
+    @Secured(permissions = Pilares.Gente.Relatorios.TREINAMENTOS)
     @Produces("application/csv")
     public StreamingOutput getRelatorioEstratificadoPorColaborador(@Required @PathParam("codUnidade") Long codUnidade,
-                                                                   @QueryParam("dataInicial") String dataInicial,
-                                                                   @QueryParam("dataFinal") String dataFinal) {
+                                                                   @Required @QueryParam("dataInicial") String dataInicial,
+                                                                   @Required @QueryParam("dataFinal") String dataFinal) {
         return service.getRelatorioEstratificadoPorColaboradorCsv(codUnidade, dataInicial, dataFinal);
     }
 }
