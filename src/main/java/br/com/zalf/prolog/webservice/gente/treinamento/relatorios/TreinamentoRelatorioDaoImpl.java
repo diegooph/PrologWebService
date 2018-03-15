@@ -30,24 +30,12 @@ public class TreinamentoRelatorioDaoImpl extends DatabaseConnection implements T
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "LPAD(tc.cpf_colaborador :: TEXT, 11, '0')                          AS CPF, " +
-                    "c.nome                                                             AS COLABORADOR, " +
-                    "t.titulo                                                           AS TITULO_TREINAMENTO, " +
-                    "t.descricao                                                        AS DESCRICAO_TREINAMENTO, " +
-                    "to_char(tc.data_visualizacao AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI') AS ULTIMA_VISUALIZACAO " +
-                    "FROM treinamento_colaborador tc " +
-                    "JOIN treinamento t ON tc.cod_treinamento = t.codigo " +
-                    "JOIN colaborador c ON tc.cpf_colaborador = c.cpf " +
-                    "WHERE T.cod_unidade = ? " +
-                    "      AND tc.data_visualizacao >= ? " +
-                    "      AND tc.data_visualizacao <= ? " +
-                    "ORDER BY c.nome;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_TREINAMENTO_VISUALIZADOS_POR_COLABORADOR(?, ?, ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setString(1, zoneId);
-            stmt.setLong(2, codUnidade);
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
+            stmt.setObject(1, dataInicial);
+            stmt.setObject(2, dataFinal);
+            stmt.setString(3, zoneId);
+            stmt.setLong(4, codUnidade);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
