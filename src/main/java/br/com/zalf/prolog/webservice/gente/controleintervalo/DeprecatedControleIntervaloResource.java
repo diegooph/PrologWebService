@@ -225,7 +225,7 @@ public class DeprecatedControleIntervaloResource {
 
         final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(marcacao.getCodUnidade());
         final LocalDateTime dataAtual = LocalDateTime.now(zoneId);
-        intervalo.setTempoDecorrido(Duration.ofMillis(ChronoUnit.MILLIS.between(dataAtual, intervalo.getDataHoraInicio())));
+        intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(intervalo.getDataHoraInicio(), dataAtual))));
 
         return intervalo;
     }
