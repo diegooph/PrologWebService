@@ -13,6 +13,7 @@ import java.sql.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -115,24 +116,41 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Intervalo> intervalos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?) LIMIT ? OFFSET ?;");
-            stmt.setLong(1, cpf);
-            if (codTipo.equals("%")) {
-                stmt.setNull(2, Types.BIGINT);
-            } else {
-                stmt.setLong(3, Long.valueOf(codTipo));
-            }
-            stmt.setLong(4, limit);
-            stmt.setLong(5, offset);
-            rSet = stmt.executeQuery();
-            while (rSet.next()){
-                intervalos.add(createIntervaloAgrupado(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
+//        try {
+//            conn = getConnection();
+//            stmt = conn.prepareStatement("SELECT " +
+//                    "I.COD_UNIDADE AS COD_UNIDADE, " +
+//                    "I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
+//                    "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
+//                    "I.DATA_HORA_INICIO AT TIME ZONE ? AS DATA_HORA_INICIO, " +
+//                    "I.DATA_HORA_FIM AT TIME ZONE ?  AS DATA_HORA_FIM, " +
+//                    "I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO, " +
+//                    "I.FONTE_DATA_HORA_FIM AS FONTE_DATA_HORA_FIM, " +
+//                    "I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
+//                    "I.JUSTIFICATIVA_ESTOURO AS JUSTIFICATIVA_ESTOURO, " +
+//                    "I.LATITUDE_MARCACAO_INICIO AS LATITUDE_MARCACAO_INICIO, " +
+//                    "I.LATITUDE_MARCACAO_FIM AS LATITUDE_MARCACAO_FIM, " +
+//                    "I.LONGITUDE_MARCACAO_INICIO AS LONGITUDE_MARCACAO_INICIO, " +
+//                    "I.LONGITUDE_MARCACAO_FIM AS LONGITUDE_MARCACAO_FIM " +
+//                    "FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?, NULL) I LIMIT ? OFFSET ?;");
+//            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+//            stmt.setString(1, zoneId.getId());
+//            stmt.setString(2, zoneId.getId());
+//            stmt.setLong(3, cpf);
+//            if (codTipo.equals("%")) {
+//                stmt.setNull(4, Types.BIGINT);
+//            } else {
+//                stmt.setLong(4, Long.valueOf(codTipo));
+//            }
+//            stmt.setLong(5, limit);
+//            stmt.setLong(6, offset);
+//            rSet = stmt.executeQuery();
+//            while (rSet.next()){
+//                intervalos.add(createIntervaloAgrupado(rSet));
+//            }
+//        } finally {
+//            closeConnection(conn, stmt, rSet);
+//        }
         return intervalos;
     }
 
@@ -365,14 +383,21 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
         intervalo.setColaborador(colaborador);
 
+        // TODO: Recuperar nome do tipo de intervalo.
         final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
 
         intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
         intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
-        intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_INICIO")));
-        intervalo.setFonteDataHoraFim(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA_FIM")));
+        final String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
+        if (!rSet.wasNull()) {
+            intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
+        }
+        final String fonteDataHoraFim = rSet.getString("FONTE_DATA_HORA_FIM");
+        if (!rSet.wasNull()) {
+            intervalo.setFonteDataHoraFim(FonteDataHora.fromString(fonteDataHoraFim));
+        }
         intervalo.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
         intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
 
@@ -390,6 +415,16 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
             localizacao.setLatitude(latitudeFim);
             localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_FIM"));
             intervalo.setLocalizacaoFim(localizacao);
+        }
+
+        // Cálculo do tempo decorrido.
+        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
+        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+        if (dataHoraInicio != null && dataHoraFim != null) {
+            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
+        } else if (dataHoraFim == null) {
+            // TODO: Precisamos trocar esse cálculo para contecer no app.
+//            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
         }
 
         return intervalo;
