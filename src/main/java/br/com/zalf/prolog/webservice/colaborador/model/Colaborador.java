@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class Colaborador {
 	private Long cpf;
+	private String pis;
 	private Date dataNascimento;
 	private Cargo funcao;
 	private Setor setor;
@@ -70,6 +71,10 @@ public class Colaborador {
 		return cpf;
 	}
 
+	public String getPis() {
+		return pis;
+	}
+
 	public String getCpfAsString() {
 		// Preenche com 0 a esquerda caso CPF tenha menos do que 11 caracteres.
 		return String.format("%011d", cpf);
@@ -77,6 +82,10 @@ public class Colaborador {
 
 	public void setCpf(Long cpf) {
 		this.cpf = cpf;
+	}
+
+	public void setPis(String pis) {
+		this.pis = pis;
 	}
 
 	public Date getDataNascimento() {
@@ -181,6 +190,7 @@ public class Colaborador {
 	public String toString() {
 		return "Colaborador{" +
 				"cpf=" + cpf +
+				", pis=" + pis +
 				", dataNascimento=" + dataNascimento +
 				", funcao=" + funcao +
 				", setor=" + setor +

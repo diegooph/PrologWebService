@@ -103,10 +103,10 @@ public class DEPRECATED_CHECKLIST_RESOURCE {
 			@PathParam("placa") String placa,
 			@HeaderParam("Authorization") String userToken) {
 
-		// Por conta da integração com o AvaCorp, vamos forçar que os usuários de Santa Cruz do Sul não possam utilizar
+		// Por conta da integração com o AvaCorp, vamos forçar que os usuários da Avilan não possam utilizar
 		// esse path e atualizem o app para utilizar os paths: checklists/novo/{codUnidade}/{codModelo}/{placa}/saida
 		// e checklists/novo/{codUnidade}/{codModelo}/{placa}/saida.
-		if (codUnidade.equals(4L)) {
+		if (codUnidade.equals(4L) || codUnidade.equals(3L) || codUnidade.equals(2L)) {
 			throw new IllegalStateException("É preciso atualizar o aplicativo para usar a nova versão do checklist");
 		}
 		return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);

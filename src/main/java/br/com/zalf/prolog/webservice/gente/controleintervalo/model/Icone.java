@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public enum Icone {
     ALIMENTACAO("ALIMENTACAO"),

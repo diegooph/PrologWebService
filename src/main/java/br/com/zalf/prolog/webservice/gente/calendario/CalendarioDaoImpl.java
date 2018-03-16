@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.calendario;
 
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
@@ -28,28 +29,28 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
      * 4 - Busca os eventos exclusivos para uma unidade, independente da função e da equipe
      * 5 - Faz um union com todos os resultados
      */
-    private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+    private static final String BUSCA_EVENTOS = "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
             + "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO = C.COD_FUNCAO "
             + "AND CAL.COD_EQUIPE IS NULL "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO IS NULL "
             + "AND CAL.COD_EQUIPE = C.COD_EQUIPE "
             + "WHERE C.CPF=? "
             + "UNION "
-            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA, CAL.LOCAL FROM "
+            + "SELECT CAL.CODIGO, CAL.DESCRICAO, CAL.DATA AT TIME ZONE ?, CAL.LOCAL FROM "
             + "COLABORADOR C JOIN CALENDARIO CAL ON "
             + "CAL.COD_UNIDADE = C.COD_UNIDADE "
             + "AND CAL.COD_FUNCAO IS NULL "
@@ -69,10 +70,15 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(BUSCA_EVENTOS);
-            stmt.setLong(1, cpf);
+            final String zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, cpf);
-            stmt.setLong(3, cpf);
+            stmt.setString(3, zoneId);
             stmt.setLong(4, cpf);
+            stmt.setString(5, zoneId);
+            stmt.setLong(6, cpf);
+            stmt.setString(7, zoneId);
+            stmt.setLong(8, cpf);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final Evento evento = new Evento();
@@ -99,20 +105,22 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
         final EmpresaDao empresaDao = Injection.provideEmpresaDao();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM \n" +
-                    "(SELECT c.data, c.codigo, c.descricao, c.local, coalesce(c.cod_funcao, c.cod_funcao, -1) as " +
-                    "cod_funcao, f.nome as funcao,\n" +
-                    "coalesce(c.cod_unidade, c.cod_unidade, -1) as cod_unidade, u.nome as unidade,\n" +
-                    "coalesce(c.cod_equipe, c.cod_equipe, -1) as cod_equipe, eq.nome as equipe\n" +
-                    "FROM calendario c  \n" +
-                    "join unidade u on u.codigo = c.cod_unidade  \n" +
-                    "join empresa e on e.codigo = u.cod_empresa\n" +
-                    "left join funcao f on f.codigo = c.cod_funcao\n" +
-                    "left join equipe eq on eq.cod_unidade = c.cod_unidade and eq.codigo = c.cod_equipe\n" +
-                    "WHERE E.CODIGO = ? AND C.data::DATE BETWEEN ? and ?) as f\n" +
-                    "WHERE F.cod_unidade::TEXT LIKE ?\n" +
-                    "AND F.cod_equipe::TEXT LIKE ? AND\n" +
-                    "  F.cod_funcao::TEXT LIKE ?");
+            stmt = conn.prepareStatement("SELECT * FROM " +
+                    "  (SELECT c.data, c.codigo, c.descricao, c.local, coalesce(c.cod_funcao, c.cod_funcao, -1) as cod_funcao, " +
+                    "     f.nome as funcao, " +
+                    "     coalesce(c.cod_unidade, c.cod_unidade, -1) as cod_unidade, u.nome as unidade, " +
+                    "     coalesce(c.cod_equipe, c.cod_equipe, -1) as cod_equipe, eq.nome as equipe " +
+                    "   FROM calendario c " +
+                    "     join unidade u on u.codigo = c.cod_unidade " +
+                    "     join empresa e on e.codigo = u.cod_empresa " +
+                    "     left join funcao f on f.codigo = c.cod_funcao " +
+                    "     left join equipe eq on eq.cod_unidade = c.cod_unidade and eq.codigo = c.cod_equipe " +
+                    "   WHERE E.CODIGO = ? " +
+                    "         AND C.data::DATE BETWEEN (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(c.cod_unidade))) " +
+                    "         and (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(c.cod_unidade)))) as f " +
+                    "WHERE F.cod_unidade::TEXT LIKE ? " +
+                    "      AND F.cod_equipe::TEXT LIKE ? " +
+                    "      AND F.cod_funcao::TEXT LIKE ?;");
             stmt.setLong(1, codEmpresa);
             stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
             stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));

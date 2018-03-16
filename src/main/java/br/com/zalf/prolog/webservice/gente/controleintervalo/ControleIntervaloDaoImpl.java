@@ -6,83 +6,98 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by Zart on 18/08/2017.
+ * Created on 08/03/2018
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
+public final class ControleIntervaloDaoImpl extends DatabaseConnection implements ControleIntervaloDao {
 
-    private static final String TAG = ControleIntervaloDaoImpl.class.getSimpleName();
+    public ControleIntervaloDaoImpl() {
 
-    @Override
-    public List<TipoIntervalo> getTiposIntervalosByUnidade(Long codUnidade, boolean withCargos) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<TipoIntervalo> tipos = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS NOME_TIPO_INTERVALO, " +
-                    " IT.COD_UNIDADE, IT.ATIVO, IT.HORARIO_SUGERIDO, IT.ICONE, IT.TEMPO_ESTOURO_MINUTOS, IT.TEMPO_RECOMENDADO_MINUTOS FROM\n" +
-                    "  INTERVALO_TIPO_CARGO ITC JOIN INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC.COD_TIPO_INTERVALO = IT.CODIGO\n" +
-                    " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return tipos;
     }
 
     @Override
-    public Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws SQLException {
+    public void insertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            // Se a marcação já existir, nós não tentamos inserir novamente e simplemente não fazemos nada. Isso garante
+            // um retorno OK para o app e assim a marcação será colocada como sincronizada. É importante tratar esse
+            // cenário pois o app pode tentar sincronizar uma marcação, ela ser inserida com sucesso, mas a conexão
+            // com o servidor se perder nesse meio tempo, aí o app acha, erroneamente, que a marcação ainda não foi
+            // sincronizada.
+            if (!marcacaoIntervaloJaExiste(intervaloMarcacao, conn)) {
+                internalInsertMarcacaoIntervalo(intervaloMarcacao, conn);
+            }
+        } finally {
+            closeConnection(conn, null, null);
+        }
+    }
+
+    @Nullable
+    @Override
+    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final Long codUnidade,
+                                                               @NotNull final Long cpf,
+                                                               @NotNull final Long codTipoIntervalo)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
-                    "I.CODIGO AS CODIGO, " +
-                    "I.DATA_HORA_INICIO AT TIME ZONE ? AS DATA_HORA_INICIO, " +
-                    "I.VALIDO AS VALIDO, " +
-                    "I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
-                    "I.LATITUDE_INICIO AS LATITUDE_INICIO, " +
-                    "I.LONGITUDE_INICIO AS LONGITUDE_INICIO, " +
-                    "I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO " +
-                    "FROM INTERVALO I " +
-                    "WHERE I.CPF_COLABORADOR = ? AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE " +
-                    "                                                                                     FROM COLABORADOR " +
-                    "                                                                                     WHERE CPF = ?) AND " +
-                    "      DATA_HORA_FIM IS NULL " +
-                    "      AND DATA_HORA_INICIO >= (SELECT MAX(DATA_HORA_INICIO) " +
-                    "                               FROM INTERVALO I " +
-                    "                               WHERE I.CPF_COLABORADOR = ? " +
-                    "                                     AND I.COD_TIPO_INTERVALO = ? AND I.COD_UNIDADE = (SELECT COD_UNIDADE " +
-                    "                                                                                       FROM COLABORADOR " +
-                    "                                                                                       WHERE CPF = ?));");
-
-            stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
-            stmt.setLong(2, cpf);
-            stmt.setLong(3, tipoInvervalo.getCodigo());
-            stmt.setLong(4, cpf);
-            stmt.setLong(5, cpf);
-            stmt.setLong(6, tipoInvervalo.getCodigo());
+                    "  I.CODIGO                          AS CODIGO, " +
+                    "  I.CODIGO_MARCACAO_POR_UNIDADE     AS COD_MARCACAO_POR_UNIDADE, " +
+                    "  I.COD_UNIDADE                     AS COD_UNIDADE, " +
+                    "  I.COD_TIPO_INTERVALO              AS COD_TIPO_INTERVALO, " +
+                    "  I.CPF_COLABORADOR                 AS CPF_COLABORADOR, " +
+                    "  C.DATA_NASCIMENTO                 AS DATA_NASCIMENTO_COLABORADOR, " +
+                    "  I.DATA_HORA AT TIME ZONE ?        AS DATA_HORA, " +
+                    "  I.TIPO_MARCACAO                   AS TIPO_MARCACAO, " +
+                    "  I.FONTE_DATA_HORA                 AS FONTE_DATA_HORA, " +
+                    "  I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
+                    "  I.JUSTIFICATIVA_ESTOURO           AS JUSTIFICATIVA_ESTOURO, " +
+                    "  I.LATITUDE_MARCACAO               AS LATITUDE_MARCACAO, " +
+                    "  I.LONGITUDE_MARCACAO              AS LONGITUDE_MARCACAO " +
+                    "FROM VIEW_INTERVALO I " +
+                    "JOIN COLABORADOR C ON I.CPF_COLABORADOR = C.CPF " +
+                    "WHERE I.COD_UNIDADE = ? " +
+                    "      AND I.CPF_COLABORADOR = ? " +
+                    "      AND I.COD_TIPO_INTERVALO = ? " +
+                    "      AND I.TIPO_MARCACAO = ? " +
+                    "      AND DATA_HORA >= (SELECT MAX(DATA_HORA) " +
+                    "                        FROM INTERVALO I " +
+                    "                        WHERE I.COD_UNIDADE = ? " +
+                    "                              AND I.CPF_COLABORADOR = ? " +
+                    "                              AND I.COD_TIPO_INTERVALO = ? " +
+                    "                              AND I.TIPO_MARCACAO = ?) " +
+                    "ORDER BY I.DATA_HORA DESC " +
+                    "LIMIT 1;");
+            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, cpf);
+            stmt.setLong(4, codTipoIntervalo);
+            stmt.setString(5, TipoMarcacaoIntervalo.MARCACAO_INICIO.asString());
+            stmt.setLong(6, codUnidade);
             stmt.setLong(7, cpf);
+            stmt.setLong(8, codTipoIntervalo);
+            stmt.setString(9, TipoMarcacaoIntervalo.MARCACAO_FIM.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createIntervaloAberto(rSet, conn);
+                return createIntervaloMarcacao(rSet);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -90,42 +105,59 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return null;
     }
 
+    @NotNull
     @Override
-    public void insertOrUpdateIntervalo(Intervalo intervalo) throws SQLException {
+    public List<Intervalo> getMarcacoesIntervaloColaborador(@NotNull final Long codUnidade,
+                                                            @NotNull final Long cpf,
+                                                            @NotNull final String codTipo,
+                                                            final long limit,
+                                                            final long offset) throws SQLException {
         Connection conn = null;
-        try {
-            conn = getConnection();
-            if (intervalo.getDataHoraInicio() != null && intervalo.getFonteDataHoraFim() != null) {
-                // Intervalo completo, apenas inserir.
-                insertIntervalo(intervalo);
-            } else if (intervalo.getDataHoraInicio() == null && intervalo.getFonteDataHoraFim() != null) {
-                // Intervalo veio apenas com data de finalização, verificar se existe um em aberto para fazer o update,
-                // caso não tenha, inserir a finalização avulsa.
-                final Intervalo intervaloEmAberto = getIntervaloAberto(
-                        intervalo.getColaborador().getCpf(),
-                        intervalo.getTipo());
-                if (intervaloEmAberto != null) {
-                    intervaloEmAberto.setDataHoraFim(intervalo.getDataHoraFim());
-                    intervaloEmAberto.setFonteDataHoraFim(intervalo.getFonteDataHoraFim());
-                    intervaloEmAberto.setJustificativaEstouro(intervalo.getJustificativaEstouro());
-                    intervaloEmAberto.setJustificativaTempoRecomendado(intervalo.getJustificativaTempoRecomendado());
-                    intervaloEmAberto.setLocalizacaoFim(intervalo.getLocalizacaoFim());
-                    updateIntervalo(intervaloEmAberto);
-                } else {
-                    insertIntervalo(intervalo);
-                }
-            } else {
-                // Intervalo veio apenas com data_hora de início, inserir na tabela.
-                insertIntervalo(intervalo);
-            }
-        } finally {
-            closeConnection(conn, null, null);
-        }
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<Intervalo> intervalos = new ArrayList<>();
+//        try {
+//            conn = getConnection();
+//            stmt = conn.prepareStatement("SELECT " +
+//                    "I.COD_UNIDADE AS COD_UNIDADE, " +
+//                    "I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
+//                    "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
+//                    "I.DATA_HORA_INICIO AT TIME ZONE ? AS DATA_HORA_INICIO, " +
+//                    "I.DATA_HORA_FIM AT TIME ZONE ?  AS DATA_HORA_FIM, " +
+//                    "I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO, " +
+//                    "I.FONTE_DATA_HORA_FIM AS FONTE_DATA_HORA_FIM, " +
+//                    "I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
+//                    "I.JUSTIFICATIVA_ESTOURO AS JUSTIFICATIVA_ESTOURO, " +
+//                    "I.LATITUDE_MARCACAO_INICIO AS LATITUDE_MARCACAO_INICIO, " +
+//                    "I.LATITUDE_MARCACAO_FIM AS LATITUDE_MARCACAO_FIM, " +
+//                    "I.LONGITUDE_MARCACAO_INICIO AS LONGITUDE_MARCACAO_INICIO, " +
+//                    "I.LONGITUDE_MARCACAO_FIM AS LONGITUDE_MARCACAO_FIM " +
+//                    "FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?, NULL) I LIMIT ? OFFSET ?;");
+//            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+//            stmt.setString(1, zoneId.getId());
+//            stmt.setString(2, zoneId.getId());
+//            stmt.setLong(3, cpf);
+//            if (codTipo.equals("%")) {
+//                stmt.setNull(4, Types.BIGINT);
+//            } else {
+//                stmt.setLong(4, Long.valueOf(codTipo));
+//            }
+//            stmt.setLong(5, limit);
+//            stmt.setLong(6, offset);
+//            rSet = stmt.executeQuery();
+//            while (rSet.next()){
+//                intervalos.add(createIntervaloAgrupado(rSet));
+//            }
+//        } finally {
+//            closeConnection(conn, stmt, rSet);
+//        }
+        return intervalos;
     }
 
+    @NotNull
     @Override
     public Long insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
-                             @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
+                                    @NotNull final DadosIntervaloChangedListener listener) throws Throwable {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rSet = null;
@@ -133,7 +165,8 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO(NOME, ICONE, TEMPO_RECOMENDADO_MINUTOS, " +
-                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, ATIVO) VALUES (?,?,?,?,?,?,TRUE) RETURNING CODIGO");
+                    "TEMPO_ESTOURO_MINUTOS, HORARIO_SUGERIDO, COD_UNIDADE, ATIVO) VALUES (?,?,?,?,?,?,TRUE) RETURNING" +
+                    " CODIGO");
             stmt.setString(1, tipoIntervalo.getNome());
             stmt.setString(2, tipoIntervalo.getIcone().getNomeIcone());
             stmt.setLong(3, tipoIntervalo.getTempoRecomendado().toMinutes());
@@ -171,7 +204,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO\n" +
+            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET NOME = ?, ICONE = ?, TEMPO_RECOMENDADO_MINUTOS = ?, TEMPO_ESTOURO_MINUTOS = ?, " +
                     "HORARIO_SUGERIDO = ? WHERE COD_UNIDADE = ? AND CODIGO = ?");
             stmt.setString(1, tipoIntervalo.getNome());
@@ -202,42 +235,33 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         }
     }
 
-    private void associaCargosTipoIntervalo(TipoIntervalo tipoIntervalo, Connection conn) throws SQLException {
-        deleteCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(), conn);
-        insertCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(),
-                tipoIntervalo.getCargos(), conn);
-    }
-
-    private void deleteCargosTipoIntervalo(Long codUnidade, Long codTipoIntervalo, Connection conn) throws SQLException {
+    @NotNull
+    @Override
+    public List<TipoIntervalo> getTiposIntervalosByUnidade(@NotNull final Long codUnidade, final boolean withCargos)
+            throws SQLException {
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<TipoIntervalo> tipos = new ArrayList<>();
         try {
-            stmt = conn.prepareStatement("DELETE FROM INTERVALO_TIPO_CARGO WHERE COD_UNIDADE = ? AND COD_TIPO_INTERVALO = ?");
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS " +
+                    "NOME_TIPO_INTERVALO, " +
+                    " IT.COD_UNIDADE, IT.ATIVO, IT.HORARIO_SUGERIDO, IT.ICONE, IT.TEMPO_ESTOURO_MINUTOS, IT" +
+                    ".TEMPO_RECOMENDADO_MINUTOS FROM " +
+                    "  INTERVALO_TIPO_CARGO ITC JOIN INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
+                    ".COD_TIPO_INTERVALO = IT.CODIGO " +
+                    " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            stmt.executeUpdate();
-            // Não precisamos verificar se o delete afetou alguma linha pois o intervalo pode não ter nenhum cargo vinculado.
-        }finally {
-            closeConnection(null, stmt, null);
-        }
-    }
-
-    private void insertCargosTipoIntervalo(Long codUnidade,
-                                           Long codTipoIntervalo,
-                                           List<Cargo> cargos, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO_CARGO VALUES (?,?,?)");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipoIntervalo);
-            for(Cargo cargo : cargos) {
-                stmt.setLong(3, cargo.getCodigo());
-                stmt.executeUpdate();
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                tipos.add(createTipoInvervalo(rSet, withCargos, conn));
             }
-        }finally {
-            closeConnection(null, stmt, null);
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
+        return tipos;
     }
-
 
     @Override
     public void inativarTipoIntervalo(@NotNull final Long codUnidade, @NotNull final Long codTipoIntervalo,
@@ -247,7 +271,7 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO\n" +
+            stmt = conn.prepareStatement("UPDATE INTERVALO_TIPO " +
                     "SET STATUS = FALSE WHERE COD_UNIDADE = ? AND CODIGO = ?");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codTipoIntervalo);
@@ -272,156 +296,15 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         }
     }
 
-    @Override
-    public void insertIntervalo(Intervalo intervalo) throws SQLException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR," +
-                    "FONTE_DATA_HORA_INICIO, DATA_HORA_INICIO, FONTE_DATA_HORA_FIM, DATA_HORA_FIM, JUSTIFICATIVA_ESTOURO, " +
-                    " JUSTIFICATIVA_TEMPO_RECOMENDADO, LATITUDE_INICIO, LATITUDE_FIM, LONGITUDE_INICIO, LONGITUDE_FIM) \n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            final Long codUnidade = intervalo.getColaborador().getUnidade().getCodigo();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, intervalo.getTipo().getCodigo());
-            stmt.setLong(3, intervalo.getColaborador().getCpf());
-            if (intervalo.getDataHoraInicio() != null) {
-                stmt.setString(4, intervalo.getFonteDataHoraInicio().key());
-                stmt.setObject(5, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
-            } else {
-                stmt.setNull(4, Types.VARCHAR);
-                stmt.setNull(5, Types.TIMESTAMP_WITH_TIMEZONE);
-            }
-            if (intervalo.getDataHoraFim() != null) {
-                stmt.setString(6, intervalo.getFonteDataHoraFim().key());
-                stmt.setObject(7, intervalo.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
-            } else {
-                stmt.setNull(6, Types.VARCHAR);
-                stmt.setNull(7, Types.TIMESTAMP_WITH_TIMEZONE);
-            }
-            stmt.setString(8, intervalo.getJustificativaEstouro());
-            stmt.setString(9, intervalo.getJustificativaTempoRecomendado());
-
-            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
-            if (localizacaoInicio != null) {
-                stmt.setString(10, localizacaoInicio.getLatitude());
-                stmt.setString(12, localizacaoInicio.getLongitude());
-            } else {
-                stmt.setNull(10, Types.VARCHAR);
-                stmt.setNull(12, Types.VARCHAR);
-            }
-            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            if (localizacaoFim != null) {
-                stmt.setString(11, localizacaoFim.getLatitude());
-                stmt.setString(13, localizacaoFim.getLongitude());
-            } else {
-                stmt.setNull(11, Types.VARCHAR);
-                stmt.setNull(13, Types.VARCHAR);
-            }
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir o intervalo");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
-    @Override
-    public void updateIntervalo(Intervalo intervalo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE INTERVALO SET FONTE_DATA_HORA_INICIO = ?, DATA_HORA_INICIO = ?, " +
-                    " FONTE_DATA_HORA_FIM = ?, DATA_HORA_FIM = ?, JUSTIFICATIVA_ESTOURO = ?, JUSTIFICATIVA_TEMPO_RECOMENDADO = ?, " +
-                    "LATITUDE_INICIO = ?, LONGITUDE_INICIO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? " +
-                    "WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
-            final Long cpf = intervalo.getColaborador().getCpf();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
-            stmt.setString(1, intervalo.getFonteDataHoraInicio().key());
-            stmt.setObject(2, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(3, intervalo.getFonteDataHoraFim().key());
-            stmt.setObject(4, intervalo.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(5, intervalo.getJustificativaEstouro());
-            stmt.setString(6, intervalo.getJustificativaTempoRecomendado());
-
-            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
-            if (localizacaoInicio != null) {
-                stmt.setString(7, localizacaoInicio.getLatitude());
-                stmt.setString(8, localizacaoInicio.getLongitude());
-            } else {
-                stmt.setNull(7, Types.VARCHAR);
-                stmt.setNull(8, Types.VARCHAR);
-            }
-            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            if (localizacaoFim != null) {
-                stmt.setString(9, localizacaoFim.getLatitude());
-                stmt.setString(10, localizacaoFim.getLongitude());
-            } else {
-                stmt.setNull(9, Types.VARCHAR);
-                stmt.setNull(10, Types.VARCHAR);
-            }
-
-            stmt.setLong(11, cpf);
-            stmt.setLong(12, intervalo.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao finalizar o intervalo");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-    }
-
-    @Override
-    public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo, long limit, long offset) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<Intervalo> intervalos = new ArrayList<>();
-        try {
-//            conn = getConnection();
-//            stmt = conn.prepareStatement("SELECT i.codigo as cod_intervalo, it.CODIGO as codigo_tipo_intervalo, i.DATA_HORA_INICIO, i.DATA_HORA_FIM,\n" +
-//                    "i.JUSTIFICATIVA_ESTOURO, i.VALIDO, it.nome as nome_tipo_intervalo, it.ICONE, it.TEMPO_RECOMENDADO_MINUTOS, it.TEMPO_ESTOURO_MINUTOS,\n" +
-//                    "it.HORARIO_SUGERIDO,i.cod_unidade, it.ativo, ULTIMA_ABERTURA.*,\n" +
-//                    "  CASE WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO = ULTIMA_ABERTURA.ULTIMO_INICIO THEN\n" +
-//                    "  EXTRACT(EPOCH FROM now() - i.DATA_HORA_INICIO)\n" +
-//                    "  WHEN I.DATA_HORA_INICIO IS NULL THEN NULL\n" +
-//                    "  WHEN I.DATA_HORA_FIM IS NULL AND I.DATA_HORA_INICIO <> ULTIMA_ABERTURA.ULTIMO_INICIO THEN NULL\n" +
-//                    "    ELSE EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) END  AS TEMPO_DECORRIDO\n" +
-//                    "FROM\n" +
-//                    "  INTERVALO I JOIN INTERVALO_TIPO IT ON IT.COD_UNIDADE = I.COD_UNIDADE AND IT.CODIGO = I.COD_TIPO_INTERVALO\n" +
-//                    "  JOIN (SELECT COD_UNIDADE, COD_TIPO_INTERVALO AS COD_TIPO_ULTIMO_INICIO, MAX(DATA_HORA_INICIO) AS ULTIMO_INICIO FROM INTERVALO WHERE CPF_COLABORADOR = ? \n" +
-//                    "GROUP BY 1,2) AS ULTIMA_ABERTURA ON ULTIMA_ABERTURA.COD_UNIDADE = I.COD_UNIDADE AND ULTIMA_ABERTURA.COD_TIPO_ULTIMO_INICIO = I.COD_TIPO_INTERVALO\n" +
-//                    "WHERE I.CPF_COLABORADOR = ? and i.cod_tipo_intervalo::text like ?\n" +
-//                    "ORDER BY cod_intervalo DESC " +
-//                    "LIMIT ? OFFSET ?;");
-//            stmt.setLong(1, cpf);
-//            stmt.setLong(2, cpf);
-//            stmt.setString(3, codTipo);
-//            stmt.setLong(4, limit);
-//            stmt.setLong(5, offset);
-//            rSet = stmt.executeQuery();
-//            while (rSet.next()){
-//                intervalos.add(createIntervalo(rSet, conn));
-//            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return intervalos;
-    }
-
-    @Override
     @NotNull
+    @Override
     public Optional<Long> getVersaoDadosIntervaloByUnidade(@NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?");
+            stmt = conn.prepareStatement("SELECT VERSAO_DADOS FROM INTERVALO_UNIDADE WHERE COD_UNIDADE = ?;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -430,160 +313,169 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-
         return Optional.empty();
     }
 
-    @Deprecated
-    @Override
-    public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            final Intervalo intervalo = new Intervalo();
-            final TipoIntervalo tipoIntervalo = new TipoIntervalo();
-            tipoIntervalo.setCodigo(codTipo);
-            final Colaborador colaborador = new Colaborador();
-            colaborador.setCpf(cpf);
-            intervalo.setTipo(tipoIntervalo);
-            intervalo.setColaborador(colaborador);
-            intervalo.setDataHoraInicio(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
-            intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
-            return insertIntervalo(intervalo, codUnidade, conn);
-        } finally {
-            closeConnection(conn, null, null);
-        }
-    }
+    private boolean marcacaoIntervaloJaExiste(@NotNull final IntervaloMarcacao intervaloMarcacao,
+                                              @NotNull final Connection conn) throws SQLException {
 
-    @Deprecated
-    @Override
-    public boolean insereFinalizacaoIntervalo (Intervalo intervalo, Long codUnidade) throws SQLException{
-        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            conn = getConnection();
-            // Seta fontes por questão de compatibilidade.
-            intervalo.setFonteDataHoraInicio(FonteDataHora.SERVIDOR);
-            intervalo.setFonteDataHoraFim(FonteDataHora.SERVIDOR);
-            final Intervalo intervaloEmAberto = getIntervaloAberto(intervalo.getColaborador().getCpf(), intervalo.getTipo());
-            if (intervaloEmAberto != null) {
-                if(intervalo.getCodigo().equals(intervaloEmAberto.getCodigo())){
-                    return finalizaIntervaloEmAberto(intervalo);
-                }
-            } else {
-                intervalo.setDataHoraInicio(null);
-                intervalo.setDataHoraFim(LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn)));
-                Long codigo = insertIntervalo(intervalo, codUnidade, conn);
-                if (codigo != null) {
-                    return true;
-                }
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT I.CODIGO FROM INTERVALO I WHERE " +
+                    "I.COD_UNIDADE = ? AND I.CPF_COLABORADOR = ? AND I.DATA_HORA = ? AND I.TIPO_MARCACAO = ?);");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(intervaloMarcacao.getCodUnidade(), conn);
+            stmt.setLong(1, intervaloMarcacao.getCodUnidade());
+            stmt.setLong(2, intervaloMarcacao.getCpfColaborador());
+            stmt.setObject(3, intervaloMarcacao.getDataHoraMaracao().atZone(zoneId).toOffsetDateTime());
+            stmt.setString(4, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTS");
             }
         } finally {
-            closeConnection(conn, null, null);
+            closeConnection(null, stmt, rSet);
         }
         return false;
     }
 
-    @Deprecated
-    @Override
-    public boolean finalizaIntervaloEmAberto(Intervalo intervalo) throws SQLException {
-        Connection conn = null;
+    private void internalInsertMarcacaoIntervalo(@NotNull final IntervaloMarcacao intervaloMarcacao,
+                                                 @NotNull final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE INTERVALO SET DATA_HORA_FIM = ?, FONTE_DATA_HORA_FIM = ?, " +
-                    "JUSTIFICATIVA_ESTOURO = ?, LATITUDE_FIM = ?, LONGITUDE_FIM = ? WHERE CPF_COLABORADOR = ? AND CODIGO = ?;");
-            stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setString(2, intervalo.getFonteDataHoraFim().key());
-            stmt.setString(3, intervalo.getJustificativaEstouro());
-            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            stmt.setString(4, localizacaoFim.getLatitude());
-            stmt.setString(5, localizacaoFim.getLongitude());
-            stmt.setLong(6, intervalo.getColaborador().getCpf());
-            stmt.setLong(7, intervalo.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao finalizar o intervalo");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
-    @Deprecated
-    private Long insertIntervalo(Intervalo intervalo, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
-                    "DATA_HORA_INICIO, FONTE_DATA_HORA_INICIO, DATA_HORA_FIM, FONTE_DATA_HORA_FIM, " +
-                    "LATITUDE_INICIO, LATITUDE_FIM, LONGITUDE_INICIO, LONGITUDE_FIM) VALUES (?,?,?,?,?,?,?,?,?,?,?) " +
-                    "RETURNING CODIGO;");
+                    "DATA_HORA, TIPO_MARCACAO, FONTE_DATA_HORA, JUSTIFICATIVA_TEMPO_RECOMENDADO, JUSTIFICATIVA_ESTOURO, " +
+                    "LATITUDE_MARCACAO, LONGITUDE_MARCACAO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, intervalo.getTipo().getCodigo());
-            stmt.setLong(3, intervalo.getColaborador().getCpf());
-            if (intervalo.getDataHoraInicio() != null) {
-                stmt.setObject(4, intervalo.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
-                stmt.setString(5, intervalo.getFonteDataHoraInicio().key());
+            stmt.setLong(2, intervaloMarcacao.getCodTipoIntervalo());
+            stmt.setLong(3, intervaloMarcacao.getCpfColaborador());
+            stmt.setObject(4, intervaloMarcacao.getDataHoraMaracao().atZone(zoneId).toOffsetDateTime());
+
+            stmt.setString(5, intervaloMarcacao.getTipoMarcacaoIntervalo().asString());
+            stmt.setString(6, intervaloMarcacao.getFonteDataHora().asString());
+            stmt.setString(7, intervaloMarcacao.getJustificativaTempoRecomendado());
+            stmt.setString(8, intervaloMarcacao.getJustificativaEstouro());
+
+            final Localizacao localizacao = intervaloMarcacao.getLocalizacaoMarcacao();
+            if (localizacao != null) {
+                stmt.setString(9, localizacao.getLatitude());
+                stmt.setString(10, localizacao.getLongitude());
             } else {
-                stmt.setNull(4, Types.TIMESTAMP_WITH_TIMEZONE);
-                stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(9, Types.VARCHAR);
+                stmt.setNull(10, Types.VARCHAR);
             }
-            if (intervalo.getDataHoraFim() != null) {
-                stmt.setObject(6, intervalo.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
-                stmt.setString(7, intervalo.getFonteDataHoraInicio().key());
-            } else {
-                stmt.setNull(6, Types.TIMESTAMP_WITH_TIMEZONE);
-                stmt.setNull(7, Types.VARCHAR);
-            }
-            final Localizacao localizacaoInicio = intervalo.getLocalizacaoInicio();
-            final Localizacao localizacaoFim = intervalo.getLocalizacaoFim();
-            stmt.setString(8, localizacaoInicio.getLatitude());
-            stmt.setString(9, localizacaoFim.getLatitude());
-            stmt.setString(10, localizacaoInicio.getLongitude());
-            stmt.setString(11, localizacaoFim.getLongitude());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir marcação de intervalo");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, null);
         }
-        return null;
     }
 
-    private Intervalo createIntervaloAberto(ResultSet rSet, Connection conn) throws SQLException {
-        final Colaborador colaborador = new Colaborador();
-        final Long cpf = rSet.getLong("CPF_COLABORADOR");
-        colaborador.setCpf(cpf);
+    @NotNull
+    private Intervalo createIntervaloAgrupado(@NotNull final ResultSet rSet) throws SQLException {
         final Intervalo intervalo = new Intervalo();
-        intervalo.setCodigo(rSet.getLong("CODIGO"));
-        intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
-        intervalo.setValido(rSet.getBoolean("VALIDO"));
-        final LocalDateTime dataAtual = LocalDateTime.now(TimeZoneManager.getZoneIdForCpf(cpf, conn));
-        intervalo.setTempoDecorrido(Duration.ofMillis(ChronoUnit.MILLIS.between(dataAtual, intervalo.getDataHoraInicio())));
+
+        final Colaborador colaborador = new Colaborador();
+        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
+        intervalo.setColaborador(colaborador);
+
+        // TODO: Recuperar nome do tipo de intervalo.
         final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
-        intervalo.setColaborador(colaborador);
-        final String latitudeInicio = rSet.getString("LATITUDE_INICIO");
+
+        intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
+        intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
+        final String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
         if (!rSet.wasNull()) {
-            final Localizacao localizacaoInicio = new Localizacao();
-            localizacaoInicio.setLatitude(latitudeInicio);
-            localizacaoInicio.setLongitude(rSet.getString("LONGITUDE_INICIO"));
-            intervalo.setLocalizacaoInicio(localizacaoInicio);
-        }
-        String fonteDataHoraInicio = rSet.getString("FONTE_DATA_HORA_INICIO");
-        // Setar apenas a fonte do inicio, sendo que não tem como um intervalo em aberto vir com fonte de término
-        if (fonteDataHoraInicio != null) {
             intervalo.setFonteDataHoraInicio(FonteDataHora.fromString(fonteDataHoraInicio));
         }
+        final String fonteDataHoraFim = rSet.getString("FONTE_DATA_HORA_FIM");
+        if (!rSet.wasNull()) {
+            intervalo.setFonteDataHoraFim(FonteDataHora.fromString(fonteDataHoraFim));
+        }
+        intervalo.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
+        intervalo.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
+
+        final String latitudeInicio = rSet.getString("LATITUDE_MARCACAO_INICIO");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacao = new Localizacao();
+            localizacao.setLatitude(latitudeInicio);
+            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_INICIO"));
+            intervalo.setLocalizacaoInicio(localizacao);
+        }
+
+        final String latitudeFim = rSet.getString("LATITUDE_MARCACAO_FIM");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacao = new Localizacao();
+            localizacao.setLatitude(latitudeFim);
+            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO_FIM"));
+            intervalo.setLocalizacaoFim(localizacao);
+        }
+
+        // Cálculo do tempo decorrido.
+        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
+        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+        if (dataHoraInicio != null && dataHoraFim != null) {
+            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
+        } else if (dataHoraFim == null) {
+            // TODO: Precisamos trocar esse cálculo para contecer no app.
+//            intervalo.setTempoDecorrido(Duration.ofMillis(Math.abs(ChronoUnit.MILLIS.between(dataHoraInicio, dataHoraFim))));
+        }
+
         return intervalo;
     }
 
-    private TipoIntervalo createTipoInvervalo(ResultSet rSet, boolean withCargos, Connection conn) throws SQLException {
+    private void associaCargosTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                                            @NotNull final Connection conn) throws SQLException {
+        deleteCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(), conn);
+        insertCargosTipoIntervalo(tipoIntervalo.getUnidade().getCodigo(), tipoIntervalo.getCodigo(),
+                tipoIntervalo.getCargos(), conn);
+    }
+
+    private void deleteCargosTipoIntervalo(@NotNull final Long codUnidade,
+                                           @NotNull final Long codTipoIntervalo,
+                                           @NotNull final Connection conn) throws
+            SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM INTERVALO_TIPO_CARGO WHERE COD_UNIDADE = ? AND " +
+                    "COD_TIPO_INTERVALO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            stmt.executeUpdate();
+            // Não precisamos verificar se o delete afetou alguma linha pois o intervalo pode não ter nenhum cargo
+            // vinculado.
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
+    private void insertCargosTipoIntervalo(@NotNull final Long codUnidade,
+                                           @NotNull final Long codTipoIntervalo,
+                                           @NotNull final List<Cargo> cargos, Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO INTERVALO_TIPO_CARGO VALUES (?,?,?)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipoIntervalo);
+            for (Cargo cargo : cargos) {
+                stmt.setLong(3, cargo.getCodigo());
+                stmt.executeUpdate();
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+    }
+
+    @NotNull
+    private TipoIntervalo createTipoInvervalo(@NotNull final ResultSet rSet,
+                                              final boolean withCargos,
+                                              @NotNull final Connection conn) throws SQLException {
         final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
         tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
@@ -601,20 +493,50 @@ public class ControleIntervaloDaoImpl extends DatabaseConnection implements Cont
         return tipoIntervalo;
     }
 
-    private List<Cargo> getCargosByTipoIntervalo(TipoIntervalo tipoIntervalo, Connection conn) throws SQLException {
-        final List<Cargo> cargos = new ArrayList<>();
+    @NotNull
+    private List<Cargo> getCargosByTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                                                 @NotNull final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
         ResultSet rSet = null;
-        PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM\n" +
-                "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE\n" +
-                "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO\n" +
-                "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?");
-        stmt.setLong(1, tipoIntervalo.getCodigo());
-        stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
-        rSet = stmt.executeQuery();
-        while (rSet.next()) {
-            Cargo cargo = new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME"));
-            cargos.add(cargo);
+        final List<Cargo> cargos = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT DISTINCT F.* FROM " +
+                    "  INTERVALO_TIPO_CARGO ITC JOIN UNIDADE U ON U.CODIGO = ITC.COD_UNIDADE " +
+                    "JOIN FUNCAO F ON F.cod_emprESA = U.cod_empresa AND F.codigo = ITC.COD_CARGO " +
+                    "WHERE ITC.COD_TIPO_INTERVALO = ? and ITC.COD_UNIDADE = ?;");
+            stmt.setLong(1, tipoIntervalo.getCodigo());
+            stmt.setLong(2, tipoIntervalo.getUnidade().getCodigo());
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                cargos.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
         }
         return cargos;
+    }
+
+    private IntervaloMarcacao createIntervaloMarcacao(@NotNull final ResultSet rSet) throws SQLException {
+        final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
+        intervaloMarcacao.setCodigo(rSet.getLong("CODIGO"));
+        intervaloMarcacao.setCodMarcacaoPorUnidade(rSet.getLong("COD_MARCACAO_POR_UNIDADE"));
+        intervaloMarcacao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+        intervaloMarcacao.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
+        intervaloMarcacao.setDataNascimentoColaborador(rSet.getDate("DATA_NASCIMENTO_COLABORADOR"));
+        intervaloMarcacao.setCodTipoIntervalo(rSet.getLong("COD_TIPO_INTERVALO"));
+        intervaloMarcacao.setDataHoraMaracao(rSet.getObject("DATA_HORA", LocalDateTime.class));
+        intervaloMarcacao.setFonteDataHora(FonteDataHora.fromString(rSet.getString("FONTE_DATA_HORA")));
+        intervaloMarcacao.setTipoMarcacaoIntervalo(TipoMarcacaoIntervalo.fromString(rSet.getString("TIPO_MARCACAO")));
+        intervaloMarcacao.setJustificativaTempoRecomendado(rSet.getString("JUSTIFICATIVA_TEMPO_RECOMENDADO"));
+        intervaloMarcacao.setJustificativaEstouro(rSet.getString("JUSTIFICATIVA_ESTOURO"));
+
+        final String latitudeMarcacao = rSet.getString("LATITUDE_MARCACAO");
+        if (!rSet.wasNull()) {
+            final Localizacao localizacao = new Localizacao();
+            localizacao.setLatitude(latitudeMarcacao);
+            localizacao.setLongitude(rSet.getString("LONGITUDE_MARCACAO"));
+            intervaloMarcacao.setLocalizacaoMarcacao(localizacao);
+        }
+        return intervaloMarcacao;
     }
 }

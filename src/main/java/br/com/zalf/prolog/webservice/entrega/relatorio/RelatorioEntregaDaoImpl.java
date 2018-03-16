@@ -46,11 +46,12 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
-            "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
-            "EM.codigo::TEXT LIKE ? AND\n" +
-            "R.codigo::TEXT LIKE ? AND\n" +
-            "U.codigo::TEXT LIKE ? AND\n" +
-            "E.nome LIKE ?\n" +
+            "WHERE  M.DATA BETWEEN (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(um.cod_unidade)))\n" +
+            "       AND (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(um.cod_unidade)))\n" +
+            "       AND EM.codigo::TEXT LIKE ?\n" +
+            "       AND R.codigo::TEXT LIKE ?\n" +
+            "       AND U.codigo::TEXT LIKE ?\n" +
+            "       AND E.nome LIKE ?\n" +
             "group by um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +
@@ -72,11 +73,12 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "JOIN UNIDADE U ON U.codigo = M.cod_unidade\n" +
             "JOIN empresa EM ON EM.codigo = U.cod_empresa\n" +
             "JOIN regional R ON R.codigo = U.cod_regional\n" +
-            "WHERE  M.DATA BETWEEN ? AND ? AND\n" +
-            " EM.codigo::TEXT LIKE ? AND\n" +
-            " R.codigo::TEXT LIKE ? AND\n" +
-            " U.codigo::TEXT LIKE ? AND\n" +
-            "E.nome LIKE ?\n" +
+            "WHERE  M.DATA BETWEEN (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(um.cod_unidade)))\n" +
+            "       AND (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(um.cod_unidade)))\n" +
+            "       AND EM.codigo::TEXT LIKE ?\n" +
+            "       AND R.codigo::TEXT LIKE ?\n" +
+            "       AND U.codigo::TEXT LIKE ?\n" +
+            "       AND E.nome LIKE ?\n" +
             "group by 1, um.cod_unidade,um.meta_tracking,um.meta_tempo_rota_horas,um.meta_tempo_rota_mapas,um.meta_caixa_viagem,\n" +
             "um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,um.meta_jornada_liquida_horas,\n" +
             "um.meta_jornada_liquida_mapas,um.meta_raio_tracking,um.meta_tempo_interno_horas,um.meta_tempo_interno_mapas,um.meta_tempo_largada_horas,\n" +

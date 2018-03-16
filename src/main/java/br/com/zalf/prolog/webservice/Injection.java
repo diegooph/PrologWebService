@@ -47,10 +47,7 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.*;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -71,6 +68,8 @@ import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.Solicitac
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.imports.mapa.MapaDao;
 import br.com.zalf.prolog.webservice.imports.mapa.MapaDaoImpl;
 import br.com.zalf.prolog.webservice.imports.tracking.TrackingDao;
@@ -265,6 +264,11 @@ public final class Injection {
     @NotNull
     public static TreinamentoDao provideTreinamentoDao() {
         return new TreinamentoDaoImpl();
+    }
+
+    @NotNull
+    public static TreinamentoRelatorioDao provideTreinamentoRelatorioDao() {
+        return new TreinamentoRelatorioDaoImpl();
     }
 
     @NotNull

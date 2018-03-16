@@ -34,9 +34,9 @@ public class ControleIntervaloService {
         }
     }
 
-    public Intervalo getIntervaloAberto(Long cpf, TipoIntervalo tipoInvervalo) throws Exception {
+    public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(Long codUnidade, Long cpf, Long codTipoIntervalo) throws Exception {
         try {
-            return dao.getIntervaloAberto(cpf, tipoInvervalo);
+            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoIntervalo);
         } catch (Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos em abertos de um colaborador. \n" +
                     "cpf: %d", cpf), e);
@@ -44,19 +44,19 @@ public class ControleIntervaloService {
         }
     }
 
-    public ResponseIntervalo insertOrUpdateIntervalo(long versaoDadosIntervalo, Intervalo intervalo) {
+    public ResponseIntervalo insertMarcacaoIntervalo(long versaoDadosIntervalo, IntervaloMarcacao intervaloMarcacao) {
         EstadoVersaoIntervalo estadoVersaoIntervalo = null;
         try {
-            final long codUnidade = intervalo.getColaborador().getCodUnidade();
+            final Long codUnidade = intervaloMarcacao.getCodUnidade();
             // Temos certeza que existira no banco, se não existir, então melhor dar erro.
             @SuppressWarnings({"OptionalGetWithoutIsPresent", "ConstantConditions"})
-            final long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
+            final Long versaoDadosBanco = dao.getVersaoDadosIntervaloByUnidade(codUnidade).get();
             if (versaoDadosIntervalo < versaoDadosBanco) {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_DESATUALIZADA;
             } else {
                 estadoVersaoIntervalo = EstadoVersaoIntervalo.VERSAO_ATUALIZADA;
             }
-            dao.insertOrUpdateIntervalo(intervalo);
+            dao.insertMarcacaoIntervalo(intervaloMarcacao);
             return ResponseIntervalo.ok("Intervalo inserido com sucesso", estadoVersaoIntervalo);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir ou atualizar um intervalo. \n" +
@@ -65,9 +65,9 @@ public class ControleIntervaloService {
         }
     }
 
-    public List<Intervalo> getIntervalosColaborador(Long cpf, String codTipo,long limit ,long offset) {
+    public List<Intervalo> getMarcacoesIntervaloColaborador(Long codUnidade, Long cpf, String codTipo, long limit, long offset) {
         try {
-            return dao.getIntervalosColaborador(cpf, codTipo, limit, offset);
+            return dao.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os intervalos de um colaborador. \n" +
                     "cpf: %s \n" +
@@ -166,7 +166,7 @@ public class ControleIntervaloService {
     @Deprecated
     public Long iniciaIntervalo(Long codUnidade, Long cpf, Long codTipo) {
         try {
-            return dao.iniciaIntervalo(codUnidade, cpf, codTipo);
+            return new DeprecatedControleIntervaloDaoImpl().iniciaIntervalo(codUnidade, cpf, codTipo);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao iniciar o intervalo. \n" +
                     "codUnidade: %d \n" +
@@ -179,7 +179,7 @@ public class ControleIntervaloService {
     @Deprecated
     public boolean insereFinalizacaoIntervalo(Intervalo intervalo, Long codUnidade) {
         try {
-            return dao.insereFinalizacaoIntervalo(intervalo, codUnidade);
+            return new DeprecatedControleIntervaloDaoImpl().insereFinalizacaoIntervalo(intervalo, codUnidade);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir uma finalização de intevalo. \n" +
                     "codUnidade: %d", codUnidade), e);

@@ -13,7 +13,7 @@ import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOffl
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -72,6 +72,15 @@ public class ColaboradorService {
             return dao.getByCpf(cpf, false);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o colaborador %d", cpf), e);
+            return null;
+        }
+    }
+
+    public Long getCodUnidadeByCpf(@NotNull final Long cpf) {
+        try {
+            return dao.getCodUnidadeByCpf(cpf);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o código da unidade para o CPF: %d", cpf), e);
             return null;
         }
     }

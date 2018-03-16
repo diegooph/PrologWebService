@@ -49,31 +49,6 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
     }
 
     @Override
-    public boolean update(FaleConosco faleConosco) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
-                    + "DATA_HORA = ?, DESCRICAO = ?, CATEGORIA = ?, CPF_COLABORADOR = ? , DATA_HORA_FEEDBACK = ?, CPF_FEEDBACK = ?," +
-                    "FEEDBACK = ?, STATUS = ? "
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ? ");
-            stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setString(2, faleConosco.getDescricao());
-            stmt.setString(3, faleConosco.getCategoria().asString());
-            stmt.setLong(4, faleConosco.getColaborador().getCpf());
-            stmt.setLong(5, faleConosco.getCodigo());
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar o fale conosco");
-            }
-        } finally {
-            closeConnection(conn, stmt, null);
-        }
-        return true;
-    }
-
-    @Override
     public FaleConosco getByCod(Long codigo, Long codUnidade) throws Exception {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -120,23 +95,27 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "F.STATUS AS STATUS, " +
-                    "F.CODIGO AS CODIGO, " +
-                    "F.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                    "F.DESCRICAO AS DESCRICAO, " +
-                    "F.CATEGORIA AS CATEGORIA, " +
-                    "F.FEEDBACK AS FEEDBACK, " +
-                    "F.DATA_HORA_FEEDBACK AT TIME ZONE ? AS DATA_HORA_FEEDBACK, " +
-                    "C.CPF AS CPF_COLABORADOR, " +
-                    "C.NOME AS NOME_COLABORADOR, " +
-                    "C2.CPF AS CPF_FEEDBACK, " +
-                    "C2.NOME AS NOME_FEEDBACK " +
-                    "FROM FALE_CONOSCO F JOIN colaborador C ON C.cpf = F.CPF_COLABORADOR\n" +
-                    "JOIN EQUIPE E ON E.codigo = C.cod_equipe\n" +
-                    "LEFT JOIN COLABORADOR C2 ON C2.CPF = F.CPF_FEEDBACK\n" +
-                    "WHERE E.nome LIKE ? AND F.cod_unidade = ? AND F.status LIKE ? AND F.categoria LIKE ? AND " +
-                    "C.CPF::TEXT LIKE ? " +
-                    "AND F.DATA_HORA::date >= ?::date AND F.DATA_HORA::date <= ?::date " +
+                    "  F.STATUS AS STATUS, " +
+                    "  F.CODIGO AS CODIGO, " +
+                    "  F.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "  F.DESCRICAO AS DESCRICAO, " +
+                    "  F.CATEGORIA AS CATEGORIA, " +
+                    "  F.FEEDBACK AS FEEDBACK, " +
+                    "  F.DATA_HORA_FEEDBACK AT TIME ZONE ? AS DATA_HORA_FEEDBACK, " +
+                    "  C.CPF AS CPF_COLABORADOR, " +
+                    "  C.NOME AS NOME_COLABORADOR, " +
+                    "  C2.CPF AS CPF_FEEDBACK, " +
+                    "  C2.NOME AS NOME_FEEDBACK " +
+                    "FROM FALE_CONOSCO F JOIN colaborador C ON C.cpf = F.CPF_COLABORADOR " +
+                    "  JOIN EQUIPE E ON E.codigo = C.cod_equipe " +
+                    "  LEFT JOIN COLABORADOR C2 ON C2.CPF = F.CPF_FEEDBACK " +
+                    "WHERE E.nome LIKE ? " +
+                    "      AND F.cod_unidade = ? " +
+                    "      AND F.status LIKE ? " +
+                    "      AND F.categoria LIKE ? " +
+                    "      AND C.CPF::TEXT LIKE ? " +
+                    "      AND F.DATA_HORA::date >= (? AT TIME ZONE ?)::date " +
+                    "      AND F.DATA_HORA::date <= (? AT TIME ZONE ?)::date " +
                     "ORDER BY F.DATA_HORA " +
                     "LIMIT ? OFFSET ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
@@ -148,9 +127,11 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
             stmt.setString(6, categoria);
             stmt.setString(7, cpf);
             stmt.setDate(8, new java.sql.Date(dataInicial));
-            stmt.setDate(9, new java.sql.Date(dataFinal));
-            stmt.setInt(10, limit);
-            stmt.setInt(11, offset);
+            stmt.setString(9, zoneId.getId());
+            stmt.setDate(10, new java.sql.Date(dataFinal));
+            stmt.setString(11, zoneId.getId());
+            stmt.setInt(12, limit);
+            stmt.setInt(13, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 FaleConosco faleConosco = createFaleConosco(rSet);

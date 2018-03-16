@@ -53,7 +53,7 @@ public class FaleConoscoService {
                             "offset: %d \n" +
                             "dataInicial: %s \n" +
                             "dataFinal: %s", codUnidade, equipe, cpf, status, categoria, limit, offset, new Date(dataInicial).toString(),
-                    new Date(dataFinal).toString()));
+                    new Date(dataFinal).toString()), e);
             return null;
         }
     }
