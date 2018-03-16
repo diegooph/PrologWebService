@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloResource;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DeprecatedControleIntervaloResource;
 
 /**
  * Está classe será usada como retorno para a função de insert de um {@link Intervalo}
- * ({@link ControleIntervaloResource#insertIntervalo(long, Intervalo)}). O seu {@link #status} é
+ * ({@link DeprecatedControleIntervaloResource#insertIntervalo(long, Intervalo)}). O seu {@link #status} é
  * referente ao insert do próprio {@link Intervalo}, status {@link #OK} significa inserido com
  * sucesso; {@link #ERROR} significa que ocorreu algum problema e não foi inserido.
  *

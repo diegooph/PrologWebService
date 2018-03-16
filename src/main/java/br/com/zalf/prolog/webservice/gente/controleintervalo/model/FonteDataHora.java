@@ -19,7 +19,7 @@ public enum FonteDataHora {
     }
 
     @NotNull
-    public String key() {
+    public String asString() {
         return key;
     }
 
