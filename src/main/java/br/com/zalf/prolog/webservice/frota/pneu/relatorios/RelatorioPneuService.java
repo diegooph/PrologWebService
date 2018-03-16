@@ -55,18 +55,6 @@ public class RelatorioPneuService {
         }
     }
 
-    public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) {
-        try {
-            return dao.getResumoServicosByUnidades(ano, mes, codUnidades);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com o resumo dos serviços por unidade. \n" +
-                    "Unidades: %s \n" +
-                    "Ano: %d \n" +
-                    "Mês: %d", codUnidades.toString(), ano, mes), e);
-            return new ArrayList<>();
-        }
-    }
-
     public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
             throws RuntimeException {
         try {
@@ -293,7 +281,7 @@ public class RelatorioPneuService {
     public List<SulcoPressao> getMenorSulcoPneus(List<Long> codUnidades) {
         try {
             return dao.getMenorSulcoEPressaoPneus(codUnidades);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a lista com o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades), e);
             throw new RuntimeException();

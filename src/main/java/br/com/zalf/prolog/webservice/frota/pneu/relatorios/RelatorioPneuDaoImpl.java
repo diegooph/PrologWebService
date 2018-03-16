@@ -35,64 +35,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
     private static final String PNEUS_RESUMO_SULCOS = "SELECT COALESCE(ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_INTERNO, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
-            + "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?])  ORDER BY 1 DESC";
-
-    private static final String RESUMO_SERVICOS = "SELECT AD.DATA,\n" +
-            "       CAL.CAL_ABERTAS,\n" +
-            "       INSP.INSP_ABERTAS,\n" +
-            "       MOV.MOV_ABERTAS,\n" +
-            "       CAL_FECHADAS.CAL_FECHADAS,\n" +
-            "       INSP_FECHADAS.INSP_FECHADAS,\n" +
-            "       MOV_FECHADAS.MOV_FECHADAS\n" +
-            "FROM AUX_DATA AD LEFT JOIN\n" +
-            "       -- BUSCA AS CALIBRAGENS ABERTAS \\n\n" +
-            "       (SELECT (A.DATA_HORA AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS CAL_ABERTAS FROM \n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "        WHERE \n" +
-            "               COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "        GROUP BY A.DATA_HORA::DATE\n" +
-            "        ORDER BY A.DATA_HORA::DATE DESC) AS CAL ON CAL.DATA = AD.DATA\n" +
-            "       LEFT JOIN\n" +
-            "       -- BUSCA AS INSPEÇÕES ABERTAS \\n\n" +
-            "       (SELECT (A.DATA_HORA AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS INSP_ABERTAS FROM\n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "       WHERE\n" +
-            "              COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "       GROUP BY A.DATA_HORA::DATE\n" +
-            "        ORDER BY A.DATA_HORA::DATE DESC) AS INSP ON INSP.DATA = AD.DATA\n" +
-            "       LEFT JOIN\n" +
-            "       -- BUSCA AS MOVIMENTAÇÕES ABERTAS \\n\n" +
-            "       (SELECT (AM.DATA_HORA_RESOLUCAO AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS MOV_ABERTAS FROM\n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "       WHERE\n" +
-            "              COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "       GROUP BY AM.DATA_HORA_RESOLUCAO::DATE\n" +
-            "        ORDER BY AM.DATA_HORA_RESOLUCAO::DATE DESC) AS MOV ON MOV.DATA = AD.DATA\n" +
-            "       LEFT JOIN\n" +
-            "       -- BUSCA AS CALIBRAGENS FECHADAS \\n\n" +
-            "       (SELECT (AM.DATA_HORA_RESOLUCAO AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS CAL_FECHADAS FROM\n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "       WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND\n" +
-            "             COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "       GROUP BY AM.DATA_HORA_RESOLUCAO::DATE\n" +
-            "        ORDER BY AM.DATA_HORA_RESOLUCAO::DATE DESC) AS CAL_FECHADAS ON CAL_FECHADAS.DATA = AD.DATA\n" +
-            "       LEFT JOIN\n" +
-            "       -- BUSCA AS INSPEÇÕES FECHADAS \\n\n" +
-            "       (SELECT (AM.DATA_HORA_RESOLUCAO AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS INSP_FECHADAS FROM\n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "       WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND\n" +
-            "             COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "       GROUP BY AM.DATA_HORA_RESOLUCAO::DATE\n" +
-            "        ORDER BY AM.DATA_HORA_RESOLUCAO::DATE DESC) AS INSP_FECHADAS ON INSP_FECHADAS.DATA = AD.DATA\n" +
-            "       LEFT JOIN\n" +
-            "       -- BUSCA AS MOVIMENTAÇÕES FECHADAS \\n\n" +
-            "       (SELECT (AM.DATA_HORA_RESOLUCAO AT TIME ZONE ?)::DATE AS DATA, COUNT(A.CODIGO) AS MOV_FECHADAS FROM\n" +
-            "              AFERICAO A JOIN AFERICAO_MANUTENCAO AM ON A.CODIGO = AM.COD_AFERICAO\n" +
-            "       WHERE AM.DATA_HORA_RESOLUCAO IS NOT NULL AND\n" +
-            "             COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND AM.TIPO_SERVICO LIKE ?\n" +
-            "       GROUP BY AM.DATA_HORA_RESOLUCAO::DATE\n" +
-            "        ORDER BY AM.DATA_HORA_RESOLUCAO::DATE DESC) AS MOV_FECHADAS ON MOV_FECHADAS.DATA = AD.DATA\n" +
-            "WHERE AD.DATA BETWEEN ? AND ?;";
+            + "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) ORDER BY 1 DESC";
 
     public RelatorioPneuDaoImpl() {
 
@@ -165,7 +108,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = conn.prepareStatement("SELECT EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?)) AS DIA," +
                     " COUNT(EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?))) AS REALIZADAS\n" +
                     "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO\n" +
-                    "WHERE A.DATA_HORA >=? AND A.DATA_HORA <= ? AND\n" +
+                    "WHERE A.DATA_HORA >= (? AT TIME ZONE ?) AND A.DATA_HORA <= (? AT TIME ZONE ?) AND\n" +
                     "      V.COD_UNIDADE = ?\n" +
                     "GROUP BY 1\n" +
                     "ORDER BY 1;");
@@ -173,8 +116,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt.setString(1, zoneId);
             stmt.setString(2, zoneId);
             stmt.setDate(3, dataInicial);
-            stmt.setDate(4, dataFinal);
-            stmt.setLong(5, codUnidade);
+            stmt.setString(4, zoneId);
+            stmt.setDate(5, dataFinal);
+            stmt.setString(6, zoneId);
+            stmt.setLong(7, codUnidade);
             rSet = stmt.executeQuery();
             int dia = 1;
             while (rSet.next()) {
@@ -250,100 +195,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
         faixas.add(faixa);
         return faixas;
-    }
-
-    @Override
-    public List<ResumoServicos> getResumoServicosByUnidades(int ano, int mes, List<String> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-
-        List<ResumoServicos> servicos = new ArrayList<>();
-        ResumoServicos resumoDia = null;
-        ResumoServicos.Servicos abertos = null;
-        ResumoServicos.Servicos fechados = null;
-        ResumoServicos.Servicos fechadosAc = null;
-        ResumoServicos.Servicos abertosAc = null;
-
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, ano);
-        calendar.set(Calendar.MONTH, mes - 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-
-        final Date dataInicial = new Date(calendar.getTimeInMillis());
-
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(RESUMO_SERVICOS);
-
-            stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(2, TipoServico.CALIBRAGEM.asString());
-            stmt.setArray(3, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(4, TipoServico.INSPECAO.asString());
-            stmt.setArray(5, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(6, TipoServico.MOVIMENTACAO.asString());
-            stmt.setArray(7, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(8, TipoServico.CALIBRAGEM.asString());
-            stmt.setArray(9, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(10, TipoServico.INSPECAO.asString());
-            stmt.setArray(11, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setString(12, TipoServico.MOVIMENTACAO.asString());
-            stmt.setDate(13, dataInicial);
-            stmt.setDate(14, DateUtils.toSqlDate(DateUtils.getUltimoDiaMes(dataInicial)));
-            rSet = stmt.executeQuery();
-            int tempCalFechadas = 0;
-            int tempInspFechadas = 0;
-            int tempMovFechadas = 0;
-            int tempCalAbertas = 0;
-            int tempInspAbertas = 0;
-            int tempMovAbertas = 0;
-            while (rSet.next()) {
-                resumoDia = new ResumoServicos();
-                abertos = new ResumoServicos.Servicos();
-                fechados = new ResumoServicos.Servicos();
-                fechadosAc = new ResumoServicos.Servicos();
-                abertosAc = new ResumoServicos.Servicos();
-                final Date data = rSet.getDate("DATA");
-                calendar.setTime(data);
-                resumoDia.setDia(calendar.get(Calendar.DAY_OF_MONTH));
-                // quantidade de serviços abertos no dia
-                abertos.calibragem = rSet.getInt("CAL_ABERTAS");
-                abertos.inspecao = rSet.getInt("INSP_ABERTAS");
-                abertos.movimentacao = rSet.getInt("MOV_ABERTAS");
-                // quantidade de serviços fechados no dia
-                fechados.calibragem = rSet.getInt("CAL_FECHADAS");
-                fechados.inspecao = rSet.getInt("INSP_FECHADAS");
-                fechados.movimentacao = rSet.getInt("MOV_FECHADAS");
-                // contador do acumulado, conta quantos serviços no total ja foram fechados
-                tempCalFechadas += rSet.getInt("CAL_FECHADAS");
-                tempInspFechadas += rSet.getInt("INSP_FECHADAS");
-                tempMovFechadas += rSet.getInt("MOV_FECHADAS");
-                //contador do acumulado, conta quantos serviços estão em aberto no dia
-                // leva em consideração o total aberto - o arrumado no dia
-                tempCalAbertas = tempCalAbertas + abertos.calibragem - fechados.calibragem;
-                tempInspAbertas = tempInspAbertas + abertos.inspecao - fechados.inspecao;
-                tempMovAbertas = tempMovAbertas + abertos.movimentacao - fechados.movimentacao;
-                // associa os valores com os temporários
-                fechadosAc.calibragem = tempCalFechadas;
-                fechadosAc.inspecao = tempInspFechadas;
-                fechadosAc.movimentacao = tempMovFechadas;
-                // associa os valores com os temporários
-                abertosAc.calibragem = tempCalAbertas;
-                abertosAc.inspecao = tempInspAbertas;
-                abertosAc.movimentacao = tempMovAbertas;
-                // seta os objetos internos do Resumo
-                resumoDia.setAbertos(abertos);
-                resumoDia.setFechados(fechados);
-                resumoDia.setAcumuladoFechados(fechadosAc);
-                resumoDia.setAcumuladoAbertos(abertosAc);
-                servicos.add(resumoDia);
-            }
-
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        Log.d(TAG, servicos.toString());
-        return servicos;
     }
 
     @Override
@@ -567,16 +418,17 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT (a.data_hora AT TIME ZONE (\n" +
-                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))::date as data,\n" +
+                    "  SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))::date as data,\n" +
                     "       to_char((a.data_hora AT TIME ZONE (\n" +
-                    "              SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade))), 'DD/MM') as data_formatada,\n" +
+                    "         SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade))), 'DD/MM') as data_formatada,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
                     "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
                     "FROM afericao a\n" +
-                    "WHERE (SELECT AV.COD_UNIDADE FROM AFERICAO_VALORES AV WHERE AV.COD_AFERICAO = A.CODIGO LIMIT 1)::text\n" +
-                    "      like any (ARRAY[?]) and a.data_hora::date BETWEEN ? and ?\n" +
-                    "GROUP BY 1, 2\n" +
+                    "WHERE a.cod_unidade::text like any (ARRAY[?])\n" +
+                    "      and a.data_hora::date BETWEEN (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))\n" +
+                    "      and (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))\n" +
+                    "GROUP BY a.data_hora, data_formatada, a.cod_unidade\n" +
                     "ORDER BY a.data_hora::DATE ASC;");
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
@@ -653,7 +505,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
                     "                FROM AFERICAO AF\n" +
                     "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
+                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "               LEFT JOIN\n" +
                     "               (SELECT\n" +
                     "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
@@ -661,7 +513,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
                     "                FROM AFERICAO AF\n" +
                     "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
+                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "        WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
             stmt.setDate(1, new Date(Now.utcMillis()));
             stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
@@ -868,12 +720,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
                 "  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
                 "  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO CENTRAL EXTERNO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL INTERNO\",\n" +
+                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL EXTERNO\",\n" +
                 "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
                 "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
                 "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO, 'DD/MM/YYYY HH24:MI'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
+                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
                 "FROM PNEU P\n" +
                 "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
                 "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
@@ -905,9 +757,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
                 "WHERE P.cod_unidade = ?\n" +
                 "ORDER BY \"PNEU\"");
-        stmt.setLong(1, codUnidade);
-        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(3, codUnidade);
+        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(2, codUnidade);
+        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setLong(4, codUnidade);
         return stmt;
     }
 

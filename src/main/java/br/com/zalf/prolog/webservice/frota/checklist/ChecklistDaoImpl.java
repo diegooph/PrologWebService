@@ -116,44 +116,46 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
                     + "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
                     + "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
-                    + "WHERE C.DATA_HORA::DATE >= ? "
-                    + "AND C.DATA_HORA::DATE <= ? "
+                    + "WHERE C.DATA_HORA::DATE >= (? AT TIME ZONE ?) "
+                    + "AND C.DATA_HORA::DATE <= (? AT TIME ZONE ?) "
                     + "AND C.COD_UNIDADE = ? "
                     + "AND (? = 1 OR E.CODIGO = ?) "
                     + "AND (? = 1 OR V.COD_TIPO = ?) "
                     + "AND (? = 1 OR C.PLACA_VEICULO = ?)"
                     + "ORDER BY DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?");
-
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setDate(2, new java.sql.Date(dataInicial));
-            stmt.setDate(3, new java.sql.Date(dataFinal));
-            stmt.setLong(4, codUnidade);
+            stmt.setString(3, zoneId);
+            stmt.setDate(4, new java.sql.Date(dataFinal));
+            stmt.setString(5, zoneId);
+            stmt.setLong(6, codUnidade);
             if (codEquipe == null) {
-                stmt.setInt(5, 1);
-                stmt.setInt(6, 1);
-            } else {
-                stmt.setInt(5, 0);
-                stmt.setLong(6, codEquipe);
-            }
-
-            if (codTipoVeiculo == null) {
                 stmt.setInt(7, 1);
                 stmt.setInt(8, 1);
             } else {
                 stmt.setInt(7, 0);
-                stmt.setLong(8, codTipoVeiculo);
+                stmt.setLong(8, codEquipe);
+            }
+
+            if (codTipoVeiculo == null) {
+                stmt.setInt(9, 1);
+                stmt.setInt(10, 1);
+            } else {
+                stmt.setInt(9, 0);
+                stmt.setLong(10, codTipoVeiculo);
             }
 
             if (placaVeiculo == null) {
-                stmt.setInt(9, 1);
-                stmt.setString(10, "");
+                stmt.setInt(11, 1);
+                stmt.setString(12, "");
             } else {
-                stmt.setInt(9, 0);
-                stmt.setString(10, placaVeiculo);
+                stmt.setInt(11, 0);
+                stmt.setString(12, placaVeiculo);
             }
-            stmt.setInt(11, limit);
-            stmt.setLong(12, offset);
+            stmt.setInt(13, limit);
+            stmt.setLong(14, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 Checklist checklist = createChecklist(rSet, resumido);
@@ -180,25 +182,30 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 					"CHECKLIST C "
                     + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
                     + "WHERE C.CPF_COLABORADOR = ? "
-                    + "AND (? = 1 OR C.DATA_HORA::DATE >= ?) "
-                    + "AND (? = 1 OR C.DATA_HORA::DATE <= ?) "
+                    + "AND (? = 1 OR C.DATA_HORA::DATE >= (? AT TIME ZONE ?)) "
+                    + "AND (? = 1 OR C.DATA_HORA::DATE <= (? AT TIME ZONE ?)) "
                     + "ORDER BY C.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, cpf);
             if (dataInicial == null || dataFinal == null) {
                 stmt.setInt(3, 1);
                 stmt.setNull(4, Types.DATE);
-                stmt.setInt(5, 1);
-                stmt.setNull(6, Types.DATE);
+                stmt.setNull(5, Types.CHAR);
+                stmt.setInt(6, 1);
+                stmt.setNull(7, Types.DATE);
+                stmt.setNull(8, Types.CHAR);
             } else {
                 stmt.setInt(3, 0);
                 stmt.setDate(4, new java.sql.Date(dataInicial));
-                stmt.setInt(5, 0);
-                stmt.setDate(6, new java.sql.Date(dataFinal));
+                stmt.setString(5, zoneId);
+                stmt.setInt(6, 0);
+                stmt.setDate(7, new java.sql.Date(dataFinal));
+                stmt.setString(8, zoneId);
             }
-            stmt.setInt(7, limit);
-            stmt.setLong(8, offset);
+            stmt.setInt(9, limit);
+            stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 Checklist checklist = createChecklist(rSet, resumido);
@@ -269,7 +276,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             + "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
                             + "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
                             + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? "
-                            + "ORDER BY CM.NOME, V.PLACA", ResultSet.TYPE_SCROLL_SENSITIVE,
+                            + "ORDER BY CM.NOME, V.PLACA",
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
@@ -325,7 +333,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "FROM aux_data AD\n" +
                     "  LEFT JOIN VEICULO V ON V.cod_unidade = ?\n" +
                     "  LEFT JOIN CHECKLIST C ON AD.data = C.data_hora::DATE AND C.placa_veiculo = V.placa\n" +
-                    "WHERE AD.data BETWEEN ? AND ?\n" +
+                    "WHERE AD.data BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?)\n" +
                     "GROUP BY 1, 2\n" +
                     "ORDER BY 1, 2) as dados_checklist LEFT JOIN CHECKLIST CS ON CS.CODIGO = dados_checklist" +
 					".cod_checklist_saida\n" +
@@ -333,12 +341,14 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     "LEFT JOIN COLABORADOR COS ON COS.cpf = CS.cpf_colaborador\n" +
                     "LEFT JOIN COLABORADOR COR ON COR.cpf = CR.cpf_colaborador\n" +
                     "ORDER BY dados_checklist.placa;");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            stmt.setString(1, zoneId.getId());
-            stmt.setString(2, zoneId.getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setString(1, zoneId);
+            stmt.setString(2, zoneId);
             stmt.setLong(3, codUnidade);
             stmt.setDate(4, DateUtils.toSqlDate(dataInicial));
-            stmt.setDate(5, DateUtils.toSqlDate(dataFinal));
+            stmt.setString(5, zoneId);
+            stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
+            stmt.setString(7, zoneId);
             rSet = stmt.executeQuery();
             List<FarolVeiculoDia> farois = new ArrayList<>();
             while (rSet.next()) {
@@ -583,26 +593,33 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         AlternativaChecklist alternativa;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA,\n" +
-                            "CP.PERGUNTA, CP.SINGLE_CHOICE,CAP.CODIGO AS COD_ALTERNATIVA, CP.PRIORIDADE,\n" +
-                            "CAP.ORDEM, CP.URL_IMAGEM, CAP.ALTERNATIVA, CR.RESPOSTA\n" +
+            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA,\n" +
+                            "  CP.ORDEM AS ORDEM_PERGUNTA,\n" +
+                            "  CP.PERGUNTA,\n" +
+                            "  CP.SINGLE_CHOICE,\n" +
+                            "  CAP.CODIGO AS COD_ALTERNATIVA,\n" +
+                            "  CP.PRIORIDADE,\n" +
+                            "  CAP.ORDEM,\n" +
+                            "  CP.URL_IMAGEM,\n" +
+                            "  CAP.ALTERNATIVA,\n" +
+                            "  CR.RESPOSTA\n" +
                             "FROM CHECKLIST C\n" +
-                            "\tJOIN CHECKLIST_RESPOSTAS CR ON\n" +
-                            "\t\t\tC.CODIGO = CR.COD_CHECKLIST AND\n" +
-                            "\t\t\tCR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO AND\n" +
-                            "\t\t\tc.cod_unidade = cr.cod_unidade\n" +
-                            "\tJOIN CHECKLIST_PERGUNTAS CP ON\n" +
-                            "\t\t\tCP.CODIGO = CR.COD_PERGUNTA AND\n" +
-                            "\t\t\tCP.COD_UNIDADE = CR.COD_UNIDADE AND\n" +
-                            "\t\t\tCP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO and\n" +
-                            "\t\t\tcp.codigo = cr.cod_pergunta\n" +
-                            "\tJOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON\n" +
-                            "\t\t\tCAP.CODIGO = CR.COD_ALTERNATIVA AND\n" +
-                            "\t\t\tCAP.COD_UNIDADE = CR.COD_UNIDADE AND\n" +
-                            "\t\t\tCAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO and\n" +
-                            "\t\t\t\tcap.cod_pergunta = cr.cod_pergunta\n" +
-                            "\tWHERE c.codigo = ? and c.cpf_colaborador = ? \n" +
-                            " ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
+                            "  JOIN CHECKLIST_RESPOSTAS CR\n" +
+                            "    ON C.CODIGO = CR.COD_CHECKLIST\n" +
+                            "       AND CR.COD_CHECKLIST_MODELO = C.COD_CHECKLIST_MODELO\n" +
+                            "       AND c.cod_unidade = cr.cod_unidade\n" +
+                            "  JOIN CHECKLIST_PERGUNTAS CP\n" +
+                            "    ON CP.CODIGO = CR.COD_PERGUNTA\n" +
+                            "       AND CP.COD_UNIDADE = CR.COD_UNIDADE\n" +
+                            "       AND CP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO\n" +
+                            "       AND cp.codigo = cr.cod_pergunta\n" +
+                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP\n" +
+                            "    ON CAP.CODIGO = CR.COD_ALTERNATIVA\n" +
+                            "       AND CAP.COD_UNIDADE = CR.COD_UNIDADE\n" +
+                            "       AND CAP.COD_CHECKLIST_MODELO = CR.COD_CHECKLIST_MODELO\n" +
+                            "       AND cap.cod_pergunta = cr.cod_pergunta\n" +
+                            "WHERE c.codigo = ? AND c.cpf_colaborador = ?\n" +
+                            "ORDER BY CP.ORDEM, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             stmt.setLong(1, checklist.getCodigo());
             stmt.setLong(2, checklist.getColaborador().getCpf());
@@ -641,7 +658,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
 
     // remonta as alternativas de uma Pergunta
     private void setRespostaAlternativa(AlternativaChecklist alternativa, ResultSet rSet) throws SQLException {
-
         if (rSet.getString("RESPOSTA").equals("NOK")) {
             alternativa.selected = true;
         } else if (rSet.getString("RESPOSTA").equals("OK")) {

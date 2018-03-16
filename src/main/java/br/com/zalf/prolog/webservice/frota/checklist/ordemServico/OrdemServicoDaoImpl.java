@@ -148,7 +148,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             conn = getConnection();
             String query = "SELECT * FROM ESTRATIFICACAO_OS E " +
                     "WHERE E.STATUS_ITEM LIKE 'P' AND E.PRIORIDADE LIKE 'CRITICA' AND E.PLACA_VEICULO = ? " +
-                    "AND E.DATA_HORA::DATE %S ? " +
+                    "AND E.DATA_HORA::DATE %S (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(E.cod_unidade))) " +
                     "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC;";
             if (itensCriticosRetroativos) {
                 query = String.format(query, "<=");

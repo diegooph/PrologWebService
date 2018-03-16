@@ -16,9 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +38,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO AFERICAO(DATA_HORA, PLACA_VEICULO, CPF_AFERIDOR, KM_VEICULO, "
-                    + "TEMPO_REALIZACAO, TIPO_AFERICAO) "
-                    + "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+                    + "TEMPO_REALIZACAO, TIPO_AFERICAO, COD_UNIDADE) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
             stmt.setObject(1, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setString(2, afericao.getVeiculo().getPlaca());
             stmt.setLong(3, afericao.getColaborador().getCpf());
             stmt.setLong(4, afericao.getKmMomentoAfericao());
             stmt.setLong(5, afericao.getTempoRealizacaoAfericaoInMillis());
             stmt.setString(6, afericao.getTipoAfericao().asString());
+            stmt.setLong(7, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 afericao.setCodigo(rSet.getLong("CODIGO"));
@@ -159,7 +158,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         List<ModeloPlacasAfericao.PlacaAfericao> placas = new ArrayList<>();
         try {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
-            // TODO: Como lidar com o now() em banco? Podemos solicitar que seja em UTC?
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT V.placa,\n" +
                     " M.nome,\n" +
@@ -168,11 +166,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
                     "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM now() - MAX(DATA_HORA)) AS INTERVALO FROM AFERICAO\n" +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
                     "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
                     "LEFT JOIN\n" +
@@ -183,15 +181,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
                     "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
 
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             // Seta para calcular informações de pressão.
-            stmt.setString(1, TipoAfericao.PRESSAO.asString());
-            stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setString(2, zoneId.getId());
+            stmt.setString(3, TipoAfericao.PRESSAO.asString());
+            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
 
             // Seta para calcular informações de sulco.
-            stmt.setString(3, TipoAfericao.SULCO.asString());
-            stmt.setString(4, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, codUnidade);
+            stmt.setObject(5, OffsetDateTime.now(Clock.system(zoneId)));
+            stmt.setString(6, zoneId.getId());
+            stmt.setString(7, TipoAfericao.SULCO.asString());
+            stmt.setString(8, TipoAfericao.SULCO_PRESSAO.asString());
+            stmt.setLong(9, codUnidade);
+            stmt.setLong(10, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (placas.size() == 0) {
@@ -248,17 +251,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE = ? "
                     + "AND V.COD_TIPO::TEXT LIKE ? "
                     + "AND V.PLACA LIKE ? "
-                    + "AND A.DATA_HORA::DATE BETWEEN ? AND ? "
+                    + "AND A.DATA_HORA::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+            stmt.setString(1, zoneId);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, codTipoVeiculo);
             stmt.setString(4, placaVeiculo);
             stmt.setDate(5, new java.sql.Date(dataInicial));
-            stmt.setDate(6, new java.sql.Date(dataFinal));
-            stmt.setInt(7, limit);
-            stmt.setLong(8, offset);
+            stmt.setString(6, zoneId);
+            stmt.setDate(7, new java.sql.Date(dataFinal));
+            stmt.setString(8, zoneId);
+            stmt.setInt(9, limit);
+            stmt.setLong(10, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 afericoes.add(createAfericaoResumida(rSet));

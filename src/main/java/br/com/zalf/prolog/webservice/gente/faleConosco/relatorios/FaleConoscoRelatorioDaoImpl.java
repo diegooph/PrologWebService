@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
@@ -77,10 +78,14 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
                 "  count(fc.data_hora_feedback) as total_respondidos,\n" +
                 "  trunc(extract(epoch from avg (data_hora_feedback - data_hora)) / 86400) as md_dias_feedback\n" +
                 "FROM fale_conosco fc\n" +
-                "WHERE cod_unidade= ? and data_hora::date >= ? and data_hora::date <= ?) as dados");
+                "WHERE cod_unidade= ? and data_hora::date >= (? AT TIME ZONE ?) " +
+                "and data_hora::date <= (? AT TIME ZONE ?)) as dados");
+        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setTimestamp(2, DateUtils.toTimestamp(dataInicial));
-        stmt.setTimestamp(3, DateUtils.toTimestamp(dataFinal));
+        stmt.setString(3, zoneId);
+        stmt.setTimestamp(4, DateUtils.toTimestamp(dataFinal));
+        stmt.setString(5, zoneId);
         return stmt;
     }
 }
