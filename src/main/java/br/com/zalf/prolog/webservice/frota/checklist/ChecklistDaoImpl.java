@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.Date;
@@ -116,8 +115,8 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     + "JOIN COLABORADOR CO ON CO.CPF = C.CPF_COLABORADOR "
                     + "JOIN EQUIPE E ON E.CODIGO = CO.COD_EQUIPE "
                     + "JOIN VEICULO V ON V.PLACA = C.PLACA_VEICULO "
-                    + "WHERE C.DATA_HORA::DATE >= (? AT TIME ZONE ?) "
-                    + "AND C.DATA_HORA::DATE <= (? AT TIME ZONE ?) "
+                    + "WHERE (C.DATA_HORA AT TIME ZONE ?)::DATE >= ? "
+                    + "AND (C.DATA_HORA AT TIME ZONE ?)::DATE <= ? "
                     + "AND C.COD_UNIDADE = ? "
                     + "AND (? = 1 OR E.CODIGO = ?) "
                     + "AND (? = 1 OR V.COD_TIPO = ?) "
@@ -126,10 +125,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                     + "LIMIT ? OFFSET ?");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setString(1, zoneId);
-            stmt.setDate(2, new java.sql.Date(dataInicial));
-            stmt.setString(3, zoneId);
-            stmt.setDate(4, new java.sql.Date(dataFinal));
-            stmt.setString(5, zoneId);
+            stmt.setString(2, zoneId);
+            stmt.setDate(3, new java.sql.Date(dataInicial));
+            stmt.setString(4, zoneId);
+            stmt.setDate(5, new java.sql.Date(dataFinal));
             stmt.setLong(6, codUnidade);
             if (codEquipe == null) {
                 stmt.setInt(7, 1);
@@ -158,8 +157,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setLong(14, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Checklist checklist = createChecklist(rSet, resumido);
-                checklists.add(checklist);
+                checklists.add(createChecklist(rSet, resumido));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
