@@ -27,4 +27,19 @@ public class Localizacao {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof Localizacao))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        final Localizacao localizacao = (Localizacao) obj;
+        return localizacao.latitude.equals(latitude) && localizacao.longitude.equals(longitude);
+    }
 }
