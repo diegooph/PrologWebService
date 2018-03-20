@@ -1,11 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -23,7 +24,6 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    @NotNull
     void getIntervalosCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
@@ -50,7 +50,6 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    @NotNull
     void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException;
 
@@ -76,7 +75,6 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    @NotNull
     void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException;
 
@@ -102,7 +100,6 @@ public interface ControleIntervaloRelatoriosDao {
      * @throws SQLException
      * @throws IOException
      */
-    @NotNull
     void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
@@ -119,4 +116,10 @@ public interface ControleIntervaloRelatoriosDao {
     Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException, IOException;
 
+
+    void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final String cpf,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal) throws SQLException, IOException;
 }
