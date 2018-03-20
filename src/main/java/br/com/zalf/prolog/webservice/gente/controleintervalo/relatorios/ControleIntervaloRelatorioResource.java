@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -64,7 +65,8 @@ public class ControleIntervaloRelatorioResource {
     public StreamingOutput getAderenciaIntervalosDiariaCsv(@PathParam("codUnidade") Long codUnidade,
                                                            @QueryParam("dataInicial") Long dataInicial,
                                                            @QueryParam("dataFinal") Long dataFinal) {
-        return outputStream -> service.getAderenciaIntervalosDiariaCsv(outputStream, codUnidade, dataInicial, dataFinal);
+        return outputStream -> service.getAderenciaIntervalosDiariaCsv(outputStream, codUnidade, dataInicial,
+                dataFinal);
     }
 
     @GET
@@ -84,7 +86,8 @@ public class ControleIntervaloRelatorioResource {
                                                                 @QueryParam("dataInicial") Long dataInicial,
                                                                 @QueryParam("dataFinal") Long dataFinal,
                                                                 @PathParam("cpf") String cpf) {
-        return outputStream -> service.getAderenciaIntervalosColaboradorCsv(outputStream, codUnidade, dataInicial, dataFinal, cpf);
+        return outputStream -> service.getAderenciaIntervalosColaboradorCsv(outputStream, codUnidade, dataInicial,
+                dataFinal, cpf);
     }
 
     @GET
@@ -95,5 +98,20 @@ public class ControleIntervaloRelatorioResource {
                                                           @QueryParam("dataFinal") Long dataFinal,
                                                           @PathParam("cpf") String cpf) {
         return service.getAderenciaIntervalosColaboradorReport(codUnidade, dataInicial, dataFinal, cpf);
+    }
+
+    @GET
+    @Secured
+    @Path("/intervalos-padrao-portaria-1510/{codUnidade}/{cpf}/csv")
+    public StreamingOutput getIntervalosPadraoPortaria1510Csv(@PathParam("codUnidade") @Required Long codUnidade,
+                                                              @PathParam("cpf") @Required String cpf,
+                                                              @QueryParam("dataInicial") @Required String dataInicial,
+                                                              @QueryParam("dataFinal") @Required String dataFinal) {
+        return outputStream -> service.getIntervalosPadraoPortaria1510(
+                outputStream,
+                codUnidade,
+                cpf,
+                dataInicial,
+                dataFinal);
     }
 }

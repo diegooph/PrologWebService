@@ -132,7 +132,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
 //                    "I.LATITUDE_MARCACAO_FIM AS LATITUDE_MARCACAO_FIM, " +
 //                    "I.LONGITUDE_MARCACAO_INICIO AS LONGITUDE_MARCACAO_INICIO, " +
 //                    "I.LONGITUDE_MARCACAO_FIM AS LONGITUDE_MARCACAO_FIM " +
-//                    "FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?, NULL) I LIMIT ? OFFSET ?;");
+//                    "FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?) I LIMIT ? OFFSET ?;");
 //            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
 //            stmt.setString(1, zoneId.getId());
 //            stmt.setString(2, zoneId.getId());

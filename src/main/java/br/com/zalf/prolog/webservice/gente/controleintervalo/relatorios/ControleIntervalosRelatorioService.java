@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -88,7 +90,8 @@ public class ControleIntervalosRelatorioService {
         }
     }
 
-    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Long dataInicial, Long
+            dataFinal, String cpf) {
         try {
             dao.getAderenciaIntervalosColaboradorCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
         } catch (SQLException | IOException e) {
@@ -99,15 +102,38 @@ public class ControleIntervalosRelatorioService {
         }
     }
 
-    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Long dataInicial, Long dataFinal, String
+            cpf) {
         try {
-            return dao.getAderenciaIntervalosColaboradorReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
+            return dao.getAderenciaIntervalosColaboradorReport(codUnidade, new Date(dataInicial), new Date(dataFinal)
+                    , cpf);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(REPORT). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
                     "dataFinal: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
             return null;
+        }
+    }
+
+    public void getIntervalosPadraoPortaria1510(@NotNull final OutputStream out,
+                                                @NotNull final Long codUnidade,
+                                                @NotNull final String cpf,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) {
+        try {
+            dao.getRelatorioPadraoPortaria1510Csv(
+                    out,
+                    codUnidade,
+                    cpf,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório csv no padrão da portaria 1510. \n" +
+                    "codUnidade: %d \n" +
+                    "cpf: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
         }
     }
 }

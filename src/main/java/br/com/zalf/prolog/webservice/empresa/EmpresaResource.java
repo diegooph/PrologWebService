@@ -147,29 +147,12 @@ public class EmpresaResource {
         return service.getResumoAtualizacaoDados(ano, mes, codUnidade);
     }
 
+    /**
+     * Deixamos apenas o {@link Secured} nesse método pois muitas funcionalidades no ProLog utilizam da busca de filtros
+     * e seria muito difícil de manter um tracking de todas aqui.
+     */
     @GET
-    @Secured(permissions = {
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
-            Pilares.Frota.Checklist.REALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM,
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Checklist.CONSERTAR_ITEM,
-            Pilares.Frota.Afericao.REALIZAR,
-            Pilares.Frota.Afericao.VISUALIZAR,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
-            Pilares.Entrega.Produtividade.CONSOLIDADO,
-            Pilares.Entrega.Indicadores.INDICADORES,
-            Pilares.Entrega.Relatorios.INDICADORES,
-            Pilares.Entrega.Upload.VERIFICACAO_DADOS,
-            Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
-            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO,
-            Pilares.Gente.ProntuarioCondutor.VISUALIZAR_TODOS})
+    @Secured
     @Path("/filtros/{cpf}")
     public List<Empresa> getFiltros(
             @PathParam("cpf") Long cpf) {
