@@ -34,7 +34,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
                     + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE, PIS) VALUES "
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
