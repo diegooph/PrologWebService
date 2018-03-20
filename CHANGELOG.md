@@ -1,8 +1,11 @@
 Change Log
 ==========
 
+<a name="v2.0.50"></a>
+## Version [v2.0.50](https://github.com/luizfp/PrologWebService/compare/v2.0.49...v2.0.50) (2018-03-19)
+
 <a name="v2.0.49"></a>
-## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (release date) [unreleased]
+## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (2018-03-19)
 
 ### Features
 * Cria relatório dos intervalos seguindo padrão da portaria 1510
