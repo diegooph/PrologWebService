@@ -1,6 +1,28 @@
 Change Log
 ==========
 
+<a name="v2.0.49"></a>
+## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (release date) [unreleased]
+
+### Features
+* Cria relatório dos intervalos seguindo padrão da portaria 1510
+* Cria teste para busca dos intervalos agruapdos
+
+### Refactors
+* Remove verificação de permissões do método de busca dos filtros
+
+### Bug Fixes
+* Corrige query de busca da quantidade de aferições realizadas na semana atual
+* Corrige busca do relatório de indicadores
+* Corrige function de busca dos intervalosa agrupados
+* Corrige insert do colaborador
+* Corrige busca dos checklists
+
+<a name="v2.0.48"></a>
+## Version [v2.0.48](https://github.com/luizfp/PrologWebService/compare/v2.0.47-h1...v2.0.48) (2018-03-16)
+
+--
+
 <a name="v2.0.47-h1"></a>
 ## Version [v2.0.47-h1](https://github.com/luizfp/PrologWebService/compare/v2.0.47...v2.0.47-h1) (2018-03-05)
 
