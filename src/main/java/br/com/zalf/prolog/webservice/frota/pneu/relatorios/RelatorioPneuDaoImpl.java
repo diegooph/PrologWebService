@@ -417,19 +417,42 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT (a.data_hora AT TIME ZONE (\n" +
-                    "  SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))::date as data,\n" +
-                    "       to_char((a.data_hora AT TIME ZONE (\n" +
-                    "         SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade))), 'DD/MM') as data_formatada,\n" +
-                    "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_pressao,\n" +
-                    "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco,\n" +
-                    "       sum(case when a.tipo_afericao = ? THEN 1 ELSE 0 END) AS qt_afericao_sulco_pressao\n" +
-                    "FROM afericao a\n" +
-                    "WHERE a.cod_unidade::text like any (ARRAY[?])\n" +
-                    "      and a.data_hora::date BETWEEN (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))\n" +
-                    "      and (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(a.cod_unidade)))\n" +
-                    "GROUP BY a.data_hora, data_formatada, a.cod_unidade\n" +
-                    "ORDER BY a.data_hora::DATE ASC;");
+            stmt = conn.prepareStatement("SELECT " +
+                    "  DATA, " +
+                    "  DADOS.DATA_FORMATADA, " +
+                    "  SUM(DADOS.QT_AFERICAO_PRESSAO) AS QT_AFERICAO_PRESSAO, " +
+                    "  SUM(DADOS.QT_AFERICAO_SULCO) AS QT_AFERICAO_SULCO, " +
+                    "  SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QT_AFERICAO_SULCO_PRESSAO FROM ( " +
+                    "  SELECT " +
+                    "    (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE " +
+                    "                               FROM FUNC_GET_TIME_ZONE_UNIDADE(A.COD_UNIDADE))) :: DATE         " +
+                    "  AS DATA, " +
+                    "    TO_CHAR((A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE " +
+                    "                                       FROM FUNC_GET_TIME_ZONE_UNIDADE(A.COD_UNIDADE))), " +
+                    "'DD/MM') AS DATA_FORMATADA, " +
+                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
+                    "      THEN 1 " +
+                    "        ELSE 0 END)                                                                             " +
+                    "  AS QT_AFERICAO_PRESSAO, " +
+                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
+                    "      THEN 1 " +
+                    "        ELSE 0 END)                                                                             " +
+                    "  AS QT_AFERICAO_SULCO, " +
+                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
+                    "      THEN 1 " +
+                    "        ELSE 0 END)                                                                             " +
+                    "  AS QT_AFERICAO_SULCO_PRESSAO " +
+                    "  FROM AFERICAO A " +
+                    "  WHERE A.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
+                    "        AND (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM FUNC_GET_TIME_ZONE_UNIDADE(A" +
+                    ".COD_UNIDADE))) :: DATE >= ? " +
+                    "        AND (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM FUNC_GET_TIME_ZONE_UNIDADE(A" +
+                    ".COD_UNIDADE))) :: DATE <= ? " +
+                    "  GROUP BY A.DATA_HORA, DATA_FORMATADA, A.COD_UNIDADE " +
+                    "  ORDER BY A.DATA_HORA :: DATE ASC " +
+                    ") AS DADOS " +
+                    "GROUP BY DATA, DADOS.DATA_FORMATADA " +
+                    "ORDER BY DATA ASC;");
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
             stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
