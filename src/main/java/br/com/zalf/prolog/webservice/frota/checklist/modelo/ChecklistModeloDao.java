@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -54,5 +57,23 @@ public interface ChecklistModeloDao {
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
 	boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException;
-	
+
+	/**
+	 * Este método busca uma lista de URLs em forma de {@link String}.
+	 * Com base nessas strings uma {@link Galeria} é criada.
+	 *
+	 * @return              - Um {@link List<String>} contendo as URLs das imagens.
+	 * @throws SQLException - Caso algum erro na query ocorrer.
+	 */
+	Galeria getGaleriaImagensPublicas() throws SQLException;
+
+	/**
+	 * Este método busca com base no código da {@link Empresa} uma lista de URLs em forma de {@link String}.
+	 * Com base nessas strings uma {@link Galeria} é criada.
+	 *
+	 * @param codEmpresa    - Código da empresa a qual devemos buscar as imagens.
+	 * @return              - Um {@link List<String>} contendo as URLs das imagens.
+	 * @throws SQLException - Caso algum erro na query ocorrer.
+	 */
+	Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws SQLException;
 }
