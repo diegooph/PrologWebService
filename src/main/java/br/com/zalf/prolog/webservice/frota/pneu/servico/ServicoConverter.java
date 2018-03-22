@@ -156,6 +156,7 @@ final class ServicoConverter {
     private static void setAtributosComunsServico(final Servico servico, final ResultSet resultSet)
             throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
+        servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
         colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));

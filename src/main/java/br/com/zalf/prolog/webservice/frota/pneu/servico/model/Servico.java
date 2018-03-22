@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
@@ -20,6 +21,10 @@ public abstract class Servico {
      * O código da {@link Afericao} que originou esse serviço.
      */
     private Long codAfericao;
+    /**
+     * O código da {@link Unidade} onde o serviço foi aberto.
+     */
+    private Long codUnidade;
     private LocalDateTime dataHoraAbertura;
     private LocalDateTime dataHoraFechamento;
     private Pneu pneuComProblema;
@@ -72,6 +77,14 @@ public abstract class Servico {
 
     public void setCodAfericao(Long codAfericao) {
         this.codAfericao = codAfericao;
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
+    }
+
+    public void setCodUnidade(final Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public TipoServico getTipoServico() {

@@ -4,8 +4,8 @@ Change Log
 <a name="v2.0.50"></a>
 ## Version [v2.0.50](https://github.com/luizfp/PrologWebService/compare/v2.0.49...v2.0.50) (release date) [unreleased]
 
-### Bug Fixes
-* Verifica permissão de cadastro de pneu na tela de movimentação
+### Refactors
+* Adiciona código da unidade ao objeto `Servico`
 
 <a name="v2.0.49"></a>
 ## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (2018-03-19)
