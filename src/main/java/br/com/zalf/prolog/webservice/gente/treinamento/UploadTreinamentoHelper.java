@@ -56,6 +56,7 @@ public class UploadTreinamentoHelper {
         return treinamento;
     }
 
+    @SuppressWarnings("Duplicates")
     private File createFile(File directorySavePDF, InputStream inputStream, String pdfName) throws IOException {
         File file = new File(directorySavePDF, pdfName);
         FileOutputStream outputStream = new FileOutputStream(file);
