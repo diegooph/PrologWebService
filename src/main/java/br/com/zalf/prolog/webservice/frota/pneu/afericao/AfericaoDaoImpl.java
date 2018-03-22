@@ -243,8 +243,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
-                    + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+            stmt = conn.prepareStatement("SELECT " +
+                    "A.KM_VEICULO, " +
+                    "A.CODIGO AS COD_AFERICAO, " +
+                    "A.COD_UNIDADE AS COD_UNIDADE, " +
+                    "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "A.PLACA_VEICULO, " +
+                    "A.TIPO_AFERICAO, " +
+                    "C.CPF, " +
+                    "C.NOME, " +
+                    "A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
@@ -288,6 +296,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("SELECT " +
                     "A.KM_VEICULO, " +
                     "A.CODIGO AS COD_AFERICAO, " +
+                    "A.COD_UNIDADE AS COD_UNIDADE, " +
                     "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
                     "A.PLACA_VEICULO, " +
                     "A.KM_VEICULO, " +
@@ -364,9 +373,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, "
-                    + "A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = V.COD_UNIDADE) AS DATA_HORA, "
-                    + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+            stmt = conn.prepareStatement("SELECT " +
+                    "A.KM_VEICULO, " +
+                    "A.CODIGO AS COD_AFERICAO, " +
+                    "A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = V.COD_UNIDADE) AS DATA_HORA, " +
+                    "A.PLACA_VEICULO, " +
+                    "A.TIPO_AFERICAO, " +
+                    "C.CPF, " +
+                    "C.NOME, " +
+                    "A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
                     + "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
@@ -540,6 +555,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException {
         final Afericao afericao = new Afericao();
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
+        afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericao.setTipoAfericao(TipoAfericao.fromString(rSet.getString("TIPO_AFERICAO")));

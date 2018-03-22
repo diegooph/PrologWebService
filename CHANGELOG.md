@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Adiciona código da unidade ao objeto `Servico`
+* Adiciona código da unidade ao objeto Afericao
 
 <a name="v2.0.49"></a>
 ## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (2018-03-19)
