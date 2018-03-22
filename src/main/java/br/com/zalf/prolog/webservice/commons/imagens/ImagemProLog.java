@@ -7,17 +7,17 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ImagenProLog {
+public class ImagemProLog {
 
     public Long codImagem;
     public String urlImagem;
     public LocalDateTime dataHoraCadastro;
     public Boolean statusImagem;
 
-    public ImagenProLog() {
+    public ImagemProLog() {
     }
 
-    public ImagenProLog(final Long codImagem,
+    public ImagemProLog(final Long codImagem,
                         final String urlImagem,
                         final LocalDateTime dataHoraCadastro,
                         final Boolean statusImagem) {
@@ -61,7 +61,7 @@ public class ImagenProLog {
 
     @Override
     public String toString() {
-        return "ImagenProLog{" +
+        return "ImagemProLog{" +
                 "codImagem=" + codImagem +
                 ", urlImagem='" + urlImagem + '\'' +
                 ", dataHoraCadastro=" + dataHoraCadastro +

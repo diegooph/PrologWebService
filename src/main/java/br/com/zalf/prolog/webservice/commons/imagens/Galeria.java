@@ -9,20 +9,20 @@ import java.util.List;
  */
 public class Galeria {
 
-    public List<ImagenProLog> galeria;
+    public List<ImagemProLog> galeria;
 
     public Galeria() {
     }
 
-    public Galeria(final List<ImagenProLog> galeria) {
+    public Galeria(final List<ImagemProLog> galeria) {
         this.galeria = galeria;
     }
 
-    public List<ImagenProLog> getGaleria() {
+    public List<ImagemProLog> getGaleria() {
         return galeria;
     }
 
-    public void setGaleria(final List<ImagenProLog> galeria) {
+    public void setGaleria(final List<ImagemProLog> galeria) {
         this.galeria = galeria;
     }
 

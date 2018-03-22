@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,4 +77,14 @@ public interface ChecklistModeloDao {
 	 * @throws SQLException - Caso algum erro na query ocorrer.
 	 */
 	Galeria getGaleriaImagensEmpresa(@NotNull final Long codEmpresa) throws SQLException;
+
+	/**
+	 * Método que insere uma imagem na {@link Galeria} da {@link Empresa}.
+	 *
+	 * @param codEmpresa    - Código da empresa a qual devemos inserir a imagem.
+	 * @param imagemProLog  - Imagem que deve ser inserida.
+	 * @return              - Código da imagem que foi inserida.
+	 * @throws SQLException - Caso algum erro na query ocorrer.
+	 */
+	Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws SQLException;
 }

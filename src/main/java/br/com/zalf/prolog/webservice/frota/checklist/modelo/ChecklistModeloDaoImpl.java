@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagenProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -189,12 +189,37 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         return getGaleria(codEmpresa);
     }
 
+    @Override
+    public Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_GALERIA_IMAGENS(URL_IMAGEM, COD_EMPRESA) " +
+                    "VALUES (?, ?) RETURNING COD_IMAGEM;");
+            stmt.setString(1, imagemProLog.getUrlImagem());
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            }
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
     @NotNull
     private Galeria getGaleria(@Nullable final Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ImagenProLog> imagensProLog = new ArrayList<>();
+        final List<ImagemProLog> imagensProLog = new ArrayList<>();
         try {
             conn = getConnection();
             if (codEmpresa != null) {
@@ -207,12 +232,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final ImagenProLog imagenProLog = new ImagenProLog();
-                imagenProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
-                imagenProLog.setUrlImagem(rSet.getString("URL_IMAGEM"));
-                imagenProLog.setDataHoraCadastro(rSet.getObject("DATA_HORA_CADASTRO", LocalDateTime.class));
-                imagenProLog.setStatusImagem(rSet.getBoolean("STATUS"));
-                imagensProLog.add(imagenProLog);
+                final ImagemProLog imagemProLog = new ImagemProLog();
+                imagemProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
+                imagemProLog.setUrlImagem(rSet.getString("URL_IMAGEM"));
+                imagemProLog.setDataHoraCadastro(rSet.getObject("DATA_HORA_CADASTRO", LocalDateTime.class));
+                imagemProLog.setStatusImagem(rSet.getBoolean("STATUS"));
+                imagensProLog.add(imagemProLog);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
