@@ -534,7 +534,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
         pergunta.setPergunta(rSet.getString("PERGUNTA"));
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
         pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
         return pergunta;
     }

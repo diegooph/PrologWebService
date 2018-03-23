@@ -14,6 +14,7 @@ public class PerguntaRespostaChecklist extends Pergunta {
     public static final String BAIXA = "BAIXA";
 
     private int ordemExibicao;
+    private Long codImagem;
     private String url;
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
@@ -42,6 +43,14 @@ public class PerguntaRespostaChecklist extends Pergunta {
 
     public void setPrioridade(String prioridade) {
         this.prioridade = prioridade;
+    }
+
+    public Long getCodImagem() {
+        return codImagem;
+    }
+
+    public void setCodImagem(final Long codImagem) {
+        this.codImagem = codImagem;
     }
 
     public String getUrl() {
@@ -84,11 +93,11 @@ public class PerguntaRespostaChecklist extends Pergunta {
     public String toString() {
         return "PerguntaRespostaChecklist{" +
                 "ordemExibicao=" + ordemExibicao +
+                ", codImagem=" + codImagem +
                 ", url='" + url + '\'' +
                 ", alternativasResposta=" + alternativasResposta +
                 ", singleChoice=" + singleChoice +
                 ", prioridade='" + prioridade + '\'' +
-                super.toString() +
                 '}';
     }
 }

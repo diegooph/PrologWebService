@@ -31,14 +31,26 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA,CP.PRIORIDADE, CP.URL_IMAGEM, CP.PERGUNTA, CP.ORDEM AS ORDEM_PERGUNTA, "
-                            + "CP.SINGLE_CHOICE, CAP.CODIGO AS COD_ALTERNATIVA, "
-                            + "CAP.ALTERNATIVA, CAP.ORDEM AS ORDEM_ALTERNATIVA "
-                            + "FROM CHECKLIST_PERGUNTAS CP "
-                            + "JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CP.CODIGO = CAP.COD_PERGUNTA AND CAP.COD_UNIDADE = CP.COD_UNIDADE "
-                            + "AND CAP.COD_CHECKLIST_MODELO = CP.COD_CHECKLIST_MODELO "
-                            + "WHERE CP.COD_UNIDADE = ? AND CP.COD_CHECKLIST_MODELO = ? AND CP.STATUS_ATIVO = TRUE "
-                            + "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM", ResultSet.TYPE_SCROLL_SENSITIVE,
+            stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, " +
+                            "  CP.PRIORIDADE, " +
+                            "  CP.COD_IMAGEM,, " +
+                            "  CGI.URL_IMAGEM, " +
+                            "  CP.PERGUNTA, " +
+                            "  CP.ORDEM AS ORDEM_PERGUNTA, " +
+                            "  CP.SINGLE_CHOICE, " +
+                            "  CAP.CODIGO AS COD_ALTERNATIVA, " +
+                            "  CAP.ALTERNATIVA, " +
+                            "  CAP.ORDEM AS ORDEM_ALTERNATIVA " +
+                            "FROM CHECKLIST_PERGUNTAS CP " +
+                            "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP " +
+                            "    ON CP.CODIGO = CAP.COD_PERGUNTA " +
+                            "       AND CAP.COD_UNIDADE = CP.COD_UNIDADE " +
+                            "       AND CAP.COD_CHECKLIST_MODELO = CP.COD_CHECKLIST_MODELO " +
+                            "  JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
+                            "    ON CGI.COD_IMAGEM = CP.COD_IMAGEM " +
+                            "WHERE CP.COD_UNIDADE = ? AND CP.COD_CHECKLIST_MODELO = ? AND CP.STATUS_ATIVO = TRUE " +
+                            "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM;",
+                    ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
@@ -57,9 +69,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     pergunta.setAlternativasResposta(alternativas);
                     perguntas.add(pergunta);
                     alternativas = new ArrayList<>();
-
                     pergunta = createPergunta(rSet);
-
                     alternativa = createAlternativa(rSet);
                     alternativas.add(alternativa);
                 }
@@ -308,6 +318,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
         pergunta.setPergunta(rSet.getString("PERGUNTA"));
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
+        pergunta.setCodImagem(rSet.getLong("COD_IMAGEM"));
         pergunta.setUrl(rSet.getString("URL_IMAGEM"));
         pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
         return pergunta;
@@ -346,13 +357,13 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     private void insertModeloPerguntas(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
         for (PerguntaRespostaChecklist pergunta : modeloChecklist.getListPerguntas()) {
             final PreparedStatement stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
-                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, URL_IMAGEM, "
+                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
                     + "STATUS_ATIVO, PRIORIDADE, SINGLE_CHOICE) VALUES (?,?,?,?,?,?,?,?) RETURNING CODIGO");
             stmt.setLong(1, modeloChecklist.getCodigo());
             stmt.setLong(2, modeloChecklist.getCodUnidade());
             stmt.setInt(3, pergunta.getOrdemExibicao());
             stmt.setString(4, pergunta.getPergunta());
-            stmt.setString(5, pergunta.getUrl());
+            stmt.setLong(5, pergunta.getCodImagem());
             stmt.setBoolean(6, true);
             stmt.setString(7, pergunta.getPrioridade());
             stmt.setBoolean(8, pergunta.isSingleChoice());
