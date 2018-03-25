@@ -46,15 +46,14 @@ public final class DatabaseManager {
         this.dataSource = dataSource;
     }
 
-    static DatabaseManager init() {
-        Log.d(TAG, "DatabaseManager initialized");
+    static void init() {
         if (singleton == null) {
             final PoolProperties poolProperties = getPoolProperties();
             singleton = new DatabaseManager(new org.apache.tomcat.jdbc.pool.DataSource(poolProperties));
         } else {
             throw new IllegalStateException("You cannot init an already initialized manager");
         }
-        return singleton;
+        Log.d(TAG, "DatabaseManager initialized");
     }
 
     static void finish() {

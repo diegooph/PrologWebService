@@ -27,7 +27,7 @@ public class DatabaseConnection {
         try {
             return DatabaseManager.getInstance().getConnection();
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao abrir conexão com o banco");
+            throw new RuntimeException("Erro ao abrir conexão com o banco", e);
         }
     }
 
