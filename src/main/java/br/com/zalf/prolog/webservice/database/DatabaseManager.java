@@ -47,6 +47,7 @@ public final class DatabaseManager {
     }
 
     static DatabaseManager init() {
+        Log.d(TAG, "DatabaseManager initialized");
         if (singleton == null) {
             final PoolProperties poolProperties = getPoolProperties();
             singleton = new DatabaseManager(new org.apache.tomcat.jdbc.pool.DataSource(poolProperties));
@@ -67,13 +68,14 @@ public final class DatabaseManager {
            final Driver driver = drivers.nextElement();
             try {
                 DriverManager.deregisterDriver(driver);
-                Log.d(TAG,"(JDBC driver (" + driver.toString() + ") successfully deregistered");
+                Log.d(TAG,"JDBC driver (" + driver.toString() + ") successfully deregistered");
             } catch (final SQLException ex) {
                 Log.e(TAG, "Error when deregistering JDBC driver (" + driver.toString() + ")", ex);
             }
         }
         // Prevent any access to this instance.
         singleton = null;
+        Log.d(TAG, "DatabaseManager finished");
     }
 
     public static DatabaseManager getInstance() {
