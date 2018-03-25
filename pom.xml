@@ -135,6 +135,13 @@
 			<version>2.0.5</version>
 		</dependency>
 
+		<!-- Para realizar pool de conexões-->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.0.45</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>prolog.webservice</finalName>
