@@ -8,7 +8,7 @@ import javax.servlet.ServletContextListener;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class DataSourceLifecycleManager implements ServletContextListener {
+public final class DataSourceLifecycleManager implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {

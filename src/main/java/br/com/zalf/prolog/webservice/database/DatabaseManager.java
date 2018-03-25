@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.database;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -33,7 +34,7 @@ public final class DatabaseManager {
 
     // Informações de acesso ao BD de testes
 //	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/INTERVALO_TESTE_1";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/TEST_POOL";
+    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 
@@ -92,9 +93,9 @@ public final class DatabaseManager {
     private static PoolProperties getPoolProperties() {
         final PoolProperties poolProperties = new PoolProperties();
         poolProperties.setDriverClassName(DRIVER);
-        poolProperties.setUrl(TESTE_URL);
-        poolProperties.setUsername(TESTE_USUARIO);
-        poolProperties.setPassword(TESTE_SENHA);
+        poolProperties.setUrl(BuildConfig.DEBUG ? TESTE_URL : URL);
+        poolProperties.setUsername(BuildConfig.DEBUG ? TESTE_USUARIO : USUARIO);
+        poolProperties.setPassword(BuildConfig.DEBUG ? TESTE_SENHA : SENHA);
         poolProperties.setInitSQL("SET application_name = 'ProLog WS'");
         poolProperties.setValidationQuery("SELECT 1");
         poolProperties.setTestWhileIdle(false);
