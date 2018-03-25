@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 

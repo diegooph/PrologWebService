@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import org.jetbrains.annotations.NotNull;
 

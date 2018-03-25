@@ -1,6 +1,5 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.database;
 
-import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

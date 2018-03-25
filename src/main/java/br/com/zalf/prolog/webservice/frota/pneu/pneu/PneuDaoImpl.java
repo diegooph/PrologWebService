@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;

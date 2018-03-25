@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
