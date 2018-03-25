@@ -14,7 +14,7 @@ import java.sql.ResultSet;
  * @version 1.0
  * @since 5 de dez de 2015 11:42:13
  */
-public final class DatabaseConnection {
+public class DatabaseConnection {
 
     /**
      * Método responsável por criar conexão com o banco.
