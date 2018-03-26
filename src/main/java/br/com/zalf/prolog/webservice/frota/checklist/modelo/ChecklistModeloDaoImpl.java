@@ -201,10 +201,10 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT CGP.URL_IMAGEM FROM CHECKLIST_MODELO_FUNCAO CMF " +
+            stmt = conn.prepareStatement("SELECT DISTINCT CGI.URL_IMAGEM FROM CHECKLIST_MODELO_FUNCAO CMF " +
                     "  JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_UNIDADE = CMF.COD_UNIDADE " +
                     "                                 AND CP.COD_CHECKLIST_MODELO = CMF.COD_CHECKLIST_MODELO " +
-                    "  JOIN CHECKLIST_GALERIA_IMAGENS CGP ON CP.COD_IMAGEM = CGP.COD_IMAGEM " +
+                    "  JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
                     "WHERE CMF.COD_UNIDADE = ? " +
                     "      AND CMF.COD_FUNCAO = ? " +
                     "      AND CP.STATUS_ATIVO = TRUE;");
@@ -305,7 +305,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                         "WHERE COD_EMPRESA IS NULL AND STATUS = TRUE;");
             }
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
+            while (rSet.next()) {
                 final ImagemProLog imagemProLog = new ImagemProLog();
                 imagemProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
                 imagemProLog.setUrlImagem(rSet.getString("URL_IMAGEM"));
