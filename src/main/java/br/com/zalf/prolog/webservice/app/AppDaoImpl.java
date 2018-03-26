@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.app;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

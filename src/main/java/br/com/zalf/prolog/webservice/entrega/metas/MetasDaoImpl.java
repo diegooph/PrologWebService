@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.metas;
 
 import br.com.zalf.prolog.webservice.commons.util.TimeUtils;
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 
 import java.sql.*;
 import java.time.Duration;
