@@ -29,7 +29,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, " +
                             "  CP.PRIORIDADE, " +
-                            "  CP.COD_IMAGEM,, " +
+                            "  CGI.COD_IMAGEM,, " +
                             "  CGI.URL_IMAGEM, " +
                             "  CP.PERGUNTA, " +
                             "  CP.ORDEM AS ORDEM_PERGUNTA, " +
@@ -274,7 +274,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     "  CAPP.CODIGO AS COD_ALTERNATIVA, " +
                     "  CAPP.ALTERNATIVA AS ALTERNATIVA, " +
                     "  CAPP.ORDEM AS ORDEM_ALTERNATIVA, " +
-                    "  CGI.URL_IMAGEM AS URL_IMAGEM " +
+                    "  CGI.URL_IMAGEM AS URL_IMAGEM, " +
+                    "  CGI.COD_IMAGEM AS COD_IMAGEM " +
                     "FROM CHECKLIST_PERGUNTAS_PROLOG CPP " +
                     "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA_PROLOG CAPP " +
                     "    ON CPP.CODIGO = CAPP.COD_PERGUNTA_PROLOG " +
