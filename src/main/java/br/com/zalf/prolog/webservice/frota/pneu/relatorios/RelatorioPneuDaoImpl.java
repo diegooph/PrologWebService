@@ -734,56 +734,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  P.codigo                                                                                   AS \"PNEU\",\n" +
-                "  map.nome                                                                                   AS \"MARCA\",\n" +
-                "  mp.nome                                                                                    AS \"MODELO\",\n" +
-                "  ((((dp.largura || '/' :: TEXT) || dp.altura) || ' R' :: TEXT) || dp.aro)                   AS \"MEDIDAS\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU, '-')                                     AS \"PLACA\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL EXTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
-                "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
-                "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
-                "FROM PNEU P\n" +
-                "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
-                "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
-                "  JOIN modelo_pneu mp ON mp.codigo = p.cod_modelo AND mp.cod_empresa = u.cod_empresa\n" +
-                "  JOIN marca_pneu map ON map.codigo = mp.cod_marca\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     PON.nomenclatura AS POSICAO_PNEU,\n" +
-                "     VP.cod_pneu      AS CODIGO_PNEU,\n" +
-                "     VP.placa         AS PLACA_VEICULO_PNEU,\n" +
-                "     VP.cod_unidade   AS COD_UNIDADE_PNEU,\n" +
-                "     VT.nome          AS VEICULO_TIPO\n" +
-                "   FROM veiculo V\n" +
-                "     JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
-                "     JOIN veiculo_tipo vt ON v.cod_unidade = vt.cod_unidade AND v.cod_tipo = vt.codigo\n" +
-                "     JOIN pneu_ordem_nomenclatura_unidade pon ON pon.cod_unidade = v.cod_unidade AND pon.cod_tipo_veiculo = v.cod_tipo\n" +
-                "                                                 AND vp.posicao = pon.posicao_prolog\n" +
-                "   WHERE V.cod_unidade = ?\n" +
-                "   ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO\n" +
-                "    ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     AV.cod_pneu,\n" +
-                "     AV.cod_unidade   AS COD_UNIDADE_DATA,\n" +
-                "     MAX(A.data_hora AT TIME ZONE ?) AS ULTIMA_AFERICAO\n" +
-                "   FROM AFERICAO A\n" +
-                "     JOIN afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
-                "   GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO\n" +
-                "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
-                "WHERE P.cod_unidade = ?\n" +
-                "ORDER BY \"PNEU\"");
-        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(2, codUnidade);
-        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(4, codUnidade);
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 
