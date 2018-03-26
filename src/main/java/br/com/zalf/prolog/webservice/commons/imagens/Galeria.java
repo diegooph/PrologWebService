@@ -8,28 +8,24 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class Galeria {
-    private List<ImagemProLog> galeria;
+    private List<ImagemProLog> imagens;
 
-    public Galeria() {
-
+    public Galeria(final List<ImagemProLog> imagens) {
+        this.imagens = imagens;
     }
 
-    public Galeria(final List<ImagemProLog> galeria) {
-        this.galeria = galeria;
+    public List<ImagemProLog> getImagens() {
+        return imagens;
     }
 
-    public List<ImagemProLog> getGaleria() {
-        return galeria;
-    }
-
-    public void setGaleria(final List<ImagemProLog> galeria) {
-        this.galeria = galeria;
+    public void setImagens(final List<ImagemProLog> imagens) {
+        this.imagens = imagens;
     }
 
     @Override
     public String toString() {
         return "Galeria{" +
-                "galeria=" + galeria +
+                "imagens=" + imagens +
                 '}';
     }
 }
