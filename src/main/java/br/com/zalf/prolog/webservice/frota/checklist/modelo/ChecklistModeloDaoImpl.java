@@ -194,6 +194,33 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
+    public List<String> getUrlImagensPerguntas(final Long codUnidade, final Long codFuncao) throws SQLException {
+        final List<String> listUrl = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT CGP.URL_IMAGEM FROM CHECKLIST_MODELO_FUNCAO CMF " +
+                    "  JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_UNIDADE = CMF.COD_UNIDADE " +
+                    "                                 AND CP.COD_CHECKLIST_MODELO = CMF.COD_CHECKLIST_MODELO " +
+                    "  JOIN CHECKLIST_GALERIA_IMAGENS CGP ON CP.COD_IMAGEM = CGP.COD_IMAGEM " +
+                    "WHERE CMF.COD_UNIDADE = ? " +
+                    "      AND CMF.COD_FUNCAO = ? " +
+                    "      AND CP.STATUS_ATIVO = TRUE;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codFuncao);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listUrl.add(rSet.getString("URL_IMAGEM"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return listUrl;
+    }
+
+    @Override
     public Galeria getGaleriaImagensPublicas() throws SQLException {
         return getGaleria(null);
     }

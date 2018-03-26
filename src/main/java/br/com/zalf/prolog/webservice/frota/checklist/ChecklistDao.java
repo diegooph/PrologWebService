@@ -66,15 +66,6 @@ public interface ChecklistDao {
 									 boolean resumido) throws SQLException;
 
 	/**
-	 * busca a url das imagens das perguntas
-	 * @param codUnidade código da unidade
-	 * @param codFuncao código da função
-	 * @return retorna uma lista de Strings contendo as URLs
-	 * @throws SQLException caso der erro no banco
-	 */
-	List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException;
-
-	/**
 	 * busca um novo checklist de perguntas
 	 * @param codUnidade código da unidade
 	 * @param codModelo código do modelo

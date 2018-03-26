@@ -216,33 +216,6 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
     }
 
     @Override
-    public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException {
-        List<String> listUrl = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT CP.URL_IMAGEM FROM CHECKLIST_MODELO_FUNCAO CMF "
-                    + "JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_UNIDADE = CMF.COD_UNIDADE "
-                    + "AND CP.COD_CHECKLIST_MODELO = CMF.COD_CHECKLIST_MODELO "
-                    + "WHERE CMF.COD_UNIDADE = ? "
-                    + "AND CMF.COD_FUNCAO = ? "
-                    + "AND CP.STATUS_ATIVO = TRUE");
-
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codFuncao);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listUrl.add(rSet.getString("URL_IMAGEM"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listUrl;
-    }
-
-    @Override
     public NovoChecklistHolder getNovoChecklistHolder(Long codUnidade, Long codModelo, String placa, char
 			tipoChecklis) throws SQLException {
         final NovoChecklistHolder holder = new NovoChecklistHolder();

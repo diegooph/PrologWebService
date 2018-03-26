@@ -88,6 +88,14 @@ public class ChecklistModeloResource {
     // Métodos referente ao uso da galeria
     //
     @GET
+    @Path("/urlImagens/{codUnidade}/{codFuncao}")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
+                                               @PathParam("codFuncao") Long codFuncao) {
+        return service.getUrlImagensPerguntas(codUnidade, codFuncao);
+    }
+
+    @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galeria-prolog")
     public Galeria getGaleriaImagensPublicas() {

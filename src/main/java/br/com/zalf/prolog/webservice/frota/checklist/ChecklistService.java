@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.VeiculoLiberacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,15 +22,6 @@ import java.util.Map;
 public class ChecklistService {
     private static final String TAG = ChecklistService.class.getSimpleName();
     private final ChecklistDao dao = Injection.provideChecklistDao();
-
-    public List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) {
-        try {
-            return dao.getUrlImagensPerguntas(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar as URL das perguntas", e);
-            return null;
-        }
-    }
 
     public Long insert(Checklist checklist, String userToken) {
         try {

@@ -66,6 +66,16 @@ public interface ChecklistModeloDao {
 	List<ModeloChecklist> getModelosChecklistProLog() throws SQLException;
 
 	/**
+	 * Busca a URL das imagens das perguntas.
+	 *
+	 * @param codUnidade    - Código da unidade.
+	 * @param codFuncao     - Código da função.
+	 * @return              - Retorna uma lista de Strings contendo as URLs.
+	 * @throws SQLException - Caso der erro no banco.
+	 */
+	List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException;
+
+	/**
 	 * Este método busca uma lista de URLs em forma de {@link String}.
 	 * Com base nessas strings uma {@link Galeria} é criada.
 	 *
