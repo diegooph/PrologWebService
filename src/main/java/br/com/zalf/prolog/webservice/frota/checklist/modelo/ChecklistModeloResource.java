@@ -48,7 +48,7 @@ public class ChecklistModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/modelo/{codUnidade}/{codModelo}")
+    @Path("/{codUnidade}/{codModelo}")
     public ModeloChecklist getModeloChecklist(
             @PathParam("codModelo") Long codModelo,
             @PathParam("codUnidade") Long codUnidade) {
@@ -66,7 +66,7 @@ public class ChecklistModeloResource {
 
     @DELETE
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("modelo/{codUnidade}/{codModelo}")
+    @Path("/{codUnidade}/{codModelo}")
     public Response setModeloChecklistInativo(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo) {
@@ -85,6 +85,16 @@ public class ChecklistModeloResource {
         return service.getUrlImagensPerguntas(codUnidade, codFuncao);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Path("/prolog")
+    public List<ModeloChecklist> getModelosChecklistProLog() {
+        return service.getModelosChecklistProLog();
+    }
+
+    //
+    // Métodos referente ao uso da galeria
+    //
     @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/galeria-prolog")

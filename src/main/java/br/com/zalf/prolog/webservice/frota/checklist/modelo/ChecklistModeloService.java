@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ public class ChecklistModeloService {
             return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -38,7 +37,7 @@ public class ChecklistModeloService {
             return dao.getModeloChecklist(codModelo, codUnidade);
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -47,7 +46,7 @@ public class ChecklistModeloService {
             return dao.setModeloChecklistInativo(codUnidade, codModelo);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -56,7 +55,7 @@ public class ChecklistModeloService {
             return dao.insertModeloChecklist(modeloChecklist);
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,7 +64,16 @@ public class ChecklistModeloService {
             return dao.getPerguntas(codUnidade, codModelo);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ModeloChecklist> getModelosChecklistProLog() {
+        try {
+            return dao.getModelosChecklistProLog();
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar modelos de checklist do ProLog", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -83,7 +91,7 @@ public class ChecklistModeloService {
             return dao.getGaleriaImagensPublicas();
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar galeria de imagens publicas", e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -92,7 +100,7 @@ public class ChecklistModeloService {
             return dao.getGaleriaImagensEmpresa(codEmpresa);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar galeria de imagens da empresa: " + codEmpresa, e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -106,7 +114,7 @@ public class ChecklistModeloService {
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS));
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
             Log.e(TAG, "Erro ao inserir o imagem.", e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

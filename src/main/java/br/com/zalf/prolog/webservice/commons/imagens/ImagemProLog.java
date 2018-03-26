@@ -9,22 +9,13 @@ import java.time.LocalDateTime;
  */
 public class ImagemProLog {
 
-    public Long codImagem;
-    public String urlImagem;
-    public LocalDateTime dataHoraCadastro;
-    public Boolean statusImagem;
+    private Long codImagem;
+    private String urlImagem;
+    private LocalDateTime dataHoraCadastro;
+    private Boolean statusImagem;
 
     public ImagemProLog() {
-    }
 
-    public ImagemProLog(final Long codImagem,
-                        final String urlImagem,
-                        final LocalDateTime dataHoraCadastro,
-                        final Boolean statusImagem) {
-        this.codImagem = codImagem;
-        this.urlImagem = urlImagem;
-        this.dataHoraCadastro = dataHoraCadastro;
-        this.statusImagem = statusImagem;
     }
 
     public Long getCodImagem() {
