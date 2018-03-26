@@ -64,10 +64,10 @@ public final class DatabaseManager {
         final Enumeration<Driver> drivers = DriverManager.getDrivers();
 
         while (drivers.hasMoreElements()) {
-           final Driver driver = drivers.nextElement();
+            final Driver driver = drivers.nextElement();
             try {
                 DriverManager.deregisterDriver(driver);
-                Log.d(TAG,"JDBC driver (" + driver.toString() + ") successfully deregistered");
+                Log.d(TAG, "JDBC driver (" + driver.toString() + ") successfully deregistered");
             } catch (final SQLException ex) {
                 Log.e(TAG, "Error when deregistering JDBC driver (" + driver.toString() + ")", ex);
             }
