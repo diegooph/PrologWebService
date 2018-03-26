@@ -60,6 +60,12 @@ public interface ChecklistModeloDao {
 	boolean setModeloChecklistInativo (Long codUnidade, Long codModelo) throws SQLException;
 
 	/**
+	 * Busca os modelos de checklists padrões disponibilizados pelo ProLog.
+	 */
+	@NotNull
+	List<ModeloChecklist> getModelosChecklistProLog() throws SQLException;
+
+	/**
 	 * Este método busca uma lista de URLs em forma de {@link String}.
 	 * Com base nessas strings uma {@link Galeria} é criada.
 	 *
@@ -86,5 +92,6 @@ public interface ChecklistModeloDao {
 	 * @return              - Código da imagem que foi inserida.
 	 * @throws SQLException - Caso algum erro na query ocorrer.
 	 */
+	@NotNull
 	Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws SQLException;
 }

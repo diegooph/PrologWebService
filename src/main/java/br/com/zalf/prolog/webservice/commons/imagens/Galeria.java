@@ -8,10 +8,10 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class Galeria {
-
-    public List<ImagemProLog> galeria;
+    private List<ImagemProLog> galeria;
 
     public Galeria() {
+
     }
 
     public Galeria(final List<ImagemProLog> galeria) {
