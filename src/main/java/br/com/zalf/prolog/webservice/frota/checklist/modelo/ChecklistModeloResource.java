@@ -38,7 +38,7 @@ public class ChecklistModeloResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("{codUnidade}/{codFuncao}")
+    @Path("/{codUnidade}/cargos/{codFuncao}")
     public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codFuncao") String codFuncao) {
@@ -88,7 +88,7 @@ public class ChecklistModeloResource {
     // Métodos referente ao uso da galeria
     //
     @GET
-    @Path("/urlImagens/{codUnidade}/{codFuncao}")
+    @Path("/url-imagens/{codUnidade}/{codFuncao}")
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
                                                @PathParam("codFuncao") Long codFuncao) {
