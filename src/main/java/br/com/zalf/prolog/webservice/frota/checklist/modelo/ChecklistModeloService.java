@@ -69,6 +69,15 @@ public class ChecklistModeloService {
         }
     }
 
+    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade, @NotNull final Long codFuncao) {
+        try {
+            return dao.getUrlImagensPerguntas(codUnidade, codFuncao);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar as URL das perguntas", e);
+            return null;
+        }
+    }
+
     public Galeria getGaleriaImagensPublicas() {
         try {
             return dao.getGaleriaImagensPublicas();
