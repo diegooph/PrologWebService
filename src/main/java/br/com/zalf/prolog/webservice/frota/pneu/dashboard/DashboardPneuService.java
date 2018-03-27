@@ -168,15 +168,15 @@ public final class DashboardPneuService {
         }
     }
 
-    public PieChartComponent getMotivoDescarte(@NotNull final Integer codComponente,
-                                                 @NotNull final List<Long> codUnidades) {
+    public TableComponent getQuantidadePneusDescartadosPorMotivo(@NotNull final Integer codComponente,
+                                                                 @NotNull final List<Long> codUnidades) {
         try {
-            return DashboardPneuComponentsCreator.createMotivoDescarte(
+            return DashboardPneuComponentsCreator.createQuantidadePneusDescartadosPorMotivo(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getMotivosDescarte(codUnidades));
+                    relatorioDao.getQuantidadePneusDescartadosPorMotivo(codUnidades));
         } catch (SQLException ex) {
             Log.e(TAG,
-                    "Erro ao buscar a quantidade de pneus por status para as unidades: " + codUnidades,
+                    "Erro ao buscar a quantidade de pneus descartados por motivo para as unidades: " + codUnidades,
                     ex);
             throw new RuntimeException(ex);
         }

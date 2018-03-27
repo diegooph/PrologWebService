@@ -89,14 +89,15 @@ public final class DashboardPneuResource {
     @GET
     @Path("media-tempo-conserto-servicos-por-tipo/{codComponente}")
     public VerticalBarChartComponent getMdTempoConsertoServicoPorTipo(@PathParam("codComponente") Integer codComponente,
-                                                                      @QueryParam("codUnidades") List<Long> codUnidades) {
+                                                                      @QueryParam("codUnidades") List<Long>
+                                                                              codUnidades) {
         return service.getMediaTempoConsertoServicoPorTipo(codComponente, codUnidades);
     }
 
     @GET
-    @Path("/motivos-descarte/{codComponente}")
-    public PieChartComponent getMotivoDescarte(@PathParam("codComponente") Integer codComponente,
-                                                 @QueryParam("codUnidades") List<Long> codUnidades) {
-        return service.getMotivoDescarte(codComponente, codUnidades);
+    @Path("/quantidade-pneus-descartados-por-motivo/{codComponente}")
+    public TableComponent getQuantidadePneusDescartadosPorMotivo(@PathParam("codComponente") Integer codComponente,
+                                                                 @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getQuantidadePneusDescartadosPorMotivo(codComponente, codUnidades);
     }
 }

@@ -911,11 +911,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Double> getMotivosDescarte(List<Long> codUnidades) throws SQLException {
+    public Map<String, Integer> getQuantidadePneusDescartadosPorMotivo(List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final Map<String, Double> motivosDescarte = new LinkedHashMap<>();
+        final Map<String, Integer> motivosDescarte = new LinkedHashMap<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT\n" +
@@ -925,13 +925,13 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
                     "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
                     "GROUP BY MMD.motivo\n" +
-                    "ORDER BY 1");
+                    "ORDER BY 2 DESC");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 motivosDescarte.put(
                         rSet.getString("motivo"),
-                        rSet.getDouble("quantidade"));
+                        rSet.getInt("quantidade"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
