@@ -919,7 +919,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT\n" +
-                    "  MMD.motivo, COUNT(M.codigo)\n" +
+                    "  MMD.motivo, COUNT(M.codigo) as quantidade\n" +
                     "FROM MOVIMENTACAO M JOIN MOVIMENTACAO_DESTINO MD ON M.codigo = MD.cod_movimentacao\n" +
                     "  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
                     "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
@@ -930,8 +930,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 motivosDescarte.put(
-                        rSet.getString("status"),
-                        rSet.getDouble("count"));
+                        rSet.getString("motivo"),
+                        rSet.getDouble("quantidade"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
