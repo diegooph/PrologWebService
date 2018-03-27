@@ -25,6 +25,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  P.PRESSAO_ATUAL, " +
             "  P.VIDA_ATUAL, " +
             "  P.VIDA_TOTAL, " +
+            "  P.PNEU_NOVO_NUNCA_RODADO, " +
             "  MOP.NOME                                   AS NOME_MODELO_PNEU, " +
             "  MOP.CODIGO                                 AS COD_MODELO_PNEU, " +
             "  MOP.QT_SULCOS                              AS QT_SULCOS_MODELO_PNEU, " +
