@@ -185,9 +185,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     fechaInspecao((ServicoInspecao) servico, codUnidade, pneuDao, conn);
                     break;
                 case MOVIMENTACAO:
-                    final MovimentacaoDao movimentacaoDao = Injection.provideMovimentacaoDao();
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
-                    // Atualiza o pneuNovo com os valores referentes ao serviço executad.
+                    final MovimentacaoDao movimentacaoDao = Injection.provideMovimentacaoDao();
+                    // Atualiza o pneuNovo com os valores referentes ao serviço executado.
                     movimentacao.getPneuNovo().setSulcosAtuais(movimentacao.getSulcosColetadosFechamento());
                     movimentacao.getPneuNovo().setPosicao(movimentacao.getPneuComProblema().getPosicao());
                     final ProcessoMovimentacao processoMovimentacao =
@@ -214,6 +214,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                                 codUnidade,
                                 codPneu,
                                 codProcessoMovimentacao,
+                                servico.getKmVeiculoMomentoFechamento(),
                                 conn);
                         if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                             throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam ser fechados "
@@ -370,6 +371,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     public int fecharAutomaticamenteServicosPneu(final Long codUnidade,
                                                  final String codPneu,
                                                  final Long codProcessoMovimentacao,
+                                                 final long kmColetadoVeiculo,
                                                  final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
@@ -377,6 +379,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     codUnidade,
                     codPneu,
                     codProcessoMovimentacao,
+                    kmColetadoVeiculo,
                     conn);
             return stmt.executeUpdate();
         } finally {

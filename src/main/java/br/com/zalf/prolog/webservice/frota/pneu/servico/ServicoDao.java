@@ -82,6 +82,7 @@ public interface ServicoDao {
 	int fecharAutomaticamenteServicosPneu(final Long codUnidade,
 										  final String codPneu,
 										  final Long codProcessoMovimentacao,
+										  final long kmColetadoVeiculo,
 										  final Connection connection) throws SQLException;
 
 

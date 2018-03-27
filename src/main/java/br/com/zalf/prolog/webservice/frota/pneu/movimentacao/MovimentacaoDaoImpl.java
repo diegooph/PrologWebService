@@ -384,10 +384,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 conn);
         if (qtdServicosEmAbertoPneu > 0) {
             if (movimentacao.isFrom(OrigemDestinoConstants.VEICULO)) {
+                final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
                 final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteServicosPneu(
                         codUnidade,
                         codPneu,
                         codProcessoMovimentacao,
+                        origemVeiculo.getVeiculo().getKmAtual(),
                         conn);
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
