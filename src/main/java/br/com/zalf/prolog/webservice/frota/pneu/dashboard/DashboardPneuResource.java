@@ -92,4 +92,11 @@ public final class DashboardPneuResource {
                                                                       @QueryParam("codUnidades") List<Long> codUnidades) {
         return service.getMediaTempoConsertoServicoPorTipo(codComponente, codUnidades);
     }
+
+    @GET
+    @Path("/motivos-descarte/{codComponente}")
+    public PieChartComponent getMotivoDescarte(@PathParam("codComponente") Integer codComponente,
+                                                 @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getMotivoDescarte(codComponente, codUnidades);
+    }
 }

@@ -909,4 +909,33 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setDate(3, dataFinal);
         return stmt;
     }
+
+    @Override
+    public Map<String, Double> getMotivosDescarte(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<String, Double> motivosDescarte = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "  MMD.motivo, COUNT(M.codigo)\n" +
+                    "FROM MOVIMENTACAO M JOIN MOVIMENTACAO_DESTINO MD ON M.codigo = MD.cod_movimentacao\n" +
+                    "  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+                    "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
+                    "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
+                    "GROUP BY MMD.motivo\n" +
+                    "ORDER BY 1");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                motivosDescarte.put(
+                        rSet.getString("status"),
+                        rSet.getDouble("count"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return motivosDescarte;
+    }
 }

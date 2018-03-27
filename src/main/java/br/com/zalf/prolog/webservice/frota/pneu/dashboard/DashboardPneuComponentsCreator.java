@@ -303,4 +303,17 @@ final class DashboardPneuComponentsCreator {
                 String.valueOf(qtPneusByStatus.values().stream().mapToInt(Number::intValue).sum()),
                 "pneus cadastrados");
     }
+
+    @NotNull
+    static PieChartComponent createMotivoDescarte(@NotNull final ComponentDataHolder component,
+                                                    @NotNull final Map<String, Double> qtdMotivosDescarte) {
+        final List<PieEntry> entries = new ArrayList<>(qtdMotivosDescarte.size());
+        qtdMotivosDescarte.forEach((motivoDescarte, valor) -> entries.add(PieEntry.create(
+                motivoDescarte,
+                valor,
+                String.valueOf(valor),
+                Color.BLUE)));
+        final PieData pieData = new PieData(entries);
+        return PieChartComponent.createDefault(component, pieData);
+    }
 }

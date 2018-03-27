@@ -167,4 +167,18 @@ public final class DashboardPneuService {
             throw new RuntimeException(e);
         }
     }
+
+    public PieChartComponent getMotivoDescarte(@NotNull final Integer codComponente,
+                                                 @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createMotivoDescarte(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getMotivosDescarte(codUnidades));
+        } catch (SQLException ex) {
+            Log.e(TAG,
+                    "Erro ao buscar a quantidade de pneus por status para as unidades: " + codUnidades,
+                    ex);
+            throw new RuntimeException(ex);
+        }
+    }
 }

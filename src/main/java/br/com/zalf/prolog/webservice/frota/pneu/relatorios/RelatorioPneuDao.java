@@ -115,4 +115,6 @@ public interface RelatorioPneuDao {
     int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
 
     List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException;
+
+    Map<String, Double> getMotivosDescarte(List<Long> codUnidades) throws SQLException;
 }
