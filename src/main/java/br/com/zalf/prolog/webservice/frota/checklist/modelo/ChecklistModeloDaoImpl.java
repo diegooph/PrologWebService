@@ -29,7 +29,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT CP.CODIGO AS COD_PERGUNTA, " +
                             "  CP.PRIORIDADE, " +
-                            "  CGI.COD_IMAGEM,, " +
+                            "  CGI.COD_IMAGEM, " +
                             "  CGI.URL_IMAGEM, " +
                             "  CP.PERGUNTA, " +
                             "  CP.ORDEM AS ORDEM_PERGUNTA, " +
