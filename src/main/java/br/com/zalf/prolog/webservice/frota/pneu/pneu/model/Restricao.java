@@ -1,5 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+
+import java.util.List;
+
 /**
  * Created by jean on 10/06/16.
  */
@@ -11,22 +15,9 @@ public class Restricao {
     private double sulcoMinimoDescarte;
     private int periodoDiasAfericaoPressao;
     private int periodoDiasAfericaoSulco;
+    private List<TipoVeiculo> tiposVeiculosAfericaoEstepeHabilitada;
 
     public Restricao() {
-    }
-
-    public Restricao(double toleranciaCalibragem,
-                     double toleranciaInspecao,
-                     double sulcoMinimoRecape,
-                     double sulcoMinimoDescarte,
-                     int periodoDiasAfericaoPressao,
-                     int periodoDiasAfericaoSulco) {
-        this.toleranciaCalibragem = toleranciaCalibragem;
-        this.toleranciaInspecao = toleranciaInspecao;
-        this.sulcoMinimoRecape = sulcoMinimoRecape;
-        this.sulcoMinimoDescarte = sulcoMinimoDescarte;
-        this.periodoDiasAfericaoPressao = periodoDiasAfericaoPressao;
-        this.periodoDiasAfericaoSulco = periodoDiasAfericaoSulco;
     }
 
     public int getPeriodoDiasAfericaoPressao() {
@@ -77,6 +68,14 @@ public class Restricao {
         this.sulcoMinimoDescarte = sulcoMinimoDescarte;
     }
 
+    public List<TipoVeiculo> getTiposVeiculosAfericaoEstepeHabilitada() {
+        return tiposVeiculosAfericaoEstepeHabilitada;
+    }
+
+    public void setTiposVeiculosAfericaoEstepeHabilitada(final List<TipoVeiculo> tiposVeiculosAfericaoEstepeHabilitada) {
+        this.tiposVeiculosAfericaoEstepeHabilitada = tiposVeiculosAfericaoEstepeHabilitada;
+    }
+
     @Override
     public String toString() {
         return "Restricao{" +
@@ -86,6 +85,7 @@ public class Restricao {
                 ", sulcoMinimoDescarte=" + sulcoMinimoDescarte +
                 ", periodoDiasAfericaoPressao=" + periodoDiasAfericaoPressao +
                 ", periodoDiasAfericaoSulco=" + periodoDiasAfericaoSulco +
+                ", tiposVeiculosAfericaoEstepeHabilitada=" + tiposVeiculosAfericaoEstepeHabilitada +
                 '}';
     }
 }
