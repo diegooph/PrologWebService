@@ -299,11 +299,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             conn = getConnection();
             if (codEmpresa != null) {
                 stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_GALERIA_IMAGENS " +
-                        "WHERE COD_EMPRESA = ? AND STATUS = TRUE;");
+                        "WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE;");
                 stmt.setLong(1, codEmpresa);
             } else {
                 stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_GALERIA_IMAGENS " +
-                        "WHERE COD_EMPRESA IS NULL AND STATUS = TRUE;");
+                        "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE;");
             }
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -311,7 +311,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 imagemProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
                 imagemProLog.setUrlImagem(rSet.getString("URL_IMAGEM"));
                 imagemProLog.setDataHoraCadastro(rSet.getObject("DATA_HORA_CADASTRO", LocalDateTime.class));
-                imagemProLog.setStatusImagem(rSet.getBoolean("STATUS"));
+                imagemProLog.setStatusImagem(rSet.getBoolean("STATUS_ATIVO"));
                 imagensProLog.add(imagemProLog);
             }
         } finally {
