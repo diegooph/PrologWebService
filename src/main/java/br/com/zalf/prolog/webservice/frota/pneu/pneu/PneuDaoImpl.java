@@ -1,13 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -277,7 +279,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             stmt = conn.prepareStatement("UPDATE PNEU SET "
                     + "STATUS = ? "
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ? AND PNEU_NOVO_NUNCA_RODADO = FALSE;");
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
             stmt.setString(1, status);
             stmt.setString(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
@@ -429,6 +431,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 if (rSet.next()) {
                     final Long codUnidade = rSet.getLong("COD_UNIDADE");
                     updateStatus(pneu, codUnidade, Pneu.EM_USO, conn);
+                    updatePneuNovoNuncaRodado(pneu.getCodigo(), codUnidade, false, conn);
                 } else {
                     throw new SQLException("Erro ao vincular o pneu ao veículo");
                 }
@@ -606,6 +609,25 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             closeConnection(conn, stmt, null);
         }
         return true;
+    }
+
+    private void updatePneuNovoNuncaRodado(@NotNull final String codPneu,
+                                           @NotNull final Long codUnidade,
+                                           final boolean pneuNovoNuncaRodado,
+                                           @NotNull final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE PNEU SET PNEU_NOVO_NUNCA_RODADO = ? " +
+                    "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+            stmt.setBoolean(1, pneuNovoNuncaRodado);
+            stmt.setString(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar flag de pneu novo para o pneu: " + codPneu + " da unidade: " + codUnidade);
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
     }
 
     private void insertValorBandaVidaAtual(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
