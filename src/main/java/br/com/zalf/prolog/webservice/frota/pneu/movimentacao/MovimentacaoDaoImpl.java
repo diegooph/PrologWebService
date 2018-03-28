@@ -71,7 +71,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
-                insertValores(processoMovimentacao, servicoDao, fecharServicosAutomaticamente, conn);
+                insertMovimentacoes(processoMovimentacao, servicoDao, fecharServicosAutomaticamente, conn);
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
@@ -165,10 +165,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         return motivo;
     }
 
-    private void insertValores(ProcessoMovimentacao processoMov,
-                               ServicoDao servicoDao,
-                               boolean fecharServicosAutomaticamente,
-                               Connection conn) throws SQLException {
+    private void insertMovimentacoes(ProcessoMovimentacao processoMov,
+                                     ServicoDao servicoDao,
+                                     boolean fecharServicosAutomaticamente,
+                                     Connection conn) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;

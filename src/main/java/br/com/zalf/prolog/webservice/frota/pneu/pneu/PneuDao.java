@@ -77,17 +77,6 @@ public interface PneuDao {
     void updateSulcos(String codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
     /**
-     * atualiza dados do veículo
-     *
-     * @param placa    placa do véiculo
-     * @param pneu     pneu
-     * @param pneuNovo novo valor a ser inserido em pneu
-     * @param conn     conexão do banco caso ocorra erro no banco
-     * @throws SQLException
-     */
-    boolean updateVeiculoPneu(String placa, Pneu pneu, Pneu pneuNovo, Connection conn) throws SQLException;
-
-    /**
      * busca uma lista de pneus com base no código e status
      *
      * @param codUnidade código unidade
