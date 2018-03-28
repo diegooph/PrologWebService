@@ -156,7 +156,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final PreparedStatement stmt = conn.prepareStatement("SELECT AETV.COD_UNIDADE AS COD_UNIDADE, " +
                 "  AETV.COD_TIPO_VEICULO AS COD_TIPO_VEICULO, " +
                 "  VT.NOME AS NOME_TIPO_VEICULO " +
-                "FROM AFERICAO_ESTEPES_TIPOS_VEICULOS AETV " +
+                "FROM AFERICAO_ESTEPES_TIPOS_VEICULOS_BLOQUEADOS AETV " +
                 "  JOIN VEICULO_TIPO VT ON AETV.COD_TIPO_VEICULO = VT.CODIGO AND AETV.COD_UNIDADE = VT.COD_UNIDADE " +
                 "WHERE AETV.COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE PLACA = ?);");
         stmt.setString(1, placa);
