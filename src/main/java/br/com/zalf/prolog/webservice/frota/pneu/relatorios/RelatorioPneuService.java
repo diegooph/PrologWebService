@@ -101,7 +101,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
+    public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
             throws RuntimeException {
         try {
             dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
