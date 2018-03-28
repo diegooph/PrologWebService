@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public final class GsonUtils {
@@ -46,6 +47,7 @@ public final class GsonUtils {
 				.registerTypeAdapter(Duration.class, new DurationSerializer())
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+				.registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
 				.registerTypeAdapter(Color.class, new ColorSerializer())
 				.setExclusionStrategies(new AnnotationExclusionStrategy())
 				.enableComplexMapKeySerialization();
@@ -66,7 +68,6 @@ public final class GsonUtils {
 				.registerSubtype(DestinoAnalise.class, OrigemDestinoConstants.ANALISE)
 				.registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
 				.registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
-
 
 		RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
 				.of(Modelo.class, "tipo")

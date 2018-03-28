@@ -4,12 +4,14 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -131,9 +133,29 @@ public class ControleIntervalosRelatorioService {
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório csv no padrão da portaria 1510. \n" +
                     "codUnidade: %d \n" +
-                    "cpf: %d \n" +
+                    "cpf: %s \n" +
                     "dataInicial: %s \n" +
                     "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+        }
+    }
+
+    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
+                                                            @NotNull final String cpf,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal) {
+        try {
+            return dao.getFolhaPontoRelatorio(
+                    codUnidade,
+                    cpf,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
+                    "codUnidade: %d \n" +
+                    "cpf: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
         }
     }
 }

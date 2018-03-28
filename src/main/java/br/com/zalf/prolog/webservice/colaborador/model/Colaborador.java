@@ -18,7 +18,7 @@ public class Colaborador {
 	private Integer matriculaTrans;
 	private Date dataAdmissao;
 	private Date dataDemissao;
-	private boolean ativo;
+	private Boolean ativo;
 	private Empresa empresa;
 	private Unidade unidade;
 	private Regional regional;
@@ -136,11 +136,11 @@ public class Colaborador {
 		this.dataDemissao = dataDemissao;
 	}
 
-	public boolean isAtivo() {
+	public Boolean isAtivo() {
 		return ativo;
 	}
 
-	public void setAtivo(boolean ativo) {
+	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
 	}
 
