@@ -520,7 +520,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "               erp.periodo_afericao_pressao,\n" +
                     "               erp.periodo_afericao_sulco\n" +
                     "        FROM VEICULO V\n" +
-                    "               JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
+                    "               JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = v.cod_unidade\n" +
                     "               LEFT JOIN\n" +
                     "               (SELECT\n" +
                     "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
@@ -626,7 +626,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "  sum(case when least(p.altura_sulco_interno, p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
                     "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
                     "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade " +
+                    "  JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = vp.cod_unidade " +
                     "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
                     "GROUP BY vp.placa " +
                     "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");

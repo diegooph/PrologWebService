@@ -108,7 +108,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM UNIDADE U JOIN "
                     + "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
+                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
                     + "WHERE U.CODIGO = ?");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
@@ -133,7 +133,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
                     + "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
+                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
                     + "WHERE V.PLACA = ?");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
