@@ -86,13 +86,8 @@ public interface RelatorioPneuDao {
 
     Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
 
-    Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
-                                                   Date dataFinal) throws SQLException;
-
-    void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
-                                              Date dataFinal) throws IOException, SQLException;
-
-    Report getPneusDescartadosReport(Long codUnidade, Long dataInicial,
+    Report getPneusDescartadosReport(Long codUnidade,
+                                     Long dataInicial,
                                      Long dataFinal) throws SQLException;
 
     void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,

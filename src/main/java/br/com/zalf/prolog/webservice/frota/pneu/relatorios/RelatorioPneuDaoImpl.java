@@ -321,38 +321,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
-                                                          Date dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
-                                                     Date dataFinal) throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
     public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -898,16 +866,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         public int compare(Faixa o1, Faixa o2) {
             return Double.compare(o1.getInicio(), o2.getInicio());
         }
-    }
-
-    private PreparedStatement getEstratificacaoServicosFechadosStatement(Connection conn, long codUnidade, Date dataInicial,
-                                                                         Date dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_extrato_servicos_fechados(?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
-        return stmt;
     }
 
     @Override
