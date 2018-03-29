@@ -27,7 +27,7 @@ public class NovaAfericao {
      * terão seus estepes aferíveis ou não. Assim este atributo serve para dizer se devemos aferir
      * os {@code estepesVeiculo} do {@code veiculo} em questão.
      */
-    private boolean shouldAferirEstepe;
+    private boolean deveAferirEstepes;
 
     public NovaAfericao() {
 
@@ -57,12 +57,12 @@ public class NovaAfericao {
         this.estepesVeiculo = estepesVeiculo;
     }
 
-    public boolean isShouldAferirEstepe() {
-        return shouldAferirEstepe;
+    public boolean isDeveAferirEstepes() {
+        return deveAferirEstepes;
     }
 
-    public void setShouldAferirEstepe(final boolean shouldAferirEstepe) {
-        this.shouldAferirEstepe = shouldAferirEstepe;
+    public void setDeveAferirEstepes(final boolean deveAferirEstepes) {
+        this.deveAferirEstepes = deveAferirEstepes;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class NovaAfericao {
                 "restricao=" + restricao +
                 ", veiculo=" + veiculo +
                 ", estepesVeiculo=" + estepesVeiculo +
-                ", shouldAferirEstepe=" + shouldAferirEstepe +
+                ", deveAferirEstepes=" + deveAferirEstepes +
                 '}';
     }
 }

@@ -15,7 +15,7 @@ public class Restricao {
     private double sulcoMinimoDescarte;
     private int periodoDiasAfericaoPressao;
     private int periodoDiasAfericaoSulco;
-    private List<TipoVeiculo> tiposVeiculosAfericaoEstepeHabilitada;
+    private List<TipoVeiculo> tiposVeiculosAfericaoEstepeBloqueada;
 
     public Restricao() {
     }
@@ -68,12 +68,12 @@ public class Restricao {
         this.sulcoMinimoDescarte = sulcoMinimoDescarte;
     }
 
-    public List<TipoVeiculo> getTiposVeiculosAfericaoEstepeHabilitada() {
-        return tiposVeiculosAfericaoEstepeHabilitada;
+    public List<TipoVeiculo> getTiposVeiculosAfericaoEstepeBloqueada() {
+        return tiposVeiculosAfericaoEstepeBloqueada;
     }
 
-    public void setTiposVeiculosAfericaoEstepeHabilitada(final List<TipoVeiculo> tiposVeiculosAfericaoEstepeHabilitada) {
-        this.tiposVeiculosAfericaoEstepeHabilitada = tiposVeiculosAfericaoEstepeHabilitada;
+    public void setTiposVeiculosAfericaoEstepeBloqueada(final List<TipoVeiculo> tiposVeiculosAfericaoEstepeBloqueada) {
+        this.tiposVeiculosAfericaoEstepeBloqueada = tiposVeiculosAfericaoEstepeBloqueada;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class Restricao {
                 ", sulcoMinimoDescarte=" + sulcoMinimoDescarte +
                 ", periodoDiasAfericaoPressao=" + periodoDiasAfericaoPressao +
                 ", periodoDiasAfericaoSulco=" + periodoDiasAfericaoSulco +
-                ", tiposVeiculosAfericaoEstepeHabilitada=" + tiposVeiculosAfericaoEstepeHabilitada +
+                ", tiposVeiculosAfericaoEstepeBloqueada=" + tiposVeiculosAfericaoEstepeBloqueada +
                 '}';
     }
 }

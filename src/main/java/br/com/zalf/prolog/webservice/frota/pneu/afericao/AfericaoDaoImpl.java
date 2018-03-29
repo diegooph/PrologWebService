@@ -95,7 +95,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         novaAfericao.setVeiculo(veiculo);
         final Restricao restricao = getRestricoesByPlaca(placa);
         novaAfericao.setRestricao(restricao);
-        novaAfericao.setShouldAferirEstepe(restricao.getTiposVeiculosAfericaoEstepeHabilitada().contains(veiculo.getTipo()));
+        novaAfericao.setDeveAferirEstepes(!restricao.getTiposVeiculosAfericaoEstepeBloqueada().contains(veiculo.getTipo()));
         return novaAfericao;
     }
 
@@ -141,7 +141,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.isLast()) {
                 final Restricao restricao = createRestricao(rSet);
-                restricao.setTiposVeiculosAfericaoEstepeHabilitada(getTiposVeiculosAfericaoEstepe(conn, placa));
+                restricao.setTiposVeiculosAfericaoEstepeBloqueada(getTiposVeiculosAfericaoEstepe(conn, placa));
                 return restricao;
             } else {
                 throw new SQLException("Erro ao buscar os dados de restrição");
