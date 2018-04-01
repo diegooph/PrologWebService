@@ -167,4 +167,18 @@ public final class DashboardPneuService {
             throw new RuntimeException(e);
         }
     }
+
+    public TableComponent getQuantidadePneusDescartadosPorMotivo(@NotNull final Integer codComponente,
+                                                                 @NotNull final List<Long> codUnidades) {
+        try {
+            return DashboardPneuComponentsCreator.createQuantidadePneusDescartadosPorMotivo(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getQuantidadePneusDescartadosPorMotivo(codUnidades));
+        } catch (SQLException ex) {
+            Log.e(TAG,
+                    "Erro ao buscar a quantidade de pneus descartados por motivo para as unidades: " + codUnidades,
+                    ex);
+            throw new RuntimeException(ex);
+        }
+    }
 }

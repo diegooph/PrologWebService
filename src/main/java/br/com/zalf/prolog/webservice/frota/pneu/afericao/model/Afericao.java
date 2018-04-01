@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,11 @@ import java.time.LocalDateTime;
  */
 public class Afericao {
     private Long codigo;
+
+    /**
+     * O código da {@link Unidade} onde a aferição foi realizada.
+     */
+    private Long codUnidade;
     private LocalDateTime dataHora;
 
     /**
@@ -49,6 +55,14 @@ public class Afericao {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
+    }
+
+    public void setCodUnidade(final Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public LocalDateTime getDataHora() {

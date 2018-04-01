@@ -82,8 +82,8 @@ public class TreinamentoService {
 
     public Long insert(InputStream file, Treinamento treinamento) {
         try {
-            PDFTransformer transformer = new PDFTransformer();
-            UploadTreinamentoHelper helper = new UploadTreinamentoHelper(transformer);
+            final PDFTransformer transformer = new PDFTransformer();
+            final UploadTreinamentoHelper helper = new UploadTreinamentoHelper(transformer);
             return dao.insert(helper.upload(treinamento, file));
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
             Log.e(TAG, "Erro ao inserir o treinamento.", e);

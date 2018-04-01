@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
@@ -71,7 +71,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
-                insertValores(processoMovimentacao, servicoDao, fecharServicosAutomaticamente, conn);
+                insertMovimentacoes(processoMovimentacao, servicoDao, fecharServicosAutomaticamente, conn);
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
@@ -165,10 +165,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         return motivo;
     }
 
-    private void insertValores(ProcessoMovimentacao processoMov,
-                               ServicoDao servicoDao,
-                               boolean fecharServicosAutomaticamente,
-                               Connection conn) throws SQLException {
+    private void insertMovimentacoes(ProcessoMovimentacao processoMov,
+                                     ServicoDao servicoDao,
+                                     boolean fecharServicosAutomaticamente,
+                                     Connection conn) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -384,10 +384,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 conn);
         if (qtdServicosEmAbertoPneu > 0) {
             if (movimentacao.isFrom(OrigemDestinoConstants.VEICULO)) {
+                final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
                 final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteServicosPneu(
                         codUnidade,
                         codPneu,
                         codProcessoMovimentacao,
+                        origemVeiculo.getVeiculo().getKmAtual(),
                         conn);
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {

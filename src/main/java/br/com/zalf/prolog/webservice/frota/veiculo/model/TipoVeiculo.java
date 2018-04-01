@@ -33,6 +33,21 @@ public class TipoVeiculo {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof TipoVeiculo))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        final TipoVeiculo tipoVeiculo = (TipoVeiculo) obj;
+        return !(codigo == null || tipoVeiculo.codigo == null) && codigo.equals(tipoVeiculo.codigo);
+    }
+
+    @Override
     public String toString() {
         return "TipoVeiculo{" +
                 "codigo=" + codigo +

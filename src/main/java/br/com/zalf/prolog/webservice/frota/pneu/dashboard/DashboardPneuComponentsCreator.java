@@ -41,7 +41,8 @@ import static br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico
 final class DashboardPneuComponentsCreator {
 
     private DashboardPneuComponentsCreator() {
-        throw new IllegalStateException(DashboardPneuComponentsCreator.class.getSimpleName() + " cannot be instatiated!");
+        throw new IllegalStateException(DashboardPneuComponentsCreator.class.getSimpleName() + " cannot be " +
+                "instatiated!");
     }
 
     @NotNull
@@ -68,7 +69,8 @@ final class DashboardPneuComponentsCreator {
 
     @NotNull
     static VerticalComboChartComponent createQtdAfericoesUltimaSemana(@NotNull final ComponentDataHolder component,
-                                                                      @NotNull final List<QuantidadeAfericao> quantidadeAfericoes) {
+                                                                      @NotNull final List<QuantidadeAfericao>
+                                                                              quantidadeAfericoes) {
         final List<ComboGroup> groups = new ArrayList<>(quantidadeAfericoes.size());
         quantidadeAfericoes.forEach(quantidadeAfericao -> {
             final List<ComboEntry> entries = new ArrayList<>(3 /* 3 tipos de aferição */);
@@ -124,7 +126,8 @@ final class DashboardPneuComponentsCreator {
 
     @NotNull
     static VerticalBarChartComponent createServicosEmAbertoByTipo(@NotNull final ComponentDataHolder component,
-                                                                  @NotNull final Map<TipoServico, Integer> servicosAbertosPorTipo) {
+                                                                  @NotNull final Map<TipoServico, Integer>
+                                                                          servicosAbertosPorTipo) {
         final List<BarGroup> groups = new ArrayList<>(servicosAbertosPorTipo.size());
 
         if (!servicosAbertosPorTipo.isEmpty()) {
@@ -188,7 +191,8 @@ final class DashboardPneuComponentsCreator {
 
     @NotNull
     static TableComponent createPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final ComponentDataHolder component,
-                                                                      @NotNull final Map<String, Integer> placasQtdPneus) {
+                                                                      @NotNull final Map<String, Integer>
+                                                                              placasQtdPneus) {
         // Header.
         final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Placa e quantidade de pneus. */);
         itemHeaders.add(new TableItemHeader("Placa", null));
@@ -250,8 +254,10 @@ final class DashboardPneuComponentsCreator {
     }
 
     @NotNull
-    static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder component,
-                                                                            @NotNull final Map<TipoServico, Integer> tipoServicoHorasConserto) {
+    static VerticalBarChartComponent createMediaTempoConsertoServicoPorTipo(@NotNull final ComponentDataHolder
+                                                                                        component,
+                                                                            @NotNull final Map<TipoServico, Integer>
+                                                                                    tipoServicoHorasConserto) {
         final List<BarGroup> groups = new ArrayList<>(tipoServicoHorasConserto.size());
 
         if (!tipoServicoHorasConserto.isEmpty()) {
@@ -302,5 +308,21 @@ final class DashboardPneuComponentsCreator {
                 component,
                 String.valueOf(qtPneusByStatus.values().stream().mapToInt(Number::intValue).sum()),
                 "pneus cadastrados");
+    }
+
+    @NotNull
+    static TableComponent createQuantidadePneusDescartadosPorMotivo(@NotNull final ComponentDataHolder component,
+                                                                    @NotNull final Map<String, Integer> qtdMotivosDescarte) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(2 /* Motivo e quantidade. */);
+        itemHeaders.add(new TableItemHeader("Motivo", null));
+        itemHeaders.add(new TableItemHeader("Quantidade de pneus", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = TableComponent.createLinesFromMap(qtdMotivosDescarte);
+
+        final TableData tableData = new TableData(lines);
+        return TableComponent.createDefault(component, tableHeader, tableData);
     }
 }

@@ -101,7 +101,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getAerenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
+    public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
             throws RuntimeException {
         try {
             dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
@@ -141,34 +141,6 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (REPORT). \n" +
                     "Unidade: %d", codUnidade), e);
             return null;
-        }
-    }
-
-    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, long dataInicial,
-                                                          long dataFinal) {
-        try {
-            return dao.getEstratificacaoServicosFechadosReport(codUnidade, DateUtils.toSqlDate(new Date(dataInicial)),
-                    DateUtils.toSqlDate(new Date(dataFinal)));
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (REPORT). \n" +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %s \n" +
-                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
-        }
-    }
-
-    public void getEstratificacaoServicosFechadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
-                                                     Long dataFinal) throws RuntimeException {
-        try {
-            dao.getEstratificacaoServicosFechadosCsv(codUnidade, outputStream, DateUtils.toSqlDate(new Date(dataInicial)),
-                    DateUtils.toSqlDate(new Date(dataFinal)));
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (CSV). \n" +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %s \n" +
-                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw new RuntimeException();
         }
     }
 

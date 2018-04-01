@@ -89,7 +89,7 @@ public class RelatorioPneuResource {
     public StreamingOutput getAderenciaPlacasCsv(@PathParam("codUnidade") Long codUnidade,
                                                  @QueryParam("dataInicial") long dataInicial,
                                                  @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        return outputStream -> service.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
     }
 
     @GET
@@ -114,34 +114,18 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/servicos/estratificacao/fechados/{codUnidade}/report")
-    public Report getEstratificacaoServicosFechadosReport(@PathParam("codUnidade") Long codUnidade,
-                                                          @QueryParam("dataInicial") long dataInicial,
-                                                          @QueryParam("dataFinal") long dataFinal) {
-        return service.getEstratificacaoServicosFechadosReport(codUnidade, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/servicos/estratificacao/fechados/{codUnidade}/csv")
-    public StreamingOutput getEstratificacaoServicosFechadosCsv(@PathParam("codUnidade") Long codUnidade,
-                                                                @QueryParam("dataInicial") long dataInicial,
-                                                                @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getEstratificacaoServicosFechadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
-    }
-
-    @GET
     @Path("/pneus-descartados/{codUnidade}/report")
-    public Report getEstratificacaoServicosFechadosReport(@PathParam("codUnidade") @Required Long codUnidade,
-                                                          @QueryParam("dataInicial") @Required Long dataInicial,
-                                                          @QueryParam("dataFinal") @Required Long dataFinal) {
+    public Report getPneusDescartadosReport(@PathParam("codUnidade") @Required Long codUnidade,
+                                            @QueryParam("dataInicial") @Required Long dataInicial,
+                                            @QueryParam("dataFinal") @Required Long dataFinal) {
         return service.getPneusDescartadosReport(codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/pneus-descartados/{codUnidade}/csv")
-    public StreamingOutput getEstratificacaoServicosFechadosCsv(@PathParam("codUnidade") @Required Long codUnidade,
-                                                                @QueryParam("dataInicial") @Required Long dataInicial,
-                                                                @QueryParam("dataFinal") @Required Long dataFinal) throws RuntimeException {
+    public StreamingOutput getPneusDescartadosCsv(@PathParam("codUnidade") @Required Long codUnidade,
+                                                  @QueryParam("dataInicial") @Required Long dataInicial,
+                                                  @QueryParam("dataFinal") @Required Long dataFinal) throws RuntimeException {
         return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
@@ -167,6 +151,6 @@ public class RelatorioPneuResource {
     public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
                                                     @QueryParam("dataInicial") long dataInicial,
                                                     @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getAerenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        return outputStream -> service.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
     }
 }

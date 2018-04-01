@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
@@ -33,14 +35,6 @@ public class ChecklistResource {
         } else {
             return Response.error("Erro ao inserir checklist");
         }
-    }
-
-    @GET
-    @Path("/urlImagens/{codUnidade}/{codFuncao}")
-    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
-    public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-                                               @PathParam("codFuncao") Long codFuncao){
-        return service.getUrlImagensPerguntas(codUnidade, codFuncao);
     }
 
     @GET
@@ -126,7 +120,7 @@ public class ChecklistResource {
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
-            @HeaderParam("Authorization") String userToken){
+            @HeaderParam("Authorization") String userToken) {
         return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_SAIDA, userToken);
     }
 
@@ -137,13 +131,25 @@ public class ChecklistResource {
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codModelo") Long codModelo,
             @PathParam("placa") String placa,
-            @HeaderParam("Authorization") String userToken){
+            @HeaderParam("Authorization") String userToken) {
         return service.getNovoChecklistHolder(codUnidade, codModelo, placa, Checklist.TIPO_RETORNO, userToken);
     }
 
     /**
+     * @deprecated at 09/03/2018. Use {@link ChecklistModeloResource} instead.
+     */
+    @GET
+    @Path("/urlImagens/{codUnidade}/{codFuncao}")
+    @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
+    @Deprecated
+    public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
+                                               @PathParam("codFuncao") Long codFuncao) {
+        return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
+    }
+
+    /**
      * @deprecated em 17/10/2017.
-     *
+     * <p>
      * No Android não é mais utilizado esse método, utiliza-se o com path base diferente (checklist). Porém, ele ainda
      * é utilizado na Web para buscar os checklists. Após a troca para utilizar
      * {@link #getAllResumido(Long, Long, Long, String, long, long, int, long, String)}, este método pode ser removido.

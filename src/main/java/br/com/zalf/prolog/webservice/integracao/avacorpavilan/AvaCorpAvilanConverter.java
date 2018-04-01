@@ -497,12 +497,13 @@ public final class AvaCorpAvilanConverter {
 
     @Nonnull
     @VisibleForTesting
-    public static List<Afericao> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro) throws ParseException {
+    public static List<Afericao> convertAfericoes(@NotNull final List<AfericaoFiltro> afericoesFiltro,
+                                                  @NotNull final Long codUnidadeAfericao) throws ParseException {
         checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
 
         final List<Afericao> afericoes = new ArrayList<>();
         for (AfericaoFiltro afericaoFiltro : afericoesFiltro) {
-            afericoes.add(convertAfericaoSemPneus(afericaoFiltro));
+            afericoes.add(convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao));
         }
         return afericoes;
     }
@@ -512,11 +513,12 @@ public final class AvaCorpAvilanConverter {
     @Nonnull
     @VisibleForTesting
     public static Afericao convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
-                                   @NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+                                   @NotNull final AfericaoFiltro afericaoFiltro,
+                                   @NotNull final Long codUnidadeAfericao) throws ParseException {
         checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
 
-        final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro);
+        final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao);
 
         // Pneus - Medidas.
         final List<Pneu> pneus = new ArrayList<>();
@@ -559,10 +561,12 @@ public final class AvaCorpAvilanConverter {
     }
 
     @Nonnull
-    private static Afericao convertAfericaoSemPneus(@NotNull final AfericaoFiltro afericaoFiltro) throws ParseException {
+    private static Afericao convertAfericaoSemPneus(@NotNull final AfericaoFiltro afericaoFiltro,
+                                                    @NotNull final Long codUnidadeAfericao) throws ParseException {
         checkNotNull(afericaoFiltro, "afericaoFiltro não pode ser null!");
         final Afericao afericao = new Afericao();
         afericao.setCodigo((long) afericaoFiltro.getCodigoAfericao());
+        afericao.setCodUnidade(codUnidadeAfericao);
         afericao.setKmMomentoAfericao(afericaoFiltro.getOdometro());
 
         // Na integração todas as aferições devem ser de sulco e pressão, já que o Latromi não tem essa diferenciação.

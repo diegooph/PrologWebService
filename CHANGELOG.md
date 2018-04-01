@@ -1,8 +1,35 @@
 Change Log
 ==========
 
+<a name="v2.0.50"></a>
+## Version [v2.0.50](https://github.com/luizfp/PrologWebService/compare/v2.0.49...v2.0.50) (release date) [unreleased]
+
+### Features
+* Adiciona atributo para sabermos se um eixo é direcional no objeto `EixoVeiculo`
+* Adiciona atributo para sabermos se devemos aferir os estepes dos veículos no objeto `NovaAfericao`
+* Cria relatório para simular folha de ponto (intervalos)
+* Cria resource específico para os relatórios dos serviços dos pneus
+* Cria pool de conexões com o banco para melhorar a performance do servidor
+* Adiciona atributo no objeto `Pneu` para sabermos se ele nunca foi rodado
+* Cria conceito de galeria pública de imagens para o checklist
+* Cria conceito de modelos de checklist padrões disponibilizados pelo ProLog
+* Cria novo método para busca das URLs das imagens dos modelos de checklist que um colaborador tem acesso no path:
+`checklists/modelos/url-imagens/{codUnidade}/{codFuncao}`
+
+### Refactors
+* Adiciona código da unidade ao objeto `Servico`
+* Adiciona código da unidade ao objeto `Afericao`
+* Altera nome tabela de `EMPRESA_RESTRICAO_PNEU` para `PNEU_RESTRICAO_UNIDADE`
+
+### Bug Fixes
+* Salva KM do veículo caso um serviço de pneus seja automaticamente fechado
+
+#### Deprecated
+* Método de busca das URLs das perguntas dos modelos de checklist que um colaborador tem acesso no path:
+`checklists/urlImagens/{codUnidade}/{codFuncao}`
+
 <a name="v2.0.49"></a>
-## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (release date) [unreleased]
+## Version [v2.0.49](https://github.com/luizfp/PrologWebService/compare/v2.0.48...v2.0.49) (2018-03-19)
 
 ### Features
 * Cria relatório dos intervalos seguindo padrão da portaria 1510

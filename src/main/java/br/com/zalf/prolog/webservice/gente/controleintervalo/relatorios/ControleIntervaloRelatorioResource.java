@@ -2,11 +2,13 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
+import java.util.List;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -109,6 +111,20 @@ public class ControleIntervaloRelatorioResource {
                                                               @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getIntervalosPadraoPortaria1510(
                 outputStream,
+                codUnidade,
+                cpf,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/folha-ponto/{codUnidade}/{cpf}")
+    public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
+                                                            @PathParam("cpf") @Required String cpf,
+                                                            @QueryParam("dataInicial") @Required String dataInicial,
+                                                            @QueryParam("dataFinal") @Required String dataFinal) {
+        return service.getFolhaPontoRelatorio(
                 codUnidade,
                 cpf,
                 dataInicial,

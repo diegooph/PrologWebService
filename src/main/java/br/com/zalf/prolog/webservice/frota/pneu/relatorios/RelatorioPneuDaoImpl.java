@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
@@ -321,38 +321,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Report getEstratificacaoServicosFechadosReport(Long codUnidade, Date dataInicial,
-                                                          Date dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void getEstratificacaoServicosFechadosCsv(Long codUnidade, OutputStream outputStream, Date dataInicial,
-                                                     Date dataFinal) throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getEstratificacaoServicosFechadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
     public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -520,7 +488,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "               erp.periodo_afericao_pressao,\n" +
                     "               erp.periodo_afericao_sulco\n" +
                     "        FROM VEICULO V\n" +
-                    "               JOIN empresa_restricao_pneu erp ON erp.cod_unidade = v.cod_unidade\n" +
+                    "               JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = v.cod_unidade\n" +
                     "               LEFT JOIN\n" +
                     "               (SELECT\n" +
                     "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
@@ -626,7 +594,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "  sum(case when least(p.altura_sulco_interno, p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
                     "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
                     "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
-                    "  JOIN empresa_restricao_pneu erp ON erp.cod_unidade = vp.cod_unidade " +
+                    "  JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = vp.cod_unidade " +
                     "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
                     "GROUP BY vp.placa " +
                     "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
@@ -734,56 +702,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  P.codigo                                                                                   AS \"PNEU\",\n" +
-                "  map.nome                                                                                   AS \"MARCA\",\n" +
-                "  mp.nome                                                                                    AS \"MODELO\",\n" +
-                "  ((((dp.largura || '/' :: TEXT) || dp.altura) || ' R' :: TEXT) || dp.aro)                   AS \"MEDIDAS\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.PLACA_VEICULO_PNEU, '-')                                     AS \"PLACA\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                                           AS \"TIPO\",\n" +
-                "  coalesce(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-')                                           AS \"POSIÇÃO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_interno :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_interno :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL INTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_central_externo :: NUMERIC, 2) :: TEXT, '-')                 AS \"SULCO CENTRAL EXTERNO\",\n" +
-                "  coalesce(trunc(P.altura_sulco_externo :: NUMERIC, 2) :: TEXT, '-')                         AS \"SULCO EXTERNO\",\n" +
-                "  coalesce(trunc(P.pressao_atual) :: TEXT, '-')                                              AS \"PRESSÃO (PSI)\",\n" +
-                "  P.vida_atual                                                                               AS \"VIDA\",\n" +
-                "  coalesce(to_char(DATA_ULTIMA_AFERICAO.ULTIMA_AFERICAO AT TIME ZONE ?, 'DD/MM/YYYY HH24:MI'), 'não aferido') AS \"ÚLTIMA AFERIÇÃO\"\n" +
-                "FROM PNEU P\n" +
-                "  JOIN dimensao_pneu dp ON dp.codigo = p.cod_dimensao\n" +
-                "  JOIN unidade u ON u.codigo = p.cod_unidade\n" +
-                "  JOIN modelo_pneu mp ON mp.codigo = p.cod_modelo AND mp.cod_empresa = u.cod_empresa\n" +
-                "  JOIN marca_pneu map ON map.codigo = mp.cod_marca\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     PON.nomenclatura AS POSICAO_PNEU,\n" +
-                "     VP.cod_pneu      AS CODIGO_PNEU,\n" +
-                "     VP.placa         AS PLACA_VEICULO_PNEU,\n" +
-                "     VP.cod_unidade   AS COD_UNIDADE_PNEU,\n" +
-                "     VT.nome          AS VEICULO_TIPO\n" +
-                "   FROM veiculo V\n" +
-                "     JOIN veiculo_pneu VP ON VP.placa = V.placa AND VP.cod_unidade = V.cod_unidade\n" +
-                "     JOIN veiculo_tipo vt ON v.cod_unidade = vt.cod_unidade AND v.cod_tipo = vt.codigo\n" +
-                "     JOIN pneu_ordem_nomenclatura_unidade pon ON pon.cod_unidade = v.cod_unidade AND pon.cod_tipo_veiculo = v.cod_tipo\n" +
-                "                                                 AND vp.posicao = pon.posicao_prolog\n" +
-                "   WHERE V.cod_unidade = ?\n" +
-                "   ORDER BY VP.cod_pneu) AS POSICAO_PNEU_VEICULO\n" +
-                "    ON P.codigo = POSICAO_PNEU_VEICULO.CODIGO_PNEU AND P.cod_unidade = POSICAO_PNEU_VEICULO.COD_UNIDADE_PNEU\n" +
-                "  LEFT JOIN\n" +
-                "  (SELECT\n" +
-                "     AV.cod_pneu,\n" +
-                "     AV.cod_unidade   AS COD_UNIDADE_DATA,\n" +
-                "     MAX(A.data_hora AT TIME ZONE ?) AS ULTIMA_AFERICAO\n" +
-                "   FROM AFERICAO A\n" +
-                "     JOIN afericao_valores AV ON A.codigo = AV.cod_afericao\n" +
-                "   GROUP BY 1, 2) AS DATA_ULTIMA_AFERICAO\n" +
-                "    ON DATA_ULTIMA_AFERICAO.COD_UNIDADE_DATA = P.cod_unidade AND DATA_ULTIMA_AFERICAO.cod_pneu = P.codigo\n" +
-                "WHERE P.cod_unidade = ?\n" +
-                "ORDER BY \"PNEU\"");
-        stmt.setString(1, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(2, codUnidade);
-        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(4, codUnidade);
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 
@@ -947,13 +868,32 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
-    private PreparedStatement getEstratificacaoServicosFechadosStatement(Connection conn, long codUnidade, Date dataInicial,
-                                                                         Date dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_extrato_servicos_fechados(?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, dataInicial);
-        stmt.setDate(3, dataFinal);
-        return stmt;
+    @Override
+    public Map<String, Integer> getQuantidadePneusDescartadosPorMotivo(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<String, Integer> motivosDescarte = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "  MMD.motivo, COUNT(M.codigo) as quantidade\n" +
+                    "FROM MOVIMENTACAO M JOIN MOVIMENTACAO_DESTINO MD ON M.codigo = MD.cod_movimentacao\n" +
+                    "  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+                    "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
+                    "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
+                    "GROUP BY MMD.motivo\n" +
+                    "ORDER BY 2 DESC");
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                motivosDescarte.put(
+                        rSet.getString("motivo"),
+                        rSet.getInt("quantidade"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return motivosDescarte;
     }
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -613,19 +613,20 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     private Set<EixoVeiculo> getEixosDiagrama(int codDiagrama, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Set<EixoVeiculo> eixos = new HashSet<>();
+        final Set<EixoVeiculo> eixos = new HashSet<>();
         try {
-            stmt = conn.prepareStatement("SELECT *\n" +
-                    "FROM veiculo_diagrama_eixos\n" +
-                    "WHERE cod_diagrama = ?\n" +
-                    "ORDER BY posicao");
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM veiculo_diagrama_eixos " +
+                    "WHERE cod_diagrama = ? " +
+                    "ORDER BY posicao;");
             stmt.setInt(1, codDiagrama);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                EixoVeiculo eixoVeiculo = new EixoVeiculo(
+                final EixoVeiculo eixoVeiculo = new EixoVeiculo(
                         TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
                         rSet.getInt("QT_PNEUS"),
-                        rSet.getInt("POSICAO"));
+                        rSet.getInt("POSICAO"),
+                        rSet.getBoolean("EIXO_DIRECIONAL"));
                 eixos.add(eixoVeiculo);
             }
         } finally {

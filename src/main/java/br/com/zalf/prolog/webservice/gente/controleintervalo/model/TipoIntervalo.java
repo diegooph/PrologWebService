@@ -100,4 +100,19 @@ public class TipoIntervalo {
     public void setTempoLimiteEstouro(Duration tempoLimiteEstouro) {
         this.tempoLimiteEstouro = tempoLimiteEstouro;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof TipoIntervalo))
+            return false;
+
+        if (obj == this)
+            return true;
+
+        final TipoIntervalo tipoIntervalo = (TipoIntervalo) obj;
+        return !(codigo == null || tipoIntervalo.codigo == null) && codigo.equals(tipoIntervalo.codigo);
+    }
 }

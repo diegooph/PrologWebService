@@ -1,6 +1,6 @@
 package test;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
@@ -55,23 +55,23 @@ public class IntervaloTest extends DatabaseConnection {
                 Assert.assertEquals((marcacao.getCodigo()), agrupado.getCodigoMarcacaoInicio());
                 Assert.assertEquals((marcacao.getCpfColaborador()), agrupado.getColaborador().getCpf());
                 Assert.assertEquals((marcacao.getCodUnidade()), agrupado.getColaborador().getUnidade().getCodigo());
+                Assert.assertEquals((marcacao.getCodTipoIntervalo()), agrupado.getTipo().getCodigo());
                 Assert.assertEquals((marcacao.getDataHoraMaracao()), agrupado.getDataHoraInicio());
                 Assert.assertEquals((marcacao.getFonteDataHora()), agrupado.getFonteDataHoraInicio());
-                Assert.assertEquals((marcacao.getCodTipoIntervalo()), agrupado.getTipo().getCodigo());
                 Assert.assertEquals((marcacao.getLocalizacaoMarcacao()), agrupado.getLocalizacaoInicio());
             } else if (agrupado.getCodigoMarcacaoFim() != null
                     && agrupado.getCodigoMarcacaoFim().equals(marcacao.getCodigo())) {
                 System.out.println(String.format("Código marcação fim: %d", agrupado.getCodigoMarcacaoFim()));
                 // FIM.
                 Assert.assertEquals((marcacao.getCodigo()), agrupado.getCodigoMarcacaoFim());
-                Assert.assertEquals((marcacao.getJustificativaEstouro()), agrupado.getJustificativaEstouro());
-                Assert.assertEquals((marcacao.getJustificativaTempoRecomendado()), agrupado.getJustificativaTempoRecomendado());
                 Assert.assertEquals((marcacao.getCpfColaborador()), agrupado.getColaborador().getCpf());
                 Assert.assertEquals((marcacao.getCodUnidade()), agrupado.getColaborador().getUnidade().getCodigo());
+                Assert.assertEquals((marcacao.getCodTipoIntervalo()), agrupado.getTipo().getCodigo());
                 Assert.assertEquals((marcacao.getDataHoraMaracao()), agrupado.getDataHoraFim());
                 Assert.assertEquals((marcacao.getFonteDataHora()), agrupado.getFonteDataHoraFim());
-                Assert.assertEquals((marcacao.getCodTipoIntervalo()), agrupado.getTipo().getCodigo());
                 Assert.assertEquals((marcacao.getLocalizacaoMarcacao()), agrupado.getLocalizacaoFim());
+                Assert.assertEquals((marcacao.getJustificativaEstouro()), agrupado.getJustificativaEstouro());
+                Assert.assertEquals((marcacao.getJustificativaTempoRecomendado()), agrupado.getJustificativaTempoRecomendado());
             } else {
                 throw new IllegalStateException();
             }
@@ -94,7 +94,7 @@ public class IntervaloTest extends DatabaseConnection {
             }
         }
 
-        throw new IllegalStateException();
+        throw new IllegalStateException("Nenhum intervalo agrupado encontrado!");
     }
 
     @SuppressWarnings("Duplicates")

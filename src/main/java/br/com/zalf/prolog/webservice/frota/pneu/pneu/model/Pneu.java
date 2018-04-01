@@ -83,8 +83,24 @@ public class Pneu {
      */
     private int posicao;
 
+    /**
+     * Indica se esse pneu nunca rodou e nem nunca foi aplicado a nenhum veículo.
+     */
+    private Boolean pneuNovoNuncaRodado;
+
     public Pneu() {
 
+    }
+
+    public Boolean isPneuNovoNuncaRodado() {
+        return pneuNovoNuncaRodado;
+    }
+
+    public void setPneuNovoNuncaRodado(Boolean pneuNovoNuncaRodado) {
+        if (pneuNovoNuncaRodado && vidaAtual > 1) {
+            throw new IllegalStateException("Um pneu não pode ao mesmo tempo ser 'novo' e ter uma vida maior do que '1'!");
+        }
+        this.pneuNovoNuncaRodado = pneuNovoNuncaRodado;
     }
 
     public Banda getBanda() {
@@ -204,6 +220,9 @@ public class Pneu {
     }
 
     public void setVidaAtual(int vidaAtual) {
+        if (pneuNovoNuncaRodado && vidaAtual > 1) {
+            throw new IllegalStateException("Um pneu não pode ao mesmo tempo ser 'novo' e ter uma vida maior do que 1!");
+        }
         this.vidaAtual = vidaAtual;
     }
 

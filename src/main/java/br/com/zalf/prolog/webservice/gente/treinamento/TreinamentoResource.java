@@ -25,7 +25,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TreinamentoResource {
 
-    private TreinamentoService service = new TreinamentoService();
+    private final TreinamentoService service = new TreinamentoService();
 
     @POST
     @Path("/upload")
@@ -40,11 +40,11 @@ public class TreinamentoResource {
             return Response.error("ERRO! Arquivo não está no formato PDF!");
 
         jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        Treinamento treinamento = jsonPart.getValueAs(Treinamento.class);
+        final Treinamento treinamento = jsonPart.getValueAs(Treinamento.class);
         if (treinamento == null) {
             return Response.error("ERRO! Treinamento veio nulo");
         } else {
-            Long codTreinamento = service.insert(fileInputStream, treinamento);
+            final Long codTreinamento = service.insert(fileInputStream, treinamento);
             if (codTreinamento != null) {
                 return ResponseWithCod.ok("Treinamento inserido com sucesso", codTreinamento);
             } else {

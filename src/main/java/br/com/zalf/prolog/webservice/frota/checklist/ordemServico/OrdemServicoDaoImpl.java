@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemServico;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
@@ -534,7 +534,6 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
         pergunta.setPergunta(rSet.getString("PERGUNTA"));
         pergunta.setSingleChoice(rSet.getBoolean("SINGLE_CHOICE"));
-        pergunta.setUrl(rSet.getString("URL_IMAGEM"));
         pergunta.setPrioridade(rSet.getString("PRIORIDADE"));
         return pergunta;
     }

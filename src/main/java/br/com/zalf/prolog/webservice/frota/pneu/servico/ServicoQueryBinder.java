@@ -375,21 +375,24 @@ final class ServicoQueryBinder {
         return stmt;
     }
 
-    static PreparedStatement fecharAutomaticamenteServicosPneu(final Long codUnidade,
-                                                               final String codPneu,
-                                                               final Long codProcessoMovimentacao,
-                                                               Connection conn) throws SQLException {
+    static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Long codUnidade,
+                                                               @NotNull final String codPneu,
+                                                               @NotNull final Long codProcessoMovimentacao,
+                                                               final long kmColetadoVeiculo,
+                                                               @NotNull final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                + "KM_MOMENTO_CONSERTO = ?, "
                 + "FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE "
                 + "WHERE COD_UNIDADE = ? "
                 + "AND COD_PNEU = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
         stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
         stmt.setLong(2, codProcessoMovimentacao);
-        stmt.setLong(3, codUnidade);
-        stmt.setString(4, codPneu);
+        stmt.setLong(3, kmColetadoVeiculo);
+        stmt.setLong(4, codUnidade);
+        stmt.setString(5, codPneu);
         return stmt;
     }
 }

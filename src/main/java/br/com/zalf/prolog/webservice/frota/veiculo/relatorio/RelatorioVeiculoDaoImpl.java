@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.relatorio;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import org.jetbrains.annotations.NotNull;
 

@@ -36,4 +36,11 @@ public final class ProLogDateParser {
             return LocalDate.parse(date, DEFAULT_DATE_FORMATTER);
         }
     }
+
+    @NotNull
+    public static String toString(@NotNull final LocalDate localDate) {
+        Preconditions.checkNotNull(localDate);
+
+        return localDate.format(DEFAULT_DATE_FORMATTER);
+    }
 }

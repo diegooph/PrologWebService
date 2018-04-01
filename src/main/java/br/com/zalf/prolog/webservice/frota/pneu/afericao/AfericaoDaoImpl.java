@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
@@ -33,7 +34,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -90,10 +91,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
         final List<Pneu> estepes = veiculo.getEstepes();
-        veiculo.removeEstepes();
-        novaAfericao.setVeiculo(veiculo);
         novaAfericao.setEstepesVeiculo(estepes);
-        novaAfericao.setRestricao(getRestricoesByPlaca(placa));
+        novaAfericao.setVeiculo(veiculo);
+        final Restricao restricao = getRestricoesByPlaca(placa);
+        novaAfericao.setRestricao(restricao);
+        novaAfericao.setDeveAferirEstepes(!restricao.getTiposVeiculosAfericaoEstepeBloqueada().contains(veiculo.getTipo()));
         return novaAfericao;
     }
 
@@ -108,7 +110,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM UNIDADE U JOIN "
                     + "EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
+                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND U.CODIGO = ER.COD_UNIDADE "
                     + "WHERE U.CODIGO = ?");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
@@ -133,18 +135,39 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "ER.PERIODO_AFERICAO_SULCO, ER.PERIODO_AFERICAO_PRESSAO "
                     + "FROM VEICULO V JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
                     + "JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA "
-                    + "JOIN EMPRESA_RESTRICAO_PNEU ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
+                    + "JOIN PNEU_RESTRICAO_UNIDADE ER ON ER.COD_EMPRESA = E.CODIGO AND ER.cod_unidade = U.codigo "
                     + "WHERE V.PLACA = ?");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.isLast()) {
-                return createRestricao(rSet);
+                final Restricao restricao = createRestricao(rSet);
+                restricao.setTiposVeiculosAfericaoEstepeBloqueada(getTiposVeiculosAfericaoEstepe(conn, placa));
+                return restricao;
             } else {
                 throw new SQLException("Erro ao buscar os dados de restrição");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    private List<TipoVeiculo> getTiposVeiculosAfericaoEstepe(final Connection conn, final String placa) throws SQLException {
+        final List<TipoVeiculo> tiposVeiculoAfericaoEstepe = new ArrayList<>();
+        final PreparedStatement stmt = conn.prepareStatement("SELECT AETV.COD_UNIDADE AS COD_UNIDADE, " +
+                "  AETV.COD_TIPO_VEICULO AS COD_TIPO_VEICULO, " +
+                "  VT.NOME AS NOME_TIPO_VEICULO " +
+                "FROM AFERICAO_ESTEPES_TIPOS_VEICULOS_BLOQUEADOS AETV " +
+                "  JOIN VEICULO_TIPO VT ON AETV.COD_TIPO_VEICULO = VT.CODIGO AND AETV.COD_UNIDADE = VT.COD_UNIDADE " +
+                "WHERE AETV.COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE PLACA = ?);");
+        stmt.setString(1, placa);
+        final ResultSet rSet = stmt.executeQuery();
+        while (rSet.next()) {
+            final TipoVeiculo tipoVeiculo = new TipoVeiculo();
+            tipoVeiculo.setCodigo(rSet.getLong("COD_TIPO_VEICULO"));
+            tipoVeiculo.setNome(rSet.getString("NOME_TIPO_VEICULO"));
+            tiposVeiculoAfericaoEstepe.add(tipoVeiculo);
+        }
+        return tiposVeiculoAfericaoEstepe;
     }
 
     @Override
@@ -243,8 +266,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, "
-                    + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+            stmt = conn.prepareStatement("SELECT " +
+                    "A.KM_VEICULO, " +
+                    "A.CODIGO AS COD_AFERICAO, " +
+                    "A.COD_UNIDADE AS COD_UNIDADE, " +
+                    "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
+                    "A.PLACA_VEICULO, " +
+                    "A.TIPO_AFERICAO, " +
+                    "C.CPF, " +
+                    "C.NOME, " +
+                    "A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A "
                     + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
@@ -288,6 +319,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("SELECT " +
                     "A.KM_VEICULO, " +
                     "A.CODIGO AS COD_AFERICAO, " +
+                    "A.COD_UNIDADE AS COD_UNIDADE, " +
                     "A.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
                     "A.PLACA_VEICULO, " +
                     "A.KM_VEICULO, " +
@@ -364,9 +396,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.KM_VEICULO, A.CODIGO AS COD_AFERICAO, "
-                    + "A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = V.COD_UNIDADE) AS DATA_HORA, "
-                    + "A.PLACA_VEICULO, A.TIPO_AFERICAO, C.CPF, C.NOME, A.TEMPO_REALIZACAO  "
+            stmt = conn.prepareStatement("SELECT " +
+                    "A.KM_VEICULO, " +
+                    "A.CODIGO AS COD_AFERICAO, " +
+                    "A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM UNIDADE U WHERE U.CODIGO = V.COD_UNIDADE) AS DATA_HORA, " +
+                    "A.PLACA_VEICULO, " +
+                    "A.TIPO_AFERICAO, " +
+                    "C.CPF, " +
+                    "C.NOME, " +
+                    "A.TEMPO_REALIZACAO  "
                     + "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
                     + "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR "
                     + "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
@@ -396,10 +434,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     }
 
     private void insertValores(Afericao afericao, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt;
-        PneuDao pneuDao = Injection.providePneuDao();
-        stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
-                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO,ALTURA_SULCO_EXTERNO, " +
+        final PneuDao pneuDao = Injection.providePneuDao();
+        final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
+                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_EXTERNO, ALTURA_SULCO_EXTERNO, " +
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         final ServicoDao servicoDao = Injection.provideServicoDao();
@@ -446,7 +483,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoAfericao tipoAfericao) throws SQLException {
+    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoAfericao tipoAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
@@ -540,6 +577,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private Afericao createAfericaoResumida(ResultSet rSet) throws SQLException {
         final Afericao afericao = new Afericao();
         afericao.setCodigo(rSet.getLong("COD_AFERICAO"));
+        afericao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         afericao.setDataHora(rSet.getObject("DATA_HORA", LocalDateTime.class));
         afericao.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericao.setTipoAfericao(TipoAfericao.fromString(rSet.getString("TIPO_AFERICAO")));

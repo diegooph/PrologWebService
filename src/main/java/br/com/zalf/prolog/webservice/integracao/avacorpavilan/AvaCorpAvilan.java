@@ -299,6 +299,7 @@ public final class AvaCorpAvilan extends Sistema {
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
         novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
+        novaAfericao.setDeveAferirEstepes(false);
         veiculo.removeEstepes();
         return novaAfericao;
     }
@@ -323,7 +324,7 @@ public final class AvaCorpAvilan extends Sistema {
         final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
                 dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan));
 
-        final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro);
+        final Afericao afericao = AvaCorpAvilanConverter.convert(posicaoPneuMapper, afericaoFiltro, codUnidade);
 
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculoAvilan);
         final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
@@ -366,7 +367,7 @@ public final class AvaCorpAvilan extends Sistema {
                 getCpf(),
                 getDataNascimento());
 
-        return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro());
+        return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro(), codUnidade);
     }
 
     @NotNull
