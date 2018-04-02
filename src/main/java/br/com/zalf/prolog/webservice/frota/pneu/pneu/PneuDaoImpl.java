@@ -134,7 +134,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (pneu.isPneuNovoNuncaRodado() != null) {
                 stmt.setBoolean(17, pneu.isPneuNovoNuncaRodado());
             } else {
-                stmt.setNull(17, Types.BOOLEAN);
+                stmt.setBoolean(17, false);
             }
 
             final int count = stmt.executeUpdate();
