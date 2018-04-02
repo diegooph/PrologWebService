@@ -4,6 +4,9 @@ Change Log
 <a name="v2.0.51"></a>
 ## Version [v2.0.51](https://github.com/luizfp/PrologWebService/compare/v2.0.50...v2.0.51) (release date) [unreleased]
 
+### Features
+* Cria relatório dos serviços em aberto dos pneu
+
 ### Bug Fixes
 * Corrige insert do pneu (seta `false` caso `pneuNovoNuncaRodado` não seja informado)
 
