@@ -54,7 +54,7 @@ public final class ServicoRelatorioService {
                                                           @NotNull final String dataInicial,
                                                           @NotNull final String dataFinal) {
         try {
-            return dao.getEstratificacaoServicosFechadosReport(
+            return dao.getEstratificacaoServicosAbertosReport(
                     codUnidade,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
