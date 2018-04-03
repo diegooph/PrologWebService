@@ -18,4 +18,14 @@ public interface ServicoRelatorioDao {
                                               @NotNull final Long codUnidade,
                                               @NotNull final LocalDate dataInicial,
                                               @NotNull final LocalDate dataFinal) throws IOException, SQLException;
+
+    @NotNull
+    Report getEstratificacaoServicosAbertosReport(@NotNull final Long codUnidade,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal) throws SQLException;
+
+    void getEstratificacaoServicosAbertosCsv(@NotNull final OutputStream outputStream,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final LocalDate dataInicial,
+                                             @NotNull final LocalDate dataFinal) throws IOException, SQLException;
 }

@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
-@Path("/servicos/relatorios")
+@Path("/pneus/servicos/relatorios")
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -31,5 +31,22 @@ public final class ServicoRelatorioResource {
                                                                 @QueryParam("dataFinal") @Required final String dataFinal)
             throws RuntimeException {
         return outputStream -> service.getEstratificacaoServicosFechadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/estratificacao-servicos-abertos/{codUnidade}/report")
+    public Report getEstratificacaoServicosAbertosReport(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                         @QueryParam("dataInicial") @Required final String dataInicial,
+                                                         @QueryParam("dataFinal") @Required final String dataFinal) {
+        return service.getEstratificacaoServicosAbertosReport(codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/estratificacao-servicos-abertos/{codUnidade}/csv")
+    public StreamingOutput getEstratificacaoServicosAbertosCsv(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                               @QueryParam("dataInicial") @Required final String dataInicial,
+                                                               @QueryParam("dataFinal") @Required final String dataFinal)
+            throws RuntimeException {
+        return outputStream -> service.getEstratificacaoServicosAbertosCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 }

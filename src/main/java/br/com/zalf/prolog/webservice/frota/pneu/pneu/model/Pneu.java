@@ -220,7 +220,7 @@ public class Pneu {
     }
 
     public void setVidaAtual(int vidaAtual) {
-        if (pneuNovoNuncaRodado && vidaAtual > 1) {
+        if (pneuNovoNuncaRodado != null && pneuNovoNuncaRodado && vidaAtual > 1) {
             throw new IllegalStateException("Um pneu não pode ao mesmo tempo ser 'novo' e ter uma vida maior do que 1!");
         }
         this.vidaAtual = vidaAtual;
