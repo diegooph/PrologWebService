@@ -112,8 +112,8 @@ public class ControleIntervaloRelatorioResource {
                                                               @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getIntervalosPadraoPortaria1510(
                 outputStream,
-                codTipoIntervalo,
                 codUnidade,
+                codTipoIntervalo,
                 cpf,
                 dataInicial,
                 dataFinal);
