@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v2.0.51"></a>
-## Version [v2.0.51](https://github.com/luizfp/PrologWebService/compare/v2.0.50...v2.0.51) (release date) [unreleased]
+## Version [v2.0.51](https://github.com/luizfp/PrologWebService/compare/v2.0.50...v2.0.51) (2018-04-02)
 
 ### Features
 * Cria relatório dos serviços em aberto dos pneu
