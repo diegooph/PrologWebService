@@ -9,6 +9,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige insert do pneu (seta `false` caso `pneuNovoNuncaRodado` não seja informado)
+* Corrige NPE ao verificar se um pneu nunca rodou
 
 <a name="v2.0.50"></a>
 ## Version [v2.0.50](https://github.com/luizfp/PrologWebService/compare/v2.0.49...v2.0.50) (2018-04-01)
