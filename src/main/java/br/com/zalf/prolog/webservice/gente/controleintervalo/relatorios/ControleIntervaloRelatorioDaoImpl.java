@@ -172,9 +172,10 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @NotNull
     @Override
     public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal,  String cpf)
-            throws SQLException, IOException {
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -201,6 +202,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
                                                   @NotNull final Long codUnidade,
+                                                  @NotNull final Long codTipoIntervalo,
                                                   @NotNull final String cpf,
                                                   @NotNull final LocalDate dataInicial,
                                                   @NotNull final LocalDate dataFinal) throws SQLException, IOException {
@@ -209,7 +211,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getRelatorioPadraoPortaria1510Stmt(codUnidade, cpf, dataInicial, dataFinal, conn);
+            stmt = getRelatorioPadraoPortaria1510Stmt(codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal, conn);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -219,21 +221,23 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getRelatorioPadraoPortaria1510Stmt(@NotNull final Long codUnidade,
+                                                                 @NotNull final Long codTipoIntervalo,
                                                                  @NotNull final String cpf,
                                                                  @NotNull final LocalDate dataInicial,
                                                                  @NotNull final LocalDate dataFinal,
                                                                  @NotNull final Connection conn) throws SQLException {
         Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?);");
-        stmt.setObject(1, dataInicial);
-        stmt.setObject(2, dataFinal);
-        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        stmt.setLong(4, codUnidade);
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codTipoIntervalo);
         if (!cpf.equals("%")) {
-            stmt.setLong(5, Long.parseLong(cpf));
+            stmt.setLong(3, Long.parseLong(cpf));
         } else {
-            stmt.setNull(5, Types.BIGINT);
+            stmt.setNull(3, Types.BIGINT);
         }
+        stmt.setObject(4, dataInicial);
+        stmt.setObject(5, dataFinal);
+        stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 

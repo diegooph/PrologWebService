@@ -104,13 +104,15 @@ public class ControleIntervaloRelatorioResource {
 
     @GET
     @Secured
-    @Path("/intervalos-padrao-portaria-1510/{codUnidade}/{cpf}/csv")
+    @Path("/intervalos-padrao-portaria-1510/{codUnidade}/{codTipoIntervalo}/{cpf}/csv")
     public StreamingOutput getIntervalosPadraoPortaria1510Csv(@PathParam("codUnidade") @Required Long codUnidade,
+                                                              @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
                                                               @PathParam("cpf") @Required String cpf,
                                                               @QueryParam("dataInicial") @Required String dataInicial,
                                                               @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getIntervalosPadraoPortaria1510(
                 outputStream,
+                codTipoIntervalo,
                 codUnidade,
                 cpf,
                 dataInicial,

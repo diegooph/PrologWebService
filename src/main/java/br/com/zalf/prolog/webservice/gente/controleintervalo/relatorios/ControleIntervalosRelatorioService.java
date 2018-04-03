@@ -109,7 +109,7 @@ public class ControleIntervalosRelatorioService {
         try {
             return dao.getAderenciaIntervalosColaboradorReport(codUnidade, new Date(dataInicial), new Date(dataFinal)
                     , cpf);
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(REPORT). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
@@ -120,6 +120,7 @@ public class ControleIntervalosRelatorioService {
 
     public void getIntervalosPadraoPortaria1510(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
+                                                @NotNull final Long codTipoIntervalo,
                                                 @NotNull final String cpf,
                                                 @NotNull final String dataInicial,
                                                 @NotNull final String dataFinal) {
@@ -127,15 +128,17 @@ public class ControleIntervalosRelatorioService {
             dao.getRelatorioPadraoPortaria1510Csv(
                     out,
                     codUnidade,
+                    codTipoIntervalo,
                     cpf,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório csv no padrão da portaria 1510. \n" +
                     "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
                     "cpf: %s \n" +
                     "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal), e);
         }
     }
 
