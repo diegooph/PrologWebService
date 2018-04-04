@@ -112,15 +112,15 @@ public interface ControleIntervaloRelatoriosDao {
      * @param dataFinal data final
      * @return um Report
      * @throws SQLException
-     * @throws IOException
      */
     @NotNull
     Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
-            throws SQLException, IOException;
+            throws SQLException;
 
 
     void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
                                            @NotNull final Long codUnidade,
+                                           @NotNull final Long codTipoIntervalo,
                                            @NotNull final String cpf,
                                            @NotNull final LocalDate dataInicial,
                                            @NotNull final LocalDate dataFinal) throws SQLException, IOException;

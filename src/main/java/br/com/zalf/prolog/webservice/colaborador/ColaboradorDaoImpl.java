@@ -307,7 +307,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
                     "WHERE C.COD_UNIDADE = ? " +
                     " AND (? = 1 OR C.STATUS_ATIVO = ?)" +
-                    "ORDER BY 8");
+                    "ORDER BY C.NOME ASC");
             stmt.setLong(1, codUnidade);
 
             //noinspection Duplicates

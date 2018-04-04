@@ -42,7 +42,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                             "    ON CP.CODIGO = CAP.COD_PERGUNTA " +
                             "       AND CAP.COD_UNIDADE = CP.COD_UNIDADE " +
                             "       AND CAP.COD_CHECKLIST_MODELO = CP.COD_CHECKLIST_MODELO " +
-                            "  JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
+                            "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
                             "    ON CGI.COD_IMAGEM = CP.COD_IMAGEM " +
                             "WHERE CP.COD_UNIDADE = ? AND CP.COD_CHECKLIST_MODELO = ? AND CP.STATUS_ATIVO = TRUE " +
                             "ORDER BY CP.ORDEM, Cp.PERGUNTA, CAP.ORDEM;",
@@ -279,7 +279,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     "FROM CHECKLIST_PERGUNTAS_PROLOG CPP " +
                     "  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA_PROLOG CAPP " +
                     "    ON CPP.CODIGO = CAPP.COD_PERGUNTA_PROLOG " +
-                    "  JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
+                    "  LEFT JOIN CHECKLIST_GALERIA_IMAGENS CGI " +
                     "    ON CGI.COD_IMAGEM = CPP.COD_IMAGEM " +
                     "ORDER BY CPP.ORDEM, CPP.PERGUNTA, CAPP.ORDEM;");
             rSet = stmt.executeQuery();
