@@ -20,9 +20,11 @@ import java.io.InputStream;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EscalaDiariaResource {
 
+    private final EscalaDiariaService service = new EscalaDiariaService();
+
     @POST
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    @Path("/mapas/{codUnidade}")
+    @Path("/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadMapa(@PathParam("codUnidade") Long codUnidade,
                                @FormDataParam("file") InputStream fileInputStream,
