@@ -9,53 +9,73 @@ import java.util.List;
  */
 public class EscalaDiaria {
 
-    private List<EscalaDiariaItem> ItensEscalaDiaria;
-    private int qtdColaboradorErrado;
-    private int qtdColaboradorPlacaErrada;
-    private int qtdColaboradorMapaErrado;
+    private List<EscalaDiariaItem> itensEscalaDiaria;
+    private int qtdColaboradoresErrados;
+    private int qtdPlacasErradas;
+    private int qtdMapasErrados;
 
     public EscalaDiaria() {
     }
 
     public List<EscalaDiariaItem> getItensEscalaDiaria() {
-        return ItensEscalaDiaria;
+        return itensEscalaDiaria;
     }
 
     public void setItensEscalaDiaria(final List<EscalaDiariaItem> itensEscalaDiaria) {
-        this.ItensEscalaDiaria = itensEscalaDiaria;
+        this.itensEscalaDiaria = itensEscalaDiaria;
     }
 
-    public int getQtdColaboradorErrado() {
-        return qtdColaboradorErrado;
+    public int getQtdColaboradoresErrados() {
+        return qtdColaboradoresErrados;
     }
 
-    public void setQtdColaboradorErrado(final int qtdColaboradorErrado) {
-        this.qtdColaboradorErrado = qtdColaboradorErrado;
+    public void setQtdColaboradoresErrados(final int qtdColaboradoresErrados) {
+        this.qtdColaboradoresErrados = qtdColaboradoresErrados;
     }
 
-    public int getQtdColaboradorPlacaErrada() {
-        return qtdColaboradorPlacaErrada;
+    public int getQtdPlacasErradas() {
+        return qtdPlacasErradas;
     }
 
-    public void setQtdColaboradorPlacaErrada(final int qtdColaboradorPlacaErrada) {
-        this.qtdColaboradorPlacaErrada = qtdColaboradorPlacaErrada;
+    public void setQtdPlacasErradas(final int qtdPlacasErradas) {
+        this.qtdPlacasErradas = qtdPlacasErradas;
     }
 
-    public int getQtdColaboradorMapaErrado() {
-        return qtdColaboradorMapaErrado;
+    public int getQtdMapasErrados() {
+        return qtdMapasErrados;
     }
 
-    public void setQtdColaboradorMapaErrado(final int qtdColaboradorMapaErrado) {
-        this.qtdColaboradorMapaErrado = qtdColaboradorMapaErrado;
+    public void setQtdMapasErrados(final int qtdMapasErrados) {
+        this.qtdMapasErrados = qtdMapasErrados;
+    }
+
+    public void calculaItensErrados() {
+        int qtdColaboradoresErrados = 0;
+        int qtdPlacasErradas = 0;
+        int qtdMapasErrados = 0;
+        for (final EscalaDiariaItem item : itensEscalaDiaria) {
+            if (!item.isCpfMotoristaOk() || !item.isCpfAjudante1Ok() || !item.isCpfAjudante2Ok()) {
+                qtdColaboradoresErrados++;
+            }
+            if (!item.isPlacaOk()) {
+                qtdPlacasErradas++;
+            }
+            if (!item.isMapaOk()) {
+                qtdMapasErrados++;
+            }
+        }
+        this.qtdColaboradoresErrados = qtdColaboradoresErrados;
+        this.qtdPlacasErradas = qtdPlacasErradas;
+        this.qtdMapasErrados = qtdMapasErrados;
     }
 
     @Override
     public String toString() {
         return "EscalaDiaria{" +
-                "ItensEscalaDiaria=" + ItensEscalaDiaria +
-                ", qtdColaboradorErrado=" + qtdColaboradorErrado +
-                ", qtdColaboradorPlacaErrada=" + qtdColaboradorPlacaErrada +
-                ", qtdColaboradorMapaErrado=" + qtdColaboradorMapaErrado +
+                "itensEscalaDiaria=" + itensEscalaDiaria +
+                ", qtdColaboradoresErrados=" + qtdColaboradoresErrados +
+                ", qtdPlacasErradas=" + qtdPlacasErradas +
+                ", qtdMapasErrados=" + qtdMapasErrados +
                 '}';
     }
 }
