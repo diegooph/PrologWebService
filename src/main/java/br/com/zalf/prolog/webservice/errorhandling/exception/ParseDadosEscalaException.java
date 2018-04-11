@@ -10,17 +10,15 @@ import org.jetbrains.annotations.NotNull;
 public class ParseDadosEscalaException extends ProLogException {
 
     public ParseDadosEscalaException(final int httpStatusCode,
-                                     final int proLogErrorCode,
                                      @NotNull final String message,
                                      @NotNull final String developerMessage) {
-        super(httpStatusCode, proLogErrorCode, message, developerMessage);
+        super(httpStatusCode, ProLogErrorCodes.PARSE_DADOS_ESCALA.errorCode(), message, developerMessage);
     }
 
     public ParseDadosEscalaException(final int httpStatusCode,
-                                     final int proLogErrorCode,
                                      @NotNull final String message,
                                      @NotNull final String developerMessage,
                                      @NotNull final Exception parentException) {
-        super(httpStatusCode, proLogErrorCode, message, developerMessage, parentException);
+        super(httpStatusCode, ProLogErrorCodes.PARSE_DADOS_ESCALA.errorCode(), message, developerMessage, parentException);
     }
 }
