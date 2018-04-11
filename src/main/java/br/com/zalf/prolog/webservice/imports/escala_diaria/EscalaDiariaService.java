@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ParseDadosEscalaException;
 import com.google.common.base.Preconditions;
+import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -69,10 +70,7 @@ public class EscalaDiariaService {
             final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
             // Pasta temporária da JVM
-            final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "escalaDiaria");
-            if (!tmpDir.exists()) {
-                tmpDir.mkdir();
-            }
+            final File tmpDir = Files.createTempDir();
             final File file = new File(tmpDir, fileName);
             final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);
