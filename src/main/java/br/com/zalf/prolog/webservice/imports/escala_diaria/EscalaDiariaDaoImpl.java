@@ -37,6 +37,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
     public List<EscalaDiaria> getEscalasDiarias(@NotNull final Long codUnidade,
                                                 @NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal) throws SQLException {
+
         return null;
     }
 
@@ -45,12 +46,13 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                                         @NotNull final List<Long> codEscalas) throws SQLException {
         if (codEscalas.isEmpty())
             return;
+
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("DELETE FROM ESCALA_DIARIA " +
-                    "WHERE COD_UNIDADE = ? AND COD_ESCALA = ANY (ARRAY[?])");
+                    "WHERE COD_UNIDADE = ? AND COD_ESCALA::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtil.ListLongToArray(conn, codEscalas));
             final int count = stmt.executeUpdate();
