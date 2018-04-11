@@ -12,13 +12,17 @@ public class EscalaDiariaItem {
     private long codEscala;
     private Date data;
     private String placa;
+    private boolean isPlacaOk;
     private int codMapa;
-    private boolean isCdoMapaOk;
+    private boolean isMapaOk;
     private Long cpfMotorista;
+    private String nomeMotorista;
     private boolean isCpfMotoristaOk;
     private Long cpfAjudante1;
+    private String nomeAjudante1;
     private boolean isCpfAjudante1Ok;
     private Long cpfAjudante2;
+    private String nomeAjudante2;
     private boolean isCpfAjudante2Ok;
 
     public EscalaDiariaItem() {
@@ -40,6 +44,14 @@ public class EscalaDiariaItem {
         this.data = data;
     }
 
+    public boolean isPlacaOk() {
+        return isPlacaOk;
+    }
+
+    public void setPlacaOk(final boolean placaOk) {
+        isPlacaOk = placaOk;
+    }
+
     public String getPlaca() {
         return placa;
     }
@@ -56,12 +68,12 @@ public class EscalaDiariaItem {
         this.codMapa = codMapa;
     }
 
-    public boolean isCdoMapaOk() {
-        return isCdoMapaOk;
+    public boolean isMapaOk() {
+        return isMapaOk;
     }
 
-    public void setCdoMapaOk(final boolean cdoMapaOk) {
-        isCdoMapaOk = cdoMapaOk;
+    public void setMapaOk(final boolean mapaOk) {
+        isMapaOk = mapaOk;
     }
 
     public Long getCpfMotorista() {
@@ -70,6 +82,14 @@ public class EscalaDiariaItem {
 
     public void setCpfMotorista(final Long cpfMotorista) {
         this.cpfMotorista = cpfMotorista;
+    }
+
+    public String getNomeMotorista() {
+        return nomeMotorista;
+    }
+
+    public void setNomeMotorista(final String nomeMotorista) {
+        this.nomeMotorista = nomeMotorista;
     }
 
     public boolean isCpfMotoristaOk() {
@@ -88,6 +108,14 @@ public class EscalaDiariaItem {
         this.cpfAjudante1 = cpfAjudante1;
     }
 
+    public String getNomeAjudante1() {
+        return nomeAjudante1;
+    }
+
+    public void setNomeAjudante1(final String nomeAjudante1) {
+        this.nomeAjudante1 = nomeAjudante1;
+    }
+
     public boolean isCpfAjudante1Ok() {
         return isCpfAjudante1Ok;
     }
@@ -104,6 +132,14 @@ public class EscalaDiariaItem {
         this.cpfAjudante2 = cpfAjudante2;
     }
 
+    public String getNomeAjudante2() {
+        return nomeAjudante2;
+    }
+
+    public void setNomeAjudante2(final String nomeAjudante2) {
+        this.nomeAjudante2 = nomeAjudante2;
+    }
+
     public boolean isCpfAjudante2Ok() {
         return isCpfAjudante2Ok;
     }
@@ -118,13 +154,17 @@ public class EscalaDiariaItem {
                 "codEscala=" + codEscala +
                 ", data=" + data +
                 ", placa='" + placa + '\'' +
+                ", isPlacaOk=" + isPlacaOk +
                 ", codMapa=" + codMapa +
-                ", isCdoMapaOk=" + isCdoMapaOk +
+                ", isMapaOk=" + isMapaOk +
                 ", cpfMotorista=" + cpfMotorista +
+                ", nomeMotorista='" + nomeMotorista + '\'' +
                 ", isCpfMotoristaOk=" + isCpfMotoristaOk +
                 ", cpfAjudante1=" + cpfAjudante1 +
+                ", nomeAjudante1='" + nomeAjudante1 + '\'' +
                 ", isCpfAjudante1Ok=" + isCpfAjudante1Ok +
                 ", cpfAjudante2=" + cpfAjudante2 +
+                ", nomeAjudante2='" + nomeAjudante2 + '\'' +
                 ", isCpfAjudante2Ok=" + isCpfAjudante2Ok +
                 '}';
     }
