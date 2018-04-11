@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -27,24 +26,24 @@ public class EscalaDiariaResource {
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Path("upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response uploadMapa(@PathParam("codUnidade") Long codUnidade,
-                               @FormDataParam("file") InputStream fileInputStream,
-                               @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        return service.uploadMapa(codUnidade, fileInputStream, fileDetail);
+    public void uploadMapa(@PathParam("codUnidade") Long codUnidade,
+                           @FormDataParam("file") InputStream fileInputStream,
+                           @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+        service.uploadMapa(codUnidade, fileInputStream, fileDetail);
     }
 
     @POST
     @Path("/{codUnidade}")
-    public Response insertEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
-                                       EscalaDiariaItem escalaDiariaItem) {
-        return service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, true);
+    public void insertEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
+                                   EscalaDiariaItem escalaDiariaItem) throws Exception {
+        service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, true);
     }
 
     @PUT
     @Path("/{codUnidade}")
-    public Response updateEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
-                                       EscalaDiariaItem escalaDiariaItem) {
-        return service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, false);
+    public void updateEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
+                                   EscalaDiariaItem escalaDiariaItem) throws Exception {
+        service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, false);
     }
 
     @GET
@@ -57,8 +56,8 @@ public class EscalaDiariaResource {
 
     @DELETE
     @Path("/{codUnidade}")
-    public Response deleteEscalaDiariaItens(@PathParam("codUnidade") Long codUnidade,
-                                            @QueryParam("codEscalas") List<Long> codEscalas) {
-        return service.deleteEscalaDiariaItens(codUnidade, codEscalas);
+    public void deleteEscalaDiariaItens(@PathParam("codUnidade") Long codUnidade,
+                                        @QueryParam("codEscalas") List<Long> codEscalas) throws Exception {
+        service.deleteEscalaDiariaItens(codUnidade, codEscalas);
     }
 }
