@@ -18,13 +18,15 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class EscalaDiariaReader {
+class EscalaDiariaReader {
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     private EscalaDiariaReader() {
         throw new IllegalStateException(EscalaDiariaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path)
+    static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path)
             throws IOException, ParseException {
         final List<EscalaDiariaItem> escalaItens = new ArrayList<>();
         final Reader in = new FileReader(path);
@@ -38,24 +40,23 @@ public class EscalaDiariaReader {
         return escalaItens;
     }
 
-    public static EscalaDiariaItem read(@NotNull final CSVRecord linha) throws ParseException {
+    private static EscalaDiariaItem read(@NotNull final CSVRecord linha) throws ParseException {
         if (linha.get(0).isEmpty()) {
             return null;
         }
         final EscalaDiariaItem item = new EscalaDiariaItem();
-        // PLACA
+        // DATA DA ESCALA
         if (!linha.get(0).trim().isEmpty()) {
-            item.setPlaca(linha.get(0).trim());
+            final Date data = new Date(DATE_FORMAT.parse(linha.get(2).trim()).getTime());
+            item.setData(data);
+        }
+        // PLACA
+        if (!linha.get(1).trim().replaceAll(" ", "").isEmpty()) {
+            item.setPlaca(linha.get(1).trim().replaceAll(" ", "").toUpperCase());
         }
         // CODIGO DO MAPA
-        if (!linha.get(1).trim().isEmpty()) {
-            item.setCodMapa(Integer.parseInt(linha.get(1).trim()));
-        }
-        // DATA DA ESCALA
         if (!linha.get(2).trim().isEmpty()) {
-            final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            final Date data = new Date(format.parse(linha.get(2).trim()).getTime());
-            item.setData(data);
+            item.setCodMapa(Integer.parseInt(linha.get(2).trim()));
         }
         // CPF MOTORISTA
         if (!linha.get(3).trim().replaceAll("[^\\d]", "").isEmpty()) {
