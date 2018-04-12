@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,16 +27,118 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
     }
 
     @Override
-    public void insertOrUpdateEscalaDiaria(@NotNull final Long codUnidade,
+    public void insertOrUpdateEscalaDiaria(@NotNull final String token,
+                                           @NotNull final Long codUnidade,
                                            @NotNull final List<EscalaDiariaItem> escalaDiariaItens) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            for (final EscalaDiariaItem item : escalaDiariaItens) {
+                if (!updateEscalaDiaria(conn, token, codUnidade, item)) {
+                    if (!insertEscalaDiaria(conn, token, codUnidade, item)) {
+                        throw new IllegalStateException("Não foi possível inserir nem atualizar o item : " + item);
+                    }
+                }
+            }
+        } finally {
+            closeConnection(conn);
+        }
+    }
 
+    private boolean insertEscalaDiaria(@NotNull final Connection conn,
+                                       @NotNull final String token,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final EscalaDiariaItem item) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO ESCALA_DIARIA (COD_UNIDADE, " +
+                    "                           DATA, " +
+                    "                           PLACA, " +
+                    "                           MAPA, " +
+                    "                           CPF_MOTORISTA, " +
+                    "                           CPF_AJUDANTE_1, " +
+                    "                           CPF_AJUDANTE_2, " +
+                    "                           DATA_HORA_CADASTRO, " +
+                    "                           DATA_HORA_ULTIMA_ALTERACAO, " +
+                    "                           CPF_CADASTRO, " +
+                    "                           CPF_ULTIMA_ALTERACAO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+                    "  (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?), " +
+                    "  (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?))");
+            stmt.setLong(1, codUnidade);
+            stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
+            stmt.setString(3, item.getPlaca());
+            stmt.setInt(4, item.getCodMapa());
+            stmt.setLong(5, item.getCpfMotorista());
+            stmt.setLong(6, item.getCpfAjudante1());
+            stmt.setLong(7, item.getCpfAjudante2());
+            stmt.setObject(8, LocalDateTime.now(Clock.systemUTC()));
+            stmt.setObject(9, LocalDateTime.now(Clock.systemUTC()));
+            stmt.setString(10, token);
+            stmt.setString(11, token);
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao inserir item na tabela escala");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+        return true;
+    }
+
+    private boolean updateEscalaDiaria(@NotNull final Connection conn,
+                                       @NotNull final String token,
+                                       @NotNull final Long codUnidade,
+                                       @NotNull final EscalaDiariaItem item) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE ESCALA_DIARIA SET COD_UNIDADE = ?, " +
+                    "  DATA = ?, " +
+                    "  PLACA = ?, " +
+                    "  MAPA = ?, " +
+                    "  CPF_MOTORISTA = ?, " +
+                    "  CPF_AJUDANTE_1 = ?," +
+                    "  CPF_AJUDANTE_2 = ?, " +
+                    "  DATA_HORA_ULTIMA_ALTERACAO = ?, " +
+                    "  CPF_ULTIMA_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
+                    "WHERE COD_ESCALA = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
+            stmt.setString(3, item.getPlaca());
+            stmt.setInt(4, item.getCodMapa());
+            stmt.setLong(5, item.getCpfMotorista());
+            stmt.setLong(6, item.getCpfAjudante1());
+            stmt.setLong(7, item.getCpfAjudante2());
+            stmt.setObject(8, LocalDateTime.now(Clock.systemUTC()));
+            stmt.setString(9, token);
+            stmt.setLong(10, item.getCodEscala());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                // nenhum para item atualizado
+                return false;
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+        return true;
     }
 
     @Override
-    public void insertOrUpdateEscalaDiariaItem(@NotNull final Long codUnidade,
+    public void insertOrUpdateEscalaDiariaItem(@NotNull final String token,
+                                               @NotNull final Long codUnidade,
                                                @NotNull final EscalaDiariaItem escalaDiariaItem,
                                                final boolean isInsert) throws SQLException {
-
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            if (isInsert) {
+                insertEscalaDiaria(conn, token, codUnidade, escalaDiariaItem);
+            } else {
+                updateEscalaDiaria(conn, token, codUnidade, escalaDiariaItem);
+            }
+        } finally {
+            closeConnection(conn);
+        }
     }
 
     @Override
