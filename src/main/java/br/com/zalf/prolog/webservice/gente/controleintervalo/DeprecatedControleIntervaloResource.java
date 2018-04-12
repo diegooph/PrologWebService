@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -206,8 +207,11 @@ public class DeprecatedControleIntervaloResource {
     /**
      * Esse método só existe por questões de compatibilidade entre a antiga e nova estrutura dos intervalos.
      */
-    @NotNull
-    private Intervalo toIntervalo(@NotNull final IntervaloMarcacao marcacao) throws SQLException {
+    @Nullable
+    private Intervalo toIntervalo(@Nullable final IntervaloMarcacao marcacao) throws SQLException {
+        if (marcacao == null)
+            return null;
+
         final Intervalo intervalo = new Intervalo();
         intervalo.setCodigo(marcacao.getCodigo());
 

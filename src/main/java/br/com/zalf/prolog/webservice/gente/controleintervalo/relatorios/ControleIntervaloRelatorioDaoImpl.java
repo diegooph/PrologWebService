@@ -322,11 +322,13 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                 diaAnterior = diaAtual;
                 nomeAnterior = rSet.getString("NOME_COLABORADOR");
             }
-            dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
-            final Colaborador colaborador = new Colaborador();
-            colaborador.setCpf(cpfAnterior);
-            colaborador.setNome(nomeAnterior);
-            relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
+            if (diaAnterior != null) {
+                dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
+                final Colaborador colaborador = new Colaborador();
+                colaborador.setCpf(cpfAnterior);
+                colaborador.setNome(nomeAnterior);
+                relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
+            }
             return relatorios;
         } finally {
             closeConnection(conn, stmt, rSet);

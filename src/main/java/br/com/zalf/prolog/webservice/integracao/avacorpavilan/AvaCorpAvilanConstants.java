@@ -14,8 +14,8 @@ public final class AvaCorpAvilanConstants {
 
     }
 
-    private static final String BASE_URL_TESTES = "http://189.11.175.146/IntegracaoPrologTestes/";
-    private static final String BASE_URL_PROD = "http://189.11.175.146/IntegracaoProlog/";
+    private static final String BASE_URL_TESTES = "http://prolog.avaconcloud.com/Avilan/IntegracaoPrologTestes/";
+    private static final String BASE_URL_PROD = "http://prolog.avaconcloud.com/Avilan/IntegracaoProlog/";
     public static final String BASE_URL = BuildConfig.DEBUG ? BASE_URL_TESTES : BASE_URL_PROD;
 
     private static final String NAMESPACE_TESTES = "http://www.avacorp.com.br/integracaoprologtestes";
