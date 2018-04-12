@@ -16,23 +16,29 @@ public interface EscalaDiariaDao {
     /**
      * Insere ou atualiza a escala diária de uma unidade.
      *
+     * @param token             - Token recebido no request.
+     *                          Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
      * @param codUnidade        - Código da unidade dos dados.
      * @param escalaDiariaItens -
-     * @throws SQLException   - Erro ao executar consulta no Banco de Dados.
+     * @throws SQLException - Erro ao executar consulta no Banco de Dados.
      */
-    void insertOrUpdateEscalaDiaria(@NotNull final Long codUnidade,
+    void insertOrUpdateEscalaDiaria(@NotNull final String token,
+                                    @NotNull final Long codUnidade,
                                     @NotNull final List<EscalaDiariaItem> escalaDiariaItens) throws SQLException;
 
     /**
      * Insere uma {@link EscalaDiariaItem} específica.
      *
+     * @param token            - Token recebido no request.
+     *                         Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
      * @param codUnidade       - Código da Unidade que será inserido ou
      *                         atualizado o {@link EscalaDiariaItem}.
      * @param escalaDiariaItem - Item que será inserido.
      * @param isInsert         - {@link Boolean} para distinguir um insert de um update.
      * @throws SQLException - Erro na execução do insert.
      */
-    void insertOrUpdateEscalaDiariaItem(@NotNull final Long codUnidade,
+    void insertOrUpdateEscalaDiariaItem(@NotNull final String token,
+                                        @NotNull final Long codUnidade,
                                         @NotNull final EscalaDiariaItem escalaDiariaItem,
                                         boolean isInsert) throws SQLException;
 

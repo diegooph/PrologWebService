@@ -26,24 +26,27 @@ public class EscalaDiariaResource {
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Path("upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public void uploadMapa(@PathParam("codUnidade") Long codUnidade,
+    public void uploadMapa(@HeaderParam("Authorization") String token,
+                           @PathParam("codUnidade") Long codUnidade,
                            @FormDataParam("file") InputStream fileInputStream,
                            @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        service.uploadMapa(codUnidade, fileInputStream, fileDetail);
+        service.uploadMapa(token, codUnidade, fileInputStream, fileDetail);
     }
 
     @POST
     @Path("/{codUnidade}")
-    public void insertEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
+    public void insertEscalaDiaria(@HeaderParam("Authorization") String token,
+                                   @PathParam("codUnidade") Long codUnidade,
                                    EscalaDiariaItem escalaDiariaItem) throws Exception {
-        service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, true);
+        service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, true);
     }
 
     @PUT
     @Path("/{codUnidade}")
-    public void updateEscalaDiaria(@PathParam("codUnidade") Long codUnidade,
+    public void updateEscalaDiaria(@HeaderParam("Authorization") String token,
+                                   @PathParam("codUnidade") Long codUnidade,
                                    EscalaDiariaItem escalaDiariaItem) throws Exception {
-        service.insertOrUpdateEscalaDiaria(codUnidade, escalaDiariaItem, false);
+        service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, false);
     }
 
     @GET

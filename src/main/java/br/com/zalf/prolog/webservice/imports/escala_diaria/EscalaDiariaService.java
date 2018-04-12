@@ -29,19 +29,21 @@ public class EscalaDiariaService {
     private static final String TAG = EscalaDiariaService.class.getSimpleName();
     private final EscalaDiariaDao dao = Injection.provideEscalaDiariaDao();
 
-    public void uploadMapa(@NotNull final Long codUnidade,
+    public void uploadMapa(@NotNull final String token,
+                           @NotNull final Long codUnidade,
                            @NotNull final InputStream fileInputStream,
                            @NotNull final FormDataContentDisposition fileDetail)
             throws ParseDadosEscalaException {
         final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-        readAndInsertImport(codUnidade, file.getPath());
+        readAndInsertImport(token, codUnidade, file.getPath());
     }
 
-    public void insertOrUpdateEscalaDiaria(@NotNull final Long codUnidade,
+    public void insertOrUpdateEscalaDiaria(@NotNull final String token,
+                                           @NotNull final Long codUnidade,
                                            @NotNull final EscalaDiariaItem escalaDiariaItem,
                                            boolean isInsert) throws SQLException {
         Preconditions.checkNotNull(escalaDiariaItem, "escalaDiariaItem não pode ser nulla!");
-        dao.insertOrUpdateEscalaDiariaItem(codUnidade, escalaDiariaItem, isInsert);
+        dao.insertOrUpdateEscalaDiariaItem(token, codUnidade, escalaDiariaItem, isInsert);
     }
 
     public List<EscalaDiaria> getEscalasDiarias(@NotNull final Long codUnidade,
@@ -86,11 +88,13 @@ public class EscalaDiariaService {
         }
     }
 
-    private void readAndInsertImport(@NotNull final Long codUnidade, @NotNull final String path)
+    private void readAndInsertImport(@NotNull final String token,
+                                     @NotNull final Long codUnidade,
+                                     @NotNull final String path)
             throws ParseDadosEscalaException {
         try {
             final List<EscalaDiariaItem> escalaItens = EscalaDiariaReader.readListFromCsvFilePath(path);
-            dao.insertOrUpdateEscalaDiaria(codUnidade, escalaItens);
+            dao.insertOrUpdateEscalaDiaria(token, codUnidade, escalaItens);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new ParseDadosEscalaException(
