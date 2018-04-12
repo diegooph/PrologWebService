@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -23,7 +25,8 @@ public class EscalaDiariaResource {
     private final EscalaDiariaService service = new EscalaDiariaService();
 
     @POST
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.EscalaDiaria.UPLOAD)
     @Path("upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public void uploadMapa(@HeaderParam("Authorization") String token,
@@ -34,6 +37,8 @@ public class EscalaDiariaResource {
     }
 
     @POST
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.EscalaDiaria.EDITAR)
     @Path("/{codUnidade}")
     public void insertEscalaDiaria(@HeaderParam("Authorization") String token,
                                    @PathParam("codUnidade") Long codUnidade,
@@ -42,6 +47,8 @@ public class EscalaDiariaResource {
     }
 
     @PUT
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.EscalaDiaria.EDITAR)
     @Path("/{codUnidade}")
     public void updateEscalaDiaria(@HeaderParam("Authorization") String token,
                                    @PathParam("codUnidade") Long codUnidade,
@@ -50,6 +57,8 @@ public class EscalaDiariaResource {
     }
 
     @GET
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    @Secured(permissions = {Pilares.Entrega.EscalaDiaria.VISUALIZAR, Pilares.Entrega.EscalaDiaria.EDITAR})
     @Path("/{codUnidade}")
     public List<EscalaDiaria> getEscalasDiarias(@PathParam("codUnidade") Long codUnidade,
                                                 @QueryParam("dataInicial") String dataInicial,
@@ -58,6 +67,8 @@ public class EscalaDiariaResource {
     }
 
     @DELETE
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = Pilares.Entrega.EscalaDiaria.DELETAR)
     @Path("/{codUnidade}")
     public void deleteEscalaDiariaItens(@PathParam("codUnidade") Long codUnidade,
                                         @QueryParam("codEscalas") List<Long> codEscalas) throws Exception {

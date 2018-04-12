@@ -227,7 +227,6 @@ public final class Pilares {
             private Indicadores() {}
 
             public static final int INDICADORES = 40;
-
         }
 
         public final class Relatorios {
@@ -244,6 +243,14 @@ public final class Pilares {
             public static final int VERIFICACAO_DADOS = 43;
         }
 
+        public final class EscalaDiaria {
+            private EscalaDiaria() {}
+
+            public static final int DELETAR = 410;
+            public static final int UPLOAD = 411;
+            public static final int VISUALIZAR = 412;
+            public static final int EDITAR = 413;
+        }
 
         public final class Meta {
             private Meta() {}
