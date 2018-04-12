@@ -33,6 +33,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(3, relato.getLatitude());
             stmt.setString(4, relato.getLongitude());
+
+            // Garante a ordem das URLs antes de setar, pois no banco a URL 1 tem que ser diferente de nulo.
+            relato.corrigeUrls();
             stmt.setString(5, relato.getUrlFoto1());
             stmt.setString(6, relato.getUrlFoto2());
             stmt.setString(7, relato.getUrlFoto3());

@@ -241,6 +241,19 @@ public class Relato {
 		this.descricao = descricao;
 	}
 
+	public void corrigeUrls() {
+		// Garanti que a URL 1 sempre vai ter uma URL diferente de null.
+		if (urlFoto1 == null) {
+			if (urlFoto2 != null) {
+				urlFoto1 = urlFoto2;
+				urlFoto2 = null;
+			} else if (urlFoto3 != null) {
+				urlFoto1 = urlFoto3;
+				urlFoto3 = null;
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "Relato{" +
