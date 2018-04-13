@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -31,9 +30,9 @@ public class EscalaDiariaService {
     private final EscalaDiariaDao dao = Injection.provideEscalaDiariaDao();
 
     public Response uploadMapa(@NotNull final String token,
-                           @NotNull final Long codUnidade,
-                           @NotNull final InputStream fileInputStream,
-                           @NotNull final FormDataContentDisposition fileDetail)
+                               @NotNull final Long codUnidade,
+                               @NotNull final InputStream fileInputStream,
+                               @NotNull final FormDataContentDisposition fileDetail)
             throws ParseDadosEscalaException {
         final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
         readAndInsertImport(token, codUnidade, file.getPath());
@@ -125,13 +124,6 @@ public class EscalaDiariaService {
                     javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
                     "",
                     "",
-                    e);
-        } catch (ParseException e) {
-            Log.e(TAG, "Erro ao fazer o parse dos dados do import", e);
-            throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo importado está formatado de forma errada",
-                    "Erro ao fazer o parse dos dados do import",
                     e);
         } catch (IOException e) {
             Log.e(TAG, "Erro ao ler arquivo no servidor", e);

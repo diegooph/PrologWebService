@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.jetbrains.annotations.NotNull;
@@ -7,9 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +19,14 @@ import java.util.List;
  */
 class EscalaDiariaReader {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private EscalaDiariaReader() {
         throw new IllegalStateException(EscalaDiariaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
     static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path)
-            throws IOException, ParseException {
+            throws IOException {
         final List<EscalaDiariaItem> escalaItens = new ArrayList<>();
         final Reader in = new FileReader(path);
         final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
@@ -40,15 +39,14 @@ class EscalaDiariaReader {
         return escalaItens;
     }
 
-    private static EscalaDiariaItem read(@NotNull final CSVRecord linha) throws ParseException {
+    private static EscalaDiariaItem read(@NotNull final CSVRecord linha) {
         if (linha.get(0).isEmpty()) {
             return null;
         }
         final EscalaDiariaItem item = new EscalaDiariaItem();
         // DATA DA ESCALA
         if (!linha.get(0).trim().isEmpty()) {
-            final Date data = new Date(DATE_FORMAT.parse(linha.get(0).trim()).getTime());
-            item.setData(data);
+            item.setData(ProLogDateParser.validateAndParse(linha.get(0).trim(), DATE_FORMAT));
         }
         // PLACA
         if (!linha.get(1).trim().replaceAll(" ", "").isEmpty()) {

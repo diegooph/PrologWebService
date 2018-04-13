@@ -38,6 +38,12 @@ public final class ProLogDateParser {
     }
 
     @NotNull
+    public static LocalDate validateAndParse(@NotNull final String date, @NotNull final DateTimeFormatter formatter) {
+        Preconditions.checkNotNull(date);
+        return LocalDate.parse(date, formatter);
+    }
+
+    @NotNull
     public static String toString(@NotNull final LocalDate localDate) {
         Preconditions.checkNotNull(localDate);
 

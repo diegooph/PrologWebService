@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Created on 10/04/18.
@@ -10,7 +10,7 @@ import java.util.Date;
 public class EscalaDiariaItem {
 
     private long codEscala;
-    private Date data;
+    private LocalDate data;
     private String placa;
     private boolean isPlacaOk;
     private int codMapa;
@@ -36,11 +36,11 @@ public class EscalaDiariaItem {
         this.codEscala = codEscala;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(final Date data) {
+    public void setData(final LocalDate data) {
         this.data = data;
     }
 

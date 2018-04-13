@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -10,9 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,7 +127,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
     private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {
         final EscalaDiariaItem item = new EscalaDiariaItem();
         item.setCodEscala(rSet.getLong("COD_ESCALA"));
-        item.setData(rSet.getDate("DATA"));
+        item.setData(rSet.getObject("DATA", LocalDate.class));
         item.setPlaca(rSet.getString("PLACA"));
         item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
         item.setCodMapa(rSet.getInt("MAPA"));
@@ -195,8 +194,8 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(5, item.getCpfMotorista());
             stmt.setLong(6, item.getCpfAjudante1());
             stmt.setLong(7, item.getCpfAjudante2());
-            stmt.setObject(8, LocalDateTime.now(Clock.systemUTC()));
-            stmt.setObject(9, LocalDateTime.now(Clock.systemUTC()));
+            stmt.setTimestamp(8, Now.timestampUtc());
+            stmt.setTimestamp(9, Now.timestampUtc());
             stmt.setString(10, TokenCleaner.getOnlyToken(token));
             stmt.setString(11, TokenCleaner.getOnlyToken(token));
             int count = stmt.executeUpdate();
@@ -232,7 +231,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(5, item.getCpfMotorista());
             stmt.setLong(6, item.getCpfAjudante1());
             stmt.setLong(7, item.getCpfAjudante2());
-            stmt.setObject(8, LocalDateTime.now(Clock.systemUTC()));
+            stmt.setTimestamp(8, Now.timestampUtc());
             stmt.setString(9, TokenCleaner.getOnlyToken(token));
             stmt.setLong(10, item.getCodEscala());
             int count = stmt.executeUpdate();
