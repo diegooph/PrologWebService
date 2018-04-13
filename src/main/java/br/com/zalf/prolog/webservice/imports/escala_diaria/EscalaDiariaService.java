@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
@@ -29,26 +30,36 @@ public class EscalaDiariaService {
     private static final String TAG = EscalaDiariaService.class.getSimpleName();
     private final EscalaDiariaDao dao = Injection.provideEscalaDiariaDao();
 
-    public void uploadMapa(@NotNull final String token,
+    public Response uploadMapa(@NotNull final String token,
                            @NotNull final Long codUnidade,
                            @NotNull final InputStream fileInputStream,
                            @NotNull final FormDataContentDisposition fileDetail)
             throws ParseDadosEscalaException {
         final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
         readAndInsertImport(token, codUnidade, file.getPath());
+        return Response.ok("Upload realizado com sucesso!");
     }
 
-    public void insertOrUpdateEscalaDiaria(@NotNull final String token,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final EscalaDiariaItem escalaDiariaItem,
-                                           boolean isInsert) throws SQLException {
+    public Response insertOrUpdateEscalaDiaria(@NotNull final String token,
+                                               @NotNull final Long codUnidade,
+                                               @NotNull final EscalaDiariaItem escalaDiariaItem,
+                                               boolean isInsert) throws ParseDadosEscalaException {
         Preconditions.checkNotNull(escalaDiariaItem, "escalaDiariaItem não pode ser nulla!");
-        dao.insertOrUpdateEscalaDiariaItem(token, codUnidade, escalaDiariaItem, isInsert);
+        try {
+            dao.insertOrUpdateEscalaDiariaItem(token, codUnidade, escalaDiariaItem, isInsert);
+            return Response.ok("Item escala diária cadastrado com sucesso");
+        } catch (SQLException e) {
+            throw new ParseDadosEscalaException(
+                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
+                    "O arquivo enviado está com problemas, tente novamente",
+                    "Erro ao ler arquivo no servidor",
+                    e);
+        }
     }
 
     public List<EscalaDiaria> getEscalasDiarias(@NotNull final Long codUnidade,
                                                 @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal) {
+                                                @NotNull final String dataFinal) throws ParseDadosEscalaException {
         try {
             return dao.getEscalasDiarias(
                     codUnidade,
@@ -56,13 +67,26 @@ public class EscalaDiariaService {
                     ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar Escalas Diarias para a Unidade: " + codUnidade, e);
-            throw new RuntimeException(e);
+            throw new ParseDadosEscalaException(
+                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
+                    "O arquivo enviado está com problemas, tente novamente",
+                    "Erro ao ler arquivo no servidor",
+                    e);
         }
     }
 
-    public void deleteEscalaDiariaItens(@NotNull final Long codUnidade,
-                                        @NotNull final List<Long> codEscalas) throws SQLException {
-        dao.deleteEscalaDiariaItens(codUnidade, codEscalas);
+    public Response deleteEscalaDiariaItens(@NotNull final Long codUnidade,
+                                            @NotNull final List<Long> codEscalas) throws ParseDadosEscalaException {
+        try {
+            dao.deleteEscalaDiariaItens(codUnidade, codEscalas);
+            return Response.ok("Escalas deletadas com sucesso!");
+        } catch (SQLException e) {
+            throw new ParseDadosEscalaException(
+                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
+                    "O arquivo enviado está com problemas, tente novamente",
+                    "Erro ao ler arquivo no servidor",
+                    e);
+        }
     }
 
     private File createFileFromImport(@NotNull final Long codUnidade,
