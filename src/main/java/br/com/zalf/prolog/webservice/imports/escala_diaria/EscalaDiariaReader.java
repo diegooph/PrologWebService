@@ -47,7 +47,7 @@ class EscalaDiariaReader {
         final EscalaDiariaItem item = new EscalaDiariaItem();
         // DATA DA ESCALA
         if (!linha.get(0).trim().isEmpty()) {
-            final Date data = new Date(DATE_FORMAT.parse(linha.get(2).trim()).getTime());
+            final Date data = new Date(DATE_FORMAT.parse(linha.get(0).trim()).getTime());
             item.setData(data);
         }
         // PLACA
