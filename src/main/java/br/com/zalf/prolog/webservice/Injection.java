@@ -35,6 +35,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -49,7 +51,10 @@ import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDaoImpl;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.*;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.VersaoDadosIntervaloAtualizador;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios.ControleIntervaloRelatoriosDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
@@ -311,6 +316,11 @@ public final class Injection {
     @NotNull
     public static ServicoRelatorioDao provideServicoRelatorioDao() {
         return new ServicoRelatorioDaoImpl();
+    }
+
+    @NotNull
+    public static RecapadoraDao provideRecapadoraDao() {
+        return new RecapadoraDaoImpl();
     }
 
     // ================================================
