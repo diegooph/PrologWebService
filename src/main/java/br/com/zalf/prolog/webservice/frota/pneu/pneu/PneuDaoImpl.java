@@ -611,6 +611,27 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return true;
     }
 
+    @Override
+    public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
+                                           @NotNull final String codPneu,
+                                           @NotNull final String urlFotoPneu) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE PNEU_FOTO_CADASTRO SET FOTO_SINCRONIZADA = TRUE, " +
+                    "DATA_HORA_SINCRONIZACAO_FOTO = ? WHERE COD_UNIDADE = ? AND COD_PNEU = ? AND URL_FOTO = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codPneu);
+            stmt.setString(3, urlFotoPneu);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu);
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+    }
+
     private void updatePneuNovoNuncaRodado(@NotNull final String codPneu,
                                            @NotNull final Long codUnidade,
                                            final boolean pneuNovoNuncaRodado,

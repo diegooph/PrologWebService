@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -42,7 +43,8 @@ public class PneuService {
 
     public AbstractResponse insertModeloPneu(ModeloPneu modelo, Long codEmpresa, Long codMarca) {
         try {
-            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(modelo, codEmpresa, codMarca));
+            return ResponseWithCod.ok("Modelo inserido com sucesso", dao.insertModeloPneu(modelo, codEmpresa,
+                    codMarca));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir modelo de pneu. Empresa: " + codEmpresa + " Marca: " + codMarca, e);
             return Response.error("Erro ao inserir o modelo de pneu");
@@ -146,6 +148,17 @@ public class PneuService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar modelo de pneu com código: " + codModelo, e);
             return null;
+        }
+    }
+
+    public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
+                                           @NotNull final String codPneu,
+                                           @NotNull final String urlFotoPneu) {
+        try {
+            dao.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
+            throw new RuntimeException(e);
         }
     }
 }
