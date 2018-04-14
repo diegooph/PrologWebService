@@ -12,10 +12,12 @@ public final class PneuFotoCadastro {
     private final Long codigo;
     @NotNull
     private final String urlFoto;
+    private final boolean fotoSincronizada;
 
-    public PneuFotoCadastro(final Long codigo, final String urlFoto) {
+    public PneuFotoCadastro(@NotNull final Long codigo, @NotNull final String urlFoto, final boolean fotoSincronizada) {
         this.codigo = codigo;
         this.urlFoto = urlFoto;
+        this.fotoSincronizada = fotoSincronizada;
     }
 
     @NotNull
@@ -26,5 +28,9 @@ public final class PneuFotoCadastro {
     @NotNull
     public String getUrlFoto() {
         return urlFoto;
+    }
+
+    public boolean isFotoSincronizada() {
+        return fotoSincronizada;
     }
 }
