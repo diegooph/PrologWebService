@@ -670,8 +670,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = connection.prepareStatement("SELECT CODIGO, URL_FOTO FROM PNEU_FOTO_CADASTRO PFC " +
-                    "WHERE PFC.COD_PNEU = ? AND PFC.COD_UNIDADE_PNEU = ?;");
+            stmt = connection.prepareStatement("SELECT CODIGO, URL_FOTO, FOTO_SINCRONIZADA " +
+                    "FROM PNEU_FOTO_CADASTRO PFC WHERE PFC.COD_PNEU = ? AND PFC.COD_UNIDADE_PNEU = ?;");
             stmt.setString(1, codPneu);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
@@ -680,7 +680,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 do {
                     fotosCadastro.add(new PneuFotoCadastro(
                             rSet.getLong("CODIGO"),
-                            rSet.getString("URL_FOTO")));
+                            rSet.getString("URL_FOTO"),
+                            rSet.getBoolean("FOTO_SINCRONIZADA")));
                 } while (rSet.next());
                 return fotosCadastro;
             }
