@@ -1,15 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -145,6 +143,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             // Verifica se precisamos inserir informações de valor da banda para a vida atual.
             if (pneu.getVidaAtual() > 1) {
                 insertValorBandaVidaAtual(pneu, codUnidade, conn);
+            }
+
+            final List<PneuFotoCadastro> fotosCadastro = pneu.getFotosCadastro();
+            if (fotosCadastro != null && !fotosCadastro.isEmpty()) {
+                insertFotosCadastroPneu(pneu.getCodigo(), codUnidade, fotosCadastro, conn);
             }
 
             conn.commit();
@@ -481,7 +484,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return PneuConverter.createPneuCompleto(rSet);
+                final Pneu pneu = PneuConverter.createPneuCompleto(rSet);
+                pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, codUnidade, conn));
+                return pneu;
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -630,6 +635,57 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         } finally {
             closeConnection(conn, stmt, null);
         }
+    }
+
+    @Nullable
+    private List<PneuFotoCadastro> insertFotosCadastroPneu(@NotNull final String codPneu,
+                                                           @NotNull final Long codUnidade,
+                                                           @NotNull final List<PneuFotoCadastro> fotosCadastro,
+                                                           @NotNull final Connection connection)
+            throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = connection.prepareStatement("INSERT INTO PNEU_FOTO_CADASTRO(COD_PNEU, COD_UNIDADE_PNEU, URL_FOTO) " +
+                    "VALUES (?, ?, ?);");
+            for (final PneuFotoCadastro fotoCadastro : fotosCadastro) {
+                stmt.setString(1, codPneu);
+                stmt.setLong(2, codUnidade);
+                stmt.setString(3, fotoCadastro.getUrlFoto());
+                if (stmt.executeUpdate() == 0) {
+                    throw new SQLException("Erro ao inserir URL de foto do pneu: "+ codPneu + " da unidade: " + codUnidade);
+                }
+            }
+        } finally {
+            closeConnection(null, stmt, null);
+        }
+        return null;
+    }
+
+    @Nullable
+    private List<PneuFotoCadastro> getFotosCadastroPneu(@NotNull final String codPneu,
+                                                        @NotNull final Long codUnidade,
+                                                        @NotNull final Connection connection) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = connection.prepareStatement("SELECT CODIGO, URL_FOTO FROM PNEU_FOTO_CADASTRO PFC " +
+                    "WHERE PFC.COD_PNEU = ? AND PFC.COD_UNIDADE_PNEU = ?;");
+            stmt.setString(1, codPneu);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<PneuFotoCadastro> fotosCadastro = new ArrayList<>();
+                do {
+                    fotosCadastro.add(new PneuFotoCadastro(
+                            rSet.getLong("CODIGO"),
+                            rSet.getString("URL_FOTO")));
+                } while (rSet.next());
+                return fotosCadastro;
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return null;
     }
 
     private void updatePneuNovoNuncaRodado(@NotNull final String codPneu,
