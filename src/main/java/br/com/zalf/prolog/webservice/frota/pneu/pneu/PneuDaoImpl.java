@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
@@ -625,10 +626,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE PNEU_FOTO_CADASTRO SET FOTO_SINCRONIZADA = TRUE, " +
-                    "DATA_HORA_SINCRONIZACAO_FOTO = ? WHERE COD_UNIDADE = ? AND COD_PNEU = ? AND URL_FOTO = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codPneu);
-            stmt.setString(3, urlFotoPneu);
+                    "DATA_HORA_SINCRONIZACAO_FOTO = ? WHERE COD_UNIDADE_PNEU = ? AND COD_PNEU = ? AND URL_FOTO = ?;");
+            stmt.setTimestamp(1, Now.timestampUtc());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, codPneu);
+            stmt.setString(4, urlFotoPneu);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu);
             }
