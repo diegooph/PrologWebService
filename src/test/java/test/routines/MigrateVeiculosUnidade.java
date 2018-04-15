@@ -56,6 +56,8 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             stmt.execute();
             stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu_inserido;");
             stmt.execute();
+            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_movimentacao_processo;");
+            stmt.execute();
             // Migra as aferições
             migrateAfericoes(
                     todosVeiculos,
@@ -163,6 +165,12 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                     "            ADD CONSTRAINT fk_afericao_manutencao_pneu_inserido\n" +
                     "            FOREIGN KEY (cod_pneu_inserido, cod_unidade)\n" +
                     "            REFERENCES pneu(codigo, cod_unidade);");
+            stmt.execute();
+
+            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao " +
+                    "  ADD CONSTRAINT fk_afericao_manutencao_movimentacao_processo " +
+                    "FOREIGN KEY (cod_unidade, cod_processo_movimentacao) REFERENCES movimentacao_processo " +
+                    "(cod_unidade, codigo);");
             stmt.execute();
 
             stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu " +
