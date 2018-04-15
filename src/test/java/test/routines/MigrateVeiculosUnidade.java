@@ -250,10 +250,19 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade da afericao_valores");
             }
 
+
+            statement = conn.prepareStatement("SELECT COUNT(*) AS TOTAL_SERVICOS FROM AFERICAO_MANUTENCAO WHERE COD_AFERICAO = ?;");
+            statement.setLong(1, codAfericao);
+            final ResultSet total = statement.executeQuery();
+            int totalServicos = 0;
+            if (total.next()) {
+                totalServicos = total.getInt("TOTAL_SERVICOS");
+            }
             statement = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET COD_UNIDADE = ? WHERE COD_AFERICAO = ?;");
             statement.setLong(1, novoCodUnidadeVeiculosPneus);
             statement.setLong(2, codAfericao);
-            if (statement.executeUpdate() == 0) {
+            System.out.println("Total de serviços: " + totalServicos + " -- codAfericao: " + codAfericao);
+            if (statement.executeUpdate() != totalServicos) {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade da afericao_manutencao");
             }
         }
