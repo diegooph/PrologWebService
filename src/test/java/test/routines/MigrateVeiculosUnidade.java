@@ -229,7 +229,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                                   final Long novoCodUnidadeVeiculosPneus,
                                   final Connection conn) throws Exception {
         PreparedStatement statement = conn.prepareStatement("SELECT * FROM AFERICAO A WHERE " +
-                "A.PLACA_VEICULO::TEXT LIKE ANY (ARRAY[?]) AND M.COD_UNIDADE = ?");
+                "A.PLACA_VEICULO::TEXT LIKE ANY (ARRAY[?]) AND A.COD_UNIDADE = ?");
         statement.setArray(1, PostgresUtil.ListToArray(conn, todosVeiculos));
         statement.setLong(2, codUnidadeAtualVeiculosPneus);
         final ResultSet rSet = statement.executeQuery();
@@ -256,10 +256,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             if (statement.executeUpdate() == 0) {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade da afericao_manutencao");
             }
-        }
-
-        if (statement.executeUpdate() != todosVeiculos.size()) {
-            throw new IllegalStateException("Erro ao atualizar o código da unidade na aferição");
         }
     }
 }
