@@ -75,7 +75,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT ED.COD_ESCALA, " +
+            stmt = conn.prepareStatement("SELECT ED.CODIGO, " +
                     "  ED.PLACA, " +
                     "  (CASE WHEN V.PLACA IS NULL THEN TRUE ELSE FALSE END) AS PLACA_OK, " +
                     "  ED.MAPA, " +
@@ -126,7 +126,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
 
     private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {
         final EscalaDiariaItem item = new EscalaDiariaItem();
-        item.setCodEscala(rSet.getLong("COD_ESCALA"));
+        item.setCodigo(rSet.getLong("CODIGO"));
         item.setData(rSet.getObject("DATA", LocalDate.class));
         item.setPlaca(rSet.getString("PLACA"));
         item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
@@ -155,7 +155,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("DELETE FROM ESCALA_DIARIA " +
-                    "WHERE COD_UNIDADE = ? AND COD_ESCALA::TEXT LIKE ANY (ARRAY[?])");
+                    "WHERE COD_UNIDADE = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtil.ListLongToArray(conn, codEscalas));
             final int count = stmt.executeUpdate();
@@ -233,7 +233,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(7, item.getCpfAjudante2());
             stmt.setTimestamp(8, Now.timestampUtc());
             stmt.setString(9, TokenCleaner.getOnlyToken(token));
-            stmt.setLong(10, item.getCodEscala());
+            stmt.setLong(10, item.getCodigo());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 // nenhum para item atualizado

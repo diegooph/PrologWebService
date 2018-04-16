@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 public class EscalaDiariaItem {
 
-    private long codEscala;
+    private long codigo;
     private LocalDate data;
     private String placa;
     private boolean isPlacaOk;
@@ -28,12 +28,12 @@ public class EscalaDiariaItem {
     public EscalaDiariaItem() {
     }
 
-    public long getCodEscala() {
-        return codEscala;
+    public long getCodigo() {
+        return codigo;
     }
 
-    public void setCodEscala(final long codEscala) {
-        this.codEscala = codEscala;
+    public void setCodigo(final long codigo) {
+        this.codigo = codigo;
     }
 
     public LocalDate getData() {
@@ -151,7 +151,7 @@ public class EscalaDiariaItem {
     @Override
     public String toString() {
         return "EscalaDiariaItem{" +
-                "codEscala=" + codEscala +
+                "codigo=" + codigo +
                 ", data=" + data +
                 ", placa='" + placa + '\'' +
                 ", isPlacaOk=" + isPlacaOk +
