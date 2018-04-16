@@ -43,9 +43,14 @@ public class AfericaoService {
     }
 
     public NovaAfericao getNovaAfericao(String placa, String tipoAfericao, String userToken) throws Exception {
-        return RouterAfericao
-                .create(dao, userToken)
-                .getNovaAfericao(placa, tipoAfericao);
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getNovaAfericao(placa, tipoAfericao);
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + placa, e);
+            throw e;
+        }
     }
 
     public Afericao getByCod(Long codUnidade, Long codAfericao, String userToken) {
@@ -59,14 +64,14 @@ public class AfericaoService {
         }
     }
 
-    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) {
+    public CronogramaAfericao getCronogramaAfericao(final Long codUnidade, final String userToken) throws Exception {
         try {
             return RouterAfericao
                     .create(dao, userToken)
                     .getCronogramaAfericao(codUnidade);
         } catch (Exception e) {
             Log.e(TAG, "Erro ao buscar o cronograma de aferições", e);
-            return null;
+            throw e;
         }
     }
 

@@ -71,7 +71,7 @@ public final class AvaCorpAvilanConverter {
             @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan) {
         checkNotNull(veiculoAvilan, "veiculoAvilan não pode ser null!");
 
-        Veiculo veiculo = new Veiculo();
+        final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAvilan.getPlaca());
         veiculo.setKmAtual(veiculoAvilan.getMarcador());
         return veiculo;

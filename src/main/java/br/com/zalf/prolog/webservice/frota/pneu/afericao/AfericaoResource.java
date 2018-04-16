@@ -55,7 +55,7 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
     @Path("/cronogramas/{codUnidade}")
     public CronogramaAfericao getCronogramaAfericao(@PathParam("codUnidade") Long codUnidade,
-                                                    @HeaderParam("Authorization") String userToken) {
+                                                    @HeaderParam("Authorization") String userToken) throws Exception {
         return service.getCronogramaAfericao(codUnidade, userToken);
     }
 
