@@ -107,9 +107,9 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                 if (ultimaData == null) {
                     ultimaData = dataAtual;
                 } else if (dataAtual != ultimaData) {
-                    escala.calculaItensErrados();
                     escala.setItensEscalaDiaria(itens);
                     escalasDiarias.add(escala);
+                    escala.calculaItensErrados();
                     escala = new EscalaDiaria();
                     itens = new ArrayList<>();
                 }
@@ -118,9 +118,9 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        escala.calculaItensErrados();
         escala.setItensEscalaDiaria(itens);
         escalasDiarias.add(escala);
+        escala.calculaItensErrados();
         return escalasDiarias;
     }
 
