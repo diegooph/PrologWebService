@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -21,18 +22,18 @@ public class RecapadoraResource {
     @POST
     @Secured(permissions = {})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public void insert(@HeaderParam("Authorization") @Required String token,
-                       @Required Recapadora recapadora) throws Exception {
-        service.insertRecapadora(token, recapadora);
+    public Response insert(@HeaderParam("Authorization") @Required String token,
+                           @Required Recapadora recapadora) throws Exception {
+        return service.insertRecapadora(token, recapadora);
     }
 
     @PUT
     @Secured(permissions = {})
-    @UsedBy(platforms = {Platform.WEBSITE})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
-    public void atualizaRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
-                                    @Required Recapadora recapadora) throws Exception {
-        service.atualizaRecapadoras(codEmpresa, recapadora);
+    public Response atualizaRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
+                                        @Required Recapadora recapadora) throws Exception {
+        return service.atualizaRecapadoras(codEmpresa, recapadora);
     }
 
     @GET
@@ -48,9 +49,9 @@ public class RecapadoraResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {})
     @Path("/{codEmpresa}/status")
-    public void alterarStatusRecapadoras(@HeaderParam("Authorization") @Required String token,
-                                         @PathParam("codEmpresa") @Required Long codEmpresa,
-                                         @Required List<Recapadora> recapadoras) throws Exception {
-        service.alterarStatusRecapadoras(token, codEmpresa, recapadoras);
+    public Response alterarStatusRecapadoras(@HeaderParam("Authorization") @Required String token,
+                                             @PathParam("codEmpresa") @Required Long codEmpresa,
+                                             @Required List<Recapadora> recapadoras) throws Exception {
+        return service.alterarStatusRecapadoras(token, codEmpresa, recapadoras);
     }
 }
