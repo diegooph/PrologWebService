@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import java.util.List;
@@ -20,7 +21,7 @@ public class RecapadoraResource {
     private final RecapadoraService service = new RecapadoraService();
 
     @POST
-    @Secured(permissions = {})
+    @Secured(permissions = {Pilares.Frota.Recapadora.CADASTRO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public Response insert(@HeaderParam("Authorization") @Required String token,
                            @Required Recapadora recapadora) throws Exception {
@@ -28,16 +29,16 @@ public class RecapadoraResource {
     }
 
     @PUT
-    @Secured(permissions = {})
+    @Secured(permissions = {Pilares.Frota.Recapadora.EDICAO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
-    public Response atualizaRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
+    public Response atualizaRecapadora(@PathParam("codEmpresa") @Required Long codEmpresa,
                                         @Required Recapadora recapadora) throws Exception {
         return service.atualizaRecapadoras(codEmpresa, recapadora);
     }
 
     @GET
-    @Secured(permissions = {})
+    @Secured(permissions = {Pilares.Frota.Recapadora.VISUALIZACAO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public List<Recapadora> getRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
@@ -47,7 +48,7 @@ public class RecapadoraResource {
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = {})
+    @Secured(permissions = {Pilares.Frota.Recapadora.EDICAO})
     @Path("/{codEmpresa}/status")
     public Response alterarStatusRecapadoras(@HeaderParam("Authorization") @Required String token,
                                              @PathParam("codEmpresa") @Required Long codEmpresa,

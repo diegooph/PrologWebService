@@ -87,6 +87,14 @@ public final class Pilares {
             public static final int CHECKLIST = 121;
             public static final int VEICULO = 122;
         }
+
+        public final class Recapadora {
+            private Recapadora() {}
+
+            public static final int CADASTRO = 130;
+            public static final int VISUALIZACAO = 131;
+            public static final int EDICAO = 132;
+        }
     }
 
     public static final int SEGURANCA = 2;
