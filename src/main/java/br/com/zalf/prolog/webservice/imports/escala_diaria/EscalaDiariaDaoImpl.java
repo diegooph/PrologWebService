@@ -101,12 +101,12 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
             rSet = stmt.executeQuery();
-            Date ultimaData = null;
+            LocalDate ultimaData = null;
             while (rSet.next()) {
-                final Date dataAtual = rSet.getDate("DATA");
+                final LocalDate dataAtual = rSet.getObject("DATA", LocalDate.class);
                 if (ultimaData == null) {
                     ultimaData = dataAtual;
-                } else if (dataAtual != ultimaData) {
+                } else if (!dataAtual.equals(ultimaData)) {
                     escala.setItensEscalaDiaria(itens);
                     escalasDiarias.add(escala);
                     escala = new EscalaDiaria();
