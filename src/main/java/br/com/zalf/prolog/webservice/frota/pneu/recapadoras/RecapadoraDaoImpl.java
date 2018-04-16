@@ -48,9 +48,9 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE RECAPADORA SET NOME = ?" +
-                    " WHERE COD_RECAPADORA = ? AND COD_EMPRESA = ?");
+                    " WHERE CODIGO = ? AND COD_EMPRESA = ?");
             stmt.setString(1, recapadora.getNome());
-            stmt.setLong(2, recapadora.getCodRecapadora());
+            stmt.setLong(2, recapadora.getCodigo());
             stmt.setLong(3, codEmpresa);
             final int count = stmt.executeUpdate();
             if (count == 0) {
@@ -70,7 +70,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT R.COD_RECAPADORA, R.COD_EMPRESA, R.NOME, R.ATIVA " +
+            stmt = conn.prepareStatement("SELECT R.CODIGO, R.COD_EMPRESA, R.NOME, R.ATIVA " +
                     "FROM RECAPADORA AS R " +
                     "WHERE R.COD_EMPRESA = ? AND R.ATIVA = ?");
             stmt.setLong(1, codEmpresa);
@@ -104,7 +104,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
     @NotNull
     private Recapadora createRecapadora(final ResultSet rSet) throws SQLException {
         final Recapadora recapadora = new Recapadora();
-        recapadora.setCodRecapadora(rSet.getLong("COD_RECAPADORA"));
+        recapadora.setCodigo(rSet.getLong("CODIGO"));
         recapadora.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         recapadora.setNome(rSet.getString("NOME"));
         recapadora.setAtiva(rSet.getBoolean("ATIVA"));
@@ -119,10 +119,10 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
         try {
             stmt = conn.prepareStatement("UPDATE RECAPADORA SET ATIVA = ?,\n" +
                     "  CPF_ALTERACAO_STATUS = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
-                    "WHERE COD_RECAPADORA = ? AND COD_EMPRESA = ?");
+                    "WHERE CODIGO = ? AND COD_EMPRESA = ?");
             stmt.setBoolean(1, recapadora.isAtiva());
             stmt.setString(2, token);
-            stmt.setLong(3, recapadora.getCodRecapadora());
+            stmt.setLong(3, recapadora.getCodigo());
             stmt.setLong(4, codEmpresa);
             final int count = stmt.executeUpdate();
             if (count == 0) {

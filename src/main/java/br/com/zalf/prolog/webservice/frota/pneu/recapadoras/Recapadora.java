@@ -7,7 +7,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
  */
 public class Recapadora {
 
-    private long codRecapadora;
+    private long codigo;
     private long codEmpresa;
     private String nome;
     private boolean isAtiva;
@@ -15,12 +15,12 @@ public class Recapadora {
     public Recapadora() {
     }
 
-    public long getCodRecapadora() {
-        return codRecapadora;
+    public long getCodigo() {
+        return codigo;
     }
 
-    public void setCodRecapadora(final long codRecapadora) {
-        this.codRecapadora = codRecapadora;
+    public void setCodigo(final long codigo) {
+        this.codigo = codigo;
     }
 
     public long getCodEmpresa() {
@@ -50,7 +50,7 @@ public class Recapadora {
     @Override
     public String toString() {
         return "Recapadora{" +
-                "codRecapadora=" + codRecapadora +
+                "codigo=" + codigo +
                 ", codEmpresa=" + codEmpresa +
                 ", nome='" + nome + '\'' +
                 ", isAtiva=" + isAtiva +
