@@ -77,26 +77,26 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT ED.CODIGO, " +
                     "  ED.PLACA, " +
-                    "  (CASE WHEN V.PLACA IS NULL THEN TRUE ELSE FALSE END) AS PLACA_OK, " +
-                    "  ED.MAPA, " +
-                    "  (CASE WHEN M.MAPA IS NULL THEN TRUE ELSE FALSE END) AS MAPA_OK, " +
+                    "  (CASE WHEN V.PLACA IS NULL THEN FALSE ELSE TRUE END) AS PLACA_OK, " +
+                    "  ED.MAPA," +
+                    "  (CASE WHEN M.MAPA IS NULL THEN FALSE ELSE TRUE END) AS MAPA_OK, " +
                     "  ED.DATA, " +
                     "  ED.CPF_MOTORISTA, " +
                     "  CM.NOME AS NOME_MOTORISTA, " +
-                    "  (CASE WHEN CM.CPF IS NULL THEN TRUE ELSE FALSE END) AS MOTORISTA_OK, " +
+                    "  (CASE WHEN CM.CPF IS NULL THEN FALSE ELSE TRUE END) AS MOTORISTA_OK, " +
                     "  ED.CPF_AJUDANTE_1, " +
                     "  CA1.NOME AS NOME_AJUDANTE_1, " +
-                    "  (CASE WHEN CA1.CPF IS NULL THEN TRUE ELSE FALSE END) AS AJUDANTE_1_OK, " +
+                    "  (CASE WHEN CA1.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_1_OK, " +
                     "  ED.CPF_AJUDANTE_2, " +
                     "  CA2.NOME AS NOME_AJUDANTE_2, " +
-                    "  (CASE WHEN CA2.CPF IS NULL THEN TRUE ELSE FALSE END) AS AJUDANTE_2_OK " +
+                    "  (CASE WHEN CA2.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_2_OK " +
                     "FROM ESCALA_DIARIA AS ED " +
                     "  LEFT JOIN COLABORADOR AS CM ON CM.CPF = ED.CPF_MOTORISTA " +
                     "  LEFT JOIN COLABORADOR AS CA1 ON CA1.CPF = ED.CPF_AJUDANTE_1 " +
                     "  LEFT JOIN COLABORADOR AS CA2 ON CA2.CPF = ED.CPF_AJUDANTE_2 " +
                     "  LEFT JOIN VEICULO AS V ON ED.PLACA = V.PLACA " +
                     "  LEFT JOIN MAPA AS M ON ED.MAPA = M.MAPA " +
-                    "WHERE ED.COD_UNIDADE = ? AND (ED.DATA >= ? AND ED.DATA <= ?) ORDER BY ED.DATA");
+                    "WHERE ED.COD_UNIDADE = ? AND (ED.DATA >= ? AND ED.DATA <= ?) ORDER BY ED.DATA;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
@@ -109,7 +109,6 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                 } else if (dataAtual != ultimaData) {
                     escala.setItensEscalaDiaria(itens);
                     escalasDiarias.add(escala);
-                    escala.calculaItensErrados();
                     escala = new EscalaDiaria();
                     itens = new ArrayList<>();
                 }
@@ -120,7 +119,6 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         }
         escala.setItensEscalaDiaria(itens);
         escalasDiarias.add(escala);
-        escala.calculaItensErrados();
         return escalasDiarias;
     }
 

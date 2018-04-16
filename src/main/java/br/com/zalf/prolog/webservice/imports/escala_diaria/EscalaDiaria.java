@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
+import com.google.common.base.Preconditions;
+
 import java.util.List;
 
 /**
@@ -23,6 +25,7 @@ public class EscalaDiaria {
 
     public void setItensEscalaDiaria(final List<EscalaDiariaItem> itensEscalaDiaria) {
         this.itensEscalaDiaria = itensEscalaDiaria;
+        calculaItensErrados();
     }
 
     public int getQtdColaboradoresErrados() {
@@ -49,7 +52,8 @@ public class EscalaDiaria {
         this.qtdMapasErrados = qtdMapasErrados;
     }
 
-    public void calculaItensErrados() {
+    private void calculaItensErrados() {
+        Preconditions.checkNotNull(itensEscalaDiaria, "itensEscalaDiaria não pode ser null!");
         int qtdColaboradoresErrados = 0;
         int qtdPlacasErradas = 0;
         int qtdMapasErrados = 0;
