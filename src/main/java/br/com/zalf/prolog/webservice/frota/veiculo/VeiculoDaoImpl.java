@@ -19,13 +19,24 @@ import java.util.*;
 
 public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
-    private static final String VEICULOS_BY_PLACA = "SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, EV.CODIGO AS COD_EIXOS, "
-            + "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
-            + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
-            + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
-            + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO AND TV.COD_UNIDADE = V.COD_UNIDADE "
-            + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-            + "WHERE V.PLACA = ?";
+    private static final String VEICULOS_BY_PLACA = "SELECT " +
+            "V.*, " +
+            "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+            "MV.NOME AS MODELO, " +
+            "EV.NOME AS EIXOS, " +
+            "EV.DIANTEIRO, " +
+            "EV.TRASEIRO, " +
+            "EV.CODIGO AS COD_EIXOS, " +
+            "tv.nome AS TIPO, " +
+            "MAV.NOME AS MARCA, " +
+            "MAV.CODIGO AS COD_MARCA  " +
+            "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+            "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+            "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO AND TV.COD_UNIDADE = V.COD_UNIDADE " +
+            "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+            "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+            "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+            "WHERE V.PLACA = ?";
 
     public VeiculoDaoImpl() {
 
@@ -131,6 +142,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
                     "V.*, " +
+                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
                     "MV.NOME AS MODELO, " +
                     "EV.NOME AS EIXOS, " +
                     "EV.DIANTEIRO, " +
@@ -143,6 +155,8 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                     "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
                     "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
                     "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
                     "WHERE V.COD_UNIDADE = ? " +
                     "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
                     "ORDER BY V.PLACA");
@@ -175,18 +189,29 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.*, MV.NOME AS MODELO, EV.NOME AS EIXOS, EV.DIANTEIRO, EV.TRASEIRO, EV.CODIGO AS COD_EIXOS, "
-                    + "tv.nome AS TIPO, MAV.NOME AS MARCA, MAV.CODIGO AS COD_MARCA  "
+            stmt = conn.prepareStatement("SELECT " +
+                    "V.*, " +
+                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                    "MV.NOME AS MODELO, " +
+                    "EV.NOME AS EIXOS, " +
+                    "EV.DIANTEIRO, " +
+                    "EV.TRASEIRO, " +
+                    "EV.CODIGO AS COD_EIXOS, " +
+                    "tv.nome AS TIPO, " +
+                    "MAV.NOME AS MARCA, " +
+                    "MAV.CODIGO AS COD_MARCA  "
                     + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
                     + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
                     + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
                     + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+                    + "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
+                    + "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO "
                     + "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?) "
                     + "ORDER BY V.PLACA");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Veiculo veiculo = createVeiculo(rSet);
+                final Veiculo veiculo = createVeiculo(rSet);
                 veiculos.add(veiculo);
             }
         } finally {
@@ -207,7 +232,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                Veiculo veiculo = createVeiculo(rSet);
+                final Veiculo veiculo = createVeiculo(rSet);
                 if (withPneus) {
                     veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
                 }
@@ -640,6 +665,9 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         veiculo.setPlaca(rSet.getString("PLACA"));
         veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         veiculo.setKmAtual(rSet.getLong("KM"));
+
+        veiculo.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
+        veiculo.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE"));
 
         // Eixos.
         final Eixos eixos = new Eixos();
