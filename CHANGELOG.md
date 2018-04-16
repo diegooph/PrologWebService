@@ -2,7 +2,15 @@ Change Log
 ==========
 
 <a name="v2.0.54"></a>
-## Version [v2.0.54](https://github.com/luizfp/PrologWebService/compare/v2.0.53...v2.0.54) (release-date) - [unreleased]
+## Version [v2.0.54](https://github.com/luizfp/PrologWebService/compare/v2.0.53...v2.0.54) (2018-04-16)
+
+### Features
+* Cria estrutura para salvar/buscar fotos do pneu no momento do cadastro
+
+### Refactors
+* Corrige URLs das fotos do relato antes de salvar o relato
+* Adiciona atributo de regional e unidade alocados no veículo
+* Cria erro específico na integração com Avilan para impedir usuário de aferir veículos de outra unidade
 
 <a name="v2.0.53"></a>
 ## Version [v2.0.53](https://github.com/luizfp/PrologWebService/compare/v2.0.52...v2.0.53) (2018-04-12)
