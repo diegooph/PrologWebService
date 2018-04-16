@@ -34,11 +34,31 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             conn.setAutoCommit(false);
 
             //////////////////////////////////////////////////////////////////////////////////////////
+            // Drop de todas as constraints que precisamos.
             stmt = conn.prepareStatement("ALTER TABLE movimentacao DROP CONSTRAINT " +
                     "fk_movimentacao_movimentacao_procecsso;");
             stmt.execute();
             stmt = conn.prepareStatement("ALTER TABLE movimentacao DROP CONSTRAINT fk_movimentacao_pneu;");
             stmt.execute();
+
+            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu;");
+            stmt.execute();
+            stmt = conn.prepareStatement("ALTER TABLE afericao_valores DROP CONSTRAINT fk_afericao_valores_pneu;");
+            stmt.execute();
+            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu_inserido;");
+            stmt.execute();
+            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_movimentacao_processo;");
+            stmt.execute();
+
+            stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu DROP CONSTRAINT fk_veiculo_pneu_pneu;");
+            stmt.execute();
+
+            stmt = conn.prepareStatement("ALTER TABLE pneu_valor_vida DROP CONSTRAINT fk_pneu_valor_vida_pneu;");
+            stmt.execute();
+            // Fim do drop das constraints.
+            //////////////////////////////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////////////////////////////////////////////////
             // Migra as movimentações
             migrateMovimentacoes(
                     todosPneus,
@@ -50,14 +70,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
 
 
             //////////////////////////////////////////////////////////////////////////////////////////
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_valores DROP CONSTRAINT fk_afericao_valores_pneu;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu_inserido;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_movimentacao_processo;");
-            stmt.execute();
             // Migra as aferições
             migrateAfericoes(
                     todosVeiculos,
@@ -69,8 +81,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
 
             //////////////////////////////////////////////////////////////////////////////////////////
             // Migra a associação entre veículos - pneus
-            stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu DROP CONSTRAINT fk_veiculo_pneu_pneu;");
-            stmt.execute();
             stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET COD_UNIDADE = ? " +
                     "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND COD_UNIDADE = ? ;");
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
@@ -84,8 +94,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
 
             //////////////////////////////////////////////////////////////////////////////////////////
             // Migra o pneu_valor_vida
-            stmt = conn.prepareStatement("ALTER TABLE pneu_valor_vida DROP CONSTRAINT fk_pneu_valor_vida_pneu;");
-            stmt.execute();
             stmt = conn.prepareStatement("UPDATE PNEU_VALOR_VIDA SET COD_UNIDADE = ? " +
                     "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]);");
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
