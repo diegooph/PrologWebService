@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -185,4 +185,8 @@ public interface PneuDao {
      * @throws SQLException
      */
     Modelo getModeloPneu(Long codModelo) throws SQLException;
+
+    void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
+                                    @NotNull final String codPneu,
+                                    @NotNull final String urlFotoPneu) throws SQLException;
 }

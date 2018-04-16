@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 
+import br.com.zalf.prolog.webservice.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +30,16 @@ public class Veiculo {
     private boolean ativo;
     private List<Pneu> listPneus;
     private DiagramaVeiculo diagrama;
+
+    /**
+     * {@link Regional} onde o veículo se encontra.
+     */
+    private Long codRegionalAlocado;
+
+    /**
+     * {@link Unidade} onde o veículo se encontra.
+     */
+    private Long codUnidadeAlocado;
 
     public Veiculo() {
 
@@ -105,6 +117,22 @@ public class Veiculo {
         this.diagrama = diagrama;
     }
 
+    public Long getCodRegionalAlocado() {
+        return codRegionalAlocado;
+    }
+
+    public void setCodRegionalAlocado(final Long codRegionalAlocado) {
+        this.codRegionalAlocado = codRegionalAlocado;
+    }
+
+    public Long getCodUnidadeAlocado() {
+        return codUnidadeAlocado;
+    }
+
+    public void setCodUnidadeAlocado(final Long codUnidadeAlocado) {
+        this.codUnidadeAlocado = codUnidadeAlocado;
+    }
+
     public boolean temEstepe() {
         if (listPneus == null)
             return false;
@@ -144,10 +172,13 @@ public class Veiculo {
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", tipo=" + tipo +
+                ", eixos=" + eixos +
                 ", kmAtual=" + kmAtual +
                 ", ativo=" + ativo +
                 ", listPneus=" + listPneus +
-                ", diagramaVeiculo=" + diagrama +
+                ", diagrama=" + diagrama +
+                ", codRegionalAlocado=" + codRegionalAlocado +
+                ", codUnidadeAlocado=" + codUnidadeAlocado +
                 '}';
     }
 }

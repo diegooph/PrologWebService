@@ -103,7 +103,7 @@ public final class AvaCorpAvilan extends Sistema {
         // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
         // vazio.
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
-        if (codTipo.equals("%")) {
+        if (codTipo.equals(FILTRO_TODOS)) {
             codTipo = "";
         } else {
             codTipo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
@@ -248,12 +248,23 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidade) throws Exception {
-        final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
+    public CronogramaAfericao getCronogramaAfericao(@NotNull Long codUnidadeCronograma) throws Exception {
+        /*
+         * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
+         * que não esteja presente na mesma unidade dele.
+         */
+        final Long codUnidadeColaborador = getCodUnidade();
+        if (!codUnidadeCronograma.equals(codUnidadeColaborador)) {
+            throw new AvaCorpAvilanException(
+                    "Você só pode aferir veículos da sua unidade",
+                    String.format("Unidade cronograma: %s -- Unidade colaborador: %d", codUnidadeCronograma, codUnidadeColaborador));
+        }
+
+        final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidadeCronograma);
         final ArrayOfVeiculo arrayOfVeiculo = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
-                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidade);
+                AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidadeCronograma);
         cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
         cronograma.calcularTotalVeiculos(cronograma);
         return cronograma;
@@ -275,6 +286,18 @@ public final class AvaCorpAvilan extends Sistema {
                     "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
         }
 
+        /*
+         * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
+         * que não esteja presente na mesma unidade dele.
+         */
+        final Long codUnidade = getCodUnidade();
+        final List<String> placas = getPlacasVeiculosByTipo(codUnidade, FILTRO_TODOS);
+        if (!placas.contains(placaVeiculo)) {
+            throw new AvaCorpAvilanException(
+                    "Você só pode aferir veículos da sua unidade",
+                    String.format("Placa: %s -- Unidade: %d", placaVeiculo, codUnidade));
+        }
+
         final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan =
                 requester.getVeiculoAtivo(placaVeiculo, getCpf(), getDataNascimento());
 
@@ -283,7 +306,7 @@ public final class AvaCorpAvilan extends Sistema {
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
                 new PosicaoPneuMapper(dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculo)),
                 requester.getPneusVeiculo(placaVeiculo, getCpf(), getDataNascimento()));
-        final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(getCodUnidade());
+        final Restricao restricao = getIntegradorProLog().getRestricaoByCodUnidade(codUnidade);
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculo);
         final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (!optional.isPresent()) {
@@ -359,7 +382,7 @@ public final class AvaCorpAvilan extends Sistema {
                 filialUnidade.getCodFilialAvilan(),
                 filialUnidade.getCodUnidadeAvilan(),
                 codTipoVeiculo,
-                placaVeiculo.equals("%") ? "" : placaVeiculo,
+                placaVeiculo.equals(FILTRO_TODOS) ? "" : placaVeiculo,
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
                 AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)),
                 limit,

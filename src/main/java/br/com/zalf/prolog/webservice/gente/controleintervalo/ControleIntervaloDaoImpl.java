@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -345,8 +346,8 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         try {
             stmt = conn.prepareStatement("INSERT INTO INTERVALO(COD_UNIDADE, COD_TIPO_INTERVALO, CPF_COLABORADOR, " +
                     "DATA_HORA, TIPO_MARCACAO, FONTE_DATA_HORA, JUSTIFICATIVA_TEMPO_RECOMENDADO, JUSTIFICATIVA_ESTOURO, " +
-                    "LATITUDE_MARCACAO, LONGITUDE_MARCACAO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "LATITUDE_MARCACAO, LONGITUDE_MARCACAO, DATA_HORA_SINCRONIZACAO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             final Long codUnidade = intervaloMarcacao.getCodUnidade();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
@@ -367,6 +368,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 stmt.setNull(9, Types.VARCHAR);
                 stmt.setNull(10, Types.VARCHAR);
             }
+            stmt.setTimestamp(11, Now.timestampUtc());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir marcação de intervalo");
             }

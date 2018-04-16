@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -37,7 +38,8 @@ public class PneuResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String codOriginal) {
+    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String
+            codOriginal) {
         if (service.update(pneu, codUnidade, codOriginal)) {
             return Response.ok("Pneu atualizado com sucesso.");
         } else {
@@ -48,7 +50,8 @@ public class PneuResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/modelo/{codEmpresa}/{codMarca}")
-    public AbstractResponse insertModeloPneu(ModeloPneu modelo, @PathParam("codEmpresa") Long codEmpresa, @PathParam("codMarca") Long codMarca) {
+    public AbstractResponse insertModeloPneu(ModeloPneu modelo, @PathParam("codEmpresa") Long codEmpresa, @PathParam
+            ("codMarca") Long codMarca) {
         return service.insertModeloPneu(modelo, codEmpresa, codMarca);
     }
 
@@ -58,7 +61,8 @@ public class PneuResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{status}")
-    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade, @PathParam("status") String status) {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade, @PathParam("status")
+            String status) {
         return service.getPneuByCodUnidadeByStatus(codUnidade, status);
     }
 
@@ -153,6 +157,16 @@ public class PneuResource {
     @Path("/unidades/{codUnidade}/{codPneu}")
     public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
+    }
+
+    @PUT
+    @Secured
+    @Path("/unidades/{codUnidade}/{codPneu}/fotos-cadastro/sincronizada")
+    public Response marcarFotoComoSincronizada(@PathParam("codUnidade") @Required final Long codUnidade,
+                                               @PathParam("codPneu") @Required final String codPneu,
+                                               @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
+        service.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
+        return Response.ok("Foto marcada como sincronizada com sucesso");
     }
 
     /**

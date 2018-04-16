@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -88,8 +88,22 @@ public class Pneu {
      */
     private Boolean pneuNovoNuncaRodado;
 
+    /**
+     * Fotos que foram capturadas no momento do cadastro deste Pneu.
+     */
+    @Nullable
+    private List<PneuFotoCadastro> fotosCadastro;
+
     public Pneu() {
 
+    }
+
+    public List<PneuFotoCadastro> getFotosCadastro() {
+        return fotosCadastro;
+    }
+
+    public void setFotosCadastro(final List<PneuFotoCadastro> fotosCadastro) {
+        this.fotosCadastro = fotosCadastro;
     }
 
     public Boolean isPneuNovoNuncaRodado() {
