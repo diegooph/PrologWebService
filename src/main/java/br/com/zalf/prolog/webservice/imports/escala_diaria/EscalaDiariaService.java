@@ -74,6 +74,20 @@ public class EscalaDiariaService {
         }
     }
 
+    public EscalaDiariaItem getEscalaDiariaItem(@NotNull final Long codUnidade,
+                                                @NotNull final Long codEscala) throws ParseDadosEscalaException {
+        try {
+            return dao.getEscalaDiariaItem(codUnidade, codEscala);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar Escala Diaria Item de codigo: " + codEscala, e);
+            throw new ParseDadosEscalaException(
+                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
+                    "O arquivo enviado está com problemas, tente novamente",
+                    "Erro ao ler arquivo no servidor",
+                    e);
+        }
+    }
+
     public Response deleteEscalaDiariaItens(@NotNull final Long codUnidade,
                                             @NotNull final List<Long> codEscalas) throws ParseDadosEscalaException {
         try {
@@ -134,5 +148,4 @@ public class EscalaDiariaService {
                     e);
         }
     }
-
 }

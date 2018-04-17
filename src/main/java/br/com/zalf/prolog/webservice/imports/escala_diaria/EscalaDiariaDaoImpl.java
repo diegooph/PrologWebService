@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +19,28 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDiariaDao {
+
+    private static final String BASE_QUERY = "SELECT ED.CODIGO, " +
+            "  ED.PLACA, " +
+            "  (CASE WHEN V.PLACA IS NULL THEN FALSE ELSE TRUE END) AS PLACA_OK, " +
+            "  ED.MAPA, " +
+            "  (CASE WHEN M.MAPA IS NULL THEN FALSE ELSE TRUE END) AS MAPA_OK, " +
+            "  ED.DATA, " +
+            "  ED.CPF_MOTORISTA, " +
+            "  CM.NOME AS NOME_MOTORISTA, " +
+            "  (CASE WHEN CM.CPF IS NULL THEN FALSE ELSE TRUE END) AS MOTORISTA_OK, " +
+            "  ED.CPF_AJUDANTE_1, " +
+            "  CA1.NOME AS NOME_AJUDANTE_1, " +
+            "  (CASE WHEN CA1.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_1_OK, " +
+            "  ED.CPF_AJUDANTE_2, " +
+            "  CA2.NOME AS NOME_AJUDANTE_2, " +
+            "  (CASE WHEN CA2.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_2_OK " +
+            "FROM ESCALA_DIARIA AS ED " +
+            "  LEFT JOIN COLABORADOR AS CM ON CM.CPF = ED.CPF_MOTORISTA " +
+            "  LEFT JOIN COLABORADOR AS CA1 ON CA1.CPF = ED.CPF_AJUDANTE_1 " +
+            "  LEFT JOIN COLABORADOR AS CA2 ON CA2.CPF = ED.CPF_AJUDANTE_2 " +
+            "  LEFT JOIN VEICULO AS V ON ED.PLACA = V.PLACA " +
+            "  LEFT JOIN MAPA AS M ON ED.MAPA = M.MAPA ";
 
     public EscalaDiariaDaoImpl() {
     }
@@ -75,27 +94,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT ED.CODIGO, " +
-                    "  ED.PLACA, " +
-                    "  (CASE WHEN V.PLACA IS NULL THEN FALSE ELSE TRUE END) AS PLACA_OK, " +
-                    "  ED.MAPA," +
-                    "  (CASE WHEN M.MAPA IS NULL THEN FALSE ELSE TRUE END) AS MAPA_OK, " +
-                    "  ED.DATA, " +
-                    "  ED.CPF_MOTORISTA, " +
-                    "  CM.NOME AS NOME_MOTORISTA, " +
-                    "  (CASE WHEN CM.CPF IS NULL THEN FALSE ELSE TRUE END) AS MOTORISTA_OK, " +
-                    "  ED.CPF_AJUDANTE_1, " +
-                    "  CA1.NOME AS NOME_AJUDANTE_1, " +
-                    "  (CASE WHEN CA1.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_1_OK, " +
-                    "  ED.CPF_AJUDANTE_2, " +
-                    "  CA2.NOME AS NOME_AJUDANTE_2, " +
-                    "  (CASE WHEN CA2.CPF IS NULL THEN FALSE ELSE TRUE END) AS AJUDANTE_2_OK " +
-                    "FROM ESCALA_DIARIA AS ED " +
-                    "  LEFT JOIN COLABORADOR AS CM ON CM.CPF = ED.CPF_MOTORISTA " +
-                    "  LEFT JOIN COLABORADOR AS CA1 ON CA1.CPF = ED.CPF_AJUDANTE_1 " +
-                    "  LEFT JOIN COLABORADOR AS CA2 ON CA2.CPF = ED.CPF_AJUDANTE_2 " +
-                    "  LEFT JOIN VEICULO AS V ON ED.PLACA = V.PLACA " +
-                    "  LEFT JOIN MAPA AS M ON ED.MAPA = M.MAPA " +
+            stmt = conn.prepareStatement(BASE_QUERY +
                     "WHERE ED.COD_UNIDADE = ? AND (ED.DATA >= ? AND ED.DATA <= ?) ORDER BY ED.DATA;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, dataInicial);
@@ -120,6 +119,29 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         escala.setItensEscalaDiaria(itens);
         escalasDiarias.add(escala);
         return escalasDiarias;
+    }
+
+    @Override
+    public EscalaDiariaItem getEscalaDiariaItem(@NotNull final Long codUnidade,
+                                                @NotNull final Long codEscala) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(BASE_QUERY +
+                    "WHERE ED.COD_UNIDADE = ? AND ED.CODIGO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codEscala);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createEscalaDiariaItem(rSet);
+            } else {
+                throw new SQLDataException("Nenhuma escala Diária para o código : " + codEscala);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
     }
 
     private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -55,6 +56,17 @@ public interface EscalaDiariaDao {
     List<EscalaDiaria> getEscalasDiarias(@NotNull final Long codUnidade,
                                          @NotNull final LocalDate dataInicial,
                                          @NotNull final LocalDate dataFinal) throws SQLException;
+
+    /**
+     * Busca um item específico da escala diária.
+     *
+     * @param codUnidade - Código da {@link Unidade} para a busca.
+     * @param codEscala  - Código do {@link EscalaDiariaItem} que será buscado.
+     * @return - Um {@link EscalaDiariaItem}.
+     * @throws SQLException - Caso algum erro na query ocorrer ou o código ser inválido.
+     */
+    EscalaDiariaItem getEscalaDiariaItem(@NotNull final Long codUnidade,
+                                         @NotNull final Long codEscala) throws SQLException;
 
     /**
      * Deleta uma {@link List<EscalaDiariaItem>}.

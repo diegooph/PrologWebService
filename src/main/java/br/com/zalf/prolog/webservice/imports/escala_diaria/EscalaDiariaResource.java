@@ -32,9 +32,9 @@ public class EscalaDiariaResource {
     @Path("upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadMapa(@HeaderParam("Authorization") String token,
-                           @PathParam("codUnidade") Long codUnidade,
-                           @FormDataParam("file") InputStream fileInputStream,
-                           @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+                               @PathParam("codUnidade") Long codUnidade,
+                               @FormDataParam("file") InputStream fileInputStream,
+                               @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         return service.uploadMapa(token, codUnidade, fileInputStream, fileDetail);
     }
 
@@ -43,8 +43,8 @@ public class EscalaDiariaResource {
     @Secured(permissions = Pilares.Entrega.EscalaDiaria.EDITAR)
     @Path("/{codUnidade}")
     public Response insertEscalaDiaria(@HeaderParam("Authorization") String token,
-                                   @PathParam("codUnidade") Long codUnidade,
-                                   EscalaDiariaItem escalaDiariaItem) throws Exception {
+                                       @PathParam("codUnidade") Long codUnidade,
+                                       EscalaDiariaItem escalaDiariaItem) throws Exception {
         return service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, true);
     }
 
@@ -53,8 +53,8 @@ public class EscalaDiariaResource {
     @Secured(permissions = Pilares.Entrega.EscalaDiaria.EDITAR)
     @Path("/{codUnidade}")
     public Response updateEscalaDiaria(@HeaderParam("Authorization") String token,
-                                   @PathParam("codUnidade") Long codUnidade,
-                                   EscalaDiariaItem escalaDiariaItem) throws Exception {
+                                       @PathParam("codUnidade") Long codUnidade,
+                                       EscalaDiariaItem escalaDiariaItem) throws Exception {
         return service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, false);
     }
 
@@ -66,6 +66,15 @@ public class EscalaDiariaResource {
                                                 @QueryParam("dataInicial") String dataInicial,
                                                 @QueryParam("dataFinal") String dataFinal) throws ParseDadosEscalaException {
         return service.getEscalasDiarias(codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
+    @Secured(permissions = {Pilares.Entrega.EscalaDiaria.VISUALIZAR, Pilares.Entrega.EscalaDiaria.EDITAR})
+    @Path("/{codUnidade}/{codEscala}")
+    public EscalaDiariaItem getEscalaDiariaItem(@PathParam("codUnidade") Long codUnidade,
+                                                @PathParam("codEscala") Long codEscala) throws ParseDadosEscalaException {
+        return service.getEscalaDiariaItem(codUnidade, codEscala);
     }
 
     @DELETE
