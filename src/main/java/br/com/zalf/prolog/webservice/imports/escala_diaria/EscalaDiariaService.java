@@ -48,10 +48,10 @@ public class EscalaDiariaService {
             dao.insertOrUpdateEscalaDiariaItem(token, codUnidade, escalaDiariaItem, isInsert);
             return Response.ok("Item escala diária cadastrado com sucesso");
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao cadastrar o item escala diária na unidade: " + codUnidade, e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo enviado está com problemas, tente novamente",
-                    "Erro ao ler arquivo no servidor",
+                    "Não foi possível cadastrar este item, tente novamente",
+                    "Erro ao cadastrar o item escala diária",
                     e);
         }
     }
@@ -67,9 +67,8 @@ public class EscalaDiariaService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar Escalas Diarias para a Unidade: " + codUnidade, e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo enviado está com problemas, tente novamente",
-                    "Erro ao ler arquivo no servidor",
+                    "Não foi possível buscar as escalas diárias, tente novamente",
+                    "Erro ao buscar Escalas Diarias",
                     e);
         }
     }
@@ -81,9 +80,8 @@ public class EscalaDiariaService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar Escala Diaria Item de codigo: " + codEscala, e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo enviado está com problemas, tente novamente",
-                    "Erro ao ler arquivo no servidor",
+                    "Não foi possível recuperrar este item, tente novamente",
+                    "Erro ao buscar o item",
                     e);
         }
     }
@@ -94,10 +92,10 @@ public class EscalaDiariaService {
             dao.deleteEscalaDiariaItens(codUnidade, codEscalas);
             return Response.ok("Escalas deletadas com sucesso!");
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao deletar os itens da unidade: " + codUnidade, e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo enviado está com problemas, tente novamente",
-                    "Erro ao ler arquivo no servidor",
+                    "Não foi possível deletar estes itens, tente novamente",
+                    "Erro ao deletar os itens",
                     e);
         }
     }
@@ -118,7 +116,6 @@ public class EscalaDiariaService {
         } catch (IOException e) {
             Log.e(TAG, "Erro ao ler arquivo binário do import", e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
                     "O arquivo importado possui inconsistências",
                     "Erro ao ler arquivo binário do import",
                     e);
@@ -135,15 +132,13 @@ public class EscalaDiariaService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "",
-                    "",
+                    "Não foi possível inserir os dados no banco de dados, tente novamente!",
+                    "Erro ao inserir informações no banco",
                     e);
         } catch (IOException e) {
             Log.e(TAG, "Erro ao ler arquivo no servidor", e);
             throw new ParseDadosEscalaException(
-                    javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
-                    "O arquivo enviado está com problemas, tente novamente",
+                    "O arquivo enviado está com problemas, tente novamente!",
                     "Erro ao ler arquivo no servidor",
                     e);
         }

@@ -15,10 +15,13 @@ public class ParseDadosEscalaException extends ProLogException {
         super(httpStatusCode, ProLogErrorCodes.PARSE_DADOS_ESCALA.errorCode(), message, developerMessage);
     }
 
-    public ParseDadosEscalaException(final int httpStatusCode,
-                                     @NotNull final String message,
+    public ParseDadosEscalaException(@NotNull final String message,
                                      @NotNull final String developerMessage,
                                      @NotNull final Exception parentException) {
-        super(httpStatusCode, ProLogErrorCodes.PARSE_DADOS_ESCALA.errorCode(), message, developerMessage, parentException);
+        super(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
+                ProLogErrorCodes.PARSE_DADOS_ESCALA.errorCode(),
+                message,
+                developerMessage,
+                parentException);
     }
 }
