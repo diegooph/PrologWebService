@@ -52,7 +52,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         try {
             conn = getConnection();
             for (final EscalaDiariaItem item : escalaDiariaItens) {
-                if (!updateEscalaDiaria(conn, token, codUnidade, item)) {
+                if (!updateEscalaDiariaUpload(conn, token, codUnidade, item)) {
                     if (!insertEscalaDiaria(conn, token, codUnidade, item)) {
                         throw new IllegalStateException("Não foi possível inserir ou atualizar o item : " + item);
                     }
@@ -143,26 +143,6 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         }
     }
 
-    private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {
-        final EscalaDiariaItem item = new EscalaDiariaItem();
-        item.setCodigo(rSet.getLong("CODIGO"));
-        item.setData(rSet.getObject("DATA", LocalDate.class));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
-        item.setCodMapa(rSet.getInt("MAPA"));
-        item.setMapaOk(rSet.getBoolean("MAPA_OK"));
-        item.setCpfMotorista(rSet.getLong("CPF_MOTORISTA"));
-        item.setNomeMotorista(rSet.getString("NOME_MOTORISTA"));
-        item.setCpfMotoristaOk(rSet.getBoolean("MOTORISTA_OK"));
-        item.setCpfAjudante1(rSet.getLong("CPF_AJUDANTE_1"));
-        item.setNomeAjudante1(rSet.getString("NOME_AJUDANTE_1"));
-        item.setCpfAjudante1Ok(rSet.getBoolean("AJUDANTE_1_OK"));
-        item.setCpfAjudante2(rSet.getLong("CPF_AJUDANTE_2"));
-        item.setNomeAjudante2(rSet.getString("NOME_AJUDANTE_2"));
-        item.setCpfAjudante2Ok(rSet.getBoolean("AJUDANTE_2_OK"));
-        return item;
-    }
-
     @Override
     public void deleteEscalaDiariaItens(@NotNull final Long codUnidade,
                                         @NotNull final List<Long> codEscalas) throws SQLException {
@@ -184,6 +164,26 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         } finally {
             closeConnection(conn, stmt, null);
         }
+    }
+
+    private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {
+        final EscalaDiariaItem item = new EscalaDiariaItem();
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setData(rSet.getObject("DATA", LocalDate.class));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
+        item.setCodMapa(rSet.getInt("MAPA"));
+        item.setMapaOk(rSet.getBoolean("MAPA_OK"));
+        item.setCpfMotorista(rSet.getLong("CPF_MOTORISTA"));
+        item.setNomeMotorista(rSet.getString("NOME_MOTORISTA"));
+        item.setCpfMotoristaOk(rSet.getBoolean("MOTORISTA_OK"));
+        item.setCpfAjudante1(rSet.getLong("CPF_AJUDANTE_1"));
+        item.setNomeAjudante1(rSet.getString("NOME_AJUDANTE_1"));
+        item.setCpfAjudante1Ok(rSet.getBoolean("AJUDANTE_1_OK"));
+        item.setCpfAjudante2(rSet.getLong("CPF_AJUDANTE_2"));
+        item.setNomeAjudante2(rSet.getString("NOME_AJUDANTE_2"));
+        item.setCpfAjudante2Ok(rSet.getBoolean("AJUDANTE_2_OK"));
+        return item;
     }
 
     private boolean insertEscalaDiaria(@NotNull final Connection conn,
@@ -227,7 +227,55 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         return true;
     }
 
-    private boolean updateEscalaDiaria(@NotNull final Connection conn,
+    private boolean updateEscalaDiariaUpload(@NotNull final Connection conn,
+                                             @NotNull final String token,
+                                             @NotNull final Long codUnidade,
+                                             @NotNull final EscalaDiariaItem item) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE ESCALA_DIARIA SET COD_UNIDADE = ?, " +
+                    "  DATA = ?, " +
+                    "  PLACA = ?, " +
+                    "  MAPA = ?, " +
+                    "  CPF_MOTORISTA = ?, " +
+                    "  CPF_AJUDANTE_1 = ?," +
+                    "  CPF_AJUDANTE_2 = ?, " +
+                    "  DATA_HORA_ULTIMA_ALTERACAO = ?, " +
+                    "  CPF_ULTIMA_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
+                    "WHERE DATA = ? " +
+                    "AND PLACA = ? " +
+                    "AND MAPA = ? " +
+                    "AND CPF_MOTORISTA = ? " +
+                    "AND CPF_AJUDANTE_1 = ? " +
+                    "AND CPF_AJUDANTE_2 = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
+            stmt.setString(3, item.getPlaca().toUpperCase());
+            stmt.setInt(4, item.getCodMapa());
+            stmt.setLong(5, item.getCpfMotorista());
+            stmt.setLong(6, item.getCpfAjudante1());
+            stmt.setLong(7, item.getCpfAjudante2());
+            stmt.setTimestamp(8, Now.timestampUtc());
+            stmt.setString(9, TokenCleaner.getOnlyToken(token));
+
+            stmt.setDate(10, DateUtils.toSqlDate(item.getData()));
+            stmt.setString(11, item.getPlaca().toUpperCase());
+            stmt.setInt(12, item.getCodMapa());
+            stmt.setLong(13, item.getCpfMotorista());
+            stmt.setLong(14, item.getCpfAjudante1());
+            stmt.setLong(15, item.getCpfAjudante2());
+            int count = stmt.executeUpdate();
+            if (count == 0) {
+                // nenhum para item atualizado
+                return false;
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+        return true;
+    }
+
+    private void updateEscalaDiaria(@NotNull final Connection conn,
                                        @NotNull final String token,
                                        @NotNull final Long codUnidade,
                                        @NotNull final EscalaDiariaItem item) throws SQLException {
@@ -256,11 +304,10 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             int count = stmt.executeUpdate();
             if (count == 0) {
                 // nenhum para item atualizado
-                return false;
+                throw new SQLDataException("Não foi possível atualizar o item de código: " + item.getCodigo());
             }
         } finally {
             closeStatement(stmt);
         }
-        return true;
     }
 }
