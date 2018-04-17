@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,11 @@ class EscalaDiariaReader {
             throws IOException {
         final List<EscalaDiariaItem> escalaItens = new ArrayList<>();
         final Reader in = new FileReader(path);
-        final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+        final List<CSVRecord> tabela = CSVFormat.DEFAULT
+                .withDelimiter(';')
+                .withSkipHeaderRecord()
+                .parse(in)
+                .getRecords();
         for (int i = 1; i < tabela.size(); i++) {
             final EscalaDiariaItem item = read(tabela.get(i));
             if (item != null) {
@@ -46,7 +50,7 @@ class EscalaDiariaReader {
         final EscalaDiariaItem item = new EscalaDiariaItem();
         // DATA DA ESCALA
         if (!linha.get(0).trim().isEmpty()) {
-            item.setData(ProLogDateParser.validateAndParse(linha.get(0).trim(), DATE_FORMAT));
+            item.setData(DateUtils.validateAndParse(linha.get(0).trim(), DATE_FORMAT));
         }
         // PLACA
         if (!linha.get(1).trim().replaceAll(" ", "").isEmpty()) {

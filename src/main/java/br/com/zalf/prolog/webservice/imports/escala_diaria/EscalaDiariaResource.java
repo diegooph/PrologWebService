@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ParseDadosEscalaException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -20,6 +21,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/escalas-diarias")
+@DebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class EscalaDiariaResource {
@@ -29,7 +31,7 @@ public class EscalaDiariaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.EscalaDiaria.UPLOAD)
-    @Path("upload/{codUnidade}")
+    @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadMapa(@HeaderParam("Authorization") String token,
                                @PathParam("codUnidade") Long codUnidade,

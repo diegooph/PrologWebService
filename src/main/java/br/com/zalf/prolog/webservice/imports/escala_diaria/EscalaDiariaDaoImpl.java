@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -243,7 +242,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                     "  CPF_AJUDANTE_2 = ?, " +
                     "  DATA_HORA_ULTIMA_ALTERACAO = ?, " +
                     "  CPF_ULTIMA_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
-                    "WHERE COD_ESCALA = ?");
+                    "WHERE CODIGO = ?");
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
