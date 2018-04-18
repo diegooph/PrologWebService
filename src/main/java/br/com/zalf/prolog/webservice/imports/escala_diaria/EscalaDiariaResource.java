@@ -84,7 +84,7 @@ public class EscalaDiariaResource {
     @Secured(permissions = Pilares.Entrega.EscalaDiaria.DELETAR)
     @Path("/{codUnidade}")
     public Response deleteEscalaDiariaItens(@PathParam("codUnidade") Long codUnidade,
-                                            @QueryParam("codEscalas") List<Long> codEscalas) throws Exception {
+                                            List<Long> codEscalas) throws Exception {
         return service.deleteEscalaDiariaItens(codUnidade, codEscalas);
     }
 }
