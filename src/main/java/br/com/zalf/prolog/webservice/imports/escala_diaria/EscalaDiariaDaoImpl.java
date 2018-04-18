@@ -20,6 +20,7 @@ import java.util.List;
 public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDiariaDao {
 
     private static final String BASE_QUERY = "SELECT ED.CODIGO, " +
+            "  ED.COD_UNIDADE, " +
             "  ED.PLACA, " +
             "  (CASE WHEN V.PLACA IS NULL THEN FALSE ELSE TRUE END) AS PLACA_OK, " +
             "  ED.MAPA, " +
@@ -169,6 +170,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
     private EscalaDiariaItem createEscalaDiariaItem(@NotNull final ResultSet rSet) throws SQLException {
         final EscalaDiariaItem item = new EscalaDiariaItem();
         item.setCodigo(rSet.getLong("CODIGO"));
+        item.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         item.setData(rSet.getObject("DATA", LocalDate.class));
         item.setPlaca(rSet.getString("PLACA"));
         item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
