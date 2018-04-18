@@ -110,6 +110,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                     escalasDiarias.add(escala);
                     escala = new EscalaDiaria();
                     itens = new ArrayList<>();
+                    ultimaData = dataAtual;
                 }
                 itens.add(createEscalaDiariaItem(rSet));
             }
