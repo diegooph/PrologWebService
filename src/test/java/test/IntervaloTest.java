@@ -1,11 +1,13 @@
 package test;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -24,6 +26,11 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class IntervaloTest extends DatabaseConnection {
+
+    @Before
+    public void initialize() {
+        DatabaseManager.init();
+    }
 
     @Test
     public void testBuscaIntervalosAgrupados() {
