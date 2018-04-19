@@ -86,7 +86,19 @@ public final class ControleIntervaloResource {
     @Secured(permissions = {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
+    @Path("/tipos/{codUnidade}/resumidos")
+    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
+        return service.getTiposIntervalos(codUnidade, false);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
+            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true);
@@ -117,15 +129,5 @@ public final class ControleIntervaloResource {
         } else {
             return Response.error("Erro ao inativar o tipo de intervalo");
         }
-    }
-
-    @GET
-    @Secured(permissions = {
-            Pilares.Gente.Intervalo.MARCAR_INTERVALO,
-            Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
-    @Path("/tipos/{codUnidade}/resumidos")
-    public List<TipoIntervalo> getTiposIntervalosResumidos(@PathParam("codUnidade") Long codUnidade) {
-        return service.getTiposIntervalos(codUnidade, false);
     }
 }
