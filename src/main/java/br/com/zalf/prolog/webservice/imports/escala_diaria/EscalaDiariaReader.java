@@ -1,13 +1,11 @@
 package br.com.zalf.prolog.webservice.imports.escala_diaria;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,24 +16,23 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 class EscalaDiariaReader {
-
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private EscalaDiariaReader() {
         throw new IllegalStateException(EscalaDiariaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path)
-            throws IOException {
+    static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path) {
+
+        final CsvParserSettings settings = new CsvParserSettings();
+        settings.setDelimiterDetectionEnabled(true);
+        settings.setHeaderExtractionEnabled(true);
+        final CsvParser parser = new CsvParser(settings);
+        final List<String[]> rows = parser.parseAll(new File(path));
+
         final List<EscalaDiariaItem> escalaItens = new ArrayList<>();
-        final Reader in = new FileReader(path);
-        final List<CSVRecord> tabela = CSVFormat.DEFAULT
-                .withDelimiter(';')
-                .withSkipHeaderRecord()
-                .parse(in)
-                .getRecords();
-        for (int i = 1; i < tabela.size(); i++) {
-            final EscalaDiariaItem item = read(tabela.get(i));
+        for (final String[] row : rows) {
+            final EscalaDiariaItem item = read(row);
             if (item != null) {
                 escalaItens.add(item);
             }
@@ -43,34 +40,35 @@ class EscalaDiariaReader {
         return escalaItens;
     }
 
-    private static EscalaDiariaItem read(@NotNull final CSVRecord linha) {
-        if (linha.get(0).isEmpty()) {
+    private static EscalaDiariaItem read(@NotNull final String[] linha) {
+        if (linha[0].isEmpty()) {
             return null;
         }
+
         final EscalaDiariaItem item = new EscalaDiariaItem();
         // DATA DA ESCALA
-        if (!linha.get(0).trim().isEmpty()) {
-            item.setData(DateUtils.validateAndParse(linha.get(0).trim(), DATE_FORMAT));
+        if (!linha[0].trim().isEmpty()) {
+            item.setData(DateUtils.validateAndParse(linha[0].trim(), DATE_FORMAT));
         }
         // PLACA
-        if (!linha.get(1).trim().replaceAll(" ", "").isEmpty()) {
-            item.setPlaca(linha.get(1).trim().replaceAll(" ", "").toUpperCase());
+        if (!linha[1].trim().replaceAll(" ", "").isEmpty()) {
+            item.setPlaca(linha[1].trim().replaceAll(" ", "").toUpperCase());
         }
         // CODIGO DO MAPA
-        if (!linha.get(2).trim().isEmpty()) {
-            item.setCodMapa(Integer.parseInt(linha.get(2).trim()));
+        if (!linha[2].trim().isEmpty()) {
+            item.setCodMapa(Integer.parseInt(linha[2].trim()));
         }
         // CPF MOTORISTA
-        if (!linha.get(3).trim().replaceAll("[^\\d]", "").isEmpty()) {
-            item.setCpfMotorista(Long.parseLong(linha.get(3).trim().replaceAll("[^\\d]", "")));
+        if (!linha[3].trim().replaceAll("[^\\d]", "").isEmpty()) {
+            item.setCpfMotorista(Long.parseLong(linha[3].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 1
-        if (!linha.get(4).trim().replaceAll("[^\\d]", "").isEmpty()) {
-            item.setCpfAjudante1(Long.parseLong(linha.get(4).trim().replaceAll("[^\\d]", "")));
+        if (!linha[4].trim().replaceAll("[^\\d]", "").isEmpty()) {
+            item.setCpfAjudante1(Long.parseLong(linha[4].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 2
-        if (!linha.get(5).trim().replaceAll("[^\\d]", "").isEmpty()) {
-            item.setCpfAjudante2(Long.parseLong(linha.get(5).trim().replaceAll("[^\\d]", "")));
+        if (!linha[5].trim().replaceAll("[^\\d]", "").isEmpty()) {
+            item.setCpfAjudante2(Long.parseLong(linha[5].trim().replaceAll("[^\\d]", "")));
         }
         return item;
     }
