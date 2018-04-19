@@ -157,10 +157,53 @@ public class ControleIntervalosRelatorioService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +
-                    "codUnidade: %s \n" +
+                    "codTipoIntervalo: %s \n" +
                     "cpf: %s \n" +
                     "dataInicial: %s \n" +
                     "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    public Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
+                                                           @NotNull final Long codTipoIntervalo,
+                                                           @NotNull final String dataInicial,
+                                                           @NotNull final String dataFinal) {
+        try {
+            return dao.getMarcacoesComparandoEscalaDiariaReport(
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar report do relatório de marcações comparando com escala diária. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getMarcacoesComparandoEscalaDiariaCsv(@NotNull final OutputStream out,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codTipoIntervalo,
+                                                      @NotNull final String dataInicial,
+                                                      @NotNull final String dataFinal) {
+        try {
+            dao.getMarcacoesComparandoEscalaDiariaCsv(
+                    out,
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (IOException | SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar csv do relatório de marcações comparando com escala diária. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

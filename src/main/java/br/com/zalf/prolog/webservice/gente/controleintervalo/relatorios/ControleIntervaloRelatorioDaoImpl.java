@@ -63,17 +63,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
-                "(?, ?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(4, cpf);
-        return stmt;
-    }
-
     @Override
     public void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -106,15 +95,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        return stmt;
-    }
-
     @Override
     public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -131,6 +111,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @NotNull
     @Override
     public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -145,15 +126,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        return stmt;
     }
 
     @Override
@@ -189,16 +161,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn,  String cpf)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(4, cpf);
-        return stmt;
-    }
-
     @Override
     public void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
                                                   @NotNull final Long codUnidade,
@@ -217,28 +179,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    @NotNull
-    private PreparedStatement getRelatorioPadraoPortaria1510Stmt(@NotNull final Long codUnidade,
-                                                                 @NotNull final Long codTipoIntervalo,
-                                                                 @NotNull final String cpf,
-                                                                 @NotNull final LocalDate dataInicial,
-                                                                 @NotNull final LocalDate dataFinal,
-                                                                 @NotNull final Connection conn) throws SQLException {
-        Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setLong(2, codTipoIntervalo);
-        if (!cpf.equals("%")) {
-            stmt.setLong(3, Long.parseLong(cpf));
-        } else {
-            stmt.setNull(3, Types.BIGINT);
-        }
-        stmt.setObject(4, dataInicial);
-        stmt.setObject(5, dataFinal);
-        stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        return stmt;
     }
 
     @NotNull
@@ -341,9 +281,128 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
+    @Override
+    public Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
+                                                           @NotNull final Long codTipoIntervalo,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getMarcacoesComparandoEscalaDiariaStmt(codUnidade, codTipoIntervalo, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getMarcacoesComparandoEscalaDiariaCsv(@NotNull final OutputStream out,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codTipoIntervalo,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getMarcacoesComparandoEscalaDiariaStmt(codUnidade, codTipoIntervalo, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
     private Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
         final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(), tipoIntervalo));
         return tiposIntervalosMap;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn,  String cpf)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(4, cpf);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getRelatorioPadraoPortaria1510Stmt(@NotNull final Long codUnidade,
+                                                                 @NotNull final Long codTipoIntervalo,
+                                                                 @NotNull final String cpf,
+                                                                 @NotNull final LocalDate dataInicial,
+                                                                 @NotNull final LocalDate dataFinal,
+                                                                 @NotNull final Connection conn) throws SQLException {
+        Preconditions.checkNotNull(codUnidade);
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codTipoIntervalo);
+        if (!cpf.equals("%")) {
+            stmt.setLong(3, Long.parseLong(cpf));
+        } else {
+            stmt.setNull(3, Types.BIGINT);
+        }
+        stmt.setObject(4, dataInicial);
+        stmt.setObject(5, dataFinal);
+        stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
+                "(?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(4, cpf);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getMarcacoesComparandoEscalaDiariaStmt(@NotNull final Long codUnidade,
+                                                                     @NotNull final Long codTipoIntervalo,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal,
+                                                                     @NotNull final Connection conn) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(?, ?, ?, ?, ?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codTipoIntervalo);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
+        stmt.setString(5, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        return stmt;
     }
 }

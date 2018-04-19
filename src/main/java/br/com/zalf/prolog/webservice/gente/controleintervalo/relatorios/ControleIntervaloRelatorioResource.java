@@ -134,4 +134,38 @@ public class ControleIntervaloRelatorioResource {
                 dataInicial,
                 dataFinal);
     }
+
+    @GET
+    @Secured
+    @Produces("application/csv")
+    @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/csv")
+    public StreamingOutput getMarcacoesComparandoEscalaDiariaCsv(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) {
+
+        return outputStream -> service.getMarcacoesComparandoEscalaDiariaCsv(
+                outputStream,
+                codUnidade,
+                codTipoIntervalo,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/report")
+    public Report getMarcacoesComparandoEscalaDiariaReport(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) {
+
+        return service.getMarcacoesComparandoEscalaDiariaReport(
+                codUnidade,
+                codTipoIntervalo,
+                dataInicial,
+                dataFinal);
+    }
 }
