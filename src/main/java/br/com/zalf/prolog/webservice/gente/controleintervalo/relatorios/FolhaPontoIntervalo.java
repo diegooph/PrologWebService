@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -10,16 +11,16 @@ import java.time.LocalDateTime;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class FolhaPontoIntervalo {
-    @NotNull
+    @Nullable
     private final LocalDateTime dataHoraInicio;
-    @NotNull
+    @Nullable
     private final LocalDateTime dataHoraFim;
     @NotNull
     private final Long codTipoIntervalo;
     @NotNull
     private final Long codTipoIntervaloPorUnidade;
 
-    public FolhaPontoIntervalo(@NotNull final LocalDateTime dataHoraInicio, @NotNull final LocalDateTime dataHoraFim,
+    public FolhaPontoIntervalo(@Nullable final LocalDateTime dataHoraInicio, @Nullable final LocalDateTime dataHoraFim,
                                @NotNull final Long codTipoIntervalo, @NotNull final Long codTipoIntervaloPorUnidade) {
         this.dataHoraInicio = dataHoraInicio;
         this.dataHoraFim = dataHoraFim;
@@ -27,12 +28,12 @@ public final class FolhaPontoIntervalo {
         this.codTipoIntervaloPorUnidade = codTipoIntervaloPorUnidade;
     }
 
-    @NotNull
+    @Nullable
     public LocalDateTime getDataHoraInicio() {
         return dataHoraInicio;
     }
 
-    @NotNull
+    @Nullable
     public LocalDateTime getDataHoraFim() {
         return dataHoraFim;
     }
