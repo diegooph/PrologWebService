@@ -121,13 +121,15 @@ public class ControleIntervaloRelatorioResource {
 
     @GET
     @Secured
-    @Path("/folha-ponto/{codUnidade}/{cpf}")
+    @Path("/folha-ponto/{codUnidade}/{codTipoIntervalo}/{cpf}")
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
                                                             @PathParam("cpf") @Required String cpf,
+                                                            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
                                                             @QueryParam("dataInicial") @Required String dataInicial,
                                                             @QueryParam("dataFinal") @Required String dataFinal) {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
+                codTipoIntervalo,
                 cpf,
                 dataInicial,
                 dataFinal);

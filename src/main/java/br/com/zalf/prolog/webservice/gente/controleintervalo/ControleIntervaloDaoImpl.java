@@ -246,11 +246,18 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         final List<TipoIntervalo> tipos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT IT.CODIGO AS CODIGO_TIPO_INTERVALO, IT.NOME AS " +
+            stmt = conn.prepareStatement("SELECT DISTINCT " +
+                    "IT.CODIGO AS CODIGO_TIPO_INTERVALO, " +
+                    "IT.CODIGO_TIPO_INTERVALO_POR_UNIDADE AS CODIGO_TIPO_INTERVALO_POR_UNIDADE, " +
+                    "IT.NOME AS " +
                     "NOME_TIPO_INTERVALO, " +
-                    " IT.COD_UNIDADE, IT.ATIVO, IT.HORARIO_SUGERIDO, IT.ICONE, IT.TEMPO_ESTOURO_MINUTOS, IT" +
-                    ".TEMPO_RECOMENDADO_MINUTOS FROM " +
-                    "  INTERVALO_TIPO_CARGO ITC JOIN INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
+                    "IT.COD_UNIDADE, " +
+                    "IT.ATIVO, " +
+                    "IT.HORARIO_SUGERIDO, " +
+                    "IT.ICONE, " +
+                    "IT.TEMPO_ESTOURO_MINUTOS, " +
+                    "IT.TEMPO_RECOMENDADO_MINUTOS " +
+                    "FROM INTERVALO_TIPO_CARGO ITC JOIN VIEW_INTERVALO_TIPO IT ON ITC.COD_UNIDADE = IT.COD_UNIDADE AND ITC" +
                     ".COD_TIPO_INTERVALO = IT.CODIGO " +
                     " WHERE IT.COD_UNIDADE = ? AND IT.ATIVO IS TRUE");
             stmt.setLong(1, codUnidade);
@@ -480,6 +487,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                                               @NotNull final Connection conn) throws SQLException {
         final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("CODIGO_TIPO_INTERVALO"));
+        tipoIntervalo.setCodigoPorUnidade(rSet.getLong("CODIGO_TIPO_INTERVALO_POR_UNIDADE"));
         tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
         final Unidade unidade = new Unidade();
         unidade.setCodigo(rSet.getLong("COD_UNIDADE"));

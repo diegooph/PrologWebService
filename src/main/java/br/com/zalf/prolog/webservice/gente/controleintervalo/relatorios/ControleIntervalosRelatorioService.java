@@ -143,12 +143,14 @@ public class ControleIntervalosRelatorioService {
     }
 
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
+                                                            @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal) {
         try {
             return dao.getFolhaPontoRelatorio(
                     codUnidade,
+                    codTipoIntervalo,
                     cpf,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));

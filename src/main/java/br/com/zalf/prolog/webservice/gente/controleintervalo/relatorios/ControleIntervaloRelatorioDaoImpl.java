@@ -245,6 +245,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                             @NotNull final String cpf,
+                                                            @NotNull final String codTipoIntervalo,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal) throws SQLException {
         Connection conn = null;
@@ -252,16 +253,21 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_DE_PONTO(?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_DE_PONTO(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            if (cpf.equals("%")) {
+            if (codTipoIntervalo.equals("%")) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
-                stmt.setLong(2, Long.parseLong(cpf));
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
             }
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
-            stmt.setString(5, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            if (cpf.equals("%")) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
 
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();

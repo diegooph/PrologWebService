@@ -127,6 +127,7 @@ public interface ControleIntervaloRelatoriosDao {
 
     @NotNull
     List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
+                                                     @NotNull final String codTipoIntervalo,
                                                      @NotNull final String cpf,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal) throws SQLException;
