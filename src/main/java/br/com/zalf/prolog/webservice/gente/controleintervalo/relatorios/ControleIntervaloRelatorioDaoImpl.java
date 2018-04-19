@@ -10,9 +10,6 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -218,7 +215,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             String nomeAnterior = null;
             LocalDate diaAnterior = null;
             List<FolhaPontoDia> dias = new ArrayList<>();
-            List<Intervalo> intervalosDia = new ArrayList<>();
+            List<FolhaPontoIntervalo> intervalosDia = new ArrayList<>();
             while (rSet.next()) {
                 final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
                 final LocalDate diaAtual = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class).toLocalDate();
@@ -257,11 +254,16 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     }
                 }
 
-                final Intervalo intervalo = new Intervalo();
-                intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
-                intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
+                final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
+                final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
+                final Long codTipoIntervaloLong = rSet.getLong("COD_TIPO_INTERVALO");
+                final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
+                        dataHoraInicio,
+                        dataHoraFim,
+                        codTipoIntervaloLong,
+                        rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
                 intervalosDia.add(intervalo);
-                tiposIntervalosMarcados.add(tiposIntervalosUnidade.get(rSet.getLong("COD_TIPO_INTERVALO")));
+                tiposIntervalosMarcados.add(tiposIntervalosUnidade.get(codTipoIntervaloLong));
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;

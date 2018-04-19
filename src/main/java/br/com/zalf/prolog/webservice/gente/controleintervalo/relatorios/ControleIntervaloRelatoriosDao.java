@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

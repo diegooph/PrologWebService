@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,9 +9,9 @@ public final class FolhaPontoDia {
     @NotNull
     private final LocalDate diaReferencia;
     @NotNull
-    private final List<Intervalo> intervalosDia;
+    private final List<FolhaPontoIntervalo> intervalosDia;
 
-    public FolhaPontoDia(@NotNull LocalDate diaReferencia, @NotNull List<Intervalo> intervalosDia) {
+    public FolhaPontoDia(@NotNull LocalDate diaReferencia, @NotNull List<FolhaPontoIntervalo> intervalosDia) {
         this.diaReferencia = diaReferencia;
         this.intervalosDia = intervalosDia;
     }
@@ -22,7 +22,7 @@ public final class FolhaPontoDia {
     }
 
     @NotNull
-    public List<Intervalo> getIntervalosDia() {
+    public List<FolhaPontoIntervalo> getIntervalosDia() {
         return intervalosDia;
     }
 }

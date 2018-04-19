@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
+package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
