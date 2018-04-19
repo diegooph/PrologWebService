@@ -157,9 +157,10 @@ public class ControleIntervalosRelatorioService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +
+                    "codUnidade: %s \n" +
                     "cpf: %s \n" +
                     "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

@@ -244,8 +244,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @NotNull
     @Override
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
-                                                            @NotNull final String cpf,
                                                             @NotNull final String codTipoIntervalo,
+                                                            @NotNull final String cpf,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal) throws SQLException {
         Connection conn = null;
@@ -320,9 +320,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                 final Intervalo intervalo = new Intervalo();
                 intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
                 intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
-                intervalo.setTipo(tiposIntervalosUnidade.get(rSet.getLong("COD_TIPO_INTERVALO")));
                 intervalosDia.add(intervalo);
-                tiposIntervalosMarcados.add(intervalo.getTipo());
+                tiposIntervalosMarcados.add(tiposIntervalosUnidade.get(rSet.getLong("COD_TIPO_INTERVALO")));
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;
