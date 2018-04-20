@@ -359,24 +359,24 @@ final class ServicoQueryBinder {
         // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setString(7, servico.getPneuNovo().getCodigo());
+        stmt.setLong(7, servico.getPneuNovo().getCodigo());
         stmt.setLong(8, servico.getCodigo());
         stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 
-    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, String codPneu, Connection conn)
+    static PreparedStatement getQuantidadeServicosEmAbertoPneu(Long codUnidade, Long codPneu, Connection conn)
             throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
                 "AFERICAO_MANUTENCAO AM " +
                 "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? AND DATA_HORA_RESOLUCAO IS NULL;");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, codPneu);
+        stmt.setLong(2, codPneu);
         return stmt;
     }
 
     static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Long codUnidade,
-                                                               @NotNull final String codPneu,
+                                                               @NotNull final Long codPneu,
                                                                @NotNull final Long codProcessoMovimentacao,
                                                                final long kmColetadoVeiculo,
                                                                @NotNull final Connection conn) throws SQLException {
@@ -392,7 +392,7 @@ final class ServicoQueryBinder {
         stmt.setLong(2, codProcessoMovimentacao);
         stmt.setLong(3, kmColetadoVeiculo);
         stmt.setLong(4, codUnidade);
-        stmt.setString(5, codPneu);
+        stmt.setLong(5, codPneu);
         return stmt;
     }
 }

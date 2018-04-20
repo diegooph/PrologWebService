@@ -370,7 +370,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
         final Pneu pneu = new Pneu();
-        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
+        pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
@@ -442,7 +442,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final ServicoDao servicoDao = Injection.provideServicoDao();
         for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
-            stmt.setString(2, pneu.getCodigo());
+            stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
 
             // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
@@ -605,7 +605,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(2, codAfericao);
             stmt.setString(3, placa);
             stmt.setString(4, pneu.getCodPneuProblema()); // codigo do pneu instalado no caminhão
-            stmt.setString(5, pneu.getCodigo()); // codigo que esta no bd (errado)
+            stmt.setLong(5, pneu.getCodigo()); // codigo que esta no bd (errado)
             stmt.setInt(6, pneu.getPosicao());
             stmt.setLong(7, codUnidade);
             stmt.executeQuery();

@@ -14,17 +14,17 @@ import java.util.List;
 
 public interface ServicoDao {
 
-	Long criaServico(String pneu, Long codAfericao, TipoServico tipoServico, Long codUnidade, Connection conn)
+	Long criaServico(Long pneu, Long codAfericao, TipoServico tipoServico, Long codUnidade, Connection conn)
 			throws SQLException;
 
-	void incrementaQtdApontamentosServico(String codPneu, Long codUnidade, TipoServico tipoServico, Connection conn) throws SQLException;
+	void incrementaQtdApontamentosServico(Long codPneu, Long codUnidade, TipoServico tipoServico, Connection conn) throws SQLException;
 
 	/**
 	 * Método usado para trocar um serviço cadastrado como calibragem para inspeção.
 	 */
-	void calibragemToInspecao(String codPneu, Long codUnidade, Connection conn) throws SQLException;
+	void calibragemToInspecao(Long codPneu, Long codUnidade, Connection conn) throws SQLException;
 
-	List<TipoServico> getServicosCadastradosByPneu(String codPneu, Long codUnidade) throws SQLException;
+	List<TipoServico> getServicosCadastradosByPneu(Long codPneu, Long codUnidade) throws SQLException;
 
 	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
@@ -66,7 +66,7 @@ public interface ServicoDao {
 											 final long dataFinal) throws SQLException;
 
 	int getQuantidadeServicosEmAbertoPneu(final Long codUnidade,
-										  final String codPneu,
+										  final Long codPneu,
 										  final Connection connection) throws SQLException;
 
 	/**
@@ -80,7 +80,7 @@ public interface ServicoDao {
 	 * @throws SQLException Caso aconteça algum erro na operação com o BD.
 	 */
 	int fecharAutomaticamenteServicosPneu(final Long codUnidade,
-										  final String codPneu,
+										  final Long codPneu,
 										  final Long codProcessoMovimentacao,
 										  final long kmColetadoVeiculo,
 										  final Connection connection) throws SQLException;

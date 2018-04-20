@@ -160,7 +160,7 @@ public final class AvaCorpAvilanConverter {
             if (!pneu.isEstepe()) {
                 final MedidaPneu medidaPneu = new MedidaPneu();
                 medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
+                medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
                 medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
                 medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
                 medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
@@ -314,11 +314,11 @@ public final class AvaCorpAvilanConverter {
 
         for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
             final Pneu pneu = new Pneu();
-            pneu.setCodigo(p.getNumeroFogo());
+            pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
-            // que é utilizado no ProLog
+            // que é utilizado no ProLog.
             pneu.setVidaAtual(p.getVidaPneu() + 1);
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(p.getSulco1());
@@ -524,7 +524,7 @@ public final class AvaCorpAvilanConverter {
         final List<Pneu> pneus = new ArrayList<>();
         for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
             final Pneu pneu = new Pneu();
-            pneu.setCodigo(pneuFiltro.getNumeroFogo());
+            pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
             pneu.setPressaoAtual(pneuFiltro.getPressao());
             final Sulcos sulcos = new Sulcos();
