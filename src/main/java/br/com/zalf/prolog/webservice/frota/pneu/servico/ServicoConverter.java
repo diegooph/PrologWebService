@@ -108,6 +108,7 @@ final class ServicoConverter {
         do {
             final Pneu pneu = new Pneu();
             pneu.setCodigo(resultSet.getLong("COD_PNEU"));
+            pneu.setCodigoCliente(resultSet.getString("COD_PNEU_CLIENTE"));
             pneu.setPosicao(resultSet.getInt("POSICAO"));
             pneu.setVidaAtual(resultSet.getInt("VIDA_MOMENTO_AFERICAO"));
             pneu.setPressaoAtual(resultSet.getDouble("PSI"));
@@ -144,6 +145,7 @@ final class ServicoConverter {
 
         final Pneu pneuNovo = new Pneu();
         pneuNovo.setCodigo(rSet.getLong("COD_PNEU_NOVO"));
+        pneuNovo.setCodigoCliente(rSet.getString("COD_PNEU_NOVO_CLIENTE"));
         pneuNovo.setSulcosAtuais(sulcos);
         pneuNovo.setPressaoAtual(rSet.getDouble("PRESSAO_COLETADA_FECHAMENTO"));
         // Podemos pegar da coluna POSICAO_PNEU_PROBLEMA pois o pneu novo foi movido para a posição onde o pneu com
@@ -169,6 +171,7 @@ final class ServicoConverter {
         // Cria pneu com problema, responsável por originar o serviço.
         final Pneu pneuProblema = new Pneu();
         pneuProblema.setCodigo(resultSet.getLong("COD_PNEU_PROBLEMA"));
+        pneuProblema.setCodigoCliente(resultSet.getString("COD_PNEU_PROBLEMA_CLIENTE"));
         pneuProblema.setPosicao(resultSet.getInt("POSICAO_PNEU_PROBLEMA"));
         pneuProblema.setVidaAtual(resultSet.getInt("VIDA_PNEU_PROBLEMA"));
         pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));

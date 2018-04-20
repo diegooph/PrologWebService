@@ -335,6 +335,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "AV.PSI::INT AS PRESSAO_PNEU, " +
                     "AV.POSICAO AS POSICAO_PNEU, " +
                     "P.CODIGO AS CODIGO_PNEU, " +
+                    "P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
                     "P.PRESSAO_RECOMENDADA " +
                     "FROM AFERICAO A " +
                     "JOIN AFERICAO_VALORES AV ON A.CODIGO = AV.COD_AFERICAO " +
@@ -371,6 +372,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
         final Pneu pneu = new Pneu();
         pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
+        pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));

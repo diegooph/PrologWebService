@@ -40,6 +40,7 @@ final class ServicoQueryBinder {
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "AV.COD_PNEU AS COD_PNEU_PROBLEMA, "
+            + "P.CODIGO_CLIENTE AS COD_PNEU_PROBLEMA_CLIENTE, "
             + "AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, "
             + "AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, "
             + "AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, "
@@ -51,7 +52,7 @@ final class ServicoQueryBinder {
             + "P.PRESSAO_RECOMENDADA "
             + "FROM AFERICAO_MANUTENCAO AM "
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
-            + "JOIN PNEU P ON AM.COD_UNIDADE = P.COD_UNIDADE AND AM.COD_PNEU = P.CODIGO "
+            + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
             + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
@@ -165,6 +166,7 @@ final class ServicoQueryBinder {
                 "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                 "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
                 "   M.COD_PNEU AS COD_PNEU_NOVO, " +
+                "   PNEU_NOVO.CODIGO_CLIENTE AS COD_PNEU_NOVO_CLIENTE, " +
                 "   M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, " +
                 "   M.SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_NOVO, " +
                 "   M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
@@ -175,6 +177,7 @@ final class ServicoQueryBinder {
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
                 "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
+                "   PNEU_PROBLEMA.CODIGO_CLIENTE AS COD_PNEU_PROBLEMA_CLIENTE, " +
                 "   AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, " +
                 "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
                 "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
@@ -182,14 +185,15 @@ final class ServicoQueryBinder {
                 "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
                 "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                 "   AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, " +
-                "   P.PRESSAO_RECOMENDADA " +
+                "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
                 "   FROM AFERICAO_MANUTENCAO AM " +
                 "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                 "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
-                "   JOIN PNEU P ON AM.COD_UNIDADE = P.COD_UNIDADE AND AM.COD_PNEU = P.CODIGO " +
+                "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
                 "   LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO " +
                 "   AND M.COD_PNEU = AM.COD_PNEU_INSERIDO " +
+                "   LEFT JOIN PNEU PNEU_NOVO ON M.COD_PNEU = PNEU_NOVO.CODIGO " +
                 "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
                 "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
                 "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
@@ -268,7 +272,8 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
-                "  AV.COD_PNEU, " +
+                "  AV.COD_PNEU AS COD_PNEU, " +
+                "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
                 "  AV.ALTURA_SULCO_EXTERNO, " +
                 "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
                 "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
@@ -285,6 +290,8 @@ final class ServicoQueryBinder {
                 "       AND A.CODIGO = AV.COD_AFERICAO " +
                 "  JOIN VEICULO V " +
                 "    ON V.PLACA = A.PLACA_VEICULO " +
+                "  JOIN PNEU P " +
+                "    ON P.CODIGO = AV.COD_PNEU " +
                 "WHERE AM.CODIGO = ? " +
                 "      AND A.PLACA_VEICULO = ?;");
         stmt.setLong(1, codServico);
