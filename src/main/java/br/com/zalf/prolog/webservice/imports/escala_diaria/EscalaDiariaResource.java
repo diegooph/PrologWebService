@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.imports.escala_diaria;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ParseDadosEscalaException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.EscalaDiariaException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -33,11 +33,11 @@ public class EscalaDiariaResource {
     @Secured(permissions = Pilares.Entrega.EscalaDiaria.UPLOAD)
     @Path("/upload/{codUnidade}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response uploadMapa(@HeaderParam("Authorization") String token,
-                               @PathParam("codUnidade") Long codUnidade,
-                               @FormDataParam("file") InputStream fileInputStream,
-                               @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
-        return service.uploadMapa(token, codUnidade, fileInputStream, fileDetail);
+    public Response uploadEscala(@HeaderParam("Authorization") String token,
+                                 @PathParam("codUnidade") Long codUnidade,
+                                 @FormDataParam("file") InputStream fileInputStream,
+                                 @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+        return service.uploadEscala(token, codUnidade, fileInputStream, fileDetail);
     }
 
     @POST
@@ -47,7 +47,7 @@ public class EscalaDiariaResource {
     public Response insertEscalaDiaria(@HeaderParam("Authorization") String token,
                                        @PathParam("codUnidade") Long codUnidade,
                                        EscalaDiariaItem escalaDiariaItem) throws Exception {
-        return service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, true);
+        return service.insertEscalaDiaria(token, codUnidade, escalaDiariaItem);
     }
 
     @PUT
@@ -57,7 +57,7 @@ public class EscalaDiariaResource {
     public Response updateEscalaDiaria(@HeaderParam("Authorization") String token,
                                        @PathParam("codUnidade") Long codUnidade,
                                        EscalaDiariaItem escalaDiariaItem) throws Exception {
-        return service.insertOrUpdateEscalaDiaria(token, codUnidade, escalaDiariaItem, false);
+        return service.updateEscalaDiaria(token, codUnidade, escalaDiariaItem);
     }
 
     @GET
@@ -66,7 +66,7 @@ public class EscalaDiariaResource {
     @Path("/{codUnidade}")
     public List<EscalaDiaria> getEscalasDiarias(@PathParam("codUnidade") Long codUnidade,
                                                 @QueryParam("dataInicial") String dataInicial,
-                                                @QueryParam("dataFinal") String dataFinal) throws ParseDadosEscalaException {
+                                                @QueryParam("dataFinal") String dataFinal) throws EscalaDiariaException {
         return service.getEscalasDiarias(codUnidade, dataInicial, dataFinal);
     }
 
@@ -75,7 +75,7 @@ public class EscalaDiariaResource {
     @Secured(permissions = {Pilares.Entrega.EscalaDiaria.VISUALIZAR, Pilares.Entrega.EscalaDiaria.EDITAR})
     @Path("/{codUnidade}/{codEscala}")
     public EscalaDiariaItem getEscalaDiariaItem(@PathParam("codUnidade") Long codUnidade,
-                                                @PathParam("codEscala") Long codEscala) throws ParseDadosEscalaException {
+                                                @PathParam("codEscala") Long codEscala) throws EscalaDiariaException {
         return service.getEscalaDiariaItem(codUnidade, codEscala);
     }
 
