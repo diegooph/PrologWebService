@@ -312,8 +312,10 @@ public final class AvaCorpAvilanConverter {
         final Banda banda = new Banda();
         banda.setModelo(modeloBanda);
 
-        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
+        for (int i = 0; i < arrayOfPneu.getPneu().size(); i++) {
+            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p = arrayOfPneu.getPneu().get(i);
             final Pneu pneu = new Pneu();
+            pneu.setCodigo((long) i);
             pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
@@ -522,8 +524,11 @@ public final class AvaCorpAvilanConverter {
 
         // Pneus - Medidas.
         final List<Pneu> pneus = new ArrayList<>();
-        for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
+        final List<PneuFiltro> pneusAvilan = afericaoFiltro.getPneus().getPneuFiltro();
+        for (int i = 0; i < pneusAvilan.size(); i++) {
+            final PneuFiltro pneuFiltro = pneusAvilan.get(i);
             final Pneu pneu = new Pneu();
+            pneu.setCodigo((long) i);
             pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
             pneu.setPressaoAtual(pneuFiltro.getPressao());
@@ -535,7 +540,6 @@ public final class AvaCorpAvilanConverter {
             pneu.setSulcosAtuais(sulcos);
             pneus.add(pneu);
         }
-
         afericao.getVeiculo().setListPneus(pneus);
 
         return afericao;
