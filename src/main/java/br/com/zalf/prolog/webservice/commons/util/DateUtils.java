@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -7,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -79,6 +81,12 @@ public class DateUtils {
 				.ofEpochMilli(dateMillis)
 				.atZone(zoneId)
 				.toLocalDate();
+	}
+
+	@NotNull
+	public static LocalDate validateAndParse(@NotNull final String date, @NotNull final DateTimeFormatter formatter) {
+		Preconditions.checkNotNull(date);
+		return LocalDate.parse(date, formatter);
 	}
 
 	/**

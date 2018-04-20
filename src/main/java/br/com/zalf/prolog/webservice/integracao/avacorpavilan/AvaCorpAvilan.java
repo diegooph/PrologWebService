@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogErrorCodes;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
 import br.com.zalf.prolog.webservice.frota.checklist.model.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FarolChecklist;
@@ -281,7 +280,6 @@ public final class AvaCorpAvilan extends Sistema {
         if (!tipoAfericao.equals(TipoAfericao.SULCO_PRESSAO.asString())) {
             throw new TipoAfericaoNotSupported(
                     Response.Status.BAD_REQUEST.getStatusCode(),
-                    ProLogErrorCodes.TIPO_AFERICAO_NAO_SUPORTADO.errorCode(),
                     "Avilan só aceita aferição de " + TipoAfericao.SULCO_PRESSAO.getLegibleString(),
                     "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
         }

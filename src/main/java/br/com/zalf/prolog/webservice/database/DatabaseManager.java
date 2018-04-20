@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.database;
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +47,8 @@ public final class DatabaseManager {
         this.dataSource = dataSource;
     }
 
-    static void init() {
+    @VisibleForTesting
+    public static void init() {
         if (singleton == null) {
             final PoolProperties poolProperties = getPoolProperties();
             singleton = new DatabaseManager(new org.apache.tomcat.jdbc.pool.DataSource(poolProperties));
