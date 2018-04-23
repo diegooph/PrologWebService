@@ -9,8 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -147,12 +152,49 @@ public class ControleIntervalosRelatorioService {
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal) {
         try {
-            return dao.getFolhaPontoRelatorio(
+            final List<FolhaPontoRelatorio> folhaPontoRelatorio = dao.getFolhaPontoRelatorio(
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
+
+            // Agora que temos todos os relatórios, com todas as entradas completas, podemos calcular quanto tempo
+            // cada colaborador passou fazendo cada tipo de intervalo.
+            final Map<Long, Long> segundosTipoIntervalo = new HashMap<>();
+            for (final FolhaPontoRelatorio pontoRelatorio : folhaPontoRelatorio) {
+                // Limpa o Map.
+                segundosTipoIntervalo.clear();
+
+                for (final FolhaPontoDia folhaPontoDia : pontoRelatorio.getMarcacoesDias()) {
+                    for (final FolhaPontoIntervalo intervalo : folhaPontoDia.getIntervalosDia()) {
+                        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+                        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
+                        if (dataHoraInicio != null && dataHoraFim != null) {
+                            final long segundos = ChronoUnit.SECONDS.between(dataHoraInicio, dataHoraFim);
+                            if (segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) != null) {
+                                segundosTipoIntervalo.put(
+                                        intervalo.getCodTipoIntervalo(),
+                                        segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) + segundos);
+                            } else {
+                                segundosTipoIntervalo.put(intervalo.getCodTipoIntervalo(), segundos);
+                            }
+                        }
+                    }
+                }
+
+                // Seta o total de tempo.
+                pontoRelatorio.getTiposIntervalosMarcados().forEach(tipoIntervalo -> {
+                    final Long totalSegundos = segundosTipoIntervalo.get(tipoIntervalo.getCodigo());
+                    if (totalSegundos != null) {
+                        tipoIntervalo.setTempoTotalTipoIntervalo(Duration.ofSeconds(totalSegundos));
+                    } else {
+                        throw new IllegalStateException("Total de tempo gasto no intervalo não calculado para o " +
+                                "intervalo de código: " + tipoIntervalo.getCodigo());
+                    }
+                });
+            }
+            return folhaPontoRelatorio;
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +

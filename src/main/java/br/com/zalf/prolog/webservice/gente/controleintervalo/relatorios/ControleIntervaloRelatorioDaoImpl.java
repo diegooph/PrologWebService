@@ -210,7 +210,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
             final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
-            Set<TipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
+            Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
             Long cpfAnterior = null;
             String nomeAnterior = null;
             LocalDate diaAnterior = null;
@@ -263,7 +263,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                         codTipoIntervaloLong,
                         rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
                 intervalosDia.add(intervalo);
-                tiposIntervalosMarcados.add(tiposIntervalosUnidade.get(codTipoIntervaloLong));
+                final FolhaPontoTipoIntervalo folhaPontoTipoIntervalo = FolhaPontoTipoIntervalo.createFromTipoIntervalo
+                        (tiposIntervalosUnidade.get(codTipoIntervaloLong));
+                tiposIntervalosMarcados.add(folhaPontoTipoIntervalo);
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;

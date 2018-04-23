@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -11,12 +10,12 @@ public final class FolhaPontoRelatorio {
     @NotNull
     private final Colaborador colaborador;
     @NotNull
-    private final Set<TipoIntervalo> tiposIntervalosMarcados;
+    private final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados;
     @NotNull
     private final List<FolhaPontoDia> marcacoesDias;
 
     public FolhaPontoRelatorio(@NotNull Colaborador colaborador,
-                               @NotNull Set<TipoIntervalo> tiposIntervalosMarcados,
+                               @NotNull Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados,
                                @NotNull List<FolhaPontoDia> marcacoesDias) {
         this.colaborador = colaborador;
         this.tiposIntervalosMarcados = tiposIntervalosMarcados;
@@ -29,7 +28,7 @@ public final class FolhaPontoRelatorio {
     }
 
     @NotNull
-    public Set<TipoIntervalo> getTiposIntervalosMarcados() {
+    public Set<FolhaPontoTipoIntervalo> getTiposIntervalosMarcados() {
         return tiposIntervalosMarcados;
     }
 
