@@ -2,7 +2,16 @@ Change Log
 ==========
 
 <a name="v2.0.55"></a>
-## Version [v2.0.55](https://github.com/luizfp/PrologWebService/compare/v2.0.54...v2.0.55) (release-date) - [unreleased]
+## Version [v2.0.55](https://github.com/luizfp/PrologWebService/compare/v2.0.54...v2.0.55) (2018-04-23)
+
+### Features
+* Cria relatório da folha de ponto dos colaboradores
+* Cria funcionalidade de escala diária
+* Adiciona nova lib para tratar o import dos CSVs
+
+### Bug Fixes
+* Corrige busca do relatório de serviços em aberto
+* Corrige erro causado no import do mapa quando valor em horas era zero
 
 <a name="v2.0.54"></a>
 ## Version [v2.0.54](https://github.com/luizfp/PrologWebService/compare/v2.0.53...v2.0.54) (2018-04-16)
