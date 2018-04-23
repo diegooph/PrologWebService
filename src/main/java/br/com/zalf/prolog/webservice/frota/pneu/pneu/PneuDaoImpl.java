@@ -21,6 +21,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             "  MP.NOME                                    AS NOME_MARCA_PNEU, " +
             "  MP.CODIGO                                  AS COD_MARCA_PNEU, " +
             "  P.CODIGO, " +
+            "  P.CODIGO_CLIENTE, " +
             "  U.CODIGO                                   AS COD_UNIDADE_ALOCADO, " +
             "  R.CODIGO                                   AS COD_REGIONAL_ALOCADO, " +
             "  P.PRESSAO_ATUAL, " +
