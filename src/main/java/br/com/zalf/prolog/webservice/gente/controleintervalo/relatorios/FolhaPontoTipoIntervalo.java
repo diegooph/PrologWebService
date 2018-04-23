@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -15,6 +16,7 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     /**
      * O tempo somado que o colaborador passou nesse tipo de intervalo, de acordo com o período buscado no relatório.
      */
+    @SerializedName("tempoTotalTipoIntervaloSegundos")
     private Duration tempoTotalTipoIntervalo;
 
     public FolhaPontoTipoIntervalo() {
