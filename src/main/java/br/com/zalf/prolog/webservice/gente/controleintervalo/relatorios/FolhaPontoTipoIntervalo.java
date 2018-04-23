@@ -46,4 +46,9 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     public void setTempoTotalTipoIntervalo(final Duration tempoTotalTipoIntervalo) {
         this.tempoTotalTipoIntervalo = tempoTotalTipoIntervalo;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return super.equals(obj);
+    }
 }
