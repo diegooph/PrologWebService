@@ -105,12 +105,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO pneu(codigo, cod_modelo, cod_dimensao, pressao_recomendada, " +
+            stmt = conn.prepareStatement("INSERT INTO pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, " +
                     "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
                     "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
-                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado)\n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
-            stmt.setLong(1, pneu.getCodigo());
+                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa)\n" +
+                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?));");
+            stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
             stmt.setDouble(4, pneu.getPressaoCorreta());
@@ -136,6 +136,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             } else {
                 stmt.setBoolean(17, false);
             }
+            stmt.setLong(18, codUnidade);
 
             final int count = stmt.executeUpdate();
             if (count == 0) {
