@@ -564,7 +564,11 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.recarga = linha.get(65).replace(" ", "");
         mapa.hrMatinal = toTime(linha.get(66));
         mapa.hrJornadaLiq = toTime(linha.get(67));
-        mapa.hrMetaJornada = toTime(linha.get(68));
+        if(linha.get(68).equals("0")) {
+            mapa.hrMetaJornada = new Time(0);
+        } else {
+            mapa.hrMetaJornada = toTime(linha.get(68));
+        }
         mapa.vlBateuJornMot = Double.parseDouble(linha.get(69).replace(",", "."));
         mapa.vlNaoBateuJornMot = Double.parseDouble(linha.get(70).replace(",", "."));
         mapa.vlRecargaMot = Double.parseDouble(linha.get(71).replace(",", "."));
