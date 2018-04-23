@@ -4,14 +4,18 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -143,21 +147,104 @@ public class ControleIntervalosRelatorioService {
     }
 
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
+                                                            @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal) {
         try {
-            return dao.getFolhaPontoRelatorio(
+            final List<FolhaPontoRelatorio> folhaPontoRelatorio = dao.getFolhaPontoRelatorio(
                     codUnidade,
+                    codTipoIntervalo,
                     cpf,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
+
+            // Agora que temos todos os relatórios, com todas as entradas completas, podemos calcular quanto tempo
+            // cada colaborador passou fazendo cada tipo de intervalo.
+            final Map<Long, Long> segundosTipoIntervalo = new HashMap<>();
+            for (final FolhaPontoRelatorio pontoRelatorio : folhaPontoRelatorio) {
+                // Limpa o Map.
+                segundosTipoIntervalo.clear();
+
+                for (final FolhaPontoDia folhaPontoDia : pontoRelatorio.getMarcacoesDias()) {
+                    for (final FolhaPontoIntervalo intervalo : folhaPontoDia.getIntervalosDia()) {
+                        final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
+                        final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
+                        if (dataHoraInicio != null && dataHoraFim != null) {
+                            final long segundos = ChronoUnit.SECONDS.between(dataHoraInicio, dataHoraFim);
+                            if (segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) != null) {
+                                segundosTipoIntervalo.put(
+                                        intervalo.getCodTipoIntervalo(),
+                                        segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) + segundos);
+                            } else {
+                                segundosTipoIntervalo.put(intervalo.getCodTipoIntervalo(), segundos);
+                            }
+                        }
+                    }
+                }
+
+                // Seta o total de tempo.
+                pontoRelatorio.getTiposIntervalosMarcados().forEach(tipoIntervalo -> {
+                    final Long totalSegundos = segundosTipoIntervalo.get(tipoIntervalo.getCodigo());
+                    if (totalSegundos != null) {
+                        tipoIntervalo.setTempoTotalTipoIntervalo(Duration.ofSeconds(totalSegundos));
+                    } else {
+                        throw new IllegalStateException("Total de tempo gasto no intervalo não calculado para o " +
+                                "intervalo de código: " + tipoIntervalo.getCodigo());
+                    }
+                });
+            }
+            return folhaPontoRelatorio;
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +
+                    "codTipoIntervalo: %s \n" +
                     "cpf: %s \n" +
                     "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    public Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
+                                                           @NotNull final Long codTipoIntervalo,
+                                                           @NotNull final String dataInicial,
+                                                           @NotNull final String dataFinal) {
+        try {
+            return dao.getMarcacoesComparandoEscalaDiariaReport(
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar report do relatório de marcações comparando com escala diária. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getMarcacoesComparandoEscalaDiariaCsv(@NotNull final OutputStream out,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codTipoIntervalo,
+                                                      @NotNull final String dataInicial,
+                                                      @NotNull final String dataFinal) {
+        try {
+            dao.getMarcacoesComparandoEscalaDiariaCsv(
+                    out,
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (IOException | SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar csv do relatório de marcações comparando com escala diária. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %d \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

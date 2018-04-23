@@ -55,4 +55,12 @@ public class DatabaseConnection {
             } catch (Exception ignore) {}
         }
     }
+
+    public static void closeConnection(@Nullable final Connection conn) {
+        closeConnection(conn, null, null);
+    }
+
+    public void closeStatement(@Nullable final PreparedStatement stmt) {
+        closeConnection(null, stmt, null);
+    }
 }

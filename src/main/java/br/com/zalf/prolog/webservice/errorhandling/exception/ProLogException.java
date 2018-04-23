@@ -30,6 +30,10 @@ public abstract class ProLogException extends Exception {
 	@Nullable
 	private String developerMessage;
 
+	/** parent exception that are catch and mapped to a {@link ProLogException}*/
+	@Nullable
+	private Exception parentException;
+
 	public ProLogException() {
 		super();
 	}
@@ -52,6 +56,19 @@ public abstract class ProLogException extends Exception {
 		this.proLogErrorCode = proLogErrorCode;
 		this.message = message;
 		this.developerMessage = developerMessage;
+	}
+
+	public ProLogException(int httpStatusCode,
+						   int proLogErrorCode,
+						   @NotNull String message,
+						   @NotNull String developerMessage,
+						   @NotNull Exception parentException) {
+		super(parentException);
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.developerMessage = developerMessage;
+		this.parentException = parentException;
 	}
 
 	public ProLogException(int httpStatusCode,
@@ -106,5 +123,13 @@ public abstract class ProLogException extends Exception {
 
 	public void setDeveloperMessage(String developerMessage) {
 		this.developerMessage = developerMessage;
+	}
+
+	public Exception getParentException() {
+		return parentException;
+	}
+
+	public void setParentException(final Exception parentException) {
+		this.parentException = parentException;
 	}
 }

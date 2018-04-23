@@ -10,9 +10,8 @@ import com.sun.istack.internal.NotNull;
 public class TipoAfericaoNotSupported extends ProLogException {
 
     public TipoAfericaoNotSupported(int httpStatusCode,
-                                    int proLogErrorCode,
                                     @NotNull String message,
                                     @NotNull String developerMessage) {
-        super(httpStatusCode, proLogErrorCode, message, developerMessage);
+        super(httpStatusCode, ProLogErrorCodes.TIPO_AFERICAO_NAO_SUPORTADO.errorCode(), message, developerMessage);
     }
 }

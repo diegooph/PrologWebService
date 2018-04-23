@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -121,14 +120,50 @@ public class ControleIntervaloRelatorioResource {
 
     @GET
     @Secured
-    @Path("/folha-ponto/{codUnidade}/{cpf}")
+    @Path("/folha-ponto/{codUnidade}/{codTipoIntervalo}/{cpf}")
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@PathParam("codUnidade") @Required Long codUnidade,
                                                             @PathParam("cpf") @Required String cpf,
+                                                            @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
                                                             @QueryParam("dataInicial") @Required String dataInicial,
                                                             @QueryParam("dataFinal") @Required String dataFinal) {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
+                codTipoIntervalo,
                 cpf,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Produces("application/csv")
+    @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/csv")
+    public StreamingOutput getMarcacoesComparandoEscalaDiariaCsv(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) {
+
+        return outputStream -> service.getMarcacoesComparandoEscalaDiariaCsv(
+                outputStream,
+                codUnidade,
+                codTipoIntervalo,
+                dataInicial,
+                dataFinal);
+    }
+
+    @GET
+    @Secured
+    @Path("/intervalos-comparando-escala-diaria/{codUnidade}/{codTipoIntervalo}/report")
+    public Report getMarcacoesComparandoEscalaDiariaReport(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required Long codTipoIntervalo,
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) {
+
+        return service.getMarcacoesComparandoEscalaDiariaReport(
+                codUnidade,
+                codTipoIntervalo,
                 dataInicial,
                 dataFinal);
     }

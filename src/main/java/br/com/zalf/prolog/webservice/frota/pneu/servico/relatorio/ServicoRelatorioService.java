@@ -72,7 +72,7 @@ public final class ServicoRelatorioService {
                                                      @NotNull final String dataInicial,
                                                      @NotNull final String dataFinal) throws RuntimeException {
         try {
-            dao.getEstratificacaoServicosFechadosCsv(
+            dao.getEstratificacaoServicosAbertosCsv(
                     outputStream,
                     codUnidade,
                     ProLogDateParser.validateAndParse(dataInicial),

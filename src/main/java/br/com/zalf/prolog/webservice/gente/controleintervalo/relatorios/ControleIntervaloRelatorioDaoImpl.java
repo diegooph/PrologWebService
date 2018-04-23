@@ -10,9 +10,6 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoDia;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.FolhaPontoRelatorio;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -63,17 +60,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
-                "(?, ?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(4, cpf);
-        return stmt;
-    }
-
     @Override
     public void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -106,15 +92,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        return stmt;
-    }
-
     @Override
     public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -131,6 +108,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @NotNull
     @Override
     public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -145,15 +123,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        return stmt;
     }
 
     @Override
@@ -189,16 +158,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn,  String cpf)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(4, cpf);
-        return stmt;
-    }
-
     @Override
     public void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
                                                   @NotNull final Long codUnidade,
@@ -220,30 +179,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getRelatorioPadraoPortaria1510Stmt(@NotNull final Long codUnidade,
-                                                                 @NotNull final Long codTipoIntervalo,
-                                                                 @NotNull final String cpf,
-                                                                 @NotNull final LocalDate dataInicial,
-                                                                 @NotNull final LocalDate dataFinal,
-                                                                 @NotNull final Connection conn) throws SQLException {
-        Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setLong(2, codTipoIntervalo);
-        if (!cpf.equals("%")) {
-            stmt.setLong(3, Long.parseLong(cpf));
-        } else {
-            stmt.setNull(3, Types.BIGINT);
-        }
-        stmt.setObject(4, dataInicial);
-        stmt.setObject(5, dataFinal);
-        stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        return stmt;
-    }
-
-    @NotNull
     @Override
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
+                                                            @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal) throws SQLException {
@@ -252,27 +190,32 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_DE_PONTO(?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_FOLHA_DE_PONTO(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            if (cpf.equals("%")) {
+            if (codTipoIntervalo.equals("%")) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
-                stmt.setLong(2, Long.parseLong(cpf));
+                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
             }
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
-            stmt.setString(5, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            if (cpf.equals("%")) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.parseLong(cpf));
+            }
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
+            stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
 
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-            final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
-            Set<TipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
+            final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
+            Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
             Long cpfAnterior = null;
             String nomeAnterior = null;
             LocalDate diaAnterior = null;
             List<FolhaPontoDia> dias = new ArrayList<>();
-            List<Intervalo> intervalosDia = new ArrayList<>();
+            List<FolhaPontoIntervalo> intervalosDia = new ArrayList<>();
             while (rSet.next()) {
                 final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
                 final LocalDate diaAtual = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class).toLocalDate();
@@ -311,12 +254,17 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     }
                 }
 
-                final Intervalo intervalo = new Intervalo();
-                intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));
-                intervalo.setDataHoraFim(rSet.getObject("DATA_HORA_FIM", LocalDateTime.class));
-                intervalo.setTipo(tiposIntervalosUnidade.get(rSet.getLong("COD_TIPO_INTERVALO")));
+                final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
+                final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
+                final Long codTipoIntervaloLong = rSet.getLong("COD_TIPO_INTERVALO");
+                final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
+                        dataHoraInicio,
+                        dataHoraFim,
+                        codTipoIntervaloLong,
+                        rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
                 intervalosDia.add(intervalo);
-                tiposIntervalosMarcados.add(intervalo.getTipo());
+                final FolhaPontoTipoIntervalo folhaPontoTipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervaloLong);
+                tiposIntervalosMarcados.add(folhaPontoTipoIntervalo);
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;
@@ -336,9 +284,130 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
-        final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
-        tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(tipoIntervalo.getCodigo(), tipoIntervalo));
+    @Override
+    public Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
+                                                           @NotNull final Long codTipoIntervalo,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getMarcacoesComparandoEscalaDiariaStmt(codUnidade, codTipoIntervalo, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getMarcacoesComparandoEscalaDiariaCsv(@NotNull final OutputStream out,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codTipoIntervalo,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getMarcacoesComparandoEscalaDiariaStmt(codUnidade, codTipoIntervalo, dataInicial, dataFinal, conn);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
+        final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosMap = new HashMap<>();
+        tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(
+                tipoIntervalo.getCodigo(),
+                FolhaPontoTipoIntervalo.createFromTipoIntervalo(tipoIntervalo)));
         return tiposIntervalosMap;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn,  String cpf)
+            throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(4, cpf);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getRelatorioPadraoPortaria1510Stmt(@NotNull final Long codUnidade,
+                                                                 @NotNull final Long codTipoIntervalo,
+                                                                 @NotNull final String cpf,
+                                                                 @NotNull final LocalDate dataInicial,
+                                                                 @NotNull final LocalDate dataFinal,
+                                                                 @NotNull final Connection conn) throws SQLException {
+        Preconditions.checkNotNull(codUnidade);
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codTipoIntervalo);
+        if (!cpf.equals("%")) {
+            stmt.setLong(3, Long.parseLong(cpf));
+        } else {
+            stmt.setNull(3, Types.BIGINT);
+        }
+        stmt.setObject(4, dataInicial);
+        stmt.setObject(5, dataFinal);
+        stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
+                "(?, ?, ?, ?);");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        stmt.setString(4, cpf);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
+        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getMarcacoesComparandoEscalaDiariaStmt(@NotNull final Long codUnidade,
+                                                                     @NotNull final Long codTipoIntervalo,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal,
+                                                                     @NotNull final Connection conn) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(?, ?, ?, ?, ?)");
+        stmt.setLong(1, codUnidade);
+        stmt.setLong(2, codTipoIntervalo);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
+        stmt.setString(5, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        return stmt;
     }
 }

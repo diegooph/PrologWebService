@@ -42,7 +42,7 @@ public class Intervalo {
      * do RH de uma {@link Unidade} pode invalidar esse intervalo. Ele não será deletado do BD mas
      * poderá ter uma visualização diferente quando exibido.
      */
-    private boolean valido;
+    private Boolean valido;
 
     public Intervalo() {
 
@@ -120,11 +120,11 @@ public class Intervalo {
         this.colaborador = colaborador;
     }
 
-    public boolean isValido() {
+    public Boolean isValido() {
         return valido;
     }
 
-    public void setValido(boolean valido) {
+    public void setValido(Boolean valido) {
         this.valido = valido;
     }
 

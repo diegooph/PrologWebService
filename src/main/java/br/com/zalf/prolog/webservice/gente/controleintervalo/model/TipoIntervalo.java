@@ -14,6 +14,12 @@ import java.util.List;
 public class TipoIntervalo {
 
     private Long codigo;
+
+    /**
+     * O código desse tipo de intervalo para a unidade no qual ele existe. Diferentes unidades sempre têm seu código
+     * iniciado em 1.
+     */
+    private Long codigoPorUnidade;
     private String nome;
     private Icone icone;
     @SerializedName("tempoRecomendadoSegundos")
@@ -99,6 +105,14 @@ public class TipoIntervalo {
 
     public void setTempoLimiteEstouro(Duration tempoLimiteEstouro) {
         this.tempoLimiteEstouro = tempoLimiteEstouro;
+    }
+
+    public Long getCodigoPorUnidade() {
+        return codigoPorUnidade;
+    }
+
+    public void setCodigoPorUnidade(final Long codigoPorUnidade) {
+        this.codigoPorUnidade = codigoPorUnidade;
     }
 
     @Override
