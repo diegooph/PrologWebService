@@ -80,7 +80,7 @@ public class ProdutividadeRelatorioResource {
             @PathParam("codUnidade") Long codUnidade,
             @QueryParam("dataInicial") String dataInicial,
             @QueryParam("dataFinal") String dataFinal,
-            final List<Long> cpfs) {
-        return service.getRelatorioProdutividadeColaborador(cpfs, codUnidade, dataInicial, dataFinal);
+            final List<Long> cpfColaboradores) {
+        return service.getRelatorioProdutividadeColaborador(cpfColaboradores, codUnidade, dataInicial, dataFinal);
     }
 }

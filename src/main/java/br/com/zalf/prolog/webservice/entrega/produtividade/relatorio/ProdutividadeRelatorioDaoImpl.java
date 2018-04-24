@@ -135,10 +135,15 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(@NotNull final List<Long> cpfs,
-                                                                                        @NotNull final Long codUnidade,
-                                                                                        @NotNull final LocalDate dataInicial,
-                                                                                        @NotNull final LocalDate dataFinal) throws SQLException {
+    public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
+            @NotNull final List<Long> cpfColaboradores,
+            @NotNull final Long codUnidade,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws SQLException {
+        if (cpfColaboradores.isEmpty()) {
+            return null;
+        }
+
         final List<ProdutividadeColaboradorRelatorio> relatorioColaboradores = new ArrayList<>();
         List<ProdutividadeColaboradorDia> relatorioDias = new ArrayList<>();
         ProdutividadeColaboradorRelatorio colaboradorRelatorio = null;
@@ -148,7 +153,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM func_relatorio_produtividade_colaborador(?, ?, ?, ?);");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, cpfs));
+            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, cpfColaboradores));
             stmt.setLong(2, codUnidade);
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
@@ -176,6 +181,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         return relatorioColaboradores;
     }
 
+    @NotNull
     private ProdutividadeColaboradorRelatorio createProdutividadeColaboradorRelatorio(
             final @NotNull ResultSet rSet,
             final @NotNull List<ProdutividadeColaboradorDia> relatorioDias) throws SQLException {
@@ -189,6 +195,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         return colaboradorRelatorio;
     }
 
+    @NotNull
     private ProdutividadeColaboradorDia createProdutividadeColaboradorDia(final @NotNull ResultSet rSet) throws SQLException {
         final ProdutividadeColaboradorDia produtividadeDia = new ProdutividadeColaboradorDia();
         produtividadeDia.setData(rSet.getObject("DATA", LocalDate.class));

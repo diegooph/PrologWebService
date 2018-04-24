@@ -115,15 +115,16 @@ public interface ProdutividadeRelatorioDao {
     /**
      * Busca a produtividade de cada colaborador baseado nos mapas que ele executou durante o período de filtragem.
      *
-     * @param cpfs        - Lista de {@link Colaborador#cpf} para serem buscados.
-     * @param codUnidade  - Códido da unidade deste colaborador.
-     * @param dataInicial - Data inicial do filtro de dados.
-     * @param dataFinal   - Data final do filtro de dados.
+     * @param cpfColaboradores - Lista de {@link Colaborador#cpf} para serem buscados.
+     * @param codUnidade       - Códido da unidade deste colaborador.
+     * @param dataInicial      - Data inicial do filtro de dados.
+     * @param dataFinal        - Data final do filtro de dados.
      * @return - Uma lista de {@link ProdutividadeColaboradorRelatorio} contendo os dados buscados.
      * @throws SQLException - Caso algum erro na busca aconteça.
      */
-    List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(@NotNull final List<Long> cpfs,
-                                                                                 @NotNull final Long codUnidade,
-                                                                                 @NotNull final LocalDate dataInicial,
-                                                                                 @NotNull final LocalDate dataFinal) throws SQLException;
+    List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
+            @NotNull final List<Long> cpfColaboradores,
+            @NotNull final Long codUnidade,
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws SQLException;
 }

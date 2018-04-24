@@ -18,13 +18,13 @@ import java.util.List;
  */
 public class ProdutividadeRelatorioTest extends BaseTest {
 
-    private List<Long> cpfs;
+    private List<Long> cpfColaboradores;
 
     @Override
     public void initialize() {
-        cpfs = new ArrayList<>();
-        cpfs.add(3383283194L);
-        cpfs.add(1606943537L);
+        cpfColaboradores = new ArrayList<>();
+        cpfColaboradores.add(3383283194L);
+        cpfColaboradores.add(1606943537L);
         DATA_INICIAL = LocalDate.parse("2018-02-01");
         DATA_FINAL = LocalDate.parse("2018-02-28");
     }
@@ -33,7 +33,7 @@ public class ProdutividadeRelatorioTest extends BaseTest {
     public void testGetProdutividadeColaboradorRelatorio() throws SQLException {
         final ProdutividadeRelatorioDao dao = Injection.provideProdutividadeRelatorioDao();
         final List<ProdutividadeColaboradorRelatorio> relatorio =
-                dao.getRelatorioProdutividadeColaborador(cpfs, COD_UNIDADE, DATA_INICIAL, DATA_FINAL);
+                dao.getRelatorioProdutividadeColaborador(cpfColaboradores, COD_UNIDADE, DATA_INICIAL, DATA_FINAL);
 
         System.out.println(relatorio);
         Assert.assertFalse(relatorio.isEmpty());

@@ -91,13 +91,14 @@ public class ProdutividadeRelatorioService {
         }
     }
 
-    public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(@NotNull final List<Long> cpfs,
-                                                                                        @NotNull final Long codUnidade,
-                                                                                        @NotNull final String dataInicial,
-                                                                                        @NotNull final String dataFinal) {
+    public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
+            @NotNull final List<Long> cpfColaboradores,
+            @NotNull final Long codUnidade,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) {
         try {
             return dao.getRelatorioProdutividadeColaborador(
-                    cpfs,
+                    cpfColaboradores,
                     codUnidade,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
