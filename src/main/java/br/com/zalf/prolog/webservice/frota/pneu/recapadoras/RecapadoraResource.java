@@ -33,7 +33,7 @@ public class RecapadoraResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public Response atualizaRecapadora(@PathParam("codEmpresa") @Required Long codEmpresa,
-                                        @Required Recapadora recapadora) throws Exception {
+                                       @Required Recapadora recapadora) throws Exception {
         return service.atualizaRecapadoras(codEmpresa, recapadora);
     }
 

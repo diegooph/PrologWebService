@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RecapadoraException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,7 @@ public class RecapadoraService {
     public Response insertRecapadora(@NotNull final String token,
                                      @NotNull final Recapadora recapadora) throws RecapadoraException {
         try {
-            dao.insertRecapadora(token, recapadora);
+            dao.insertRecapadora(TokenCleaner.getOnlyToken(token), recapadora);
             return Response.ok("Recapadora inserida com sucesso!");
         } catch (SQLException e) {
             throw new RecapadoraException(
@@ -57,7 +58,7 @@ public class RecapadoraService {
                                              @NotNull final Long codEmpresa,
                                              @NotNull final List<Recapadora> recapadoras) throws RecapadoraException {
         try {
-            dao.alterarStatusRecapadoras(token, codEmpresa, recapadoras);
+            dao.alterarStatusRecapadoras(TokenCleaner.getOnlyToken(token), codEmpresa, recapadoras);
             return Response.ok("Status");
         } catch (SQLException e) {
             throw new RecapadoraException(
