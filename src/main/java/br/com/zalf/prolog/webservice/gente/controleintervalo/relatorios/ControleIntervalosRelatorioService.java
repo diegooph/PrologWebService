@@ -189,7 +189,7 @@ public class ControleIntervalosRelatorioService {
                     if (totalSegundos != null) {
                         tipoIntervalo.setTempoTotalTipoIntervalo(Duration.ofSeconds(totalSegundos));
                     } else {
-                        throw new IllegalStateException("Total de tempo gasto no intervalo não calculado para o " +
+                        Log.d(TAG, "Total de tempo gasto no intervalo não calculado para o " +
                                 "intervalo de código: " + tipoIntervalo.getCodigo());
                     }
                 });
