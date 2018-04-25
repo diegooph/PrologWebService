@@ -69,28 +69,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Pneu> getPneusByPlaca(String placa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<Pneu> listPneu = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
-                    "WHERE VP.PLACA = ? " +
-                    "ORDER BY PO.ORDEM_EXIBICAO ASC;");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listPneu.add(PneuConverter.createPneuCompleto(rSet));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return listPneu;
-    }
-
-    @Override
     public boolean insert(Pneu pneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -164,6 +142,66 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
+    public boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE PNEU SET CODIGO_CLIENTE = ?, COD_MODELO = ?, COD_DIMENSAO = ?, "
+                    + "COD_MODELO_BANDA = ?, DOT = ?, VALOR = ? "
+                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+            stmt.setString(1, pneu.getCodigoCliente());
+            stmt.setLong(2, pneu.getModelo().getCodigo());
+            stmt.setLong(3, pneu.getDimensao().codigo);
+            if (pneu.jaFoiRecapado()) {
+                stmt.setLong(4, pneu.getBanda().getModelo().getCodigo());
+                updateTrocaVidaPneu(pneu, codUnidade, conn);
+            } else {
+                stmt.setNull(4, Types.BIGINT);
+            }
+            stmt.setString(5, pneu.getDot());
+            stmt.setBigDecimal(6, pneu.getValor());
+            stmt.setLong(7, codOriginalPneu);
+            stmt.setLong(8, codUnidade);
+
+            final int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao atualizar as informações do pneu: " + pneu.getCodigo());
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
+        return true;
+    }
+
+    @Override
+    public List<Pneu> getPneusByPlaca(String placa) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Pneu> listPneu = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
+                    "WHERE VP.PLACA = ? " +
+                    "ORDER BY PO.ORDEM_EXIBICAO ASC;");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listPneu.add(PneuConverter.createPneuCompleto(rSet));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return listPneu;
+    }
+
+    @Override
     public void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         Preconditions.checkArgument(pneu.getVidaAtual() > 1, "Vida atual precisa ser maior que 1");
 
@@ -224,43 +262,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
         } finally {
             closeConnection(null, stmt, null);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE PNEU SET COD_MODELO = ?, COD_DIMENSAO = ?, "
-                    + "COD_MODELO_BANDA = ?, DOT = ?, VALOR = ? "
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?");
-            stmt.setLong(1, pneu.getModelo().getCodigo());
-            stmt.setLong(2, pneu.getDimensao().codigo);
-            if (pneu.jaFoiRecapado()) {
-                stmt.setLong(3, pneu.getBanda().getModelo().getCodigo());
-                updateTrocaVidaPneu(pneu, codUnidade, conn);
-            } else {
-                stmt.setNull(3, Types.BIGINT);
-            }
-            stmt.setString(4, pneu.getDot());
-            stmt.setBigDecimal(5, pneu.getValor());
-            stmt.setLong(6, codOriginalPneu);
-            stmt.setLong(7, codUnidade);
-
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar as informações do pneu: " + pneu.getCodigo());
-            }
-            conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, null);
         }
         return true;
     }
