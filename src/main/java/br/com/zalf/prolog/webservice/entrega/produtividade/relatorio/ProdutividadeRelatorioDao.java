@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import org.jetbrains.annotations.NotNull;
 
@@ -115,16 +114,17 @@ public interface ProdutividadeRelatorioDao {
     /**
      * Busca a produtividade de cada colaborador baseado nos mapas que ele executou durante o período de filtragem.
      *
-     * @param cpfColaboradores - Lista de {@link Colaborador#cpf} para serem buscados.
+     * @param cpf              - um CPF.
      * @param codUnidade       - Códido da unidade deste colaborador.
      * @param dataInicial      - Data inicial do filtro de dados.
      * @param dataFinal        - Data final do filtro de dados.
      * @return - Uma lista de {@link ProdutividadeColaboradorRelatorio} contendo os dados buscados.
      * @throws SQLException - Caso algum erro na busca aconteça.
      */
+    @NotNull
     List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
-            @NotNull final List<Long> cpfColaboradores,
             @NotNull final Long codUnidade,
+            @NotNull final String cpf,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws SQLException;
 }

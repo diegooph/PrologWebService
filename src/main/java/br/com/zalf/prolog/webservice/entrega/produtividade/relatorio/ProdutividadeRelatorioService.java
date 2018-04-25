@@ -92,19 +92,19 @@ public class ProdutividadeRelatorioService {
     }
 
     public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
-            @NotNull final List<Long> cpfColaboradores,
             @NotNull final Long codUnidade,
+            @NotNull final String cpfColaborador,
             @NotNull final String dataInicial,
             @NotNull final String dataFinal) {
         try {
             return dao.getRelatorioProdutividadeColaborador(
-                    cpfColaboradores,
                     codUnidade,
+                    cpfColaborador,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de produtividade dos colaboradores", e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }

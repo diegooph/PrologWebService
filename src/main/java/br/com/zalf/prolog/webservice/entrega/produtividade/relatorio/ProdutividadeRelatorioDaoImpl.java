@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -136,14 +135,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
 
     @Override
     public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
-            @NotNull final List<Long> cpfColaboradores,
             @NotNull final Long codUnidade,
+            @NotNull final String cpfColaborador,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws SQLException {
-        if (cpfColaboradores.isEmpty()) {
-            return null;
-        }
-
         final List<ProdutividadeColaboradorRelatorio> relatorioColaboradores = new ArrayList<>();
         List<ProdutividadeColaboradorDia> relatorioDias = new ArrayList<>();
         ProdutividadeColaboradorRelatorio colaboradorRelatorio = null;
@@ -153,8 +148,12 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM func_relatorio_produtividade_colaborador(?, ?, ?, ?);");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, cpfColaboradores));
-            stmt.setLong(2, codUnidade);
+            stmt.setLong(1, codUnidade);
+            if (cpfColaborador.equals("%")) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                stmt.setLong(2, Long.valueOf(cpfColaborador));
+            }
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
             rSet = stmt.executeQuery();

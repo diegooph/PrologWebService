@@ -75,12 +75,12 @@ public class ProdutividadeRelatorioResource {
     }
 
     @GET
-    @Path("/produtividade-colaborador/{codUnidade}")
+    @Path("/produtividade-colaborador/{codUnidade}/{cpf}")
     public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
             @PathParam("codUnidade") Long codUnidade,
+            @PathParam("cpf") String cpfColaborador,
             @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal,
-            final List<Long> cpfColaboradores) {
-        return service.getRelatorioProdutividadeColaborador(cpfColaboradores, codUnidade, dataInicial, dataFinal);
+            @QueryParam("dataFinal") String dataFinal) {
+        return service.getRelatorioProdutividadeColaborador(codUnidade, cpfColaborador, dataInicial, dataFinal);
     }
 }
