@@ -247,6 +247,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                             tiposIntervalosUnidade,
                             segundosTipoIntervalo);
                     relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
+                    segundosTipoIntervalo.clear();
                     dias = new ArrayList<>();
                     intervalosDia = new ArrayList<>();
                 } else {
@@ -283,6 +284,13 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     } else {
                         segundosTipoIntervalo.put(intervalo.getCodTipoIntervalo(), segundos);
                     }
+                } else {
+                    // Se a marcação de início ou fim não existirem, nós não temos como calcular o tempo total nesse
+                    // tipo de intervalo. Porém, caso o colaborador tenha marcado apenas INÍCIOS para um tipo de
+                    // intervalo e nenhum fim, nós nunca vamos calcular o tempo total gasto e com isso, não adicionaremos
+                    // esse tipo de intervalo nos intervalos marcados pelo colaborador. Pois ele não estará no Map
+                    // segundosTipoIntervalo. Esse putIfAbsent garante que cobrimos esse caso.
+                    segundosTipoIntervalo.putIfAbsent(intervalo.getCodTipoIntervalo(), 0L);
                 }
 
                 cpfAnterior = cpfAtual;
@@ -297,6 +305,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                 final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = createTiposIntervalosMarcados(
                         tiposIntervalosUnidade,
                         segundosTipoIntervalo);
+                segundosTipoIntervalo.clear();
                 relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
             }
             return relatorios;
