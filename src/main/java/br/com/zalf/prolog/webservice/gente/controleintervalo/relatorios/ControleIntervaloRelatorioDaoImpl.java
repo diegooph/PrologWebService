@@ -209,8 +209,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-            final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
-            Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
+            final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
+            Set<TipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
             Long cpfAnterior = null;
             String nomeAnterior = null;
             LocalDate diaAnterior = null;
@@ -263,8 +263,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                         codTipoIntervaloLong,
                         rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
                 intervalosDia.add(intervalo);
-                final FolhaPontoTipoIntervalo folhaPontoTipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervaloLong);
-                tiposIntervalosMarcados.add(folhaPontoTipoIntervalo);
+                final TipoIntervalo tipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervaloLong);
+                tiposIntervalosMarcados.add(tipoIntervalo);
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;
@@ -322,11 +322,11 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
-        final Map<Long, FolhaPontoTipoIntervalo> tiposIntervalosMap = new HashMap<>();
+    private Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
+        final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(
                 tipoIntervalo.getCodigo(),
-                FolhaPontoTipoIntervalo.createFromTipoIntervalo(tipoIntervalo)));
+                tipoIntervalo));
         return tiposIntervalosMap;
     }
 

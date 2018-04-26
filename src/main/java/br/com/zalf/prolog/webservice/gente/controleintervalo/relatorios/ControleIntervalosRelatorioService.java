@@ -187,7 +187,9 @@ public class ControleIntervalosRelatorioService {
                 pontoRelatorio.getTiposIntervalosMarcados().forEach(tipoIntervalo -> {
                     final Long totalSegundos = segundosTipoIntervalo.get(tipoIntervalo.getCodigo());
                     if (totalSegundos != null) {
-                        tipoIntervalo.setTempoTotalTipoIntervalo(Duration.ofSeconds(totalSegundos));
+                        final FolhaPontoTipoIntervalo pontoTipoIntervalo = FolhaPontoTipoIntervalo
+                                .createFromTipoIntervalo(tipoIntervalo);
+                        pontoTipoIntervalo.setTempoTotalTipoIntervalo(Duration.ofSeconds(totalSegundos));
                     } else {
                         Log.d(TAG, "Total de tempo gasto no intervalo não calculado para o " +
                                 "intervalo de código: " + tipoIntervalo.getCodigo());

@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Zart on 18/08/2017.
@@ -128,5 +129,10 @@ public class TipoIntervalo {
 
         final TipoIntervalo tipoIntervalo = (TipoIntervalo) obj;
         return !(codigo == null || tipoIntervalo.codigo == null) && codigo.equals(tipoIntervalo.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(codigo);
     }
 }
