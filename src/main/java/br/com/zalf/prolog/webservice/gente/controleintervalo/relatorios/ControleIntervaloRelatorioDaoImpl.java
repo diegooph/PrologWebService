@@ -271,7 +271,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                         dataHoraInicio,
                         dataHoraFim,
                         codTipoIntervaloLong,
-                        rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
+                        rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
+                        rSet.getBoolean("TROCOU_DIA"));
                 intervalosDia.add(intervalo);
 
                 // Calcula a diferença de tempo entre início e fim, se ambos existirem.

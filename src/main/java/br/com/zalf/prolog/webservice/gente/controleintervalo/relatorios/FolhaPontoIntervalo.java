@@ -20,12 +20,21 @@ public final class FolhaPontoIntervalo {
     @NotNull
     private final Long codTipoIntervaloPorUnidade;
 
-    public FolhaPontoIntervalo(@Nullable final LocalDateTime dataHoraInicio, @Nullable final LocalDateTime dataHoraFim,
-                               @NotNull final Long codTipoIntervalo, @NotNull final Long codTipoIntervaloPorUnidade) {
+    /**
+     * Indica se as marcações de início e fim foram feitas em dias diferentes.
+     */
+    private final boolean trocouDia;
+
+    public FolhaPontoIntervalo(@Nullable final LocalDateTime dataHoraInicio,
+                               @Nullable final LocalDateTime dataHoraFim,
+                               @NotNull final Long codTipoIntervalo,
+                               @NotNull final Long codTipoIntervaloPorUnidade,
+                               final boolean trocouDia) {
         this.dataHoraInicio = dataHoraInicio;
         this.dataHoraFim = dataHoraFim;
         this.codTipoIntervalo = codTipoIntervalo;
         this.codTipoIntervaloPorUnidade = codTipoIntervaloPorUnidade;
+        this.trocouDia = trocouDia;
     }
 
     @Nullable
@@ -46,5 +55,9 @@ public final class FolhaPontoIntervalo {
     @NotNull
     public Long getCodTipoIntervaloPorUnidade() {
         return codTipoIntervaloPorUnidade;
+    }
+
+    public boolean isTrocouDia() {
+        return trocouDia;
     }
 }
