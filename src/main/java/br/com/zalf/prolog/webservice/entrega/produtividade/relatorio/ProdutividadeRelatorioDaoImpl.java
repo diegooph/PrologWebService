@@ -133,6 +133,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         }
     }
 
+    @NotNull
     @Override
     public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
             @NotNull final Long codUnidade,
@@ -147,7 +148,10 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM func_relatorio_produtividade_colaborador(?, ?, ?, ?);");
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM func_relatorio_produtividade_colaborador(?, ?, ?, ?);",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             stmt.setLong(1, codUnidade);
             if (cpfColaborador.equals("%")) {
                 stmt.setNull(2, Types.BIGINT);
@@ -159,7 +163,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             Long ultimoCpf = null;
             while (rSet.next()) {
-                Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
+                final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
                 if (ultimoCpf == null) {
                     ultimoCpf = cpfAtual;
                 } else if (!cpfAtual.equals(ultimoCpf)) {
@@ -169,9 +173,9 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                     ultimoCpf = cpfAtual;
                 }
                 relatorioDias.add(createProdutividadeColaboradorDia(rSet));
-                if (rSet.isLast()) {
-                    colaboradorRelatorio = createProdutividadeColaboradorRelatorio(rSet, relatorioDias);
-                }
+            }
+            if (ultimoCpf != null && rSet.previous()) {
+                colaboradorRelatorio = createProdutividadeColaboradorRelatorio(rSet, relatorioDias);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
