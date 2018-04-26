@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Date;
 
@@ -126,7 +127,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @Override
-    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date
+            dataFinal, String cpf)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -143,7 +145,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     @Override
-    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal,  String cpf)
+    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -209,8 +211,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-            final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao.getTiposIntervalosByUnidade(codUnidade, false));
-            Set<TipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
+            final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao
+                    .getTiposIntervalosByUnidade(codUnidade, false));
+            final Map<Long, Long> segundosTipoIntervalo = new HashMap<>();
             Long cpfAnterior = null;
             String nomeAnterior = null;
             LocalDate diaAnterior = null;
@@ -218,7 +221,12 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             List<FolhaPontoIntervalo> intervalosDia = new ArrayList<>();
             while (rSet.next()) {
                 final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
-                final LocalDate diaAtual = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class).toLocalDate();
+                final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
+                // A data/hora de início pode ser nula ou a de fim, mas nunca ambas. Para utilizar o dia atual, devemos
+                // priorizar a data/hora de início.
+                final LocalDate diaAtual = dataHoraInicio != null
+                        ? dataHoraInicio.toLocalDate()
+                        : rSet.getObject("DATA_HORA_FIM", LocalDateTime.class).toLocalDate();
 
                 // Se for na primeira iteração, devemos deixar dia e cpf anterior como sendo igual aos atuais.
                 if (cpfAnterior == null) {
@@ -235,8 +243,10 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     final Colaborador colaborador = new Colaborador();
                     colaborador.setCpf(cpfAnterior);
                     colaborador.setNome(nomeAnterior);
+                    final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = createTiposIntervalosMarcados(
+                            tiposIntervalosUnidade,
+                            segundosTipoIntervalo);
                     relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
-                    tiposIntervalosMarcados = new HashSet<>();
                     dias = new ArrayList<>();
                     intervalosDia = new ArrayList<>();
                 } else {
@@ -254,7 +264,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     }
                 }
 
-                final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
                 final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
                 final Long codTipoIntervaloLong = rSet.getLong("COD_TIPO_INTERVALO");
                 final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
@@ -263,8 +272,18 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                         codTipoIntervaloLong,
                         rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"));
                 intervalosDia.add(intervalo);
-                final TipoIntervalo tipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervaloLong);
-                tiposIntervalosMarcados.add(tipoIntervalo);
+
+                // Calcula a diferença de tempo entre início e fim, se ambos existirem.
+                if (dataHoraInicio != null && dataHoraFim != null) {
+                    final long segundos = ChronoUnit.SECONDS.between(dataHoraInicio, dataHoraFim);
+                    if (segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) != null) {
+                        segundosTipoIntervalo.put(
+                                intervalo.getCodTipoIntervalo(),
+                                segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) + segundos);
+                    } else {
+                        segundosTipoIntervalo.put(intervalo.getCodTipoIntervalo(), segundos);
+                    }
+                }
 
                 cpfAnterior = cpfAtual;
                 diaAnterior = diaAtual;
@@ -275,6 +294,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                 final Colaborador colaborador = new Colaborador();
                 colaborador.setCpf(cpfAnterior);
                 colaborador.setNome(nomeAnterior);
+                final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = createTiposIntervalosMarcados(
+                        tiposIntervalosUnidade,
+                        segundosTipoIntervalo);
                 relatorios.add(new FolhaPontoRelatorio(colaborador, tiposIntervalosMarcados, dias));
             }
             return relatorios;
@@ -307,7 +329,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                       @NotNull final Long codUnidade,
                                                       @NotNull final Long codTipoIntervalo,
                                                       @NotNull final LocalDate dataInicial,
-                                                      @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+                                                      @NotNull final LocalDate dataFinal) throws SQLException,
+            IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -331,9 +354,24 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn,  String cpf)
+    private Set<FolhaPontoTipoIntervalo> createTiposIntervalosMarcados(
+            @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+            @NotNull final Map<Long, Long> segundosTipoIntervalo) {
+
+        final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
+        segundosTipoIntervalo.forEach((codTipoIntervalo, segundosTotal) -> {
+            final TipoIntervalo tipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervalo);
+            tiposIntervalosMarcados.add(FolhaPontoTipoIntervalo.createFromTipoIntervalo(tipoIntervalo, segundosTotal));
+        });
+        return tiposIntervalosMarcados;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date
+            dataFinal, Connection conn, String cpf)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador" +
+                "(?,?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -349,7 +387,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                  @NotNull final LocalDate dataFinal,
                                                                  @NotNull final Connection conn) throws SQLException {
         Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codTipoIntervalo);
         if (!cpf.equals("%")) {
@@ -364,9 +403,11 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
+    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal,
+                                                               Connection conn)
             throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias" +
+                "(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -374,7 +415,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf, Connection conn)
+    private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
+                                                Connection conn)
             throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
                 "(?, ?, ?, ?);");
@@ -400,7 +442,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                      @NotNull final Long codTipoIntervalo,
                                                                      @NotNull final LocalDate dataInicial,
                                                                      @NotNull final LocalDate dataFinal,
-                                                                     @NotNull final Connection conn) throws SQLException {
+                                                                     @NotNull final Connection conn) throws
+            SQLException {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(?, ?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
