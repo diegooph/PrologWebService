@@ -106,10 +106,10 @@ final class ServicoQueryBinder {
                 "FROM AFERICAO_MANUTENCAO AM " +
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
                 "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
-                "WHERE AM.COD_UNIDADE = ?" +
+                "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
-                "GROUP BY AM.COD_PNEU "+
+                "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU "+
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
