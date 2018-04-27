@@ -89,7 +89,8 @@ final class ServicoConverter {
 
     static QuantidadeServicosPneu createQtdServicosPneu(ResultSet resultSet) throws SQLException {
         final QuantidadeServicosPneu qtdServicosFechados = new QuantidadeServicosPneu();
-        qtdServicosFechados.setCodigoPneu(resultSet.getString("COD_PNEU"));
+        qtdServicosFechados.setCodigoPneu(resultSet.getLong("COD_PNEU"));
+        qtdServicosFechados.setCodigoPneuCliente(resultSet.getString("CODIGO_PNEU_CLIENTE"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
         qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
         qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));

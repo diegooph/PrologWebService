@@ -99,11 +99,13 @@ final class ServicoQueryBinder {
                                                                Connection connection) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  AM.COD_PNEU, " +
+                "  P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
                 "FROM AFERICAO_MANUTENCAO AM " +
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
                 "WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
                 "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
