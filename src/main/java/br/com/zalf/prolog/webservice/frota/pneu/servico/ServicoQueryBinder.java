@@ -227,7 +227,7 @@ final class ServicoQueryBinder {
 
 
     static PreparedStatement getServicosFechadosPneu(final Long codUnidade,
-                                                     final String codPneu,
+                                                     final Long codPneu,
                                                      final long dataInicial,
                                                      final long dataFinal,
                                                      Connection connection) throws SQLException {
@@ -239,7 +239,7 @@ final class ServicoQueryBinder {
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, codPneu);
+        stmt.setLong(2, codPneu);
         stmt.setDate(3, new Date(dataInicial));
         stmt.setString(4, zoneId);
         stmt.setDate(5, new Date(dataFinal));

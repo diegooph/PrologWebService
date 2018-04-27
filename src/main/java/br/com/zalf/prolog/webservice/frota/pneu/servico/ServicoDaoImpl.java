@@ -317,7 +317,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosFechadosPneu(Long codUnidade, String codPneu, long dataInicial, long dataFinal)
+    public List<Servico> getServicosFechadosPneu(Long codUnidade, Long codPneu, long dataInicial, long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;

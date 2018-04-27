@@ -53,7 +53,7 @@ public interface ServicoDao {
 	 * Retorna os serviços fechados referentes ao pneu com código {@code codPneu}.
 	 */
 	List<Servico> getServicosFechadosPneu(final Long codUnidade,
-										  final String codPneu,
+										  final Long codPneu,
 										  final long dataInicial,
 										  final long dataFinal) throws SQLException;
 
