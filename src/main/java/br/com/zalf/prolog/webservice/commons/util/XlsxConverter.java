@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.commons.util;
 
 import com.google.common.base.Preconditions;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,7 +28,7 @@ public final class XlsxConverter {
 
         // Open the xlsx and get the requested sheet from the workbook.
         final XSSFWorkbook workBook = new XSSFWorkbook(fileInStream);
-        XSSFSheet selSheet = workBook.getSheetAt(sheetIndex);
+        final XSSFSheet selSheet = workBook.getSheetAt(sheetIndex);
 
         // Iterate through all the rows in the selected sheet.
         try {
@@ -49,7 +50,11 @@ public final class XlsxConverter {
                             sb.append(cell.getStringCellValue());
                             break;
                         case NUMERIC:
-                            sb.append(cell.getNumericCellValue());
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                sb.append(cell.getDateCellValue());
+                            } else {
+                                sb.append(cell.getNumericCellValue());
+                            }
                             break;
                         case BOOLEAN:
                             sb.append(cell.getBooleanCellValue());
