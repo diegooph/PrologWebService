@@ -40,9 +40,10 @@ public final class XlsxConverter {
                 // Iterate through all the columns in the row and build ","
                 // separated string.
                 final Iterator<Cell> cellIterator = row.cellIterator();
+                int count = 0;
                 while (cellIterator.hasNext()) {
                     final Cell cell = cellIterator.next();
-                    if (sb.length() != 0) {
+                    if (count != 0) {
                         sb.append(",");
                     }
 
@@ -64,10 +65,12 @@ public final class XlsxConverter {
                             break;
                         default:
                     }
+                    // Para previnir de adicionar vírgula onde não se deve.
+                    count++;
                 }
                 sb.append("\r\n");
             }
-
+            System.out.println(sb.toString());
             IOUtils.write(sb.toString(), new FileOutputStream(file), Charsets.UTF_8);
         } finally {
             IOUtils.closeQuietly(fileInStream, workBook);
