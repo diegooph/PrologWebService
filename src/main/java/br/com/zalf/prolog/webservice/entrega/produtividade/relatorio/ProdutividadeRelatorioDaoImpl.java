@@ -142,7 +142,6 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             @NotNull final LocalDate dataFinal) throws SQLException {
         final List<ProdutividadeColaboradorRelatorio> relatorioColaboradores = new ArrayList<>();
         List<ProdutividadeColaboradorDia> relatorioDias = new ArrayList<>();
-        ProdutividadeColaboradorRelatorio colaboradorRelatorio = null;
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -175,12 +174,11 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                 relatorioDias.add(createProdutividadeColaboradorDia(rSet));
             }
             if (ultimoCpf != null && rSet.previous()) {
-                colaboradorRelatorio = createProdutividadeColaboradorRelatorio(rSet, relatorioDias);
+                relatorioColaboradores.add(createProdutividadeColaboradorRelatorio(rSet, relatorioDias));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        relatorioColaboradores.add(colaboradorRelatorio);
         return relatorioColaboradores;
     }
 
