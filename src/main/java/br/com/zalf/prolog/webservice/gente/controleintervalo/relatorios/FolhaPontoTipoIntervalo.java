@@ -24,7 +24,8 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     }
 
     @NotNull
-    public static FolhaPontoTipoIntervalo createFromTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
+    public static FolhaPontoTipoIntervalo createFromTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo,
+                                                                  @NotNull final Long tempoTotalTipoIntervaloSegundos) {
         final FolhaPontoTipoIntervalo folhaTipo = new FolhaPontoTipoIntervalo();
         folhaTipo.setCodigo(tipoIntervalo.getCodigo());
         folhaTipo.setCodigoPorUnidade(tipoIntervalo.getCodigoPorUnidade());
@@ -36,6 +37,7 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
         folhaTipo.setTempoLimiteEstouro(tipoIntervalo.getTempoLimiteEstouro());
         folhaTipo.setTempoRecomendado(tipoIntervalo.getTempoRecomendado());
         folhaTipo.setUnidade(tipoIntervalo.getUnidade());
+        folhaTipo.setTempoTotalTipoIntervalo(Duration.ofSeconds(tempoTotalTipoIntervaloSegundos));
         return folhaTipo;
     }
 
@@ -50,5 +52,10 @@ public final class FolhaPontoTipoIntervalo extends TipoIntervalo {
     @Override
     public boolean equals(final Object obj) {
         return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

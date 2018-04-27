@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+<a name="v2.0.56"></a>
+## Version [v2.0.56](https://github.com/luizfp/PrologWebService/compare/v2.0.55...v2.0.56) (2018-04-27)
+
+### Bug Fixes
+* Corrige problemas no relatório de folha de ponto dos colaboradores
+
 <a name="v2.0.55"></a>
 ## Version [v2.0.55](https://github.com/luizfp/PrologWebService/compare/v2.0.54...v2.0.55) (2018-04-23)
 
