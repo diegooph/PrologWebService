@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -26,7 +27,8 @@ class EscalaDiariaReader {
     }
 
     static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final File file) {
-        if (file.getName().endsWith(".xlsx") || file.getName().endsWith(".XLSX")) {
+        final String extension = FilenameUtils.getExtension(file.getName());
+        if (extension.equalsIgnoreCase(".xlsx")) {
             try {
                 new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("dd/MM/yyyy"));
             } catch (final IOException ex) {
