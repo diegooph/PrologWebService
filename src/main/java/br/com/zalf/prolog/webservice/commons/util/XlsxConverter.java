@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -32,11 +35,11 @@ public final class XlsxConverter {
 
         // Iterate through all the rows in the selected sheet.
         try {
+            final StringBuilder sb = new StringBuilder();
             for (final Row row : selSheet) {
                 // Iterate through all the columns in the row and build ","
                 // separated string.
                 final Iterator<Cell> cellIterator = row.cellIterator();
-                final StringBuilder sb = new StringBuilder();
                 while (cellIterator.hasNext()) {
                     final Cell cell = cellIterator.next();
                     if (sb.length() != 0) {
@@ -62,10 +65,12 @@ public final class XlsxConverter {
                         default:
                     }
                 }
-                System.out.println(sb.toString());
+                sb.append("\r\n");
             }
+
+            IOUtils.write(sb.toString(), new FileOutputStream(file), Charsets.UTF_8);
         } finally {
-            workBook.close();
+            IOUtils.closeQuietly(fileInStream, workBook);
         }
     }
 }
