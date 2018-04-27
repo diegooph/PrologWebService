@@ -9,12 +9,12 @@ import java.time.LocalDate;
  */
 public class EscalaDiariaItem {
 
-    private long codigo;
-    private long codUnidade;
+    private Long codigo;
+    private Long codUnidade;
     private LocalDate data;
     private String placa;
     private boolean isPlacaOk;
-    private int codMapa;
+    private Integer codMapa;
     private boolean isMapaOk;
     private Long cpfMotorista;
     private String nomeMotorista;
@@ -29,19 +29,19 @@ public class EscalaDiariaItem {
     public EscalaDiariaItem() {
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
-    public long getCodUnidade() {
+    public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final long codUnidade) {
+    public void setCodUnidade(final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
@@ -53,14 +53,6 @@ public class EscalaDiariaItem {
         this.data = data;
     }
 
-    public boolean isPlacaOk() {
-        return isPlacaOk;
-    }
-
-    public void setPlacaOk(final boolean placaOk) {
-        isPlacaOk = placaOk;
-    }
-
     public String getPlaca() {
         return placa;
     }
@@ -69,11 +61,19 @@ public class EscalaDiariaItem {
         this.placa = placa;
     }
 
-    public int getCodMapa() {
+    public boolean isPlacaOk() {
+        return isPlacaOk;
+    }
+
+    public void setPlacaOk(final boolean placaOk) {
+        isPlacaOk = placaOk;
+    }
+
+    public Integer getCodMapa() {
         return codMapa;
     }
 
-    public void setCodMapa(final int codMapa) {
+    public void setCodMapa(final Integer codMapa) {
         this.codMapa = codMapa;
     }
 

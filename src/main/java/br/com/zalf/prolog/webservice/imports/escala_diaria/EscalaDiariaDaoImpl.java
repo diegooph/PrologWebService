@@ -243,10 +243,25 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-            stmt.setInt(4, item.getCodMapa());
+
+            if (item.getCodMapa() != null) {
+                stmt.setInt(4, item.getCodMapa());
+            } else {
+                stmt.setNull(4, Types.BIGINT);
+            }
+
             stmt.setLong(5, item.getCpfMotorista());
-            stmt.setLong(6, item.getCpfAjudante1());
-            stmt.setLong(7, item.getCpfAjudante2());
+
+            if (item.getCpfAjudante1() != null) {
+                stmt.setLong(6, item.getCpfAjudante1());
+            } else {
+                stmt.setNull(6, Types.BIGINT);
+            }
+            if (item.getCpfAjudante2() != null) {
+                stmt.setLong(7, item.getCpfAjudante2());
+            } else {
+                stmt.setNull(7, Types.BIGINT);
+            }
             stmt.setTimestamp(8, Now.timestampUtc());
             stmt.setTimestamp(9, Now.timestampUtc());
             stmt.setString(10, token);
