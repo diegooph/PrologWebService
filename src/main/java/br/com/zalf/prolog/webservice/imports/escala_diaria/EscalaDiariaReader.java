@@ -28,7 +28,7 @@ class EscalaDiariaReader {
 
     static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
-        if (extension.equalsIgnoreCase(".xlsx")) {
+        if (extension.equalsIgnoreCase("xlsx")) {
             try {
                 new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("dd/MM/yyyy"));
             } catch (final IOException ex) {
