@@ -30,7 +30,7 @@ public class ProdutividadeColaboradorRelatorio {
     }
 
     public void setValorTotal(final BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
+        this.valorTotal = valorTotal.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public List<ProdutividadeColaboradorDia> getProdutividadeDias() {

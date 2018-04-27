@@ -44,7 +44,7 @@ public class ProdutividadeColaboradorDia {
     }
 
     public void setValor(final BigDecimal valor) {
-        this.valor = valor;
+        this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     @Override
