@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ class EscalaDiariaReader {
     static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final File file) {
         if (file.getName().endsWith(".xlsx") || file.getName().endsWith(".XLSX")) {
             try {
-                new XlsxConverter().convertFileToCsv(file, 0);
+                new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("dd/MM/yyyy"));
             } catch (final IOException ex) {
                 throw new RuntimeException("Erro ao converter de XLSX para CSV", ex);
             }

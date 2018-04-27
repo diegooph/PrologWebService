@@ -9,11 +9,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 /**
@@ -23,7 +25,9 @@ import java.util.Iterator;
  */
 public final class XlsxConverter {
 
-    public void convertFileToCsv(@NotNull final File file, final int sheetIndex) throws IOException {
+    public void convertFileToCsv(@NotNull final File file,
+                                 final int sheetIndex,
+                                 @Nullable final SimpleDateFormat dateFormat) throws IOException {
         Preconditions.checkNotNull(file);
         Preconditions.checkArgument(sheetIndex >= 0);
 
@@ -55,7 +59,10 @@ public final class XlsxConverter {
                             break;
                         case NUMERIC:
                             if (DateUtil.isCellDateFormatted(cell)) {
-                                sb.append(cell.getDateCellValue());
+                                // Assumimos que quem chama o conversor sabe se a planilha tem ou não um campo de
+                                // data/hora para ser convertido. E caso tenha, irá enviar um SimpleDateFormat não nulo.
+                                //noinspection ConstantConditions
+                                sb.append(dateFormat.format(cell.getDateCellValue()));
                             } else {
                                 sb.append(cell.getNumericCellValue());
                             }
@@ -70,7 +77,6 @@ public final class XlsxConverter {
                 }
                 sb.append("\r\n");
             }
-            System.out.println(sb.toString());
             IOUtils.write(sb.toString(), new FileOutputStream(file), Charsets.UTF_8);
         } finally {
             IOUtils.closeQuietly(fileInStream, workBook);
