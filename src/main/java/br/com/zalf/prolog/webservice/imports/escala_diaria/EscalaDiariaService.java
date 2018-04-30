@@ -144,7 +144,7 @@ public class EscalaDiariaService {
             throws EscalaDiariaException {
         try {
             final List<EscalaDiariaItem> escalaItens = EscalaDiariaReader.readListFromCsvFilePath(file);
-            dao.insertOrUpdateEscalaDiaria(token, codUnidade, escalaItens);
+            dao.insertOrUpdateEscalaDiaria(TokenCleaner.getOnlyToken(token), codUnidade, escalaItens);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new EscalaDiariaException(
