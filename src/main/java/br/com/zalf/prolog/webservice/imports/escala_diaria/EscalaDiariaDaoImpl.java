@@ -206,15 +206,15 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         item.setData(rSet.getObject("DATA", LocalDate.class));
         item.setPlaca(rSet.getString("PLACA"));
         item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
-        item.setCodMapa(rSet.getInt("MAPA"));
+        item.setCodMapa((Integer) rSet.getObject("MAPA"));
         item.setMapaOk(rSet.getBoolean("MAPA_OK"));
         item.setCpfMotorista(rSet.getLong("CPF_MOTORISTA"));
         item.setNomeMotorista(rSet.getString("NOME_MOTORISTA"));
         item.setCpfMotoristaOk(rSet.getBoolean("MOTORISTA_OK"));
-        item.setCpfAjudante1(rSet.getLong("CPF_AJUDANTE_1"));
+        item.setCpfAjudante1((Long) rSet.getObject("CPF_AJUDANTE_1"));
         item.setNomeAjudante1(rSet.getString("NOME_AJUDANTE_1"));
         item.setCpfAjudante1Ok(rSet.getBoolean("AJUDANTE_1_OK"));
-        item.setCpfAjudante2(rSet.getLong("CPF_AJUDANTE_2"));
+        item.setCpfAjudante2((Long) rSet.getObject("CPF_AJUDANTE_2"));
         item.setNomeAjudante2(rSet.getString("NOME_AJUDANTE_2"));
         item.setCpfAjudante2Ok(rSet.getBoolean("AJUDANTE_2_OK"));
         return item;
