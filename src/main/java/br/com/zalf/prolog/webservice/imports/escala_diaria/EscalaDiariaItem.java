@@ -14,7 +14,7 @@ public class EscalaDiariaItem {
     private LocalDate data;
     private String placa;
     private boolean isPlacaOk;
-    private Integer codMapa;
+    private Long codMapa;
     private boolean isMapaOk;
     private Long cpfMotorista;
     private String nomeMotorista;
@@ -69,11 +69,11 @@ public class EscalaDiariaItem {
         isPlacaOk = placaOk;
     }
 
-    public Integer getCodMapa() {
+    public Long getCodMapa() {
         return codMapa;
     }
 
-    public void setCodMapa(final Integer codMapa) {
+    public void setCodMapa(final Long codMapa) {
         this.codMapa = codMapa;
     }
 

@@ -98,7 +98,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-            stmt.setInt(4, item.getCodMapa());
+            stmt.setLong(4, item.getCodMapa());
             stmt.setLong(5, item.getCpfMotorista());
             stmt.setLong(6, item.getCpfAjudante1());
             stmt.setLong(7, item.getCpfAjudante2());
@@ -206,7 +206,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
         item.setData(rSet.getObject("DATA", LocalDate.class));
         item.setPlaca(rSet.getString("PLACA"));
         item.setPlacaOk(rSet.getBoolean("PLACA_OK"));
-        item.setCodMapa((Integer) rSet.getObject("MAPA"));
+        item.setCodMapa((Long) rSet.getObject("MAPA"));
         item.setMapaOk(rSet.getBoolean("MAPA_OK"));
         item.setCpfMotorista(rSet.getLong("CPF_MOTORISTA"));
         item.setNomeMotorista(rSet.getString("NOME_MOTORISTA"));
@@ -245,7 +245,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setString(3, item.getPlaca().toUpperCase());
 
             if (item.getCodMapa() != null) {
-                stmt.setInt(4, item.getCodMapa());
+                stmt.setLong(4, item.getCodMapa());
             } else {
                 stmt.setNull(4, Types.BIGINT);
             }
@@ -298,7 +298,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-            stmt.setInt(4, item.getCodMapa());
+            stmt.setLong(4, item.getCodMapa());
             stmt.setLong(5, item.getCpfMotorista());
             stmt.setLong(6, item.getCpfAjudante1());
             stmt.setLong(7, item.getCpfAjudante2());
@@ -307,7 +307,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
 
             stmt.setDate(10, DateUtils.toSqlDate(item.getData()));
             stmt.setString(11, item.getPlaca().toUpperCase());
-            stmt.setInt(12, item.getCodMapa());
+            stmt.setLong(12, item.getCodMapa());
             stmt.setLong(13, item.getCpfMotorista());
             stmt.setLong(14, item.getCpfAjudante1());
             stmt.setLong(15, item.getCpfAjudante2());
