@@ -75,7 +75,7 @@ public class ProdutividadeRelatorioResource {
     }
 
     @GET
-    @Path("/produtividade-colaborador/{codUnidade}/{cpf}")
+    @Path("/remuneracao-acumulada-colaborador/{codUnidade}/{cpf}")
     public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("cpf") String cpfColaborador,
