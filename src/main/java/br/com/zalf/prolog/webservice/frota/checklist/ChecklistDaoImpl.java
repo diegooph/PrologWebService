@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServi
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -321,9 +322,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
             stmt.setDate(6, DateUtils.toSqlDate(dataFinal));
             stmt.setString(7, zoneId);
             rSet = stmt.executeQuery();
-            List<FarolVeiculoDia> farois = new ArrayList<>();
+            final List<FarolVeiculoDia> farois = new ArrayList<>();
+            final OrdemServicoDao ordemServicoDao = Injection.provideOrdemServicoDao();
             while (rSet.next()) {
-                farois.add(createFarolVeiculoDia(rSet, dataInicial, dataFinal, itensCriticosRetroativos));
+                farois.add(createFarolVeiculoDia(rSet, dataFinal, itensCriticosRetroativos, ordemServicoDao));
             }
             return new FarolChecklist(farois);
         } finally {
@@ -331,10 +333,10 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
     }
 
-    private FarolVeiculoDia createFarolVeiculoDia(ResultSet rSet,
-                                                  Date dataInicial,
-                                                  Date dataFinal,
-                                                  boolean itensCriticosRetroativos) throws SQLException {
+    private FarolVeiculoDia createFarolVeiculoDia(@NotNull final ResultSet rSet,
+                                                  @NotNull final Date dataFinal,
+                                                  final boolean itensCriticosRetroativos,
+                                                  @NotNull final OrdemServicoDao ordemServicoDao) throws SQLException {
         Checklist checkSaida = null;
         final Long codChecklistSaida = rSet.getLong("COD_CHECKLIST_SAIDA");
         if (!rSet.wasNull()) {
@@ -357,9 +359,13 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
         }
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA"));
-        final List<ItemOrdemServico> itensCriticos = Injection
-                .provideOrdemServicoDao()
-                .getItensOsManutencaoHolder(veiculo.getPlaca(), dataInicial, dataFinal, itensCriticosRetroativos);
+        final List<ItemOrdemServico> itensCriticos = ordemServicoDao
+                .getItensOs(
+                        veiculo.getPlaca(),
+                        dataFinal,
+                        ItemOrdemServico.Status.PENDENTE,
+                        PerguntaRespostaChecklist.CRITICA,
+                        itensCriticosRetroativos);
         return new FarolVeiculoDia(veiculo, checkSaida, checkRetorno, itensCriticos);
     }
 

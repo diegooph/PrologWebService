@@ -59,7 +59,7 @@ public class OrdemServicoService {
 
     public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status, int limit, long offset, String prioridade){
         try{
-            return dao.getItensOsManutencaoHolder(placa, status, limit, offset, prioridade);
+            return dao.getItensOs(placa, status, limit, offset, prioridade);
         }catch (SQLException e){
             Log.e(TAG, String.format("Erro ao buscar os itens de uma OS. \n" +
                     "Placa: %s \n" +
