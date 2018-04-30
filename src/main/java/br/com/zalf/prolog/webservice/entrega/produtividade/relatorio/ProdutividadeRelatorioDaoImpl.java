@@ -148,7 +148,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM func_relatorio_produtividade_colaborador(?, ?, ?, ?);",
+                    "SELECT * FROM func_relatorio_produtividade_remuneracao_acumulada_colaborador(?, ?, ?, ?);",
                     ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             stmt.setLong(1, codUnidade);
