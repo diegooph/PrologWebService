@@ -119,7 +119,7 @@ public class EmpresaResource {
     }
 
     @POST
-    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR})
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Permissao.VINCULAR_CARGO})
     @Path("/unidades/{codUnidade}/cargos/{codCargo}/visao")
     public Response alterarVisaoCargo(Visao visao,
                                       @PathParam("codUnidade") Long codUnidade,
