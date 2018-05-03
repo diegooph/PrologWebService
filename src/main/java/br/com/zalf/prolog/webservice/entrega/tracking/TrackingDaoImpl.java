@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.tracking;
+package br.com.zalf.prolog.webservice.entrega.tracking;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -16,8 +16,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
-import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
+import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTime;
+import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTimestamp;
 
 public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
     private static final String TAG = TrackingDaoImpl.class.getSimpleName();

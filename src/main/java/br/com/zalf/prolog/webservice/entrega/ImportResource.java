@@ -1,12 +1,12 @@
-package br.com.zalf.prolog.webservice.imports;
+package br.com.zalf.prolog.webservice.entrega;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.imports.mapa.MapaService;
-import br.com.zalf.prolog.webservice.imports.tracking.TrackingService;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaService;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.apache.commons.io.IOUtils;
@@ -20,9 +20,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @deprecated in v2_56. Devemos mover esses métodos de import para seus respectivos resources. Criando MapaResource
+ * e um Tracking resource.
+ */
 @Path("/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Deprecated
 public class ImportResource {
 
 	private static final String TAG = ImportResource.class.getSimpleName();

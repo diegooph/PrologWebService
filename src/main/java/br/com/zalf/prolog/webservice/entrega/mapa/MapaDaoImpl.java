@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.mapa;
+package br.com.zalf.prolog.webservice.entrega.mapa;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -16,8 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTime;
-import static br.com.zalf.prolog.webservice.imports.ImportUtils.toTimestamp;
+import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTime;
+import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTimestamp;
 
 public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     private static final String TAG = MapaDaoImpl.class.getSimpleName();

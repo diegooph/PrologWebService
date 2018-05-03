@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Situacao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia.*;
-import br.com.zalf.prolog.webservice.imports.ImportUtils;
+import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 

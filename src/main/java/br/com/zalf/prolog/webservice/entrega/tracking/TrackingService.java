@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.tracking;
+package br.com.zalf.prolog.webservice.entrega.tracking;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;

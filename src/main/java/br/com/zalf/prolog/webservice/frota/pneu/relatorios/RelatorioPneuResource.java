@@ -144,7 +144,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated in v2_56. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoCsv(Long)} instead.
+     * @deprecated in v2_57. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoCsv(Long)} instead.
      */
     @GET
     @Path("/afericoes/resumo/pneus/{codUnidade}/csv")
@@ -154,7 +154,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated in v2_56. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoReport(Long)} instead.
+     * @deprecated in v2_57. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoReport(Long)} instead.
      */
     @GET
     @Path("/afericoes/resumo/pneus/{codUnidade}/report")
