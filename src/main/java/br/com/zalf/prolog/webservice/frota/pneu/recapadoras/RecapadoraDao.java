@@ -41,6 +41,15 @@ public interface RecapadoraDao {
     List<Recapadora> getRecapadoras(@NotNull final Long codEmpresa, final Boolean ativas) throws SQLException;
 
     /**
+     * Busca uma {@link Recapadora} através do código dela.
+     *
+     * @param codEmpresa    - Código da empresa para buscar as recapadoras.
+     * @param codRecapadora - Código da {@link Recapadora} que será buscada.
+     * @return - Uma {@link Recapadora}.
+     */
+    Recapadora getRecapadora(Long codEmpresa, Long codRecapadora) throws SQLException;
+
+    /**
      * @param token       - Token para saber qual {@link Colaborador} está alterando as {@link Recapadora}s.
      * @param codEmpresa  - Código da {@link Empresa} que as {@link Recapadora}s pertencem.
      * @param recapadoras - {@link Recapadora}s que serão alteradas.

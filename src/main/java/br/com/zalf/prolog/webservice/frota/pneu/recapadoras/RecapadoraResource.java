@@ -46,6 +46,15 @@ public class RecapadoraResource {
         return service.getRecapadoras(codEmpresa, ativas);
     }
 
+    @GET
+    @Secured(permissions = {Pilares.Frota.Recapadora.VISUALIZACAO, Pilares.Frota.Recapadora.EDICAO})
+    @UsedBy(platforms = {Platform.WEBSITE})
+    @Path("/{codEmpresa}/{codRecapadora}")
+    public Recapadora getRecapadora(@PathParam("codEmpresa") Long codEmpresa,
+                                    @PathParam("codRecapadora") Long codRecapadora) throws Exception {
+        return service.getRecapadora(codEmpresa, codRecapadora);
+    }
+
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Recapadora.EDICAO})

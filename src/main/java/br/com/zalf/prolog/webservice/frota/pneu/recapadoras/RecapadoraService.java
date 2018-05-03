@@ -54,6 +54,17 @@ public class RecapadoraService {
         }
     }
 
+    public Recapadora getRecapadora(@NotNull final Long codEmpresa,
+                                    @NotNull final Long codRecapadora) throws RecapadoraException {
+        try {
+            return dao.getRecapadora(codEmpresa, codRecapadora);
+        } catch (SQLException e) {
+            throw new RecapadoraException(
+                    "Não foi possível buscar esta recapadora, tente novamente!",
+                    "Erro ao buscar esta recapadora!");
+        }
+    }
+
     public Response alterarStatusRecapadoras(@NotNull final String token,
                                              @NotNull final Long codEmpresa,
                                              @NotNull final List<Recapadora> recapadoras) throws RecapadoraException {

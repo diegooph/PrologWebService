@@ -87,6 +87,29 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
     }
 
     @Override
+    public Recapadora getRecapadora(final Long codEmpresa, final Long codRecapadora) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT R.CODIGO, R.COD_EMPRESA, R.NOME, R.ATIVA " +
+                    "FROM RECAPADORA AS R " +
+                    "WHERE R.CODIGO = ? AND R.COD_EMPRESA = ?");
+            stmt.setLong(1, codRecapadora);
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createRecapadora(rSet);
+            } else {
+                throw new SQLException("Nenhuma Recapadora encontrada para o código: " + codRecapadora);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void alterarStatusRecapadoras(@NotNull final String token,
                                          @NotNull final Long codEmpresa,
                                          @NotNull final List<Recapadora> recapadoras) throws SQLException {
