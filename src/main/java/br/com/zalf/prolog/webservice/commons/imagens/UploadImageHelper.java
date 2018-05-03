@@ -19,11 +19,11 @@ import java.io.InputStream;
  */
 public class UploadImageHelper {
 
-    public static ImagemProLog uploadImagem(@NotNull final ImagemProLog imagemProLog,
-                                            @NotNull final InputStream inputStream,
+    public static ImagemProLog uploadImagem(@NotNull final InputStream inputStream,
                                             @NotNull final String amazonBucket)
             throws IOException, S3FileSender.S3FileSenderException {
 
+        final ImagemProLog imagemProLog = new ImagemProLog();
         final S3FileSender fileSender = new S3FileSender(
                 AmazonConstants.AWS_ACCESS_KEY_ID,
                 AmazonConstants.AWS_SECRET_KEY);
