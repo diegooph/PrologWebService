@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.imports.escala_diaria;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -98,12 +97,24 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-            stmt.setLong(4, item.getCodMapa());
+            if (item.getCodMapa() != null) {
+                stmt.setLong(4, item.getCodMapa());
+            } else {
+                stmt.setNull(4, Types.BIGINT);
+            }
             stmt.setLong(5, item.getCpfMotorista());
-            stmt.setLong(6, item.getCpfAjudante1());
-            stmt.setLong(7, item.getCpfAjudante2());
+            if (item.getCpfAjudante1() != null) {
+                stmt.setLong(6, item.getCpfAjudante1());
+            } else {
+                stmt.setNull(6, Types.BIGINT);
+            }
+            if (item.getCpfAjudante2() != null) {
+                stmt.setLong(7, item.getCpfAjudante2());
+            } else {
+                stmt.setNull(7, Types.BIGINT);
+            }
             stmt.setTimestamp(8, Now.timestampUtc());
-            stmt.setString(9, TokenCleaner.getOnlyToken(token));
+            stmt.setString(9, token);
             stmt.setLong(10, item.getCodigo());
             if (stmt.executeUpdate() == 0) {
                 // nenhum para item atualizado
@@ -243,15 +254,12 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-
             if (item.getCodMapa() != null) {
                 stmt.setLong(4, item.getCodMapa());
             } else {
                 stmt.setNull(4, Types.BIGINT);
             }
-
             stmt.setLong(5, item.getCpfMotorista());
-
             if (item.getCpfAjudante1() != null) {
                 stmt.setLong(6, item.getCpfAjudante1());
             } else {
@@ -291,26 +299,56 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
                     "  CPF_ULTIMA_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
                     "WHERE DATA = ? " +
                     "AND PLACA = ? " +
-                    "AND MAPA = ? " +
+                    "AND (? = 1 OR MAPA = ?) " +
                     "AND CPF_MOTORISTA = ? " +
-                    "AND CPF_AJUDANTE_1 = ? " +
-                    "AND CPF_AJUDANTE_2 = ?");
+                    "AND (? = 1 OR CPF_AJUDANTE_1 = ?) " +
+                    "AND (? = 1 OR CPF_AJUDANTE_2 = ?)");
             stmt.setLong(1, codUnidade);
             stmt.setDate(2, DateUtils.toSqlDate(item.getData()));
             stmt.setString(3, item.getPlaca().toUpperCase());
-            stmt.setLong(4, item.getCodMapa());
+            if (item.getCodMapa() != null) {
+                stmt.setLong(4, item.getCodMapa());
+            } else {
+                stmt.setNull(4, Types.BIGINT);
+            }
             stmt.setLong(5, item.getCpfMotorista());
-            stmt.setLong(6, item.getCpfAjudante1());
-            stmt.setLong(7, item.getCpfAjudante2());
+            if (item.getCpfAjudante1() != null) {
+                stmt.setLong(6, item.getCpfAjudante1());
+            } else {
+                stmt.setNull(6, Types.BIGINT);
+            }
+            if (item.getCpfAjudante2() != null) {
+                stmt.setLong(7, item.getCpfAjudante2());
+            } else {
+                stmt.setNull(7, Types.BIGINT);
+            }
             stmt.setTimestamp(8, Now.timestampUtc());
-            stmt.setString(9, TokenCleaner.getOnlyToken(token));
+            stmt.setString(9, token);
 
             stmt.setDate(10, DateUtils.toSqlDate(item.getData()));
             stmt.setString(11, item.getPlaca().toUpperCase());
-            stmt.setLong(12, item.getCodMapa());
-            stmt.setLong(13, item.getCpfMotorista());
-            stmt.setLong(14, item.getCpfAjudante1());
-            stmt.setLong(15, item.getCpfAjudante2());
+            if (item.getCodMapa() != null) {
+                stmt.setInt(12, 1);
+                stmt.setLong(13, item.getCodMapa());
+            } else {
+                stmt.setInt(12, 0);
+                stmt.setNull(13, Types.BIGINT);
+            }
+            stmt.setLong(14, item.getCpfMotorista());
+            if (item.getCpfAjudante1() != null) {
+                stmt.setInt(15, 1);
+                stmt.setLong(16, item.getCpfAjudante1());
+            } else {
+                stmt.setInt(15, 0);
+                stmt.setNull(16, Types.BIGINT);
+            }
+            if (item.getCpfAjudante2() != null) {
+                stmt.setInt(17, 1);
+                stmt.setLong(18, item.getCpfAjudante2());
+            } else {
+                stmt.setInt(17, 0);
+                stmt.setNull(18, Types.BIGINT);
+            }
             if (stmt.executeUpdate() == 0) {
                 // nenhum para item atualizado
                 return false;
