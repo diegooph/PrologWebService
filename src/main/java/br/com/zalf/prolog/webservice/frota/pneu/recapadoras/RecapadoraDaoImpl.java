@@ -72,10 +72,17 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT R.CODIGO, R.COD_EMPRESA, R.NOME, R.ATIVA " +
                     "FROM RECAPADORA AS R " +
-                    "WHERE R.COD_EMPRESA = ? AND R.ATIVA = ?");
+                    "WHERE R.COD_EMPRESA = ? " +
+                    "AND (? = 1 OR R.ATIVA = ?);");
             stmt.setLong(1, codEmpresa);
-            // Se ativas != null significa que Se true buscamos TODOS se não Só as recapadoras ativas.
-            stmt.setBoolean(2, ativas != null);
+
+            if (ativas == null) {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, true);
+            } else {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, ativas);
+            }
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 recapadoras.add(createRecapadora(rSet));
