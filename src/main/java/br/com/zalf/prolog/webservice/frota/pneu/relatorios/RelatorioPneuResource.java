@@ -100,18 +100,6 @@ public class RelatorioPneuResource {
         return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
     }
 
-    @GET
-    @Path("/afericoes/resumo/pneus/{codUnidade}/csv")
-    public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) throws RuntimeException {
-        return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
-    }
-
-    @GET
-    @Path("/afericoes/resumo/pneus/{codUnidade}/report")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
-        return service.getDadosUltimaAfericaoReport(codUnidade);
-    }
 
     @GET
     @Path("/pneus-descartados/{codUnidade}/report")
@@ -129,8 +117,55 @@ public class RelatorioPneuResource {
         return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
     }
 
+    @GET
+    @Path("/dados-ultima-afericao/{codUnidade}/csv")
+    public StreamingOutput getDadosUltimaAfericaoCsv(@PathParam("codUnidade") Long codUnidade) throws RuntimeException {
+        return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+    }
+
+    @GET
+    @Path("/dados-ultima-afericao/{codUnidade}/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getDadosUltimaAfericaoReport(@PathParam("codUnidade") Long codUnidade) {
+        return service.getDadosUltimaAfericaoReport(codUnidade);
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/{codUnidade}/csv")
+    public StreamingOutput getResumoGeralPneusCsv(@PathParam("codUnidade") Long codUnidade) throws RuntimeException {
+        return outputStream -> service.getResumoGeralPneusCsv(codUnidade, outputStream);
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/{codUnidade}/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getResumoGeralPneusReport(@PathParam("codUnidade") Long codUnidade) {
+        return service.getResumoGeralPneusReport(codUnidade);
+    }
+
     /**
-     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasReport(Long, long, long)} (Long, long)} instead
+     * @deprecated in v2_56. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoCsv(Long)} instead.
+     */
+    @GET
+    @Path("/afericoes/resumo/pneus/{codUnidade}/csv")
+    @Deprecated
+    public StreamingOutput DEPRECATED_DADOS_ULTIMA_AFERICAO_CSV(@PathParam("codUnidade") Long codUnidade) throws RuntimeException {
+        return outputStream -> service.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+    }
+
+    /**
+     * @deprecated in v2_56. Use {@link RelatorioPneuResource#getDadosUltimaAfericaoReport(Long)} instead.
+     */
+    @GET
+    @Path("/afericoes/resumo/pneus/{codUnidade}/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    @Deprecated
+    public Report DEPRECATED_DADOS_ULTIMA_AFERICAO_REPORT(@PathParam("codUnidade") Long codUnidade) {
+        return service.getDadosUltimaAfericaoReport(codUnidade);
+    }
+
+    /**
+     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasReport(Long, long, long)} instead.
      */
     @GET
     @Path("/aderencia/placas/{codUnidade}/report")
@@ -142,7 +177,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(Long, long, long)} (Long, long)} instead
+     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(Long, long, long)} instead.
      */
     @GET
     @Path("/aderencia/placas/{codUnidade}/csv")
