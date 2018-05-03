@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
@@ -89,7 +90,8 @@ public final class GsonUtils {
                 .of(AbstractResponse.class)
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class)
-				.registerSubtype(ResponseIntervalo.class);
+				.registerSubtype(ResponseIntervalo.class)
+				.registerSubtype(ResponseImagemChecklist.class);
 
 		RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
 				.of(Motivo.class, "tipo")

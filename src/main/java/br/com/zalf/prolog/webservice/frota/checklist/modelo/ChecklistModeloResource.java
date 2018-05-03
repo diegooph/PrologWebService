@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -116,11 +115,6 @@ public class ChecklistModeloResource {
                                                 @FormDataParam("file") FormDataContentDisposition fileDetail) {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
 
-        final Long codImagem = service.insertImagem(codEmpresa, fileInputStream);
-        if (codImagem != null) {
-            return ResponseWithCod.ok("Imagem inserida com sucesso", codImagem);
-        } else {
-            return Response.error("Erro ao inserir imagem");
-        }
+        return service.insertImagem(codEmpresa, fileInputStream);
     }
 }

@@ -2,8 +2,12 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -103,14 +107,19 @@ public class ChecklistModeloService {
         }
     }
 
-    public Long insertImagem(@NotNull final Long codEmpresa,
-                             @NotNull final InputStream fileInputStream) {
+    public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
+                                         @NotNull final InputStream fileInputStream) {
         try {
-            return dao.insertImagem(codEmpresa, UploadImageHelper.uploadImagem(
+            final ImagemProLog imagemProLog = UploadImageHelper.uploadImagem(
                     fileInputStream,
-                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS));
+                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS);
+            final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
+            return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
+        } catch (FileFormatNotSupportException e) {
+            Log.e(TAG, "Arquivo recebido não é uma imagem", e);
+            return Response.error(e.getMessage());
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
-            Log.e(TAG, "Erro ao inserir o imagem.", e);
+            Log.e(TAG, "Erro ao inserir o imagem", e);
             throw new RuntimeException(e);
         }
     }
