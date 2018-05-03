@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
@@ -105,11 +104,9 @@ public class ChecklistModeloService {
     }
 
     public Long insertImagem(@NotNull final Long codEmpresa,
-                             @NotNull final InputStream fileInputStream,
-                             @NotNull final ImagemProLog imagemProLog) {
+                             @NotNull final InputStream fileInputStream) {
         try {
             return dao.insertImagem(codEmpresa, UploadImageHelper.uploadImagem(
-                    imagemProLog,
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS));
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
