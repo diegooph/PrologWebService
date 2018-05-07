@@ -143,22 +143,24 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getResumoGeralPneusCsv(Long codUnidade, OutputStream outputStream) throws RuntimeException {
+    public void getResumoGeralPneusCsv(Long codUnidade, String status, OutputStream outputStream) throws RuntimeException {
         try {
-            dao.getResumoGeralPneus(codUnidade, outputStream);
+            dao.getResumoGeralPneus(codUnidade, status, outputStream);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (CSV). \n" +
-                    "Unidade: %d", codUnidade), e);
+                    "Unidade: %d\n" +
+                    "Status: %s", codUnidade, status), e);
             throw new RuntimeException(e);
         }
     }
 
-    public Report getResumoGeralPneusReport(Long codUnidade) {
+    public Report getResumoGeralPneusReport(Long codUnidade, String status) {
         try {
-            return dao.getResumoGeralPneus(codUnidade);
+            return dao.getResumoGeralPneus(codUnidade, status);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (REPORT). \n" +
-                    "Unidade: %d", codUnidade), e);
+                    "Unidade: %d\n" +
+                    "Status: %s", codUnidade, status), e);
             throw new RuntimeException(e);
         }
     }

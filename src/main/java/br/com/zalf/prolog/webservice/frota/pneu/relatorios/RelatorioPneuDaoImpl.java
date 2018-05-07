@@ -321,14 +321,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getResumoGeralPneus(final Long codUnidade, final OutputStream outputStream)
+    public void getResumoGeralPneus(final Long codUnidade, final String status, final OutputStream outputStream)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getResumoGeralPneusStatement(conn, codUnidade);
+            stmt = getResumoGeralPneusStatement(conn, codUnidade, status);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -337,13 +337,13 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Report getResumoGeralPneus(final Long codUnidade) throws SQLException {
+    public Report getResumoGeralPneus(final Long codUnidade, String status) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getResumoGeralPneusStatement(conn, codUnidade);
+            stmt = getResumoGeralPneusStatement(conn, codUnidade, status);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -739,11 +739,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-    private PreparedStatement getResumoGeralPneusStatement(Connection conn, long codUnidade)
+    private PreparedStatement getResumoGeralPneusStatement(Connection conn, Long codUnidade, String status)
             throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?, ?);");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+        stmt.setString(2, status);
+        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 

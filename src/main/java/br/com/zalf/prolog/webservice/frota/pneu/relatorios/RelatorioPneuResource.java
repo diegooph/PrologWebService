@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
@@ -115,15 +116,17 @@ public class RelatorioPneuResource {
 
     @GET
     @Path("/resumo-geral-pneus/{codUnidade}/csv")
-    public StreamingOutput getResumoGeralPneusCsv(@PathParam("codUnidade") Long codUnidade) throws RuntimeException {
-        return outputStream -> service.getResumoGeralPneusCsv(codUnidade, outputStream);
+    public StreamingOutput getResumoGeralPneusCsv(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                  @QueryParam("status-pneu") @Optional final String status) throws RuntimeException {
+        return outputStream -> service.getResumoGeralPneusCsv(codUnidade, status, outputStream);
     }
 
     @GET
     @Path("/resumo-geral-pneus/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getResumoGeralPneusReport(@PathParam("codUnidade") Long codUnidade) {
-        return service.getResumoGeralPneusReport(codUnidade);
+    public Report getResumoGeralPneusReport(@PathParam("codUnidade") @Required final Long codUnidade,
+                                            @QueryParam("status-pneu") @Optional final String status) {
+        return service.getResumoGeralPneusReport(codUnidade, status);
     }
 
     @GET
