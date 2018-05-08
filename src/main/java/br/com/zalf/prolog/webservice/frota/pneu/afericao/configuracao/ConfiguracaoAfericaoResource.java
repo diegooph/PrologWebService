@@ -21,12 +21,6 @@ public class ConfiguracaoAfericaoResource {
 
     private final ConfiguracaoAfericaoService service = new ConfiguracaoAfericaoService();
 
-    @POST
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    public Response insert(ConfiguracaoTipoVeiculoAfericao configuracao) throws Exception {
-        return service.insertConfiguracao(configuracao);
-    }
-
     @PUT
     @Secured
     @Path("/{codUnidade}")

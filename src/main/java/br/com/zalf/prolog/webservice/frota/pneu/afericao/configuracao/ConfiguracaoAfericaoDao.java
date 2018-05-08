@@ -21,8 +21,8 @@ public interface ConfiguracaoAfericaoDao {
      * @param configuracao - Nova {@link ConfiguracaoTipoVeiculoAfericao} que será inserida.
      * @throws SQLException - Caso algum erro acorrer.
      */
-    void updateConfiguracao(@NotNull final Long codUnidade,
-                            @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws SQLException;
+    void insertOrUpdateConfiguracao(@NotNull final Long codUnidade,
+                                    @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws SQLException;
 
     /**
      * Busca todas as {@link ConfiguracaoTipoVeiculoAfericao} existentes para os tipos de veículos da {@link Unidade}.

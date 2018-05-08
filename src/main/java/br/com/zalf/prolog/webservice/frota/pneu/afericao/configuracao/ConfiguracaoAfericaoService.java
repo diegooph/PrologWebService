@@ -17,15 +17,10 @@ public class ConfiguracaoAfericaoService {
 
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
 
-    public Response insertConfiguracao(@NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) {
-        // TODO - é mesmo necessário?
-        return null;
-    }
-
     public Response updateConfiguracao(@NotNull final Long codUnidade,
                                        @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws Exception {
         try {
-            dao.updateConfiguracao(codUnidade, configuracao);
+            dao.insertOrUpdateConfiguracao(codUnidade, configuracao);
             return Response.ok("Configuração atualizada com sucesso!");
         } catch (SQLException e) {
             //TODO - Logar Exception do ProLog

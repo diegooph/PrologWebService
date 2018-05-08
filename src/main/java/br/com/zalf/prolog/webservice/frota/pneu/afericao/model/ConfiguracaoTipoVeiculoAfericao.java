@@ -12,10 +12,10 @@ public class ConfiguracaoTipoVeiculoAfericao {
     private long codigo;
     private long codUnidade;
     private TipoVeiculo tipoVeiculo;
-    private boolean deveAferirPressao;
-    private boolean deveAferirSulco;
-    private boolean deveAferirSulcoPressao;
-    private boolean deveAferirEstepe;
+    private boolean podeAferirPressao;
+    private boolean podeAferirSulco;
+    private boolean podeAferirSulcoPressao;
+    private boolean podeAferirEstepe;
 
     public ConfiguracaoTipoVeiculoAfericao() {
     }
@@ -44,36 +44,36 @@ public class ConfiguracaoTipoVeiculoAfericao {
         this.tipoVeiculo = tipoVeiculo;
     }
 
-    public boolean isDeveAferirPressao() {
-        return deveAferirPressao;
+    public boolean isPodeAferirPressao() {
+        return podeAferirPressao;
     }
 
-    public void setDeveAferirPressao(final boolean deveAferirPressao) {
-        this.deveAferirPressao = deveAferirPressao;
+    public void setPodeAferirPressao(final boolean podeAferirPressao) {
+        this.podeAferirPressao = podeAferirPressao;
     }
 
-    public boolean isDeveAferirSulco() {
-        return deveAferirSulco;
+    public boolean isPodeAferirSulco() {
+        return podeAferirSulco;
     }
 
-    public void setDeveAferirSulco(final boolean deveAferirSulco) {
-        this.deveAferirSulco = deveAferirSulco;
+    public void setPodeAferirSulco(final boolean podeAferirSulco) {
+        this.podeAferirSulco = podeAferirSulco;
     }
 
-    public boolean isDeveAferirSulcoPressao() {
-        return deveAferirSulcoPressao;
+    public boolean isPodeAferirSulcoPressao() {
+        return podeAferirSulcoPressao;
     }
 
-    public void setDeveAferirSulcoPressao(final boolean deveAferirSulcoPressao) {
-        this.deveAferirSulcoPressao = deveAferirSulcoPressao;
+    public void setPodeAferirSulcoPressao(final boolean podeAferirSulcoPressao) {
+        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
     }
 
-    public boolean isDeveAferirEstepe() {
-        return deveAferirEstepe;
+    public boolean isPodeAferirEstepe() {
+        return podeAferirEstepe;
     }
 
-    public void setDeveAferirEstepe(final boolean deveAferirEstepe) {
-        this.deveAferirEstepe = deveAferirEstepe;
+    public void setPodeAferirEstepe(final boolean podeAferirEstepe) {
+        this.podeAferirEstepe = podeAferirEstepe;
     }
 
     @Override
@@ -82,10 +82,10 @@ public class ConfiguracaoTipoVeiculoAfericao {
                 "codigo=" + codigo +
                 ", codUnidade=" + codUnidade +
                 ", tipoVeiculo=" + tipoVeiculo +
-                ", deveAferirPressao=" + deveAferirPressao +
-                ", deveAferirSulco=" + deveAferirSulco +
-                ", deveAferirSulcoPressao=" + deveAferirSulcoPressao +
-                ", deveAferirEstepe=" + deveAferirEstepe +
+                ", podeAferirPressao=" + podeAferirPressao +
+                ", podeAferirSulco=" + podeAferirSulco +
+                ", podeAferirSulcoPressao=" + podeAferirSulcoPressao +
+                ", podeAferirEstepe=" + podeAferirEstepe +
                 '}';
     }
 }
