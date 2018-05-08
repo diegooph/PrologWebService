@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria método para buscar um tipo de intervalo específico
 
+### Refactors
+* Altera nomes de alguns atributos do `ModeloChecklist`
+
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
 
