@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -78,9 +78,11 @@ public class ControleIntervaloService {
         }
     }
 
-    public AbstractResponse insertTipoIntervalo(@NotNull TipoIntervalo tipoIntervalo) {
+    public AbstractResponse insertTipoIntervalo(@NotNull final TipoIntervalo tipoIntervalo) {
         try {
-            return ResponseWithCod.ok("Intervalo inserido com sucesso", dao.insertTipoIntervalo(tipoIntervalo,
+            return ResponseWithCod.ok(
+                    "Tipo de intervalo inserido com sucesso",
+                    dao.insertTipoIntervalo(tipoIntervalo,
                     Injection.provideDadosIntervaloChangedListener()));
         } catch (Throwable e){
             Log.e(TAG, "Erro ao inserir o tipo de intervalo", e);
