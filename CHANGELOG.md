@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.57"></a>
-## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (release-date) - [unreleased]
+## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
 
 ### Features
 * Permite importar arquivos XLSX, além de CSV, para a função de Escala Diária
