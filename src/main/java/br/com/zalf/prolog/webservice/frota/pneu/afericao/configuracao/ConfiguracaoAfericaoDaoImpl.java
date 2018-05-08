@@ -51,25 +51,25 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                     "  VT.NOME NOME_TIPO_VEICULO, " +
                     "  VT.COD_UNIDADE, " +
                     "  VT.STATUS_ATIVO, " +
-                    "  (CASE WHEN (CONFIG.PODE_AFERIR_SULCO IS NULL OR CONFIG.PODE_AFERIR_SULCO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_PRESSAO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_SULCO_PRESSAO IS FALSE) " +
+                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
                     "    THEN TRUE " +
                     "   ELSE CONFIG.PODE_AFERIR_SULCO END) AS PODE_AFERIR_SULCO, " +
-                    "  (CASE WHEN (CONFIG.PODE_AFERIR_SULCO IS NULL OR CONFIG.PODE_AFERIR_SULCO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_PRESSAO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_SULCO_PRESSAO IS FALSE) " +
+                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
                     "    THEN TRUE " +
                     "   ELSE CONFIG.PODE_AFERIR_PRESSAO END) AS PODE_AFERIR_PRESSAO, " +
-                    "  (CASE WHEN (CONFIG.PODE_AFERIR_SULCO IS NULL OR CONFIG.PODE_AFERIR_SULCO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_PRESSAO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_SULCO_PRESSAO IS FALSE) " +
+                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
                     "    THEN TRUE " +
                     "   ELSE CONFIG.PODE_AFERIR_SULCO_PRESSAO END) AS PODE_AFERIR_SULCO_PRESSAO, " +
-                    "  (CASE WHEN (CONFIG.PODE_AFERIR_SULCO IS NULL OR CONFIG.PODE_AFERIR_SULCO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_PRESSAO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL OR CONFIG.PODE_AFERIR_SULCO_PRESSAO IS FALSE) " +
-                    "             AND (CONFIG.PODE_AFERIR_ESTEPE IS NULL OR CONFIG.PODE_AFERIR_ESTEPE IS FALSE) " +
+                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
+                    "             AND CONFIG.PODE_AFERIR_ESTEPE IS NULL " +
                     "    THEN TRUE " +
                     "   ELSE CONFIG.PODE_AFERIR_ESTEPE END) AS PODE_AFERIR_ESTEPE " +
                     "FROM VEICULO_TIPO AS VT " +
