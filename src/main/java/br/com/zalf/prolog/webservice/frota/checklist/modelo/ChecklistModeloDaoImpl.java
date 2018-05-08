@@ -106,9 +106,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 modeloChecklist = new ModeloChecklist();
                 modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
                 modeloChecklist.setNome(rSet.getString("MODELO"));
-                modeloChecklist.setListPerguntas(getPerguntas(codUnidade, codModelo));
-                modeloChecklist.setListTipoVeiculo(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
-                modeloChecklist.setListFuncao(getFuncaoByCodModelo(codUnidade, codModelo));
+                modeloChecklist.setPerguntas(getPerguntas(codUnidade, codModelo));
+                modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
+                modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -185,7 +185,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 final ModeloChecklist modelo = new ModeloChecklist();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
-                modelo.setListPerguntas(getPerguntasAlternativasProLog());
+                modelo.setPerguntas(getPerguntasAlternativasProLog());
                 modelos.add(modelo);
             }
             return modelos;
@@ -438,7 +438,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            for (final TipoVeiculo tipoVeiculo : modeloChecklist.getListTipoVeiculo()) {
+            for (final TipoVeiculo tipoVeiculo : modeloChecklist.getTiposVeiculoLiberados()) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_VEICULO_TIPO VALUES (?,?,?);");
                 stmt.setLong(1, modeloChecklist.getCodUnidade());
                 stmt.setLong(2, modeloChecklist.getCodigo());
@@ -451,7 +451,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     private void insertModeloFuncao(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
-        for (final Cargo cargo : modeloChecklist.getListFuncao()) {
+        for (final Cargo cargo : modeloChecklist.getCargosLiberados()) {
             final PreparedStatement stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_FUNCAO VALUES (?,?,?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setLong(2, modeloChecklist.getCodigo());
@@ -463,7 +463,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     private void insertModeloPerguntas(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getListPerguntas()) {
+            for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
                         + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
                         + "STATUS_ATIVO, PRIORIDADE, SINGLE_CHOICE) VALUES (?,?,?,?,?,?,?,?) RETURNING CODIGO");

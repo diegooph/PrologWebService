@@ -14,19 +14,19 @@ public class ModeloChecklist {
     private Long codigo;
     private String nome;
     private Long codUnidade;
-    private List<TipoVeiculo> listTipoVeiculo;
-    private List<Cargo> listFuncao;
-    private List<PerguntaRespostaChecklist> listPerguntas;
+    private List<TipoVeiculo> tiposVeiculoLiberados;
+    private List<Cargo> cargosLiberados;
+    private List<PerguntaRespostaChecklist> perguntas;
 
     public ModeloChecklist() {
     }
 
-    public List<TipoVeiculo> getListTipoVeiculo() {
-        return listTipoVeiculo;
+    public List<TipoVeiculo> getTiposVeiculoLiberados() {
+        return tiposVeiculoLiberados;
     }
 
-    public void setListTipoVeiculo(List<TipoVeiculo> listTipoVeiculo) {
-        this.listTipoVeiculo = listTipoVeiculo;
+    public void setTiposVeiculoLiberados(List<TipoVeiculo> tiposVeiculoLiberados) {
+        this.tiposVeiculoLiberados = tiposVeiculoLiberados;
     }
 
     public Long getCodigo() {
@@ -53,20 +53,20 @@ public class ModeloChecklist {
         this.codUnidade = codUnidade;
     }
 
-    public List<Cargo> getListFuncao() {
-        return listFuncao;
+    public List<Cargo> getCargosLiberados() {
+        return cargosLiberados;
     }
 
-    public void setListFuncao(List<Cargo> listCargo) {
-        this.listFuncao = listCargo;
+    public void setCargosLiberados(List<Cargo> listCargo) {
+        this.cargosLiberados = listCargo;
     }
 
-    public List<PerguntaRespostaChecklist> getListPerguntas() {
-        return listPerguntas;
+    public List<PerguntaRespostaChecklist> getPerguntas() {
+        return perguntas;
     }
 
-    public void setListPerguntas(List<PerguntaRespostaChecklist> listPerguntas) {
-        this.listPerguntas = listPerguntas;
+    public void setPerguntas(List<PerguntaRespostaChecklist> perguntas) {
+        this.perguntas = perguntas;
     }
 
     @Override
@@ -75,9 +75,9 @@ public class ModeloChecklist {
                 "codigo=" + codigo +
                 ", nome='" + nome + '\'' +
                 ", codUnidade=" + codUnidade +
-                ", listTipoVeiculo=" + listTipoVeiculo +
-                ", listFuncao=" + listFuncao +
-                ", listPerguntas=" + listPerguntas +
+                ", tiposVeiculoLiberados=" + tiposVeiculoLiberados +
+                ", cargosLiberados=" + cargosLiberados +
+                ", perguntas=" + perguntas +
                 '}';
     }
 }
