@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.57"></a>
 ## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (release-date) - [unreleased]
 
+### Bug Fixes
+* Corrige criação de Veiculos na integração com a Avilan
+
 <a name="v2.0.56"></a>
 ## Version [v2.0.56](https://github.com/luizfp/PrologWebService/compare/v2.0.55...v2.0.56) (2018-04-27)
 

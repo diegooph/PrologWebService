@@ -61,7 +61,7 @@ public class AvaCorpAvilanConverterTest {
         assertTrue(!veiculosAvilan.getVeiculo().isEmpty());
 
         final List<br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo> veiculosProLog =
-                AvaCorpAvilanConverter.convert(veiculosAvilan);
+                AvaCorpAvilanConverter.convert(veiculosAvilan, 4L);
         assertNotNull(veiculosProLog);
         assertTrue(!veiculosProLog.isEmpty());
 
