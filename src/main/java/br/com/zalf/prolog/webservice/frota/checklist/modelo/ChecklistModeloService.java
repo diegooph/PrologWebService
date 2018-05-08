@@ -30,7 +30,7 @@ public class ChecklistModeloService {
         try {
             return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
             throw new RuntimeException(e);
         }
     }
@@ -39,7 +39,7 @@ public class ChecklistModeloService {
         try {
             return dao.getModeloChecklist(codModelo, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
@@ -48,16 +48,16 @@ public class ChecklistModeloService {
         try {
             return dao.setModeloChecklistInativo(codUnidade, codModelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
 
-    public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) {
+    public void insertModeloChecklist(ModeloChecklist modeloChecklist) {
         try {
-            return dao.insertModeloChecklist(modeloChecklist);
+            dao.insertModeloChecklist(modeloChecklist);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
             throw new RuntimeException(e);
         }
     }
@@ -66,7 +66,7 @@ public class ChecklistModeloService {
         try {
             return dao.getPerguntas(codUnidade, codModelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }

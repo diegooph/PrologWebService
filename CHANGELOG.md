@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.58"></a>
 ## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (release-date) - [unreleased]
 
+### Bug Fixes
+* Aprimora fluxo de inserção de um modelo de checklist
+
 <a name="v0.0.57"></a>
 ## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
 

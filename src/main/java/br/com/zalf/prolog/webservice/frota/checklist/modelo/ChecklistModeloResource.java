@@ -25,11 +25,8 @@ public class ChecklistModeloResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     public Response insertModeloChecklist(ModeloChecklist modeloChecklist) {
-        if (service.insertModeloChecklist(modeloChecklist)) {
-            return Response.ok("Modelo de checklist inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir modelo de checklist");
-        }
+        service.insertModeloChecklist(modeloChecklist);
+        return Response.ok("Modelo de checklist inserido com sucesso");
     }
 
     @GET
