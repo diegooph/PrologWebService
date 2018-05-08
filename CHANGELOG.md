@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.58"></a>
 ## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (release-date) - [unreleased]
 
+### Features
+* Cria método para buscar um tipo de intervalo específico
+
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
 
