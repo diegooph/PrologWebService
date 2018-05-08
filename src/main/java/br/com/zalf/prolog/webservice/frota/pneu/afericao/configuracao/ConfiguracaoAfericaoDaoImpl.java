@@ -75,7 +75,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                     "FROM VEICULO_TIPO AS VT " +
                     "  LEFT JOIN CONFIGURACAO_TIPO_AFERICAO_VEICULO AS CONFIG " +
                     "    ON VT.CODIGO = CONFIG.COD_TIPO_VEICULO AND VT.COD_UNIDADE = CONFIG.COD_UNIDADE " +
-                    "WHERE VT.COD_UNIDADE = ?;");
+                    "WHERE VT.COD_UNIDADE = ? AND VT.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
