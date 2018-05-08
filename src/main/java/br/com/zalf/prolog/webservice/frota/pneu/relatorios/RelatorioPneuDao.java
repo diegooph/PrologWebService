@@ -86,6 +86,10 @@ public interface RelatorioPneuDao {
 
     Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
 
+    void getResumoGeralPneus(Long codUnidade, String status, OutputStream outputStream) throws SQLException, IOException;
+
+    Report getResumoGeralPneus(Long codUnidade, String status) throws SQLException;
+
     Report getPneusDescartadosReport(Long codUnidade,
                                      Long dataInicial,
                                      Long dataFinal) throws SQLException;

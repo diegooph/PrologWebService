@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
@@ -36,7 +36,7 @@ public class EscalaDiariaService {
                                  @NotNull final FormDataContentDisposition fileDetail)
             throws EscalaDiariaException {
         final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-        readAndInsertImport(token, codUnidade, file.getPath());
+        readAndInsertImport(token, codUnidade, file);
         return Response.ok("Upload realizado com sucesso!");
     }
 
@@ -140,11 +140,11 @@ public class EscalaDiariaService {
 
     private void readAndInsertImport(@NotNull final String token,
                                      @NotNull final Long codUnidade,
-                                     @NotNull final String path)
+                                     @NotNull final File file)
             throws EscalaDiariaException {
         try {
-            final List<EscalaDiariaItem> escalaItens = EscalaDiariaReader.readListFromCsvFilePath(path);
-            dao.insertOrUpdateEscalaDiaria(token, codUnidade, escalaItens);
+            final List<EscalaDiariaItem> escalaItens = EscalaDiariaReader.readListFromCsvFilePath(file);
+            dao.insertOrUpdateEscalaDiaria(TokenCleaner.getOnlyToken(token), codUnidade, escalaItens);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new EscalaDiariaException(

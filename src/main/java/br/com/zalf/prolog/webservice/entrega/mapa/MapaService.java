@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.mapa;
+package br.com.zalf.prolog.webservice.entrega.mapa;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;

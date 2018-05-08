@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.mapa;
+package br.com.zalf.prolog.webservice.entrega.mapa;
 
 import java.io.IOException;
 import java.sql.SQLException;

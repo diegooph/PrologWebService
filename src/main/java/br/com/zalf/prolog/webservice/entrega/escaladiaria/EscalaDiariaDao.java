@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import org.jetbrains.annotations.NotNull;

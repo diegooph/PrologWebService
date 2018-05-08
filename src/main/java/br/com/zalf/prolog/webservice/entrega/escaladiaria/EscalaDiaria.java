@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import com.google.common.base.Preconditions;
 

@@ -245,7 +245,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getLong("CODIGO");
+                return rSet.getLong("COD_IMAGEM");
             } else {
                 throw new SQLException("Erro ao inserir imagem");
             }

@@ -1,11 +1,15 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +26,21 @@ class EscalaDiariaReader {
         throw new IllegalStateException(EscalaDiariaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final String path) {
+    static List<EscalaDiariaItem> readListFromCsvFilePath(@NotNull final File file) {
+        final String extension = FilenameUtils.getExtension(file.getName());
+        if (extension.equalsIgnoreCase("xlsx")) {
+            try {
+                new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("dd/MM/yyyy"));
+            } catch (final IOException ex) {
+                throw new RuntimeException("Erro ao converter de XLSX para CSV", ex);
+            }
+        }
 
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true);
         settings.setHeaderExtractionEnabled(true);
         final CsvParser parser = new CsvParser(settings);
-        final List<String[]> rows = parser.parseAll(new File(path));
+        final List<String[]> rows = parser.parseAll(file);
 
         final List<EscalaDiariaItem> escalaItens = new ArrayList<>();
         for (final String[] row : rows) {
@@ -55,19 +67,19 @@ class EscalaDiariaReader {
             item.setPlaca(linha[1].trim().replaceAll(" ", "").toUpperCase());
         }
         // CODIGO DO MAPA
-        if (!linha[2].trim().isEmpty()) {
-            item.setCodMapa(Integer.parseInt(linha[2].trim()));
+        if (linha[2] != null && linha[2].trim().isEmpty()) {
+            item.setCodMapa(Long.parseLong(linha[2].trim()));
         }
         // CPF MOTORISTA
         if (!linha[3].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfMotorista(Long.parseLong(linha[3].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 1
-        if (!linha[4].trim().replaceAll("[^\\d]", "").isEmpty()) {
+        if (linha[4] != null && !linha[4].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfAjudante1(Long.parseLong(linha[4].trim().replaceAll("[^\\d]", "")));
         }
         // CPF AJUDANTE 2
-        if (!linha[5].trim().replaceAll("[^\\d]", "").isEmpty()) {
+        if (linha[5] != null && !linha[5].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfAjudante2(Long.parseLong(linha[5].trim().replaceAll("[^\\d]", "")));
         }
         return item;

@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class RelatorioPneuService {
             return dao.getQtPneusByFaixaSulco(codUnidades, status);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de sulco", e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -38,7 +37,7 @@ public class RelatorioPneuService {
             return dao.getQtPneusByFaixaPressao(codUnidades, status);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de pressão", e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,7 +50,7 @@ public class RelatorioPneuService {
                     "Unidade: %d \n" +
                     "Ano: %d \n" +
                     "Mês: %d", codUnidade, ano, mes), e);
-            return new ArrayList<>();
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,7 +62,7 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (CSV). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -74,7 +73,7 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (REPORT). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -97,7 +96,7 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (REPORT). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -109,7 +108,7 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (CSV). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -120,7 +119,7 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (REPORT). \n" +
                     "Unidade: %d \n" +
                     "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -130,7 +129,7 @@ public class RelatorioPneuService {
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (CSV). \n" +
                     "Unidade: %d", codUnidade), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -140,7 +139,29 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (REPORT). \n" +
                     "Unidade: %d", codUnidade), e);
-            return null;
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getResumoGeralPneusCsv(Long codUnidade, String status, OutputStream outputStream) throws RuntimeException {
+        try {
+            dao.getResumoGeralPneus(codUnidade, status, outputStream);
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (CSV). \n" +
+                    "Unidade: %d\n" +
+                    "Status: %s", codUnidade, status), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Report getResumoGeralPneusReport(Long codUnidade, String status) {
+        try {
+            return dao.getResumoGeralPneus(codUnidade, status);
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (REPORT). \n" +
+                    "Unidade: %d\n" +
+                    "Status: %s", codUnidade, status), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -186,7 +207,7 @@ public class RelatorioPneuService {
                     "dataInicial: %s \n" +
                     "dataFinal: %s \n" +
                     "unidades: %s", dataInicial.toString(), dataFinal, codUnidades.toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -206,7 +227,7 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de placas com aferição vencida. \n" +
                     "unidade: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -226,7 +247,7 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o total de km percorrido com serviço em aberto por placa. \n" +
                     "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -236,7 +257,7 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a lista com as placas e qtd de pneus abaixo do limite. \n" +
                     "unidades: %s", codUnidades.toString()), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -246,7 +267,7 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus com pressão incorreta. \n" +
                     "unidades: %s", codUnidades), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -256,7 +277,7 @@ public class RelatorioPneuService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a lista com o menor sulco de cada pneu. \n" +
                     "unidades: %s", codUnidades), e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

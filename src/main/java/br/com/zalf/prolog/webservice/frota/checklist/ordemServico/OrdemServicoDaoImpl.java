@@ -115,8 +115,8 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
      * @throws SQLException caso não seja possível buscar os itens
      */
     @Override
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, String status,
-                                                             int limit, long offset, String prioridade) throws SQLException {
+    public List<ItemOrdemServico> getItensOs(String placa, String status,
+                                             int limit, long offset, String prioridade) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -139,16 +139,21 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
     }
 
     @Override
-    public List<ItemOrdemServico> getItensOsManutencaoHolder(String placa, Date dataInicial, Date dataFinal,
-                                                             boolean itensCriticosRetroativos) throws SQLException {
+    public List<ItemOrdemServico> getItensOs(@NotNull final String placa,
+                                             @NotNull final Date untilDate,
+                                             @NotNull final ItemOrdemServico.Status statusItem,
+                                             @NotNull final String prioridadeItem,
+                                             final boolean itensCriticosRetroativos) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
         try {
             conn = getConnection();
             String query = "SELECT * FROM ESTRATIFICACAO_OS E " +
-                    "WHERE E.STATUS_ITEM LIKE 'P' AND E.PRIORIDADE LIKE 'CRITICA' AND E.PLACA_VEICULO = ? " +
-                    "AND E.DATA_HORA::DATE %S (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(E.cod_unidade))) " +
+                    "WHERE E.STATUS_ITEM = ? " +
+                    "AND E.PRIORIDADE = ? " +
+                    "AND E.PLACA_VEICULO = ? " +
+                    "AND E.DATA_HORA::DATE %s (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(E.cod_unidade))) " +
                     "ORDER BY E.PLACA_VEICULO, E.PRIORIDADE, E.DATA_HORA DESC;";
             if (itensCriticosRetroativos) {
                 query = String.format(query, "<=");
@@ -156,8 +161,10 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 query = String.format(query, "=");
             }
             stmt = conn.prepareStatement(query);
-            stmt.setString(1, placa);
-            stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
+            stmt.setString(1, statusItem.asString());
+            stmt.setString(2, prioridadeItem);
+            stmt.setString(3, placa);
+            stmt.setDate(4, DateUtils.toSqlDate(untilDate));
             rSet = stmt.executeQuery();
             return createItensOs(rSet);
         } finally {

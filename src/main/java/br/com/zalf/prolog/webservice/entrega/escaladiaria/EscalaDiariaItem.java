@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.escala_diaria;
+package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import java.time.LocalDate;
 
@@ -9,12 +9,12 @@ import java.time.LocalDate;
  */
 public class EscalaDiariaItem {
 
-    private long codigo;
-    private long codUnidade;
+    private Long codigo;
+    private Long codUnidade;
     private LocalDate data;
     private String placa;
     private boolean isPlacaOk;
-    private int codMapa;
+    private Long codMapa;
     private boolean isMapaOk;
     private Long cpfMotorista;
     private String nomeMotorista;
@@ -29,19 +29,19 @@ public class EscalaDiariaItem {
     public EscalaDiariaItem() {
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
-    public long getCodUnidade() {
+    public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final long codUnidade) {
+    public void setCodUnidade(final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
@@ -53,14 +53,6 @@ public class EscalaDiariaItem {
         this.data = data;
     }
 
-    public boolean isPlacaOk() {
-        return isPlacaOk;
-    }
-
-    public void setPlacaOk(final boolean placaOk) {
-        isPlacaOk = placaOk;
-    }
-
     public String getPlaca() {
         return placa;
     }
@@ -69,11 +61,19 @@ public class EscalaDiariaItem {
         this.placa = placa;
     }
 
-    public int getCodMapa() {
+    public boolean isPlacaOk() {
+        return isPlacaOk;
+    }
+
+    public void setPlacaOk(final boolean placaOk) {
+        isPlacaOk = placaOk;
+    }
+
+    public Long getCodMapa() {
         return codMapa;
     }
 
-    public void setCodMapa(final int codMapa) {
+    public void setCodMapa(final Long codMapa) {
         this.codMapa = codMapa;
     }
 

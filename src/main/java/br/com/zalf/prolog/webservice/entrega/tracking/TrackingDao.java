@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.imports.tracking;
+package br.com.zalf.prolog.webservice.entrega.tracking;
 
 import java.io.IOException;
 import java.sql.SQLException;

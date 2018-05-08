@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
+import java.util.List;
 
 /**
  * Created by Zart on 18/05/2017.
@@ -58,18 +59,28 @@ public class ProdutividadeRelatorioResource {
     @Path("/extratos/acessos/{codUnidade}/{cpf}/csv")
     @Produces("application/csv")
     public StreamingOutput getAcessosProdutividadeCsv(@PathParam("cpf") String cpf,
-                                                                @PathParam("codUnidade") Long codUnidade,
-                                                                @QueryParam("dataInicial") long dataInicial,
-                                                                @QueryParam("dataFinal") long dataFinal) {
+                                                      @PathParam("codUnidade") Long codUnidade,
+                                                      @QueryParam("dataInicial") long dataInicial,
+                                                      @QueryParam("dataFinal") long dataFinal) {
         return outputStream -> service.getAcessosProdutividadeCsv(outputStream, cpf, codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/extratos/acessos/{codUnidade}/{cpf}/report")
     public Report getAcessosProdutividadeReport(@PathParam("cpf") String cpf,
-                                                          @PathParam("codUnidade") Long codUnidade,
-                                                          @QueryParam("dataInicial") long dataInicial,
-                                                          @QueryParam("dataFinal") long dataFinal) {
+                                                @PathParam("codUnidade") Long codUnidade,
+                                                @QueryParam("dataInicial") long dataInicial,
+                                                @QueryParam("dataFinal") long dataFinal) {
         return service.getAcessosProdutividadeReport(cpf, codUnidade, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/remuneracao-acumulada-colaborador/{codUnidade}/{cpf}")
+    public List<ProdutividadeColaboradorRelatorio> getRelatorioProdutividadeColaborador(
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("cpf") String cpfColaborador,
+            @QueryParam("dataInicial") String dataInicial,
+            @QueryParam("dataFinal") String dataFinal) {
+        return service.getRelatorioProdutividadeColaborador(codUnidade, cpfColaborador, dataInicial, dataFinal);
     }
 }

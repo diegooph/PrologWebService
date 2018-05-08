@@ -35,6 +35,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -75,12 +77,12 @@ import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.imports.escala_diaria.EscalaDiariaDao;
-import br.com.zalf.prolog.webservice.imports.escala_diaria.EscalaDiariaDaoImpl;
-import br.com.zalf.prolog.webservice.imports.mapa.MapaDao;
-import br.com.zalf.prolog.webservice.imports.mapa.MapaDaoImpl;
-import br.com.zalf.prolog.webservice.imports.tracking.TrackingDao;
-import br.com.zalf.prolog.webservice.imports.tracking.TrackingDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDao;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDao;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -321,6 +323,11 @@ public final class Injection {
     @NotNull
     public static EscalaDiariaDao provideEscalaDiariaDao() {
         return new EscalaDiariaDaoImpl();
+    }
+
+    @NotNull
+    public static RecapadoraDao provideRecapadoraDao() {
+        return new RecapadoraDaoImpl();
     }
 
     // ================================================

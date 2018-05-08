@@ -61,7 +61,7 @@ public final class AvaCorpAvilan extends Sistema {
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()));
+        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()), codUnidade);
     }
 
     @NotNull
@@ -311,7 +311,7 @@ public final class AvaCorpAvilan extends Sistema {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
 
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan);
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, codUnidade);
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
