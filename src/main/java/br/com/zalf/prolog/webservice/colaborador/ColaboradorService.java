@@ -27,13 +27,13 @@ public class ColaboradorService {
     private final ColaboradorDao dao = Injection.provideColaboradorDao();
     private static final String TAG = ColaboradorService.class.getSimpleName();
 
-    public boolean insert(Colaborador colaborador) {
+    public void insert(Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao inserir o colaborador", e);
-            return false;
+            throw e;
         }
     }
 

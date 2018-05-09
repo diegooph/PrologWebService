@@ -26,12 +26,9 @@ public class ColaboradorResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Secured(permissions = Pilares.Gente.Colaborador.CADASTRAR)
-	public Response insert(Colaborador colaborador) {
-		if (service.insert(colaborador)) {
-			return Response.ok("Colaborador inserido com sucesso");
-		} else {
-			return Response.error("Erro ao inserir colaborador");
-		}
+	public Response insert(Colaborador colaborador) throws Throwable {
+		service.insert(colaborador);
+		return Response.ok("Colaborador inserido com sucesso");
 	}
 	
 	@PUT
