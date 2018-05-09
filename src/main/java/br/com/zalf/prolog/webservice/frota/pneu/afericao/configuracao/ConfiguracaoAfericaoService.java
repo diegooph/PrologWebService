@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoTipoVeiculoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoAfericaoValidator;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ public class ConfiguracaoAfericaoService {
 
     public Response updateConfiguracao(@NotNull final Long codUnidade,
                                        @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
-        ConfiguracaoValidator.validateUpdate(configuracoes);
+        ConfiguracaoAfericaoValidator.validateUpdate(configuracoes);
         try {
             dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
