@@ -52,36 +52,8 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         final List<ConfiguracaoTipoVeiculoAfericao> configTipoAfericao = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT CONFIG.CODIGO, " +
-                    "  VT.CODIGO AS COD_TIPO_VEICULO, " +
-                    "  VT.NOME NOME_TIPO_VEICULO, " +
-                    "  VT.COD_UNIDADE, " +
-                    "  VT.STATUS_ATIVO, " +
-                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
-                    "    THEN TRUE " +
-                    "   ELSE CONFIG.PODE_AFERIR_SULCO END) AS PODE_AFERIR_SULCO, " +
-                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
-                    "    THEN TRUE " +
-                    "   ELSE CONFIG.PODE_AFERIR_PRESSAO END) AS PODE_AFERIR_PRESSAO, " +
-                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
-                    "    THEN TRUE " +
-                    "   ELSE CONFIG.PODE_AFERIR_SULCO_PRESSAO END) AS PODE_AFERIR_SULCO_PRESSAO, " +
-                    "  (CASE WHEN CONFIG.PODE_AFERIR_SULCO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_PRESSAO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_SULCO_PRESSAO IS NULL " +
-                    "             AND CONFIG.PODE_AFERIR_ESTEPE IS NULL " +
-                    "    THEN TRUE " +
-                    "   ELSE CONFIG.PODE_AFERIR_ESTEPE END) AS PODE_AFERIR_ESTEPE " +
-                    "FROM VEICULO_TIPO AS VT " +
-                    "  LEFT JOIN CONFIGURACAO_TIPO_AFERICAO_VEICULO AS CONFIG " +
-                    "    ON VT.CODIGO = CONFIG.COD_TIPO_VEICULO AND VT.COD_UNIDADE = CONFIG.COD_UNIDADE " +
-                    "WHERE VT.COD_UNIDADE = ? AND VT.STATUS_ATIVO = TRUE;");
+            stmt = conn.prepareStatement("SELECT * FROM VIEW_CONFIGURACAO_TIPO_AFERICAO " +
+                    "WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {

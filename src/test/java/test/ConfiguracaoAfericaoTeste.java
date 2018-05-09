@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
     @Test
     public void testInsertConfiguracoesTipoAfericao() throws SQLException {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
+        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
@@ -34,8 +36,8 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
         config.setPodeAferirPressao(true);
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(true);
-
-        dao.insertOrUpdateConfiguracao(5L, config);
+        configs.add(config);
+        dao.insertOrUpdateConfiguracao(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
@@ -55,6 +57,7 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
     @Test
     public void testUpdateAndGetConfiguracoesTipoAfericao() throws SQLException {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
+        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
@@ -64,8 +67,8 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
         config.setPodeAferirPressao(false);
         config.setPodeAferirSulcoPressao(true);
         config.setPodeAferirEstepe(false);
-
-        dao.insertOrUpdateConfiguracao(5L, config);
+        configs.add(config);
+        dao.insertOrUpdateConfiguracao(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 
@@ -76,6 +79,7 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
     @Test
     public void testUpdateSameConfiguracoesTipoAfericao() throws SQLException {
         final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
+        final List<ConfiguracaoTipoVeiculoAfericao> configs = new ArrayList<>();
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
         config.setCodUnidade(5L);
         final TipoVeiculo tipoVeiculo = new TipoVeiculo();
@@ -85,8 +89,8 @@ public class ConfiguracaoAfericaoTeste extends BaseTest {
         config.setPodeAferirPressao(false);
         config.setPodeAferirSulcoPressao(false);
         config.setPodeAferirEstepe(false);
-
-        dao.insertOrUpdateConfiguracao(5L, config);
+        configs.add(config);
+        dao.insertOrUpdateConfiguracao(5L, configs);
 
         List<ConfiguracaoTipoVeiculoAfericao> configuracoes = dao.getConfiguracoesTipoAfericaoVeiculo(5L);
 

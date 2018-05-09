@@ -182,26 +182,33 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             // coalesce - trabalha semenlhante ao IF, verifica se o valor é null.
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT V.placa,\n" +
-                    " M.nome,\n" +
-                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO,\n" +
-                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO,\n" +
-                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS\n" +
-                    "FROM VEICULO V JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO\n" +
-                    "        WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
-                    "LEFT JOIN\n" +
-                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total\n" +
-                    "        FROM veiculo_pneu vp\n" +
-                    "        WHERE cod_unidade = ?\n" +
-                    "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa\n" +
-                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ?\n" +
+            stmt = conn.prepareStatement("SELECT V.placa, " +
+                    " M.nome, " +
+                    "    coalesce(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER as INTERVALO_PRESSAO, " +
+                    "    coalesce(INTERVALO_SULCO.INTERVALO, -1)::INTEGER as INTERVALO_SULCO, " +
+                    "    coalesce(numero_pneus.total, 0)::INTEGER AS PNEUS_APLICADOS, " +
+                    "  VCTA.STATUS_ATIVO, " +
+                    "  VCTA.PODE_AFERIR_SULCO, " +
+                    "  VCTA.PODE_AFERIR_PRESSAO, " +
+                    "  VCTA.PODE_AFERIR_SULCO_PRESSAO, " +
+                    "  VCTA.PODE_AFERIR_ESTEPE " +
+                    "FROM VEICULO V " +
+                    "  JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO " +
+                    "  JOIN VIEW_CONFIGURACAO_TIPO_AFERICAO VCTA ON VCTA.COD_TIPO_VEICULO = V.COD_TIPO " +
+                    "LEFT JOIN " +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO " +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA " +
+                    "LEFT JOIN " +
+                    "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO,  EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO " +
+                    "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
+                    "        GROUP BY PLACA_VEICULO) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
+                    "LEFT JOIN " +
+                    "    (SELECT vp.placa as placa_pneus, count(vp.cod_pneu) as total " +
+                    "        FROM veiculo_pneu vp " +
+                    "        WHERE cod_unidade = ? " +
+                    "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa " +
+                    "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? " +
                     "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
 
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
@@ -430,6 +437,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
+        placa.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
         return placa;
     }
 

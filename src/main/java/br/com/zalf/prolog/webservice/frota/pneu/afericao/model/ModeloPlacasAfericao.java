@@ -116,7 +116,12 @@ public class ModeloPlacasAfericao {
          * Indica se a {@link #placa} permite aferição do tipo {@link TipoAfericao#SULCO} e
          * do tipo {@link TipoAfericao#PRESSAO}.
          */
-        private boolean podeAferirSUlcoPressao;
+        private boolean podeAferirSulcoPressao;
+
+        /**
+         * Indica se a {@link #placa} permite aferição de estepes.
+         */
+        private boolean podeAferirEstepe;
 
         public String getPlaca() {
             return placa;
@@ -148,6 +153,38 @@ public class ModeloPlacasAfericao {
 
         public void setQuantidadePneus(int quantidadePneus) {
             this.quantidadePneus = quantidadePneus;
+        }
+
+        public boolean isPodeAferirSulco() {
+            return podeAferirSulco;
+        }
+
+        public void setPodeAferirSulco(final boolean podeAferirSulco) {
+            this.podeAferirSulco = podeAferirSulco;
+        }
+
+        public boolean isPodeAferirPressao() {
+            return podeAferirPressao;
+        }
+
+        public void setPodeAferirPressao(final boolean podeAferirPressao) {
+            this.podeAferirPressao = podeAferirPressao;
+        }
+
+        public boolean isPodeAferirSulcoPressao() {
+            return podeAferirSulcoPressao;
+        }
+
+        public void setPodeAferirSulcoPressao(final boolean podeAferirSulcoPressao) {
+            this.podeAferirSulcoPressao = podeAferirSulcoPressao;
+        }
+
+        public boolean isPodeAferirEstepe() {
+            return podeAferirEstepe;
+        }
+
+        public void setPodeAferirEstepe(final boolean podeAferirEstepe) {
+            this.podeAferirEstepe = podeAferirEstepe;
         }
 
         public PlacaAfericao() {}
