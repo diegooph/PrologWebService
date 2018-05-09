@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoTipoVeiculoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoValidator;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -18,13 +20,15 @@ public class ConfiguracaoAfericaoService {
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
 
     public Response updateConfiguracao(@NotNull final Long codUnidade,
-                                       @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws Exception {
+                                       @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
+        ConfiguracaoValidator.validateUpdate(configuracoes);
         try {
-            dao.insertOrUpdateConfiguracao(codUnidade, configuracao);
-            return Response.ok("Configuração atualizada com sucesso!");
+            dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
+            return Response.ok("Configurações atualizadas com sucesso!");
         } catch (SQLException e) {
-            //TODO - Logar Exception do ProLog
-            throw new Exception();
+            throw new GenericException("Não foi possível atualizar as configurações de Aferição",
+                    "Algo deu errado no servidor. Não foi possível atualizar as configurações de Aferição",
+                    e);
         }
     }
 
@@ -32,8 +36,9 @@ public class ConfiguracaoAfericaoService {
         try {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
         } catch (SQLException e) {
-            //TODO - Logar Exception do ProLog
-            throw new Exception();
+            throw new GenericException("Não foi possível buscar as configurações de Aferição",
+                    "Algo deu errado no servidor. Não foi possível buscar as configurações de Aferição",
+                    e);
         }
     }
 }

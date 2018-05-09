@@ -24,13 +24,19 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
 
     @Override
     public void insertOrUpdateConfiguracao(@NotNull final Long codUnidade,
-                                           @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao)
+                                           @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes)
             throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            if (!updateCondiguracao(conn, codUnidade, configuracao)) {
-                insertConfiguracao(conn, codUnidade, configuracao);
+            for (final ConfiguracaoTipoVeiculoAfericao configuracao : configuracoes) {
+                // Garantimos que se um código for == NULL se trata de uma configuração NOVA
+                // Então fazemos um insert, caso contrário um update.
+                if (configuracao.getCodigo() == null) {
+                    insertConfiguracao(conn, codUnidade, configuracao);
+                } else {
+                    updateCondiguracao(conn, codUnidade, configuracao);
+                }
             }
         } finally {
             closeConnection(conn);

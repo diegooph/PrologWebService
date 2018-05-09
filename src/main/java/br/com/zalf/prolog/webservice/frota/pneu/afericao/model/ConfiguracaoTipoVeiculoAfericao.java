@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
  */
 public class ConfiguracaoTipoVeiculoAfericao {
 
-    private long codigo;
+    private Long codigo;
     private long codUnidade;
     private TipoVeiculo tipoVeiculo;
     private boolean podeAferirPressao;
@@ -20,11 +20,11 @@ public class ConfiguracaoTipoVeiculoAfericao {
     public ConfiguracaoTipoVeiculoAfericao() {
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 

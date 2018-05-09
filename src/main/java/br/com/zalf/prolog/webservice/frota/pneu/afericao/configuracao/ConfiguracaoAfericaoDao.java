@@ -17,12 +17,12 @@ public interface ConfiguracaoAfericaoDao {
     /**
      * Método utilizado para alterar uma configuração de aferição de um tipo de veículo.
      *
-     * @param codUnidade   - Codigo da {@link Unidade} que os atributos serão alterados.
-     * @param configuracao - Nova {@link ConfiguracaoTipoVeiculoAfericao} que será inserida.
+     * @param codUnidade    - Codigo da {@link Unidade} que os atributos serão alterados.
+     * @param configuracoes - Novas {@link ConfiguracaoTipoVeiculoAfericao}s que serão inseridas.
      * @throws SQLException - Caso algum erro acorrer.
      */
     void insertOrUpdateConfiguracao(@NotNull final Long codUnidade,
-                                    @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws SQLException;
+                                    @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws SQLException;
 
     /**
      * Busca todas as {@link ConfiguracaoTipoVeiculoAfericao} existentes para os tipos de veículos da {@link Unidade}.

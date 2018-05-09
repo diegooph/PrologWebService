@@ -25,8 +25,8 @@ public class ConfiguracaoAfericaoResource {
     @Secured
     @Path("/{codUnidade}")
     public Response update(@PathParam("codUnidade") Long codUnidade,
-                           ConfiguracaoTipoVeiculoAfericao configuracao) throws Exception {
-        return service.updateConfiguracao(codUnidade, configuracao);
+                           List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
+        return service.updateConfiguracao(codUnidade, configuracoes);
     }
 
     @GET
