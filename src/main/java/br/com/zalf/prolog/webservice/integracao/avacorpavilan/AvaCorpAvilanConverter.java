@@ -54,26 +54,31 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo) {
+    public static List<Veiculo> convert(@NotNull final ArrayOfVeiculo arrayOfVeiculo,
+                                        @NotNull final Long codUnidadeVeiculo) {
         checkNotNull(arrayOfVeiculo, "arrayOfVeiculo não pode ser null!");
+        checkNotNull(codUnidadeVeiculo, "codUnidadeVeiculo não pode ser null!");
 
         final List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo> veiculosAvilan
                 = arrayOfVeiculo.getVeiculo();
 
         final List<Veiculo> veiculos = new ArrayList<>();
-        veiculosAvilan.forEach(v -> veiculos.add(convert(v)));
+        veiculosAvilan.forEach(v -> veiculos.add(convert(v, codUnidadeVeiculo)));
 
         return veiculos;
     }
 
     @VisibleForTesting
     public static Veiculo convert(
-            @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan) {
+            @NotNull final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan,
+            @NotNull final Long codUnidadeVeiculo) {
         checkNotNull(veiculoAvilan, "veiculoAvilan não pode ser null!");
+        checkNotNull(codUnidadeVeiculo, "codUnidadeVeiculo não pode ser null!");
 
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAvilan.getPlaca());
         veiculo.setKmAtual(veiculoAvilan.getMarcador());
+        veiculo.setCodUnidadeAlocado(codUnidadeVeiculo);
         return veiculo;
     }
 

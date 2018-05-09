@@ -1,8 +1,35 @@
 Change Log
 ==========
 
+<a name="v0.0.58"></a>
+## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (release-date) - [unreleased]
+
+### Features
+* Cria método para buscar um tipo de intervalo específico
+
+### Refactors
+* Altera nomes de alguns atributos do `ModeloChecklist`
+
+### Bug Fixes
+* Aprimora fluxo de inserção de um modelo de checklist
+* Corrige busca dos modelos de checklist disponíveis
+
 <a name="v0.0.57"></a>
-## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (release-date) - [unreleased]
+## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
+
+### Features
+* Permite importar arquivos XLSX, além de CSV, para a função de Escala Diária
+* Cria relatório contendo o resumo geral dos pneus
+* Cria método para buscar uma recapadora específica
+
+### Refactors
+* Altera path de relatório de produtividade do colaborador
+
+### Bug Fixes
+* Corrige criação de Veiculos na integração com a Avilan
+* Corrige insert de um item da Escala Diária
+* Corrige busca das recapadoras
+* Corrige upload de uma imagem do modelo de checklist
 
 <a name="v2.0.56"></a>
 ## Version [v2.0.56](https://github.com/luizfp/PrologWebService/compare/v2.0.55...v2.0.56) (2018-04-27)

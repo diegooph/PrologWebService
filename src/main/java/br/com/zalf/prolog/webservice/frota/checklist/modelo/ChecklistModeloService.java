@@ -2,9 +2,12 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -27,7 +30,7 @@ public class ChecklistModeloService {
         try {
             return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
             throw new RuntimeException(e);
         }
     }
@@ -36,7 +39,7 @@ public class ChecklistModeloService {
         try {
             return dao.getModeloChecklist(codModelo, codUnidade);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
@@ -45,16 +48,16 @@ public class ChecklistModeloService {
         try {
             return dao.setModeloChecklistInativo(codUnidade, codModelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
 
-    public boolean insertModeloChecklist(ModeloChecklist modeloChecklist) {
+    public void insertModeloChecklist(ModeloChecklist modeloChecklist) {
         try {
-            return dao.insertModeloChecklist(modeloChecklist);
+            dao.insertModeloChecklist(modeloChecklist);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
             throw new RuntimeException(e);
         }
     }
@@ -63,7 +66,7 @@ public class ChecklistModeloService {
         try {
             return dao.getPerguntas(codUnidade, codModelo);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
@@ -104,16 +107,19 @@ public class ChecklistModeloService {
         }
     }
 
-    public Long insertImagem(@NotNull final Long codEmpresa,
-                             @NotNull final InputStream fileInputStream,
-                             @NotNull final ImagemProLog imagemProLog) {
+    public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
+                                         @NotNull final InputStream fileInputStream) {
         try {
-            return dao.insertImagem(codEmpresa, UploadImageHelper.uploadImagem(
-                    imagemProLog,
+            final ImagemProLog imagemProLog = UploadImageHelper.uploadImagem(
                     fileInputStream,
-                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS));
+                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS);
+            final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
+            return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
+        } catch (FileFormatNotSupportException e) {
+            Log.e(TAG, "Arquivo recebido não é uma imagem", e);
+            return Response.error(e.getMessage());
         } catch (SQLException | IOException | S3FileSender.S3FileSenderException e) {
-            Log.e(TAG, "Erro ao inserir o imagem.", e);
+            Log.e(TAG, "Erro ao inserir o imagem", e);
             throw new RuntimeException(e);
         }
     }
