@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
 
 public enum ProLogErrorCodes {
 
+	GENERIC(0),
 	AMAZON_CREDENTIALS(1),
 	VERSAO_DADOS_INTERVALO_DESATUALIZADA(2),
 	TIPO_AFERICAO_NAO_SUPORTADO(3),
