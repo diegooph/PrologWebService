@@ -471,7 +471,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 stmt.setLong(2, modeloChecklist.getCodUnidade());
                 stmt.setInt(3, pergunta.getOrdemExibicao());
                 stmt.setString(4, pergunta.getPergunta());
-                stmt.setLong(5, pergunta.getCodImagem());
+                if (pergunta.getCodImagem() != null) {
+                    stmt.setLong(5, pergunta.getCodImagem());
+                } else {
+                    stmt.setNull(5, Types.BIGINT);
+                }
                 stmt.setBoolean(6, true);
                 stmt.setString(7, pergunta.getPrioridade());
                 stmt.setBoolean(8, pergunta.isSingleChoice());
