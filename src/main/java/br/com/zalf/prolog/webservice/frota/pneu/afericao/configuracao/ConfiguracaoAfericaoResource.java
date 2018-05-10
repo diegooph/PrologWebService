@@ -22,16 +22,16 @@ public class ConfiguracaoAfericaoResource {
     private final ConfiguracaoAfericaoService service = new ConfiguracaoAfericaoService();
 
     @PUT
-    @Secured
-    @Path("/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
+    @Path("/tipos-veiculo/{codUnidade}")
     public Response update(@PathParam("codUnidade") Long codUnidade,
                            List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
         return service.updateConfiguracao(codUnidade, configuracoes);
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR)
-    @Path("/cronogramas/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
+    @Path("/tipos-veiculo/{codUnidade}")
     public List<ConfiguracaoTipoVeiculoAfericao> getConfiguracoesTipoAfericaoVeiculo(
             @PathParam("codUnidade") Long codUnidade) throws Exception {
         return service.getConfiguracoesTipoAfericaoVeiculo(codUnidade);

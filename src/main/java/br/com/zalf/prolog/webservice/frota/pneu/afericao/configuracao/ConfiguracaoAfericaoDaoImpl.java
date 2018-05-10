@@ -52,7 +52,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
         final List<ConfiguracaoTipoVeiculoAfericao> configTipoAfericao = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM VIEW_CONFIGURACAO_TIPO_AFERICAO " +
+            stmt = conn.prepareStatement("SELECT * FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO " +
                     "WHERE COD_UNIDADE = ? AND STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
