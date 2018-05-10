@@ -23,7 +23,7 @@ public class ConfiguracaoAfericaoResource {
 
     @PUT
     @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
-    @Path("/{codUnidade}")
+    @Path("/tipos-veiculo/{codUnidade}")
     public Response update(@PathParam("codUnidade") Long codUnidade,
                            List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
         return service.updateConfiguracao(codUnidade, configuracoes);
@@ -31,7 +31,7 @@ public class ConfiguracaoAfericaoResource {
 
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)
-    @Path("/cronogramas/{codUnidade}")
+    @Path("/tipos-veiculo/{codUnidade}")
     public List<ConfiguracaoTipoVeiculoAfericao> getConfiguracoesTipoAfericaoVeiculo(
             @PathParam("codUnidade") Long codUnidade) throws Exception {
         return service.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
