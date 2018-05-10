@@ -117,6 +117,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     @NotNull
     private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoVeiculoAfericao(@NotNull final ResultSet rSet) throws SQLException {
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        config.setCodigo(rSet.getLong("CODIGO"));
         config.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         config.setTipoVeiculo(createTipoVeiculo(rSet));
         config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
