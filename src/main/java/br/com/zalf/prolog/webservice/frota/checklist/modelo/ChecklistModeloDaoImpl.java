@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
@@ -10,10 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +121,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
+            System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?," +
@@ -478,6 +478,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 final ResultSet rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     pergunta.setCodigo(rSet.getLong("CODIGO"));
+                    // Adiciona a alternativa TIPO_OUTROS.
+                    pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
                     for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
                         stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
                                 + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
@@ -495,5 +497,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             closeStatement(stmt);
         }
+    }
+
+    private AlternativaChecklist createAlternativaTipoOutros(@NotNull final PerguntaRespostaChecklist pergunta) {
+        final AlternativaChecklist alternativa = new AlternativaChecklist();
+        alternativa.setAlternativa("Outros");
+        alternativa.setTipo(Alternativa.TIPO_OUTROS);
+        // A alterntiva de tipo outros deve sempre ser a última alternativa de uma pergunta.
+        alternativa.setOrdemExibicao(pergunta.getAlternativasResposta().size() + 1);
+        return alternativa;
     }
 }
