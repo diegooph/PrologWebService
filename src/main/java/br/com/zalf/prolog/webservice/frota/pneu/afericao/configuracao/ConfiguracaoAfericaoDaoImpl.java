@@ -70,7 +70,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                                     @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
+            stmt = conn.prepareStatement("INSERT INTO AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
                     "(COD_UNIDADE, COD_TIPO_VEICULO, PODE_AFERIR_SULCO, " +
                     "PODE_AFERIR_PRESSAO, PODE_AFERIR_SULCO_PRESSAO, PODE_AFERIR_ESTEPE) " +
                     "VALUES (?, ?, ?, ?, ?, ?);");
@@ -93,7 +93,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
                                        @NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
+            stmt = conn.prepareStatement("UPDATE AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
                     "SET PODE_AFERIR_SULCO = ?, " +
                     "  PODE_AFERIR_PRESSAO = ?, " +
                     "  PODE_AFERIR_SULCO_PRESSAO = ?, " +
