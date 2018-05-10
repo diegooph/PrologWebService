@@ -13,7 +13,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 
 import java.sql.*;
@@ -271,6 +270,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
+            cronogramaAfericao.removePlacasNaoAferiveis(cronogramaAfericao);
             cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
             cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
         } finally {
