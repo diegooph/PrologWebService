@@ -3,28 +3,27 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.permissao.Visao;
-import com.amazonaws.util.StringUtils;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import sun.security.validator.ValidatorException;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.util.Calendar;
 import java.util.Date;
-
-import static java.sql.JDBCType.INTEGER;
 
 public class ColaboradorValidator {
 
     public static void validacaoAtributosColaborador(@NotNull final Colaborador colaborador) throws GenericException {
         try {
             validacaoCpf(colaborador.getCpf());
+            validacaoMatriculaAmbev(colaborador.getMatriculaAmbev());
+            validacaoMatriculaTrans(colaborador.getMatriculaTrans());
             validacaoDataNascimento(colaborador.getDataNascimento());
+            validacaoDataAdmissao(colaborador.getDataAdmissao());
+            validacaoNome(colaborador.getNome());
+            validacaoSetor(colaborador.getSetor());
+            validacaoFuncao(colaborador.getFuncao());
+            validacaoUnidade(colaborador.getUnidade());
+            validacaoNivelPermissao(colaborador.getCodPermissao());
+            validacaoEquipe(colaborador.getEquipe());
             validacaoPis(colaborador.getPis());
         } catch (GenericException e) {
             throw e;
@@ -41,106 +40,123 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoPis(String pis) throws Exception{
-        
-        if(pis.length()<11){
-            throw new GenericException("Pis inválido", null);
-        }
+    private static void validacaoMatriculaAmbev(Integer matriculaAmbev) throws Exception {
 
+        if (!verificacaoNumeroPositivo(matriculaAmbev)) {
+            throw new GenericException("Matrícula inválida", "A matrícula fornecida é negativa");
+        }
     }
 
-    private static void validacaoDataNascimento (Date dataNascimento) throws Exception {
-        final int anoMinimoPermitido = 1918;
+    private static void validacaoMatriculaTrans(Integer matriculaTrans) throws Exception {
 
+        if (!verificacaoNumeroPositivo(matriculaTrans)) {
+            throw new GenericException("Matrícula inválida", "A matrícula fornecida é negativa");
+        }
+    }
+
+    private static void validacaoDataNascimento(Date dataNascimento) throws Exception {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento");
-        if(!verificarDataInserida(dataNascimento)){
-            throw new GenericException("A data inserida é inválida", null);
 
-        }else if (!calculariIdade(dataNascimento)){
-            throw new GenericException("A idade do funcionário não pode ser menor que 16 anos", null);
+        if (!verificacaoAno(dataNascimento)) {
+            throw new GenericException("Você precisa fornecer um ano válido", null);
+        }
+    }
 
-        }else if(dataNascimento.getYear() < anoMinimoPermitido){
+    private static void validacaoDataAdmissao(Date dataAdmissao) throws Exception {
+        Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
+
+        if (!verificacaoAno(dataAdmissao)) {
             throw new GenericException("Você precisa fornecer um ano válido", null);
         }
 
     }
 
-    private static boolean verificarDataInserida(Date data){
+    private static void validacaoNome(String nome) throws Exception {
+        Preconditions.checkNotNull(nome, "Você precisa preencher o nome");
 
-        SimpleDateFormat simpleData = new SimpleDateFormat("dd/MM/yyyy");
-        String dataFormatada = simpleData.format(data);
+        if (!verificacaoCaracteresLetras(nome)) {
+            throw new GenericException("Você precisa preencher um nome válido", "O campo 'nome' contém números");
+        }
+    }
 
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate dataValida = LocalDate.parse(dataFormatada, formatter);
+    private static void validacaoSetor(Setor setor) throws Exception {
+        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa fornecer a Equipe");
+
+        if (!verificacaoNumeroPositivo(setor.getCodigo().intValue())) {
+            throw new GenericException("Setor inválido", "O código é negativo");
+        }
+
+    }
+
+    private static void validacaoFuncao(Cargo funcao) throws Exception {
+        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa fornecer a Cargo");
+
+        if (!verificacaoNumeroPositivo(funcao.getCodigo().intValue())) {
+            throw new GenericException("Cargo inválido", "O código é negativo");
+        }
+
+    }
+
+    private static void validacaoUnidade(Unidade unidade) throws Exception {
+        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Equipe");
+
+        if (!verificacaoNumeroPositivo(unidade.getCodigo().intValue())) {
+            throw new GenericException("Setor inválido", "O código é negativo");
+        }
+    }
+
+    private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
+        Preconditions.checkNotNull(codPermissao, "Você precisa fornecer o Nível de Acesso");
+
+        if (codPermissao < 0 || codPermissao > 3) {
+            throw new GenericException("Nível de Acesso inválido", "Cód menor que 0 ou maior que 3");
+        }
+
+    }
+
+    private static void validacaoEquipe(Equipe equipe) throws Exception {
+        if (!verificacaoNumeroPositivo(Integer.valueOf((int) equipe.getCodigo()))) {
+            throw new GenericException("Equipe inválida", "O código é negativo");
+        }
+    }
+
+    private static void validacaoPis(String pis) throws Exception {
+
+        if (pis.length() < 11) {
+            throw new GenericException("Pis inválido", null);
+        } else if (!ValidationUtils.validaPIS(pis)) {
+            throw new GenericException("Pis inválido", null);
+        }
+    }
+
+    private static boolean verificacaoCaracteresLetras(String palavra) {
+
+        if (palavra.matches("[A-Z]*")) {
             return true;
-        } catch (DateTimeParseException e) {
+        } else {
             return false;
         }
     }
 
-    private static boolean calculariIdade(Date dataNascimento){
+    private static boolean verificacaoNumeroPositivo(int numero) {
 
-
-        return true;
+        if (numero > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private static void validacaoFuncao (Cargo funcao){
+    private static boolean verificacaoAno(Date data) {
+        final int anoMinimoPermitido = 1900;
+        final int anoMaximoPermitido = 2050;
+        SimpleDateFormat ano = new SimpleDateFormat("yyyy");
+        final int anoDataNascimento = Integer.parseInt(ano.format(data));
 
+        if (anoDataNascimento < anoMaximoPermitido || anoDataNascimento > anoMinimoPermitido) {
+            return true;
+        }else{
+            return false;
+        }
     }
-
-    private static void validacaoSetor (Setor setor){
-
-    }
-
-    private static void validacaoNome (String nome){
-
-    }
-
-    private static void validacaoMatriculaAmbev (Integer matriculaAmbev){
-
-    }
-
-    private static void validacaoMatriculaTrans (Integer matriculaTrans){
-
-    }
-
-    private static void validacaoDataAdmissao (Date dataAdmissao){
-        Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
-
-    }
-
-    private static void validacaoDataDemissao (Date dataDemissao){
-
-    }
-
-  /*  private static void validacaoAtivo (Boolean ativo){
-
-    }*/
-
-    private static void validacaoEmpresa (Empresa empresa){
-
-    }
-
-    private static void validacaoUnidade (Unidade unidade){
-
-    }
-
-    private static void validacaoRegional (Regional regional){
-
-    }
-
-    private static void validacaoEquipe (Equipe equipe){
-
-    }
-
-    private static void validacaoVisao (Visao visao){
-
-    }
-
-    private static void validacaoCodPermissao (Integer codPermissao){
-
-    }
-
-
 }

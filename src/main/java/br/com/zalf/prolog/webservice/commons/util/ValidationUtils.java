@@ -70,4 +70,33 @@ public final class ValidationUtils {
                 || cpf.equals("77777777777") || cpf.equals("88888888888") || cpf.equals("99999999999")
                 || cpf.equals("00000000000");
     }
+
+
+    /**
+     * Método para verificar Pis
+     */
+    public static boolean validaPIS(String strPIS) {
+        char i, j, somatorio = 0;
+        char chDigitoVerificador;
+        char chPISAux;
+
+        try{
+            for (i = 0, j = 4; j >= 2; i++, j--)
+                somatorio += ((strPIS.charAt(i) - 0x30) * j);
+            for (j = 9; j >= 2; i++, j--)
+                somatorio += ((strPIS.charAt(i) - 0x30) * j);
+            if (( somatorio % 11 ) < 2) {
+                chDigitoVerificador = 0;
+            } else {
+                chDigitoVerificador = (char)(11 - ( somatorio % 11 ));
+            }
+            chPISAux = (char)(chDigitoVerificador+'0');
+            if (strPIS.charAt(11) == chPISAux)
+                return true;
+            else
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
