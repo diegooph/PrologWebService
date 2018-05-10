@@ -44,14 +44,14 @@ public class ColaboradorValidator {
     private static void validacaoMatriculaAmbev(Integer matriculaAmbev) throws Exception {
 
         if (!verificacaoNumeroPositivo(matriculaAmbev)) {
-            throw new GenericException("Matrícula inválida", "A matrícula fornecida é negativa");
+            throw new GenericException("Matrícula Ambev inválida", "A matrícula fornecida é negativa");
         }
     }
 
     private static void validacaoMatriculaTrans(Integer matriculaTrans) throws Exception {
 
         if (!verificacaoNumeroPositivo(matriculaTrans)) {
-            throw new GenericException("Matrícula inválida", "A matrícula fornecida é negativa");
+            throw new GenericException("Matrícula Transportadora inválida", "A matrícula fornecida é negativa");
         }
     }
 
@@ -59,7 +59,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento");
 
         if (!verificacaoAno(dataNascimento)) {
-            throw new GenericException("Você precisa fornecer um ano válido", null);
+            throw new GenericException("Você precisa fornecer um ano de nascimento válido", null);
         }
     }
 
@@ -67,7 +67,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
         if (!verificacaoAno(dataAdmissao)) {
-            throw new GenericException("Você precisa fornecer um ano válido", null);
+            throw new GenericException("Você precisa fornecer um ano de admissão válido", null);
         }
 
     }
@@ -131,15 +131,20 @@ public class ColaboradorValidator {
     private static void validacaoPis(String pis) throws Exception {
 
         if (pis.length() < 11) {
-            throw new GenericException("Pis inválido", null);
+            throw new GenericException("PIS inválido", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
-            throw new GenericException("Pis inválido", null);
+            throw new GenericException("PIS inválido", null);
         }
     }
 
     private static boolean verificacaoCaracteresLetras(String palavra) {
 
-        return palavra.matches("[A-Z]*");
+        if(palavra.matches(".*\\d+.*")){
+            return false;
+        }else{
+            return true;
+        }
+
     }
 
     private static boolean verificacaoNumeroPositivo(int numero) {

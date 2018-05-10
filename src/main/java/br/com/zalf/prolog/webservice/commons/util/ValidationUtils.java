@@ -75,28 +75,28 @@ public final class ValidationUtils {
     /**
      * Método para verificar Pis
      */
-    public static boolean validaPIS(String strPIS) {
-        char i, j, somatorio = 0;
-        char chDigitoVerificador;
-        char chPISAux;
-
-        try{
-            for (i = 0, j = 4; j >= 2; i++, j--)
-                somatorio += ((strPIS.charAt(i) - 0x30) * j);
-            for (j = 9; j >= 2; i++, j--)
-                somatorio += ((strPIS.charAt(i) - 0x30) * j);
-            if (( somatorio % 11 ) < 2) {
-                chDigitoVerificador = 0;
-            } else {
-                chDigitoVerificador = (char)(11 - ( somatorio % 11 ));
-            }
-            chPISAux = (char)(chDigitoVerificador+'0');
-            if (strPIS.charAt(11) == chPISAux)
-                return true;
-            else
-                return false;
-        } catch (Exception e) {
-            return false;
+    public static boolean validaPIS(String pisOrPasep) {
+        if (pisOrPasep == null) return false;
+        String n = pisOrPasep.replaceAll("[^0-9]*","");
+        //boolean isPis = n.length() == PIS_DIGITS;
+        //boolean isPasep = n.length() == PASEP_DIGITS;
+        if (n.length() != 11) return false;
+        int i;          // just count
+        int digit;      // A number digit
+        int coeficient; // A coeficient
+        int sum;        // The sum of (Digit * Coeficient)
+        int foundDv;    // The found Dv (Chek Digit)
+        int dv = Integer.parseInt(String.valueOf(n.charAt(n.length()-1)));
+        sum = 0;
+        coeficient = 2;
+        for (i = n.length() - 2; i >= 0 ; i--){
+            digit = Integer.parseInt(String.valueOf(n.charAt(i)));
+            sum += digit * coeficient;
+            coeficient ++;
+            if (coeficient > 9) coeficient = 2;
         }
+        foundDv = 11 - sum % 11;
+        if (foundDv >= 10) foundDv = 0;
+        return dv == foundDv;
     }
 }
