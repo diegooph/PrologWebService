@@ -57,7 +57,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                configTipoAfericao.add(createTipoVeiculoAfericao(rSet));
+                configTipoAfericao.add(createConfiguracaoTipoVeiculoAfericao(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -115,7 +115,7 @@ public class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements C
     }
 
     @NotNull
-    private ConfiguracaoTipoVeiculoAfericao createTipoVeiculoAfericao(@NotNull final ResultSet rSet) throws SQLException {
+    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoVeiculoAfericao(@NotNull final ResultSet rSet) throws SQLException {
         final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
         config.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         config.setTipoVeiculo(createTipoVeiculo(rSet));
