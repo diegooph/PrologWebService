@@ -95,7 +95,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         novaAfericao.setVeiculo(veiculo);
         final Restricao restricao = getRestricoesByPlaca(placa);
         novaAfericao.setRestricao(restricao);
-        novaAfericao.setDeveAferirEstepes(!restricao.getTiposVeiculosAfericaoEstepeBloqueada().contains(veiculo.getTipo()));
+        novaAfericao.setDeveAferirEstepes(getConfiguracaTiposVeiculosAfericaoEstepe(placa).isPodeAferirEstepe());
         return novaAfericao;
     }
 
@@ -140,9 +140,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.isLast()) {
-                final Restricao restricao = createRestricao(rSet);
-                restricao.setTiposVeiculosAfericaoEstepeBloqueada(getTiposVeiculosAfericaoEstepe(conn, placa));
-                return restricao;
+                return createRestricao(rSet);
             } else {
                 throw new SQLException("Erro ao buscar os dados de restrição");
             }
@@ -151,23 +149,46 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private List<TipoVeiculo> getTiposVeiculosAfericaoEstepe(final Connection conn, final String placa) throws SQLException {
-        final List<TipoVeiculo> tiposVeiculoAfericaoEstepe = new ArrayList<>();
-        final PreparedStatement stmt = conn.prepareStatement("SELECT AETV.COD_UNIDADE AS COD_UNIDADE, " +
-                "  AETV.COD_TIPO_VEICULO AS COD_TIPO_VEICULO, " +
-                "  VT.NOME AS NOME_TIPO_VEICULO " +
-                "FROM AFERICAO_ESTEPES_TIPOS_VEICULOS_BLOQUEADOS AETV " +
-                "  JOIN VEICULO_TIPO VT ON AETV.COD_TIPO_VEICULO = VT.CODIGO AND AETV.COD_UNIDADE = VT.COD_UNIDADE " +
-                "WHERE AETV.COD_UNIDADE = (SELECT COD_UNIDADE FROM veiculo WHERE PLACA = ?);");
-        stmt.setString(1, placa);
-        final ResultSet rSet = stmt.executeQuery();
-        while (rSet.next()) {
-            final TipoVeiculo tipoVeiculo = new TipoVeiculo();
-            tipoVeiculo.setCodigo(rSet.getLong("COD_TIPO_VEICULO"));
-            tipoVeiculo.setNome(rSet.getString("NOME_TIPO_VEICULO"));
-            tiposVeiculoAfericaoEstepe.add(tipoVeiculo);
+    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(final String placa)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "  VACTA.STATUS_ATIVO, " +
+                    "  VACTA.PODE_AFERIR_SULCO, " +
+                    "  VACTA.PODE_AFERIR_PRESSAO, " +
+                    "  VACTA.PODE_AFERIR_SULCO_PRESSAO," +
+                    "  VACTA.PODE_AFERIR_ESTEPE " +
+                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO AS VACTA " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE " +
+                    "                     FROM VEICULO " +
+                    "                     WHERE PLACA = ?) " +
+                    "      AND COD_TIPO_VEICULO = (SELECT COD_TIPO " +
+                    "                              FROM VEICULO " +
+                    "                              WHERE PLACA = ?);");
+            stmt.setString(1, placa);
+            stmt.setString(2, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createConfiguracaoTipoAfericao(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar as configurações de aferição para a placa: " + placa);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
-        return tiposVeiculoAfericaoEstepe;
+    }
+
+    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws SQLException {
+        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        return config;
     }
 
     @Override
