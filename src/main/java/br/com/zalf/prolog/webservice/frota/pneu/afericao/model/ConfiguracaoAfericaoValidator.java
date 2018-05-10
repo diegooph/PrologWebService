@@ -28,7 +28,7 @@ public final class ConfiguracaoAfericaoValidator {
             try {
                 validateTipoVeiculo(configuracao);
             } catch (Exception e) {
-                throw new GenericException(e.getMessage(), "TipoVeiculo está vindo null.", e);
+                throw new GenericException(e.getMessage(), "TipoVeiculo está vindo null", e);
             }
         }
     }

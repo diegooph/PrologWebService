@@ -22,12 +22,14 @@ public class ConfiguracaoAfericaoService {
 
     public Response updateConfiguracao(@NotNull final Long codUnidade,
                                        @NotNull final List<ConfiguracaoTipoVeiculoAfericao> configuracoes) throws Exception {
-        ConfiguracaoAfericaoValidator.validateUpdate(configuracoes);
         try {
+            ConfiguracaoAfericaoValidator.validateUpdate(configuracoes);
             dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao atualizar configuração tipos de veículod da aferição", e);
+        } catch (GenericException e) {
+              throw e;
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
             throw new GenericException("Não foi possível atualizar as configurações de Aferição",
                     "Algo deu errado no servidor. Não foi possível atualizar as configurações de Aferição",
                     e);
