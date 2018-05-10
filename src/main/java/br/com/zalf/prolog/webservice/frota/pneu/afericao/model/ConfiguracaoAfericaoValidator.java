@@ -36,6 +36,5 @@ public final class ConfiguracaoAfericaoValidator {
     private static void validateTipoVeiculo(@NotNull final ConfiguracaoTipoVeiculoAfericao configuracao) {
         Preconditions.checkNotNull(configuracao.getTipoVeiculo(), "Tipo de veículo não está correto");
         Preconditions.checkNotNull(configuracao.getTipoVeiculo().getCodigo(), "Código do Tipo de veículo não está correto");
-        Preconditions.checkNotNull(configuracao.getTipoVeiculo().getNome(), "Código do Tipo de veículo não está correto");
     }
 }

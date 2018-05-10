@@ -27,7 +27,8 @@ public class ConfiguracaoAfericaoService {
             dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (GenericException e) {
-              throw e;
+            Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
+            throw e;
         } catch (Exception e) {
             Log.e(TAG, "Erro ao atualizar configuração tipos de veículo da aferição", e);
             throw new GenericException("Não foi possível atualizar as configurações de Aferição",
