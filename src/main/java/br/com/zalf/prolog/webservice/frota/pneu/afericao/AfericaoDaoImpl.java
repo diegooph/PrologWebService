@@ -194,7 +194,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "  VCTA.PODE_AFERIR_ESTEPE " +
                     "FROM VEICULO V " +
                     "  JOIN MODELO_VEICULO M ON M.CODIGO = V.COD_MODELO " +
-                    "  JOIN VIEW_CONFIGURACAO_TIPO_AFERICAO VCTA ON VCTA.COD_TIPO_VEICULO = V.COD_TIPO " +
+                    "  JOIN VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO VCTA ON VCTA.COD_TIPO_VEICULO = V.COD_TIPO " +
                     "LEFT JOIN " +
                     "    (SELECT PLACA_VEICULO AS PLACA_INTERVALO, EXTRACT(DAYS FROM (?) - MAX(DATA_HORA AT TIME ZONE ?)) AS INTERVALO FROM AFERICAO " +
                     "        WHERE tipo_afericao = ? OR tipo_afericao = ? " +
