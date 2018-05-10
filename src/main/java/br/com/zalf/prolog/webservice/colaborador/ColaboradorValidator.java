@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.permissao.Permissao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,7 +81,8 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoSetor(Setor setor) throws Exception {
-        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa fornecer a Equipe");
+        Preconditions.checkNotNull(setor, "Você precisa fornecer o Setor");
+        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa fornecer o Setor");
 
         if (!verificacaoNumeroPositivo(setor.getCodigo().intValue())) {
             throw new GenericException("Setor inválido", "O código é negativo");
@@ -89,7 +91,9 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoFuncao(Cargo funcao) throws Exception {
+        Preconditions.checkNotNull(funcao, "Você precisa fornecer o Cargo");
         Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa fornecer a Cargo");
+
 
         if (!verificacaoNumeroPositivo(funcao.getCodigo().intValue())) {
             throw new GenericException("Cargo inválido", "O código é negativo");
@@ -98,7 +102,8 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoUnidade(Unidade unidade) throws Exception {
-        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Equipe");
+        Preconditions.checkNotNull(unidade, "Você precisa fornecer a Unidade");
+        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Unidade");
 
         if (!verificacaoNumeroPositivo(unidade.getCodigo().intValue())) {
             throw new GenericException("Setor inválido", "O código é negativo");
@@ -108,14 +113,17 @@ public class ColaboradorValidator {
     private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
         Preconditions.checkNotNull(codPermissao, "Você precisa fornecer o Nível de Acesso");
 
-        if (codPermissao < 0 || codPermissao > 3) {
+        if (codPermissao < Permissao.LOCAL || codPermissao > Permissao.GERAL) {
             throw new GenericException("Nível de Acesso inválido", "Cód menor que 0 ou maior que 3");
         }
 
     }
 
     private static void validacaoEquipe(Equipe equipe) throws Exception {
-        if (!verificacaoNumeroPositivo(Integer.valueOf((int) equipe.getCodigo()))) {
+        Preconditions.checkNotNull(equipe, "Você precisa fornecer a Equipe");
+        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa fornecer a Equipe");
+
+        if (!verificacaoNumeroPositivo((int) equipe.getCodigo().intValue())) {
             throw new GenericException("Equipe inválida", "O código é negativo");
         }
     }
@@ -131,20 +139,12 @@ public class ColaboradorValidator {
 
     private static boolean verificacaoCaracteresLetras(String palavra) {
 
-        if (palavra.matches("[A-Z]*")) {
-            return true;
-        } else {
-            return false;
-        }
+        return palavra.matches("[A-Z]*");
     }
 
     private static boolean verificacaoNumeroPositivo(int numero) {
 
-        if (numero > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return numero > 0;
     }
 
     private static boolean verificacaoAno(Date data) {
@@ -153,10 +153,6 @@ public class ColaboradorValidator {
         SimpleDateFormat ano = new SimpleDateFormat("yyyy");
         final int anoDataNascimento = Integer.parseInt(ano.format(data));
 
-        if (anoDataNascimento < anoMaximoPermitido || anoDataNascimento > anoMinimoPermitido) {
-            return true;
-        }else{
-            return false;
-        }
+        return anoDataNascimento < anoMaximoPermitido && anoDataNascimento > anoMinimoPermitido;
     }
 }
