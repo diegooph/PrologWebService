@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoTipoVeiculoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.ConfiguracaoAfericaoValidator;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ConfiguracaoAfericaoService {
-
+    private static final String TAG = ConfiguracaoAfericaoService.class.getSimpleName();
     private final ConfiguracaoAfericaoDao dao = Injection.provideConfiguracaoAfericaoDao();
 
     public Response updateConfiguracao(@NotNull final Long codUnidade,
@@ -26,6 +27,7 @@ public class ConfiguracaoAfericaoService {
             dao.insertOrUpdateConfiguracao(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao atualizar configuração tipos de veículod da aferição", e);
             throw new GenericException("Não foi possível atualizar as configurações de Aferição",
                     "Algo deu errado no servidor. Não foi possível atualizar as configurações de Aferição",
                     e);
@@ -36,6 +38,7 @@ public class ConfiguracaoAfericaoService {
         try {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
         } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar configurações de tipos de veículo da aferição", e);
             throw new GenericException("Não foi possível buscar as configurações de Aferição",
                     "Algo deu errado no servidor. Não foi possível buscar as configurações de Aferição",
                     e);
