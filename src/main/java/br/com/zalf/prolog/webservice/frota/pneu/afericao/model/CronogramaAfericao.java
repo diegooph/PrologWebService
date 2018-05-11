@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -145,5 +146,32 @@ public class CronogramaAfericao {
     private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao, int metaAfericaoSulco) {
         return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericaoSulco
                 && placaAfericao.getIntervaloUltimaAfericaoSulco() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
+    }
+
+    public void removerPlacasNaoAferiveis(final CronogramaAfericao cronogramaAfericao) {
+        final List<ModeloPlacasAfericao.PlacaAfericao> placasNaoAferiveis = new ArrayList<>();
+        for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
+            for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
+                // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa da listagem.
+                if (!placaAfericao.isPodeAferirPressao()
+                        && !placaAfericao.isPodeAferirSulco()
+                        && !placaAfericao.isPodeAferirSulcoPressao()) {
+                    placasNaoAferiveis.add(placaAfericao);
+                }
+            }
+            modelo.getPlacasAfericao().removeAll(placasNaoAferiveis);
+        }
+    }
+
+    public void removerModelosSemPlacas(final CronogramaAfericao cronogramaAfericao) {
+        final List<ModeloPlacasAfericao> modelosSemPlacas = new ArrayList<>();
+        for (final ModeloPlacasAfericao modeloPlacasAfericao : cronogramaAfericao.getModelosPlacasAfericao()) {
+            if (modeloPlacasAfericao.getPlacasAfericao().isEmpty()) {
+                modelosSemPlacas.add(modeloPlacasAfericao);
+            }
+        }
+        if (!modelosSemPlacas.isEmpty()) {
+            cronogramaAfericao.getModelosPlacasAfericao().removeAll(modelosSemPlacas);
+        }
     }
 }

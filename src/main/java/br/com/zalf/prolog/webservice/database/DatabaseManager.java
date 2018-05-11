@@ -35,7 +35,8 @@ public final class DatabaseManager {
 
     // Informações de acesso ao BD de testes
 //	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/INTERVALO_TESTE_1";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog";
+//	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prolog_abril_pneu_2";
+    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/local_teste";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 

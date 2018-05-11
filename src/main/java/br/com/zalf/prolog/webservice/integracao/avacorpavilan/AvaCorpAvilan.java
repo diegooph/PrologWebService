@@ -264,6 +264,8 @@ public final class AvaCorpAvilan extends Sistema {
         final AfericaoVeiculosExclusionStrategy exclusionStrategy = new AfericaoVeiculosExclusionStrategy();
         final CronogramaAfericao cronograma =
                 AvaCorpAvilanConverter.convert(exclusionStrategy.applyStrategy(arrayOfVeiculo), restricao, codUnidadeCronograma);
+        cronograma.removerPlacasNaoAferiveis(cronograma);
+        cronograma.removerModelosSemPlacas(cronograma);
         cronograma.calcularQuatidadeSulcosPressaoOk(cronograma);
         cronograma.calcularTotalVeiculos(cronograma);
         return cronograma;

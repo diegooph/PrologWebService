@@ -60,6 +60,11 @@ public final class Pilares {
 
             public static final int REALIZAR = 18;
             public static final int VISUALIZAR = 117;
+
+            public final class ConfiguracaoAfericao {
+
+                public static final int CONFIGURAR = 100;
+            }
         }
 
         public final class OrdemServico {
