@@ -37,13 +37,13 @@ public class ColaboradorService {
         }
     }
 
-    public boolean update(Long cpfAntigo, Colaborador colaborador) {
+    public void update(Long cpfAntigo, Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            return false;
+            throw e;
         }
     }
 

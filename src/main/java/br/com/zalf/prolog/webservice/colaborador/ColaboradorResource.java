@@ -35,12 +35,9 @@ public class ColaboradorResource {
 	@Path("/{cpf}")
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Secured(permissions = { Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Colaborador.CADASTRAR })
-	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) {
-		if (service.update(cpfAntigo, colaborador)) {
-			return Response.ok("Colaborador atualizado com sucesso");
-		} else {
-			return Response.error("Erro ao atualizar o colaborador");
-		}
+	public Response update(@PathParam("cpf") Long cpfAntigo, Colaborador colaborador) throws Throwable{
+		service.update(cpfAntigo, colaborador);
+		return Response.ok("Colaborador atualizado com sucesso");
 	}
 
 	@PUT
