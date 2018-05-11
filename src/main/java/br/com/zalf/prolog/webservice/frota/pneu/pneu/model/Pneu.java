@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -33,7 +34,18 @@ public class Pneu {
     // é diferente do que esta no sistema), enviar o codigo do pneu correto (que está
     // instalado atualmente).
     private String codPneuProblema;
-    private String codigo;
+
+    /**
+     * O código único do pneu a nível de {@link Empresa} que o cliente escolhe ao cadastrar um pneu.
+     * Esse código é equivalente ao número de fogo do pneu.
+     */
+    public String codigoCliente;
+
+    /**
+     * O código único (autoincrement) do pneu no sistema.
+     */
+    public Long codigo;
+
     private Marca marca;
     private ModeloPneu modelo;
     private BigDecimal valor;
@@ -98,6 +110,14 @@ public class Pneu {
 
     }
 
+    public String getCodigoCliente() {
+        return codigoCliente;
+    }
+
+    public void setCodigoCliente(final String codigoCliente) {
+        this.codigoCliente = codigoCliente;
+    }
+
     public List<PneuFotoCadastro> getFotosCadastro() {
         return fotosCadastro;
     }
@@ -149,11 +169,11 @@ public class Pneu {
         this.pressaoAtual = pressaoAtual;
     }
 
-    public String getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 

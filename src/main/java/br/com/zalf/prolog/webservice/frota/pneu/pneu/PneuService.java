@@ -32,7 +32,7 @@ public class PneuService {
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, String codOriginal) {
+    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {
@@ -133,7 +133,7 @@ public class PneuService {
         }
     }
 
-    public Pneu getPneuByCod(String codPneu, Long codUnidade) {
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {
@@ -152,7 +152,7 @@ public class PneuService {
     }
 
     public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
-                                           @NotNull final String codPneu,
+                                           @NotNull final Long codPneu,
                                            @NotNull final String urlFotoPneu) {
         try {
             dao.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);

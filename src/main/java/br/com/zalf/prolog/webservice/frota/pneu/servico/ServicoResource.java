@@ -4,9 +4,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -87,7 +86,7 @@ public class ServicoResource {
 	@Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
 	@Path("/fechados/{codUnidade}/pneus/{codPneu}")
 	public List<Servico> getServicosFechadosPneu(@PathParam("codUnidade") @Required Long codUnidade,
-												 @PathParam("codPneu") @Required String codPneu,
+												 @PathParam("codPneu") @Required Long codPneu,
 												 @QueryParam("dataInicial") @Required long dataInicial,
 												 @QueryParam("dataFinal") @Required long dataFinal) {
 		return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);

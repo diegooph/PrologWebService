@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
@@ -182,7 +182,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
                 final Pneu pneu = mov.getPneu();
-                stmt.setString(3, pneu.getCodigo());
+                stmt.setLong(3, pneu.getCodigo());
                 stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
                 stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
                 stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
@@ -240,14 +240,14 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, String codPneu) throws SQLException {
+    private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, Long codPneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
                     "COD_PNEU = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
-            stmt.setString(3, codPneu);
+            stmt.setLong(3, codPneu);
             final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao deletar o pneu do veículo");
@@ -289,10 +289,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "FROM pneu p " +
                     "WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? in (select p.status from pneu p WHERE p.codigo = ? " +
                     "and p.cod_unidade = ?)),?,?,?,?)");
-            stmt.setString(1, movimentacao.getPneu().getCodigo());
+            stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo());
-            stmt.setString(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(4, movimentacao.getPneu().getCodigo());
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
             if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
@@ -377,7 +377,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             return;
         }
 
-        final String codPneu = movimentacao.getPneu().getCodigo();
+        final Long codPneu = movimentacao.getPneu().getCodigo();
         final int qtdServicosEmAbertoPneu = servicoDao.getQuantidadeServicosEmAbertoPneu(
                 codUnidade,
                 codPneu,
@@ -412,7 +412,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "VALUES (?, ?, ?, ?)");
             final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
             stmt.setString(1, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setString(2, movimentacao.getPneu().getCodigo());
+            stmt.setLong(2, movimentacao.getPneu().getCodigo());
             stmt.setLong(3, codUnidade);
             stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
             if (stmt.executeUpdate() == 0) {
