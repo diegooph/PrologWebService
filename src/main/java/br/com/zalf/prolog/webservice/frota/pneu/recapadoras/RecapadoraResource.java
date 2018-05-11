@@ -38,7 +38,7 @@ public class RecapadoraResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Recapadora.VISUALIZACAO})
+    @Secured(permissions = {Pilares.Frota.Recapadora.VISUALIZACAO, Pilares.Frota.Recapadora.CADASTRO, Pilares.Frota.Recapadora.EDICAO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public List<Recapadora> getRecapadoras(@PathParam("codEmpresa") @Required Long codEmpresa,
