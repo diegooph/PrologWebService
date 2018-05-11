@@ -355,23 +355,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericao;
     }
 
-    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
-        pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
-        pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
-        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
-        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
-        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
-
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        pneu.setSulcosAtuais(sulcos);
-        return pneu;
-    }
-
     @Override
     @Deprecated
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades,
@@ -456,7 +439,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
         final Pneu pneu = new Pneu();
-        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
+        pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
+        pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
         pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
         pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
