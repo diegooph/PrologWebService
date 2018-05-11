@@ -44,22 +44,22 @@ public class ColaboradorValidator {
     private static void validacaoMatriculaAmbev(Integer matriculaAmbev) throws Exception {
 
         if (!verificacaoNumeroPositivo(matriculaAmbev)) {
-            throw new GenericException("Matrícula Ambev inválida", "A matrícula fornecida é negativa");
+            throw new GenericException("Matrícula Ambev inválida.\nA matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
         }
     }
 
     private static void validacaoMatriculaTrans(Integer matriculaTrans) throws Exception {
 
         if (!verificacaoNumeroPositivo(matriculaTrans)) {
-            throw new GenericException("Matrícula Transportadora inválida", "A matrícula fornecida é negativa");
+            throw new GenericException("Matrícula Transportadora inválida.\nA matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
         }
     }
 
     private static void validacaoDataNascimento(Date dataNascimento) throws Exception {
-        Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento");
+        Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento\n");
 
         if (!verificacaoAno(dataNascimento)) {
-            throw new GenericException("Você precisa fornecer um ano de nascimento válido", null);
+            throw new GenericException("Ano de Nascimento inválido", null);
         }
     }
 
@@ -67,7 +67,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
         if (!verificacaoAno(dataAdmissao)) {
-            throw new GenericException("Você precisa fornecer um ano de admissão válido", null);
+            throw new GenericException("Ano de Admissão inválido", null);
         }
 
     }
@@ -76,7 +76,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(nome, "Você precisa preencher o nome");
 
         if (!verificacaoCaracteresLetras(nome)) {
-            throw new GenericException("Você precisa preencher um nome válido", "O campo 'nome' contém números");
+            throw new GenericException("Nome inválido.\nO Nome não pode conter números", "O campo 'nome' contém números");
         }
     }
 
@@ -131,7 +131,7 @@ public class ColaboradorValidator {
     private static void validacaoPis(String pis) throws Exception {
 
         if (pis.length() < 11) {
-            throw new GenericException("PIS inválido", null);
+            throw new GenericException("PIS inválido.\nO PIS deve conter 11 dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
             throw new GenericException("PIS inválido", null);
         }
