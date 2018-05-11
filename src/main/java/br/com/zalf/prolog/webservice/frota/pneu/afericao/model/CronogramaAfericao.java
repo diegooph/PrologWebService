@@ -148,7 +148,7 @@ public class CronogramaAfericao {
                 && placaAfericao.getIntervaloUltimaAfericaoSulco() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    public void removePlacasNaoAferiveis(final CronogramaAfericao cronogramaAfericao) {
+    public void removerPlacasNaoAferiveis(final CronogramaAfericao cronogramaAfericao) {
         final List<ModeloPlacasAfericao.PlacaAfericao> placasNaoAferiveis = new ArrayList<>();
         for (final ModeloPlacasAfericao modelo : cronogramaAfericao.getModelosPlacasAfericao()) {
             for (final ModeloPlacasAfericao.PlacaAfericao placaAfericao : modelo.getPlacasAfericao()) {
@@ -160,6 +160,18 @@ public class CronogramaAfericao {
                 }
             }
             modelo.getPlacasAfericao().removeAll(placasNaoAferiveis);
+        }
+    }
+
+    public void removerModelosSemPlacas(final CronogramaAfericao cronogramaAfericao) {
+        final List<ModeloPlacasAfericao> modelosSemPlacas = new ArrayList<>();
+        for (final ModeloPlacasAfericao modeloPlacasAfericao : cronogramaAfericao.getModelosPlacasAfericao()) {
+            if (modeloPlacasAfericao.getPlacasAfericao().isEmpty()) {
+                modelosSemPlacas.add(modeloPlacasAfericao);
+            }
+        }
+        if (!modelosSemPlacas.isEmpty()) {
+            cronogramaAfericao.getModelosPlacasAfericao().removeAll(modelosSemPlacas);
         }
     }
 }

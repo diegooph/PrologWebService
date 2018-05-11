@@ -148,48 +148,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(final String placa)
-            throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  VACTA.STATUS_ATIVO, " +
-                    "  VACTA.PODE_AFERIR_SULCO, " +
-                    "  VACTA.PODE_AFERIR_PRESSAO, " +
-                    "  VACTA.PODE_AFERIR_SULCO_PRESSAO," +
-                    "  VACTA.PODE_AFERIR_ESTEPE " +
-                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO AS VACTA " +
-                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE " +
-                    "                     FROM VEICULO " +
-                    "                     WHERE PLACA = ?) " +
-                    "      AND COD_TIPO_VEICULO = (SELECT COD_TIPO " +
-                    "                              FROM VEICULO " +
-                    "                              WHERE PLACA = ?);");
-            stmt.setString(1, placa);
-            stmt.setString(2, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createConfiguracaoTipoAfericao(rSet);
-            } else {
-                throw new SQLException("Erro ao buscar as configurações de aferição para a placa: " + placa);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws SQLException {
-        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
-        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
-        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-        return config;
-    }
-
     @Override
     public CronogramaAfericao getCronogramaAfericao(Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -230,7 +188,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "        GROUP BY 1) as numero_pneus on placa_pneus = v.placa " +
                     "WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE = ? " +
                     "ORDER BY M.NOME ASC, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC;");
-
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             // Seta para calcular informações de pressão.
             stmt.setObject(1, OffsetDateTime.now(Clock.system(zoneId)));
@@ -270,7 +227,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
             cronogramaAfericao.setMetaAfericaoSulco(restricao.getPeriodoDiasAfericaoSulco());
             cronogramaAfericao.setModelosPlacasAfericao(modelos);
-            cronogramaAfericao.removePlacasNaoAferiveis(cronogramaAfericao);
+            cronogramaAfericao.removerPlacasNaoAferiveis(cronogramaAfericao);
+            cronogramaAfericao.removerModelosSemPlacas(cronogramaAfericao);
             cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(cronogramaAfericao);
             cronogramaAfericao.calcularTotalVeiculos(cronogramaAfericao);
         } finally {
@@ -396,22 +354,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericao;
     }
 
-    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
-        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
-        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
-        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
-        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
-
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        pneu.setSulcosAtuais(sulcos);
-        return pneu;
-    }
-
     @Override
     @Deprecated
     public List<Afericao> getAfericoesByCodUnidadeByPlaca(List<String> codUnidades,
@@ -450,6 +392,64 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             closeConnection(conn, stmt, rSet);
         }
         return afericoes;
+    }
+
+    private ConfiguracaoTipoVeiculoAfericao getConfiguracaTiposVeiculosAfericaoEstepe(final String placa)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "  VACTA.STATUS_ATIVO, " +
+                    "  VACTA.PODE_AFERIR_SULCO, " +
+                    "  VACTA.PODE_AFERIR_PRESSAO, " +
+                    "  VACTA.PODE_AFERIR_SULCO_PRESSAO," +
+                    "  VACTA.PODE_AFERIR_ESTEPE " +
+                    "FROM VIEW_AFERICAO_CONFIGURACAO_TIPO_AFERICAO AS VACTA " +
+                    "WHERE COD_UNIDADE = (SELECT COD_UNIDADE " +
+                    "                     FROM VEICULO " +
+                    "                     WHERE PLACA = ?) " +
+                    "      AND COD_TIPO_VEICULO = (SELECT COD_TIPO " +
+                    "                              FROM VEICULO " +
+                    "                              WHERE PLACA = ?);");
+            stmt.setString(1, placa);
+            stmt.setString(2, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createConfiguracaoTipoAfericao(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar as configurações de aferição para a placa: " + placa);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private ConfiguracaoTipoVeiculoAfericao createConfiguracaoTipoAfericao(ResultSet rSet) throws SQLException {
+        final ConfiguracaoTipoVeiculoAfericao config = new ConfiguracaoTipoVeiculoAfericao();
+        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
+        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
+        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
+        return config;
+    }
+
+    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
+        final Pneu pneu = new Pneu();
+        pneu.setCodigo(rSet.getString("CODIGO_PNEU"));
+        pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
+        pneu.setPressaoCorreta(rSet.getDouble("PRESSAO_RECOMENDADA"));
+        pneu.setPressaoAtual(rSet.getDouble("PRESSAO_PNEU"));
+
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        sulcos.setCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        sulcos.setCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        sulcos.setExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        pneu.setSulcosAtuais(sulcos);
+        return pneu;
     }
 
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(ResultSet rSet) throws SQLException {
