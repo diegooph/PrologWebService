@@ -73,7 +73,8 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
             stmt = conn.prepareStatement("SELECT R.CODIGO, R.COD_EMPRESA, R.NOME, R.ATIVA " +
                     "FROM RECAPADORA AS R " +
                     "WHERE R.COD_EMPRESA = ? " +
-                    "AND (? = 1 OR R.ATIVA = ?);");
+                    "AND (? = 1 OR R.ATIVA = ?) " +
+                    "ORDER BY R.ATIVA DESC, R.CODIGO;");
             stmt.setLong(1, codEmpresa);
 
             if (ativas == null) {
