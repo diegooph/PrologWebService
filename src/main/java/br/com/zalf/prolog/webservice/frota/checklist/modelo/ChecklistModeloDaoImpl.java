@@ -107,6 +107,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                                                                   @NotNull final Set<String> setTiposVeiculos) throws SQLException {
         final ModeloChecklistListagem modeloChecklist = new ModeloChecklistListagem();
         modeloChecklist.setCodigo(codModeloChecklistAtual);
+        modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         modeloChecklist.setNome(rSet.getString("MODELO"));
         modeloChecklist.setCargosLiberados(new ArrayList<>(setCargos));
         modeloChecklist.setTiposVeiculoLiberados(new ArrayList<>(setTiposVeiculos));
