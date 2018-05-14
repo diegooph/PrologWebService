@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria método para buscar um tipo de intervalo específico
 * Cria estrutura para permitir configurar quais tipos de veículo podem realizar determinados tipos de aferição
+* Cria classes para barrar requisições de versões específicas do App Android
 
 ### Refactors
 * Altera nomes de alguns atributos do `ModeloChecklist`
