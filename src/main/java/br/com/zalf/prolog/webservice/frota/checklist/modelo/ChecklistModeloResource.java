@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -34,18 +35,18 @@ public class ChecklistModeloResource {
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}")
-    public List<ModeloChecklist> getModelosChecklistByCodUnidade(@PathParam("codUnidade") @Required Long codUnidade) {
-        return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, "%");
+    public List<ModeloChecklistListagem> getModelosChecklistByCodUnidade(@PathParam("codUnidade") @Required Long codUnidade) {
+        return service.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, "%");
     }
 
     @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/cargos/{codCargo}")
-    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodCargo(
+    public List<ModeloChecklistListagem> getModelosChecklistByCodUnidadeByCodCargo(
             @PathParam("codUnidade") @Required Long codUnidade,
             @PathParam("codCargo") @Required String codFuncao) {
-        return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
+        return service.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
     }
 
     @GET

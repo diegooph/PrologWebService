@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +27,9 @@ public class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
-    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
         try {
-            return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
+            return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
             throw new RuntimeException(e);

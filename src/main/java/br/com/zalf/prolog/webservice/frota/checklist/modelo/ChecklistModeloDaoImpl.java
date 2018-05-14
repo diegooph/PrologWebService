@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao {
 
@@ -57,34 +60,58 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) throws
-            SQLException {
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao)
+            throws SQLException {
+        final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<ModeloChecklist> listModelos = new ArrayList<>();
+        Set<String> setCargos = new HashSet<>();
+        Set<String> setTiposVeiculos = new HashSet<>();
+        ModeloChecklistListagem modeloChecklistListagem = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO, " +
-                    "CM.COD_UNIDADE AS COD_UNIDADE "
-                    + "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE " +
-                    "AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
-                    + "WHERE CMF.COD_UNIDADE = ? AND CMF.COD_FUNCAO::TEXT LIKE ? AND CM.STATUS_ATIVO = TRUE "
-                    + "ORDER BY MODELO");
+            stmt = conn.prepareStatement("select * from func_checklist_get_listagem_modelos_checklist(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codFuncao);
             rSet = stmt.executeQuery();
+            Long codModeloChecklistAnterior = null;
             while (rSet.next()) {
-                final ModeloChecklist modeloChecklist = new ModeloChecklist();
-                modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
-                modeloChecklist.setNome(rSet.getString("MODELO"));
-                modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-                listModelos.add(modeloChecklist);
+                final Long codModeloChecklistAtual = rSet.getLong("COD_MODELO");
+                if (codModeloChecklistAnterior == null) {
+                    codModeloChecklistAnterior = codModeloChecklistAtual;
+                }
+                if (!codModeloChecklistAtual.equals(codModeloChecklistAnterior)) {
+                    modelosChecklistListagem.add(modeloChecklistListagem);
+                    codModeloChecklistAnterior = codModeloChecklistAtual;
+                    setCargos = new HashSet<>();
+                    setTiposVeiculos = new HashSet<>();
+                }
+                setCargos.add(rSet.getString("NOME_CARGO"));
+                setTiposVeiculos.add(rSet.getString("TIPO_VEICULO"));
+                modeloChecklistListagem = createModeloChecklistListagem(rSet, codModeloChecklistAnterior, setCargos, setTiposVeiculos);
+            }
+            if (codModeloChecklistAnterior != null) {
+                modelosChecklistListagem.add(modeloChecklistListagem);
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return listModelos;
+        return modelosChecklistListagem;
+    }
+
+    @NotNull
+    private ModeloChecklistListagem createModeloChecklistListagem(@NotNull final ResultSet rSet,
+                                                                  @NotNull final Long codModeloChecklistAtual,
+                                                                  @NotNull final Set<String> setCargos,
+                                                                  @NotNull final Set<String> setTiposVeiculos) throws SQLException {
+        final ModeloChecklistListagem modeloChecklist = new ModeloChecklistListagem();
+        modeloChecklist.setCodigo(codModeloChecklistAtual);
+        modeloChecklist.setNome(rSet.getString("MODELO"));
+        modeloChecklist.setCargosLiberados(new ArrayList<>(setCargos));
+        modeloChecklist.setTiposVeiculoLiberados(new ArrayList<>(setTiposVeiculos));
+        modeloChecklist.setQtdPerguntas(rSet.getInt("TOTAL_PERGUNTAS"));
+        return modeloChecklist;
     }
 
     @Override

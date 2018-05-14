@@ -4,6 +4,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +32,8 @@ public interface ChecklistModeloDao {
 	 * @return lista de modelo do checklist
 	 * @throws SQLException se ocorrer erro no banco
 	 */
-	List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) throws SQLException;
+	List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao)
+			throws SQLException;
 
 	/**
 	 * busca um modelo de checklist atraves do modelo e da unidade
