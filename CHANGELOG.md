@@ -13,6 +13,7 @@ Change Log
 * Altera nomes de alguns atributos do `ModeloChecklist`
 * Seta código de unidade na busca dos modelos de checklist de uma unidade
 * Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
+* Bloqueia resources ligados a pneu para os apps com version code menor ou igual a 51
 
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
