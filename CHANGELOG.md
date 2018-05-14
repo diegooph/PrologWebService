@@ -6,9 +6,12 @@ Change Log
 
 ### Features
 * Cria método para buscar um tipo de intervalo específico
+* Cria estrutura para permitir configurar quais tipos de veículo podem realizar determinados tipos de aferição
 
 ### Refactors
 * Altera nomes de alguns atributos do `ModeloChecklist`
+* Seta código de unidade na busca dos modelos de checklist de uma unidade
+* Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
 
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
