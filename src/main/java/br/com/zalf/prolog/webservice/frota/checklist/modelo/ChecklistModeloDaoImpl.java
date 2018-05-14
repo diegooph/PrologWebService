@@ -65,7 +65,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         final List<ModeloChecklist> listModelos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO "
+            stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, CM.CODIGO AS COD_MODELO, " +
+                    "CM.COD_UNIDADE AS COD_UNIDADE "
                     + "FROM CHECKLIST_MODELO_FUNCAO CMF JOIN CHECKLIST_MODELO CM ON CM.COD_UNIDADE = CMF.COD_UNIDADE " +
                     "AND CM.CODIGO = CMF.COD_CHECKLIST_MODELO "
                     + "WHERE CMF.COD_UNIDADE = ? AND CMF.COD_FUNCAO::TEXT LIKE ? AND CM.STATUS_ATIVO = TRUE "
@@ -77,6 +78,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 final ModeloChecklist modeloChecklist = new ModeloChecklist();
                 modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
                 modeloChecklist.setNome(rSet.getString("MODELO"));
+                modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));
                 listModelos.add(modeloChecklist);
             }
         } finally {
