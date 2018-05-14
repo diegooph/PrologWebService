@@ -15,7 +15,6 @@ public class Restricao {
     private double sulcoMinimoDescarte;
     private int periodoDiasAfericaoPressao;
     private int periodoDiasAfericaoSulco;
-    private List<TipoVeiculo> tiposVeiculosAfericaoEstepeBloqueada;
 
     public Restricao() {
     }
@@ -68,14 +67,6 @@ public class Restricao {
         this.sulcoMinimoDescarte = sulcoMinimoDescarte;
     }
 
-    public List<TipoVeiculo> getTiposVeiculosAfericaoEstepeBloqueada() {
-        return tiposVeiculosAfericaoEstepeBloqueada;
-    }
-
-    public void setTiposVeiculosAfericaoEstepeBloqueada(final List<TipoVeiculo> tiposVeiculosAfericaoEstepeBloqueada) {
-        this.tiposVeiculosAfericaoEstepeBloqueada = tiposVeiculosAfericaoEstepeBloqueada;
-    }
-
     @Override
     public String toString() {
         return "Restricao{" +
@@ -85,7 +76,6 @@ public class Restricao {
                 ", sulcoMinimoDescarte=" + sulcoMinimoDescarte +
                 ", periodoDiasAfericaoPressao=" + periodoDiasAfericaoPressao +
                 ", periodoDiasAfericaoSulco=" + periodoDiasAfericaoSulco +
-                ", tiposVeiculosAfericaoEstepeBloqueada=" + tiposVeiculosAfericaoEstepeBloqueada +
                 '}';
     }
 }

@@ -38,9 +38,10 @@ public class PneuResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String
-            codOriginal) {
-        if (service.update(pneu, codUnidade, codOriginal)) {
+    public Response update(Pneu pneu,
+                           @PathParam("codUnidade") Long codUnidade,
+                           @PathParam("codPneuOriginal") Long codOriginalPneu) {
+        if (service.update(pneu, codUnidade, codOriginalPneu)) {
             return Response.ok("Pneu atualizado com sucesso.");
         } else {
             return Response.error("Erro ao atualizar o pneu.");
@@ -155,7 +156,7 @@ public class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
+    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 
@@ -163,7 +164,7 @@ public class PneuResource {
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}/fotos-cadastro/sincronizada")
     public Response marcarFotoComoSincronizada(@PathParam("codUnidade") @Required final Long codUnidade,
-                                               @PathParam("codPneu") @Required final String codPneu,
+                                               @PathParam("codPneu") @Required final Long codPneu,
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
         service.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");

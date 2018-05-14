@@ -116,7 +116,7 @@ public class ServicoService {
     }
 
     public List<Servico> getServicosFechadosPneu(final Long codUnidade,
-                                                 final String codPneu,
+                                                 final Long codPneu,
                                                  final long dataInicial,
                                                  final long dataFinal) {
         try {
@@ -124,7 +124,7 @@ public class ServicoService {
         } catch (SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +
-                    "Pneu: %s \n" +
+                    "Pneu: %d \n" +
                     "Data Inicial: %d \n" +
                     "Data Final: %d", codUnidade, codPneu, dataInicial, dataFinal);
             Log.e(TAG, message, e);
