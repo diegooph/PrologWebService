@@ -484,6 +484,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 final ResultSet rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     pergunta.setCodigo(rSet.getLong("CODIGO"));
+
+                    // Verifica se temos alguma alternativa nessa pergunta.
+                    if (pergunta.getAlternativasResposta() == null) {
+                        pergunta.setAlternativasResposta(new ArrayList<>());
+                    }
+
                     // Adiciona a alternativa TIPO_OUTROS.
                     pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
                     for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
