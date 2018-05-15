@@ -125,7 +125,8 @@ public final class DatabaseManager {
         poolProperties.setDefaultAutoCommit(true);
         poolProperties.setJdbcInterceptors(
                 "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;" +
-                        "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+                "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;" +
+                "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer");
         return poolProperties;
     }
 }
