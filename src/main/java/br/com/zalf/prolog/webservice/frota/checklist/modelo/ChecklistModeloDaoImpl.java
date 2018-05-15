@@ -5,8 +5,10 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -100,21 +102,6 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         return modelosChecklistListagem;
     }
 
-    @NotNull
-    private ModeloChecklistListagem createModeloChecklistListagem(@NotNull final ResultSet rSet,
-                                                                  @NotNull final Long codModeloChecklistAtual,
-                                                                  @NotNull final Set<String> setCargos,
-                                                                  @NotNull final Set<String> setTiposVeiculos) throws SQLException {
-        final ModeloChecklistListagem modeloChecklist = new ModeloChecklistListagem();
-        modeloChecklist.setCodigo(codModeloChecklistAtual);
-        modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));
-        modeloChecklist.setNome(rSet.getString("MODELO"));
-        modeloChecklist.setCargosLiberados(new ArrayList<>(setCargos));
-        modeloChecklist.setTiposVeiculoLiberados(new ArrayList<>(setTiposVeiculos));
-        modeloChecklist.setQtdPerguntas(rSet.getInt("TOTAL_PERGUNTAS"));
-        return modeloChecklist;
-    }
-
     @Override
     public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -143,6 +130,24 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             closeConnection(conn, stmt, rSet);
         }
         return modeloChecklist;
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final String token,
+                                      @NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            atualizaModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
+            // Nenhuma pergunta será enviada ao Servidor caso não tenham sofrido nenhuma edição.
+            if (modeloChecklist.getPerguntas() != null && modeloChecklist.getPerguntas().size() > 0) {
+                atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
+            }
+        } finally {
+            closeConnection(conn);
+        }
     }
 
     @Override
@@ -287,6 +292,284 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             closeConnection(conn, stmt, rSet);
         }
+    }
+
+    private void atualizaPerguntasModeloChecklist(@NotNull final Connection conn,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final Long codModelo,
+                                                  @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+        for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
+            switch (pergunta.getAcaoEdicao()) {
+                case PerguntaRespostaChecklist.CRIADA:
+                    // Apenas adicionamos uma nova entrada no banco.
+                    // Adicionamos as alternativas também.
+                    insertPerguntaAlternativaChecklist(conn, codUnidade, codModelo, pergunta);
+                    break;
+                case PerguntaRespostaChecklist.ALTERADA_NOME:
+                    // Inativa a Pergunta atual.
+                    // Cria uma nova entrada no banco de dados e retorna o código.
+                    // Insere as alternativas (NÃO DELETADAS) da pergunta no código novo.
+                    inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    final Long codPergunta = insertApenasPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    // Adiciona a alternativa TIPO_OUTROS.
+                    pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
+                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
+                        if (alternativa.acaoEdicao.equals(AlternativaChecklist.DELETADA)) {
+                            // Devemos passar o código da pergunta que foi desativada, para podermos desativar as suas
+                            // alternativas também.
+                            inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                        } else {
+                            insertAlternativaChecklist(conn, codUnidade, codModelo, codPergunta, alternativa);
+                        }
+                    }
+                    break;
+                case PerguntaRespostaChecklist.ALTERADA_INFOS:
+                    // Apenas atualizamos a pergunta atual.
+                    // Devemos fazer uma verificação em cima das alternativas para tratar
+                    // os casos de ALTERACAO/CRIACAO/DELECAO.
+                    atualizaPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
+                        if (alternativa.acaoEdicao.equals(AlternativaChecklist.CRIADA)) {
+                            insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                        } else if (alternativa.acaoEdicao.equals(AlternativaChecklist.ALTERADA)) {
+                            // Devemos passar o código da pergunta que foi desativada, para podermos desativar as suas
+                            // alternativas também.
+                            inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                            insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                        } else {
+                            // Devemos passar o código da pergunta que foi desativada, para podermos desativar as suas
+                            // alternativas também.
+                            inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                        }
+                    }
+                    break;
+                case PerguntaRespostaChecklist.DELETADA:
+                    // Vamos inativar a pergunta
+                    inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
+                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
+                        inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void atualizaPerguntaChecklist(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Long codModelo,
+                                           @NotNull final PerguntaRespostaChecklist pergunta) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_PERGUNTAS " +
+                    "SET ORDEM = ?, PERGUNTA = ?, PRIORIDADE = ?, SINGLE_CHOICE = ?, COD_IMAGEM = ? " +
+                    "WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+            stmt.setInt(1, pergunta.getOrdemExibicao());
+            stmt.setString(2, pergunta.getPergunta());
+            stmt.setString(3, pergunta.getPrioridade());
+            stmt.setBoolean(4, pergunta.isSingleChoice());
+            stmt.setLong(5, pergunta.getCodImagem());
+            stmt.setLong(6, codUnidade);
+            stmt.setLong(7, codModelo);
+            stmt.setLong(8, pergunta.getCodigo());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível atualizar a pergunta de código: " + pergunta.getCodigo());
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertAlternativaChecklist(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidade,
+                                            @NotNull final Long codModelo,
+                                            @NotNull final Long codPergunta,
+                                            @NotNull final AlternativaChecklist alternativa) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
+                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
+                    + "STATUS_ATIVO) VALUES (?,?,?,?,?,?);");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codModelo);
+            stmt.setString(4, alternativa.alternativa);
+            stmt.setInt(5, alternativa.ordemExibicao);
+            stmt.setBoolean(6, true);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inserir a alternativa da pergunta de código: " + codPergunta);
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private long insertApenasPerguntaChecklist(@NotNull final Connection conn,
+                                               @NotNull final Long codUnidade,
+                                               @NotNull final Long codModelo,
+                                               @NotNull final PerguntaRespostaChecklist pergunta) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
+                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
+                    + "STATUS_ATIVO, PRIORIDADE, SINGLE_CHOICE) VALUES (?,?,?,?,?,?,?,?) RETURNING CODIGO");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            stmt.setInt(3, pergunta.getOrdemExibicao());
+            stmt.setString(4, pergunta.getPergunta());
+            if (pergunta.getCodImagem() != null) {
+                stmt.setLong(5, pergunta.getCodImagem());
+            } else {
+                stmt.setNull(5, Types.BIGINT);
+            }
+            stmt.setBoolean(6, true);
+            stmt.setString(7, pergunta.getPrioridade());
+            stmt.setBoolean(8, pergunta.isSingleChoice());
+            final ResultSet rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Não foi possível inserir a pergunta do checklist");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void inativarAlternativaChecklist(@NotNull final Connection conn,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final Long codModelo,
+                                              @NotNull final Long codPergunta,
+                                              @NotNull final AlternativaChecklist alternativa) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA" +
+                    " SET STATUS_ATIVO = FALSE" +
+                    " WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND COD_PERGUNTA = ? AND CODIGO = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setLong(3, codPergunta);
+            stmt.setLong(4, alternativa.getCodigo());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inativar a alternativa de código: " + alternativa.getCodigo());
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void inativarPerguntaChecklist(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final Long codModelo,
+                                           @NotNull final PerguntaRespostaChecklist pergunta) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_PERGUNTAS " +
+                    "SET STATUS_ATIVO = FALSE " +
+                    "WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setLong(3, pergunta.getCodigo());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inativar a pergunta de código: " + pergunta.getCodigo());
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertPerguntaAlternativaChecklist(@NotNull final Connection conn,
+                                                    @NotNull final Long codUnidade,
+                                                    @NotNull final Long codModelo,
+                                                    @NotNull final PerguntaRespostaChecklist pergunta) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
+                    + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
+                    + "STATUS_ATIVO, PRIORIDADE, SINGLE_CHOICE) VALUES (?,?,?,?,?,?,?,?) RETURNING CODIGO");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            stmt.setInt(3, pergunta.getOrdemExibicao());
+            stmt.setString(4, pergunta.getPergunta());
+            if (pergunta.getCodImagem() != null) {
+                stmt.setLong(5, pergunta.getCodImagem());
+            } else {
+                stmt.setNull(5, Types.BIGINT);
+            }
+            stmt.setBoolean(6, true);
+            stmt.setString(7, pergunta.getPrioridade());
+            stmt.setBoolean(8, pergunta.isSingleChoice());
+            final ResultSet rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                pergunta.setCodigo(rSet.getLong("CODIGO"));
+                // Adiciona a alternativa TIPO_OUTROS.
+                pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
+                for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
+                    stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
+                            + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
+                            + "STATUS_ATIVO) VALUES (?,?,?,?,?,?);");
+                    stmt.setLong(1, codModelo);
+                    stmt.setLong(2, codUnidade);
+                    stmt.setLong(3, pergunta.getCodigo());
+                    stmt.setString(4, alternativa.alternativa);
+                    stmt.setInt(5, alternativa.ordemExibicao);
+                    stmt.setBoolean(6, true);
+                    stmt.executeUpdate();
+                }
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void atualizaModeloChecklist(@NotNull final Connection conn,
+                                         @NotNull final Long codUnidade,
+                                         @NotNull final Long codModelo,
+                                         @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM func_checklist_update_modelo_checklist(?, ?, ?, ?, ?);");
+        stmt.setString(1, modeloChecklist.getNome());
+        stmt.setLong(2, codUnidade);
+        stmt.setLong(3, codModelo);
+        stmt.setArray(4,
+                PostgresUtil.ListLongToArray(conn, getCodigosCargos(modeloChecklist.getCargosLiberados())));
+        stmt.setArray(5,
+                PostgresUtil.ListLongToArray(conn, getCodigosTiposVeiculos(modeloChecklist.getTiposVeiculoLiberados())));
+        stmt.executeQuery();
+
+        closeStatement(stmt);
+    }
+
+    @NotNull
+    private List<Long> getCodigosTiposVeiculos(@NotNull final List<TipoVeiculo> tiposVeiculoLiberados) {
+        final List<Long> codTiposVeiculo = new ArrayList<>();
+        for (final TipoVeiculo tipoVeiculo : tiposVeiculoLiberados) {
+            codTiposVeiculo.add(tipoVeiculo.getCodigo());
+        }
+        return codTiposVeiculo;
+    }
+
+    @NotNull
+    private List<Long> getCodigosCargos(@NotNull final List<Cargo> cargosLiberados) {
+        final List<Long> codCargos = new ArrayList<>();
+        for (final Cargo cargo : cargosLiberados) {
+            codCargos.add(cargo.getCodigo());
+        }
+        return codCargos;
+    }
+
+    @NotNull
+    private ModeloChecklistListagem createModeloChecklistListagem(@NotNull final ResultSet rSet,
+                                                                  @NotNull final Long codModeloChecklistAtual,
+                                                                  @NotNull final Set<String> setCargos,
+                                                                  @NotNull final Set<String> setTiposVeiculos) throws SQLException {
+        final ModeloChecklistListagem modeloChecklist = new ModeloChecklistListagem();
+        modeloChecklist.setCodigo(codModeloChecklistAtual);
+        modeloChecklist.setCodUnidade(rSet.getLong("COD_UNIDADE"));
+        modeloChecklist.setNome(rSet.getString("MODELO"));
+        modeloChecklist.setCargosLiberados(new ArrayList<>(setCargos));
+        modeloChecklist.setTiposVeiculoLiberados(new ArrayList<>(setTiposVeiculos));
+        modeloChecklist.setQtdPerguntas(rSet.getInt("TOTAL_PERGUNTAS"));
+        return modeloChecklist;
     }
 
     @NotNull
@@ -491,45 +774,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     private void insertModeloPerguntas(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
-                stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
-                        + "COD_CHECKLIST_MODELO, COD_UNIDADE, ORDEM, PERGUNTA, COD_IMAGEM, "
-                        + "STATUS_ATIVO, PRIORIDADE, SINGLE_CHOICE) VALUES (?,?,?,?,?,?,?,?) RETURNING CODIGO");
-                stmt.setLong(1, modeloChecklist.getCodigo());
-                stmt.setLong(2, modeloChecklist.getCodUnidade());
-                stmt.setInt(3, pergunta.getOrdemExibicao());
-                stmt.setString(4, pergunta.getPergunta());
-                if (pergunta.getCodImagem() != null) {
-                    stmt.setLong(5, pergunta.getCodImagem());
-                } else {
-                    stmt.setNull(5, Types.BIGINT);
-                }
-                stmt.setBoolean(6, true);
-                stmt.setString(7, pergunta.getPrioridade());
-                stmt.setBoolean(8, pergunta.isSingleChoice());
-                final ResultSet rSet = stmt.executeQuery();
-                if (rSet.next()) {
-                    pergunta.setCodigo(rSet.getLong("CODIGO"));
-                    // Adiciona a alternativa TIPO_OUTROS.
-                    pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
-                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                        stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
-                                + "COD_CHECKLIST_MODELO, COD_UNIDADE, COD_PERGUNTA, ALTERNATIVA, ORDEM, "
-                                + "STATUS_ATIVO) VALUES (?,?,?,?,?,?);");
-                        stmt.setLong(1, modeloChecklist.getCodigo());
-                        stmt.setLong(2, modeloChecklist.getCodUnidade());
-                        stmt.setLong(3, pergunta.getCodigo());
-                        stmt.setString(4, alternativa.alternativa);
-                        stmt.setInt(5, alternativa.ordemExibicao);
-                        stmt.setBoolean(6, true);
-                        stmt.executeUpdate();
-                    }
-                }
-            }
-        } finally {
-            closeStatement(stmt);
+        for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
+            insertPerguntaAlternativaChecklist(conn, modeloChecklist.getCodUnidade(), modeloChecklist.getCodigo(), pergunta);
         }
     }
 

@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +43,19 @@ public class ChecklistModeloService {
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
+        }
+    }
+
+    public Response updateModeloChecklist(@NotNull final String token,
+                                          @NotNull final Long codUnidade,
+                                          @NotNull final Long codModelo,
+                                          @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+        try {
+            dao.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+            return Response.ok("Modelo atualizado com sucesso!");
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
+            throw e;
         }
     }
 

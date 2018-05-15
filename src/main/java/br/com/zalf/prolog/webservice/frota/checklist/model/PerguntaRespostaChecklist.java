@@ -9,19 +9,32 @@ import java.util.List;
  */
 public class PerguntaRespostaChecklist extends Pergunta {
 
+    /**
+     * Criticidade que a pergunta pode ter, selecionada na criação do checklist
+     */
     public static final String CRITICA = "CRITICA";
     public static final String ALTA = "ALTA";
     public static final String BAIXA = "BAIXA";
 
+    /**
+     * Ações que a pergunta pode sofrer na edição de um modelo de checklist
+     */
+    public static final String DELETADA = "DELETADA";
+    public static final String ALTERADA_NOME = "ALTERADA_NOME";
+    public static final String ALTERADA_INFOS = "ALTERADA_INFOS";
+    public static final String CRIADA = "CRIADA";
     private int ordemExibicao;
     private Long codImagem;
     private String url;
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
     private String prioridade;
+    /**
+     * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA_NOME}/{@code ALTERADA_INFOS}/{@code CRIADA}
+     */
+    private String acaoEdicao;
 
     public PerguntaRespostaChecklist(){
-
     }
 
     /**
@@ -89,6 +102,14 @@ public class PerguntaRespostaChecklist extends Pergunta {
         this.singleChoice = singleChoice;
     }
 
+    public String getAcaoEdicao() {
+        return acaoEdicao;
+    }
+
+    public void setAcaoEdicao(final String acaoEdicao) {
+        this.acaoEdicao = acaoEdicao;
+    }
+
     @Override
     public String toString() {
         return "PerguntaRespostaChecklist{" +
@@ -98,6 +119,7 @@ public class PerguntaRespostaChecklist extends Pergunta {
                 ", alternativasResposta=" + alternativasResposta +
                 ", singleChoice=" + singleChoice +
                 ", prioridade='" + prioridade + '\'' +
+                ", acaoEdicao='" + acaoEdicao + '\'' +
                 '}';
     }
 }
