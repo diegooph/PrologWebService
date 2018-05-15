@@ -139,7 +139,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                     "pc.STATUS, pc.MOTIVO, pc.PONTUACAO, pc.VENCIMENTO_CNH " +
                     "FROM prontuario_condutor_consolidado pc JOIN colaborador c on c.cpf = pc.CPF_COLABORADOR " +
                     "JOIN equipe e ON e.codigo = c.cod_equipe AND e.cod_unidade = c.cod_unidade " +
-                    "WHERE c.cod_unidade = ? and e.codigo::text like ? " +
+                    "WHERE c.cod_unidade = ? and e.codigo::text like ? and c.status_ativo = true " +
                     "ORDER BY pc.PONTUACAO_PONDERADA desc, initcap(c.nome) asc");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codEquipe);

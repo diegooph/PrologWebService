@@ -9,17 +9,24 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@DebugLog
 @Path("/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@AppVersionCodeHandler(
+        implementation = DefaultAppVersionCodeHandler.class,
+        targetVersionCode = 51,
+        versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+        actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class PneuResource {
 
     private PneuService service = new PneuService();
@@ -27,20 +34,17 @@ public class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insert(pneu, codUnidade)) {
-            return Response.ok("Pneu inserido com sucesso.");
-        } else {
-            return Response.error("Erro ao inserir o pneu");
-        }
+    public AbstractResponse insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) {
+        return service.insert(pneu, codUnidade);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(Pneu pneu, @PathParam("codUnidade") Long codUnidade, @PathParam("codPneuOriginal") String
-            codOriginal) {
-        if (service.update(pneu, codUnidade, codOriginal)) {
+    public Response update(Pneu pneu,
+                           @PathParam("codUnidade") Long codUnidade,
+                           @PathParam("codPneuOriginal") Long codOriginalPneu) {
+        if (service.update(pneu, codUnidade, codOriginalPneu)) {
             return Response.ok("Pneu atualizado com sucesso.");
         } else {
             return Response.error("Erro ao atualizar o pneu.");
@@ -155,7 +159,7 @@ public class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") String codPneu, @PathParam("codUnidade") Long codUnidade) {
+    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 
@@ -163,7 +167,7 @@ public class PneuResource {
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}/fotos-cadastro/sincronizada")
     public Response marcarFotoComoSincronizada(@PathParam("codUnidade") @Required final Long codUnidade,
-                                               @PathParam("codPneu") @Required final String codPneu,
+                                               @PathParam("codPneu") @Required final Long codPneu,
                                                @QueryParam("urlFotoPneu") @Required final String urlFotoPneu) {
         service.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);
         return Response.ok("Foto marcada como sincronizada com sucesso");

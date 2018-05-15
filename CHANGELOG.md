@@ -1,6 +1,29 @@
 Change Log
 ==========
 
+<a name="v0.0.58"></a>
+## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (2018-05-15)
+
+### Features
+* Cria método para buscar um tipo de intervalo específico
+* Cria estrutura para permitir configurar quais tipos de veículo podem realizar determinados tipos de aferição
+* Cria classes para barrar requisições de versões específicas do App Android
+
+### Refactors
+* Altera nomes de alguns atributos do `ModeloChecklist`
+* Seta código de unidade na busca dos modelos de checklist de uma unidade
+* Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
+* Bloqueia resources ligados a pneu para os apps com version code menor ou igual a 51
+* Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
+* Altera insert do pneu para retornar um `AbstractResponse`
+
+### Bug Fixes
+* Aprimora fluxo de inserção de um modelo de checklist
+* Corrige busca dos modelos de checklist disponíveis
+* Lida com caso de alternativas nulas na inserção do modelo de checklist
+* Aumenta para 5 min timeout até uma connection ser considerada abandonada
+* Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
+
 <a name="v0.0.57"></a>
 ## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
 

@@ -23,16 +23,16 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public boolean insert(Pneu pneu, Long codUnidade) {
+    public AbstractResponse insert(Pneu pneu, Long codUnidade) {
         try {
-            return dao.insert(pneu, codUnidade);
+            return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            return false;
+            return Response.error("Erro ao inserir o pneu");
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, String codOriginal) {
+    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {
@@ -133,7 +133,7 @@ public class PneuService {
         }
     }
 
-    public Pneu getPneuByCod(String codPneu, Long codUnidade) {
+    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {
@@ -152,7 +152,7 @@ public class PneuService {
     }
 
     public void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
-                                           @NotNull final String codPneu,
+                                           @NotNull final Long codPneu,
                                            @NotNull final String urlFotoPneu) {
         try {
             dao.marcarFotoComoSincronizada(codUnidade, codPneu, urlFotoPneu);

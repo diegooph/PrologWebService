@@ -45,10 +45,9 @@ public interface ChecklistModeloDao {
 	/**
 	 * insere um checklist
 	 * @param modeloChecklist o checklist
-	 * @return valor da operação
 	 * @throws SQLException caso ocorrer erro no banco
 	 */
-	boolean insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException;
+	void insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException;
 
 	/**
 	 * marca como inativo o checklist através das informações de unidade e modelo

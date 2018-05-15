@@ -22,7 +22,7 @@ public class PneuTest {
         final PneuDao dao = Injection.providePneuDao();
 
         final Pneu pneu = new Pneu();
-        pneu.setCodigo("16304");
+        pneu.setCodigo(16304L);
 
         final Sulcos sulcos = new Sulcos();
         sulcos.setExterno(10.0);
@@ -34,7 +34,7 @@ public class PneuTest {
 
         dao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), 14L, null /* Alterar */);
 
-        final Pneu pneuAtualizado = dao.getPneuByCod("16304", 14L);
+        final Pneu pneuAtualizado = dao.getPneuByCod(16304L, 14L);
         final Sulcos sulcosAtualizados = pneuAtualizado.getSulcosAtuais();
         assertEquals(sulcos.getExterno(), sulcosAtualizados.getExterno(), 0);
         assertEquals(sulcos.getCentralExterno(), sulcosAtualizados.getCentralExterno(), 0);

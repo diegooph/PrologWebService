@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -25,20 +26,25 @@ public class ChecklistModeloResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     public Response insertModeloChecklist(ModeloChecklist modeloChecklist) {
-        if (service.insertModeloChecklist(modeloChecklist)) {
-            return Response.ok("Modelo de checklist inserido com sucesso");
-        } else {
-            return Response.error("Erro ao inserir modelo de checklist");
-        }
+        service.insertModeloChecklist(modeloChecklist);
+        return Response.ok("Modelo de checklist inserido com sucesso");
     }
 
     @GET
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/{codUnidade}/cargos/{codFuncao}")
-    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codFuncao") String codFuncao) {
+    @Path("/{codUnidade}")
+    public List<ModeloChecklist> getModelosChecklistByCodUnidade(@PathParam("codUnidade") @Required Long codUnidade) {
+        return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, "%");
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.VISUALIZAR, Pilares.Frota.Checklist.Modelo.ALTERAR,
+            Pilares.Frota.Checklist.Modelo.CADASTRAR})
+    @Path("/{codUnidade}/cargos/{codCargo}")
+    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodCargo(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @PathParam("codCargo") @Required String codFuncao) {
         return service.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
     }
 

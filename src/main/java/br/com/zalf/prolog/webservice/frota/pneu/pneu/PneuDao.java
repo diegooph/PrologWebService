@@ -25,10 +25,11 @@ public interface PneuDao {
      *
      * @param pneu       um pneu
      * @param codUnidade código da unidade
-     * @return valor da operação
+     * @return código do pneu recém cadastrado
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean insert(Pneu pneu, Long codUnidade) throws SQLException;
+    @NotNull
+    Long insert(Pneu pneu, Long codUnidade) throws SQLException;
 
     /**
      * atualiza medições do pneu no banco
@@ -46,16 +47,16 @@ public interface PneuDao {
      *
      * @param pneu        um pneu
      * @param codUnidade  código da unidade
-     * @param codOriginal código original do pneu
+     * @param codOriginalPneu código original do pneu
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean update(Pneu pneu, Long codUnidade, String codOriginal) throws SQLException;
+    boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
 
     /**
      * Atualiza a pressão do pneu.
      */
-    boolean updatePressao(String codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
+    boolean updatePressao(Long codPneu, double pressao, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza status do pneu
@@ -74,7 +75,7 @@ public interface PneuDao {
      */
     void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
-    void updateSulcos(String codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
+    void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * busca uma lista de pneus com base no código e status
@@ -176,7 +177,7 @@ public interface PneuDao {
      * @return
      * @throws SQLException
      */
-    Pneu getPneuByCod(String codPneu, Long codUnidade) throws SQLException;
+    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
 
     /**
      * Busca um modelo de pneu a partir de seu código único
@@ -187,6 +188,6 @@ public interface PneuDao {
     Modelo getModeloPneu(Long codModelo) throws SQLException;
 
     void marcarFotoComoSincronizada(@NotNull final Long codUnidade,
-                                    @NotNull final String codPneu,
+                                    @NotNull final Long codPneu,
                                     @NotNull final String urlFotoPneu) throws SQLException;
 }
