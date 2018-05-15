@@ -13,6 +13,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 25/03/2018
@@ -112,11 +113,11 @@ public final class DatabaseManager {
         poolProperties.setValidationInterval(30000);
         poolProperties.setTimeBetweenEvictionRunsMillis(30000);
         poolProperties.setMaxWait(10000);
-        poolProperties.setRemoveAbandonedTimeout(60);
         // The number of milliseconds a connection must be idle to be eligible for eviction.
         poolProperties.setMinEvictableIdleTimeMillis(60000);
         poolProperties.setLogAbandoned(true);
         poolProperties.setRemoveAbandoned(true);
+        poolProperties.setRemoveAbandonedTimeout((int) TimeUnit.MINUTES.toSeconds(5));
 
         // Usando o autoCommit default em true o interceptor ConnectionState, a conexão sempre será setada com
         // autoCommit true ao ser emprestada da pool. Do contrário o autoCommit seria setado apenas quando a conexão
