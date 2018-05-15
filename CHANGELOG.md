@@ -22,6 +22,7 @@ Change Log
 * Corrige busca dos modelos de checklist disponíveis
 * Lida com caso de alternativas nulas na inserção do modelo de checklist
 * Aumenta para 5 min timeout até uma connection ser considerada abandonada
+* Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
 
 <a name="v0.0.57"></a>
 ## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)
