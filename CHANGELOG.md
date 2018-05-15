@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.58"></a>
-## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (release-date) - [unreleased]
+## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (2018-05-15)
 
 ### Features
 * Cria método para buscar um tipo de intervalo específico
