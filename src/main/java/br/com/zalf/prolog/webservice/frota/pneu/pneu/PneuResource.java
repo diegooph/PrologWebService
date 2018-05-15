@@ -34,12 +34,8 @@ public class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public Response insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) {
-        if (service.insert(pneu, codUnidade)) {
-            return Response.ok("Pneu inserido com sucesso.");
-        } else {
-            return Response.error("Erro ao inserir o pneu");
-        }
+    public AbstractResponse insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) {
+        return service.insert(pneu, codUnidade);
     }
 
     @PUT

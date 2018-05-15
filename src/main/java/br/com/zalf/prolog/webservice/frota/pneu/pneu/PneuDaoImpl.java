@@ -69,9 +69,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean insert(Pneu pneu, Long codUnidade) throws SQLException {
+    @NotNull
+    public Long insert(Pneu pneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        Long codPneu;
         try {
             // Se um pneu tem número ímpar de sulcos, o valor do sulco central deve ser duplicado nos dois campos de
             // de sulco central.
@@ -87,7 +90,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
                     "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
                     "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa)\n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?));");
+                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO;");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -116,8 +119,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             stmt.setLong(18, codUnidade);
 
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codPneu = rSet.getLong("CODIGO");
+                pneu.setCodigo(codPneu);
+            } else {
                 throw new SQLException("Erro ao inserir o pneu");
             }
 
@@ -136,9 +142,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.rollback();
             throw e;
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
-        return true;
+        return codPneu;
     }
 
     @Override

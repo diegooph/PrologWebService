@@ -23,12 +23,12 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public boolean insert(Pneu pneu, Long codUnidade) {
+    public AbstractResponse insert(Pneu pneu, Long codUnidade) {
         try {
-            return dao.insert(pneu, codUnidade);
+            return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            return false;
+            return Response.error("Erro ao inserir o pneu");
         }
     }
 

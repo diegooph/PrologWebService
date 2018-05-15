@@ -25,10 +25,11 @@ public interface PneuDao {
      *
      * @param pneu       um pneu
      * @param codUnidade código da unidade
-     * @return valor da operação
+     * @return código do pneu recém cadastrado
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean insert(Pneu pneu, Long codUnidade) throws SQLException;
+    @NotNull
+    Long insert(Pneu pneu, Long codUnidade) throws SQLException;
 
     /**
      * atualiza medições do pneu no banco
