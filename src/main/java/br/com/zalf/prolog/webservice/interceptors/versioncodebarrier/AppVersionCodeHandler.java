@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface AppVersionCodeHandler {
 
     Class<? extends AppVersionCodeBarrier> implementation() default DefaultAppVersionCodeHandler.class;

@@ -1,10 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -198,6 +205,11 @@ public class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/com-pneus/{placa}")
+    @AppVersionCodeHandler(
+            implementation = DefaultAppVersionCodeHandler.class,
+            targetVersionCode = 51,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, true);

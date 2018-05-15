@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * Created on 14/05/2018
@@ -38,24 +39,30 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         // Se chegou até aqui sabemos que a requisição partiu do App Android.
 
         final Class<?> resourceClass = resourceInfo.getResourceClass();
-        final AppVersionCodeHandler classAnnot = resourceClass.getAnnotation(AppVersionCodeHandler.class);
+        final Method resourceMethod = resourceInfo.getResourceMethod();
+        final AppVersionCodeHandler methodAnnot = resourceMethod.getAnnotation(AppVersionCodeHandler.class);
+
+        // Priorizamos anotações no método, se existirem.
+        final AppVersionCodeHandler annotation = methodAnnot != null
+                ? methodAnnot
+                : resourceClass.getAnnotation(AppVersionCodeHandler.class);
 
         // Sanity check.
-        if (classAnnot.targetVersionCode() == -1) {
+        if (annotation.targetVersionCode() == -1) {
             return;
         }
 
         final String versionCodeString = containerRequestContext
                 .getHeaderString(ProLogCustomHeaders.APP_VERSION_ANDROID_APP.getHeaderName());
 
-        final VersionNotPresentAction notPresentAction = classAnnot.actionIfVersionNotPresent();
+        final VersionNotPresentAction notPresentAction = annotation.actionIfVersionNotPresent();
         if (versionCodeString != null) {
             Log.d(TAG, "AppVersionCodeBarrier instanciado. VersionCode: " + versionCodeString);
-            final AppVersionCodeBarrier versionCodeBarrier = ReflectionHelper.instance(classAnnot.implementation());
+            final AppVersionCodeBarrier versionCodeBarrier = ReflectionHelper.instance(annotation.implementation());
             versionCodeBarrier.stopIfNeeded(
                     Long.valueOf(versionCodeString),
-                    classAnnot.targetVersionCode(),
-                    classAnnot.versionCodeHandlerMode());
+                    annotation.targetVersionCode(),
+                    annotation.versionCodeHandlerMode());
         } else if (notPresentAction.equals(VersionNotPresentAction.IGNORE)) {
             Log.d(TAG, "Versão do app não presente no header e foi setado para IGNORAR a requisição nesse caso");
         } else if (notPresentAction.equals(VersionNotPresentAction.BLOCK_ANYWAY)) {
