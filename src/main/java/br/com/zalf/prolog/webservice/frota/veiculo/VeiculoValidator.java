@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -17,4 +18,19 @@ public class VeiculoValidator {
         }
     }
 
+    private static void validacaoRegional(Long codRegional){
+        Preconditions.checkNotNull(codRegional, "Você precisa selecionar a Regional");
+    }
+
+    private static void validacaoUnidade (Long codUnidade){
+        Preconditions.checkNotNull(codUnidade, "Vocẽ precisa selecionar a Unidade");
+    }
+
+    private static void validacaoPlaca (String placa){
+        Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
+    }
+
+    private static void validacaoKmAtual (){
+
+    }
 }
