@@ -318,10 +318,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     // Cria uma nova entrada no banco de dados e retorna o código.
                     // Insere as alternativas (NÃO DELETADAS) da pergunta no código novo.
                     inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
-                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                        // Desativamos todas as alternativas da perunta.
-                        inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
-                    }
+                    inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());
                     final Long codPergunta = insertApenasPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
                     // Adiciona a alternativa TIPO_OUTROS.
                     pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
@@ -354,9 +351,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 case PerguntaRespostaChecklist.DELETADA:
                     // Vamos inativar a pergunta
                     inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
-                    for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                        inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
-                    }
+                    inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());
                     break;
             }
         }
@@ -460,6 +455,26 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(4, alternativa.getCodigo());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inativar a alternativa de código: " + alternativa.getCodigo());
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void inativarTodasAlternativasPerguntaChecklist(@NotNull final Connection conn,
+                                                            @NotNull final Long codUnidade,
+                                                            @NotNull final Long codModelo,
+                                                            @NotNull final Long codPergunta) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
+                    "SET STATUS_ATIVO = FALSE " +
+                    "WHERE COD_UNIDADE = ? AND COD_CHECKLIST_MODELO = ? AND COD_PERGUNTA = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModelo);
+            stmt.setLong(3, codPergunta);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inativar as alternativas da pergunta de código: " + codPergunta);
             }
         } finally {
             closeStatement(stmt);
