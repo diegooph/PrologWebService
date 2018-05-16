@@ -8,6 +8,7 @@ import java.util.Date;
  * Informações do colaborador.
  */
 public class Colaborador {
+	private Long codigo;
 	private Long cpf;
 	private String pis;
 	private Date dataNascimento;
@@ -33,6 +34,14 @@ public class Colaborador {
 
 	public Colaborador() {
 
+	}
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(final Long codigo) {
+		this.codigo = codigo;
 	}
 
 	public Equipe getEquipe() {
