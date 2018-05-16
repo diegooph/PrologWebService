@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
@@ -63,7 +64,7 @@ public class ChecklistModeloService {
                                           @NotNull final Long codModelo,
                                           @NotNull final ModeloChecklist modeloChecklist) throws Exception {
         try {
-            dao.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
+            dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
