@@ -560,37 +560,17 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setString(1, modeloChecklist.getNome());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codModelo);
-            stmt.setArray(4,
-                    PostgresUtil.ListLongToArray(conn, getCodigosCargos(modeloChecklist.getCargosLiberados())));
-            stmt.setArray(5,
-                    PostgresUtil.ListLongToArray(conn, getCodigosTiposVeiculos(modeloChecklist.getTiposVeiculoLiberados())));
+            stmt.setArray(4, PostgresUtil.ListLongToArray(conn, modeloChecklist.getCodigosCargosLiberados()));
+            stmt.setArray(5, PostgresUtil.ListLongToArray(conn, modeloChecklist.getCodigosTiposVeiculosLiberados()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (!rSet.getBoolean("RESULTADO")) {
-                    throw new SQLException("A query não executou o update corretamente");
+                    throw new SQLException("Erro ao atualziar as informações gerais do modelo de checklist");
                 }
             }
         } finally {
             closeConnection(null, stmt, rSet);
         }
-    }
-
-    @NotNull
-    private List<Long> getCodigosTiposVeiculos(@NotNull final List<TipoVeiculo> tiposVeiculoLiberados) {
-        final List<Long> codTiposVeiculo = new ArrayList<>();
-        for (final TipoVeiculo tipoVeiculo : tiposVeiculoLiberados) {
-            codTiposVeiculo.add(tipoVeiculo.getCodigo());
-        }
-        return codTiposVeiculo;
-    }
-
-    @NotNull
-    private List<Long> getCodigosCargos(@NotNull final List<Cargo> cargosLiberados) {
-        final List<Long> codCargos = new ArrayList<>();
-        for (final Cargo cargo : cargosLiberados) {
-            codCargos.add(cargo.getCodigo());
-        }
-        return codCargos;
     }
 
     @NotNull
