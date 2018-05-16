@@ -7,10 +7,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -308,12 +305,12 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                                                   @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
         for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
             switch (pergunta.getAcaoEdicao()) {
-                case PerguntaRespostaChecklist.CRIADA:
+                case CRIADA:
                     // Apenas adicionamos uma nova entrada no banco.
                     // Adicionamos as alternativas também.
                     insertPerguntaAlternativaChecklist(conn, codUnidade, codModelo, pergunta);
                     break;
-                case PerguntaRespostaChecklist.ALTERADA_NOME:
+                case ALTERADA_NOME:
                     // Inativa a Pergunta atual.
                     // Cria uma nova entrada no banco de dados e retorna o código.
                     // Insere as alternativas (NÃO DELETADAS) da pergunta no código novo.
@@ -323,20 +320,20 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                     // Adiciona a alternativa TIPO_OUTROS.
                     pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
                     for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                        if (!alternativa.acaoEdicao.equals(AlternativaChecklist.DELETADA)) {
+                        if (!alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.DELETADA)) {
                             insertAlternativaChecklist(conn, codUnidade, codModelo, codPergunta, alternativa);
                         }
                     }
                     break;
-                case PerguntaRespostaChecklist.ALTERADA_INFOS:
+                case ALTERADA_INFOS:
                     // Apenas atualizamos a pergunta atual.
                     // Devemos fazer uma verificação em cima das alternativas para tratar
                     // os casos de ALTERACAO/CRIACAO/DELECAO.
                     atualizaPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
                     for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
-                        if (alternativa.acaoEdicao.equals(AlternativaChecklist.CRIADA)) {
+                        if (alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.CRIADA)) {
                             insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
-                        } else if (alternativa.acaoEdicao.equals(AlternativaChecklist.ALTERADA)) {
+                        } else if (alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.ALTERADA)) {
                             // Devemos passar o código da pergunta que foi desativada, para podermos desativar as suas
                             // alternativas também.
                             inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
@@ -348,7 +345,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                         }
                     }
                     break;
-                case PerguntaRespostaChecklist.DELETADA:
+                case DELETADA:
                     // Vamos inativar a pergunta
                     inativarPerguntaChecklist(conn, codUnidade, codModelo, pergunta);
                     inativarTodasAlternativasPerguntaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo());

@@ -8,16 +8,9 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 public class AlternativaChecklist extends Alternativa {
 
     /**
-     * Ações que a alternativa pode sofrer na edição de um modelo de checklist
-     */
-    public static final String DELETADA = "DELETADA";
-    public static final String ALTERADA = "ALTERADA";
-    public static final String CRIADA = "CRIADA";
-
-    /**
      * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA}/{@code CRIADA}
      */
-    public String acaoEdicao;
+    public AcaoEdicaoAlternativa acaoEdicao;
 
     /**
      * Indica se a alternativa atual está marcada (selecionada) ou não.

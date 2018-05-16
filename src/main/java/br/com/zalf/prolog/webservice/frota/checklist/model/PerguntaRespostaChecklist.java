@@ -16,25 +16,16 @@ public class PerguntaRespostaChecklist extends Pergunta {
     public static final String ALTA = "ALTA";
     public static final String BAIXA = "BAIXA";
 
-    /**
-     * Ações que a pergunta pode sofrer na edição de um modelo de checklist
-     */
-    public static final String DELETADA = "DELETADA";
-    public static final String ALTERADA_NOME = "ALTERADA_NOME";
-    public static final String ALTERADA_INFOS = "ALTERADA_INFOS";
-    public static final String CRIADA = "CRIADA";
     private int ordemExibicao;
     private Long codImagem;
     private String url;
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
     private String prioridade;
-    /**
-     * Atributo restrito a ser apenas {@code DELETADA}/{@code ALTERADA_NOME}/{@code ALTERADA_INFOS}/{@code CRIADA}
-     */
-    private String acaoEdicao;
+    private AcaoEdicaoPergunta acaoEdicao;
 
-    public PerguntaRespostaChecklist(){
+    public PerguntaRespostaChecklist() {
+
     }
 
     /**
@@ -102,11 +93,11 @@ public class PerguntaRespostaChecklist extends Pergunta {
         this.singleChoice = singleChoice;
     }
 
-    public String getAcaoEdicao() {
+    public AcaoEdicaoPergunta getAcaoEdicao() {
         return acaoEdicao;
     }
 
-    public void setAcaoEdicao(final String acaoEdicao) {
+    public void setAcaoEdicao(final AcaoEdicaoPergunta acaoEdicao) {
         this.acaoEdicao = acaoEdicao;
     }
 
