@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -23,12 +24,13 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public AbstractResponse insert(Pneu pneu, Long codUnidade) {
+    public AbstractResponse insert(Pneu pneu, Long codUnidade) throws Throwable {
+        PneuValidator.validacaoAtributosPneu(pneu);
         try {
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            return Response.error("Erro ao inserir o pneu");
+            throw new GenericException("Erro ao inserir", null);
         }
     }
 
