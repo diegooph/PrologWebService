@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -28,7 +29,18 @@ public class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
+    public void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) {
+        try {
+            dao.insertModeloChecklist(modeloChecklist);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+            @NotNull final Long codUnidade,
+            @NotNull final String codFuncao) {
         try {
             return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
         } catch (SQLException e) {
@@ -37,9 +49,9 @@ public class ChecklistModeloService {
         }
     }
 
-    public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) {
+    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
         try {
-            return dao.getModeloChecklist(codModelo, codUnidade);
+            return dao.getModeloChecklist(codUnidade, codModelo);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
@@ -49,39 +61,32 @@ public class ChecklistModeloService {
     public Response updateModeloChecklist(@NotNull final String token,
                                           @NotNull final Long codUnidade,
                                           @NotNull final Long codModelo,
-                                          @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+                                          @NotNull final ModeloChecklist modeloChecklist) throws Exception {
         try {
             dao.updateModeloChecklist(token, codUnidade, codModelo, modeloChecklist);
-            return Response.ok("Modelo atualizado com sucesso!");
+            return Response.ok("Modelo de checklist atualizado com sucesso");
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
-            throw e;
+            throw new GenericException("Não foi possível atualizar o modelo do checklist",
+                    "Erro ao atualizar o modelo de checklist código: " + codModelo,
+                    e);
         }
     }
 
-    public boolean setModeloChecklistInativo(Long codUnidade, Long codModelo) {
-        try {
-            return dao.setModeloChecklistInativo(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void insertModeloChecklist(ModeloChecklist modeloChecklist) {
-        try {
-            dao.insertModeloChecklist(modeloChecklist);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir modelo de checklist", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) {
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
         try {
             return dao.getPerguntas(codUnidade, codModelo);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean setModeloChecklistInativo(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+        try {
+            return dao.setModeloChecklistInativo(codUnidade, codModelo);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }

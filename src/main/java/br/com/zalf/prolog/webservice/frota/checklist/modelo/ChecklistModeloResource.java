@@ -63,9 +63,9 @@ public class ChecklistModeloResource {
             Pilares.Frota.Checklist.Modelo.CADASTRAR})
     @Path("/{codUnidade}/{codModelo}")
     public ModeloChecklist getModeloChecklist(
-            @PathParam("codModelo") Long codModelo,
-            @PathParam("codUnidade") Long codUnidade) {
-        return service.getModeloChecklist(codModelo, codUnidade);
+            @PathParam("codUnidade") Long codUnidade,
+            @PathParam("codModelo") Long codModelo) {
+        return service.getModeloChecklist(codUnidade, codModelo);
     }
 
     @PUT

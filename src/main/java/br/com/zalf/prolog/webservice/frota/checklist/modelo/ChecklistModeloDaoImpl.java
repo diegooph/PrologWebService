@@ -25,7 +25,8 @@ import java.util.Set;
 public class ChecklistModeloDaoImpl extends DatabaseConnection implements ChecklistModeloDao {
 
     @Override
-    public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) throws SQLException {
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+                                                        @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -62,8 +63,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao)
-            throws SQLException {
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+            @NotNull final Long codUnidade,
+            @NotNull final String codFuncao) throws SQLException {
         final List<ModeloChecklistListagem> modelosChecklistListagem = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -103,7 +105,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException {
+    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade,
+                                              @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -151,7 +154,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public void insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException {
+    public void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -159,8 +162,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) VALUES (?,?," +
-                    "?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO(COD_UNIDADE, NOME, STATUS_ATIVO) " +
+                    "VALUES (?, ?, ?) RETURNING CODIGO");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setString(2, modeloChecklist.getNome());
             stmt.setBoolean(3, true);
@@ -181,13 +184,15 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public boolean setModeloChecklistInativo(Long codUnidade, Long codModelo) throws SQLException {
+    public boolean setModeloChecklistInativo(@NotNull final Long codUnidade,
+                                             @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO SET STATUS_ATIVO = FALSE WHERE COD_UNIDADE  = ? AND" +
-                    " CODIGO = ?");
+            stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO " +
+                    "SET STATUS_ATIVO = FALSE " +
+                    "WHERE COD_UNIDADE  = ? AND CODIGO = ?");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             int count = stmt.executeUpdate();
@@ -230,7 +235,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public List<String> getUrlImagensPerguntas(final Long codUnidade, final Long codFuncao) throws SQLException {
+    public List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
+                                               @NotNull final Long codFuncao) throws SQLException {
         final List<String> listUrl = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -268,8 +274,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws
-            SQLException {
+    public Long insertImagem(@NotNull final Long codEmpresa,
+                             @NotNull final ImagemProLog imagemProLog) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -636,7 +642,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private List<TipoVeiculo> getTipoVeiculoByCodModeloChecklist(Long codUnidade, Long codModelo) throws SQLException {
+    private List<TipoVeiculo> getTipoVeiculoByCodModeloChecklist(@NotNull final Long codUnidade,
+                                                                 @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -666,7 +673,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private List<Cargo> getFuncaoByCodModelo(Long codUnidade, Long codModelo) throws SQLException {
+    private List<Cargo> getFuncaoByCodModelo(@NotNull final Long codUnidade,
+                                             @NotNull final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -725,7 +733,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
+    private PerguntaRespostaChecklist createPergunta(@NotNull final ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
@@ -738,7 +746,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private AlternativaChecklist createAlternativa(ResultSet rSet) throws SQLException {
+    private AlternativaChecklist createAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
         alternativa.alternativa = rSet.getString("ALTERNATIVA");
@@ -748,7 +756,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         return alternativa;
     }
 
-    private void insertModeloTipoVeiculo(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
+    private void insertModeloTipoVeiculo(@NotNull final Connection conn,
+                                         @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
         PreparedStatement stmt = null;
         try {
             for (final TipoVeiculo tipoVeiculo : modeloChecklist.getTiposVeiculoLiberados()) {
@@ -763,7 +772,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    private void insertModeloFuncao(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
+    private void insertModeloFuncao(@NotNull final Connection conn,
+                                    @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
         for (final Cargo cargo : modeloChecklist.getCargosLiberados()) {
             final PreparedStatement stmt = conn.prepareStatement("INSERT INTO CHECKLIST_MODELO_FUNCAO VALUES (?,?,?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
@@ -773,12 +783,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    private void insertModeloPerguntas(Connection conn, ModeloChecklist modeloChecklist) throws SQLException {
+    private void insertModeloPerguntas(@NotNull final Connection conn,
+                                       @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
         for (final PerguntaRespostaChecklist pergunta : modeloChecklist.getPerguntas()) {
             insertPerguntaAlternativaChecklist(conn, modeloChecklist.getCodUnidade(), modeloChecklist.getCodigo(), pergunta);
         }
     }
 
+    @NotNull
     private AlternativaChecklist createAlternativaTipoOutros(@NotNull final PerguntaRespostaChecklist pergunta) {
         final AlternativaChecklist alternativa = new AlternativaChecklist();
         alternativa.setAlternativa("Outros");

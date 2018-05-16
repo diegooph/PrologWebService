@@ -2,11 +2,13 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -18,43 +20,47 @@ import java.util.List;
 public interface ChecklistModeloDao {
 
     /**
-     * busca as perguntas do checklist
+     * Insere um novo {@link ModeloChecklist} na base de dados.
      *
-     * @param codUnidade código da unidade
-     * @param codModelo  código do modelo
-     * @return lista de perguntas do checklist
-     * @throws SQLException se ocorrer erro na execução
+     * @param modeloChecklist - O {@link ModeloChecklist} a ser inserido.
+     * @throws SQLException - Caso ocorrer erro no banco.
      */
-    List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) throws SQLException;
+    void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) throws SQLException;
 
     /**
-     * busca o modelo de checklist usando código da unidade e função
+     * Busca a listagem de {@link ModeloChecklistListagem} da {@link Unidade} filtrado pela {@link FuncaoProLog}.
      *
-     * @param codUnidade código da unidade
-     * @param codFuncao  código da função
-     * @return lista de modelo do checklist
-     * @throws SQLException se ocorrer erro no banco
+     * @param codUnidade - Código da unidade.
+     * @param codFuncao  - Código da função ou "%" para buscar de todas as funções.
+     * @return - Lista de {@link ModeloChecklistListagem} da Unidade.
+     * @throws SQLException - Se ocorrer erro no banco.
      */
-    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao)
-            throws SQLException;
+    List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+            @NotNull final Long codUnidade,
+            @NotNull final String codFuncao) throws SQLException;
 
     /**
-     * busca um modelo de checklist atraves do modelo e da unidade
+     * Busca um modelo de checklist através do {@link ModeloChecklist#getCodigo()} e {@link Unidade#getCodigo()}.
      *
-     * @param codModelo  código do modelo
-     * @param codUnidade código da unidade
-     * @return um {@link ModeloChecklist}
-     * @throws SQLException se ocorrer erro no bando
+     * @param codUnidade - Código da unidade.
+     * @param codModelo  - Código do modelo.
+     * @return - Um {@link ModeloChecklist}.
+     * @throws SQLException - Se ocorrer erro no bando.
      */
-    ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) throws SQLException;
+    ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) throws SQLException;
 
     /**
+     * Atualiza um {@link ModeloChecklist} específico. Essa atualização pode ser:
+     * * {@link ModeloChecklist#nome}.
+     * * {@link ModeloChecklist#cargosLiberados}.
+     * * {@link ModeloChecklist#tiposVeiculoLiberados}.
+     * * {@link ModeloChecklist#perguntas}.
      *
-     * @param token
-     * @param unidade
-     * @param codUnidade
-     * @param modeloChecklist
-     * @throws SQLException
+     * @param token           - Token do usuário que está solicitando a alteração do {@link ModeloChecklist}.
+     * @param unidade         - Código da Unidade.
+     * @param codUnidade      - Código do modelo.
+     * @param modeloChecklist - O novo {@link ModeloChecklist} que será inserido.
+     * @throws SQLException - Se algum erro de execução ocorrer.
      */
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
@@ -62,22 +68,25 @@ public interface ChecklistModeloDao {
                                @NotNull final ModeloChecklist modeloChecklist) throws SQLException;
 
     /**
-     * insere um checklist
+     * Busca as perguntas que compoẽm o checklist.
      *
-     * @param modeloChecklist o checklist
-     * @throws SQLException caso ocorrer erro no banco
+     * @param codUnidade - Código da unidade.
+     * @param codModelo  - Código do modelo.
+     * @return - Lista de {@link PerguntaRespostaChecklist}.
+     * @throws SQLException - Se ocorrer erro na execução.
      */
-    void insertModeloChecklist(ModeloChecklist modeloChecklist) throws SQLException;
+    List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade,
+                                                 @NotNull final  Long codModelo) throws SQLException;
 
     /**
-     * marca como inativo o checklist através das informações de unidade e modelo
+     * Marca um {@link ModeloChecklist} como inativo. Assim não será mais possível realizar o checklist deste modelo.
      *
-     * @param codUnidade código da unidade
-     * @param codModelo  código do modelo
-     * @return valor da operação
-     * @throws SQLException caso ocorrer erro no banco
+     * @param codUnidade - Código da unidade.
+     * @param codModelo  - Código do modelo.
+     * @return - {@code true} se a operação for sucesso, {@code false} caso contrário.
+     * @throws SQLException - Caso ocorrer erro no banco.
      */
-    boolean setModeloChecklistInativo(Long codUnidade, Long codModelo) throws SQLException;
+    boolean setModeloChecklistInativo(@NotNull final Long codUnidade, @NotNull final Long codModelo) throws SQLException;
 
     /**
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.
@@ -93,7 +102,7 @@ public interface ChecklistModeloDao {
      * @return - Retorna uma lista de Strings contendo as URLs.
      * @throws SQLException - Caso der erro no banco.
      */
-    List<String> getUrlImagensPerguntas(Long codUnidade, Long codFuncao) throws SQLException;
+    List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade, @NotNull final Long codFuncao) throws SQLException;
 
     /**
      * Este método busca uma lista de URLs em forma de {@link String}.
