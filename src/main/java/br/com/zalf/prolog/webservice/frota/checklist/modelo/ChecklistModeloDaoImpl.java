@@ -4,7 +4,8 @@ import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -556,6 +557,9 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
+    public ChecklistModeloDaoImpl() {
+    }
+
     private void atualizaModeloChecklist(@NotNull final Connection conn,
                                          @NotNull final Long codUnidade,
                                          @NotNull final Long codModelo,
@@ -568,8 +572,14 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             stmt.setString(1, modeloChecklist.getNome());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codModelo);
-            stmt.setArray(4, PostgresUtil.ListLongToArray(conn, modeloChecklist.getCodigosCargosLiberados()));
-            stmt.setArray(5, PostgresUtil.ListLongToArray(conn, modeloChecklist.getCodigosTiposVeiculosLiberados()));
+            stmt.setArray(4, PostgresUtils.listToArray(
+                    conn,
+                    SqlType.BIGINT,
+                    modeloChecklist.getCodigosCargosLiberados()));
+            stmt.setArray(5, PostgresUtils.listToArray(
+                    conn,
+                    SqlType.BIGINT,
+                    modeloChecklist.getCodigosTiposVeiculosLiberados()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (!rSet.getBoolean(1)) {

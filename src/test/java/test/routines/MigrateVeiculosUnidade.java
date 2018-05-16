@@ -1,6 +1,6 @@
 package test.routines;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,7 +84,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET COD_UNIDADE = ? " +
                     "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND COD_UNIDADE = ? ;");
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, todosPneus));
             stmt.setLong(3, codUnidadeAtualVeiculosPneus);
             if (stmt.executeUpdate() == 0) {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade na VEICULO_PNEU");
@@ -97,7 +97,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             stmt = conn.prepareStatement("UPDATE PNEU_VALOR_VIDA SET COD_UNIDADE = ? " +
                     "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]);");
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, todosPneus));
             if (stmt.executeUpdate() == 0) {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade na PNEU_VALOR_VIDA");
             }
@@ -111,7 +111,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                     "WHERE CODIGO::TEXT LIKE ANY (ARRAY[?]) AND COD_UNIDADE = ?;");
             System.out.println("Pneus que serão atualizados: " + todosPneus);
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, todosPneus));
             stmt.setLong(3, codUnidadeAtualVeiculosPneus);
             System.out.println("query: " + stmt.toString());
             if (stmt.executeUpdate() != todosPneus.size()) {
@@ -212,7 +212,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                                       @NotNull final Connection conn) throws Exception {
         PreparedStatement statement = conn.prepareStatement("SELECT * FROM MOVIMENTACAO M WHERE " +
                 "M.COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND M.COD_UNIDADE = ?");
-        statement.setArray(1, PostgresUtil.ListToArray(conn, todosPneus));
+        statement.setArray(1, PostgresUtils.ListToArray(conn, todosPneus));
         statement.setLong(2, codUnidadeAtualVeiculosPneus);
         final ResultSet rSet = statement.executeQuery();
 
@@ -246,7 +246,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                                   final Connection conn) throws Exception {
         PreparedStatement statement = conn.prepareStatement("SELECT * FROM AFERICAO A WHERE " +
                 "A.PLACA_VEICULO::TEXT LIKE ANY (ARRAY[?]) AND A.COD_UNIDADE = ?");
-        statement.setArray(1, PostgresUtil.ListToArray(conn, todosVeiculos));
+        statement.setArray(1, PostgresUtils.ListToArray(conn, todosVeiculos));
         statement.setLong(2, codUnidadeAtualVeiculosPneus);
         final ResultSet rSet = statement.executeQuery();
 

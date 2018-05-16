@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
@@ -410,8 +410,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     + "WHERE V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND V.PLACA LIKE ANY (ARRAY[?]) "
                     + "ORDER BY A.DATA_HORA DESC "
                     + "LIMIT ? OFFSET ?");
-            stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, placas));
+            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, placas));
             stmt.setInt(3, limit);
             stmt.setLong(4, offset);
             rSet = stmt.executeQuery();
