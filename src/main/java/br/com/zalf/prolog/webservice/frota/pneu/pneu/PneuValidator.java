@@ -11,11 +11,10 @@ import java.math.BigDecimal;
 
 public class PneuValidator {
 
-    public static void validacaoAtributosPneu(@NotNull final Pneu pneu) throws GenericException {
+    public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
         try {
-            validacaoRegional(pneu.getCodRegionalAlocado());
-            validacaoUnidade(pneu.getCodUnidadeAlocado());
-            validacaoCodigoCliente(pneu.getCodigoCliente());
+            validacaoUnidade(codUnidade);
+            validacaoCodigo(pneu.getCodigo());
             validacaoMarca(pneu.getMarca());
             validacaoModelo(pneu.getModelo());
             validacaoValor(pneu.getValor());
@@ -31,24 +30,16 @@ public class PneuValidator {
         }
     }
 
-    private static void validacaoRegional(Long codRegional) throws Exception {
-        Preconditions.checkNotNull(codRegional, "Você precisa selecionar a Regional");
+    private static void validacaoUnidade(Long codUnidade) throws Exception {
+        Preconditions.checkNotNull(codUnidade, "Você precisa selecionar a Unidade");
 
-        if (!verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(codRegional)))) {
-            throw new GenericException("Regional inválida", "getCodRegionalAlocado() < 1");
-        }
-    }
-
-    private static void validacaoUnidade(Long unidade) throws Exception {
-        Preconditions.checkNotNull(unidade, "Você precisa selecionar a Unidade");
-
-        if (!verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(unidade)))) {
+        if (!verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(codUnidade)))) {
             throw new GenericException("Unidade inválida", "getCodUnidadeAlocado() < 1");
         }
     }
 
-    private static void validacaoCodigoCliente(String codigoCliente) {
-        Preconditions.checkNotNull(codigoCliente.trim(), "Você precisa fornecer o Código");
+    private static void validacaoCodigo(Long codigo) {
+        Preconditions.checkNotNull(codigo, "Você precisa fornecer o Código");
     }
 
     private static void validacaoMarca(Marca marca) throws Exception {
@@ -174,11 +165,11 @@ public class PneuValidator {
 
 
     private static boolean verificacaoNumeroPositivo(Double numero) {
-        return numero < 0;
+        return numero >= 0;
     }
 
     private static boolean verificacaoNumeroPositivo(int numero) {
-        return numero < 0;
+        return numero >= 0;
     }
 
 }

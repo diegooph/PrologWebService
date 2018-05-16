@@ -25,7 +25,7 @@ public class PneuService {
     private final PneuDao dao = Injection.providePneuDao();
 
     public AbstractResponse insert(Pneu pneu, Long codUnidade) throws Throwable {
-        PneuValidator.validacaoAtributosPneu(pneu);
+        PneuValidator.validacaoAtributosPneu(pneu, codUnidade);
         try {
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
         } catch (Exception e) {
