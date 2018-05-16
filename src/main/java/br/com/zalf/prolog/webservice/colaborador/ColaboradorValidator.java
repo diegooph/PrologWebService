@@ -14,6 +14,7 @@ public class ColaboradorValidator {
 
     public static void validacaoAtributosColaborador(@NotNull final Colaborador colaborador) throws GenericException {
         try {
+            validacaoRegional(colaborador.getRegional().getCodigo());
             validacaoCpf(colaborador.getCpf());
             validacaoMatriculaAmbev(colaborador.getMatriculaAmbev());
             validacaoMatriculaTrans(colaborador.getMatriculaTrans());
@@ -33,6 +34,12 @@ public class ColaboradorValidator {
         }
     }
 
+    private static void validacaoRegional (Long regional){
+        Preconditions.checkNotNull(regional, "Você precisa selecionar a Regional");
+    }
+
+
+
     private static void validacaoCpf(Long cpf) throws Exception {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
 
@@ -42,14 +49,14 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoMatriculaAmbev(Integer matriculaAmbev) throws Exception {
-
+        Preconditions.checkNotNull(matriculaAmbev, "Você precisa fornecer a Matrícula Ambev");
         if (!verificacaoNumeroPositivo(matriculaAmbev)) {
             throw new GenericException("Matrícula Ambev inválida.\nA Matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
         }
     }
 
     private static void validacaoMatriculaTrans(Integer matriculaTrans) throws Exception {
-
+        Preconditions.checkNotNull(matriculaTrans, "Você precisa fornecer a Matrícula Transportadora");
         if (!verificacaoNumeroPositivo(matriculaTrans)) {
             throw new GenericException("Matrícula Transportadora inválida.\nA Matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
         }
@@ -73,7 +80,7 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoNome(String nome) throws Exception {
-        Preconditions.checkNotNull(nome, "Você precisa preencher o nome");
+        Preconditions.checkNotNull(nome, "Você precisa fornecer o nome");
 
         if (!verificacaoCaracteresLetras(nome)) {
             throw new GenericException("Nome inválido\nO Nome não pode conter números", "O campo 'nome' contém números");
@@ -81,8 +88,8 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoSetor(Setor setor) throws Exception {
-        Preconditions.checkNotNull(setor, "Você precisa fornecer o Setor");
-        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa fornecer o Setor");
+        Preconditions.checkNotNull(setor, "Você precisa selecionar o Setor");
+        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o Setor");
 
         if (!verificacaoNumeroPositivo(setor.getCodigo().intValue())) {
             throw new GenericException("Setor inválido", "O código é negativo");
@@ -91,8 +98,8 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoFuncao(Cargo funcao) throws Exception {
-        Preconditions.checkNotNull(funcao, "Você precisa fornecer o Cargo");
-        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa fornecer a Cargo");
+        Preconditions.checkNotNull(funcao, "Você precisa selecionar o Cargo");
+        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a Cargo");
 
 
         if (!verificacaoNumeroPositivo(funcao.getCodigo().intValue())) {
@@ -102,7 +109,7 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoUnidade(Unidade unidade) throws Exception {
-        Preconditions.checkNotNull(unidade, "Você precisa fornecer a Unidade");
+        Preconditions.checkNotNull(unidade, "Você precisa selecionar a Unidade");
         Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Unidade");
 
         if (!verificacaoNumeroPositivo(unidade.getCodigo().intValue())) {
@@ -111,7 +118,7 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
-        Preconditions.checkNotNull(codPermissao, "Você precisa fornecer o Nível de Acesso");
+        Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o Nível de Acesso");
 
         if (codPermissao < Permissao.LOCAL || codPermissao > Permissao.GERAL) {
             throw new GenericException("Nível de Acesso inválido", "Cód menor que 0 ou maior que 3");
@@ -120,8 +127,8 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoEquipe(Equipe equipe) throws Exception {
-        Preconditions.checkNotNull(equipe, "Você precisa fornecer a Equipe");
-        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa fornecer a Equipe");
+        Preconditions.checkNotNull(equipe, "Você precisa selecionar a Equipe");
+        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a Equipe");
 
         if (!verificacaoNumeroPositivo((int) equipe.getCodigo().intValue())) {
             throw new GenericException("Equipe inválida", "O código é negativo");
@@ -129,7 +136,7 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoPis(String pis) throws Exception {
-
+        Preconditions.checkNotNull(pis, "Você precisa fornecer o PIS");
         if (pis.length() < 11) {
             throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
@@ -139,9 +146,9 @@ public class ColaboradorValidator {
 
     private static boolean verificacaoCaracteresLetras(String palavra) {
 
-        if(palavra.matches(".*\\d+.*")){
+        if (palavra.matches(".*\\d+.*")) {
             return false;
-        }else{
+        } else {
             return true;
         }
 

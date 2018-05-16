@@ -72,7 +72,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (conn != null) {
                 conn.rollback();
             }
-            throw  e;
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
