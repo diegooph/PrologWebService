@@ -118,6 +118,10 @@ public final class AvaCorpAvilanConverter {
                 final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
                 placaAfericao.setPlaca(v.getPlaca());
                 placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
+                placaAfericao.setPodeAferirEstepe(false);
+                placaAfericao.setPodeAferirPressao(false);
+                placaAfericao.setPodeAferirSulco(false);
+                placaAfericao.setPodeAferirSulcoPressao(true);
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
                     placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
