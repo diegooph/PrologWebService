@@ -2,6 +2,7 @@ package test;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import org.junit.Assert;
@@ -11,14 +12,24 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ChecklistTest extends BaseTest {
+
+    private ChecklistModeloDao dao;
+
     @Override
     public void initialize() {
-        // do nothing
+        dao = Injection.provideChecklistModeloDao();
+    }
+
+    @Test
+    public void testGetModeloChecklist() throws SQLException {
+        final ModeloChecklist modeloChecklist = dao.getModeloChecklist(5L, 40L);
+
+        System.out.println(GsonUtils.getGson().toJson(modeloChecklist));
+        Assert.assertNotNull(modeloChecklist);
     }
 
     @Test
     public void testGetModelosChecklistListagem() throws SQLException {
-        final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
         final List<ModeloChecklistListagem> listagem =
                 dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(5L, "%");
 
