@@ -60,12 +60,12 @@ public interface ChecklistModeloDao {
      * @param unidade         - Código da Unidade.
      * @param codUnidade      - Código do modelo.
      * @param modeloChecklist - O novo {@link ModeloChecklist} que será inserido.
-     * @throws SQLException - Se algum erro de execução ocorrer.
+     * @throws Throwable      - Se algum erro ocorrer.
      */
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
                                @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklist modeloChecklist) throws SQLException;
+                               @NotNull final ModeloChecklist modeloChecklist) throws Throwable;
 
     /**
      * Busca as perguntas que compoẽm o checklist.

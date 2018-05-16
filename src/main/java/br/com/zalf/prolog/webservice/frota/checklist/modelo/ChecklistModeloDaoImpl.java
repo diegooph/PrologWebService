@@ -136,7 +136,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     public void updateModeloChecklist(@NotNull final String token,
                                       @NotNull final Long codUnidade,
                                       @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklist modeloChecklist) throws SQLException {
+                                      @NotNull final ModeloChecklist modeloChecklist) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -147,6 +147,11 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 atualizaPerguntasModeloChecklist(conn, codUnidade, codModelo, modeloChecklist);
             }
             conn.commit();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn);
         }
