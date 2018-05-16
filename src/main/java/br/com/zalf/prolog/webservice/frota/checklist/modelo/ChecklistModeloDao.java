@@ -65,7 +65,7 @@ public interface ChecklistModeloDao {
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,
                                @NotNull final Long codUnidade,
-                               @NotNull final ModeloChecklist modeloChecklist) throws Throwable;
+                               @NotNull final ModeloChecklist modeloChecklist) throws Exception;
 
     /**
      * Busca as perguntas que compoẽm o checklist.

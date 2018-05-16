@@ -66,7 +66,7 @@ public class ChecklistModeloService {
         try {
             dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
             return Response.ok("Modelo de checklist atualizado com sucesso");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
             throw new GenericException("Não foi possível atualizar o modelo do checklist",
                     "Erro ao atualizar o modelo de checklist código: " + codModelo,

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 14/05/18.
@@ -11,8 +11,8 @@ public class ModeloChecklistListagem {
     private Long codigo;
     private Long codUnidade;
     private String nome;
-    private List<String> tiposVeiculoLiberados;
-    private List<String> cargosLiberados;
+    private Set<String> tiposVeiculoLiberados;
+    private Set<String> cargosLiberados;
     private int qtdPerguntas;
 
     public ModeloChecklistListagem() {
@@ -42,19 +42,19 @@ public class ModeloChecklistListagem {
         this.nome = nome;
     }
 
-    public List<String> getTiposVeiculoLiberados() {
+    public Set<String> getTiposVeiculoLiberados() {
         return tiposVeiculoLiberados;
     }
 
-    public void setTiposVeiculoLiberados(final List<String> tiposVeiculoLiberados) {
+    public void setTiposVeiculoLiberados(final Set<String> tiposVeiculoLiberados) {
         this.tiposVeiculoLiberados = tiposVeiculoLiberados;
     }
 
-    public List<String> getCargosLiberados() {
+    public Set<String> getCargosLiberados() {
         return cargosLiberados;
     }
 
-    public void setCargosLiberados(final List<String> cargosLiberados) {
+    public void setCargosLiberados(final Set<String> cargosLiberados) {
         this.cargosLiberados = cargosLiberados;
     }
 
