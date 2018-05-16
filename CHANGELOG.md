@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+<a name="v0.0.59"></a>
+## Version [v0.0.59](https://github.com/luizfp/PrologWeb/compare/v0.0.58...v0.0.59) (2018-05-15)
+
+### Bug Fixes
+* Corrige busca do cronograma da aferição na integração com a Avilan
+
 <a name="v0.0.58"></a>
 ## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (2018-05-15)
 
