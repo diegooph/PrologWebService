@@ -170,16 +170,16 @@ public class PneuValidator {
         Preconditions.checkNotNull(sulcos.getExterno(), "Você precisa fornecer o Sulco Externo");
         Preconditions.checkNotNull(sulcos.getInterno(), "Você precisa fornecer o Sulco Externo");
 
-        final int quantidadeSulcosMaxima = 4;
-        final int quantidadeSulcosMinima = 3;
+        final int quantidadeDeSulcosSite = quantidadeDeSulcos % 2;
+        final int par = 0;
 
-        if (quantidadeDeSulcos == quantidadeSulcosMaxima) {
+        if (quantidadeDeSulcosSite == par) {
             if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
                 throw new GenericException("Sulco Atual Central Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Interno com valor negativo");
             } else if (!verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
                 throw new GenericException("Sulco Atual Central Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Externo com valor negativo");
             }
-        } else if (quantidadeDeSulcos == quantidadeSulcosMinima) {
+        } else {
             if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
                 throw new GenericException("Sulco Atual Central inválido\nO Sulco não pode ter um valor negativo", "Sulco Central com valor negativo");
             }
