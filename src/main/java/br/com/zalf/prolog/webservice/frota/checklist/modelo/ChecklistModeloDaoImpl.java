@@ -122,6 +122,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                 modeloChecklist = new ModeloChecklist();
                 modeloChecklist.setCodigo(rSet.getLong("COD_MODELO"));
                 modeloChecklist.setNome(rSet.getString("MODELO"));
+                modeloChecklist.setCodUnidade(codUnidade);
                 modeloChecklist.setPerguntas(getPerguntas(codUnidade, codModelo));
                 modeloChecklist.setTiposVeiculoLiberados(getTipoVeiculoByCodModeloChecklist(codUnidade, codModelo));
                 modeloChecklist.setCargosLiberados(getFuncaoByCodModelo(codUnidade, codModelo));
