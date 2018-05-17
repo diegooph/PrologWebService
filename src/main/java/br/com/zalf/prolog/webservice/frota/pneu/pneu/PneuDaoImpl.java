@@ -138,7 +138,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
 
             conn.commit();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }

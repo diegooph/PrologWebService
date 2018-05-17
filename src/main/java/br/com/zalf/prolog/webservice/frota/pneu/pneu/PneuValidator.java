@@ -5,16 +5,20 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.base.Preconditions;
+import org.apache.poi.ss.formula.functions.T;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
+
+import static br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.isDotValid;
 
 public class PneuValidator {
 
     public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
         try {
             validacaoUnidade(codUnidade);
-            validacaoCodigo(pneu.getCodigo());
+            validacaoCodigoCliente(pneu.getCodigoCliente());
             validacaoMarca(pneu.getMarca());
             validacaoModelo(pneu.getModelo());
             validacaoValor(pneu.getValor());
@@ -38,8 +42,18 @@ public class PneuValidator {
         }
     }
 
-    private static void validacaoCodigo(Long codigo) {
-        Preconditions.checkNotNull(codigo, "Você precisa fornecer o Código");
+    private static void validacaoCodigoCliente(String codigoCliente) throws Exception {
+        Preconditions.checkNotNull(codigoCliente, "Você precisa fornecer o Código");
+
+        String codClienteSemAcento = codigoCliente;
+
+
+        codClienteSemAcento = Normalizer.normalize(codClienteSemAcento, Normalizer.Form.NFD);
+        codClienteSemAcento.replaceAll("[^\\p{ASCII}]", "");
+
+        if (!codClienteSemAcento.equals(codigoCliente)) {
+            throw new GenericException("Código inválido\nO código não pode conter acentos", null);
+        }
     }
 
     private static void validacaoMarca(Marca marca) throws Exception {
@@ -53,7 +67,6 @@ public class PneuValidator {
 
     private static void validacaoModelo(ModeloPneu modelo) throws Exception {
         Preconditions.checkNotNull(modelo, "Você precisa selecionar o Modelo");
-        Preconditions.checkNotNull(modelo.getCodigo(), "Você precisa selecionar o Modelo");
 
         if (!verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(modelo.getCodigo())))) {
             throw new GenericException("Modelo inválido", "getCodigo() < 1");
@@ -132,7 +145,6 @@ public class PneuValidator {
 
     private static void validacaoDimensao(Pneu.Dimensao dimensao) {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a Dimensão");
-        Preconditions.checkNotNull(dimensao.codigo, "Você precisa fornecer a Dimensão");
     }
 
     private static void validacaoSulcos(Sulcos sulcos) throws Exception {
@@ -142,25 +154,23 @@ public class PneuValidator {
         Preconditions.checkNotNull(sulcos.getExterno(), "Você precisa fornecer o Sulco Externo");
         Preconditions.checkNotNull(sulcos.getInterno(), "Você precisa fornecer o Sulco Externo");
 
-        if (verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
+        if (!verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
             throw new GenericException("Sulco Central Externo inválido\n", "Sulco Central Externo com valor negativo");
-        }
-
-        if (verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
+        } else if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
             throw new GenericException("Sulco Central Interno inválido\n", "Sulco Central Interno com valor negativo");
-        }
-
-        if (verificacaoNumeroPositivo(sulcos.getExterno())) {
+        } else if (!verificacaoNumeroPositivo(sulcos.getExterno())) {
             throw new GenericException("Sulco Externo inválido\n", "Sulco Externo com valor negativo");
-        }
-
-        if (verificacaoNumeroPositivo(sulcos.getInterno())) {
+        } else if (!verificacaoNumeroPositivo(sulcos.getInterno())) {
             throw new GenericException("Sulco Interno inválido\n", "Sulco Externo com valor negativo");
         }
     }
 
-    private static void validacaoDot(String dot) {
+    public static void validacaoDot(String dot) throws Exception {
         Preconditions.checkNotNull(dot, "Você precisa fornecer o DOT");
+
+        if (!isDotValid(dot)) {
+            throw new GenericException("DOT inválido.", null);
+        }
     }
 
 
