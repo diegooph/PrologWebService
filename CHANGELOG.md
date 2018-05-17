@@ -7,6 +7,9 @@ Change Log
 ### Refactors
 * Adiciona código do colaborador na criação do objeto na `ColaboradorDaoImpl`
 
+### Bug Fixes
+* Seta credenciais da Amazon ao logar usuário caso ele tenha permissão de cadastro de pneu
+
 <a name="v0.0.59"></a>
 ## Version [v0.0.59](https://github.com/luizfp/PrologWeb/compare/v0.0.58...v0.0.59) (2018-05-15)
 

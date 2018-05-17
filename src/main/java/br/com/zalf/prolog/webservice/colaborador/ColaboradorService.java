@@ -118,6 +118,8 @@ public class ColaboradorService {
                         colaborador.getSetor().getCodigo()));
             } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.CADASTRAR)) {
+                loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 
             final ControleIntervaloService intervaloService = new ControleIntervaloService();
