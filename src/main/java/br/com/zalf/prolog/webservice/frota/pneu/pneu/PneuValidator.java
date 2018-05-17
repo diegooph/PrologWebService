@@ -192,7 +192,6 @@ public class PneuValidator {
         }
     }
 
-
     public static void validacaoDot(String dot) throws Exception {
         Preconditions.checkNotNull(dot, "Você precisa fornecer o DOT");
 
@@ -200,7 +199,6 @@ public class PneuValidator {
             throw new GenericException("DOT inválido.", null);
         }
     }
-
 
     private static boolean verificacaoNumeroPositivo(Double numero) {
         return numero >= 0;
