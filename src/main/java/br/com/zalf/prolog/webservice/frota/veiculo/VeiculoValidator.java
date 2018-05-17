@@ -11,8 +11,14 @@ public class VeiculoValidator {
     public static void validacaoAtributosVeiculo(@NotNull final Veiculo veiculo) throws GenericException {
 
         try {
-
-
+            validacaoRegional(veiculo.getCodRegionalAlocado());
+            validacaoUnidade(veiculo.getCodUnidadeAlocado());
+            validacaoPlaca(veiculo.getPlaca());
+            validacaoKmAtual(veiculo.getKmAtual());
+            validacaoMarca(veiculo.getMarca().getCodigo());
+            validacaoModelo(veiculo.getModelo().getCodigo());
+            validacaoEixos(veiculo.getEixos().codigo);
+            validacaoTipo(veiculo.getTipo().getCodigo());
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
@@ -27,10 +33,26 @@ public class VeiculoValidator {
     }
 
     private static void validacaoPlaca (String placa){
-        Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
+        Preconditions.checkNotNull(placa, "Você deve fornecer a Placa");
     }
 
-    private static void validacaoKmAtual (){
+    private static void validacaoKmAtual (Long kmAtual){
+        Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
+    }
 
+    private static void validacaoMarca (Long codMarca){
+        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
+    }
+
+    private static void validacaoModelo (Long codModelo){
+        Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
+    }
+
+    private static void validacaoEixos (Long codEixos){
+        Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
+    }
+
+    private static void validacaoTipo (Long codTipo){
+        Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
     }
 }
