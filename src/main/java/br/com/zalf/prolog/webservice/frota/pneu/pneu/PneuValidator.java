@@ -25,7 +25,7 @@ public class PneuValidator {
             validacaoVida(pneu);
             validacaoPressao(pneu.getPressaoCorreta());
             validacaoDimensao(pneu.getDimensao());
-            validacaoSulcos(pneu.getSulcosAtuais());
+            tipoValidacaoSulcos(pneu);
             validacaoDot(pneu.getDot());
         } catch (GenericException e) {
             throw e;
@@ -147,23 +147,51 @@ public class PneuValidator {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a Dimensão");
     }
 
-    private static void validacaoSulcos(Sulcos sulcos) throws Exception {
+    private static void tipoValidacaoSulcos(Pneu pneu) throws GenericException{
+        final int pneuNovo = 1;
+
+        try {
+            if (pneu.getVidaAtual() == pneuNovo) {
+                validacaoSulcos(pneu.getSulcosAtuais(), pneu.getModelo().getQuantidadeSulcos());
+            } else {
+                validacaoSulcos(pneu.getSulcosAtuais(), pneu.getBanda().getModelo().getQuantidadeSulcos());
+            }
+        } catch (GenericException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
+    }
+
+    private static void validacaoSulcos(Sulcos sulcos, int quantidadeDeSulcos) throws Exception {
         Preconditions.checkNotNull(sulcos, "Você precisa fornecer o Sulco");
         Preconditions.checkNotNull(sulcos.getCentralExterno(), "Você precisa fornecer o Sulco Central Externo");
         Preconditions.checkNotNull(sulcos.getCentralInterno(), "Você precisa fornecer o Sulco Central Interno");
         Preconditions.checkNotNull(sulcos.getExterno(), "Você precisa fornecer o Sulco Externo");
         Preconditions.checkNotNull(sulcos.getInterno(), "Você precisa fornecer o Sulco Externo");
 
-        if (!verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
-            throw new GenericException("Sulco Central Externo inválido\n", "Sulco Central Externo com valor negativo");
-        } else if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
-            throw new GenericException("Sulco Central Interno inválido\n", "Sulco Central Interno com valor negativo");
-        } else if (!verificacaoNumeroPositivo(sulcos.getExterno())) {
-            throw new GenericException("Sulco Externo inválido\n", "Sulco Externo com valor negativo");
+        final int quantidadeSulcosMaxima = 4;
+        final int quantidadeSulcosMinima = 3;
+
+        if (quantidadeDeSulcos == quantidadeSulcosMaxima) {
+            if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
+                throw new GenericException("Sulco Atual Central Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Interno com valor negativo");
+            } else if (!verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
+                throw new GenericException("Sulco Atual Central Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Externo com valor negativo");
+            }
+        } else if (quantidadeDeSulcos == quantidadeSulcosMinima) {
+            if (!verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
+                throw new GenericException("Sulco Atual Central inválido\nO Sulco não pode ter um valor negativo", "Sulco Central com valor negativo");
+            }
+        }
+
+        if (!verificacaoNumeroPositivo(sulcos.getExterno())) {
+            throw new GenericException("Sulco Atual Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
         } else if (!verificacaoNumeroPositivo(sulcos.getInterno())) {
-            throw new GenericException("Sulco Interno inválido\n", "Sulco Externo com valor negativo");
+            throw new GenericException("Sulco Atual Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
         }
     }
+
 
     public static void validacaoDot(String dot) throws Exception {
         Preconditions.checkNotNull(dot, "Você precisa fornecer o DOT");
