@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.60"></a>
-## Version [v0.0.60](https://github.com/luizfp/PrologWeb/compare/v0.0.59...v0.0.60) (release-date) - [unreleased]
+## Version [v0.0.60](https://github.com/luizfp/PrologWeb/compare/v0.0.59...v0.0.60) (2018-05-17)
 
 ### Refactors
 * Adiciona código do colaborador na criação do objeto na `ColaboradorDaoImpl`
