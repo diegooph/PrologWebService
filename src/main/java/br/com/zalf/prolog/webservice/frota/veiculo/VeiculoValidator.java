@@ -24,35 +24,39 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoRegional(Long codRegional){
+    private static void validacaoRegional(Long codRegional) {
         Preconditions.checkNotNull(codRegional, "Você precisa selecionar a Regional");
     }
 
-    private static void validacaoUnidade (Long codUnidade){
+    private static void validacaoUnidade(Long codUnidade) {
         Preconditions.checkNotNull(codUnidade, "Vocẽ precisa selecionar a Unidade");
     }
 
-    private static void validacaoPlaca (String placa){
+    private static void validacaoPlaca(String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a Placa");
+
+        if (placa.length() != 7) {
+            throw new GenericException("A placa deve conter 7 caracteres", null);
+        }
     }
 
-    private static void validacaoKmAtual (Long kmAtual){
+    private static void validacaoKmAtual(Long kmAtual) {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
     }
 
-    private static void validacaoMarca (Long codMarca){
+    private static void validacaoMarca(Long codMarca) {
         Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
     }
 
-    private static void validacaoModelo (Long codModelo){
+    private static void validacaoModelo(Long codModelo) {
         Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
     }
 
-    private static void validacaoEixos (Long codEixos){
+    private static void validacaoEixos(Long codEixos) {
         Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
     }
 
-    private static void validacaoTipo (Long codTipo){
+    private static void validacaoTipo(Long codTipo) {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
     }
 }
