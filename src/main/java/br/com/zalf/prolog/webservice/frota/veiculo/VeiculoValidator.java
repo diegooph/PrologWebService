@@ -38,8 +38,7 @@ public class VeiculoValidator {
             throw new GenericException("Código inválido\nO código não pode conter acentos", null);
         }
 
-
-
+        //verificar cada parte da Placa
     }
 
     private static void validacaoKmAtual(Long kmAtual) throws Exception {
