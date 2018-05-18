@@ -11,8 +11,6 @@ public class VeiculoValidator {
     public static void validacaoAtributosVeiculo(@NotNull final Veiculo veiculo) throws GenericException {
 
         try {
-            validacaoRegional(veiculo.getCodRegionalAlocado());
-            validacaoUnidade(veiculo.getCodUnidadeAlocado());
             validacaoPlaca(veiculo.getPlaca());
             validacaoKmAtual(veiculo.getKmAtual());
             validacaoMarca(veiculo.getMarca().getCodigo());
@@ -24,18 +22,6 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoRegional(Long codRegional) throws Exception {
-        Preconditions.checkNotNull(codRegional, "Você precisa selecionar a Regional");
-
-        if (verificarNumeroNegativo(codRegional)) {
-            throw new GenericException("Regional inválida", "codigo Regional retornou um valor negativo");
-        }
-    }
-
-    private static void validacaoUnidade(Long codUnidade) {
-        Preconditions.checkNotNull(codUnidade, "Vocẽ precisa selecionar a Unidade");
-    }
-
     private static void validacaoPlaca(String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a Placa");
 
@@ -44,27 +30,47 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoKmAtual(Long kmAtual) {
+    private static void validacaoKmAtual(Long kmAtual) throws Exception {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
+
+        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(kmAtual)))) {
+            throw new GenericException("Km Atual inválido\nA quilometragem não pode ser negativa", null);
+        }
     }
 
-    private static void validacaoMarca(Long codMarca) {
+    private static void validacaoMarca(Long codMarca) throws Exception{
         Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
+
+        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
+            throw new GenericException("Marca inválida", "codigo Regional retornou um valor negativo");
+        }
     }
 
-    private static void validacaoModelo(Long codModelo) {
+    private static void validacaoModelo(Long codModelo) throws Exception {
         Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
+
+        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codModelo)))) {
+            throw new GenericException("Modelo inválido", "codigo do modelo retornou um valor negativo");
+        }
     }
 
-    private static void validacaoEixos(Long codEixos) {
+    private static void validacaoEixos(Long codEixos) throws Exception {
         Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
+
+        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codEixos)))) {
+            throw new GenericException("Eixos inválido", "codigo de eixos retornou um valor negativo");
+        }
     }
 
-    private static void validacaoTipo(Long codTipo) {
+    private static void validacaoTipo(Long codTipo) throws Exception {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
+
+        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codTipo)))) {
+            throw new GenericException("Tipo inválido", "codigo de tipo retornou um valor negativo");
+        }
     }
 
-    private static boolean verificarNumeroNegativo(Long numero) {
+    private static boolean verificarNumeroNegativo(int numero) {
         return numero < 0;
     }
 }
