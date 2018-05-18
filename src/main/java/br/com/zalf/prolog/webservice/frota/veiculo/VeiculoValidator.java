@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.Normalizer;
+
 
 public class VeiculoValidator {
 
@@ -28,6 +30,16 @@ public class VeiculoValidator {
         if (placa.length() != 7) {
             throw new GenericException("A placa deve conter 7 caracteres", null);
         }
+
+        String codClienteSemAcento = placa;
+        codClienteSemAcento = Normalizer.normalize(codClienteSemAcento, Normalizer.Form.NFD);
+        codClienteSemAcento.replaceAll("[^\\p{ASCII}]", "");
+        if (!codClienteSemAcento.equals(placa)) {
+            throw new GenericException("Código inválido\nO código não pode conter acentos", null);
+        }
+
+
+
     }
 
     private static void validacaoKmAtual(Long kmAtual) throws Exception {
@@ -38,7 +50,7 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoMarca(Long codMarca) throws Exception{
+    private static void validacaoMarca(Long codMarca) throws Exception {
         Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
 
         if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
