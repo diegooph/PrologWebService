@@ -4,6 +4,8 @@ Change Log
 <a name="v0.0.61"></a>
 ## Version [v0.0.61](https://github.com/luizfp/PrologWeb/compare/v0.0.60...v0.0.61) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige join com tabela `PNEU_VALOR_VIDA` na busca dos pneus
 
 <a name="v0.0.60"></a>
 ## Version [v0.0.60](https://github.com/luizfp/PrologWeb/compare/v0.0.59...v0.0.60) (2018-05-17)
