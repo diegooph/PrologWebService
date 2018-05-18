@@ -36,7 +36,7 @@ public class PneuValidator {
     private static void validacaoUnidade(Long codUnidade) throws Exception {
         Preconditions.checkNotNull(codUnidade, "Você precisa selecionar a Unidade");
 
-        if (verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(codUnidade)))) {
+        if (verificacaoNumeroNegativo(Integer.parseInt(String.valueOf(codUnidade)))) {
             throw new GenericException("Unidade inválida", "getCodUnidadeAlocado() < 1");
         }
     }
@@ -59,7 +59,7 @@ public class PneuValidator {
         Preconditions.checkNotNull(marca, "Você precisa selecionar a Marca");
 
 
-        if (verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(marca.getCodigo())))) {
+        if (verificacaoNumeroNegativo(Integer.parseInt(String.valueOf(marca.getCodigo())))) {
             throw new GenericException("Marca inválida", "getCodigo() < 1");
         }
     }
@@ -67,14 +67,14 @@ public class PneuValidator {
     private static void validacaoModelo(ModeloPneu modelo) throws Exception {
         Preconditions.checkNotNull(modelo, "Você precisa selecionar o Modelo");
 
-        if (verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(modelo.getCodigo())))) {
+        if (verificacaoNumeroNegativo(Integer.parseInt(String.valueOf(modelo.getCodigo())))) {
             throw new GenericException("Modelo inválido", "getCodigo() < 1");
         }
     }
 
     private static void validacaoValor(BigDecimal valor) throws Exception {
 
-        if (verificacaoNumeroPositivo(Double.parseDouble(String.valueOf(valor)))) {
+        if (verificacaoNumeroNegativo(Double.parseDouble(String.valueOf(valor)))) {
             throw new GenericException("Valor inválido\nO valor não pode ser negativo", "valor negativo");
         }
     }
@@ -110,7 +110,7 @@ public class PneuValidator {
     private static void validacaoMarcaDaBanda(Long codMarcaDaBanda) throws Exception {
         Preconditions.checkNotNull(codMarcaDaBanda, "Você precisa selecionar a Marca da Banda");
 
-        if (verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(codMarcaDaBanda)))) {
+        if (verificacaoNumeroNegativo(Integer.parseInt(String.valueOf(codMarcaDaBanda)))) {
             throw new GenericException("Marca da Banda inválida\n", "codMarcaDaBanda < 1");
         }
 
@@ -119,7 +119,7 @@ public class PneuValidator {
     private static void validacaoModeloDaBanda(Long codModeloDaBanda) throws Exception {
         Preconditions.checkNotNull(codModeloDaBanda, "Você precisa selecionar o Modelo da Banda");
 
-        if (verificacaoNumeroPositivo(Integer.parseInt(String.valueOf(codModeloDaBanda)))) {
+        if (verificacaoNumeroNegativo(Integer.parseInt(String.valueOf(codModeloDaBanda)))) {
             throw new GenericException("Modelo da Banda inválido\n", "codModeloDaBanda < 1");
         }
 
@@ -127,7 +127,7 @@ public class PneuValidator {
 
     private static void validacaoValorDaBanda(BigDecimal valor) throws Exception {
 
-        if (verificacaoNumeroPositivo(Double.parseDouble(String.valueOf(valor)))) {
+        if (verificacaoNumeroNegativo(Double.parseDouble(String.valueOf(valor)))) {
             throw new GenericException("Valor inválido\nO valor não pode ser negativo", "valor negativo");
         }
 
@@ -136,7 +136,7 @@ public class PneuValidator {
     private static void validacaoPressao(double pressao) throws Exception {
         Preconditions.checkNotNull(pressao, "Você fornecer a Pressão Correta");
 
-        if (verificacaoNumeroPositivo(pressao)) {
+        if (verificacaoNumeroNegativo(pressao)) {
             throw new GenericException("Pressão inválida\nA Pressão não pode ser negativa", "valor da pressão negativo");
         }
 
@@ -173,19 +173,19 @@ public class PneuValidator {
         final int par = 0;
 
         if (quantidadeDeSulcosSite == par) {
-            if (verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
+            if (verificacaoNumeroNegativo(sulcos.getCentralInterno())) {
                 throw new GenericException("Sulco Atual Central Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Interno com valor negativo");
-            } else if (verificacaoNumeroPositivo(sulcos.getCentralExterno())) {
+            } else if (verificacaoNumeroNegativo(sulcos.getCentralExterno())) {
                 throw new GenericException("Sulco Atual Central Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Central Externo com valor negativo");
             }
         } else {
-            if (verificacaoNumeroPositivo(sulcos.getCentralInterno())) {
+            if (verificacaoNumeroNegativo(sulcos.getCentralInterno())) {
                 throw new GenericException("Sulco Atual Central inválido\nO Sulco não pode ter um valor negativo", "Sulco Central com valor negativo");
             }
         }
-        if (verificacaoNumeroPositivo(sulcos.getInterno())) {
+        if (verificacaoNumeroNegativo(sulcos.getInterno())) {
             throw new GenericException("Sulco Atual Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
-        } else if (verificacaoNumeroPositivo(sulcos.getExterno())) {
+        } else if (verificacaoNumeroNegativo(sulcos.getExterno())) {
             throw new GenericException("Sulco Atual Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
         }
     }
@@ -198,11 +198,11 @@ public class PneuValidator {
         }
     }
 
-    private static boolean verificacaoNumeroPositivo(Double numero) {
+    private static boolean verificacaoNumeroNegativo(Double numero) {
         return numero < 0;
     }
 
-    private static boolean verificacaoNumeroPositivo(int numero) {
+    private static boolean verificacaoNumeroNegativo(int numero) {
         return numero < 0;
     }
 
