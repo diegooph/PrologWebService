@@ -146,7 +146,7 @@ public class PneuValidator {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a Dimensão");
     }
 
-    private static void tipoValidacaoSulcos(Pneu pneu) throws GenericException{
+    private static void tipoValidacaoSulcos(Pneu pneu) throws GenericException {
         final int pneuNovo = 1;
 
         try {
@@ -183,11 +183,10 @@ public class PneuValidator {
                 throw new GenericException("Sulco Atual Central inválido\nO Sulco não pode ter um valor negativo", "Sulco Central com valor negativo");
             }
         }
-
-        if (verificacaoNumeroPositivo(sulcos.getExterno())) {
-            throw new GenericException("Sulco Atual Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
-        } else if (verificacaoNumeroPositivo(sulcos.getInterno())) {
+        if (verificacaoNumeroPositivo(sulcos.getInterno())) {
             throw new GenericException("Sulco Atual Interno inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
+        } else if (verificacaoNumeroPositivo(sulcos.getExterno())) {
+            throw new GenericException("Sulco Atual Externo inválido\nO Sulco não pode ter um valor negativo", "Sulco Externo com valor negativo");
         }
     }
 
