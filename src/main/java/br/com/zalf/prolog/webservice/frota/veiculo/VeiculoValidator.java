@@ -24,8 +24,12 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoRegional(Long codRegional) {
+    private static void validacaoRegional(Long codRegional) throws Exception {
         Preconditions.checkNotNull(codRegional, "Você precisa selecionar a Regional");
+
+        if (verificarNumeroNegativo(codRegional)) {
+            throw new GenericException("Regional inválida", "codigo Regional retornou um valor negativo");
+        }
     }
 
     private static void validacaoUnidade(Long codUnidade) {
@@ -58,5 +62,9 @@ public class VeiculoValidator {
 
     private static void validacaoTipo(Long codTipo) {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
+    }
+
+    private static boolean verificarNumeroNegativo(Long numero) {
+        return numero < 0;
     }
 }
