@@ -677,7 +677,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
                     "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.cpf_mecanico is null;");
+                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.data_hora_resolucao is null;");
             stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
