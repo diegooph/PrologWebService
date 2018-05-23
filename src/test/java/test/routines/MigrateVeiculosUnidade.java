@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Essa classe move veículos e seus pneus de uma unidade para outra.
- * Também será alterado qualquer vínculo que exista na PNEU_VALOR_VIDA, nas tabelas de movimentação e
+ * Também será alterado qualquer vínculo que exista nas tabelas de movimentação e
  * nas tabelas de aferição.
  * <p>
  * Created on 10/04/2018
@@ -53,8 +53,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu DROP CONSTRAINT fk_veiculo_pneu_pneu;");
             stmt.execute();
 
-            stmt = conn.prepareStatement("ALTER TABLE pneu_valor_vida DROP CONSTRAINT fk_pneu_valor_vida_pneu;");
-            stmt.execute();
             // Fim do drop das constraints.
             //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,19 +89,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             }
             // Fim da migração da associação entre veículos - pneus
             //////////////////////////////////////////////////////////////////////////////////////////
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            // Migra o pneu_valor_vida
-            stmt = conn.prepareStatement("UPDATE PNEU_VALOR_VIDA SET COD_UNIDADE = ? " +
-                    "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]);");
-            stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
-            if (stmt.executeUpdate() == 0) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade na PNEU_VALOR_VIDA");
-            }
-            // Fim da migração do pneu_valor_vida
-            //////////////////////////////////////////////////////////////////////////////////////////
-
 
             //////////////////////////////////////////////////////////////////////////////////////////
             // Migra os pneus para a nova unidade
@@ -185,12 +170,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                     "   ADD CONSTRAINT fk_veiculo_pneu_pneu " +
                     "   FOREIGN KEY (cod_pneu, cod_unidade) " +
                     "   REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE pneu_valor_vida " +
-                    "  ADD CONSTRAINT fk_pneu_valor_vida_pneu " +
-                    "FOREIGN KEY (cod_pneu, cod_unidade) " +
-                    "REFERENCES pneu (codigo, cod_unidade);");
             stmt.execute();
             // Fim da criação das constraints
             //////////////////////////////////////////////////////////////////////////////////////////
