@@ -19,9 +19,11 @@ public interface RecapadoraDao {
      *
      * @param token      - Token para saber qual {@link Colaborador} está fazendo o cadastro.
      * @param recapadora - Obejto que será inserido no banco.
+     * @return O código gerado ao inserir a recapadora.
      * @throws SQLException - Se algum erro acontecer no Banco de Dados.
      */
-    void insertRecapadora(@NotNull final String token, @NotNull final Recapadora recapadora) throws SQLException;
+    @NotNull
+    Long insertRecapadora(@NotNull final String token, @NotNull final Recapadora recapadora) throws SQLException;
 
     /**
      * Método para atualizar uma {@link Recapadora}.

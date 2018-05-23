@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -23,8 +24,8 @@ public class RecapadoraResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Recapadora.CADASTRO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public Response insert(@HeaderParam("Authorization") @Required String token,
-                           @Required Recapadora recapadora) throws Exception {
+    public AbstractResponse insert(@HeaderParam("Authorization") @Required String token,
+                                   @Required Recapadora recapadora) throws Exception {
         return service.insertRecapadora(token, recapadora);
     }
 

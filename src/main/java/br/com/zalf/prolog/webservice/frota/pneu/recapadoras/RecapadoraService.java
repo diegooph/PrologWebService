@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RecapadoraException;
 import org.jetbrains.annotations.NotNull;
@@ -19,11 +21,12 @@ public class RecapadoraService {
 
     private final RecapadoraDao dao = Injection.provideRecapadoraDao();
 
-    public Response insertRecapadora(@NotNull final String token,
-                                     @NotNull final Recapadora recapadora) throws RecapadoraException {
+    public AbstractResponse insertRecapadora(@NotNull final String token,
+                                             @NotNull final Recapadora recapadora) throws RecapadoraException {
         try {
-            dao.insertRecapadora(TokenCleaner.getOnlyToken(token), recapadora);
-            return Response.ok("Recapadora inserida com sucesso!");
+            return ResponseWithCod.ok(
+                    "Recapadora inserida com sucesso!",
+                    dao.insertRecapadora(TokenCleaner.getOnlyToken(token), recapadora));
         } catch (SQLException e) {
             throw new RecapadoraException(
                     "Não foi possível inserir a recapadora, tente novamente!",
