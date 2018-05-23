@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RecapadoraException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class RecapadoraService {
-
+    private static final String TAG = RecapadoraService.class.getSimpleName();
     private final RecapadoraDao dao = Injection.provideRecapadoraDao();
 
     public AbstractResponse insertRecapadora(@NotNull final String token,
@@ -27,7 +27,8 @@ public class RecapadoraService {
             return ResponseWithCod.ok(
                     "Recapadora inserida com sucesso!",
                     dao.insertRecapadora(TokenCleaner.getOnlyToken(token), recapadora));
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao inserir recapadora", e);
             throw new RecapadoraException(
                     "Não foi possível inserir a recapadora, tente novamente!",
                     "Erro ao inserir a recapadora!");
@@ -39,7 +40,8 @@ public class RecapadoraService {
         try {
             dao.atualizaRecapadoras(codEmpresa, recapadora);
             return Response.ok("Recapadora atualizada com sucesso!");
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao atualizar recapadora", e);
             throw new RecapadoraException(
                     "Não foi possível atualizar a recapadora, tente novamente!",
                     "Erro ao atualizar a recapadora!");
@@ -50,7 +52,8 @@ public class RecapadoraService {
                                            @Nullable final Boolean ativas) throws RecapadoraException {
         try {
             return dao.getRecapadoras(codEmpresa, ativas);
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao buscar recapadoras para a empresa: " + codEmpresa, e);
             throw new RecapadoraException(
                     "Não foi possível buscar as recapadoras, tente novamente!",
                     "Erro ao buscar as recapadoras!");
@@ -61,7 +64,8 @@ public class RecapadoraService {
                                     @NotNull final Long codRecapadora) throws RecapadoraException {
         try {
             return dao.getRecapadora(codEmpresa, codRecapadora);
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao buscar recapadora de código: " + codRecapadora, e);
             throw new RecapadoraException(
                     "Não foi possível buscar esta recapadora, tente novamente!",
                     "Erro ao buscar esta recapadora!");
@@ -74,7 +78,8 @@ public class RecapadoraService {
         try {
             dao.alterarStatusRecapadoras(TokenCleaner.getOnlyToken(token), codEmpresa, recapadoras);
             return Response.ok("Status");
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao alterar status das recapadoras", e);
             throw new RecapadoraException(
                     "Não foi possível atualizar o status das recapadoras, tente novamente!",
                     "Erro ao atualizar o status das recapadoras!");
