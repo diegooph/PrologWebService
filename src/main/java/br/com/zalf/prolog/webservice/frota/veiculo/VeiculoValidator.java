@@ -35,21 +35,27 @@ public class VeiculoValidator {
         codClienteSemAcento = Normalizer.normalize(codClienteSemAcento, Normalizer.Form.NFD);
         codClienteSemAcento.replaceAll("[^\\p{ASCII}]", "");
         if (!codClienteSemAcento.equals(placa)) {
-            throw new GenericException("Código inválido\nO código não pode conter acentos", null);
+            throw new GenericException("Placa inválida\nA placa não pode conter acentos", null);
         }
 
-        if(!verificarPlaca(placa)){
+        if (!placa.substring(4, 5).matches(".*\\d+.*")) {
 
+            if (verificaPlacaNova(placa)) {
+                throw new GenericException("Plava inválida", null);
+            }
+
+        } else {
+
+            if (verificaPlacaAntiga(placa)) {
+                throw new GenericException("Placa inválida", null);
+            }
         }
-
-        //verificar cada parte da Placa
     }
-
 
     private static void validacaoKmAtual(Long kmAtual) throws Exception {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
 
-        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(kmAtual)))) {
+        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(kmAtual)))) {
             throw new GenericException("Km Atual inválido\nA quilometragem não pode ser negativa", null);
         }
     }
@@ -57,7 +63,7 @@ public class VeiculoValidator {
     private static void validacaoMarca(Long codMarca) throws Exception {
         Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
 
-        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
+        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
             throw new GenericException("Marca inválida", "codigo Regional retornou um valor negativo");
         }
     }
@@ -65,7 +71,7 @@ public class VeiculoValidator {
     private static void validacaoModelo(Long codModelo) throws Exception {
         Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
 
-        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codModelo)))) {
+        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codModelo)))) {
             throw new GenericException("Modelo inválido", "codigo do modelo retornou um valor negativo");
         }
     }
@@ -73,7 +79,7 @@ public class VeiculoValidator {
     private static void validacaoEixos(Long codEixos) throws Exception {
         Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
 
-        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codEixos)))) {
+        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codEixos)))) {
             throw new GenericException("Eixos inválido", "codigo de eixos retornou um valor negativo");
         }
     }
@@ -81,23 +87,44 @@ public class VeiculoValidator {
     private static void validacaoTipo(Long codTipo) throws Exception {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
 
-        if (verificarNumeroNegativo(Integer.parseInt(String.valueOf(codTipo)))) {
+        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codTipo)))) {
             throw new GenericException("Tipo inválido", "codigo de tipo retornou um valor negativo");
         }
     }
 
-    private static boolean verificarNumeroNegativo(int numero) {
+    private static boolean verificaNumeroNegativo(int numero) {
 
         return numero < 0;
     }
 
-    private static boolean verificarPlaca(String placa) {
+    private static boolean verificaPlacaNova(String placa) {
 
-        placa.substring(0,2);
-
-        if(){
+        if (placa.substring(0, 3).matches(".*\\d+.*")) {
             return true;
         }
+        if (!placa.substring(3, 4).matches("^[0-9]*$")) {
+            return true;
+        }
+        if (placa.substring(4, 5).matches(".*\\d+.*")) {
+            return true;
+        }
+        if (!placa.substring(5, 7).matches("^[0-9]*$")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean verificaPlacaAntiga(String placa) {
+
+        if (placa.substring(0, 3).matches(".*\\d+.*")) {
+            return true;
+        }
+        if (!placa.substring(3, 7).matches("^[0-9]*$")) {
+            return true;
+        }
+
+        return false;
     }
 
 }
