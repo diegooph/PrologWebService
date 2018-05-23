@@ -12,8 +12,6 @@ import java.util.Map;
 
 /**
  * Essa classe move veículos e seus pneus de uma unidade para outra.
- * Também será alterado qualquer vínculo que exista nas tabelas de movimentação e
- * nas tabelas de aferição.
  * <p>
  * Created on 10/04/2018
  *
@@ -32,50 +30,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            // Drop de todas as constraints que precisamos.
-            stmt = conn.prepareStatement("ALTER TABLE movimentacao DROP CONSTRAINT " +
-                    "fk_movimentacao_movimentacao_procecsso;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE movimentacao DROP CONSTRAINT fk_movimentacao_pneu;");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_valores DROP CONSTRAINT fk_afericao_valores_pneu;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_pneu_inserido;");
-            stmt.execute();
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao DROP CONSTRAINT fk_afericao_manutencao_movimentacao_processo;");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu DROP CONSTRAINT fk_veiculo_pneu_pneu;");
-            stmt.execute();
-
-            // Fim do drop das constraints.
-            //////////////////////////////////////////////////////////////////////////////////////////
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            // Migra as movimentações
-            migrateMovimentacoes(
-                    todosPneus,
-                    codUnidadeAtualVeiculosPneus,
-                    novoCodUnidadeVeiculosPneus,
-                    conn);
-            // Fim da migração das movimentações
-            //////////////////////////////////////////////////////////////////////////////////////////
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            // Migra as aferições
-            migrateAfericoes(
-                    todosVeiculos,
-                    codUnidadeAtualVeiculosPneus,
-                    novoCodUnidadeVeiculosPneus,
-                    conn);
-            // Fim da migração das aferições
-            //////////////////////////////////////////////////////////////////////////////////////////
 
             //////////////////////////////////////////////////////////////////////////////////////////
             // Migra a associação entre veículos - pneus
@@ -127,54 +81,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             }
             // Fim da migração de veículos para a nova unidade
             //////////////////////////////////////////////////////////////////////////////////////////
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            // Cria todas as constraints que foram removidas
-            stmt = conn.prepareStatement("ALTER TABLE movimentacao " +
-                    "  ADD CONSTRAINT fk_movimentacao_movimentacao_procecsso " +
-                    "FOREIGN KEY (cod_movimentacao_processo, cod_unidade) " +
-                    "REFERENCES movimentacao_processo(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE movimentacao " +
-                    "            ADD CONSTRAINT fk_movimentacao_pneu " +
-                    "            FOREIGN KEY (cod_pneu, cod_unidade) " +
-                    "            REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao\n" +
-                    "            ADD CONSTRAINT fk_afericao_manutencao_pneu\n" +
-                    "            FOREIGN KEY (cod_pneu, cod_unidade)\n" +
-                    "            REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE afericao_valores\n" +
-                    "            ADD CONSTRAINT fk_afericao_valores_pneu\n" +
-                    "            FOREIGN KEY (cod_pneu, cod_unidade)\n" +
-                    "            REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao\n" +
-                    "            ADD CONSTRAINT fk_afericao_manutencao_pneu_inserido\n" +
-                    "            FOREIGN KEY (cod_pneu_inserido, cod_unidade)\n" +
-                    "            REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE afericao_manutencao " +
-                    "  ADD CONSTRAINT fk_afericao_manutencao_movimentacao_processo " +
-                    "FOREIGN KEY (cod_unidade, cod_processo_movimentacao) REFERENCES movimentacao_processo " +
-                    "(cod_unidade, codigo);");
-            stmt.execute();
-
-            stmt = conn.prepareStatement("ALTER TABLE veiculo_pneu " +
-                    "   ADD CONSTRAINT fk_veiculo_pneu_pneu " +
-                    "   FOREIGN KEY (cod_pneu, cod_unidade) " +
-                    "   REFERENCES pneu(codigo, cod_unidade);");
-            stmt.execute();
-            // Fim da criação das constraints
-            //////////////////////////////////////////////////////////////////////////////////////////
-
-
             conn.commit();
         } catch (final Exception e) {
             if (conn != null) {
@@ -182,84 +88,6 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             }
             closeConnection(conn, stmt, rSet);
             throw e;
-        }
-    }
-
-    private void migrateMovimentacoes(@NotNull final List<Long> todosPneus,
-                                      @NotNull final Long codUnidadeAtualVeiculosPneus,
-                                      @NotNull final Long novoCodUnidadeVeiculosPneus,
-                                      @NotNull final Connection conn) throws Exception {
-        PreparedStatement statement = conn.prepareStatement("SELECT * FROM MOVIMENTACAO M WHERE " +
-                "M.COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND M.COD_UNIDADE = ?");
-        statement.setArray(1, PostgresUtil.ListLongToArray(conn, todosPneus));
-        statement.setLong(2, codUnidadeAtualVeiculosPneus);
-        final ResultSet rSet = statement.executeQuery();
-
-        while (rSet.next()) {
-            final Long codMovimentacao = rSet.getLong("CODIGO");
-            final Long codProcessoMovimentacao = rSet.getLong("COD_MOVIMENTACAO_PROCESSO");
-
-            System.out.println("Código mov: " + codMovimentacao + " - Processo: " + codProcessoMovimentacao);
-
-            statement = conn.prepareStatement("UPDATE MOVIMENTACAO SET COD_UNIDADE = ? WHERE CODIGO = ?;");
-            statement.setLong(1, novoCodUnidadeVeiculosPneus);
-            statement.setLong(2, codMovimentacao);
-            if (statement.executeUpdate() == 0) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade da movimentação");
-            }
-
-            statement = conn.prepareStatement("UPDATE MOVIMENTACAO_PROCESSO SET COD_UNIDADE = ? WHERE CODIGO " +
-                    "= ?;");
-            statement.setLong(1, novoCodUnidadeVeiculosPneus);
-            statement.setLong(2, codProcessoMovimentacao);
-            if (statement.executeUpdate() == 0) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade do processo de movimentação");
-            }
-        }
-    }
-
-
-    private void migrateAfericoes(final List<String> todosVeiculos,
-                                  final Long codUnidadeAtualVeiculosPneus,
-                                  final Long novoCodUnidadeVeiculosPneus,
-                                  final Connection conn) throws Exception {
-        PreparedStatement statement = conn.prepareStatement("SELECT * FROM AFERICAO A WHERE " +
-                "A.PLACA_VEICULO::TEXT LIKE ANY (ARRAY[?]) AND A.COD_UNIDADE = ?");
-        statement.setArray(1, PostgresUtil.ListToArray(conn, todosVeiculos));
-        statement.setLong(2, codUnidadeAtualVeiculosPneus);
-        final ResultSet rSet = statement.executeQuery();
-
-        while (rSet.next()) {
-            final Long codAfericao = rSet.getLong("CODIGO");
-            statement = conn.prepareStatement("UPDATE AFERICAO SET COD_UNIDADE = ? WHERE CODIGO = ?;");
-            statement.setLong(1, novoCodUnidadeVeiculosPneus);
-            statement.setLong(2, codAfericao);
-            if (statement.executeUpdate() == 0) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade da aferição");
-            }
-
-            statement = conn.prepareStatement("UPDATE AFERICAO_VALORES SET COD_UNIDADE = ? WHERE COD_AFERICAO = ?;");
-            statement.setLong(1, novoCodUnidadeVeiculosPneus);
-            statement.setLong(2, codAfericao);
-            if (statement.executeUpdate() == 0) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade da afericao_valores");
-            }
-
-
-            statement = conn.prepareStatement("SELECT COUNT(*) AS TOTAL_SERVICOS FROM AFERICAO_MANUTENCAO WHERE COD_AFERICAO = ?;");
-            statement.setLong(1, codAfericao);
-            final ResultSet total = statement.executeQuery();
-            int totalServicos = 0;
-            if (total.next()) {
-                totalServicos = total.getInt("TOTAL_SERVICOS");
-            }
-            statement = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET COD_UNIDADE = ? WHERE COD_AFERICAO = ?;");
-            statement.setLong(1, novoCodUnidadeVeiculosPneus);
-            statement.setLong(2, codAfericao);
-            System.out.println("Total de serviços: " + totalServicos + " -- codAfericao: " + codAfericao);
-            if (statement.executeUpdate() != totalServicos) {
-                throw new IllegalStateException("Erro ao atualizar o código da unidade da afericao_manutencao");
-            }
         }
     }
 }
