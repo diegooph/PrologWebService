@@ -336,7 +336,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                         pergunta.setAlternativasResposta(new ArrayList<>());
                     }
 
-                    // Adiciona a alternativa TIPO_OUTROS.'
+                    // Adiciona a alternativa TIPO_OUTROS.
                     pergunta.getAlternativasResposta().add(createAlternativaTipoOutros(pergunta));
                     for (final AlternativaChecklist alternativa : pergunta.getAlternativasResposta()) {
                         if (!alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.DELETADA)) {
@@ -356,8 +356,8 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
                             if (alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.CRIADA)) {
                                 insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
                             } else if (alternativa.acaoEdicao.equals(AcaoEdicaoAlternativa.ALTERADA)) {
-                                // Devemos passar o código da pergunta que foi desativada, para podermos desativar as suas
-                                // alternativas também.
+                                // Devemos passar o código da pergunta que foi alterada, para podermos desativar as suas
+                                // alternativas.
                                 inativarAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
                                 insertAlternativaChecklist(conn, codUnidade, codModelo, pergunta.getCodigo(), alternativa);
                             } else {
