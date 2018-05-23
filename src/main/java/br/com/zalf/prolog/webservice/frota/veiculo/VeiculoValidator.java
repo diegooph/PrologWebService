@@ -38,8 +38,13 @@ public class VeiculoValidator {
             throw new GenericException("Código inválido\nO código não pode conter acentos", null);
         }
 
+        if(!verificarPlaca(placa)){
+
+        }
+
         //verificar cada parte da Placa
     }
+
 
     private static void validacaoKmAtual(Long kmAtual) throws Exception {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
@@ -82,6 +87,17 @@ public class VeiculoValidator {
     }
 
     private static boolean verificarNumeroNegativo(int numero) {
+
         return numero < 0;
     }
+
+    private static boolean verificarPlaca(String placa) {
+
+        placa.substring(0,2);
+
+        if(){
+            return true;
+        }
+    }
+
 }
