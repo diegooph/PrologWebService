@@ -23,7 +23,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
 
     public void run(@NotNull final Map<Long, Long> codigosTiposVeiculos,
                     @NotNull final List<String> todosVeiculos,
-                    @NotNull final List<String> todosPneus,
+                    @NotNull final List<Long> todosPneus,
                     @NotNull final Long codUnidadeAtualVeiculosPneus,
                     @NotNull final Long novoCodUnidadeVeiculosPneus) throws Exception {
         Connection conn = null;
@@ -82,7 +82,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
             stmt = conn.prepareStatement("UPDATE VEICULO_PNEU SET COD_UNIDADE = ? " +
                     "WHERE COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND COD_UNIDADE = ? ;");
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
+            stmt.setArray(2, PostgresUtil.ListLongToArray(conn, todosPneus));
             stmt.setLong(3, codUnidadeAtualVeiculosPneus);
             if (stmt.executeUpdate() == 0) {
                 throw new IllegalStateException("Erro ao atualizar o código da unidade na VEICULO_PNEU");
@@ -96,7 +96,7 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
                     "WHERE CODIGO::TEXT LIKE ANY (ARRAY[?]) AND COD_UNIDADE = ?;");
             System.out.println("Pneus que serão atualizados: " + todosPneus);
             stmt.setLong(1, novoCodUnidadeVeiculosPneus);
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, todosPneus));
+            stmt.setArray(2, PostgresUtil.ListLongToArray(conn, todosPneus));
             stmt.setLong(3, codUnidadeAtualVeiculosPneus);
             System.out.println("query: " + stmt.toString());
             if (stmt.executeUpdate() != todosPneus.size()) {
@@ -185,13 +185,13 @@ public class MigrateVeiculosUnidade extends DatabaseConnection {
         }
     }
 
-    private void migrateMovimentacoes(@NotNull final List<String> todosPneus,
+    private void migrateMovimentacoes(@NotNull final List<Long> todosPneus,
                                       @NotNull final Long codUnidadeAtualVeiculosPneus,
                                       @NotNull final Long novoCodUnidadeVeiculosPneus,
                                       @NotNull final Connection conn) throws Exception {
         PreparedStatement statement = conn.prepareStatement("SELECT * FROM MOVIMENTACAO M WHERE " +
                 "M.COD_PNEU::TEXT LIKE ANY (ARRAY[?]) AND M.COD_UNIDADE = ?");
-        statement.setArray(1, PostgresUtil.ListToArray(conn, todosPneus));
+        statement.setArray(1, PostgresUtil.ListLongToArray(conn, todosPneus));
         statement.setLong(2, codUnidadeAtualVeiculosPneus);
         final ResultSet rSet = statement.executeQuery();
 
