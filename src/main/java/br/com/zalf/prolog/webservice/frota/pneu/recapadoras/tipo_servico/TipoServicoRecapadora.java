@@ -12,6 +12,7 @@ public class TipoServicoRecapadora {
     private String nome;
     private boolean status;
     private boolean editavel;
+    private boolean incrementaVida;
 
     public TipoServicoRecapadora() {
     }
@@ -56,6 +57,14 @@ public class TipoServicoRecapadora {
         this.editavel = editavel;
     }
 
+    public boolean isIncrementaVida() {
+        return incrementaVida;
+    }
+
+    public void setIncrementaVida(boolean incrementaVida) {
+        this.incrementaVida = incrementaVida;
+    }
+
     @Override
     public String toString() {
         return "TipoServicoRecapadora{" +
@@ -64,6 +73,7 @@ public class TipoServicoRecapadora {
                 ", nome='" + nome + '\'' +
                 ", status=" + status +
                 ", editavel=" + editavel +
+                ", incrementaVida=" + incrementaVida +
                 '}';
     }
 }

@@ -33,9 +33,10 @@ public class TipoServicoRecapadoraResource {
     @Secured(permissions = {})
     @UsedBy(platforms = {Platform.WEBSITE})
     @Path("/{codEmpresa}")
-    public Response atualizaTipoServicoRecapadora(@PathParam("codEmpresa") @Required Long codEmpresa,
+    public Response atualizaTipoServicoRecapadora(@HeaderParam("Authorization") @Required String token,
+                                                  @PathParam("codEmpresa") @Required Long codEmpresa,
                                                   @Required TipoServicoRecapadora tipoServico) throws Exception {
-        return service.atualizaTipoServicoRecapadora(codEmpresa, tipoServico);
+        return service.atualizaTipoServicoRecapadora(token, codEmpresa, tipoServico);
     }
 
     @GET

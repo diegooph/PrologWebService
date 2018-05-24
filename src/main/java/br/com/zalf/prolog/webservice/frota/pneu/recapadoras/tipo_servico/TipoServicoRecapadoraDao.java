@@ -28,11 +28,13 @@ public interface TipoServicoRecapadoraDao {
     /**
      * Atualiza um {@link TipoServicoRecapadora} com os novos dados inseridos pelo usuário.
      *
+     * @param token       - Utilizado para buscar o id do usuário que está solicitando a operação.
      * @param codEmpresa  - Código da {@link Empresa}.
      * @param tipoServico - {@link TipoServicoRecapadora} que será inserido.
      * @throws SQLException - Se algum erro ocorrer na execução da função.
      */
-    void atualizaTipoServicoRecapadora(@NotNull final Long codEmpresa,
+    void atualizaTipoServicoRecapadora(@NotNull final String token,
+                                       @NotNull final Long codEmpresa,
                                        @NotNull final TipoServicoRecapadora tipoServico) throws SQLException;
 
     /**
@@ -44,7 +46,7 @@ public interface TipoServicoRecapadoraDao {
      * @throws SQLException - Se algum erro ocorrer na execução da função.
      */
     List<TipoServicoRecapadora> getTiposServicosRecapadora(@NotNull final Long codEmpresa,
-                                                           final boolean ativas) throws SQLException;
+                                                           final Boolean ativas) throws SQLException;
 
     /**
      * Busca um {@link TipoServicoRecapadora} específico através do {@link TipoServicoRecapadora#codigo}.
