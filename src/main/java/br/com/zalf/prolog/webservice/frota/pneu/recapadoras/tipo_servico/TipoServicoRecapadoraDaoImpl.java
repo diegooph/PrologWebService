@@ -148,7 +148,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
                     "  STATUS_ATIVO = FALSE, " +
                     "  COD_COLABORADOR_EDICAO = (SELECT C.CODIGO " +
                     "                            FROM COLABORADOR AS C " +
-                    "                            WHERE C.CPF = (SELECT ta.cpf_colaborador " +
+                    "                            WHERE C.CPF = (SELECT TA.CPF_COLABORADOR " +
                     "                                           FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), " +
                     "  DATA_HORA_EDICAO = ? " +
                     "WHERE CODIGO = ? AND COD_EMPRESA = ?;");
