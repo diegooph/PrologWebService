@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,7 +48,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     @SuppressWarnings("Duplicates")
     @Override
     public List<TipoServicoRecapadora> getTiposServicosRecapadora(@NotNull final Long codEmpresa,
-                                                                  final Boolean ativas) throws SQLException {
+                                                                  @Nullable final Boolean ativas) throws SQLException {
         final List<TipoServicoRecapadora> tiposServicos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;

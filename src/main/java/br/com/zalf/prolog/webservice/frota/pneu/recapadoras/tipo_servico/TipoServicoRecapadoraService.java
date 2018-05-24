@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class TipoServicoRecapadoraService {
     }
 
     public List<TipoServicoRecapadora> getTiposServicosRecapadora(@NotNull final Long codEmpresa,
-                                                                  final boolean ativas) throws GenericException {
+                                                                  @Nullable final Boolean ativas) throws GenericException {
         try {
             return dao.getTiposServicosRecapadora(codEmpresa, ativas);
         } catch (Exception e) {

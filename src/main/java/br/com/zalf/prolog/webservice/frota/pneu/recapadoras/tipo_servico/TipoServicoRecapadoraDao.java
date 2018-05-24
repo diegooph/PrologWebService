@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -46,7 +47,7 @@ public interface TipoServicoRecapadoraDao {
      * @throws SQLException - Se algum erro ocorrer na execução da função.
      */
     List<TipoServicoRecapadora> getTiposServicosRecapadora(@NotNull final Long codEmpresa,
-                                                           final Boolean ativas) throws SQLException;
+                                                           @Nullable final Boolean ativas) throws SQLException;
 
     /**
      * Busca um {@link TipoServicoRecapadora} específico através do {@link TipoServicoRecapadora#codigo}.
