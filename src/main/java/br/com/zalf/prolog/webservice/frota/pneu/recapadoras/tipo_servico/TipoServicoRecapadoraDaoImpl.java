@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
 
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -23,26 +22,11 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     public Long insertTipoServicoRecapadora(@NotNull final String token,
                                             @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO RECAPADORA_TIPO_SERVICO (COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
-                    "VALUES (?, ?, " +
-                    "(SELECT C.CODIGO FROM COLABORADOR AS C WHERE C.CPF = " +
-                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
-            stmt.setLong(1, tipoServico.getCodEmpresa());
-            stmt.setString(2, tipoServico.getNome());
-            stmt.setString(3, token);
-            stmt.setTimestamp(4, Now.timestampUtc());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Erro ao inserir tipo de serviço");
-            }
+            return insereTipoServico(conn, token, tipoServico.getCodEmpresa(), tipoServico);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(conn);
         }
     }
 
@@ -54,7 +38,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             inativaTipoServico(conn, token, codEmpresa, tipoServico);
-            atualizaTipoServico(conn, token, codEmpresa, tipoServico);
+            insereTipoServico(conn, token, codEmpresa, tipoServico);
         } finally {
             closeConnection(conn);
         }
@@ -72,9 +56,8 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM RECAPADORA_TIPO_SERVICO " +
                     "WHERE (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) " +
-                    "AND (? = 1 OR STATUS_ATIVA = ?)");
+                    "AND (? = 1 OR STATUS_ATIVO = ?)");
             stmt.setLong(1, codEmpresa);
-
             if (ativas == null) {
                 stmt.setInt(2, 1);
                 stmt.setBoolean(3, true);
@@ -100,7 +83,8 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RECAPADORA_TIPO_SERVICO WHERE (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) AND CODIGO = ?");
+            stmt = conn.prepareStatement("SELECT * FROM RECAPADORA_TIPO_SERVICO WHERE" +
+                    " (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) AND CODIGO = ?");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codTipoServico);
             rSet = stmt.executeQuery();
@@ -123,26 +107,34 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             inativaTipoServico(conn, token, codEmpresa, tipoServico);
         } finally {
-            closeConnection(conn, null, null);
+            closeConnection(conn);
         }
     }
 
-    private void atualizaTipoServico(@NotNull final Connection conn,
-                                     @NotNull final String token,
-                                     @NotNull final Long codEmpresa,
-                                     @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+    @NotNull
+    private Long insereTipoServico(@NotNull final Connection conn,
+                                   @NotNull final String token,
+                                   @NotNull final Long codEmpresa,
+                                   @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RECAPADORA_TIPO_SERVICO SET NOME = ? " +
-                    "WHERE CODIGO = ? AND COD_EMPRESA = ?;");
-            stmt.setString(1, tipoServico.getNome());
-            stmt.setLong(2, tipoServico.getCodigo());
-            stmt.setLong(3, codEmpresa);
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao atualizar nome do tipo serviço de código: " + tipoServico.getCodigo());
+            stmt = conn.prepareStatement("INSERT INTO RECAPADORA_TIPO_SERVICO (COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
+                    "VALUES (?, ?, " +
+                    "(SELECT C.CODIGO FROM COLABORADOR AS C WHERE C.CPF = " +
+                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, tipoServico.getNome());
+            stmt.setString(3, token);
+            stmt.setTimestamp(4, Now.timestampUtc());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao inserir tipo de serviço");
             }
         } finally {
-            closeStatement(stmt);
+            closeConnection(null, stmt, rSet);
         }
     }
 
@@ -152,10 +144,18 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
                                     @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RECAPADORA_TIPO_SERVICO SET STATUS_ATIVO = FALSE " +
-                    "WHERE CODIGO = ? AND COD_EMPRESA = ?");
-            stmt.setLong(1, tipoServico.getCodigo());
-            stmt.setLong(2, codEmpresa);
+            stmt = conn.prepareStatement("UPDATE RECAPADORA_TIPO_SERVICO SET " +
+                    "  STATUS_ATIVO = FALSE, " +
+                    "  COD_COLABORADOR_EDICAO = (SELECT C.CODIGO " +
+                    "                            FROM COLABORADOR AS C " +
+                    "                            WHERE C.CPF = (SELECT ta.cpf_colaborador " +
+                    "                                           FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), " +
+                    "  DATA_HORA_EDICAO = ? " +
+                    "WHERE CODIGO = ? AND COD_EMPRESA = ?;");
+            stmt.setString(1, token);
+            stmt.setTimestamp(2, Now.timestampUtc());
+            stmt.setLong(3, tipoServico.getCodigo());
+            stmt.setLong(4, codEmpresa);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inativar tipo serviço de código: " + tipoServico.getCodigo());
             }

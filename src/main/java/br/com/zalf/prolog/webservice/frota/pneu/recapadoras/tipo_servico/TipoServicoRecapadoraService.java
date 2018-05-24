@@ -39,7 +39,7 @@ public class TipoServicoRecapadoraService {
             @NotNull final Long codEmpresa,
             @NotNull final TipoServicoRecapadora tipoServico) throws GenericException {
         try {
-            dao.atualizaTipoServicoRecapadora(token, codEmpresa, tipoServico);
+            dao.atualizaTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
             return Response.ok("");
         } catch (Exception e) {
             Log.e(TAG, "", e);
