@@ -10,8 +10,12 @@ import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDao;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDao;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDao;
@@ -20,6 +24,8 @@ import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.Produtivida
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioEntregaDao;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioEntregaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDao;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
@@ -39,6 +45,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.TipoServicoRecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.TipoServicoRecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -79,12 +87,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
-import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.mapa.MapaDao;
-import br.com.zalf.prolog.webservice.entrega.mapa.MapaDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDao;
-import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -335,6 +337,11 @@ public final class Injection {
     @NotNull
     public static RecapadoraDao provideRecapadoraDao() {
         return new RecapadoraDaoImpl();
+    }
+
+    @NotNull
+    public static TipoServicoRecapadoraDao provideTipoServicoRecapadoraDao() {
+        return new TipoServicoRecapadoraDaoImpl();
     }
 
     // ================================================
