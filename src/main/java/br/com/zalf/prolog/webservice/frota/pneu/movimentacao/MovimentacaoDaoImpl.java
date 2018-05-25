@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
@@ -47,7 +48,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             connection.rollback();
             throw e;
         } finally {
-            closeConnection(connection, null, null);
+            closeConnection(connection);
         }
     }
 
@@ -82,14 +83,15 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public Long insertMotivo(@NotNull Motivo motivo, @NotNull Long codEmpresa) throws SQLException {
+    public Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             connection = getConnection();
             stmt = connection.prepareStatement("INSERT INTO " +
-                    "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, data_hora_insercao, data_hora_ultima_alteracao) " +
+                    "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, " +
+                    "data_hora_insercao, data_hora_ultima_alteracao) " +
                     "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, motivo.getMotivo());
@@ -110,7 +112,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public List<Motivo> getMotivos(@NotNull Long codEmpresa, boolean onlyAtivos) throws SQLException {
+    public List<Motivo> getMotivos(@NotNull final Long codEmpresa, boolean onlyAtivos) throws SQLException {
         final List<Motivo> motivos = new ArrayList<>();
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -128,15 +130,15 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 motivos.add(createMotivo(rSet));
             }
         } finally {
-            closeConnection(connection,stmt, rSet);
+            closeConnection(connection, stmt, rSet);
         }
         return motivos;
     }
 
     @Override
-    public void updateMotivoStatus(@NotNull Long codEmpresa,
-                                   @NotNull Long codMotivo,
-                                   @NotNull Motivo motivo) throws SQLException {
+    public void updateMotivoStatus(@NotNull final Long codEmpresa,
+                                   @NotNull final Long codMotivo,
+                                   @NotNull final Motivo motivo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -156,7 +158,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private Motivo createMotivo(ResultSet rSet) throws SQLException {
+    private Motivo createMotivo(@NotNull final ResultSet rSet) throws SQLException {
         final MotivoDescarte motivo = new MotivoDescarte();
         motivo.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         motivo.setCodigo(rSet.getLong("CODIGO"));
@@ -209,11 +211,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     }
 
                     // Atualiza o status do pneu.
-                    pneuDao.updateStatus(
-                            pneu,
-                            codUnidade,
-                            mov.getDestino().getTipo(),
-                            conn);
+                    pneuDao.updateStatus(pneu, codUnidade, mov.getDestino().getTipo(), conn);
                 }
             }
         } finally {
@@ -316,53 +314,112 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void insertDestino(Connection conn, Movimentacao movimentacao) throws SQLException {
+    private void insertDestino(@NotNull final Connection conn,
+                               @NotNull final Movimentacao movimentacao) throws SQLException {
+        switch (movimentacao.getDestino().getTipo()) {
+            case OrigemDestinoConstants.VEICULO:
+                insertMovimentacaoVeiculo(conn, movimentacao);
+                break;
+            case OrigemDestinoConstants.ESTOQUE:
+                insertMovimentacaoEstoque(conn, movimentacao);
+                break;
+            case OrigemDestinoConstants.ANALISE:
+                insertMovimentacaoAnalise(conn, movimentacao);
+                break;
+            case OrigemDestinoConstants.DESCARTE:
+                insertMovimentacaoDescarte(conn, movimentacao);
+                break;
+        }
+    }
+
+    private void insertMovimentacaoVeiculo(@NotNull final Connection conn,
+                                           @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_destino(cod_movimentacao, " +
-                    "tipo_destino, placa, km_veiculo, posicao_pneu_destino," +
-                    " cod_motivo_descarte, url_imagem_descarte_1, url_imagem_descarte_2, url_imagem_descarte_3) " +
-                    "values (?,?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, PLACA, KM_VEICULO, POSICAO_PNEU_DESTINO) " +
+                    "VALUES (?, ?, ?, ?, ?);");
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+            final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
-            stmt.setString(2, movimentacao.getDestino().getTipo());
-            if (movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(destinoVeiculo.getVeiculo().getPlaca(), destinoVeiculo.getVeiculo()
-                        .getKmAtual(), conn);
-                stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
-                stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
-                stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
-                // seta informações de Descarte como Null
-                stmt.setNull(6, Types.BIGINT);
-                stmt.setNull(7, Types.VARCHAR);
-                stmt.setNull(8, Types.VARCHAR);
-                stmt.setNull(9, Types.VARCHAR);
-            } else if (!movimentacao.getDestino().getTipo().equals(OrigemDestinoConstants.DESCARTE)) {
-                // seta informações de Descarte como Null
-                stmt.setNull(3, Types.VARCHAR);
-                stmt.setNull(4, Types.BIGINT);
-                stmt.setNull(5, Types.INTEGER);
-                stmt.setNull(6, Types.BIGINT);
-                stmt.setNull(7, Types.VARCHAR);
-                stmt.setNull(8, Types.VARCHAR);
-                stmt.setNull(9, Types.VARCHAR);
-            } else {
-                final DestinoDescarte destinoDescarte = (DestinoDescarte) movimentacao.getDestino();
-                final MotivoDescarte motivoDescarte = destinoDescarte.getMotivoDescarte();
-                stmt.setNull(3, Types.VARCHAR);
-                stmt.setNull(4, Types.BIGINT);
-                stmt.setNull(5, Types.INTEGER);
-                stmt.setLong(6, motivoDescarte.getCodigo());
-                stmt.setString(7, destinoDescarte.getUrlImagemDescarte1());
-                stmt.setString(8, destinoDescarte.getUrlImagemDescarte2());
-                stmt.setString(9, destinoDescarte.getUrlImagemDescarte3());
-            }
+            stmt.setString(2, destinoVeiculo.getTipo());
+            veiculoDao.updateKmByPlaca(
+                    destinoVeiculo.getVeiculo().getPlaca(),
+                    destinoVeiculo.getVeiculo().getKmAtual(),
+                    conn);
+            stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
+            stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir o destino da movimentação");
+                throw new SQLException("Erro ao inserir o destino veiculo da movimentação");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertMovimentacaoEstoque(@NotNull final Connection conn,
+                                           @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO) " +
+                    "VALUES (?, ?);");
+            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setString(2, movimentacao.getDestino().getTipo());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o destino estoque da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertMovimentacaoAnalise(@NotNull final Connection conn,
+                                           @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_RECAPADORA, COD_COLETA) " +
+                    "VALUES (?, ?, ?, ?);");
+            final DestinoAnalise destinoAnalise = (DestinoAnalise) movimentacao.getDestino();
+            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setString(2, destinoAnalise.getTipo());
+            if (destinoAnalise.getRecapadoraDestino() != null) {
+                stmt.setLong(3, destinoAnalise.getRecapadoraDestino().getCodigo());
+            } else {
+                stmt.setNull(3, Types.BIGINT);
+            }
+            stmt.setString(4, destinoAnalise.getCodColeta());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o destino analise da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+
+    }
+
+    private void insertMovimentacaoDescarte(@NotNull final Connection conn,
+                                            @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO " +
+                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_MOTIVO_DESCARTE, " +
+                    "URL_IMAGEM_DESCARTE_1, URL_IMAGEM_DESCARTE_2, URL_IMAGEM_DESCARTE_3) " +
+                    "VALUES (?, ?, ?, ?, ?, ?);");
+            final DestinoDescarte destinoDescarte = (DestinoDescarte) movimentacao.getDestino();
+            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setString(2, destinoDescarte.getTipo());
+            stmt.setLong(3, destinoDescarte.getMotivoDescarte().getCodigo());
+            stmt.setString(4, destinoDescarte.getUrlImagemDescarte1());
+            stmt.setString(5, destinoDescarte.getUrlImagemDescarte2());
+            stmt.setString(6, destinoDescarte.getUrlImagemDescarte3());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir o destino descarte da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
         }
     }
 
