@@ -10,7 +10,7 @@ public class TipoServicoRecapadora {
     private Long codigo;
     private Long codEmpresa;
     private String nome;
-    private boolean status;
+    private boolean statusAtivo;
     private boolean editavel;
     private boolean incrementaVida;
 
@@ -41,12 +41,12 @@ public class TipoServicoRecapadora {
         this.nome = nome;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isStatusAtivo() {
+        return statusAtivo;
     }
 
-    public void setStatus(final boolean status) {
-        this.status = status;
+    public void setStatusAtivo(final boolean status) {
+        this.statusAtivo = status;
     }
 
     public boolean isEditavel() {
@@ -71,7 +71,7 @@ public class TipoServicoRecapadora {
                 "codigo=" + codigo +
                 ", codEmpresa=" + codEmpresa +
                 ", nome='" + nome + '\'' +
-                ", status=" + status +
+                ", statusAtivo=" + statusAtivo +
                 ", editavel=" + editavel +
                 ", incrementaVida=" + incrementaVida +
                 '}';

@@ -171,7 +171,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
         tipoServico.setCodigo(rSet.getLong("CODIGO"));
         tipoServico.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         tipoServico.setNome(rSet.getString("NOME"));
-        tipoServico.setStatus(rSet.getBoolean("STATUS_ATIVO"));
+        tipoServico.setStatusAtivo(rSet.getBoolean("STATUS_ATIVO"));
         tipoServico.setEditavel(rSet.getBoolean("EDITAVEL"));
         tipoServico.setIncrementaVida(rSet.getBoolean("INCREMENTA_VIDA"));
         return tipoServico;
