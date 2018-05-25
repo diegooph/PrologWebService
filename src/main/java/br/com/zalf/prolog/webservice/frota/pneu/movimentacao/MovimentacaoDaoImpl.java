@@ -380,7 +380,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_RECAPADORA, COD_COLETA) " +
+                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_RECAPADORA_DESTINO, COD_COLETA) " +
                     "VALUES (?, ?, ?, ?);");
             final DestinoAnalise destinoAnalise = (DestinoAnalise) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
