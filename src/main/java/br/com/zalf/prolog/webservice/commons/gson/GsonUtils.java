@@ -11,13 +11,11 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemCheckl
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacaoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
@@ -100,8 +98,8 @@ public final class GsonUtils {
                 .registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
 
         RuntimeTypeAdapterFactory<PneuMovimentacao> adapterPneumovimentacao = RuntimeTypeAdapterFactory
-                .of(PneuMovimentacao.class)
-                .registerSubtype(PneuMovimentacaoAnalise.class);
+                .of(PneuMovimentacao.class, "TipoPneuMovimentacao")
+                .registerSubtype(PneuMovimentacaoAnalise.class, TipoPneuMovimentacao.PNEU_ANALISE.asString());
 
         builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(adapterAlternativa);

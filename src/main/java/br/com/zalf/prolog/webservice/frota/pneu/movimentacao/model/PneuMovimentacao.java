@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 25/05/18.
@@ -9,12 +10,21 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
  */
 public class PneuMovimentacao extends Pneu {
 
-    public PneuMovimentacao() {
+    private final TipoPneuMovimentacao tipoPneuMovimentacao;
+
+    public PneuMovimentacao(@NotNull final TipoPneuMovimentacao tipoPneuMovimentacao) {
         super();
+        this.tipoPneuMovimentacao = tipoPneuMovimentacao;
+    }
+
+    public TipoPneuMovimentacao getTipoPneuMovimentacao() {
+        return tipoPneuMovimentacao;
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return "PneuMovimentacao{" +
+                "tipoPneuMovimentacao=" + tipoPneuMovimentacao +
+                '}';
     }
 }

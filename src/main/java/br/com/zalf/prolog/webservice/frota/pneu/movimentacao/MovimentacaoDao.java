@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ public interface MovimentacaoDao {
                             @NotNull final Long codMotivo,
                             @NotNull final Motivo motivo) throws SQLException;
 
-    List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
-                                                @NotNull final String statusPneu) throws SQLException;
+    List<PneuMovimentacao> getPneusMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoPneuMovimentacao tipoPneuMovimentacao) throws Exception;
 }

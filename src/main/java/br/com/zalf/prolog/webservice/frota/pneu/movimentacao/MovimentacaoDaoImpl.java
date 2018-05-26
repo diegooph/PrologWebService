@@ -159,14 +159,31 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
-                                                       @NotNull final String statusPneu) throws SQLException {
+    public List<PneuMovimentacao> getPneusMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoPneuMovimentacao tipoPneuMovimentacao) throws Exception {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<PneuMovimentacao> pneusMovimentacao = new ArrayList<>();
         try {
             conn = getConnection();
+            switch (tipoPneuMovimentacao) {
+                case PNEU_ANALISE:
+                    return getPneusMovimentacaoAnalise(conn, codUnidade);
+                default:
+                    throw new Exception("Tipo de PneuMovimentacao não existente tipo: "
+                            + tipoPneuMovimentacao.asString());
+            }
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    private List<PneuMovimentacao> getPneusMovimentacaoAnalise(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade) throws SQLException {
+        final List<PneuMovimentacao> pneusMovimentacao = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_MOVIMENTACOES_ANALISE(?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
@@ -174,7 +191,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 pneusMovimentacao.add(PneuMovimentacaoConverter.createPneuMovimentacaoAnaliseCompleto(rSet));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
         return pneusMovimentacao;
     }

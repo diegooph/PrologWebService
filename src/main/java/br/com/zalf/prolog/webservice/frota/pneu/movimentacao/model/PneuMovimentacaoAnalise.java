@@ -12,9 +12,11 @@ public class PneuMovimentacaoAnalise extends PneuMovimentacao {
     private String codColeta;
 
     public PneuMovimentacaoAnalise() {
+        super(TipoPneuMovimentacao.PNEU_ANALISE);
     }
 
     public PneuMovimentacaoAnalise(final Recapadora recapadora, final String codColeta) {
+        super(TipoPneuMovimentacao.PNEU_ANALISE);
         this.recapadora = recapadora;
         this.codColeta = codColeta;
     }
@@ -37,6 +39,9 @@ public class PneuMovimentacaoAnalise extends PneuMovimentacao {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "PneuMovimentacaoAnalise{" +
+                "recapadora=" + recapadora +
+                ", codColeta='" + codColeta + '\'' +
+                '}';
     }
 }

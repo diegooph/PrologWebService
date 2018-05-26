@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,10 +66,11 @@ public class MovimentacaoService {
         }
     }
 
-    public List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
-                                                       @NotNull final String statusPneu) throws Exception {
+    public List<PneuMovimentacao> getPneusMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoPneuMovimentacao tipoPneuMovimentacao) throws Exception {
         try {
-            return dao.getPneusMovimentacao(codUnidade, statusPneu);
+            return dao.getPneusMovimentacao(codUnidade, tipoPneuMovimentacao);
         } catch (Exception e) {
             Log.e(TAG, "Erro ao buscar os pneus para movimentação da unidade: " + codUnidade, e);
             throw new GenericException(

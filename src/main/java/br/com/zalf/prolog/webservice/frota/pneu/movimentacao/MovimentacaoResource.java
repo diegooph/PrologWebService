@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -83,7 +84,7 @@ public class MovimentacaoResource {
     @Path("/listagem-pneus/{codUnidade}")
     public List<PneuMovimentacao> getPneusMovimentacao(
             @PathParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("apenasAtivos") @Required String statusPneu) throws Exception {
-        return service.getPneusMovimentacao(codUnidade, statusPneu);
+            @QueryParam("apenasAtivos") @Required TipoPneuMovimentacao tipoPneuMovimentacao) throws Exception {
+        return service.getPneusMovimentacao(codUnidade, tipoPneuMovimentacao);
     }
 }
