@@ -89,7 +89,7 @@ public final class PneuConverter {
             banda.setMarca(pneu.getMarca());
             return banda;
         } else {
-            // TODO: 12/01/2017 - Atualmente não podemos quebrar o servidor caso atinja esse estado porque possuimos
+            // TODO: 12/01/2018 - Atualmente não podemos quebrar o servidor caso atinja esse estado porque possuimos
             // pneus com essa inconsistência em banco. Isso será eliminado no futuro e poderemos lançar uma exceção aqui.
             Log.w(TAG, "Esse estado é uma inconsistência e não deveria acontecer! " +
                     "Algum pneu está acima da primeira vida porém não possui banda associada.");
