@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -17,14 +18,14 @@ import java.util.List;
  */
 public interface MovimentacaoDao {
 
-    Long insert(ProcessoMovimentacao processoMovimentacao,
-                ServicoDao servicoDao,
+    Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
+                @NotNull final ServicoDao servicoDao,
                 boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
-    Long insert(ProcessoMovimentacao processoMovimentacao,
-                ServicoDao servicoDao,
+    Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
+                @NotNull final ServicoDao servicoDao,
                 boolean fecharServicosAutomaticamente,
-                Connection conn) throws SQLException, OrigemDestinoInvalidaException;
+                @NotNull final Connection conn) throws SQLException, OrigemDestinoInvalidaException;
 
     Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException;
 
@@ -33,4 +34,7 @@ public interface MovimentacaoDao {
     void updateMotivoStatus(@NotNull final Long codEmpresa,
                             @NotNull final Long codMotivo,
                             @NotNull final Motivo motivo) throws SQLException;
+
+    List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
+                                                @NotNull final String statusPneu) throws SQLException;
 }

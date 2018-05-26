@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -37,7 +38,7 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public AbstractResponse insert(ProcessoMovimentacao movimentacao) {
+    public AbstractResponse insert(@Required ProcessoMovimentacao movimentacao) {
         return service.insert(movimentacao);
     }
 
@@ -72,5 +73,17 @@ public class MovimentacaoResource {
     public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required Long codEmpresa,
                                          @QueryParam("apenasAtivos") @Required Boolean apenasAtivos) {
         return service.getMotivos(codEmpresa, apenasAtivos);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/listagem-pneus/{codUnidade}")
+    public List<PneuMovimentacao> getPneusMovimentacao(
+            @PathParam("codUnidade") @Required Long codUnidade,
+            @QueryParam("apenasAtivos") @Required String statusPneu) throws Exception {
+        return service.getPneusMovimentacao(codUnidade, statusPneu);
     }
 }

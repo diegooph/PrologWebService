@@ -30,8 +30,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     private static final String TAG = MovimentacaoDaoImpl.class.getSimpleName();
 
     @Override
-    public Long insert(ProcessoMovimentacao processoMovimentacao,
-                       ServicoDao servicoDao,
+    public Long insert(@NotNull ProcessoMovimentacao processoMovimentacao,
+                       @NotNull ServicoDao servicoDao,
                        boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
         Connection connection = null;
         try {
@@ -53,10 +53,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public Long insert(ProcessoMovimentacao processoMovimentacao,
-                       ServicoDao servicoDao,
+    public Long insert(@NotNull ProcessoMovimentacao processoMovimentacao,
+                       @NotNull ServicoDao servicoDao,
                        boolean fecharServicosAutomaticamente,
-                       Connection conn) throws SQLException, OrigemDestinoInvalidaException {
+                       @NotNull Connection conn) throws SQLException, OrigemDestinoInvalidaException {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -156,6 +156,27 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         } finally {
             closeConnection(conn, stmt, null);
         }
+    }
+
+    @Override
+    public List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
+                                                       @NotNull final String statusPneu) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<PneuMovimentacao> pneusMovimentacao = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_MOVIMENTACOES_ANALISE(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                pneusMovimentacao.add(PneuMovimentacaoConverter.createPneuMovimentacaoAnaliseCompleto(rSet));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return pneusMovimentacao;
     }
 
     private Motivo createMotivo(@NotNull final ResultSet rSet) throws SQLException {

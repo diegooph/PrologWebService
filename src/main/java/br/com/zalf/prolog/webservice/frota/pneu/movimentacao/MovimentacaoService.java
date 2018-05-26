@@ -5,7 +5,9 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +22,7 @@ public class MovimentacaoService {
     private final MovimentacaoDao dao = Injection.provideMovimentacaoDao();
     private static final String TAG = MovimentacaoService.class.getSimpleName();
 
-    public AbstractResponse insert(ProcessoMovimentacao movimentacao) {
+    public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) {
         try {
             final Long codigo = dao.insert(movimentacao, Injection.provideServicoDao(), true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
@@ -32,14 +34,17 @@ public class MovimentacaoService {
 
     public AbstractResponse insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) {
         try {
-            return ResponseWithCod.ok("Motivo de descarte inserido com sucesso", dao.insertMotivo(motivo, codEmpresa));
+            return ResponseWithCod.ok(
+                    "Motivo de descarte inserido com sucesso",
+                    dao.insertMotivo(motivo, codEmpresa));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir um novo motivo de descarte", e);
             return Response.error("Erro ao inserir um novo motivo de descarte");
         }
     }
 
-    public List<Motivo> getMotivos(@NotNull Long codEmpresa, boolean onlyAtivos) {
+    public List<Motivo> getMotivos(@NotNull final Long codEmpresa,
+                                   final boolean onlyAtivos) {
         try {
             return dao.getMotivos(codEmpresa, onlyAtivos);
         } catch (SQLException e) {
@@ -57,6 +62,19 @@ public class MovimentacaoService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar Motivo: %d", codMotivo), e);
             return false;
+        }
+    }
+
+    public List<PneuMovimentacao> getPneusMovimentacao(@NotNull final Long codUnidade,
+                                                       @NotNull final String statusPneu) throws Exception {
+        try {
+            return dao.getPneusMovimentacao(codUnidade, statusPneu);
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao buscar os pneus para movimentação da unidade: " + codUnidade, e);
+            throw new GenericException(
+                    "Não foi possível buscar os pneus para movimentar",
+                    "Erro ao buscar os pneus para movimentação da unidade:" + codUnidade,
+                    e);
         }
     }
 }
