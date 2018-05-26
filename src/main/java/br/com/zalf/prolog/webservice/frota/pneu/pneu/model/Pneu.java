@@ -337,7 +337,8 @@ public class Pneu {
         return "Pneu{" +
                 "problemas=" + problemas +
                 ", codPneuProblema='" + codPneuProblema + '\'' +
-                ", codigo='" + codigo + '\'' +
+                ", codigoCliente='" + codigoCliente + '\'' +
+                ", codigo=" + codigo +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", valor=" + valor +
@@ -348,9 +349,13 @@ public class Pneu {
                 ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
-                ", status='" + status + '\'' +
+                ", status=" + status +
+                ", codRegionalAlocado=" + codRegionalAlocado +
+                ", codUnidadeAlocado=" + codUnidadeAlocado +
                 ", dot='" + dot + '\'' +
                 ", posicao=" + posicao +
+                ", pneuNovoNuncaRodado=" + pneuNovoNuncaRodado +
+                ", fotosCadastro=" + fotosCadastro +
                 '}';
     }
 
