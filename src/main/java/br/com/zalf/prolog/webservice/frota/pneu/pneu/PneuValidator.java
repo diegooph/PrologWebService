@@ -101,8 +101,8 @@ public class PneuValidator {
 
     private static void validacaoRecapagem(int vidaTotal, int vidaAtual) throws Exception {
 
-        if (vidaTotal > vidaAtual) {
-            throw new GenericException("A vida do pneu precisa ser maior que a quantidade de recapagens", "vidaTotal é maior que vidaAtual");
+        if (vidaTotal < vidaAtual) {
+            throw new GenericException("A vida do pneu precisa ser menor ou igual ao máximo de recapagens", "vidaTotal é menor que vidaAtual");
         }
 
     }
