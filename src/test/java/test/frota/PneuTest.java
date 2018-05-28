@@ -2,11 +2,15 @@ package test.frota;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
+import org.junit.Assert;
 import org.junit.Test;
+import test.BaseTest;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +19,14 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class PneuTest {
+public class PneuTest extends BaseTest {
+
+    private PneuService service;
+
+    @Override
+    public void initialize() {
+        service = new PneuService();
+    }
 
     @Test(timeout = 10 * 1000)
     public void updateSulcos() throws SQLException {
@@ -40,5 +51,14 @@ public class PneuTest {
         assertEquals(sulcos.getCentralExterno(), sulcosAtualizados.getCentralExterno(), 0);
         assertEquals(sulcos.getCentralInterno(), sulcosAtualizados.getCentralInterno(), 0);
         assertEquals(sulcos.getInterno(), sulcosAtualizados.getInterno(), 0);
+    }
+
+    @Test
+    public void getPneusMovimentacao() throws Exception {
+        final List<Pneu> pneusAnalise = service.getPneuByCodUnidadeByStatus(5L, Pneu.ANALISE);
+        System.out.println(pneusAnalise);
+        Assert.assertNotNull(pneusAnalise);
+        Assert.assertFalse(pneusAnalise.isEmpty());
+        Assert.assertNotNull(pneusAnalise.get(0));
     }
 }

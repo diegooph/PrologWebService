@@ -12,16 +12,16 @@ public final class DestinoAnalise extends Destino {
     @Nullable
     private Recapadora recapadoraDestino;
     @Nullable
-    private String codColeta;
+    private String codigoColeta;
 
     public DestinoAnalise() {
         super(OrigemDestinoConstants.ANALISE);
     }
 
-    public DestinoAnalise(@Nullable final Recapadora recapadoraDestino, @Nullable final String codColeta) {
+    public DestinoAnalise(@Nullable final Recapadora recapadoraDestino, @Nullable final String codigoColeta) {
         super(OrigemDestinoConstants.ANALISE);
         this.recapadoraDestino = recapadoraDestino;
-        this.codColeta = codColeta;
+        this.codigoColeta = codigoColeta;
     }
 
     @Nullable
@@ -34,19 +34,19 @@ public final class DestinoAnalise extends Destino {
     }
 
     @Nullable
-    public String getCodColeta() {
-        return codColeta;
+    public String getCodigoColeta() {
+        return codigoColeta;
     }
 
-    public void setCodColeta(@Nullable final String codColeta) {
-        this.codColeta = codColeta;
+    public void setCodigoColeta(@Nullable final String codigoColeta) {
+        this.codigoColeta = codigoColeta;
     }
 
     @Override
     public String toString() {
         return "DestinoAnalise{" +
                 "recapadoraDestino=" + recapadoraDestino +
-                ", codColeta='" + codColeta + '\'' +
+                ", codigoColeta='" + codigoColeta + '\'' +
                 '}';
     }
 }

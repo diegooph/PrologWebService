@@ -129,7 +129,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException {
+    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Exception {
         final ServicoHolder holder = new ServicoHolder();
         holder.setPlacaVeiculo(placa);
 
