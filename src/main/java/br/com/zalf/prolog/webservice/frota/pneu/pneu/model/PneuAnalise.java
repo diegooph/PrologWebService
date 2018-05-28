@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 
@@ -7,16 +7,16 @@ import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuMovimentacaoAnalise extends PneuMovimentacao {
+public class PneuAnalise extends Pneu {
     private Recapadora recapadora;
     private String codColeta;
 
-    public PneuMovimentacaoAnalise() {
-        super(TipoPneuMovimentacao.PNEU_ANALISE);
+    public PneuAnalise() {
+        super(StatusPneu.ANALISE);
     }
 
-    public PneuMovimentacaoAnalise(final Recapadora recapadora, final String codColeta) {
-        super(TipoPneuMovimentacao.PNEU_ANALISE);
+    public PneuAnalise(final Recapadora recapadora, final String codColeta) {
+        super(StatusPneu.ANALISE);
         this.recapadora = recapadora;
         this.codColeta = codColeta;
     }
@@ -39,7 +39,7 @@ public class PneuMovimentacaoAnalise extends PneuMovimentacao {
 
     @Override
     public String toString() {
-        return "PneuMovimentacaoAnalise{" +
+        return "PneuAnalise{" +
                 "recapadora=" + recapadora +
                 ", codColeta='" + codColeta + '\'' +
                 '}';

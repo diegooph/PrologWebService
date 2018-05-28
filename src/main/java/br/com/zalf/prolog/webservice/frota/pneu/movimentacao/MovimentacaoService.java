@@ -5,11 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,20 +60,6 @@ public class MovimentacaoService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar Motivo: %d", codMotivo), e);
             return false;
-        }
-    }
-
-    public List<PneuMovimentacao> getPneusMovimentacao(
-            @NotNull final Long codUnidade,
-            @NotNull final TipoPneuMovimentacao tipoPneuMovimentacao) throws Exception {
-        try {
-            return dao.getPneusMovimentacao(codUnidade, tipoPneuMovimentacao);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar os pneus para movimentação da unidade: " + codUnidade, e);
-            throw new GenericException(
-                    "Não foi possível buscar os pneus para movimentar",
-                    "Erro ao buscar os pneus para movimentação da unidade:" + codUnidade,
-                    e);
         }
     }
 }

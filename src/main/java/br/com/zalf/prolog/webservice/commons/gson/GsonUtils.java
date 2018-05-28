@@ -9,15 +9,16 @@ import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacaoAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.PneuMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.TipoPneuMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -97,10 +98,6 @@ public final class GsonUtils {
                 .of(Motivo.class, "tipo")
                 .registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
 
-        RuntimeTypeAdapterFactory<PneuMovimentacao> adapterPneumovimentacao = RuntimeTypeAdapterFactory
-                .of(PneuMovimentacao.class, "TipoPneuMovimentacao")
-                .registerSubtype(PneuMovimentacaoAnalise.class, TipoPneuMovimentacao.PNEU_ANALISE.asString());
-
         builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(adapterAlternativa);
         builder.registerTypeAdapterFactory(adapterResponse);
@@ -108,7 +105,7 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(adapterDestino);
         builder.registerTypeAdapterFactory(adapterModelo);
         builder.registerTypeAdapterFactory(adapterMotivo);
-        builder.registerTypeAdapterFactory(adapterPneumovimentacao);
+        builder.registerTypeAdapterFactory(Pneu.provideTypeAdapterFactory());
         builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
 
         sGson = builder.create();

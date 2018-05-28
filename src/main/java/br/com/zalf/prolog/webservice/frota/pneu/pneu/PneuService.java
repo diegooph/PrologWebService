@@ -51,10 +51,10 @@ public class PneuService {
         }
     }
 
-    public List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status) {
         try {
             return dao.getPneusByCodUnidadeByStatus(codUnidade, status);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, e);
             return null;
         }

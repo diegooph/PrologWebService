@@ -65,8 +65,8 @@ public class PneuResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{status}")
-    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade, @PathParam("status")
-            String status) {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
+                                                  @PathParam("status") String status) {
         return service.getPneuByCodUnidadeByStatus(codUnidade, status);
     }
 

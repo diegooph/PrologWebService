@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -108,6 +110,16 @@ public class Pneu {
 
     public Pneu() {
 
+    }
+
+    public Pneu(@NotNull final StatusPneu statusPneu) {
+        this.status = statusPneu;
+    }
+
+    public static RuntimeTypeAdapterFactory<Pneu> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(Pneu.class, "status")
+                .registerSubtype(PneuAnalise.class, StatusPneu.ANALISE.asString());
     }
 
     public String getCodigoCliente() {

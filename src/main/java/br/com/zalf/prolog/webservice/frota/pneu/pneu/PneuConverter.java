@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,45 @@ public final class PneuConverter {
         pneu.setVidaAtual(rSet.getInt("VIDA_ATUAL"));
         pneu.setVidasTotal(rSet.getInt("VIDA_TOTAL"));
         return pneu;
+    }
+
+    @NotNull
+    public static PneuAnalise createPneuAnaliseCompleto(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final Pneu pneu = createPneuCompleto(rSet);
+        final PneuAnalise pneuAnalise = new PneuAnalise();
+        pneuAnalise.setCodigo(pneu.getCodigo());
+        pneuAnalise.setCodigoCliente(pneu.getCodigoCliente());
+        pneuAnalise.setPosicao(pneu.getPosicao());
+        pneuAnalise.setDot(pneu.getDot());
+        pneuAnalise.setValor(pneu.getValor());
+        pneuAnalise.setCodUnidadeAlocado(pneu.getCodUnidadeAlocado());
+        pneuAnalise.setCodRegionalAlocado(pneu.getCodRegionalAlocado());
+        pneuAnalise.setPneuNovoNuncaRodado(pneu.isPneuNovoNuncaRodado());
+        pneuAnalise.setMarca(pneu.getMarca());
+        pneuAnalise.setModelo(pneu.getModelo());
+        pneuAnalise.setBanda(pneu.getBanda());
+        pneuAnalise.setDimensao(pneu.getDimensao());
+        pneuAnalise.setSulcosAtuais(pneu.getSulcosAtuais());
+        pneuAnalise.setPressaoCorreta(pneu.getPressaoCorreta());
+        pneuAnalise.setPressaoAtual(pneu.getPressaoAtual());
+        pneuAnalise.setStatus(pneu.getStatus());
+        pneuAnalise.setVidaAtual(pneu.getVidaAtual());
+        pneuAnalise.setVidasTotal(pneu.getVidasTotal());
+        // Seta informações extras do pneu que está em Análise.
+        pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
+        pneuAnalise.setCodColeta(rSet.getString("COD_COLETA"));
+        return pneuAnalise;
+    }
+
+    @NotNull
+    private static Recapadora createRecapadoraPneu(@NotNull final ResultSet rSet) throws SQLException {
+        final Recapadora recapadora = new Recapadora();
+        recapadora.setCodigo(rSet.getLong("COD_RECAPADORA"));
+        recapadora.setNome(rSet.getString("NOME_RECAPADORA"));
+        recapadora.setCodEmpresa(rSet.getLong("COD_EMPRESA_RECAPADORA"));
+        recapadora.setAtiva(rSet.getBoolean("RECAPADORA_ATIVA"));
+        return recapadora;
     }
 
     @Nullable

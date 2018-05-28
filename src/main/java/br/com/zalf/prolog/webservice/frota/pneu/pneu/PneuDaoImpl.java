@@ -221,7 +221,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE PNEU SET " +
                     "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ?, " +
                     "ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, " +
-                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "+
+                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? " +
                     "WHERE CODIGO = ? AND COD_UNIDADE = ? AND PNEU_NOVO_NUNCA_RODADO = FALSE;");
             stmt.setInt(1, pneu.getVidaAtual());
             if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
@@ -296,7 +296,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setString(1, status);
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
-            if(stmt.executeUpdate() == 0) {
+            if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao atualizar o status do pneu");
             }
         } finally {
@@ -305,15 +305,34 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException {
+    public List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws Exception {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Pneu> pneus = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BASE_QUERY_BUSCA_PNEU +
-                    "WHERE P.COD_UNIDADE = ? AND P.STATUS LIKE ? ORDER BY P.CODIGO ASC;");
+            switch (status) {
+                case Pneu.ANALISE:
+                    return getPneusAnalise(conn, codUnidade);
+                case Pneu.EM_USO:
+                case Pneu.ESTOQUE:
+                case Pneu.DESCARTE:
+                    return getPneus(conn, codUnidade, status);
+                default:
+                    throw new Exception("Tipo de PneuMovimentacao não existente: " + status);
+            }
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @NotNull
+    private List<Pneu> getPneus(@NotNull final Connection conn,
+                                @NotNull final Long codUnidade,
+                                @NotNull final String status) throws SQLException {
+        final List<Pneu> pneus = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, status);
             rSet = stmt.executeQuery();
@@ -321,9 +340,28 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 pneus.add(PneuConverter.createPneuCompleto(rSet));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            closeConnection(null, stmt, rSet);
         }
         return pneus;
+    }
+
+    @NotNull
+    private List<Pneu> getPneusAnalise(@NotNull final Connection conn,
+                                       @NotNull final Long codUnidade) throws SQLException {
+        final List<Pneu> pneusMovimentacao = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_GET_LISTAGEM_PNEUS_MOVIMENTACOES_ANALISE(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                pneusMovimentacao.add(PneuConverter.createPneuAnaliseCompleto(rSet));
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return pneusMovimentacao;
     }
 
     @Override
@@ -663,7 +701,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 stmt.setLong(2, codUnidade);
                 stmt.setString(3, fotoCadastro.getUrlFoto());
                 if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao inserir URL de foto do pneu: "+ codPneu + " da unidade: " + codUnidade);
+                    throw new SQLException("Erro ao inserir URL de foto do pneu: " + codPneu + " da unidade: " + codUnidade);
                 }
             }
         } finally {
