@@ -517,7 +517,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

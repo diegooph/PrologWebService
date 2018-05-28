@@ -18,8 +18,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
 
     private static String TAG = ProdutividadeDaoImpl.class.getSimpleName();
 
-    public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf, boolean salvaLog) throws
-            SQLException {
+    public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf, boolean salvaLog)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

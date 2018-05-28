@@ -356,7 +356,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 eixos.add(eixo);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return eixos;
     }
@@ -375,7 +375,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao atualizar o km do veículo");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -427,7 +427,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             marca.setModelos(modelos);
             marcas.add(marca);
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return marcas;
     }

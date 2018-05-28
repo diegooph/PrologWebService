@@ -164,7 +164,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
                 throw new SQLException("Erro ao atualizar status da recapadora : " + recapadora.getNome());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

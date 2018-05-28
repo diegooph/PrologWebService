@@ -32,22 +32,22 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     public Long insert(ProcessoMovimentacao processoMovimentacao,
                        ServicoDao servicoDao,
                        boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
-        Connection connection = null;
+        Connection conn = null;
         try {
-            connection = getConnection();
-            connection.setAutoCommit(false);
+            conn = getConnection();
+            conn.setAutoCommit(false);
             final Long codigoProcessoMovimentacao = insert(
                     processoMovimentacao,
                     servicoDao,
                     fecharServicosAutomaticamente,
-                    connection);
-            connection.commit();
+                    conn);
+            conn.commit();
             return codigoProcessoMovimentacao;
         } catch (SQLException e) {
-            connection.rollback();
+            conn.rollback();
             throw e;
         } finally {
-            closeConnection(connection, null, null);
+            closeConnection(conn, null, null);
         }
     }
 
@@ -83,12 +83,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     @Override
     public Long insertMotivo(@NotNull Motivo motivo, @NotNull Long codEmpresa) throws SQLException {
-        Connection connection = null;
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            connection = getConnection();
-            stmt = connection.prepareStatement("INSERT INTO " +
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO " +
                     "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, data_hora_insercao, data_hora_ultima_alteracao) " +
                     "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
             stmt.setLong(1, codEmpresa);
@@ -105,22 +105,22 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir novo motivo de descarte");
             }
         } finally {
-            closeConnection(connection, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
     @Override
     public List<Motivo> getMotivos(@NotNull Long codEmpresa, boolean onlyAtivos) throws SQLException {
         final List<Motivo> motivos = new ArrayList<>();
-        Connection connection = null;
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            connection = getConnection();
+            conn = getConnection();
             if (onlyAtivos) {
-                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
+                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
             } else {
-                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
+                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
             }
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
@@ -128,7 +128,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 motivos.add(createMotivo(rSet));
             }
         } finally {
-            closeConnection(connection,stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
         return motivos;
     }
@@ -253,7 +253,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao deletar o pneu do veículo");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -312,7 +312,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir a origem da movimentação");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -362,7 +362,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir o destino da movimentação");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
