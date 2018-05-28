@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Desti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -280,6 +281,21 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertOrigem(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+
+        switch (movimentacao.getOrigem().getTipo()) {
+            case OrigemDestinoConstants.VEICULO:
+                insertMovimentacaoOrigemVeiculo(conn, codUnidade, movimentacao);
+                break;
+            case OrigemDestinoConstants.ESTOQUE:
+                insertMovimentacaoOrigemEstoque(conn, codUnidade, movimentacao);
+                break;
+            case OrigemDestinoConstants.ANALISE:
+                insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
+                break;
+            case OrigemDestinoConstants.DESCARTE:
+                throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
+        }
+
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO movimentacao_origem (tipo_origem, cod_movimentacao, " +
@@ -314,26 +330,126 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
+    private void insertMovimentacaoOrigemAnalise(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO, PLACA, KM_VEICULO, " +
+                    "                                POSICAO_PNEU_ORIGEM, COD_RECAPADORA_ORIGEM, COD_TIPO_SERVICO_RECAPADORA) " +
+                    "VALUES ((SELECT P.STATUS " +
+                    "  FROM PNEU P " +
+                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
+                    "  and P.COD_UNIDADE = ?)), ?, ?, ?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
+                    "                                        FROM MOVIMENTACAO_DESTINO AS MD " +
+                    "                                          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                    "                                        WHERE M.COD_UNIDADE = ? " +
+                    "                                              AND M.COD_PNEU = ? " +
+                    "                                              AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    "                                        ORDER BY M.CODIGO DESC LIMIT 1), ?);");
+            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, movimentacao.getOrigem().getTipo());
+            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, movimentacao.getCodigo());
+            stmt.setNull(7, Types.VARCHAR);
+            stmt.setNull(8, Types.BIGINT);
+            stmt.setNull(9, Types.INTEGER);
+            stmt.setLong(10, codUnidade);
+            stmt.setLong(11, movimentacao.getPneu().getCodigo());
+            final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
+//            stmt.setLong(12, origemAnalise.);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir a origem estoque da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertMovimentacaoOrigemEstoque(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, " +
+                    "COD_MOVIMENTACAO, PLACA, KM_VEICULO, POSICAO_PNEU_ORIGEM) " +
+                    "VALUES ((SELECT P.STATUS " +
+                    "  FROM PNEU P " +
+                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
+                    "  and P.COD_UNIDADE = ?)), ?, ?, ?, ?);");
+            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, movimentacao.getOrigem().getTipo());
+            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, movimentacao.getCodigo());
+            stmt.setNull(7, Types.VARCHAR);
+            stmt.setNull(8, Types.BIGINT);
+            stmt.setNull(9, Types.INTEGER);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir a origem estoque da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertMovimentacaoOrigemVeiculo(@NotNull final Connection conn,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, " +
+                    "COD_MOVIMENTACAO, PLACA, KM_VEICULO, POSICAO_PNEU_ORIGEM) " +
+                    "VALUES ((SELECT P.STATUS " +
+                    "  FROM PNEU P " +
+                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
+                    "  and P.COD_UNIDADE = ?)), ?, ?, ?, ?);");
+            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, movimentacao.getOrigem().getTipo());
+            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, movimentacao.getCodigo());
+            final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+            veiculoDao.updateKmByPlaca(
+                    origemVeiculo.getVeiculo().getPlaca(),
+                    origemVeiculo.getVeiculo().getKmAtual(),
+                    conn);
+            stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
+            stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(9, origemVeiculo.getPosicaoOrigemPneu());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir a origem veiculo da movimentação");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
     private void insertDestino(@NotNull final Connection conn,
                                @NotNull final Movimentacao movimentacao) throws SQLException {
         switch (movimentacao.getDestino().getTipo()) {
             case OrigemDestinoConstants.VEICULO:
-                insertMovimentacaoVeiculo(conn, movimentacao);
+                insertMovimentacaoDestinoVeiculo(conn, movimentacao);
                 break;
             case OrigemDestinoConstants.ESTOQUE:
-                insertMovimentacaoEstoque(conn, movimentacao);
+                insertMovimentacaoDestinoEstoque(conn, movimentacao);
                 break;
             case OrigemDestinoConstants.ANALISE:
-                insertMovimentacaoAnalise(conn, movimentacao);
+                insertMovimentacaoDestinoAnalise(conn, movimentacao);
                 break;
             case OrigemDestinoConstants.DESCARTE:
-                insertMovimentacaoDescarte(conn, movimentacao);
+                insertMovimentacaoDestinoDescarte(conn, movimentacao);
                 break;
         }
     }
 
-    private void insertMovimentacaoVeiculo(@NotNull final Connection conn,
-                                           @NotNull final Movimentacao movimentacao) throws SQLException {
+    private void insertMovimentacaoDestinoVeiculo(@NotNull final Connection conn,
+                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
@@ -358,8 +474,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void insertMovimentacaoEstoque(@NotNull final Connection conn,
-                                           @NotNull final Movimentacao movimentacao) throws SQLException {
+    private void insertMovimentacaoDestinoEstoque(@NotNull final Connection conn,
+                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
@@ -375,8 +491,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void insertMovimentacaoAnalise(@NotNull final Connection conn,
-                                           @NotNull final Movimentacao movimentacao) throws SQLException {
+    private void insertMovimentacaoDestinoAnalise(@NotNull final Connection conn,
+                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
@@ -400,8 +516,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     }
 
-    private void insertMovimentacaoDescarte(@NotNull final Connection conn,
-                                            @NotNull final Movimentacao movimentacao) throws SQLException {
+    private void insertMovimentacaoDestinoDescarte(@NotNull final Connection conn,
+                                                   @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
