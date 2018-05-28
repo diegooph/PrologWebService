@@ -96,7 +96,7 @@ public final class PneuConverter {
         pneuAnalise.setVidasTotal(pneu.getVidasTotal());
         // Seta informações extras do pneu que está em Análise.
         pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
-        pneuAnalise.setCodColeta(rSet.getString("COD_COLETA"));
+        pneuAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));
         return pneuAnalise;
     }
 

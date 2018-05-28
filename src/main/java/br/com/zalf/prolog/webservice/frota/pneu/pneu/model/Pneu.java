@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
+import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +64,12 @@ public class Pneu {
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
+
+    /**
+     * O status do pneu define onde ele se encontra no momento. Precisamos utilizar o {@link Exclude} para a
+     * serialização/desserialização das subclasses funcionar corretamente utilizando o {@link Gson}.
+     */
+    @Exclude
     private StatusPneu status;
 
     /**
