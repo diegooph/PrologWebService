@@ -9,16 +9,16 @@ import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
  */
 public class PneuMovimentacaoAnalise extends PneuMovimentacao {
     private Recapadora recapadora;
-    private String codColeta;
+    private String codigoColeta;
 
     public PneuMovimentacaoAnalise() {
         super(TipoPneuMovimentacao.PNEU_ANALISE);
     }
 
-    public PneuMovimentacaoAnalise(final Recapadora recapadora, final String codColeta) {
+    public PneuMovimentacaoAnalise(final Recapadora recapadora, final String codigoColeta) {
         super(TipoPneuMovimentacao.PNEU_ANALISE);
         this.recapadora = recapadora;
-        this.codColeta = codColeta;
+        this.codigoColeta = codigoColeta;
     }
 
     public Recapadora getRecapadora() {
@@ -29,19 +29,19 @@ public class PneuMovimentacaoAnalise extends PneuMovimentacao {
         this.recapadora = recapadora;
     }
 
-    public String getCodColeta() {
-        return codColeta;
+    public String getCodigoColeta() {
+        return codigoColeta;
     }
 
-    public void setCodColeta(final String codColeta) {
-        this.codColeta = codColeta;
+    public void setCodigoColeta(final String codigoColeta) {
+        this.codigoColeta = codigoColeta;
     }
 
     @Override
     public String toString() {
         return "PneuMovimentacaoAnalise{" +
                 "recapadora=" + recapadora +
-                ", codColeta='" + codColeta + '\'' +
+                ", codigoColeta='" + codigoColeta + '\'' +
                 '}';
     }
 }

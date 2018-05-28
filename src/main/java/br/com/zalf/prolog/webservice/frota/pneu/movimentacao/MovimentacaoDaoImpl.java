@@ -428,7 +428,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             } else {
                 stmt.setNull(3, Types.BIGINT);
             }
-            stmt.setString(4, destinoAnalise.getCodColeta());
+            stmt.setString(4, destinoAnalise.getCodigoColeta());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o destino analise da movimentação");
             }

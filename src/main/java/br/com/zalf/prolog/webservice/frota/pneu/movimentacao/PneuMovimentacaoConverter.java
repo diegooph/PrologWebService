@@ -45,7 +45,7 @@ public final class PneuMovimentacaoConverter {
         pneuMovimentacaoAnalise.setVidasTotal(pneu.getVidasTotal());
         // Seta informações extras do pneu que está em Análise.
         pneuMovimentacaoAnalise.setRecapadora(createRecapadoraPneu(rSet));
-        pneuMovimentacaoAnalise.setCodColeta(rSet.getString("COD_COLETA"));
+        pneuMovimentacaoAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));
         return pneuMovimentacaoAnalise;
     }
 
