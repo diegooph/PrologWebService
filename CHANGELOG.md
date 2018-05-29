@@ -9,6 +9,7 @@ Change Log
 
 ### Bug Fixes
 * Loga erros que possam acontecer no `RecapadoraService`
+* Corrige busca dos modelos de checklist, buscando apenas veículos ativos que podem realizar o checklist
 
 <a name="v0.0.61"></a>
 ## Version [v0.0.61](https://github.com/luizfp/PrologWeb/compare/v0.0.60...v0.0.61) (2018-05-22)

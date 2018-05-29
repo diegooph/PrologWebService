@@ -247,7 +247,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             ".COD_UNIDADE = CM.COD_UNIDADE "
                             + "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
                             + "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE "
+                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE AND V.STATUS_ATIVO = TRUE "
                             + "ORDER BY CM.CODIGO, V.PLACA;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
