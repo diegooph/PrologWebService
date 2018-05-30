@@ -95,7 +95,7 @@ public class PneuValidator {
         }
 
         if (pneu.getVidaAtual() < vidaPneuNovo) {
-            throw new GenericException("Vida inválida\nO pneu deve ter pelo menos 1 vida", "getVidaAtual < 1");
+            throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1", "getVidaAtual < 1");
         }
     }
 
