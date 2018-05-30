@@ -26,7 +26,7 @@ public class Veiculo {
      */
     @Deprecated
     private Eixos eixos;
-    private long kmAtual;
+    private Long kmAtual;
     private boolean ativo;
     private List<Pneu> listPneus;
     private DiagramaVeiculo diagrama;
@@ -93,11 +93,11 @@ public class Veiculo {
         this.eixos = eixos;
     }
 
-    public long getKmAtual() {
+    public Long getKmAtual() {
         return kmAtual;
     }
 
-    public void setKmAtual(long km) {
+    public void setKmAtual(Long km) {
         this.kmAtual = km;
     }
 

@@ -117,13 +117,14 @@ public class VeiculoService {
         }
     }
 
-    public boolean insert(Veiculo veiculo, Long codUnidade) {
+    public void insert(Veiculo veiculo, Long codUnidade) throws Throwable {
         try {
-            return dao.insert(veiculo, codUnidade);
-        } catch (SQLException e) {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            dao.insert(veiculo, codUnidade);
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            return false;
+            throw e;
         }
     }
 
@@ -208,8 +209,8 @@ public class VeiculoService {
         try {
             return dao.updateTipoVeiculo(tipo, codUnidade);
         } catch (SQLException e) {
-          Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
-                  "codUnidade: %d", codUnidade), e);
+            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return false;
         }
     }

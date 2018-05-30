@@ -100,7 +100,7 @@ final class ServicoConverter {
     static VeiculoServico createVeiculoAberturaServico(ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
-        veiculo.setKmAtual(resultSet.getInt("KM_ATUAL_VEICULO"));
+        veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
         final List<Pneu> pneus = new ArrayList<>();

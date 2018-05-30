@@ -77,7 +77,7 @@ public final class AvaCorpAvilanConverter {
 
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAvilan.getPlaca());
-        veiculo.setKmAtual(veiculoAvilan.getMarcador());
+        veiculo.setKmAtual((long) veiculoAvilan.getMarcador());
         veiculo.setCodUnidadeAlocado(codUnidadeVeiculo);
         return veiculo;
     }
@@ -226,7 +226,7 @@ public final class AvaCorpAvilanConverter {
                 .filter(v -> v.getVeiculo().getPlaca().equals(placaVeiculo))
                 .collect(MoreCollectors.onlyElement());
         // Seta o km do veículo.
-        veiculo.setKmAtual(veiculoQuestao.getVeiculo().getMarcador());
+        veiculo.setKmAtual((long) veiculoQuestao.getVeiculo().getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
         // Cria as perguntas/respostas do checklist.
