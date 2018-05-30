@@ -195,7 +195,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));
-                    insertOrigem(conn, mov, codUnidade);
+                    insertOrigem(conn, codUnidade, mov);
                     insertDestino(conn, mov);
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(codUnidade, processoMov.getCodigo(), mov, servicoDao, conn);
@@ -280,8 +280,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void insertOrigem(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
-
+    private void insertOrigem(@NotNull final Connection conn,
+                              @NotNull final Long codUnidade,
+                              @NotNull final Movimentacao movimentacao) throws SQLException {
         switch (movimentacao.getOrigem().getTipo()) {
             case OrigemDestinoConstants.VEICULO:
                 insertMovimentacaoOrigemVeiculo(conn, codUnidade, movimentacao);
@@ -295,39 +296,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             case OrigemDestinoConstants.DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
         }
-
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO movimentacao_origem (tipo_origem, cod_movimentacao, " +
-                    "placa, km_veiculo, posicao_pneu_origem) values ((SELECT p.status\n" +
-                    "FROM pneu p " +
-                    "WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? in (select p.status from pneu p WHERE p.codigo = ? " +
-                    "and p.cod_unidade = ?)),?,?,?,?)");
-            stmt.setLong(1, movimentacao.getPneu().getCodigo());
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, movimentacao.getOrigem().getTipo());
-            stmt.setLong(4, movimentacao.getPneu().getCodigo());
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, movimentacao.getCodigo());
-            if (movimentacao.getOrigem().getTipo().equals(OrigemDestinoConstants.VEICULO)) {
-                final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(origemVeiculo.getVeiculo().getPlaca(), origemVeiculo.getVeiculo()
-                        .getKmAtual(), conn);
-                stmt.setString(7, origemVeiculo.getVeiculo().getPlaca());
-                stmt.setLong(8, origemVeiculo.getVeiculo().getKmAtual());
-                stmt.setInt(9, origemVeiculo.getPosicaoOrigemPneu());
-            } else {
-                stmt.setNull(7, Types.VARCHAR);
-                stmt.setNull(8, Types.BIGINT);
-                stmt.setNull(9, Types.INTEGER);
-            }
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir a origem da movimentação");
-            }
-        } finally {
-            closeConnection(null, stmt, null);
-        }
     }
 
     private void insertMovimentacaoOrigemAnalise(@NotNull final Connection conn,
@@ -335,33 +303,30 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO, PLACA, KM_VEICULO, " +
-                    "                                POSICAO_PNEU_ORIGEM, COD_RECAPADORA_ORIGEM, COD_TIPO_SERVICO_RECAPADORA) " +
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO, " +
+                    "COD_RECAPADORA_ORIGEM, COD_TIPO_SERVICO_RECAPADORA) " +
                     "VALUES ((SELECT P.STATUS " +
                     "  FROM PNEU P " +
                     "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
-                    "  and P.COD_UNIDADE = ?)), ?, ?, ?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
+                    "  and P.COD_UNIDADE = ?)), ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
                     "                                        FROM MOVIMENTACAO_DESTINO AS MD " +
                     "                                          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
                     "                                        WHERE M.COD_UNIDADE = ? " +
                     "                                              AND M.COD_PNEU = ? " +
                     "                                              AND MD.TIPO_DESTINO = 'ANALISE' " +
                     "                                        ORDER BY M.CODIGO DESC LIMIT 1), ?);");
+            final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
-            stmt.setString(3, movimentacao.getOrigem().getTipo());
+            stmt.setString(3, origemAnalise.getTipo());
             stmt.setLong(4, movimentacao.getPneu().getCodigo());
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
-            stmt.setNull(7, Types.VARCHAR);
-            stmt.setNull(8, Types.BIGINT);
-            stmt.setNull(9, Types.INTEGER);
-            stmt.setLong(10, codUnidade);
-            stmt.setLong(11, movimentacao.getPneu().getCodigo());
-            final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
-//            stmt.setLong(12, origemAnalise.);
+            stmt.setLong(7, codUnidade);
+            stmt.setLong(8, movimentacao.getPneu().getCodigo());
+            stmt.setLong(9, origemAnalise.getCodigoTipoServicoRecapadora());
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir a origem estoque da movimentação");
+                throw new SQLException("Erro ao inserir a origem análise da movimentação");
             }
         } finally {
             closeStatement(stmt);
@@ -373,21 +338,17 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, " +
-                    "COD_MOVIMENTACAO, PLACA, KM_VEICULO, POSICAO_PNEU_ORIGEM) " +
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO) " +
                     "VALUES ((SELECT P.STATUS " +
                     "  FROM PNEU P " +
                     "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
-                    "  and P.COD_UNIDADE = ?)), ?, ?, ?, ?);");
+                    "  and P.COD_UNIDADE = ?)), ?);");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo());
             stmt.setLong(4, movimentacao.getPneu().getCodigo());
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
-            stmt.setNull(7, Types.VARCHAR);
-            stmt.setNull(8, Types.BIGINT);
-            stmt.setNull(9, Types.INTEGER);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir a origem estoque da movimentação");
             }
