@@ -9,5 +9,8 @@
         <module name="prolog.webservice" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="prolog.webservice" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
