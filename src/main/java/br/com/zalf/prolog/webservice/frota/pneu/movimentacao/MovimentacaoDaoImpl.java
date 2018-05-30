@@ -324,7 +324,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(6, movimentacao.getCodigo());
             stmt.setLong(7, codUnidade);
             stmt.setLong(8, movimentacao.getPneu().getCodigo());
-            stmt.setLong(9, origemAnalise.getCodigoTipoServicoRecapadora());
+            if (origemAnalise.getCodTipoServicoRecapadora() != null) {
+                stmt.setLong(9, origemAnalise.getCodTipoServicoRecapadora());
+            } else {
+                stmt.setNull(9, Types.BIGINT);
+            }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir a origem análise da movimentação");
             }
