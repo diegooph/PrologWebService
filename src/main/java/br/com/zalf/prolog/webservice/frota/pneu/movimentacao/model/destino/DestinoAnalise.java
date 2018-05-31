@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,11 +15,11 @@ public final class DestinoAnalise extends Destino {
     private String codigoColeta;
 
     public DestinoAnalise() {
-        super(OrigemDestinoConstants.ANALISE);
+        super(OrigemDestinoEnum.ANALISE);
     }
 
     public DestinoAnalise(@Nullable final Recapadora recapadoraDestino, @Nullable final String codigoColeta) {
-        super(OrigemDestinoConstants.ANALISE);
+        super(OrigemDestinoEnum.ANALISE);
         this.recapadoraDestino = recapadoraDestino;
         this.codigoColeta = codigoColeta;
     }

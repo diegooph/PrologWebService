@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,7 +12,7 @@ public final class OrigemAnalise extends Origem {
     private Long codTipoServicoRecapadora;
 
     public OrigemAnalise() {
-        super(OrigemDestinoConstants.ANALISE);
+        super(OrigemDestinoEnum.ANALISE);
     }
 
     @Nullable

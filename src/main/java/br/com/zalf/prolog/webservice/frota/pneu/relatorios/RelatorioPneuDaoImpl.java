@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
@@ -10,9 +9,9 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -697,7 +696,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setDate(1, new Date(dataInicial));
         stmt.setDate(2, new Date(dataFinal));
         stmt.setLong(3, codUnidade);
-        stmt.setString(4, Pneu.EM_USO);
+        stmt.setString(4, StatusPneu.EM_USO.asString());
         return stmt;
     }
 
@@ -727,7 +726,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
         stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setString(4, Pneu.EM_USO);
+        stmt.setString(4, StatusPneu.EM_USO.asString());
         return stmt;
     }
 

@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
@@ -62,16 +62,16 @@ public final class GsonUtils {
 
         RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
                 .of(Origem.class, "tipo")
-                .registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
-                .registerSubtype(OrigemAnalise.class, OrigemDestinoConstants.ANALISE)
-                .registerSubtype(OrigemVeiculo.class, OrigemDestinoConstants.VEICULO);
+                .registerSubtype(OrigemEstoque.class, OrigemDestinoEnum.ESTOQUE.asString())
+                .registerSubtype(OrigemAnalise.class, OrigemDestinoEnum.ANALISE.asString())
+                .registerSubtype(OrigemVeiculo.class, OrigemDestinoEnum.VEICULO.asString());
 
         RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
                 .of(Destino.class, "tipo")
-                .registerSubtype(DestinoDescarte.class, OrigemDestinoConstants.DESCARTE)
-                .registerSubtype(DestinoAnalise.class, OrigemDestinoConstants.ANALISE)
-                .registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
-                .registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
+                .registerSubtype(DestinoDescarte.class, OrigemDestinoEnum.DESCARTE.asString())
+                .registerSubtype(DestinoAnalise.class, OrigemDestinoEnum.ANALISE.asString())
+                .registerSubtype(DestinoVeiculo.class, OrigemDestinoEnum.VEICULO.asString())
+                .registerSubtype(DestinoEstoque.class, OrigemDestinoEnum.ESTOQUE.asString());
 
         RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
                 .of(Modelo.class, "tipo")

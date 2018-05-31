@@ -22,12 +22,6 @@ import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemM
  * Created by jean on 04/04/16.
  */
 public class Pneu {
-
-    public static final String ESTOQUE = "ESTOQUE";
-    public static final String EM_USO = "EM_USO";
-    public static final String DESCARTE = "DESCARTE";
-    public static final String ANALISE = "ANALISE";
-
     public enum Problema{
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
     }

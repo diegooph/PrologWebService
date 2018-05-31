@@ -28,7 +28,7 @@ public interface ServicoDao {
 
 	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
-	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Exception;
+	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Throwable;
 
 	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 

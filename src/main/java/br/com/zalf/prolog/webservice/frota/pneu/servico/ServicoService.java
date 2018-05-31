@@ -37,11 +37,11 @@ public class ServicoService {
     public ServicoHolder getServicoHolder(String placa, Long codUnidade) {
         try {
             return dao.getServicoHolder(placa, codUnidade);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar os serviços da placa. \n," +
                     "Unidade: %d \n" +
                     "Placa: %s", codUnidade, placa), e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

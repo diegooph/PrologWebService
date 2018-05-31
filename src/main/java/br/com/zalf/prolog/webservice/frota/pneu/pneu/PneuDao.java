@@ -67,7 +67,7 @@ public interface PneuDao {
      * @param conn       conexão do banco
      * @throws SQLException caso ocorra erro no banco
      */
-    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
 
     /**
      * Altera a vida atual de um determinado {@link Pneu}. Sempre que um {@link Pneu} tiver sua vida alterada,
@@ -85,7 +85,14 @@ public interface PneuDao {
      * @return uma lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws Exception;
+    @NotNull
+    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, StatusPneu status) throws Throwable;
+
+    @NotNull
+    List<Pneu> getTodosPneus(@NotNull Long codUnidade) throws Throwable;
+
+    @NotNull
+    List<Pneu> getPneusAnalise(@NotNull Long codUnidade) throws Throwable;
 
     /**
      * retorna uma lista de marcas de pneus da empresa

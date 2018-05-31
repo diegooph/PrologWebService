@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
@@ -17,7 +17,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Desti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -129,7 +129,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Exception {
+    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Throwable {
         final ServicoHolder holder = new ServicoHolder();
         holder.setPlacaVeiculo(placa);
 
@@ -148,7 +148,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             if (contains(servicos, TipoServico.MOVIMENTACAO)) {
                 Log.d(TAG, "Contém movimentação");
                 final PneuDao pneuDao = Injection.providePneuDao();
-                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
+                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, StatusPneu.ESTOQUE));
             }
         }
 

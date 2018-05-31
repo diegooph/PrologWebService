@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +54,24 @@ public class PneuService {
 
     public List<Pneu> getPneuByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status) {
         try {
-            return dao.getPneusByCodUnidadeByStatus(codUnidade, status);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, e);
-            return null;
+            if (status.equals("%")) {
+                return dao.getTodosPneus(codUnidade);
+            } else {
+                final StatusPneu statusPneu = StatusPneu.fromString(status);
+                switch (statusPneu) {
+                    case ANALISE:
+                        return dao.getPneusAnalise(codUnidade);
+                    case EM_USO:
+                    case ESTOQUE:
+                    case DESCARTE:
+                        return dao.getPneusByCodUnidadeByStatus(codUnidade, statusPneu);
+                    default:
+                        throw new IllegalArgumentException("Status de Pneu não existente: " + status);
+                }
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, t);
+            throw new RuntimeException(t);
         }
     }
 

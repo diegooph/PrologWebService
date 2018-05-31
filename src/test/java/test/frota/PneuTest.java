@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class PneuTest extends BaseTest {
 
     @Test
     public void getPneusMovimentacao() throws Exception {
-        final List<Pneu> pneusAnalise = service.getPneuByCodUnidadeByStatus(5L, Pneu.ANALISE);
+        final List<Pneu> pneusAnalise = service.getPneuByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
         System.out.println(pneusAnalise);
         Assert.assertNotNull(pneusAnalise);
         Assert.assertFalse(pneusAnalise.isEmpty());
