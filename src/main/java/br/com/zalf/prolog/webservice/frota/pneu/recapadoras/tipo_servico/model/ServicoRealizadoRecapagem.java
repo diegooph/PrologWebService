@@ -23,11 +23,11 @@ public class ServicoRealizadoRecapagem extends ServicoRealizadoRecapadora {
         this.codModeloBanda = codModeloBanda;
     }
 
-    public Integer getVidaNovaPneu() {
+    public int getVidaNovaPneu() {
         return vidaNovaPneu;
     }
 
-    public void setVidaNovaPneu(final Integer vidaNovaPneu) {
+    public void setVidaNovaPneu(final int vidaNovaPneu) {
         this.vidaNovaPneu = vidaNovaPneu;
     }
 
