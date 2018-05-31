@@ -6,10 +6,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ServicoRealizadoRecapagem extends ServicoRealizadoRecapadora {
-    public static final String TIPO_SERVICO_REALIZADO_RECAPAGEM = "SERVICO_REALIZADO_RECAPAGE";
+    public static final String TIPO_SERVICO_REALIZADO_RECAPAGEM = "SERVICO_REALIZADO_RECAPAGEM";
 
     private Long codModeloBanda;
-    private Integer vidaNovaPneu;
+    private int vidaNovaPneu;
 
     public ServicoRealizadoRecapagem() {
         this.setTipo(TIPO_SERVICO_REALIZADO_RECAPAGEM);
