@@ -30,8 +30,9 @@ public class TipoServicoRecapadoraService {
             return ResponseWithCod.ok("Tipo de Serviço inserido com sucesso",
                     dao.insertTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), tipoServico));
         } catch (Exception e) {
-            Log.e(TAG, "", e);
-            throw new GenericException("", "", e);
+            Log.e(TAG, "Erro ao inserir o tipo de serviço", e);
+            throw new GenericException("Erro ao inserir o tipo de serviço", "Algo deu errado no servidor. " +
+                    "Erro ao inserir o tipo de serviço", e);
         }
     }
 
@@ -41,10 +42,11 @@ public class TipoServicoRecapadoraService {
             @NotNull final TipoServicoRecapadora tipoServico) throws GenericException {
         try {
             dao.atualizaTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
-            return Response.ok("");
+            return Response.ok("Tipo de Serviço atualizado com sucesso");
         } catch (Exception e) {
-            Log.e(TAG, "", e);
-            throw new GenericException("", "", e);
+            Log.e(TAG, "Erro ao atualizar o tipo de serviço", e);
+            throw new GenericException("Erro ao atualizar o tipo de serviço", "Algo deu errado no servidor. " +
+                    "Erro ao atualizar o tipo de serviço", e);
         }
     }
 
@@ -53,8 +55,9 @@ public class TipoServicoRecapadoraService {
         try {
             return dao.getTiposServicosRecapadora(codEmpresa, ativas);
         } catch (Exception e) {
-            Log.e(TAG, "", e);
-            throw new GenericException("", "", e);
+            Log.e(TAG, "Erro ao buscar os tipos de serviços", e);
+            throw new GenericException("Erro ao buscar os tipos de serviços", "Algo deu errado no servidor. " +
+                    "Erro ao buscar os tipos de serviços", e);
         }
     }
 
@@ -63,8 +66,9 @@ public class TipoServicoRecapadoraService {
         try {
             return dao.getTipoServicoRecapadora(codEmpresa, codTipoServico);
         } catch (Exception e) {
-            Log.e(TAG, "", e);
-            throw new GenericException("", "", e);
+            Log.e(TAG, "Erro ao buscar o tipo de serviço", e);
+            throw new GenericException("Erro ao buscar os tipo de serviço", "Algo deu errado no servidor. " +
+                    "Erro ao buscar os tipo de serviço", e);
         }
     }
 
@@ -74,10 +78,11 @@ public class TipoServicoRecapadoraService {
             @NotNull final TipoServicoRecapadora tipoServico) throws GenericException {
         try {
             dao.alterarStatusTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
-            return Response.ok("");
+            return Response.ok("Status de serviço alterado com sucesso");
         } catch (Exception e) {
-            Log.e(TAG, "", e);
-            throw new GenericException("", "", e);
+            Log.e(TAG, "Erro ao alterar o status do serviço", e);
+            throw new GenericException("Erro ao alterar o status do serviço", "Algo deu errado no servidor. " +
+                    "Erro ao alterar o status do serviço", e);
         }
     }
 }
