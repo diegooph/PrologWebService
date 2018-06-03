@@ -57,35 +57,43 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     public void incrementaQtdApontamentosServico(Long codPneu, Long codUnidade, TipoServico tipoServico, Connection conn)
             throws SQLException {
         Log.d(TAG, "Atualizando quantidade de apontamos do pneu: " + codPneu + " da unidade: " + codUnidade);
-        PreparedStatement stmt =
-                conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
-                        + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND "
-                        + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
-                        + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setLong(1, codPneu);
-        stmt.setLong(2, codUnidade);
-        stmt.setString(3, tipoServico.asString());
-        stmt.setLong(4, codPneu);
-        stmt.setLong(5, codUnidade);
-        stmt.setString(6, tipoServico.asString());
-        stmt.executeUpdate();
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(" UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
+                    + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND "
+                    + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1 "
+                    + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setLong(1, codPneu);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, tipoServico.asString());
+            stmt.setLong(4, codPneu);
+            stmt.setLong(5, codUnidade);
+            stmt.setString(6, tipoServico.asString());
+            stmt.executeUpdate();
+        } finally {
+            closeStatement(stmt);
+        }
     }
 
     @Override
     public void calibragemToInspecao(Long codPneu, Long codUnidade, Connection conn) throws SQLException {
-        PreparedStatement stmt =
-                conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
-                + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND "
-                + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
-                + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL;");
-        stmt.setLong(1, codPneu);
-        stmt.setLong(2, codUnidade);
-        stmt.setString(3, TipoServico.CALIBRAGEM.asString());
-        stmt.setString(4, TipoServico.INSPECAO.asString());
-        stmt.setLong(5, codPneu);
-        stmt.setLong(6, codUnidade);
-        stmt.setString(7, TipoServico.CALIBRAGEM.asString());
-        stmt.executeUpdate();
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
+                    + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND "
+                    + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, TIPO_SERVICO = ? "
+                    + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setLong(1, codPneu);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, TipoServico.CALIBRAGEM.asString());
+            stmt.setString(4, TipoServico.INSPECAO.asString());
+            stmt.setLong(5, codPneu);
+            stmt.setLong(6, codUnidade);
+            stmt.setString(7, TipoServico.CALIBRAGEM.asString());
+            stmt.executeUpdate();
+        } finally {
+            closeStatement(stmt);
+        }
     }
 
     @Override
@@ -383,7 +391,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     conn);
             return stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -504,7 +512,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     codUnidade,
                     conn);
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
 
     }
@@ -524,7 +532,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     codUnidade,
                     conn);
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
 
     }
@@ -551,7 +559,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     codUnidade,
                     conn);
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

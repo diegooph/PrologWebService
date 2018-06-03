@@ -27,23 +27,23 @@ public class ColaboradorService {
     private final ColaboradorDao dao = Injection.provideColaboradorDao();
     private static final String TAG = ColaboradorService.class.getSimpleName();
 
-    public boolean insert(Colaborador colaborador) {
+    public void insert(Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
             Log.e(TAG, "Erro ao inserir o colaborador", e);
-            return false;
+            throw e;
         }
     }
 
-    public boolean update(Long cpfAntigo, Colaborador colaborador) {
+    public void update(Long cpfAntigo, Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            return false;
+            throw e;
         }
     }
 

@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 
+import javax.print.attribute.standard.PresentationDirection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;

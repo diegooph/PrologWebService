@@ -18,25 +18,29 @@ import java.util.List;
  */
 public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraDao {
 
+    @NotNull
     @Override
-    public void insertRecapadora(@NotNull final String token,
+    public Long insertRecapadora(@NotNull final String token,
                                  @NotNull final Recapadora recapadora) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO RECAPADORA (NOME, COD_EMPRESA, DATA_HORA_CADASTRO, CPF_CADASTRO) " +
-                    "VALUES (?, ?, ?, (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?))");
+                    "VALUES (?, ?, ?, (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)) RETURNING CODIGO;");
             stmt.setString(1, recapadora.getNome());
             stmt.setLong(2, recapadora.getCodEmpresa());
             stmt.setTimestamp(3, Now.timestampUtc());
             stmt.setString(4, token);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao inserir recapadora : " + recapadora.getNome());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao inserir a recapadora");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
@@ -160,7 +164,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
                 throw new SQLException("Erro ao atualizar status da recapadora : " + recapadora.getNome());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

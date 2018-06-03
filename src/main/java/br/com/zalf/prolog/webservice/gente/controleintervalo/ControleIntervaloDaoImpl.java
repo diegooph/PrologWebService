@@ -416,7 +416,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
                 throw new SQLException("Erro ao inserir marcação de intervalo");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

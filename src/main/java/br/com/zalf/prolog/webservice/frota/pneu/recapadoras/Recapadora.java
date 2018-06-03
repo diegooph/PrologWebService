@@ -6,28 +6,28 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class Recapadora {
-
-    private long codigo;
-    private long codEmpresa;
+    private Long codigo;
+    private Long codEmpresa;
     private String nome;
     private boolean isAtiva;
 
     public Recapadora() {
+
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(final long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
-    public long getCodEmpresa() {
+    public Long getCodEmpresa() {
         return codEmpresa;
     }
 
-    public void setCodEmpresa(final long codEmpresa) {
+    public void setCodEmpresa(final Long codEmpresa) {
         this.codEmpresa = codEmpresa;
     }
 
