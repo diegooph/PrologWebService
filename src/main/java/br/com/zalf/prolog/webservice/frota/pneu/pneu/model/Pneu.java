@@ -19,9 +19,11 @@ import java.util.List;
 import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
- * Created by jean on 04/04/16.
+ * Created on 31/05/2018
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class Pneu {
+public abstract class Pneu {
     public enum Problema{
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
     }
@@ -37,7 +39,7 @@ public class Pneu {
      * O código único do pneu a nível de {@link Empresa} que o cliente escolhe ao cadastrar um pneu.
      * Esse código é equivalente ao número de fogo do pneu.
      */
-    public String codigoCliente;
+    private String codigoCliente;
 
     /**
      * O código único (autoincrement) do pneu no sistema.
@@ -110,18 +112,32 @@ public class Pneu {
     @Nullable
     private List<PneuFotoCadastro> fotosCadastro;
 
-    public Pneu() {
+    @Exclude
+    @NotNull
+    private PneuTipo tipo;
 
-    }
-
-    public Pneu(@NotNull final StatusPneu statusPneu) {
-        this.status = statusPneu;
+    Pneu(@NotNull final PneuTipo pneuTipo) {
+        this.tipo = pneuTipo;
     }
 
     public static RuntimeTypeAdapterFactory<Pneu> provideTypeAdapterFactory() {
-        return RuntimeTypeAdapterFactory
-                .of(Pneu.class, "status")
-                .registerSubtype(PneuAnalise.class, StatusPneu.ANALISE.asString());
+        final RuntimeTypeAdapterFactory<Pneu> factory = RuntimeTypeAdapterFactory
+                .of(Pneu.class, "tipo");
+        final PneuTipo[] values = PneuTipo.values();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < values.length; i++) {
+            factory.registerSubtype(values[i].getClazz(), values[i].asString());
+        }
+        return factory;
+    }
+
+    @NotNull
+    public PneuTipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(@NotNull final PneuTipo tipo) {
+        this.tipo = tipo;
     }
 
     public String getCodigoCliente() {
@@ -344,7 +360,7 @@ public class Pneu {
         return getQuantidadeSulcos() % 2 != 0;
     }
 
-    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
+    public static final Comparator<PneuComum> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {

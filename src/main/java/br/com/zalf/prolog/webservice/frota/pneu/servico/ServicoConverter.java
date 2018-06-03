@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 
@@ -103,11 +103,11 @@ final class ServicoConverter {
         veiculo.setKmAtual(resultSet.getInt("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
         // Aqui precisa ser um do-while porque já é feito um resultSet.next() antes de chamar
         // esse método. Se fizessemos apenas um while, perderíamos o primeiro elemento.
         do {
-            final Pneu pneu = new Pneu();
+            final PneuComum pneu = new PneuComum();
             pneu.setCodigo(resultSet.getLong("COD_PNEU"));
             pneu.setCodigoCliente(resultSet.getString("COD_PNEU_CLIENTE"));
             pneu.setPosicao(resultSet.getInt("POSICAO"));
@@ -144,7 +144,7 @@ final class ServicoConverter {
         sulcos.setInterno(rSet.getDouble("SULCO_INTERNO_PNEU_NOVO"));
         movimentacao.setSulcosColetadosFechamento(sulcos);
 
-        final Pneu pneuNovo = new Pneu();
+        final PneuComum pneuNovo = new PneuComum();
         pneuNovo.setCodigo(rSet.getLong("COD_PNEU_NOVO"));
         pneuNovo.setCodigoCliente(rSet.getString("COD_PNEU_NOVO_CLIENTE"));
         pneuNovo.setSulcosAtuais(sulcos);
@@ -170,7 +170,7 @@ final class ServicoConverter {
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
 
         // Cria pneu com problema, responsável por originar o serviço.
-        final Pneu pneuProblema = new Pneu();
+        final PneuComum pneuProblema = new PneuComum();
         pneuProblema.setCodigo(resultSet.getLong("COD_PNEU_PROBLEMA"));
         pneuProblema.setCodigoCliente(resultSet.getString("COD_PNEU_PROBLEMA_CLIENTE"));
         pneuProblema.setPosicao(resultSet.getInt("POSICAO_PNEU_PROBLEMA"));

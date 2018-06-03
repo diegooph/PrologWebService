@@ -18,7 +18,7 @@ public interface PneuDao {
      * @return lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneusByPlaca(String placa) throws SQLException;
+    List<PneuComum> getPneusByPlaca(String placa) throws SQLException;
 
     /**
      * insere um pneu
@@ -29,7 +29,7 @@ public interface PneuDao {
      * @throws SQLException caso ocorra erro no banco
      */
     @NotNull
-    Long insert(Pneu pneu, Long codUnidade) throws SQLException;
+    Long insert(PneuComum pneu, Long codUnidade) throws SQLException;
 
     /**
      * atualiza medições do pneu no banco
@@ -40,7 +40,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateMedicoes(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    boolean updateMedicoes(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza valores do pneu
@@ -51,7 +51,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
+    boolean update(PneuComum pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
 
     /**
      * Atualiza a pressão do pneu.
@@ -67,13 +67,13 @@ public interface PneuDao {
      * @param conn       conexão do banco
      * @throws SQLException caso ocorra erro no banco
      */
-    void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
+    void updateStatus(PneuComum pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
 
     /**
-     * Altera a vida atual de um determinado {@link Pneu}. Sempre que um {@link Pneu} tiver sua vida alterada,
+     * Altera a vida atual de um determinado {@link PneuComum}. Sempre que um {@link PneuComum} tiver sua vida alterada,
      * é necessário aterar também seu código de {@link Banda}, pois significa que o mesmo foi recapado.
      */
-    void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void trocarVida(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
@@ -109,7 +109,7 @@ public interface PneuDao {
      * @return uma lista com todas as dimensões
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu.Dimensao> getDimensoes() throws SQLException;
+    List<PneuComum.Dimensao> getDimensoes() throws SQLException;
 
     /**
      * insere um modelo de pneu
@@ -130,7 +130,7 @@ public interface PneuDao {
      * @return true se deu certo; caso contrário false
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException;
+    boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa
@@ -184,7 +184,7 @@ public interface PneuDao {
      * @return
      * @throws SQLException
      */
-    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
+    PneuComum getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
 
     /**
      * Busca um modelo de pneu a partir de seu código único

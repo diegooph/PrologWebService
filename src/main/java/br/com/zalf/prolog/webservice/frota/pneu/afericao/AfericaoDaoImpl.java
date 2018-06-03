@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -89,7 +89,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final NovaAfericao novaAfericao = new NovaAfericao();
         final Veiculo veiculo = veiculoDao.getVeiculoByPlaca(placa, true);
-        final List<Pneu> estepes = veiculo.getEstepes();
+        final List<PneuComum> estepes = veiculo.getEstepes();
         novaAfericao.setEstepesVeiculo(estepes);
         novaAfericao.setVeiculo(veiculo);
         final Restricao restricao = getRestricoesByPlaca(placa);
@@ -299,7 +299,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         PreparedStatement stmt = null;
         Afericao afericao = null;
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
@@ -437,8 +437,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return config;
     }
 
-    private Pneu createPneuAfericao(ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
+    private PneuComum createPneuAfericao(ResultSet rSet) throws SQLException {
+        final PneuComum pneu = new PneuComum();
         pneu.setCodigo(rSet.getLong("CODIGO_PNEU"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_PNEU_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
@@ -474,7 +474,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         final ServicoDao servicoDao = Injection.provideServicoDao();
-        for (Pneu pneu : afericao.getVeiculo().getListPneus()) {
+        for (PneuComum pneu : afericao.getVeiculo().getListPneus()) {
             stmt.setLong(1, afericao.getCodigo());
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
@@ -517,11 +517,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    private List<TipoServico> getServicosACadastrar(Pneu pneu, Restricao restricao, TipoAfericao tipoAfericao) {
+    private List<TipoServico> getServicosACadastrar(PneuComum pneu, Restricao restricao, TipoAfericao tipoAfericao) {
         final List<TipoServico> servicos = new ArrayList<>();
 
         // Verifica se o pneu foi marcado como "com problema" na hora de aferir a pressão.
-        if (pneu.getProblemas() != null && pneu.getProblemas().contains(Pneu.Problema.PRESSAO_INDISPONIVEL)) {
+        if (pneu.getProblemas() != null && pneu.getProblemas().contains(PneuComum.Problema.PRESSAO_INDISPONIVEL)) {
             servicos.add(TipoServico.INSPECAO);
         }
 
@@ -580,7 +580,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return restricao;
     }
 
-    private void insertOrUpdateServicos(Pneu pneu, long codAfericao, Long codUnidade, List<TipoServico> servicosPendentes,
+    private void insertOrUpdateServicos(PneuComum pneu, long codAfericao, Long codUnidade, List<TipoServico> servicosPendentes,
                                         Connection conn, ServicoDao servicoDao) throws SQLException {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
         if (servicosPendentes.isEmpty())
@@ -630,7 +630,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return afericao;
     }
 
-    private void insertInconsistencia(Long codAfericao, String placa, Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    private void insertInconsistencia(Long codAfericao, String placa, PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO VEICULO_PNEU_INCONSISTENCIA(DATA_HORA, "

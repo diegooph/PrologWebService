@@ -5,11 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +21,7 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public AbstractResponse insert(Pneu pneu, Long codUnidade) {
+    public AbstractResponse insert(PneuComum pneu, Long codUnidade) {
         try {
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
         } catch (SQLException e) {
@@ -33,7 +30,7 @@ public class PneuService {
         }
     }
 
-    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
+    public boolean update(PneuComum pneu, Long codUnidade, Long codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {
@@ -93,7 +90,7 @@ public class PneuService {
         }
     }
 
-    public boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) {
+    public boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) {
         try {
             return dao.vinculaPneuVeiculo(placaVeiculo, pneus);
         } catch (SQLException e) {
@@ -148,7 +145,7 @@ public class PneuService {
         }
     }
 
-    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
+    public PneuComum getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {

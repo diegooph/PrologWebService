@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 import org.junit.Assert;
@@ -33,7 +34,7 @@ public class PneuTest extends BaseTest {
     public void updateSulcos() throws SQLException {
         final PneuDao dao = Injection.providePneuDao();
 
-        final Pneu pneu = new Pneu();
+        final PneuComum pneu = new PneuComum();
         pneu.setCodigo(16304L);
 
         final Sulcos sulcos = new Sulcos();
@@ -46,7 +47,7 @@ public class PneuTest extends BaseTest {
 
         dao.updateSulcos(pneu.getCodigo(), pneu.getSulcosAtuais(), 14L, null /* Alterar */);
 
-        final Pneu pneuAtualizado = dao.getPneuByCod(16304L, 14L);
+        final PneuComum pneuAtualizado = dao.getPneuByCod(16304L, 14L);
         final Sulcos sulcosAtualizados = pneuAtualizado.getSulcosAtuais();
         assertEquals(sulcos.getExterno(), sulcosAtualizados.getExterno(), 0);
         assertEquals(sulcos.getCentralExterno(), sulcosAtualizados.getCentralExterno(), 0);

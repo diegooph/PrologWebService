@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
@@ -184,7 +184,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(1, processoMov.getCodigo());
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
-                final Pneu pneu = mov.getPneu();
+                final PneuComum pneu = mov.getPneu();
                 stmt.setLong(3, pneu.getCodigo());
                 stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
                 stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
@@ -223,7 +223,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     /**
      * Antes de o {@link ProcessoMovimentacao} começar a ser processado. Todos os pneus movimentados com origem no
      * veículo são antes desvinculados do mesmo. Com isso, removemos a dependência temporal no processamento das
-     * movimentações, pois podemos primeiro movimentar um {@link Pneu} do estoque para o veículo mesmo que na posição
+     * movimentações, pois podemos primeiro movimentar um {@link PneuComum} do estoque para o veículo mesmo que na posição
      * de destino dele já existisse um pneu.
      */
     private void removePneusComOrigemVeiculo(ProcessoMovimentacao processoMovimentacao, Connection conn) throws SQLException {
@@ -260,7 +260,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         // Garantimos que não exista mais de uma movimentação para um mesmo pneu.
         for (final Movimentacao m1 : movimentacoes) {
             int numCount = 0;
-            final Pneu pneuMovimentado = m1.getPneu();
+            final PneuComum pneuMovimentado = m1.getPneu();
             for (final Movimentacao m2 : movimentacoes) {
                 if (pneuMovimentado.equals(m2.getPneu())) {
                     numCount++;

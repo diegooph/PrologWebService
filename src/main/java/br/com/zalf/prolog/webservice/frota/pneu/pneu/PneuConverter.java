@@ -23,8 +23,8 @@ public final class PneuConverter {
     }
 
     @NotNull
-    public static Pneu createPneuCompleto(@NotNull final ResultSet rSet) throws SQLException {
-        final Pneu pneu = new Pneu();
+    public static PneuComum createPneuCompleto(@NotNull final ResultSet rSet) throws SQLException {
+        final PneuComum pneu = new PneuComum();
         pneu.setCodigo(rSet.getLong("CODIGO"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_CLIENTE"));
         pneu.setPosicao(rSet.getInt("POSICAO_PNEU"));
@@ -48,7 +48,7 @@ public final class PneuConverter {
 
         pneu.setBanda(createBanda(pneu, rSet));
 
-        final Pneu.Dimensao dimensao = new Pneu.Dimensao();
+        final PneuComum.Dimensao dimensao = new PneuComum.Dimensao();
         dimensao.codigo = rSet.getLong("COD_DIMENSAO");
         dimensao.altura = rSet.getInt("ALTURA");
         dimensao.largura = rSet.getInt("LARGURA");
@@ -73,7 +73,7 @@ public final class PneuConverter {
     @NotNull
     public static PneuAnalise createPneuAnaliseCompleto(@NotNull final ResultSet rSet)
             throws SQLException {
-        final Pneu pneu = createPneuCompleto(rSet);
+        final PneuComum pneu = createPneuCompleto(rSet);
         final PneuAnalise pneuAnalise = new PneuAnalise();
         pneuAnalise.setCodigo(pneu.getCodigo());
         pneuAnalise.setCodigoCliente(pneu.getCodigoCliente());
@@ -110,7 +110,7 @@ public final class PneuConverter {
     }
 
     @Nullable
-    private static Banda createBanda(@NotNull final Pneu pneu, @NotNull final ResultSet rSet) throws SQLException {
+    private static Banda createBanda(@NotNull final PneuComum pneu, @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.getString("COD_MODELO_BANDA") != null) {
             final Banda banda = new Banda();
             banda.setModelo(createModeloBanda(rSet));

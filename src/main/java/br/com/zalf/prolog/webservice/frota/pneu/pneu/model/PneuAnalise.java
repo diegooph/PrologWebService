@@ -1,24 +1,26 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
+import com.google.common.base.Preconditions;
 
 /**
  * Created on 25/05/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuAnalise extends Pneu {
+public final class PneuAnalise extends Pneu {
     private Recapadora recapadora;
     private String codigoColeta;
 
     public PneuAnalise() {
-        super(StatusPneu.ANALISE);
+        super(PneuTipo.PNEU_ANALISE);
+        setStatus(StatusPneu.ANALISE);
     }
 
-    public PneuAnalise(final Recapadora recapadora, final String codigoColeta) {
-        super(StatusPneu.ANALISE);
-        this.recapadora = recapadora;
-        this.codigoColeta = codigoColeta;
+    @Override
+    public void setStatus(final StatusPneu status) {
+        Preconditions.checkArgument(status == StatusPneu.ANALISE);
+        super.setStatus(status);
     }
 
     public Recapadora getRecapadora() {
