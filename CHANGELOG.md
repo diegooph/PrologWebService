@@ -4,6 +4,11 @@ Change Log
 <a name="v0.0.62"></a>
 ## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (release-date) [unreleased]
 
+### Features
+* Cria validador para o insert do pneu
+* Cria validador para o insert do colaborador
+* Cria validador para o insert do veículo
+
 ### Refactors
 * Altera insert da `Recapadora` para retornar o código do banco
 
