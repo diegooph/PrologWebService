@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.commons.util.GenericUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import com.google.common.base.Preconditions;
@@ -31,10 +32,10 @@ public class VeiculoValidator {
             throw new GenericException("A placa deve conter 7 caracteres", null);
         }
 
-        String codClienteSemAcento = placa;
-        codClienteSemAcento = Normalizer.normalize(codClienteSemAcento, Normalizer.Form.NFD);
-        codClienteSemAcento.replaceAll("[^\\p{ASCII}]", "");
-        if (!codClienteSemAcento.equals(placa)) {
+        String placaSemAcento = placa;
+        placaSemAcento = Normalizer.normalize(placaSemAcento, Normalizer.Form.NFD);
+        placaSemAcento = placaSemAcento.replaceAll("[^\\p{ASCII}]", "");
+        if (!placaSemAcento.equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não pode conter acentos", null);
         }
 
@@ -55,7 +56,7 @@ public class VeiculoValidator {
     private static void validacaoKmAtual(Long kmAtual) throws Exception {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
 
-        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(kmAtual)))) {
+        if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(kmAtual)))) {
             throw new GenericException("Km Atual inválido\nA quilometragem não pode ser negativa", null);
         }
     }
@@ -63,7 +64,7 @@ public class VeiculoValidator {
     private static void validacaoMarca(Long codMarca) throws Exception {
         Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
 
-        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
+        if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codMarca)))) {
             throw new GenericException("Marca inválida", "codigo Regional retornou um valor negativo");
         }
     }
@@ -71,7 +72,7 @@ public class VeiculoValidator {
     private static void validacaoModelo(Long codModelo) throws Exception {
         Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
 
-        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codModelo)))) {
+        if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codModelo)))) {
             throw new GenericException("Modelo inválido", "codigo do modelo retornou um valor negativo");
         }
     }
@@ -79,7 +80,7 @@ public class VeiculoValidator {
     private static void validacaoEixos(Long codEixos) throws Exception {
         Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
 
-        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codEixos)))) {
+        if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codEixos)))) {
             throw new GenericException("Eixos inválido", "codigo de eixos retornou um valor negativo");
         }
     }
@@ -87,14 +88,9 @@ public class VeiculoValidator {
     private static void validacaoTipo(Long codTipo) throws Exception {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
 
-        if (verificaNumeroNegativo(Integer.parseInt(String.valueOf(codTipo)))) {
+        if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codTipo)))) {
             throw new GenericException("Tipo inválido", "codigo de tipo retornou um valor negativo");
         }
-    }
-
-    private static boolean verificaNumeroNegativo(int numero) {
-
-        return numero < 0;
     }
 
     private static boolean verificaPlacaNova(String placa) {
