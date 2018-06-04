@@ -2,7 +2,12 @@ Change Log
 ==========
 
 <a name="v0.0.62"></a>
-## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (release-date) [unreleased]
+## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
+
+### Features
+* Cria validador para o insert do pneu
+* Cria validador para o insert do colaborador
+* Cria validador para o insert do veículo
 
 ### Refactors
 * Altera insert da `Recapadora` para retornar o código do banco
@@ -10,6 +15,7 @@ Change Log
 ### Bug Fixes
 * Loga erros que possam acontecer no `RecapadoraService`
 * Corrige busca dos modelos de checklist, buscando apenas veículos ativos que podem realizar o checklist
+* Corrige busca das aferições
 
 <a name="v0.0.61"></a>
 ## Version [v0.0.61](https://github.com/luizfp/PrologWeb/compare/v0.0.60...v0.0.61) (2018-05-22)
