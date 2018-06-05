@@ -134,6 +134,9 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoPis(String pis) throws Exception {
+        if (pis == null || pis.isEmpty())
+            return;
+
         if (pis.length() < 11) {
             throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
