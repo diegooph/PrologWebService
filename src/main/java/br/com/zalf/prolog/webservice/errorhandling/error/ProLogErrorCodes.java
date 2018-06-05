@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.errorhandling.exception;
+package br.com.zalf.prolog.webservice.errorhandling.error;
 
 public enum ProLogErrorCodes {
 
