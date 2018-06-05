@@ -35,10 +35,9 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoRegional (Long regional){
+    private static void validacaoRegional(Long regional) {
         Preconditions.checkNotNull(regional, "Você precisa selecionar a Regional");
     }
-
 
 
     private static void validacaoCpf(Long cpf) throws Exception {
@@ -49,17 +48,17 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoMatriculaAmbev(Integer matriculaAmbev) throws Exception {
-        Preconditions.checkNotNull(matriculaAmbev, "Você precisa fornecer a Matrícula Ambev");
-        if (GenericUtils.verificaNumeroNegativo(matriculaAmbev)) {
-            throw new GenericException("Matrícula Ambev inválida.\nA Matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
+    private static void validacaoMatriculaAmbev(Integer matriculaAmbev) {
+        if (matriculaAmbev != null) {
+            Preconditions.checkArgument(matriculaAmbev > 0, "Matrícula Ambev inválida." +
+                    "\nA Matrícula deve ser um número positivo");
         }
     }
 
-    private static void validacaoMatriculaTrans(Integer matriculaTrans) throws Exception {
-        Preconditions.checkNotNull(matriculaTrans, "Você precisa fornecer a Matrícula Transportadora");
-        if (GenericUtils.verificaNumeroNegativo(matriculaTrans)) {
-            throw new GenericException("Matrícula Transportadora inválida.\nA Matrícula deve ser um número positivo", "A matrícula fornecida é um número negativo");
+    private static void validacaoMatriculaTrans(Integer matriculaTrans) {
+        if (matriculaTrans != null) {
+            Preconditions.checkArgument(matriculaTrans > 0, "Matrícula Transportadora inválida." +
+                    "\nA Matrícula deve ser um número positivo");
         }
     }
 
@@ -77,7 +76,6 @@ public class ColaboradorValidator {
         if (GenericUtils.verificaAno(dataAdmissao)) {
             throw new GenericException("Ano de Admissão inválido", null);
         }
-
     }
 
     private static void validacaoNome(String nome) throws Exception {
@@ -101,7 +99,6 @@ public class ColaboradorValidator {
     private static void validacaoFuncao(Cargo funcao) throws Exception {
         Preconditions.checkNotNull(funcao, "Você precisa selecionar o Cargo");
         Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a Cargo");
-
 
         if (GenericUtils.verificaNumeroNegativo(funcao.getCodigo().intValue())) {
             throw new GenericException("Cargo inválido", "O código é negativo");
@@ -137,15 +134,15 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoPis(String pis) throws Exception {
-        Preconditions.checkNotNull(pis, "Você precisa fornecer o PIS");
+        if (pis == null || pis.isEmpty())
+            return;
+
         if (pis.length() < 11) {
             throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
             throw new GenericException("PIS inválido", null);
         }
     }
-
-
 
 
 }
