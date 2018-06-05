@@ -95,11 +95,11 @@ public class ChecklistModeloResource {
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR})
-    @Path("/{codUnidade}/{codModelo}/staus-ativo")
+    @Path("/{codUnidade}/{codModelo}/status-ativo")
     public Response updateStatus(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo,
-            @QueryParam("staus-ativo") @Required final boolean statusAtivo) throws ProLogException {
+            @QueryParam("status-ativo") @Required final boolean statusAtivo) throws ProLogException {
         service.updateStatusAtivo(codUnidade, codModelo, statusAtivo);
         return Response.ok("Modelo de checklist " + (statusAtivo ? "ativado" : "inativado"));
     }
