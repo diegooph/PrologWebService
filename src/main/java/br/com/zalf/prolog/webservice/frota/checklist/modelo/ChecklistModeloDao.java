@@ -79,14 +79,16 @@ public interface ChecklistModeloDao {
                                                  @NotNull final  Long codModelo) throws SQLException;
 
     /**
-     * Marca um {@link ModeloChecklist} como inativo. Assim não será mais possível realizar o checklist deste modelo.
+     * Marca um {@link ModeloChecklist} como ativo ou inativo.
      *
      * @param codUnidade - Código da unidade.
      * @param codModelo  - Código do modelo.
-     * @return - {@code true} se a operação for sucesso, {@code false} caso contrário.
+     * @param statusAtivo - o novo status indicando se o modelo será ativado ou inativado.
      * @throws SQLException - Caso ocorrer erro no banco.
      */
-    boolean setModeloChecklistInativo(@NotNull final Long codUnidade, @NotNull final Long codModelo) throws SQLException;
+    void updateStatusAtivo(@NotNull final Long codUnidade,
+                           @NotNull final Long codModelo,
+                           final boolean statusAtivo) throws SQLException;
 
     /**
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.

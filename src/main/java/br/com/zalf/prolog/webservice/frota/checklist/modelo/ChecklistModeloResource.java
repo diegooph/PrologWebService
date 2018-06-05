@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -92,18 +93,15 @@ public class ChecklistModeloResource {
         return service.getPerguntas(codUnidade, codModelo);
     }
 
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR,
-            Pilares.Frota.Checklist.Modelo.CADASTRAR})
-    @Path("/{codUnidade}/{codModelo}")
-    public Response setModeloChecklistInativo(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codModelo") Long codModelo) {
-        if (service.setModeloChecklistInativo(codUnidade, codModelo)) {
-            return Response.ok("Modelo desativado com sucesso");
-        } else {
-            return Response.error("Erro ao desativar o modelo");
-        }
+    @PUT
+    @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR})
+    @Path("/{codUnidade}/{codModelo}/staus-ativo")
+    public Response updateStatus(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codModelo") @Required final Long codModelo,
+            @QueryParam("staus-ativo") @Required final boolean statusAtivo) throws ProLogException {
+        service.updateStatusAtivo(codUnidade, codModelo, statusAtivo);
+        return Response.ok("Modelo de checklist " + (statusAtivo ? "ativado" : "inativado"));
     }
 
     @GET

@@ -196,25 +196,25 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public boolean setModeloChecklistInativo(@NotNull final Long codUnidade,
-                                             @NotNull final Long codModelo) throws SQLException {
+    public void updateStatusAtivo(@NotNull final Long codUnidade,
+                                  @NotNull final Long codModelo,
+                                  final boolean statusAtivo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE CHECKLIST_MODELO " +
-                    "SET STATUS_ATIVO = FALSE " +
+                    "SET STATUS_ATIVO = ? " +
                     "WHERE COD_UNIDADE  = ? AND CODIGO = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModelo);
-            int count = stmt.executeUpdate();
-            if (count == 0) {
-                return false;
+            stmt.setBoolean(1, statusAtivo);
+            stmt.setLong(2, codUnidade);
+            stmt.setLong(3, codModelo);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao atualizar o status do modelo de checklist");
             }
         } finally {
             closeConnection(conn, stmt, null);
         }
-        return true;
     }
 
     @NotNull

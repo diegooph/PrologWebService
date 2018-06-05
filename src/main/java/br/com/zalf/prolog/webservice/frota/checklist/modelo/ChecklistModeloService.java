@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -85,11 +86,13 @@ public class ChecklistModeloService {
         }
     }
 
-    public boolean setModeloChecklistInativo(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+    public void updateStatusAtivo(@NotNull final Long codUnidade,
+                                  @NotNull final Long codModelo,
+                                  final boolean statusAtivo) throws ProLogException {
         try {
-            return dao.setModeloChecklistInativo(codUnidade, codModelo);
+            dao.updateStatusAtivo(codUnidade, codModelo, statusAtivo);
         } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
+            Log.e(TAG, "Erro ao ativar/inativar o modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
         }
     }
