@@ -12,7 +12,6 @@ import java.text.Normalizer;
 public class VeiculoValidator {
 
     public static void validacaoAtributosVeiculo(@NotNull final Veiculo veiculo) throws GenericException {
-
         try {
             validacaoPlaca(veiculo.getPlaca());
             validacaoKmAtual(veiculo.getKmAtual());

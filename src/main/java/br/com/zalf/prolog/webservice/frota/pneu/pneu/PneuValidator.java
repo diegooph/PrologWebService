@@ -56,7 +56,6 @@ public class PneuValidator {
     private static void validacaoMarca(Marca marca) throws Exception {
         Preconditions.checkNotNull(marca, "Você precisa selecionar a Marca");
 
-
         if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(marca.getCodigo())))) {
             throw new GenericException("Marca inválida", "getCodigo() < 1");
         }
@@ -71,7 +70,6 @@ public class PneuValidator {
     }
 
     private static void validacaoValor(BigDecimal valor) throws Exception {
-
         if (GenericUtils.verificaNumeroNegativo(Double.parseDouble(String.valueOf(valor)))) {
             throw new GenericException("Valor inválido\nO valor não pode ser negativo", "valor negativo");
         }
@@ -98,11 +96,9 @@ public class PneuValidator {
     }
 
     private static void validacaoRecapagem(int vidaTotal, int vidaAtual) throws Exception {
-
         if (vidaTotal < vidaAtual) {
             throw new GenericException("A vida do pneu precisa ser menor ou igual ao máximo de recapagens", "vidaTotal é menor que vidaAtual");
         }
-
     }
 
     private static void validacaoMarcaDaBanda(Long codMarcaDaBanda) throws Exception {
@@ -111,7 +107,6 @@ public class PneuValidator {
         if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codMarcaDaBanda)))) {
             throw new GenericException("Marca da Banda inválida\n", "codMarcaDaBanda < 1");
         }
-
     }
 
     private static void validacaoModeloDaBanda(Long codModeloDaBanda) throws Exception {
@@ -120,24 +115,15 @@ public class PneuValidator {
         if (GenericUtils.verificaNumeroNegativo(Integer.parseInt(String.valueOf(codModeloDaBanda)))) {
             throw new GenericException("Modelo da Banda inválido\n", "codModeloDaBanda < 1");
         }
-
     }
 
     private static void validacaoValorDaBanda(BigDecimal valor) throws Exception {
-
-        if (GenericUtils.verificaNumeroNegativo(Double.parseDouble(String.valueOf(valor)))) {
-            throw new GenericException("Valor inválido\nO valor não pode ser negativo", "valor negativo");
-        }
-
+        Preconditions.checkArgument(Double.parseDouble(String.valueOf(valor)) >= 0,"Valor " +
+                "inválido\nO valor não pode ser negativo");
     }
 
-    private static void validacaoPressao(double pressao) throws Exception {
-        Preconditions.checkNotNull(pressao, "Você fornecer a Pressão Correta");
-
-        if (GenericUtils.verificaNumeroNegativo(pressao)) {
-            throw new GenericException("Pressão inválida\nA Pressão não pode ser negativa", "valor da pressão negativo");
-        }
-
+    public static void validacaoPressao(double pressao) throws Exception {
+        Preconditions.checkArgument(pressao >= 0,"Pressão inválida\nA Pressão não pode ser negativa");
     }
 
     private static void validacaoDimensao(Pneu.Dimensao dimensao) {
