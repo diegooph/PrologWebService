@@ -10,7 +10,14 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -26,34 +33,7 @@ public class ChecklistModeloService {
     private static final String TAG = ChecklistModeloService.class.getSimpleName();
     private final ChecklistModeloDao dao = Injection.provideChecklistModeloDao();
 
-    public List<ModeloChecklist> getModelosChecklistByCodUnidadeByCodFuncao(Long codUnidade, String codFuncao) {
-        try {
-            return dao.getModelosChecklistByCodUnidadeByCodFuncao(codUnidade, codFuncao);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public ModeloChecklist getModeloChecklist(Long codModelo, Long codUnidade) {
-        try {
-            return dao.getModeloChecklist(codModelo, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean setModeloChecklistInativo(Long codUnidade, Long codModelo) {
-        try {
-            return dao.setModeloChecklistInativo(codUnidade, codModelo);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inativar o modelo de checklist " + codModelo, e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void insertModeloChecklist(ModeloChecklist modeloChecklist) {
+    public void insertModeloChecklist(@NotNull final ModeloChecklist modeloChecklist) {
         try {
             dao.insertModeloChecklist(modeloChecklist);
         } catch (SQLException e) {
@@ -62,12 +42,60 @@ public class ChecklistModeloService {
         }
     }
 
-    public List<PerguntaRespostaChecklist> getPerguntas(Long codUnidade, Long codModelo) {
+    public List<ModeloChecklistListagem> getModelosChecklistListagemByCodUnidadeByCodFuncao(
+            @NotNull final Long codUnidade,
+            @NotNull final String codFuncao) {
+        try {
+            return dao.getModelosChecklistListagemByCodUnidadeByCodFuncao(codUnidade, codFuncao);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar os modelos de checklist para o cargo " + codFuncao, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ModeloChecklist getModeloChecklist(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
+        try {
+            return dao.getModeloChecklist(codUnidade, codModelo);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar o modelo de checklist " + codModelo, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Response updateModeloChecklist(@NotNull final String token,
+                                          @NotNull final Long codUnidade,
+                                          @NotNull final Long codModelo,
+                                          @NotNull final ModeloChecklist modeloChecklist) throws Exception {
+        try {
+            dao.updateModeloChecklist(TokenCleaner.getOnlyToken(token), codUnidade, codModelo, modeloChecklist);
+            return Response.ok("Modelo de checklist atualizado com sucesso");
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao atualizar modelo de checklist", e);
+            throw new GenericException("Não foi possível atualizar o modelo do checklist",
+                    "Erro ao atualizar o modelo de checklist código: " + codModelo,
+                    e);
+        }
+    }
+
+    public List<PerguntaRespostaChecklist> getPerguntas(@NotNull final Long codUnidade, @NotNull final Long codModelo) {
         try {
             return dao.getPerguntas(codUnidade, codModelo);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar perguntas do modelo de checklist " + codModelo, e);
             throw new RuntimeException(e);
+        }
+    }
+
+    public Response updateStatusAtivo(@NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklist modeloChecklist) throws Throwable {
+        try {
+            dao.updateStatusAtivo(codUnidade, codModelo, modeloChecklist.isAtivo());
+            return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao ativar/inativar o modelo de checklist: " + codModelo;
+            Log.e(TAG, errorMessage, e);
+            throw ProLogExceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -108,11 +136,14 @@ public class ChecklistModeloService {
     }
 
     public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
-                                         @NotNull final InputStream fileInputStream) {
+                                         @NotNull final InputStream fileInputStream,
+                                         @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            final ImagemProLog imagemProLog = UploadImageHelper.uploadImagem(
+            final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
+            final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
-                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS);
+                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
+                    imageType);
             final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
             return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
         } catch (FileFormatNotSupportException e) {

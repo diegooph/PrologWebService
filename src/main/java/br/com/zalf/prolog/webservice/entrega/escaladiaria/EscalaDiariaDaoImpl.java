@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Now;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -201,7 +201,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt = conn.prepareStatement("DELETE FROM ESCALA_DIARIA " +
                     "WHERE COD_UNIDADE = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codUnidade);
-            stmt.setArray(2, PostgresUtil.ListLongToArray(conn, codEscalas));
+            stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codEscalas));
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao deletar Escala");
             }

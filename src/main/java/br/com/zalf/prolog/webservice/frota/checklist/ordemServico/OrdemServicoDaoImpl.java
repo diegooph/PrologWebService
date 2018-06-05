@@ -472,6 +472,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
         try {
             while (rSet.next()) {
                 item = new ItemOrdemServico();
+                item.setCodigo(rSet.getLong("codigo"));
                 item.setCodOs(rSet.getLong("cod_os"));
                 pergunta = createPergunta(rSet);
                 alternativa = createAlternativa(rSet);

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice;
 import br.com.zalf.prolog.webservice.colaborador.model.AmazonCredentials;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogErrorCodes;
+import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 
 import javax.ws.rs.core.Response;
 import java.sql.Connection;

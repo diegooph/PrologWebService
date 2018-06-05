@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+<a name="v0.0.63"></a>
+## Version [v0.0.63](https://github.com/luizfp/PrologWeb/compare/v0.0.62...v0.0.63) (2018-06-05)
+
+### Features
+* Permite ativar/inativar um modelo de checklist
+
+### Refactors
+* Altera fluxo de edição de um modelo de checklist
+* Lida corretamente com exceções no insert do colaborador/veículo/pneu
+
+### Bug Fixes
+* Corrige validações feitas no cadastro/edição de colaborador
+* Corrige busca de uma aferição por código removendo comparação de código de unidade com a tabela `PNEU`
+
 <a name="v0.0.62"></a>
 ## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
 

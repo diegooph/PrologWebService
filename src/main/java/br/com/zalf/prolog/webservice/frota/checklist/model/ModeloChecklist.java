@@ -1,9 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.checklist.modelo;
+package br.com.zalf.prolog.webservice.frota.checklist.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,8 +18,28 @@ public class ModeloChecklist {
     private List<TipoVeiculo> tiposVeiculoLiberados;
     private List<Cargo> cargosLiberados;
     private List<PerguntaRespostaChecklist> perguntas;
+    private boolean ativo;
 
     public ModeloChecklist() {
+
+    }
+
+    @NotNull
+    public List<Long> getCodigosTiposVeiculosLiberados() {
+        final List<Long> codTiposVeiculo = new ArrayList<>();
+        for (final TipoVeiculo tipoVeiculo : tiposVeiculoLiberados) {
+            codTiposVeiculo.add(tipoVeiculo.getCodigo());
+        }
+        return codTiposVeiculo;
+    }
+
+    @NotNull
+    public List<Long> getCodigosCargosLiberados() {
+        final List<Long> codCargos = new ArrayList<>();
+        for (final Cargo cargo : cargosLiberados) {
+            codCargos.add(cargo.getCodigo());
+        }
+        return codCargos;
     }
 
     public List<TipoVeiculo> getTiposVeiculoLiberados() {
@@ -69,6 +90,14 @@ public class ModeloChecklist {
         this.perguntas = perguntas;
     }
 
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        this.ativo = ativo;
+    }
+
     @Override
     public String toString() {
         return "ModeloChecklist{" +
@@ -78,6 +107,7 @@ public class ModeloChecklist {
                 ", tiposVeiculoLiberados=" + tiposVeiculoLiberados +
                 ", cargosLiberados=" + cargosLiberados +
                 ", perguntas=" + perguntas +
+                ", ativo=" + ativo +
                 '}';
     }
 }

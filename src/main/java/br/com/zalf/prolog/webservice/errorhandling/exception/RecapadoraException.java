@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
+import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
+
 /**
  * Created on 16/04/18.
  *

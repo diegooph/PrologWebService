@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class PerguntaRespostaChecklist extends Pergunta {
 
+    /**
+     * Criticidade que a pergunta pode ter, selecionada na criação do checklist
+     */
     public static final String CRITICA = "CRITICA";
     public static final String ALTA = "ALTA";
     public static final String BAIXA = "BAIXA";
@@ -19,8 +22,9 @@ public class PerguntaRespostaChecklist extends Pergunta {
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
     private String prioridade;
+    private AcaoEdicaoPergunta acaoEdicao;
 
-    public PerguntaRespostaChecklist(){
+    public PerguntaRespostaChecklist() {
 
     }
 
@@ -89,6 +93,14 @@ public class PerguntaRespostaChecklist extends Pergunta {
         this.singleChoice = singleChoice;
     }
 
+    public AcaoEdicaoPergunta getAcaoEdicao() {
+        return acaoEdicao;
+    }
+
+    public void setAcaoEdicao(final AcaoEdicaoPergunta acaoEdicao) {
+        this.acaoEdicao = acaoEdicao;
+    }
+
     @Override
     public String toString() {
         return "PerguntaRespostaChecklist{" +
@@ -98,6 +110,7 @@ public class PerguntaRespostaChecklist extends Pergunta {
                 ", alternativasResposta=" + alternativasResposta +
                 ", singleChoice=" + singleChoice +
                 ", prioridade='" + prioridade + '\'' +
+                ", acaoEdicao='" + acaoEdicao + '\'' +
                 '}';
     }
 }
