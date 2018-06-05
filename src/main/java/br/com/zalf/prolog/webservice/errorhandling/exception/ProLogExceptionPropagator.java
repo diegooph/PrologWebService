@@ -15,7 +15,7 @@ public final class ProLogExceptionPropagator {
     }
 
     public static void handle(@NotNull final Throwable throwable,
-                              @NotNull final String genericErrorMessage) throws Throwable {
+                              @NotNull final String genericErrorMessage) throws ProLogException {
         Throwables.throwIfInstanceOf(throwable, ProLogException.class);
         throw new GenericException(genericErrorMessage, null);
     }
