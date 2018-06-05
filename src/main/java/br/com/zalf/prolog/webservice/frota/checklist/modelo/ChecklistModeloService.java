@@ -139,7 +139,7 @@ public class ChecklistModeloService {
                                          @NotNull final InputStream fileInputStream,
                                          @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            final String imageType = FilenameUtils.getExtension(fileDetail.getName());
+            final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
             final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
