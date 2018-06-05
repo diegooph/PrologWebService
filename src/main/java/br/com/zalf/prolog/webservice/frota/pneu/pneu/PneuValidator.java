@@ -70,6 +70,8 @@ public class PneuValidator {
     }
 
     private static void validacaoValor(BigDecimal valor) throws Exception {
+        Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
+
         if (GenericUtils.verificaNumeroNegativo(Double.parseDouble(String.valueOf(valor)))) {
             throw new GenericException("Valor inválido\nO valor não pode ser negativo", "valor negativo");
         }
