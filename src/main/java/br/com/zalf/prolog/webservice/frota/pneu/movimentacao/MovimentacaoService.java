@@ -41,16 +41,6 @@ public class MovimentacaoService {
         }
     }
 
-    public List<Motivo> getMotivos(@NotNull final Long codEmpresa,
-                                   final boolean onlyAtivos) {
-        try {
-            return dao.getMotivos(codEmpresa, onlyAtivos);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar lista de Motivos", e);
-            return null;
-        }
-    }
-
     public boolean updateMotivoStatus(@NotNull final Long codEmpresa,
                                       @NotNull final Long codMotivo,
                                       @NotNull final Motivo motivo) {
@@ -60,6 +50,16 @@ public class MovimentacaoService {
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar Motivo: %d", codMotivo), e);
             return false;
+        }
+    }
+
+    public List<Motivo> getMotivos(@NotNull final Long codEmpresa,
+                                   final boolean onlyAtivos) {
+        try {
+            return dao.getMotivos(codEmpresa, onlyAtivos);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar lista de Motivos", e);
+            return null;
         }
     }
 }

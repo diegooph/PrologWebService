@@ -193,10 +193,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
+                            conn,
                             processoMovimentacao,
                             this,
-                            false,
-                            conn);
+                            false);
                     movimentacao.setCodProcessoMovimentacao(codProcessoMovimentacao);
 
                     // Como impedimos o processo de movimentação de fechar automaticamente todos os serviços,

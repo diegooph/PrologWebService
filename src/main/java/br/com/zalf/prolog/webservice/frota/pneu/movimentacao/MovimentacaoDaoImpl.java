@@ -31,18 +31,18 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     private static final String TAG = MovimentacaoDaoImpl.class.getSimpleName();
 
     @Override
-    public Long insert(@NotNull ProcessoMovimentacao processoMovimentacao,
-                       @NotNull ServicoDao servicoDao,
-                       boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
+    public Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final ServicoDao servicoDao,
+                       final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
         Connection connection = null;
         try {
             connection = getConnection();
             connection.setAutoCommit(false);
             final Long codigoProcessoMovimentacao = insert(
+                    connection,
                     processoMovimentacao,
                     servicoDao,
-                    fecharServicosAutomaticamente,
-                    connection);
+                    fecharServicosAutomaticamente);
             connection.commit();
             return codigoProcessoMovimentacao;
         } catch (SQLException e) {
@@ -54,10 +54,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     @Override
-    public Long insert(@NotNull ProcessoMovimentacao processoMovimentacao,
-                       @NotNull ServicoDao servicoDao,
-                       boolean fecharServicosAutomaticamente,
-                       @NotNull Connection conn) throws SQLException, OrigemDestinoInvalidaException {
+    public Long insert(@NotNull final Connection conn,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final ServicoDao servicoDao,
+                       boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -73,7 +73,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
-                insertMovimentacoes(processoMovimentacao, servicoDao, fecharServicosAutomaticamente, conn);
+                insertMovimentacoes(conn, processoMovimentacao, servicoDao, fecharServicosAutomaticamente);
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
@@ -159,6 +159,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
+    @NotNull
     private Motivo createMotivo(@NotNull final ResultSet rSet) throws SQLException {
         final MotivoDescarte motivo = new MotivoDescarte();
         motivo.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
@@ -168,15 +169,15 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         return motivo;
     }
 
-    private void insertMovimentacoes(ProcessoMovimentacao processoMov,
-                                     ServicoDao servicoDao,
-                                     boolean fecharServicosAutomaticamente,
-                                     Connection conn) throws SQLException {
+    private void insertMovimentacoes(@NotNull final Connection conn,
+                                     @NotNull final ProcessoMovimentacao processoMov,
+                                     @NotNull final ServicoDao servicoDao,
+                                     boolean fecharServicosAutomaticamente) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            removePneusComOrigemVeiculo(processoMov, conn);
+            removePneusComOrigemVeiculo(conn, processoMov);
             final Long codUnidade = processoMov.getUnidade().getCodigo();
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
@@ -198,7 +199,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     insertOrigem(conn, codUnidade, mov);
                     insertDestino(conn, mov);
                     if (fecharServicosAutomaticamente) {
-                        fecharServicosPneu(codUnidade, processoMov.getCodigo(), mov, servicoDao, conn);
+                        fecharServicosPneu(conn, servicoDao, codUnidade, processoMov.getCodigo(), mov);
                     }
 
                     if (mov.getDestino().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
@@ -226,7 +227,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
      * movimentações, pois podemos primeiro movimentar um {@link PneuComum} do estoque para o veículo mesmo que na posição
      * de destino dele já existisse um pneu.
      */
-    private void removePneusComOrigemVeiculo(ProcessoMovimentacao processoMovimentacao, Connection conn) throws SQLException {
+    private void removePneusComOrigemVeiculo(@NotNull final Connection conn,
+                                             @NotNull final ProcessoMovimentacao processoMovimentacao) throws SQLException {
         for (final Movimentacao mov : processoMovimentacao.getMovimentacoes()) {
             if (mov.getOrigem().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
                 final OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
@@ -239,7 +241,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void removePneuVeiculo(Connection conn, Long codUnidade, String placa, Long codPneu) throws SQLException {
+    private void removePneuVeiculo(@NotNull final Connection conn,
+                                   @NotNull final Long codUnidade,
+                                   @NotNull final String placa,
+                                   @NotNull final Long codPneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
@@ -256,7 +261,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void validaMovimentacoes(List<Movimentacao> movimentacoes) throws OrigemDestinoInvalidaException {
+    private void validaMovimentacoes(@NotNull final List<Movimentacao> movimentacoes)
+            throws OrigemDestinoInvalidaException {
         // Garantimos que não exista mais de uma movimentação para um mesmo pneu.
         for (final Movimentacao m1 : movimentacoes) {
             int numCount = 0;
@@ -324,11 +330,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(6, movimentacao.getCodigo());
             stmt.setLong(7, codUnidade);
             stmt.setLong(8, movimentacao.getPneu().getCodigo());
-            if (origemAnalise.getCodTipoServicoRecapadora() != null) {
-                stmt.setLong(9, origemAnalise.getCodTipoServicoRecapadora());
-            } else {
-                stmt.setNull(9, Types.BIGINT);
-            }
+//            if (origemAnalise.getCodTipoServicoRecapadora() != null) {
+//                stmt.setLong(9, origemAnalise.getCodTipoServicoRecapadora());
+//            } else {
+//                stmt.setNull(9, Types.BIGINT);
+//            }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir a origem análise da movimentação");
             }
@@ -504,11 +510,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void fecharServicosPneu(Long codUnidade,
-                                    Long codProcessoMovimentacao,
-                                    Movimentacao movimentacao,
-                                    ServicoDao servicoDao,
-                                    Connection conn) throws SQLException {
+    private void fecharServicosPneu(@NotNull final Connection conn,
+                                    @NotNull final ServicoDao servicoDao,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final Long codProcessoMovimentacao,
+                                    @NotNull final Movimentacao movimentacao) throws SQLException {
         if (movimentacao.isFromDestinoToOrigem(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
@@ -543,7 +549,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void adicionaPneuVeiculo(Connection conn, Movimentacao movimentacao, Long codUnidade) throws SQLException {
+    private void adicionaPneuVeiculo(@NotNull final Connection conn,
+                                     @NotNull final Movimentacao movimentacao,
+                                     @NotNull final Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +

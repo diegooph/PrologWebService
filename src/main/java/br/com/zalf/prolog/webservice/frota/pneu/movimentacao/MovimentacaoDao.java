@@ -21,10 +21,10 @@ public interface MovimentacaoDao {
                 @NotNull final ServicoDao servicoDao,
                 boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
-    Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
+    Long insert(@NotNull final Connection conn,
+                @NotNull final ProcessoMovimentacao processoMovimentacao,
                 @NotNull final ServicoDao servicoDao,
-                boolean fecharServicosAutomaticamente,
-                @NotNull final Connection conn) throws SQLException, OrigemDestinoInvalidaException;
+                final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
     Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException;
 
