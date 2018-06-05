@@ -43,7 +43,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     }
 
     @Override
-    public boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException {
+    public boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         veiculo.setPlaca(veiculo.getPlaca().replaceAll("\\-|\\s+", "").trim().toUpperCase());
@@ -64,6 +64,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o veículo");
             }
+        }catch (Throwable e){
+            if (conn != null){
+                conn.rollback();
+            }
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -356,7 +361,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 eixos.add(eixo);
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return eixos;
     }
@@ -375,7 +380,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
                 throw new SQLException("Erro ao atualizar o km do veículo");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -427,7 +432,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             marca.setModelos(modelos);
             marcas.add(marca);
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
         return marcas;
     }

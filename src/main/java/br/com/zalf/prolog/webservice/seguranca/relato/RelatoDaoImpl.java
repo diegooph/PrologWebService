@@ -128,7 +128,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
     public List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean
-			isOrderByDate, String status) throws SQLException {
+            isOrderByDate, String status) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -157,7 +157,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 "C2.NOME AS NOME_CLASSIFICACAO, " +
                 "C3.NOME AS NOME_FECHAMENTO, " +
                 "ST_Distance(ST_Point(?, ?)::geography,ST_Point(longitude::real, latitude::real)::geography)/1000 as " +
-				"distancia "
+                "distancia "
                 + " FROM RELATO R JOIN "
                 + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                 + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE LEFT JOIN "
@@ -198,7 +198,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     @Override
     public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude,
                                                    double longitude, boolean isOrderByDate, String status, String
-															   campoFiltro) throws SQLException {
+                                                           campoFiltro) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -266,7 +266,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
 
     @Override
     public List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude,
-												boolean isOrderByDate, String status) throws SQLException {
+                                                boolean isOrderByDate, String status) throws SQLException {
         List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -298,11 +298,11 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 + " FROM RELATO R JOIN "
                 + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF JOIN "
                 + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE  LEFT " +
-				"JOIN "
+                "JOIN "
                 + "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
                 + "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF "
                 + "WHERE R.CPF_COLABORADOR != ? AND R.STATUS LIKE ? AND R.COD_UNIDADE = (SELECT COD_UNIDADE FROM " +
-				"colaborador\n" +
+                "colaborador\n" +
                 "        WHERE CPF = ?) "
                 + "ORDER BY %s "
                 + "LIMIT ? OFFSET ? ";

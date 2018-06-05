@@ -77,7 +77,7 @@ public final class AvaCorpAvilanConverter {
 
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAvilan.getPlaca());
-        veiculo.setKmAtual(veiculoAvilan.getMarcador());
+        veiculo.setKmAtual((long) veiculoAvilan.getMarcador());
         veiculo.setCodUnidadeAlocado(codUnidadeVeiculo);
         return veiculo;
     }
@@ -118,6 +118,10 @@ public final class AvaCorpAvilanConverter {
                 final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
                 placaAfericao.setPlaca(v.getPlaca());
                 placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
+                placaAfericao.setPodeAferirEstepe(false);
+                placaAfericao.setPodeAferirPressao(false);
+                placaAfericao.setPodeAferirSulco(false);
+                placaAfericao.setPodeAferirSulcoPressao(true);
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
                     placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
@@ -165,7 +169,7 @@ public final class AvaCorpAvilanConverter {
             if (!pneu.isEstepe()) {
                 final MedidaPneu medidaPneu = new MedidaPneu();
                 medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-                medidaPneu.setNumeroFogoPneu(pneu.getCodigo());
+                medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
                 medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
                 medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
                 medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
@@ -222,7 +226,7 @@ public final class AvaCorpAvilanConverter {
                 .filter(v -> v.getVeiculo().getPlaca().equals(placaVeiculo))
                 .collect(MoreCollectors.onlyElement());
         // Seta o km do veículo.
-        veiculo.setKmAtual(veiculoQuestao.getVeiculo().getMarcador());
+        veiculo.setKmAtual((long) veiculoQuestao.getVeiculo().getMarcador());
         novoChecklistHolder.setVeiculo(veiculo);
 
         // Cria as perguntas/respostas do checklist.
@@ -317,13 +321,15 @@ public final class AvaCorpAvilanConverter {
         final Banda banda = new Banda();
         banda.setModelo(modeloBanda);
 
-        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p : arrayOfPneu.getPneu()) {
+        for (int i = 0; i < arrayOfPneu.getPneu().size(); i++) {
+            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p = arrayOfPneu.getPneu().get(i);
             final Pneu pneu = new Pneu();
-            pneu.setCodigo(p.getNumeroFogo());
+            pneu.setCodigo((long) i);
+            pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
             // A vida atual do pneu começa em 1 quando ele é novo, porém, o getVidaPneu() retorna, na verdade, o
             // número de recapagens desse pneu, por isso somamos 1 ao total para ter a informação correta do modo
-            // que é utilizado no ProLog
+            // que é utilizado no ProLog.
             pneu.setVidaAtual(p.getVidaPneu() + 1);
             final Sulcos sulcos = new Sulcos();
             sulcos.setExterno(p.getSulco1());
@@ -527,9 +533,12 @@ public final class AvaCorpAvilanConverter {
 
         // Pneus - Medidas.
         final List<Pneu> pneus = new ArrayList<>();
-        for (PneuFiltro pneuFiltro : afericaoFiltro.getPneus().getPneuFiltro()) {
+        final List<PneuFiltro> pneusAvilan = afericaoFiltro.getPneus().getPneuFiltro();
+        for (int i = 0; i < pneusAvilan.size(); i++) {
+            final PneuFiltro pneuFiltro = pneusAvilan.get(i);
             final Pneu pneu = new Pneu();
-            pneu.setCodigo(pneuFiltro.getNumeroFogo());
+            pneu.setCodigo((long) i);
+            pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));
             pneu.setPressaoAtual(pneuFiltro.getPressao());
             final Sulcos sulcos = new Sulcos();
@@ -540,7 +549,6 @@ public final class AvaCorpAvilanConverter {
             pneu.setSulcosAtuais(sulcos);
             pneus.add(pneu);
         }
-
         afericao.getVeiculo().setListPneus(pneus);
 
         return afericao;

@@ -17,7 +17,7 @@ public class AmazonConstants {
             : "treinamentos-prolog/images";
     public static final String BUCKET_CHECKLIST_GALERIA_IMAGENS = BuildConfig.DEBUG
             ? BUCKET_TEST_CHECKLIST
-            : "checklist-imagens";
+            : "prolog-geral/checklist/galeria-empresas";
 
     private AmazonConstants() {
         throw new IllegalStateException(AmazonConstants.class.getSimpleName() + " cannot be instantiated!");

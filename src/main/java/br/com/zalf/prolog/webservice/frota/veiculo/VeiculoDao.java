@@ -23,7 +23,7 @@ public interface VeiculoDao {
 	 * @return resultado da requisição
 	 * @throws SQLException caso não seja possível realizar o insert
 	 */
-	boolean insert(Veiculo veiculo, Long codUnidade) throws SQLException;
+	boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable;
 
 	/**
 	 * Atualiza os dados de um veículo

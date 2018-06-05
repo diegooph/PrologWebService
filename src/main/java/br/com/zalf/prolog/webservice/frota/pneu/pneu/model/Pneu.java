@@ -1,13 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,6 +26,8 @@ public class Pneu {
     public static final String EM_USO = "EM_USO";
     public static final String DESCARTE = "DESCARTE";
     public static final String ANALISE = "ANALISE";
+    private static final String TAG = Pneu.class.getSimpleName();
+    public static final int DOT_LENGTH = 4;
 
     public enum Problema{
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
@@ -33,7 +39,18 @@ public class Pneu {
     // é diferente do que esta no sistema), enviar o codigo do pneu correto (que está
     // instalado atualmente).
     private String codPneuProblema;
-    private String codigo;
+
+    /**
+     * O código único do pneu a nível de {@link Empresa} que o cliente escolhe ao cadastrar um pneu.
+     * Esse código é equivalente ao número de fogo do pneu.
+     */
+    public String codigoCliente;
+
+    /**
+     * O código único (autoincrement) do pneu no sistema.
+     */
+    public Long codigo;
+
     private Marca marca;
     private ModeloPneu modelo;
     private BigDecimal valor;
@@ -98,6 +115,14 @@ public class Pneu {
 
     }
 
+    public String getCodigoCliente() {
+        return codigoCliente;
+    }
+
+    public void setCodigoCliente(final String codigoCliente) {
+        this.codigoCliente = codigoCliente;
+    }
+
     public List<PneuFotoCadastro> getFotosCadastro() {
         return fotosCadastro;
     }
@@ -149,11 +174,11 @@ public class Pneu {
         this.pressaoAtual = pressaoAtual;
     }
 
-    public String getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Long codigo) {
         this.codigo = codigo;
     }
 
@@ -353,5 +378,41 @@ public class Pneu {
                     ", aro=" + aro +
                     '}';
         }
+    }
+
+    public static boolean isDotValid(@NotNull final String dot) {
+        //noinspection ConstantConditions
+        if (dot == null || dot.length() != DOT_LENGTH || !isIntegerValue(dot)) {
+            return false;
+        }
+
+        try {
+            final int semanaAno = Integer.parseInt(dot.substring(0, 2));
+
+            // Consideramos apenas os DOTs de pneus fabricados após o ano 2000. Esses possuem 2
+            // caracteres para o ano.
+            final int ano = Integer.parseInt(dot.substring(2, 4)) + 2000;
+
+            Log.d(TAG, "Semana ano: " + semanaAno);
+            Log.d(TAG, "Ano: " + ano);
+
+            final Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, ano);
+            final int maxWeeksInYear = calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
+            Log.d(TAG, "Semanas no ano " + ano + ": " + maxWeeksInYear);
+
+            if (semanaAno <= maxWeeksInYear) {
+                return true;
+            }
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
+        }
+
+        return false;
+    }
+
+    public static boolean isIntegerValue(@NotNull final String representacaoValor) {
+        return representacaoValor.matches("^[+-]?\\d+$");
     }
 }

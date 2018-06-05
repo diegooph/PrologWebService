@@ -72,7 +72,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (conn != null) {
                 conn.rollback();
             }
-            throw  e;
+            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -192,7 +192,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+            stmt = conn.prepareStatement("SELECT C.CODIGO, C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
                     + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
                     + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
                     ".LOGO_THUMBNAIL_URL, "
@@ -237,7 +237,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+            stmt = conn.prepareStatement("SELECT C.CODIGO, C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
                     + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
                     + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
                     ".LOGO_THUMBNAIL_URL, "
@@ -274,37 +274,38 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT\n" +
-                    "  C.CPF,\n" +
-                    "  C.PIS,\n" +
-                    "  C.MATRICULA_AMBEV,\n" +
-                    "  C.MATRICULA_TRANS,\n" +
-                    "  C.DATA_NASCIMENTO,\n" +
-                    "  C.DATA_ADMISSAO,\n" +
-                    "  C.DATA_DEMISSAO,\n" +
-                    "  C.STATUS_ATIVO,\n" +
-                    "  initcap(C.NOME)          AS NOME_COLABORADOR,\n" +
-                    "  EM.NOME         AS NOME_EMPRESA,\n" +
-                    "  EM.CODIGO       AS COD_EMPRESA,\n" +
-                    "  EM.LOGO_THUMBNAIL_URL,\n" +
-                    "  R.REGIAO        AS NOME_REGIONAL,\n" +
-                    "  R.CODIGO        AS COD_REGIONAL,\n" +
-                    "  U.NOME          AS NOME_UNIDADE,\n" +
-                    "  U.CODIGO        AS COD_UNIDADE,\n" +
-                    "  EQ.NOME         AS NOME_EQUIPE,\n" +
-                    "  EQ.CODIGO       AS COD_EQUIPE,\n" +
-                    "  S.NOME          AS NOME_SETOR,\n" +
-                    "  S.CODIGO        AS COD_SETOR,\n" +
-                    "  C.COD_FUNCAO,\n" +
-                    "  F.NOME          AS NOME_FUNCAO,\n" +
-                    "  C.COD_PERMISSAO AS PERMISSAO\n" +
-                    "FROM COLABORADOR C\n" +
-                    "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO\n" +
-                    "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE\n" +
-                    "  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE\n" +
-                    "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA\n" +
-                    "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL\n" +
-                    "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
+            stmt = conn.prepareStatement("SELECT " +
+                    "  C.CODIGO, " +
+                    "  C.CPF, " +
+                    "  C.PIS, " +
+                    "  C.MATRICULA_AMBEV, " +
+                    "  C.MATRICULA_TRANS, " +
+                    "  C.DATA_NASCIMENTO, " +
+                    "  C.DATA_ADMISSAO, " +
+                    "  C.DATA_DEMISSAO, " +
+                    "  C.STATUS_ATIVO, " +
+                    "  initcap(C.NOME)          AS NOME_COLABORADOR, " +
+                    "  EM.NOME         AS NOME_EMPRESA, " +
+                    "  EM.CODIGO       AS COD_EMPRESA, " +
+                    "  EM.LOGO_THUMBNAIL_URL, " +
+                    "  R.REGIAO        AS NOME_REGIONAL, " +
+                    "  R.CODIGO        AS COD_REGIONAL, " +
+                    "  U.NOME          AS NOME_UNIDADE, " +
+                    "  U.CODIGO        AS COD_UNIDADE, " +
+                    "  EQ.NOME         AS NOME_EQUIPE, " +
+                    "  EQ.CODIGO       AS COD_EQUIPE, " +
+                    "  S.NOME          AS NOME_SETOR, " +
+                    "  S.CODIGO        AS COD_SETOR, " +
+                    "  C.COD_FUNCAO, " +
+                    "  F.NOME          AS NOME_FUNCAO, " +
+                    "  C.COD_PERMISSAO AS PERMISSAO " +
+                    "FROM COLABORADOR C " +
+                    "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
+                    "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
+                    "  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE " +
+                    "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA " +
+                    "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL " +
+                    "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE " +
                     "WHERE C.COD_UNIDADE = ? " +
                     " AND (? = 1 OR C.STATUS_ATIVO = ?)" +
                     "ORDER BY C.NOME ASC");
@@ -337,41 +338,42 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT\n" +
-                    "  C.CPF,\n" +
-                    "  C.PIS,\n" +
-                    "  C.MATRICULA_AMBEV,\n" +
-                    "  C.MATRICULA_TRANS,\n" +
-                    "  C.DATA_NASCIMENTO,\n" +
-                    "  C.DATA_ADMISSAO,\n" +
-                    "  C.DATA_DEMISSAO,\n" +
-                    "  C.STATUS_ATIVO,\n" +
-                    "  initcap(C.NOME) AS NOME_COLABORADOR,\n" +
-                    "  EM.NOME         AS NOME_EMPRESA,\n" +
-                    "  EM.CODIGO       AS COD_EMPRESA,\n" +
-                    "  EM.LOGO_THUMBNAIL_URL,\n" +
-                    "  R.REGIAO        AS NOME_REGIONAL,\n" +
-                    "  R.CODIGO        AS COD_REGIONAL,\n" +
-                    "  U.NOME          AS NOME_UNIDADE,\n" +
-                    "  U.CODIGO        AS COD_UNIDADE,\n" +
-                    "  EQ.NOME         AS NOME_EQUIPE,\n" +
-                    "  EQ.CODIGO       AS COD_EQUIPE,\n" +
-                    "  S.NOME          AS NOME_SETOR,\n" +
-                    "  S.CODIGO        AS COD_SETOR,\n" +
-                    "  C.COD_FUNCAO,\n" +
-                    "  F.NOME          AS NOME_FUNCAO,\n" +
-                    "  C.COD_PERMISSAO AS PERMISSAO\n" +
-                    "FROM COLABORADOR C\n" +
-                    "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO\n" +
-                    "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE\n" +
-                    "  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE\n" +
-                    "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA\n" +
-                    "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL\n" +
-                    "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE\n" +
-                    "  JOIN unidade_funcao_produtividade UFP ON UFP.cod_unidade = C.cod_unidade AND\n" +
-                    "                                           (C.cod_funcao = UFP.cod_funcao_ajudante OR\n" +
-                    "                                            C.COD_FUNCAO = UFP.cod_funcao_motorista)\n" +
-                    "WHERE C.COD_UNIDADE = ?\n" +
+            stmt = conn.prepareStatement("SELECT " +
+                    "  C.CODIGO, " +
+                    "  C.CPF, " +
+                    "  C.PIS, " +
+                    "  C.MATRICULA_AMBEV, " +
+                    "  C.MATRICULA_TRANS, " +
+                    "  C.DATA_NASCIMENTO, " +
+                    "  C.DATA_ADMISSAO, " +
+                    "  C.DATA_DEMISSAO, " +
+                    "  C.STATUS_ATIVO, " +
+                    "  initcap(C.NOME) AS NOME_COLABORADOR, " +
+                    "  EM.NOME         AS NOME_EMPRESA, " +
+                    "  EM.CODIGO       AS COD_EMPRESA, " +
+                    "  EM.LOGO_THUMBNAIL_URL, " +
+                    "  R.REGIAO        AS NOME_REGIONAL, " +
+                    "  R.CODIGO        AS COD_REGIONAL, " +
+                    "  U.NOME          AS NOME_UNIDADE, " +
+                    "  U.CODIGO        AS COD_UNIDADE, " +
+                    "  EQ.NOME         AS NOME_EQUIPE, " +
+                    "  EQ.CODIGO       AS COD_EQUIPE, " +
+                    "  S.NOME          AS NOME_SETOR, " +
+                    "  S.CODIGO        AS COD_SETOR, " +
+                    "  C.COD_FUNCAO, " +
+                    "  F.NOME          AS NOME_FUNCAO, " +
+                    "  C.COD_PERMISSAO AS PERMISSAO " +
+                    "FROM COLABORADOR C " +
+                    "  JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO " +
+                    "  JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE " +
+                    "  JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE " +
+                    "  JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA " +
+                    "  JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL " +
+                    "  JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE " +
+                    "  JOIN unidade_funcao_produtividade UFP ON UFP.cod_unidade = C.cod_unidade AND " +
+                    "                                           (C.cod_funcao = UFP.cod_funcao_ajudante OR " +
+                    "                                            C.COD_FUNCAO = UFP.cod_funcao_motorista) " +
+                    "WHERE C.COD_UNIDADE = ? " +
                     "ORDER BY 8");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
@@ -543,6 +545,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     private Colaborador createColaborador(ResultSet rSet) throws SQLException {
         final Colaborador c = new Colaborador();
+        c.setCodigo(rSet.getLong("CODIGO"));
         c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
 
         final Cargo cargo = new Cargo();
