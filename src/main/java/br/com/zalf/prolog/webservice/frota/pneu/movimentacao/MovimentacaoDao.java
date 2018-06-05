@@ -19,7 +19,7 @@ public interface MovimentacaoDao {
 
     Long insert(@NotNull final ServicoDao servicoDao,
                 @NotNull final ProcessoMovimentacao processoMovimentacao,
-                boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
+                final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
     Long insert(@NotNull final Connection conn,
                 @NotNull final ServicoDao servicoDao,
