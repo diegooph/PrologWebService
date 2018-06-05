@@ -2,6 +2,15 @@ Change Log
 ==========
 
 <a name="v0.0.62"></a>
+## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (release-date) [unreleased]
+
+### Features
+* Permite ativar/inativar um modelo de checklist
+
+### Refactors
+* Altera fluxo de edição de um modelo de checklist
+
+<a name="v0.0.62"></a>
 ## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
 
 ### Features
