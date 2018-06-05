@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ProLogExceptionMapper {
+public final class ProLogExceptionHandler {
 
-    private ProLogExceptionMapper() {
-        throw new IllegalStateException(ProLogExceptionMapper.class.getSimpleName() + " cannot be instantiated!");
+    private ProLogExceptionHandler() {
+        throw new IllegalStateException(ProLogExceptionHandler.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static Throwable map(@NotNull final Throwable throwable,

@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
@@ -32,8 +33,9 @@ public class ColaboradorService {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
         } catch (Throwable e) {
-            Log.e(TAG, "Erro ao inserir o colaborador", e);
-            throw e;
+            final String errorMessage = "Erro ao inserir o colaborador";
+            Log.e(TAG, errorMessage, e);
+            throw ProLogExceptionHandler.map(e, errorMessage);
         }
     }
 

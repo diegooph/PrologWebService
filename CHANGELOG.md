@@ -9,6 +9,10 @@ Change Log
 
 ### Refactors
 * Altera fluxo de edição de um modelo de checklist
+* Lida corretamente com exceções no insert do colaborador/veículo/pneu
+
+### Bug Fixes
+* Corrige validações feitas no cadastro/edição de colaborador
 
 <a name="v0.0.62"></a>
 ## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
