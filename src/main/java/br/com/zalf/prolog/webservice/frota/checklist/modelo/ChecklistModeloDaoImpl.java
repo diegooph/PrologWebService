@@ -198,7 +198,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
     @Override
     public void updateStatusAtivo(@NotNull final Long codUnidade,
                                   @NotNull final Long codModelo,
-                                  final boolean statusAtivo) throws SQLException {
+                                  final boolean statusAtivo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {

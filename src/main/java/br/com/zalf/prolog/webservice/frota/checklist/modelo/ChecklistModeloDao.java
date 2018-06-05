@@ -88,7 +88,7 @@ public interface ChecklistModeloDao {
      */
     void updateStatusAtivo(@NotNull final Long codUnidade,
                            @NotNull final Long codModelo,
-                           final boolean statusAtivo) throws SQLException;
+                           final boolean statusAtivo) throws Throwable;
 
     /**
      * Busca os modelos de checklists padrões disponibilizados pelo ProLog.
