@@ -194,8 +194,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
                             conn,
-                            processoMovimentacao,
                             this,
+                            processoMovimentacao,
                             false);
                     movimentacao.setCodProcessoMovimentacao(codProcessoMovimentacao);
 

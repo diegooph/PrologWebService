@@ -17,13 +17,13 @@ import java.util.List;
  */
 public interface MovimentacaoDao {
 
-    Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
-                @NotNull final ServicoDao servicoDao,
+    Long insert(@NotNull final ServicoDao servicoDao,
+                @NotNull final ProcessoMovimentacao processoMovimentacao,
                 boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
     Long insert(@NotNull final Connection conn,
-                @NotNull final ProcessoMovimentacao processoMovimentacao,
                 @NotNull final ServicoDao servicoDao,
+                @NotNull final ProcessoMovimentacao processoMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException;
 
     Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException;

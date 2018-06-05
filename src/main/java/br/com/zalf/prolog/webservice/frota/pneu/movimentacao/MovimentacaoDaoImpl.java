@@ -31,8 +31,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     private static final String TAG = MovimentacaoDaoImpl.class.getSimpleName();
 
     @Override
-    public Long insert(@NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final ServicoDao servicoDao,
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
         Connection connection = null;
         try {
@@ -40,8 +40,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             connection.setAutoCommit(false);
             final Long codigoProcessoMovimentacao = insert(
                     connection,
-                    processoMovimentacao,
                     servicoDao,
+                    processoMovimentacao,
                     fecharServicosAutomaticamente);
             connection.commit();
             return codigoProcessoMovimentacao;
@@ -55,8 +55,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     @Override
     public Long insert(@NotNull final Connection conn,
-                       @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
                        boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;

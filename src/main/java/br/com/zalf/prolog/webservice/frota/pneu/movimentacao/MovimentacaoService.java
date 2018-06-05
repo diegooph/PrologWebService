@@ -22,7 +22,7 @@ public class MovimentacaoService {
 
     public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) {
         try {
-            final Long codigo = dao.insert(movimentacao, Injection.provideServicoDao(), true);
+            final Long codigo = dao.insert(Injection.provideServicoDao(), movimentacao, true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (SQLException | OrigemDestinoInvalidaException e) {
             Log.e(TAG, "Erro ao inserir uma movimentação", e);
