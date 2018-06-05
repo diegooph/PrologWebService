@@ -14,8 +14,17 @@ public class ModeloChecklistListagem {
     private Set<String> tiposVeiculoLiberados;
     private Set<String> cargosLiberados;
     private int qtdPerguntas;
+    private boolean ativo;
 
     public ModeloChecklistListagem() {
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        this.ativo = ativo;
     }
 
     public Long getCodigo() {
@@ -70,10 +79,12 @@ public class ModeloChecklistListagem {
     public String toString() {
         return "ModeloChecklistListagem{" +
                 "codigo=" + codigo +
+                ", codUnidade=" + codUnidade +
                 ", nome='" + nome + '\'' +
                 ", tiposVeiculoLiberados=" + tiposVeiculoLiberados +
                 ", cargosLiberados=" + cargosLiberados +
                 ", qtdPerguntas=" + qtdPerguntas +
+                ", ativo=" + ativo +
                 '}';
     }
 }

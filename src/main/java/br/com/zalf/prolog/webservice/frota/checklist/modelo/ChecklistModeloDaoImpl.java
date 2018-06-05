@@ -625,6 +625,7 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
         modeloChecklist.setCargosLiberados(setCargos);
         modeloChecklist.setTiposVeiculoLiberados(setTiposVeiculos);
         modeloChecklist.setQtdPerguntas(rSet.getInt("TOTAL_PERGUNTAS"));
+        modeloChecklist.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         return modeloChecklist;
     }
 
