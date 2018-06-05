@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -99,9 +98,8 @@ public class ChecklistModeloResource {
     public Response updateStatus(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codModelo") @Required final Long codModelo,
-            @QueryParam("status-ativo") @Required final boolean statusAtivo) throws ProLogException {
-        service.updateStatusAtivo(codUnidade, codModelo, statusAtivo);
-        return Response.ok("Modelo de checklist " + (statusAtivo ? "ativado" : "inativado"));
+            final ModeloChecklist modeloChecklist) throws Throwable {
+        return service.updateStatusAtivo(codUnidade, codModelo, modeloChecklist);
     }
 
     @GET

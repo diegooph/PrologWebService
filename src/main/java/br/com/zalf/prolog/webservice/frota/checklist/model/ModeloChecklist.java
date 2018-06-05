@@ -18,6 +18,7 @@ public class ModeloChecklist {
     private List<TipoVeiculo> tiposVeiculoLiberados;
     private List<Cargo> cargosLiberados;
     private List<PerguntaRespostaChecklist> perguntas;
+    private boolean ativo;
 
     public ModeloChecklist() {
 
@@ -89,6 +90,14 @@ public class ModeloChecklist {
         this.perguntas = perguntas;
     }
 
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(final boolean ativo) {
+        this.ativo = ativo;
+    }
+
     @Override
     public String toString() {
         return "ModeloChecklist{" +
@@ -98,6 +107,7 @@ public class ModeloChecklist {
                 ", tiposVeiculoLiberados=" + tiposVeiculoLiberados +
                 ", cargosLiberados=" + cargosLiberados +
                 ", perguntas=" + perguntas +
+                ", ativo=" + ativo +
                 '}';
     }
 }
