@@ -20,14 +20,20 @@ import java.io.InputStream;
  */
 public class UploadImageHelper {
 
+    @NotNull
+    public static ImagemProLog uploadCompressedImagem(@NotNull final InputStream inputStream,
+                                                      @NotNull final String amazonBucket,
+                                                      @NotNull final String imageType)
+            throws IOException, S3FileSender.S3FileSenderException, FileFormatNotSupportException {
+        final String imageName = createRandomImageName();
+        final File compressFile = ImageCompressUtils.compressFile(inputStream, imageName, imageType);
+        return internalImageSender(amazonBucket, imageName, compressFile);
+    }
+
+    @NotNull
     public static ImagemProLog uploadImagem(@NotNull final InputStream inputStream,
                                             @NotNull final String amazonBucket)
             throws IOException, S3FileSender.S3FileSenderException, FileFormatNotSupportException {
-
-        final ImagemProLog imagemProLog = new ImagemProLog();
-        final S3FileSender fileSender = new S3FileSender(
-                AmazonConstants.AWS_ACCESS_KEY_ID,
-                AmazonConstants.AWS_SECRET_KEY);
         final String imageName = createRandomImageName();
         // Pasta temporária da JVM
         final File tmpDir = Files.createTempDir();
@@ -35,6 +41,18 @@ public class UploadImageHelper {
         if (ImageIO.read(imageFile) == null) {
             throw new FileFormatNotSupportException("O arquivo precisa ser uma imagem");
         }
+        return internalImageSender(amazonBucket, imageName, imageFile);
+    }
+
+    @NotNull
+    private static ImagemProLog internalImageSender(
+            @NotNull final String amazonBucket,
+            @NotNull final String imageName,
+            @NotNull final File imageFile) throws S3FileSender.S3FileSenderException {
+        final ImagemProLog imagemProLog = new ImagemProLog();
+        final S3FileSender fileSender = new S3FileSender(
+                AmazonConstants.AWS_ACCESS_KEY_ID,
+                AmazonConstants.AWS_SECRET_KEY);
         fileSender.sendFile(amazonBucket, imageName, imageFile);
         imagemProLog.setUrlImagem(fileSender.generateFileUrl(amazonBucket, imageName));
         return imagemProLog;

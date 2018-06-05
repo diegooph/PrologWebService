@@ -150,6 +150,6 @@ public class ChecklistModeloResource {
                                                 @FormDataParam("file") InputStream fileInputStream,
                                                 @FormDataParam("file") FormDataContentDisposition fileDetail) {
         Preconditions.checkNotNull(codEmpresa, "Código da empresa não pode ser null!");
-        return service.insertImagem(codEmpresa, fileInputStream);
+        return service.insertImagem(codEmpresa, fileInputStream, fileDetail);
     }
 }

@@ -15,6 +15,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -129,11 +131,14 @@ public class ChecklistModeloService {
     }
 
     public AbstractResponse insertImagem(@NotNull final Long codEmpresa,
-                                         @NotNull final InputStream fileInputStream) {
+                                         @NotNull final InputStream fileInputStream,
+                                         @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            final ImagemProLog imagemProLog = UploadImageHelper.uploadImagem(
+            final String imageType = FilenameUtils.getExtension(fileDetail.getName());
+            final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
-                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS);
+                    AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
+                    imageType);
             final Long codImagem = dao.insertImagem(codEmpresa, imagemProLog);
             return ResponseImagemChecklist.ok("Imagem inserida com sucesso!", codImagem, imagemProLog.getUrlImagem());
         } catch (FileFormatNotSupportException e) {
