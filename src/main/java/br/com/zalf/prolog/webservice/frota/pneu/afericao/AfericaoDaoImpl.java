@@ -329,7 +329,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "JOIN PNEU P ON P.CODIGO = AV.COD_PNEU " +
                     "JOIN MODELO_PNEU MO ON MO.CODIGO = P.COD_MODELO " +
                     "JOIN MARCA_PNEU MP ON MP.CODIGO = MO.COD_MARCA " +
-                    "JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE " +
+                    "JOIN UNIDADE U ON U.CODIGO = A.COD_UNIDADE " +
                     "JOIN COLABORADOR C ON C.CPF = A.CPF_AFERIDOR " +
                     "WHERE AV.COD_AFERICAO = ? AND AV.COD_UNIDADE = ? " +
                     "ORDER BY PO.ORDEM_EXIBICAO ASC");
