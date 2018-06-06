@@ -320,7 +320,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         final ServicoRealizadoRecapadoraDao servicoRealizadoRecapadoraDao =
                 Injection.provideTipoServicoRealizadoRecapadoraDao();
         for (final ServicoRealizadoRecapadora servico : servicosRealizados) {
-            final Long codServicoRealizado = servicoRealizadoRecapadoraDao.insert(codUnidade, codPneu, servico);
+            final Long codServicoRealizado = servicoRealizadoRecapadoraDao.insert(conn, codUnidade, codPneu, servico);
             insertMovimentacaoServicoRecapadora(conn, codUnidade, codPneu, codServicoRealizado, movimentacao);
         }
     }
