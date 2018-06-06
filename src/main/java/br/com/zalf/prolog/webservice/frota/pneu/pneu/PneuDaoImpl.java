@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import com.google.common.base.Preconditions;
@@ -129,7 +131,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             // Verifica se precisamos inserir informações de valor da banda para a vida atual.
             if (pneu.getVidaAtual() > 1) {
-                insertValorBandaVidaAtual(pneu, codUnidade, conn);
+                insertValorBandaVidaAtual(conn, codUnidade, pneu);
             }
 
             final List<PneuFotoCadastro> fotosCadastro = pneu.getFotosCadastro();
@@ -213,9 +215,6 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
         PreparedStatement stmt = null;
         try {
-            // Insere o valor da nova vida para o pneu.
-            insertValorBandaVidaAtual(pneu, codUnidade, conn);
-
             // Atualiza a vidao, o código do modelo de banda e a altura dos sulcos do pneu.
             // É preciso atualizar os sulcos pois para trocar de vida o pneu foi recapado, logo, ele tem novos sulcos.
             stmt = conn.prepareStatement("UPDATE PNEU SET " +
@@ -752,25 +751,53 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
-    private void insertValorBandaVidaAtual(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
+    private void insertValorBandaVidaAtual(@NotNull final Connection conn,
+                                           @NotNull final Long codUnidade,
+                                           @NotNull final PneuComum pneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO pneu_valor_vida(cod_unidade, cod_pneu, cod_modelo_banda, vida, " +
-                    "valor)" +
-                    "VALUES (?,?,?,?,?) ");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, pneu.getCodigo());
-            stmt.setLong(3, pneu.getCodModeloBanda());
-            stmt.setBigDecimal(5, pneu.getValorBanda());
-            stmt.setInt(4, pneu.getVidaAtual());
+            final ServicoRealizadoRecapagem servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
+            final Long codServicoRealizado = Injection
+                    .provideTipoServicoRealizadoRecapadoraDao()
+                    .insert(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
+            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO(COD_PNEU, COD_SERVICO) VALUES (?, ?);");
+            stmt.setLong(1, pneu.getCodigo());
+            stmt.setLong(2, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o valor da banda do pneu "
                         + pneu.getCodigo() + " da unidade " + codUnidade);
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
+    }
 
+    @NotNull
+    private ServicoRealizadoRecapagem createServicoRealizadoRecapagem(@NotNull final Connection conn,
+                                                                      @NotNull final Long codUnidade,
+                                                                      @NotNull final PneuComum pneu) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT RTS.CODIGO FROM RECAPADORA_TIPO_SERVICO AS RTS " +
+                    "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE AND INCREMENTA_VIDA = TRUE");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final ServicoRealizadoRecapagem servico = new ServicoRealizadoRecapagem();
+                servico.setCodTipoServicoRecapadora(rSet.getLong("CODIGO"));
+                servico.setCodUnidade(codUnidade);
+                servico.setCodPneu(pneu.getCodigo());
+                servico.setValor(pneu.getValorBanda());
+                servico.setVidaMomentoRealizacaoServico(pneu.getVidaAtual() - 1);
+                servico.setCodModeloBanda(pneu.getCodModeloBanda());
+                servico.setVidaNovaPneu(pneu.getVidaAtual());
+                return servico;
+            } else {
+                throw new SQLException("Erro ao criar o serviço de recapagem para a troca de vida do pneu inserido");
+            }
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
     }
 
     private Marca createMarcaPneu(ResultSet rSet) throws SQLException {
