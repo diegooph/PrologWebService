@@ -13,7 +13,6 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 25/03/2018
@@ -35,9 +34,8 @@ public final class DatabaseManager {
             + EnvironmentHelper.PROLOG_RDS_DB_NAME;
 
     // Informações de acesso ao BD de testes
-//	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/INTERVALO_TESTE_1";
-//	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prolog_abril_pneu_2";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/local_teste";
+	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prolog_abril_pneu_2";
+//    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/bd_local";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 
@@ -113,11 +111,11 @@ public final class DatabaseManager {
         poolProperties.setValidationInterval(30000);
         poolProperties.setTimeBetweenEvictionRunsMillis(30000);
         poolProperties.setMaxWait(10000);
+        poolProperties.setRemoveAbandonedTimeout(60);
         // The number of milliseconds a connection must be idle to be eligible for eviction.
         poolProperties.setMinEvictableIdleTimeMillis(60000);
         poolProperties.setLogAbandoned(true);
         poolProperties.setRemoveAbandoned(true);
-        poolProperties.setRemoveAbandonedTimeout((int) TimeUnit.MINUTES.toSeconds(5));
 
         // Usando o autoCommit default em true o interceptor ConnectionState, a conexão sempre será setada com
         // autoCommit true ao ser emprestada da pool. Do contrário o autoCommit seria setado apenas quando a conexão
@@ -125,8 +123,7 @@ public final class DatabaseManager {
         poolProperties.setDefaultAutoCommit(true);
         poolProperties.setJdbcInterceptors(
                 "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;" +
-                "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;" +
-                "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer");
+                        "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
         return poolProperties;
     }
 }

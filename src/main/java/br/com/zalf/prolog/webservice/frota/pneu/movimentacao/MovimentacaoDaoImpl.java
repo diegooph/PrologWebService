@@ -36,22 +36,22 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     public Long insert(@NotNull final ServicoDao servicoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws SQLException, OrigemDestinoInvalidaException {
-        Connection connection = null;
+        Connection conn = null;
         try {
-            connection = getConnection();
-            connection.setAutoCommit(false);
+            conn = getConnection();
+            conn.setAutoCommit(false);
             final Long codigoProcessoMovimentacao = insert(
-                    connection,
+                    conn,
                     servicoDao,
                     processoMovimentacao,
                     fecharServicosAutomaticamente);
-            connection.commit();
+            conn.commit();
             return codigoProcessoMovimentacao;
         } catch (SQLException e) {
-            connection.rollback();
+            conn.rollback();
             throw e;
         } finally {
-            closeConnection(connection);
+            closeConnection(conn);
         }
     }
 
@@ -75,7 +75,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
-                insertMovimentacoes(conn, processoMovimentacao, servicoDao, fecharServicosAutomaticamente);
+                insertMovimentacoes(conn, servicoDao,processoMovimentacao, fecharServicosAutomaticamente);
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
@@ -87,12 +87,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     @Override
     public Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws SQLException {
-        Connection connection = null;
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            connection = getConnection();
-            stmt = connection.prepareStatement("INSERT INTO " +
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO " +
                     "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, " +
                     "data_hora_insercao, data_hora_ultima_alteracao) " +
                     "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
@@ -110,22 +110,22 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao inserir novo motivo de descarte");
             }
         } finally {
-            closeConnection(connection, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
     @Override
     public List<Motivo> getMotivos(@NotNull final Long codEmpresa, boolean onlyAtivos) throws SQLException {
         final List<Motivo> motivos = new ArrayList<>();
-        Connection connection = null;
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            connection = getConnection();
+            conn = getConnection();
             if (onlyAtivos) {
-                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
+                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
             } else {
-                stmt = connection.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
+                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
             }
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
@@ -133,7 +133,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 motivos.add(createMotivo(rSet));
             }
         } finally {
-            closeConnection(connection, stmt, rSet);
+            closeConnection(conn, stmt, rSet);
         }
         return motivos;
     }
@@ -259,7 +259,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 throw new SQLException("Erro ao deletar o pneu do veículo");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

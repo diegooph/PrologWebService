@@ -137,23 +137,28 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     private RestricoesContracheque getRestricaoCalculoContracheque(Connection conn, Long cpf) throws SQLException {
-        ResultSet rSet;
-        final RestricoesContracheque restricoes = new RestricoesContracheque();
-        final PreparedStatement stmt = conn.prepareStatement("SELECT pc.*, c.cod_funcao as COD_FUNCAO_SOLICITANTE\n" +
-                "FROM colaborador c JOIN pre_contracheque_informacoes pc on c.cod_unidade = pc.cod_unidade\n" +
-                "WHERE c.cpf = ?");
-        stmt.setLong(1, cpf);
-        rSet = stmt.executeQuery();
-        if (rSet.next()) {
-            restricoes.codFuncaoAjudante = rSet.getInt("COD_CARGO_AJUDANTE");
-            restricoes.codFuncaoMotorista = rSet.getInt("COD_CARGO_MOTORISTA");
-            restricoes.valorBonusAjudante = rSet.getDouble("BONUS_AJUDANTE");
-            restricoes.valorBonusMotorista = rSet.getDouble("BONUS_MOTORISTA");
-            restricoes.indicadorBonus = rSet.getString("INDICADOR");
-            restricoes.recargaPartePremio = rSet.getBoolean("RECARGA_PARTE_PREMIO");
-            restricoes.codFuncaoSolicitante = rSet.getLong("COD_FUNCAO_SOLICITANTE");
+        ResultSet rSet = null;
+        PreparedStatement stmt = null;
+        try {
+            final RestricoesContracheque restricoes = new RestricoesContracheque();
+            stmt = conn.prepareStatement("SELECT pc.*, c.cod_funcao as COD_FUNCAO_SOLICITANTE\n" +
+                    "FROM colaborador c JOIN pre_contracheque_informacoes pc on c.cod_unidade = pc.cod_unidade\n" +
+                    "WHERE c.cpf = ?");
+            stmt.setLong(1, cpf);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                restricoes.codFuncaoAjudante = rSet.getInt("COD_CARGO_AJUDANTE");
+                restricoes.codFuncaoMotorista = rSet.getInt("COD_CARGO_MOTORISTA");
+                restricoes.valorBonusAjudante = rSet.getDouble("BONUS_AJUDANTE");
+                restricoes.valorBonusMotorista = rSet.getDouble("BONUS_MOTORISTA");
+                restricoes.indicadorBonus = rSet.getString("INDICADOR");
+                restricoes.recargaPartePremio = rSet.getBoolean("RECARGA_PARTE_PREMIO");
+                restricoes.codFuncaoSolicitante = rSet.getLong("COD_FUNCAO_SOLICITANTE");
+            }
+            return restricoes;
+        } finally {
+            closeConnection(null, stmt, rSet);
         }
-        return restricoes;
     }
 
     private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException {
@@ -174,35 +179,39 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     private double getPremio(Connection conn, Long codUnidade, List<ItemContracheque> itensContracheque,
                              double bonus, double recarga, double produtividade) throws SQLException {
-        PreparedStatement stmt;
-        ResultSet rSet;
-        final List<String> codigosPremio = new ArrayList<>();
-        final double acumuladoProdutividade = bonus + recarga + produtividade;
+        PreparedStatement stmt= null;
+        ResultSet rSet = null;
+        try {
+            final List<String> codigosPremio = new ArrayList<>();
+            final double acumuladoProdutividade = bonus + recarga + produtividade;
 
-        stmt = conn.prepareStatement("SELECT *\n" +
-                "FROM pre_contracheque_calculo_premio\n" +
-                "WHERE cod_unidade = ?");
-        stmt.setLong(1, codUnidade);
-        rSet = stmt.executeQuery();
-        while (rSet.next()) {
-            codigosPremio.add(rSet.getString("COD_ITEM"));
-        }
-
-        double outrasVerbas = 0;
-        for (ItemContracheque item : itensContracheque) {
-            if (codigosPremio.contains(item.getCodigo())) {
-                outrasVerbas += item.getValor();
+            stmt = conn.prepareStatement("SELECT *\n" +
+                    "FROM pre_contracheque_calculo_premio\n" +
+                    "WHERE cod_unidade = ?");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                codigosPremio.add(rSet.getString("COD_ITEM"));
             }
-        }
 
-        final double valorPremio;
-        if (outrasVerbas >= acumuladoProdutividade) {
-            valorPremio = 0;
-        } else {
-            valorPremio = acumuladoProdutividade - outrasVerbas;
-        }
+            double outrasVerbas = 0;
+            for (ItemContracheque item : itensContracheque) {
+                if (codigosPremio.contains(item.getCodigo())) {
+                    outrasVerbas += item.getValor();
+                }
+            }
 
-        return valorPremio;
+            final double valorPremio;
+            if (outrasVerbas >= acumuladoProdutividade) {
+                valorPremio = 0;
+            } else {
+                valorPremio = acumuladoProdutividade - outrasVerbas;
+            }
+
+            return valorPremio;
+        } finally {
+            closeConnection(null, stmt, rSet);
+        }
     }
 
     @Override
@@ -289,7 +298,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 throw new SQLException("Erro ao inserir o item: " + item.toString());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }

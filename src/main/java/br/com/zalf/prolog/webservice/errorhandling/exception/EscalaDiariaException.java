@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
+import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 import org.jetbrains.annotations.NotNull;
 
 /**

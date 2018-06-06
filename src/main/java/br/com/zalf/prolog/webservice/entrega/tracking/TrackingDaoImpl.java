@@ -113,7 +113,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
                 throw new SQLException("Erro ao inserir a tabela");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -224,7 +224,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
                 return false;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }

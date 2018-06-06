@@ -403,7 +403,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -414,7 +414,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -433,7 +433,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 count++;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -506,7 +506,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -517,7 +517,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
             stmt.setLong(1, codTreinamento);
             stmt.executeUpdate();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

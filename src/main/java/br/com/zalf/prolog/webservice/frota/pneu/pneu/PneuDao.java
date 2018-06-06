@@ -29,7 +29,7 @@ public interface PneuDao {
      * @throws SQLException caso ocorra erro no banco
      */
     @NotNull
-    Long insert(PneuComum pneu, Long codUnidade) throws SQLException;
+    Long insert(PneuComum pneu, Long codUnidade) throws Throwable;
 
     /**
      * atualiza medições do pneu no banco

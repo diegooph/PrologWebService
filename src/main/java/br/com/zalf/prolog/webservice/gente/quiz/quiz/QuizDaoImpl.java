@@ -157,7 +157,7 @@ public class QuizDaoImpl extends DatabaseConnection implements QuizDao {
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

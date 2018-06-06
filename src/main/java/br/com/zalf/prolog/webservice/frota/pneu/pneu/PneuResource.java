@@ -35,7 +35,7 @@ public class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public AbstractResponse insert(PneuComum pneu, @PathParam("codUnidade") Long codUnidade) {
+    public AbstractResponse insert(PneuComum pneu, @PathParam("codUnidade") Long codUnidade) throws Throwable {
         return service.insert(pneu, codUnidade);
     }
 

@@ -295,7 +295,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                         .getCpf());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -375,7 +375,7 @@ public class ProntuarioCondutorDaoImpl extends DatabaseConnection implements Pro
                 return false;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }

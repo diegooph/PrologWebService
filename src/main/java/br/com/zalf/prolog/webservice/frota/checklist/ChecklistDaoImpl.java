@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemServico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -247,7 +247,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                             ".COD_UNIDADE = CM.COD_UNIDADE "
                             + "JOIN VEICULO_TIPO VT ON VT.CODIGO = CMVT.COD_TIPO_VEICULO "
                             + "JOIN VEICULO V ON V.COD_TIPO = VT.CODIGO "
-                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE "
+                            + "WHERE CM.COD_UNIDADE = ? AND CMF.COD_FUNCAO = ? AND CM.STATUS_ATIVO = TRUE AND V.STATUS_ATIVO = TRUE "
                             + "ORDER BY CM.CODIGO, V.PLACA;",
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
@@ -517,7 +517,7 @@ public class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 

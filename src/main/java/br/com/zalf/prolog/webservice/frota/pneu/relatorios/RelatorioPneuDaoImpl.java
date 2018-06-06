@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.Now;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtil;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
@@ -49,8 +49,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
-            stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
+            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
@@ -171,8 +171,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     + "FROM PNEU  "
                     + "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
                     + "ORDER BY 1 asc");
-            stmt.setArray(1, PostgresUtil.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtil.ListToArray(conn, status));
+            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.ListToArray(conn, status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (rSet.getString("PORC").equals("N")) {
@@ -394,7 +394,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])\n" +
                     "GROUP BY P.status\n" +
                     "ORDER BY 1");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 statusPneus.put(
@@ -454,7 +454,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
             stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setArray(4, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(4, PostgresUtils.ListLongToArray(conn, codUnidades));
             stmt.setDate(5, dataInicial);
             stmt.setDate(6, dataFinal);
             rSet = stmt.executeQuery();
@@ -485,7 +485,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM afericao_manutencao am\n" +
                     "WHERE am.cpf_mecanico IS NULL AND am.cod_unidade::TEXT LIKE ANY(ARRAY[?])\n" +
                     "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 servicosAbertos.put(
@@ -542,7 +542,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt.setDate(4, new Date(Now.utcMillis()));
             stmt.setString(5, TipoAfericao.SULCO_PRESSAO.asString());
             stmt.setString(6, TipoAfericao.SULCO.asString());
-            stmt.setArray(7, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(7, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
@@ -568,7 +568,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
                     "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
                     "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 resultados.put(
@@ -597,7 +597,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "(am.tipo_servico LIKE ? OR am.tipo_servico like ?) " +
                     "GROUP BY a.placa_veiculo " +
                     "ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE total_km > 0;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
@@ -628,7 +628,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
                     "GROUP BY vp.placa " +
                     "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 resultados.put(rSet.getString("placa_veiculo"),
@@ -653,7 +653,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM pneu p\n" +
                     "WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
                     "ORDER BY menor_sulco ASC");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(new SulcoPressao(
@@ -677,7 +677,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
                     "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
                     "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.data_hora_resolucao is null;");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
@@ -923,7 +923,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
                     "GROUP BY MMD.motivo\n" +
                     "ORDER BY 2 DESC");
-            stmt.setArray(1, PostgresUtil.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 motivosDescarte.put(
