@@ -140,8 +140,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
 
             conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -243,7 +245,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao trocar a vida do pneu " + pneu.getCodigo() + " da unidade " + codUnidade);
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -266,7 +268,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar medições do pneu: " + pneu.getCodigo());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -299,7 +301,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar o status do pneu");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -487,7 +489,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar os dados do Pneu");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -699,7 +701,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return null;
     }
@@ -747,7 +749,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar flag de pneu novo para o pneu: " + codPneu + " da unidade: " + codUnidade);
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -850,7 +852,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 throw new SQLException("Erro ao atualizar a relação vida x banda");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
