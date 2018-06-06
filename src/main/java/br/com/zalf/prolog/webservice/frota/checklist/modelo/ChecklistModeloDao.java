@@ -60,7 +60,7 @@ public interface ChecklistModeloDao {
      * @param unidade         - Código da Unidade.
      * @param codUnidade      - Código do modelo.
      * @param modeloChecklist - O novo {@link ModeloChecklist} que será inserido.
-     * @throws Throwable      - Se algum erro ocorrer.
+     * @throws Exception      - Se algum erro ocorrer.
      */
     void updateModeloChecklist(@NotNull final String token,
                                @NotNull final Long unidade,

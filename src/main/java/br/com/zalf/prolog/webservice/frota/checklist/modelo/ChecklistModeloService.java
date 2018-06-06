@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionMapper;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PerguntaRespostaChecklist;
@@ -95,7 +95,7 @@ public class ChecklistModeloService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao ativar/inativar o modelo de checklist: " + codModelo;
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionMapper.map(e, errorMessage);
+            throw ProLogExceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -139,7 +139,7 @@ public class ChecklistModeloService {
                                          @NotNull final InputStream fileInputStream,
                                          @NotNull final FormDataContentDisposition fileDetail) {
         try {
-            final String imageType = FilenameUtils.getExtension(fileDetail.getName());
+            final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
             final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,

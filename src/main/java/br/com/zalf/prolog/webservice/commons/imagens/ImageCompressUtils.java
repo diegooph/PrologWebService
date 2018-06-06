@@ -26,7 +26,7 @@ public class ImageCompressUtils {
     public static File compressFile(@NotNull final InputStream inputStream,
                                     @NotNull final String imageName,
                                     @NotNull final String imageType) throws IOException, FileFormatNotSupportException {
-        return compressFile(inputStream, imageName, imageType, 0.05F);
+        return compressFile(inputStream, imageName, imageType, 0.5F);
     }
 
     @NotNull

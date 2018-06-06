@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
@@ -124,7 +125,7 @@ public class VeiculoService {
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw e;
+            throw ProLogExceptionHandler.map(e, "Erro ao inserir veículo");
         }
     }
 

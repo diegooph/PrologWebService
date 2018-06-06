@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -30,7 +30,7 @@ public class PneuService {
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
         } catch (Exception e) {
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            throw new GenericException("Erro ao inserir", null);
+            throw ProLogExceptionHandler.map(e, "Erro ao inserir pneu");
         }
     }
 
