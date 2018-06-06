@@ -13,6 +13,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.ServicoRealizadoRecapadoraDao;
+import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
@@ -298,9 +300,57 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 break;
             case ANALISE:
                 insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
+                insertServicosRealizadosRecapadoras(conn, codUnidade, movimentacao);
                 break;
             case DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
+        }
+    }
+
+    private void insertServicosRealizadosRecapadoras(@NotNull final Connection conn,
+                                                     @NotNull final Long codUnidade,
+                                                     @NotNull final Movimentacao movimentacao) throws SQLException {
+        final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
+        final List<ServicoRealizadoRecapadora> servicosRealizados = origemAnalise.getServicosRealizados();
+        final Long codPneu = movimentacao.getPneu().getCodigo();
+        if (servicosRealizados == null || servicosRealizados.isEmpty()) {
+            return;
+        }
+
+        final ServicoRealizadoRecapadoraDao servicoRealizadoRecapadoraDao =
+                Injection.provideTipoServicoRealizadoRecapadoraDao();
+        for (final ServicoRealizadoRecapadora servico : servicosRealizados) {
+            final Long codServicoRealizado = servicoRealizadoRecapadoraDao.insert(codUnidade, codPneu, servico);
+            insertMovimentacaoServicoRecapadora(conn, codUnidade, codPneu, codServicoRealizado, movimentacao);
+        }
+    }
+
+    private void insertMovimentacaoServicoRecapadora(@NotNull final Connection conn,
+                                                     @NotNull final Long codUnidade,
+                                                     @NotNull final Long codPneu,
+                                                     @NotNull final Long codServicoRealizado,
+                                                     @NotNull final Movimentacao movimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO_RECAPADORA" +
+                    "(COD_MOVIMENTACAO, COD_SERVICO, COD_RECAPADORA) " +
+                    "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
+                    " FROM MOVIMENTACAO_DESTINO AS MD " +
+                    "   JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                    " WHERE M.COD_UNIDADE = ? " +
+                    "       AND M.COD_PNEU = ? " +
+                    "       AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    " ORDER BY M.CODIGO DESC LIMIT 1));");
+            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setLong(2, codServicoRealizado);
+            stmt.setLong(3, codUnidade);
+            stmt.setLong(4, codPneu);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao inserir vinculo da movimentacao com o serviço realizado " +
+                        "na tabale movimentacao_servico_realizado_recapadora");
+            }
+        } finally {
+            closeStatement(stmt);
         }
     }
 
@@ -309,32 +359,22 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO, " +
-                    "COD_RECAPADORA_ORIGEM, COD_TIPO_SERVICO_RECAPADORA) " +
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO) " +
                     "VALUES ((SELECT P.STATUS " +
-                    "  FROM PNEU P " +
-                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
-                    "  and P.COD_UNIDADE = ?)), ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
-                    "                                        FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "                                          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "                                        WHERE M.COD_UNIDADE = ? " +
-                    "                                              AND M.COD_PNEU = ? " +
-                    "                                              AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    "                                        ORDER BY M.CODIGO DESC LIMIT 1), ?);");
+                    "         FROM PNEU P " +
+                    "         WHERE P.CODIGO = ? " +
+                    "               AND COD_UNIDADE = ? " +
+                    "               AND ? IN (SELECT P.STATUS FROM PNEU P " +
+                    "         WHERE P.CODIGO = ? " +
+                    "               AND P.COD_UNIDADE = ?)), ?);");
             final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
-            stmt.setLong(1, movimentacao.getPneu().getCodigo());
+            final Long codPneu = movimentacao.getPneu().getCodigo();
+            stmt.setLong(1, codPneu);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, origemAnalise.getTipo().asString());
-            stmt.setLong(4, movimentacao.getPneu().getCodigo());
+            stmt.setLong(4, codPneu);
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
-            stmt.setLong(7, codUnidade);
-            stmt.setLong(8, movimentacao.getPneu().getCodigo());
-//            if (origemAnalise.getCodTipoServicoRecapadora() != null) {
-//                stmt.setLong(9, origemAnalise.getCodTipoServicoRecapadora());
-//            } else {
-//                stmt.setNull(9, Types.BIGINT);
-//            }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir a origem análise da movimentação");
             }
