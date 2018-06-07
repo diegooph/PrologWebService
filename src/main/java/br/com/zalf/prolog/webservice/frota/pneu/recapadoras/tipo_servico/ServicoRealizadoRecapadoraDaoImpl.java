@@ -25,15 +25,11 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
                        @NotNull final Long codUnidade,
                        @NotNull final Long codPneu,
                        @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
+        final Long codServicoRealizado = insertServicoRealizado(conn, codUnidade, codPneu, servicoRealizado);
         if (servicoRealizado instanceof ServicoRealizadoRecapagem) {
-            return insertServicoRealizadoRecapagem(
-                    conn,
-                    codUnidade,
-                    codPneu,
-                    (ServicoRealizadoRecapagem) servicoRealizado);
-        } else {
-            return insertServicoRealizado(conn, codUnidade, codPneu, servicoRealizado);
+            insertServicoRealizadoRecapagem(conn, codServicoRealizado, (ServicoRealizadoRecapagem) servicoRealizado);
         }
+        return codServicoRealizado;
     }
 
     @NotNull
@@ -63,33 +59,23 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
         }
     }
 
-    @NotNull
-    private Long insertServicoRealizadoRecapagem(
+    private void insertServicoRealizadoRecapagem(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codPneu,
+            @NotNull final Long codServicoRealizado,
             @NotNull final ServicoRealizadoRecapagem servicoRecapagem) throws SQLException {
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO_RECAPAGEM(" +
-                    "COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, VALOR, VIDA, COD_MODELO_BANDA, VIDA_NOVA_PNEU) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
-            stmt.setLong(1, servicoRecapagem.getCodTipoServicoRecapadora());
-            stmt.setLong(2, codUnidade);
-            stmt.setLong(3, codPneu);
-            stmt.setBigDecimal(4, servicoRecapagem.getValor());
-            stmt.setInt(5, servicoRecapagem.getVidaMomentoRealizacaoServico());
-            stmt.setLong(6, servicoRecapagem.getCodModeloBanda());
-            stmt.setInt(7, servicoRecapagem.getVidaNovaPneu());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Não foi possível inserir o servico de recapagem realizado no pneu: " + codPneu);
+                    "COD_SERVICO_REALIZADO_RECAPADORA, COD_MODELO_BANDA, VIDA_NOVA_PNEU) " +
+                    "VALUES (?, ?, ?);");
+            stmt.setLong(1, codServicoRealizado);
+            stmt.setLong(2, servicoRecapagem.getCodModeloBanda());
+            stmt.setInt(3, servicoRecapagem.getVidaNovaPneu());
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inserir o servico de recapagem realizado no pneu: ");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            closeStatement(stmt);
         }
     }
 }

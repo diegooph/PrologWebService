@@ -312,13 +312,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                      @NotNull final Movimentacao movimentacao) throws SQLException {
         final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
         final List<ServicoRealizadoRecapadora> servicosRealizados = origemAnalise.getServicosRealizados();
-        final Long codPneu = movimentacao.getPneu().getCodigo();
         if (servicosRealizados == null || servicosRealizados.isEmpty()) {
             return;
         }
 
         final ServicoRealizadoRecapadoraDao servicoRealizadoRecapadoraDao =
                 Injection.provideTipoServicoRealizadoRecapadoraDao();
+        final Long codPneu = movimentacao.getPneu().getCodigo();
         for (final ServicoRealizadoRecapadora servico : servicosRealizados) {
             final Long codServicoRealizado = servicoRealizadoRecapadoraDao.insert(conn, codUnidade, codPneu, servico);
             insertMovimentacaoServicoRecapadora(conn, codUnidade, codPneu, codServicoRealizado, movimentacao);
