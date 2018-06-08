@@ -72,7 +72,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @Override
     @NotNull
-    public Long insert(PneuComum pneu, Long codUnidade) throws SQLException {
+    public Long insert(Pneu pneu, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -152,7 +152,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public boolean update(PneuComum pneu, Long codUnidade, Long codOriginalPneu) throws SQLException {
+    public boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -755,7 +755,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     private void insertValorBandaVidaAtual(@NotNull final Connection conn,
                                            @NotNull final Long codUnidade,
-                                           @NotNull final PneuComum pneu) throws SQLException {
+                                           @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             final ServicoRealizadoRecapagem servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
@@ -777,7 +777,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     @NotNull
     private ServicoRealizadoRecapagem createServicoRealizadoRecapagem(@NotNull final Connection conn,
                                                                       @NotNull final Long codUnidade,
-                                                                      @NotNull final PneuComum pneu) throws SQLException {
+                                                                      @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -837,7 +837,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return modelo;
     }
 
-    private void updateTrocaVidaPneu(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
+    private void updateTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE pneu_valor_vida set cod_modelo_banda = ?, valor = ? WHERE " +

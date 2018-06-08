@@ -35,14 +35,14 @@ public class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
-    public AbstractResponse insert(PneuComum pneu, @PathParam("codUnidade") Long codUnidade) throws Throwable {
+    public AbstractResponse insert(Pneu pneu, @PathParam("codUnidade") Long codUnidade) throws Throwable {
         return service.insert(pneu, codUnidade);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
-    public Response update(PneuComum pneu,
+    public Response update(Pneu pneu,
                            @PathParam("codUnidade") Long codUnidade,
                            @PathParam("codPneuOriginal") Long codOriginalPneu) {
         if (service.update(pneu, codUnidade, codOriginalPneu)) {

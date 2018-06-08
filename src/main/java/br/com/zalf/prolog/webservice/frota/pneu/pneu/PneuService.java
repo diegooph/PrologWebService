@@ -22,7 +22,7 @@ public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
 
-    public AbstractResponse insert(PneuComum pneu, Long codUnidade) throws Throwable {
+    public AbstractResponse insert(Pneu pneu, Long codUnidade) throws Throwable {
         try {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade);
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
@@ -32,7 +32,7 @@ public class PneuService {
         }
     }
 
-    public boolean update(PneuComum pneu, Long codUnidade, Long codOriginal) {
+    public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
         try {
             return dao.update(pneu, codUnidade, codOriginal);
         } catch (SQLException e) {

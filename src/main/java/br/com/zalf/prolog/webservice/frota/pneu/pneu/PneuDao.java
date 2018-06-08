@@ -29,7 +29,7 @@ public interface PneuDao {
      * @throws SQLException caso ocorra erro no banco
      */
     @NotNull
-    Long insert(PneuComum pneu, Long codUnidade) throws Throwable;
+    Long insert(Pneu pneu, Long codUnidade) throws Throwable;
 
     /**
      * atualiza medições do pneu no banco
@@ -51,7 +51,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean update(PneuComum pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
+    boolean update(Pneu pneu, Long codUnidade, Long codOriginalPneu) throws SQLException;
 
     /**
      * Atualiza a pressão do pneu.
