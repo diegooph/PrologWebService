@@ -120,10 +120,12 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO RECAPADORA_TIPO_SERVICO (COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
+            stmt = conn.prepareStatement("INSERT INTO RECAPADORA_TIPO_SERVICO(" +
+                    "COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
                     "VALUES (?, ?, " +
                     "(SELECT C.CODIGO FROM COLABORADOR AS C WHERE C.CPF = " +
-                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
+                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) " +
+                    "RETURNING CODIGO;");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, tipoServico.getNome());
             stmt.setString(3, token);
