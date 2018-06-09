@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
@@ -27,23 +28,24 @@ public class ColaboradorService {
     private final ColaboradorDao dao = Injection.provideColaboradorDao();
     private static final String TAG = ColaboradorService.class.getSimpleName();
 
-    public boolean insert(Colaborador colaborador) {
+    public void insert(Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.insert(colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
-            Log.e(TAG, "Erro ao inserir o colaborador", e);
-            return false;
+            final String errorMessage = "Erro ao inserir o colaborador";
+            Log.e(TAG, errorMessage, e);
+            throw ProLogExceptionHandler.map(e, errorMessage);
         }
     }
 
-    public boolean update(Long cpfAntigo, Colaborador colaborador) {
+    public void update(Long cpfAntigo, Colaborador colaborador) throws Throwable {
         try {
+            ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
-            return true;
         } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            return false;
+            throw e;
         }
     }
 
@@ -117,6 +119,8 @@ public class ColaboradorService {
                         colaborador.getUnidade().getCodigo(),
                         colaborador.getSetor().getCodigo()));
             } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL)) {
+                loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
+            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.FROTA, Pilares.Frota.Pneu.CADASTRAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             }
 

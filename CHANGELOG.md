@@ -1,8 +1,70 @@
 Change Log
 ==========
 
+<a name="v0.0.64"></a>
+## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (release-date) [unreleased]
+
+### Refactor
+* Remove JOIN não necessário na busca de uma aferição por código
+
+<a name="v0.0.63"></a>
+## Version [v0.0.63](https://github.com/luizfp/PrologWeb/compare/v0.0.62...v0.0.63) (2018-06-05)
+
+### Features
+* Permite ativar/inativar um modelo de checklist
+
+### Refactors
+* Altera fluxo de edição de um modelo de checklist
+* Lida corretamente com exceções no insert do colaborador/veículo/pneu
+
+### Bug Fixes
+* Corrige validações feitas no cadastro/edição de colaborador
+* Corrige busca de uma aferição por código removendo comparação de código de unidade com a tabela `PNEU`
+
+<a name="v0.0.62"></a>
+## Version [v0.0.62](https://github.com/luizfp/PrologWeb/compare/v0.0.61...v0.0.62) (2018-06-03)
+
+### Features
+* Cria validador para o insert do pneu
+* Cria validador para o insert do colaborador
+* Cria validador para o insert do veículo
+
+### Refactors
+* Altera insert da `Recapadora` para retornar o código do banco
+
+### Bug Fixes
+* Loga erros que possam acontecer no `RecapadoraService`
+* Corrige busca dos modelos de checklist, buscando apenas veículos ativos que podem realizar o checklist
+* Corrige busca das aferições
+
+<a name="v0.0.61"></a>
+## Version [v0.0.61](https://github.com/luizfp/PrologWeb/compare/v0.0.60...v0.0.61) (2018-05-22)
+
+### Refactors
+* Altera pasta de salvamento das imagens do checklist
+
+### Bug Fixes
+* Corrige join com tabela `PNEU_VALOR_VIDA` na busca dos pneus
+* Sobe exception caso ocorra ao enviar uma imagem com `S3FileSender`
+* Corrige busca da quantidade de pneus com pressão incorreta (dashboard)
+
+<a name="v0.0.60"></a>
+## Version [v0.0.60](https://github.com/luizfp/PrologWeb/compare/v0.0.59...v0.0.60) (2018-05-17)
+
+### Refactors
+* Adiciona código do colaborador na criação do objeto na `ColaboradorDaoImpl`
+
+### Bug Fixes
+* Seta credenciais da Amazon ao logar usuário caso ele tenha permissão de cadastro de pneu
+
+<a name="v0.0.59"></a>
+## Version [v0.0.59](https://github.com/luizfp/PrologWeb/compare/v0.0.58...v0.0.59) (2018-05-15)
+
+### Bug Fixes
+* Corrige busca do cronograma da aferição na integração com a Avilan
+
 <a name="v0.0.58"></a>
-## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (release-date) - [unreleased]
+## Version [v0.0.58](https://github.com/luizfp/PrologWeb/compare/v0.0.57...v0.0.58) (2018-05-15)
 
 ### Features
 * Cria método para buscar um tipo de intervalo específico
@@ -15,12 +77,14 @@ Change Log
 * Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
 * Bloqueia resources ligados a pneu para os apps com version code menor ou igual a 51
 * Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
+* Altera insert do pneu para retornar um `AbstractResponse`
 
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
 * Corrige busca dos modelos de checklist disponíveis
 * Lida com caso de alternativas nulas na inserção do modelo de checklist
 * Aumenta para 5 min timeout até uma connection ser considerada abandonada
+* Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
 
 <a name="v0.0.57"></a>
 ## Version [v0.0.57](https://github.com/luizfp/PrologWeb/compare/v0.0.56...v0.0.57) (2018-05-08)

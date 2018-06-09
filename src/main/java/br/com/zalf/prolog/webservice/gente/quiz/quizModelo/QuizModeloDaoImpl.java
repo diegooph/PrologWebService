@@ -375,7 +375,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 }
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -391,7 +391,7 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 throw new SQLException("Erro ao inserir o treinamento do Quiz");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

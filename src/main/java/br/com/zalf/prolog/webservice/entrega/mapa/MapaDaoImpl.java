@@ -193,7 +193,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 throw new SQLException("Erro ao inserir o mapa " + mapa + " na tabela");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -210,7 +210,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 throw new SQLException("Erro ao inserir o mapa_colaborador: " + mapa + " matricula: " + matricula);
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }
@@ -455,7 +455,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                 return false;
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
         return true;
     }

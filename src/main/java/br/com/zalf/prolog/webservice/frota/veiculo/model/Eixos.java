@@ -7,7 +7,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 public class Eixos {
     public int dianteiro;
     public int traseiro;
-    public long codigo;
+    public Long codigo;
     public String nome;
 
     public Eixos() {

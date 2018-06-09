@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
@@ -117,13 +118,14 @@ public class VeiculoService {
         }
     }
 
-    public boolean insert(Veiculo veiculo, Long codUnidade) {
+    public void insert(Veiculo veiculo, Long codUnidade) throws Throwable {
         try {
-            return dao.insert(veiculo, codUnidade);
-        } catch (SQLException e) {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            dao.insert(veiculo, codUnidade);
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            return false;
+            throw ProLogExceptionHandler.map(e, "Erro ao inserir veículo");
         }
     }
 
@@ -208,8 +210,8 @@ public class VeiculoService {
         try {
             return dao.updateTipoVeiculo(tipo, codUnidade);
         } catch (SQLException e) {
-          Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
-                  "codUnidade: %d", codUnidade), e);
+            Log.e(TAG, String.format("Erro ao atualizar o tipo de veículo. \n" +
+                    "codUnidade: %d", codUnidade), e);
             return false;
         }
     }
