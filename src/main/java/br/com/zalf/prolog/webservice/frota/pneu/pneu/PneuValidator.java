@@ -66,25 +66,37 @@ public class PneuValidator {
     }
 
     private static void validacaoVida(Pneu pneu) throws Exception {
+        validacaoVidaRecapagem(pneu.getVidasTotal(), pneu.getVidaAtual());
+
         if (pneu.getVidaAtual() > vidaPneuNovo) {
-            validacaoRecapagem(pneu.getVidasTotal(), pneu.getVidaAtual());
-            validacaoMarcaDaBanda(pneu.getBanda().getMarca().getCodigo());
-            validacaoModeloDaBanda(pneu.getBanda().getModelo().getCodigo());
-            validacaoValorDaBanda(pneu.getBanda().getValor());
+            validacaoBanda(pneu.getBanda());
         }
+
         if (pneu.getVidaAtual() > vidaMaxima) {
             throw new GenericException("Vida inválida\nO máximo de vidas que um pneu pode ter é 6", "getVidaAtual > 6");
         }
+
         if (pneu.getVidaAtual() < vidaPneuNovo) {
             throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1", "getVidaAtual < 1");
         }
     }
 
-    private static void validacaoRecapagem(int vidaTotal, int vidaAtual) throws Exception {
+
+    private static void validacaoVidaRecapagem(int vidaTotal, int vidaAtual) throws Exception {
         if (vidaTotal < vidaAtual) {
             throw new GenericException("A vida do pneu precisa ser menor ou igual ao máximo de recapagens",
                     "vidaTotal é menor que vidaAtual");
         }
+    }
+
+    private static void validacaoBanda (Banda banda) throws Exception {
+        Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar uma marca de banda");
+        Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar um modelo");
+        Preconditions.checkNotNull(banda.getValor(), "Vocẽ precisa fornecer o valor");
+
+        validacaoMarcaDaBanda(banda.getMarca().getCodigo());
+        validacaoModeloDaBanda(banda.getModelo().getCodigo());
+        validacaoValorDaBanda(banda.getValor());
     }
 
     private static void validacaoMarcaDaBanda(Long codMarcaDaBanda) {
