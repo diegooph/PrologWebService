@@ -13,10 +13,10 @@ public final class ProLogExceptionHandler {
         throw new IllegalStateException(ProLogExceptionHandler.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static Throwable map(@NotNull final Throwable throwable,
-                                @NotNull final String genericErrorMessage) {
+    public static ProLogException map(@NotNull final Throwable throwable,
+                                      @NotNull final String genericErrorMessage) {
         if (throwable instanceof ProLogException) {
-            return throwable;
+            return (ProLogException) throwable;
         } else {
             return new GenericException(genericErrorMessage, null);
         }

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -118,7 +119,7 @@ public class VeiculoService {
         }
     }
 
-    public void insert(Veiculo veiculo, Long codUnidade) throws Throwable {
+    public void insert(Veiculo veiculo, Long codUnidade) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             dao.insert(veiculo, codUnidade);
