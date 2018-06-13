@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class VeiculoValidator {
 
-    private static final int maxLengthPlaca = 7;
+    private static final int MAX_LENGTH_PLACA = 7;
 
     private VeiculoValidator() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -30,7 +30,7 @@ public class VeiculoValidator {
     private static void validacaoPlaca(String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a Placa");
 
-        if (placa.length() != maxLengthPlaca) {
+        if (placa.length() != MAX_LENGTH_PLACA) {
             throw new GenericException("A placa deve conter 7 caracteres", null);
         }
 

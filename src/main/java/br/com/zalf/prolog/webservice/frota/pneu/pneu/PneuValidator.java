@@ -13,9 +13,9 @@ import static br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.isDotVali
 
 public class PneuValidator {
 
-    private static final int vidaPneuNovo = 1;
-    private static final int vidaMaxima = 6;
-    private static final int paridade = 0;
+    private static final int VIDA_PNEU_NOVO = 1;
+    private static final int VIDA_MAXIMA = 6;
+    private static final int PARIDADE = 0;
 
     public static void validacaoAtributosPneu(@NotNull final Pneu pneu, Long codUnidade) throws GenericException {
         try {
@@ -53,13 +53,13 @@ public class PneuValidator {
         Preconditions.checkArgument(marca.getCodigo() > 0, "Marca inválida");
     }
 
-    private static void validacaoModelo(ModeloPneu modelo) throws Exception {
+    private static void validacaoModelo(ModeloPneu modelo) {
         Preconditions.checkNotNull(modelo, "Você precisa selecionar o Modelo");
         Preconditions.checkArgument(Integer.parseInt(String.valueOf(modelo.getCodigo())) > 0,
                 "Modelo inválido");
     }
 
-    private static void validacaoValor(BigDecimal valor) throws Exception {
+    private static void validacaoValor(BigDecimal valor) {
         Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
         Preconditions.checkArgument(Double.parseDouble(String.valueOf(valor)) > 0,
                 "Valor inválido\nO valor não pode ser negativo");
@@ -68,19 +68,18 @@ public class PneuValidator {
     private static void validacaoVida(Pneu pneu) throws Exception {
         validacaoVidaRecapagem(pneu.getVidasTotal(), pneu.getVidaAtual());
 
-        if (pneu.getVidaAtual() > vidaPneuNovo) {
+        if (pneu.getVidaAtual() > VIDA_PNEU_NOVO) {
             validacaoBanda(pneu.getBanda());
         }
 
-        if (pneu.getVidaAtual() > vidaMaxima) {
+        if (pneu.getVidaAtual() > VIDA_MAXIMA) {
             throw new GenericException("Vida inválida\nO máximo de vidas que um pneu pode ter é 6", "getVidaAtual > 6");
         }
 
-        if (pneu.getVidaAtual() < vidaPneuNovo) {
+        if (pneu.getVidaAtual() < VIDA_PNEU_NOVO) {
             throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1", "getVidaAtual < 1");
         }
     }
-
 
     private static void validacaoVidaRecapagem(int vidaTotal, int vidaAtual) throws Exception {
         if (vidaTotal < vidaAtual) {
@@ -89,7 +88,7 @@ public class PneuValidator {
         }
     }
 
-    private static void validacaoBanda (Banda banda) throws Exception {
+    private static void validacaoBanda (Banda banda) {
         Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar uma marca de banda");
         Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar um modelo");
         Preconditions.checkNotNull(banda.getValor(), "Vocẽ precisa fornecer o valor");
@@ -126,7 +125,7 @@ public class PneuValidator {
 
     private static void tipoValidacaoSulcos(Pneu pneu) throws Exception {
         try {
-            if (pneu.getVidaAtual() == vidaPneuNovo) {
+            if (pneu.getVidaAtual() == VIDA_PNEU_NOVO) {
                 validacaoSulcos(pneu.getSulcosAtuais(), pneu.getModelo().getQuantidadeSulcos());
             } else {
                 validacaoSulcos(pneu.getSulcosAtuais(), pneu.getBanda().getModelo().getQuantidadeSulcos());
@@ -146,7 +145,7 @@ public class PneuValidator {
         Preconditions.checkNotNull(sulcos.getInterno(), "Você precisa fornecer o Sulco Externo");
 
         final int quantidadeDeSulcosSite = quantidadeDeSulcos % 2;
-        if (quantidadeDeSulcosSite == paridade) {
+        if (quantidadeDeSulcosSite == PARIDADE) {
             Preconditions.checkArgument(sulcos.getCentralInterno() >= 0, "Sulco Atual Central " +
                     "Interno inválido\nO Sulco não pode ter um valor negativo");
 

@@ -29,8 +29,8 @@ public class PneuService {
         try {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade);
             return ResponseWithCod.ok("Pneu inserido com sucesso", dao.insert(pneu, codUnidade));
-        } catch (Exception e) {
-            final String errorMessage = "Erro ao inserir o colaborador";
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao inserir o pneu";
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
             throw ProLogExceptionHandler.map(e, errorMessage);
         }

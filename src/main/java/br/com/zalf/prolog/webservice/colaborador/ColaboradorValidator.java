@@ -13,9 +13,9 @@ import java.util.Date;
 
 public class ColaboradorValidator {
 
-    private static final int anoMinimoPermitido = 1900;
-    private static final int anoMaximoPermitido = 2050;
-    private static final int maxLengthPis = 11;
+    private static final int ANO_MINIMO_PERMITIDO = 1900;
+    private static final int ANO_MAXIMO_PERMITIDO = 2050;
+    private static final int MAX_LENGTH_PIS = 11;
 
     private ColaboradorValidator() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -74,7 +74,7 @@ public class ColaboradorValidator {
     private static void validacaoDataNascimento(Date dataNascimento) throws Exception {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento\n");
 
-        if (DateUtils.verificaAno(dataNascimento, anoMaximoPermitido, anoMinimoPermitido)) {
+        if (DateUtils.verificaAno(dataNascimento, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
             throw new GenericException("Ano de Nascimento inválido", null);
         }
     }
@@ -82,7 +82,7 @@ public class ColaboradorValidator {
     private static void validacaoDataAdmissao(Date dataAdmissao) throws Exception {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
-        if (DateUtils.verificaAno(dataAdmissao, anoMaximoPermitido, anoMinimoPermitido)) {
+        if (DateUtils.verificaAno(dataAdmissao, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
             throw new GenericException("Ano de Admissão inválido", null);
         }
     }
@@ -131,7 +131,7 @@ public class ColaboradorValidator {
         if (pis == null || pis.isEmpty())
             return;
 
-        if (pis.length() < maxLengthPis) {
+        if (pis.length() < MAX_LENGTH_PIS) {
             throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
             throw new GenericException("PIS inválido", null);
