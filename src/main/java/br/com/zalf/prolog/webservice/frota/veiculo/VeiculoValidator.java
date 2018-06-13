@@ -74,12 +74,12 @@ public class VeiculoValidator {
         Preconditions.checkArgument(codModelo > 0, "Modelo inválido");
     }
 
-    private static void validacaoEixos(Long codEixos) throws Exception {
+    private static void validacaoEixos(Long codEixos) {
         Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
         Preconditions.checkArgument(codEixos > 0, "Eixos inválido");
     }
 
-    private static void validacaoTipo(Long codTipo) throws Exception {
+    private static void validacaoTipo(Long codTipo) {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
         Preconditions.checkArgument(codTipo > 0, "Tipo inválido");
     }

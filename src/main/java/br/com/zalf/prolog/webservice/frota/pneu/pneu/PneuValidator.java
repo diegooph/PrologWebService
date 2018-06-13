@@ -130,14 +130,12 @@ public class PneuValidator {
             } else {
                 validacaoSulcos(pneu.getSulcosAtuais(), pneu.getBanda().getModelo().getQuantidadeSulcos());
             }
-        } catch (GenericException e) {
-            throw e;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
     }
 
-    private static void validacaoSulcos(Sulcos sulcos, int quantidadeDeSulcos) throws Exception {
+    private static void validacaoSulcos(Sulcos sulcos, int quantidadeDeSulcos) {
         Preconditions.checkNotNull(sulcos, "Você precisa fornecer o Sulco");
         Preconditions.checkNotNull(sulcos.getCentralExterno(), "Você precisa fornecer o Sulco Central Externo");
         Preconditions.checkNotNull(sulcos.getCentralInterno(), "Você precisa fornecer o Sulco Central Interno");

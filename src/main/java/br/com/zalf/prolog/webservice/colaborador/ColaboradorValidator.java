@@ -107,7 +107,7 @@ public class ColaboradorValidator {
         Preconditions.checkArgument(funcao.getCodigo() > 0, "Cargo inválido");
     }
 
-    private static void validacaoUnidade(Unidade unidade) throws Exception {
+    private static void validacaoUnidade(Unidade unidade) {
         Preconditions.checkNotNull(unidade, "Você precisa selecionar a Unidade");
         Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Unidade");
         Preconditions.checkArgument(unidade.getCodigo() > 0, "Unidade inválida");
@@ -121,7 +121,7 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoEquipe(Equipe equipe) throws Exception {
+    private static void validacaoEquipe(Equipe equipe) {
         Preconditions.checkNotNull(equipe, "Você precisa selecionar a Equipe");
         Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a Equipe");
         Preconditions.checkArgument((int) equipe.getCodigo().intValue() > 0, "Equipe inválida");
