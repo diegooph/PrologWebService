@@ -90,8 +90,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, " +
                     "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
-                    "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
-                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa)\n" +
+                    "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, " +
+                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa) " +
                     "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO;");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
@@ -131,7 +131,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             // Verifica se precisamos inserir informações de valor da banda para a vida atual.
             if (pneu.getVidaAtual() > 1) {
-                insertValorBandaVidaAtual(conn, codUnidade, pneu);
+                criaServicoRecapagemCadastroPneu(conn, codUnidade, pneu);
             }
 
             final List<PneuFotoCadastro> fotosCadastro = pneu.getFotosCadastro();
@@ -753,18 +753,21 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
-    private void insertValorBandaVidaAtual(@NotNull final Connection conn,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final Pneu pneu) throws SQLException {
+    private void criaServicoRecapagemCadastroPneu(@NotNull final Connection conn,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
             final ServicoRealizadoRecapagem servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
             final Long codServicoRealizado = Injection
                     .provideTipoServicoRealizadoRecapadoraDao()
-                    .insert(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
-            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO(COD_PNEU, COD_SERVICO) VALUES (?, ?);");
+                    .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
+            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO " +
+                    "(COD_PNEU, COD_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, (SELECT SR.FONTE_SERVICO_REALIZADO FROM SERVICO_REALIZADO AS SR WHERE CODIGO = ?));");
             stmt.setLong(1, pneu.getCodigo());
             stmt.setLong(2, codServicoRealizado);
+            stmt.setLong(3, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o valor da banda do pneu "
                         + pneu.getCodigo() + " da unidade " + codUnidade);
