@@ -320,20 +320,49 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 Injection.provideTipoServicoRealizadoRecapadoraDao();
         final Long codPneu = movimentacao.getPneu().getCodigo();
         for (final ServicoRealizadoRecapadora servico : servicosRealizados) {
-            final Long codServicoRealizado = servicoRealizadoRecapadoraDao.insert(conn, codUnidade, codPneu, servico);
-            insertMovimentacaoServicoRecapadora(conn, codUnidade, codPneu, codServicoRealizado, movimentacao);
+            final Long codServicoRealizado =
+                    servicoRealizadoRecapadoraDao.insertServicoByMovimentacao(conn, codUnidade, codPneu, servico);
+            insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
+            insertMovimentacaoServicoRealizadoRecapadora(
+                    conn,
+                    codUnidade,
+                    codPneu,
+                    codServicoRealizado,
+                    movimentacao.getCodigo());
         }
     }
 
-    private void insertMovimentacaoServicoRecapadora(@NotNull final Connection conn,
-                                                     @NotNull final Long codUnidade,
-                                                     @NotNull final Long codPneu,
-                                                     @NotNull final Long codServicoRealizado,
-                                                     @NotNull final Movimentacao movimentacao) throws SQLException {
+    private void insertMovimentacaoServicoRealizado(@NotNull final Connection conn,
+                                                    @NotNull final Long codServicoRealizado,
+                                                    @NotNull final Long codMovimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO_RECAPADORA" +
-                    "(COD_MOVIMENTACAO, COD_SERVICO, COD_RECAPADORA) " +
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, (SELECT SR.FONTE_SERVICO_REALIZADO " +
+                    "FROM SERVICO_REALIZADO AS SR WHERE CODIGO = ?));");
+            stmt.setLong(1, codMovimentacao);
+            stmt.setLong(2, codServicoRealizado);
+            stmt.setLong(3, codServicoRealizado);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível inserir o Serviço Realizado " +
+                        "na tabela de vínculo com a Movimentação na tabela movimentacao_servico_realizado");
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    private void insertMovimentacaoServicoRealizadoRecapadora(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final Long codServicoRealizado,
+            @NotNull final Long codMovimentacao) throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO_RECAPADORA " +
+                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO, COD_RECAPADORA) " +
                     "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
                     " FROM MOVIMENTACAO_DESTINO AS MD " +
                     "   JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
@@ -341,7 +370,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "       AND M.COD_PNEU = ? " +
                     "       AND MD.TIPO_DESTINO = 'ANALISE' " +
                     " ORDER BY M.CODIGO DESC LIMIT 1));");
-            stmt.setLong(1, movimentacao.getCodigo());
+            stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
             stmt.setLong(3, codUnidade);
             stmt.setLong(4, codPneu);
@@ -524,7 +553,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         } finally {
             closeStatement(stmt);
         }
-
     }
 
     private void insertMovimentacaoDestinoDescarte(@NotNull final Connection conn,
