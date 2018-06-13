@@ -21,13 +21,36 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
     }
 
     @Override
-    public Long insert(@NotNull final Connection conn,
-                       @NotNull final Long codUnidade,
-                       @NotNull final Long codPneu,
-                       @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
-        final Long codServicoRealizado = insertServicoRealizado(conn, codUnidade, codPneu, servicoRealizado);
+    public Long insertServicoByMovimentacao(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
+        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, ServicoRealizadoRecapadora.FONTE_MOVIMENTACAO);
+    }
+
+    @Override
+    public Long insertServicoByPneuCadastro(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
+        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, ServicoRealizadoRecapadora.FONTE_CADASTRO);
+    }
+
+    private Long internalInsert(@NotNull final Connection conn,
+                                @NotNull final Long codUnidade,
+                                @NotNull final Long codPneu,
+                                @NotNull final ServicoRealizadoRecapadora servicoRealizado,
+                                @NotNull final String fonteServicoRealizado) throws SQLException {
+        final Long codServicoRealizado =
+                insertServicoRealizado(conn, codUnidade, codPneu, servicoRealizado, fonteServicoRealizado);
         if (servicoRealizado instanceof ServicoRealizadoRecapagem) {
-            insertServicoRealizadoRecapagem(conn, codServicoRealizado, (ServicoRealizadoRecapagem) servicoRealizado);
+            insertServicoRealizadoRecapagem(
+                    conn,
+                    codServicoRealizado,
+                    (ServicoRealizadoRecapagem) servicoRealizado,
+                    fonteServicoRealizado);
         }
         return codServicoRealizado;
     }
@@ -36,18 +59,20 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
     private Long insertServicoRealizado(@NotNull final Connection conn,
                                         @NotNull final Long codUnidade,
                                         @NotNull final Long codPneu,
-                                        @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
+                                        @NotNull final ServicoRealizadoRecapadora servicoRealizado,
+                                        @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO_RECAPADORA(" +
-                    "COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, VALOR, VIDA) " +
-                    "VALUES (?, ?, ?, ?, ?) RETURNING CODIGO;");
+            stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO(" +
+                    "COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, VALOR, VIDA, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, servicoRealizado.getCodTipoServicoRecapadora());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codPneu);
             stmt.setBigDecimal(4, servicoRealizado.getValor());
             stmt.setInt(5, servicoRealizado.getVidaMomentoRealizacaoServico());
+            stmt.setString(6, fonteServicoRealizado);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -62,15 +87,17 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
     private void insertServicoRealizadoRecapagem(
             @NotNull final Connection conn,
             @NotNull final Long codServicoRealizado,
-            @NotNull final ServicoRealizadoRecapagem servicoRecapagem) throws SQLException {
+            @NotNull final ServicoRealizadoRecapagem servicoRecapagem,
+            @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO_RECAPAGEM(" +
-                    "COD_SERVICO_REALIZADO_RECAPADORA, COD_MODELO_BANDA, VIDA_NOVA_PNEU) " +
-                    "VALUES (?, ?, ?);");
+                    "COD_SERVICO_REALIZADO_RECAPADORA, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, ?, ?);");
             stmt.setLong(1, codServicoRealizado);
             stmt.setLong(2, servicoRecapagem.getCodModeloBanda());
             stmt.setInt(3, servicoRecapagem.getVidaNovaPneu());
+            stmt.setString(4, fonteServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir o servico de recapagem realizado no pneu: ");
             }

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 public interface ServicoRealizadoRecapadoraDao {
 
     /**
+     * Processo de inserção de um {@link ServicoRealizadoRecapadora} disparado através de uma movimentação.
      * Insere no banco de dados um {@link ServicoRealizadoRecapadora} contendo os dados
      * referentes ao serviço executado no {@link Pneu}.
      *
@@ -26,8 +27,26 @@ public interface ServicoRealizadoRecapadoraDao {
      * @return - o código do {@link ServicoRealizadoRecapadora} inserido.
      * @throws SQLException - Se algum erro ocorrer na inserção.
      */
-    Long insert(@NotNull final Connection conn,
-                @NotNull final Long codUnidade,
-                @NotNull final Long codPneu,
-                @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException;
+    Long insertServicoByMovimentacao(@NotNull final Connection conn,
+                                     @NotNull final Long codUnidade,
+                                     @NotNull final Long codPneu,
+                                     @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException;
+
+    /**
+     * Processo de inserção de um {@link ServicoRealizadoRecapadora} disparado através do cadastro
+     * de um {@link Pneu} cujo não está na primeira vida.
+     * Insere no banco de dados um {@link ServicoRealizadoRecapadora} contendo os dados
+     * referentes ao serviço executado no {@link Pneu}.
+     *
+     * @param conn             - {@link Connection} que será utilizada para conectar ao banco de dados.
+     * @param codUnidade       - Código da {@link Unidade} que o serviço foi realizado.
+     * @param codPneu          - Código do {@link Pneu} que o serviço foi realizado.
+     * @param servicoRealizado - {@link ServicoRealizadoRecapadora} que foi realizado no {@link Pneu}.
+     * @return - o código do {@link ServicoRealizadoRecapadora} inserido.
+     * @throws SQLException - Se algum erro ocorrer na inserção.
+     */
+    Long insertServicoByPneuCadastro(@NotNull final Connection conn,
+                                     @NotNull final Long codUnidade,
+                                     @NotNull final Long codPneu,
+                                     @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException;
 }

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import com.google.gson.Gson;
 
 import java.math.BigDecimal;
@@ -12,6 +13,19 @@ import java.math.BigDecimal;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class ServicoRealizadoRecapadora {
+
+    /**
+     * Atributo que define o gatilho pelo qual este serviço foi necessário.
+     * {@code FONTE_MOVIMENTACAO} indica que um processo de movimentação disparou a realização deste serviço.
+     */
+    public static final String FONTE_MOVIMENTACAO = "FONTE_MOVIMENTACAO";
+
+    /**
+     * Atributo que define o gatilho pelo qual este serviço foi necessário.
+     * {@code FONTE_CADASTRO} indica que o cadastro de um {@link Pneu} cujo não está na primeira vida
+     * disparou a criação deste serviço.
+     */
+    public static final String FONTE_CADASTRO = "FONTE_CADASTRO";
 
     private Long codigo;
     private Long codTipoServicoRecapadora;
