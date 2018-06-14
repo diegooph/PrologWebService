@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.math.DoubleMath;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class Pneu {
     private static final String TAG = Pneu.class.getSimpleName();
     public static final int DOT_LENGTH = 4;
 
-    public enum Problema{
+    public enum Problema {
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
     }
 
@@ -85,16 +86,16 @@ public class Pneu {
 
     /**
      * Usaremos um int com 3 digitos para mapear a posição de um pneu.
-     *
+     * <p>
      * Ex.: 121
      * O primeiro digito se refere ao eixo, contando a partir da dianteira, iniciando em 1, no exemplo esse seria o
      * primeiro eixo, o que controla a direção do veículo, no caso.
      * O segundo dígito indica o lado, esquerdo(1) ou direito(2), assumindo que estamos olhando o veículo na direção
      * carroceria -> cabine (sentado no bando do motorista).
      * O terceiro dígito indica se é um pneu interno(2) ou externo(1).
-     *
+     * <p>
      * Em resumo, o único dígito que pode passar de 2 é o primeiro, o segundo e terceiro serão sempre 1 ou 2.
-     *
+     * <p>
      * Obs.: Estepes serão representados sempre começando com número 9, o segundo número continua informando o lado e
      * o terceiro (interno ou externo) é ignorado.
      */
@@ -382,7 +383,7 @@ public class Pneu {
 
     public static boolean isDotValid(@NotNull final String dot) {
         //noinspection ConstantConditions
-        if (dot == null || dot.length() != DOT_LENGTH || !isIntegerValue(dot)) {
+        if (dot == null || dot.length() != DOT_LENGTH || !StringUtils.isIntegerValuePositive(dot)) {
             return false;
         }
 
@@ -408,11 +409,6 @@ public class Pneu {
         } catch (Exception ex) {
             Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
         }
-
         return false;
-    }
-
-    public static boolean isIntegerValue(@NotNull final String representacaoValor) {
-        return representacaoValor.matches("^[+-]?\\d+$");
     }
 }

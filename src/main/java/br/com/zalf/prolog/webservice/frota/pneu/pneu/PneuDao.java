@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -45,8 +46,8 @@ public interface PneuDao {
     /**
      * atualiza valores do pneu
      *
-     * @param pneu        um pneu
-     * @param codUnidade  código da unidade
+     * @param pneu            um pneu
+     * @param codUnidade      código da unidade
      * @param codOriginalPneu código original do pneu
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
@@ -136,26 +137,29 @@ public interface PneuDao {
 
     /**
      * Insere uma nova marca de banda
-     * @param marca marca a ser inserida
+     *
+     * @param marca      marca a ser inserida
      * @param codEmpresa código da empresa a ser vinculada a marca
      * @return código gerado pelo BD para a nova banda inserida
      * @throws SQLException
      */
-    Long insertMarcaBanda (Marca marca, Long codEmpresa) throws SQLException;
+    Long insertMarcaBanda(Marca marca, Long codEmpresa) throws SQLException;
 
     /**
      * Insere um nomo modelo de banda
-     * @param modelo modelo a ser inserido
+     *
+     * @param modelo        modelo a ser inserido
      * @param codMarcaBanda código da marca da banda que esse modelo pertence
-     * @param codEmpresa código da empresa que esse modelo pertence
+     * @param codEmpresa    código da empresa que esse modelo pertence
      * @return código gerado pelo BD para o novo modelo inserido
      * @throws SQLException
      */
-    Long insertModeloBanda (ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) throws SQLException;
+    Long insertModeloBanda(ModeloBanda modelo, Long codMarcaBanda, Long codEmpresa) throws SQLException;
 
     /**
      * Atualiza o nome de uma marca
-     * @param marca marca com o nome atualizado
+     *
+     * @param marca      marca com o nome atualizado
      * @param codEmpresa código da empresa na qual a marca pertence
      * @return
      * @throws SQLException
@@ -164,6 +168,7 @@ public interface PneuDao {
 
     /**
      * Atualiza o nome de um modelo de banda
+     *
      * @param modelo modelo da banda a ser atualizada
      * @return
      * @throws SQLException
@@ -172,6 +177,7 @@ public interface PneuDao {
 
     /**
      * Busca um pneu através de seu código
+     *
      * @param codPneu
      * @param codUnidade
      * @return
@@ -181,6 +187,7 @@ public interface PneuDao {
 
     /**
      * Busca um modelo de pneu a partir de seu código único
+     *
      * @param codModelo
      * @return
      * @throws SQLException
