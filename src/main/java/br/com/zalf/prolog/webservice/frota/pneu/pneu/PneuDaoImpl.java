@@ -763,8 +763,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     .provideTipoServicoRealizadoRecapadoraDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO " +
-                    "(COD_PNEU, COD_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
-                    "VALUES (?, ?, (SELECT SR.FONTE_SERVICO_REALIZADO FROM SERVICO_REALIZADO AS SR WHERE CODIGO = ?));");
+                    "(COD_PNEU, COD_PNEU_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, (SELECT PSR.FONTE_SERVICO_REALIZADO FROM PNEU_SERVICO_REALIZADO AS PSR WHERE PSR.CODIGO = ?));");
             stmt.setLong(1, pneu.getCodigo());
             stmt.setLong(2, codServicoRealizado);
             stmt.setLong(3, codServicoRealizado);
@@ -784,8 +784,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT RTS.CODIGO FROM RECAPADORA_TIPO_SERVICO AS RTS " +
-                    "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE AND INCREMENTA_VIDA = TRUE");
+            stmt = conn.prepareStatement("SELECT PTS.CODIGO AS CODIGO FROM PNEU_TIPO_SERVICO AS PTS " +
+                    "WHERE PTS.COD_EMPRESA IS NULL AND PTS.STATUS_ATIVO = TRUE AND PTS.INCREMENTA_VIDA = TRUE;");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final PneuServicoRealizadoRecapagem servico = new PneuServicoRealizadoRecapagem();
