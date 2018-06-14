@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -88,7 +89,7 @@ public class PneuValidator {
         }
     }
 
-    private static void validacaoBanda (Banda banda) {
+    private static void validacaoBanda(Banda banda) {
         Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar uma marca de banda");
         Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar um modelo");
         Preconditions.checkNotNull(banda.getValor(), "Vocẽ precisa fornecer o valor");
@@ -160,11 +161,9 @@ public class PneuValidator {
                 "\nO Sulco não pode ter um valor negativo");
     }
 
-    private static void validacaoDot(String dot) throws Exception {
-        Preconditions.checkNotNull(dot, "Você precisa fornecer o DOT");
-
-        if (!isDotValid(dot)) {
-            throw new GenericException("DOT inválido.", null);
+    private static void validacaoDot(@Nullable final String dot) throws Exception {
+        if (dot != null && !isDotValid(dot)) {
+            throw new GenericException("DOT inválido", null);
         }
     }
 }
