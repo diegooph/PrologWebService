@@ -1,11 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model;
 
 /**
  * Created on 24/05/18.
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class TipoServicoRecapadora {
+public class PneuTipoServico {
 
     private Long codigo;
     private Long codEmpresa;
@@ -14,7 +14,7 @@ public class TipoServicoRecapadora {
     private boolean editavel;
     private boolean incrementaVida;
 
-    public TipoServicoRecapadora() {
+    public PneuTipoServico() {
     }
 
     public Long getCodigo() {
@@ -67,7 +67,7 @@ public class TipoServicoRecapadora {
 
     @Override
     public String toString() {
-        return "TipoServicoRecapadora{" +
+        return "PneuTipoServico{" +
                 "codigo=" + codigo +
                 ", codEmpresa=" + codEmpresa +
                 ", nome='" + nome + '\'' +

@@ -16,8 +16,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapagem;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoRecapagem;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
@@ -151,9 +151,9 @@ public class MovimentacaoTest extends BaseTest {
         return movimentacoes;
     }
 
-    private List<ServicoRealizadoRecapadora> createServicosRealizados() {
-        final List<ServicoRealizadoRecapadora> servicos = new ArrayList<>();
-        final ServicoRealizadoRecapagem servicoRecapagem = createServicoRecapagem();
+    private List<PneuServicoRealizado> createServicosRealizados() {
+        final List<PneuServicoRealizado> servicos = new ArrayList<>();
+        final PneuServicoRealizadoRecapagem servicoRecapagem = createServicoRecapagem();
         servicos.add(servicoRecapagem);
         trocarBandaPneu(servicoRecapagem.getCodModeloBanda());
         servicos.add(createServicoVulcanizacao());
@@ -164,22 +164,22 @@ public class MovimentacaoTest extends BaseTest {
         pneuComum.getBanda().getModelo().setCodigo(codModeloBanda);
     }
 
-    private ServicoRealizadoRecapadora createServicoVulcanizacao() {
-        ServicoRealizadoRecapadora vulcanizacao = new ServicoRealizadoRecapadora();
-        vulcanizacao.setCodTipoServicoRecapadora(4L);
+    private PneuServicoRealizado createServicoVulcanizacao() {
+        PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
+        vulcanizacao.setCodPneuTipoServico(4L);
         vulcanizacao.setCodUnidade(5L);
         vulcanizacao.setCodPneu(pneuComum.getCodigo());
-        vulcanizacao.setValor(new BigDecimal(150));
+        vulcanizacao.setCusto(new BigDecimal(150));
         vulcanizacao.setVidaMomentoRealizacaoServico(pneuComum.getVidaAtual());
         return vulcanizacao;
     }
 
-    private ServicoRealizadoRecapagem createServicoRecapagem() {
-        final ServicoRealizadoRecapagem recapagem = new ServicoRealizadoRecapagem();
-        recapagem.setCodTipoServicoRecapadora(1L);
+    private PneuServicoRealizadoRecapagem createServicoRecapagem() {
+        final PneuServicoRealizadoRecapagem recapagem = new PneuServicoRealizadoRecapagem();
+        recapagem.setCodPneuTipoServico(1L);
         recapagem.setCodUnidade(5L);
         recapagem.setCodPneu(pneuComum.getCodigo());
-        recapagem.setValor(new BigDecimal(800));
+        recapagem.setCusto(new BigDecimal(800));
         recapagem.setVidaMomentoRealizacaoServico(pneuComum.getVidaAtual());
         recapagem.setCodModeloBanda(12L);
         recapagem.setVidaNovaPneu(pneuComum.getVidaAtual() + 1);

@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapagem;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoRecapagem;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -15,9 +15,9 @@ import java.sql.SQLException;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implements ServicoRealizadoRecapadoraDao {
+public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements PneuServicoRealizadoDao {
 
-    public ServicoRealizadoRecapadoraDaoImpl() {
+    public PneuServicoRealizadoDaoImpl() {
     }
 
     @Override
@@ -25,8 +25,8 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
             @NotNull final Long codPneu,
-            @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
-        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, ServicoRealizadoRecapadora.FONTE_MOVIMENTACAO);
+            @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, PneuServicoRealizado.FONTE_MOVIMENTACAO);
     }
 
     @Override
@@ -34,43 +34,44 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
             @NotNull final Long codPneu,
-            @NotNull final ServicoRealizadoRecapadora servicoRealizado) throws SQLException {
-        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, ServicoRealizadoRecapadora.FONTE_CADASTRO);
+            @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, PneuServicoRealizado.FONTE_CADASTRO);
     }
 
+    @NotNull
     private Long internalInsert(@NotNull final Connection conn,
                                 @NotNull final Long codUnidade,
                                 @NotNull final Long codPneu,
-                                @NotNull final ServicoRealizadoRecapadora servicoRealizado,
+                                @NotNull final PneuServicoRealizado servicoRealizado,
                                 @NotNull final String fonteServicoRealizado) throws SQLException {
         final Long codServicoRealizado =
-                insertServicoRealizado(conn, codUnidade, codPneu, servicoRealizado, fonteServicoRealizado);
-        if (servicoRealizado instanceof ServicoRealizadoRecapagem) {
-            insertServicoRealizadoRecapagem(
+                insertPneuServicoRealizado(conn, codUnidade, codPneu, servicoRealizado, fonteServicoRealizado);
+        if (servicoRealizado instanceof PneuServicoRealizadoRecapagem) {
+            insertPneuServicoRealizadoRecapagem(
                     conn,
                     codServicoRealizado,
-                    (ServicoRealizadoRecapagem) servicoRealizado,
+                    (PneuServicoRealizadoRecapagem) servicoRealizado,
                     fonteServicoRealizado);
         }
         return codServicoRealizado;
     }
 
     @NotNull
-    private Long insertServicoRealizado(@NotNull final Connection conn,
-                                        @NotNull final Long codUnidade,
-                                        @NotNull final Long codPneu,
-                                        @NotNull final ServicoRealizadoRecapadora servicoRealizado,
-                                        @NotNull final String fonteServicoRealizado) throws SQLException {
+    private Long insertPneuServicoRealizado(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidade,
+                                            @NotNull final Long codPneu,
+                                            @NotNull final PneuServicoRealizado servicoRealizado,
+                                            @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO(" +
                     "COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, VALOR, VIDA, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
-            stmt.setLong(1, servicoRealizado.getCodTipoServicoRecapadora());
+            stmt.setLong(1, servicoRealizado.getCodPneuTipoServico());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, codPneu);
-            stmt.setBigDecimal(4, servicoRealizado.getValor());
+            stmt.setBigDecimal(4, servicoRealizado.getCusto());
             stmt.setInt(5, servicoRealizado.getVidaMomentoRealizacaoServico());
             stmt.setString(6, fonteServicoRealizado);
             rSet = stmt.executeQuery();
@@ -84,10 +85,10 @@ public class ServicoRealizadoRecapadoraDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private void insertServicoRealizadoRecapagem(
+    private void insertPneuServicoRealizadoRecapagem(
             @NotNull final Connection conn,
             @NotNull final Long codServicoRealizado,
-            @NotNull final ServicoRealizadoRecapagem servicoRecapagem,
+            @NotNull final PneuServicoRealizadoRecapagem servicoRecapagem,
             @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         try {

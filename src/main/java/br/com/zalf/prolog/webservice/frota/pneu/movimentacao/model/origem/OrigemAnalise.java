@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -12,18 +12,18 @@ import java.util.List;
 public final class OrigemAnalise extends Origem {
 
     @Nullable
-    private List<ServicoRealizadoRecapadora> servicosRealizados;
+    private List<PneuServicoRealizado> servicosRealizados;
 
     public OrigemAnalise() {
         super(OrigemDestinoEnum.ANALISE);
     }
 
     @Nullable
-    public List<ServicoRealizadoRecapadora> getServicosRealizados() {
+    public List<PneuServicoRealizado> getServicosRealizados() {
         return servicosRealizados;
     }
 
-    public void setServicosRealizados(@Nullable final List<ServicoRealizadoRecapadora> servicosRealizados) {
+    public void setServicosRealizados(@Nullable final List<PneuServicoRealizado> servicosRealizados) {
         this.servicosRealizados = servicosRealizados;
     }
 

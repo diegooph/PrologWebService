@@ -1,7 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,11 +18,11 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements TipoServicoRecapadoraDao {
+public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTipoServicoDao {
 
     @Override
-    public Long insertTipoServicoRecapadora(@NotNull final String token,
-                                            @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+    public Long insertPneuTipoServico(@NotNull final String token,
+                                      @NotNull final PneuTipoServico tipoServico) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -32,13 +33,13 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public void atualizaTipoServicoRecapadora(@NotNull final String token,
-                                              @NotNull final Long codEmpresa,
-                                              @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+    public void atualizaPneuTipoServico(@NotNull final String token,
+                                        @NotNull final Long codEmpresa,
+                                        @NotNull final PneuTipoServico tipoServico) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            inativaTipoServico(conn, token, codEmpresa, tipoServico);
+            inativaPneuTipoServico(conn, token, codEmpresa, tipoServico);
             insereTipoServico(conn, token, codEmpresa, tipoServico);
         } finally {
             closeConnection(conn);
@@ -47,9 +48,9 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
 
     @SuppressWarnings("Duplicates")
     @Override
-    public List<TipoServicoRecapadora> getTiposServicosRecapadora(@NotNull final Long codEmpresa,
-                                                                  @Nullable final Boolean ativas) throws SQLException {
-        final List<TipoServicoRecapadora> tiposServicos = new ArrayList<>();
+    public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
+                                                      @Nullable final Boolean ativas) throws SQLException {
+        final List<PneuTipoServico> tiposServicos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -68,7 +69,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
             }
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                tiposServicos.add(createTipoServicoRecapadora(rSet));
+                tiposServicos.add(createPneuTipoServico(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -77,8 +78,8 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public TipoServicoRecapadora getTipoServicoRecapadora(@NotNull final Long codEmpresa,
-                                                          @NotNull final Long codTipoServico) throws SQLException {
+    public PneuTipoServico getPneuTipoServico(@NotNull final Long codEmpresa,
+                                              @NotNull final Long codTipoServico) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -90,7 +91,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
             stmt.setLong(2, codTipoServico);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return createTipoServicoRecapadora(rSet);
+                return createPneuTipoServico(rSet);
             } else {
                 throw new SQLException("Nenhuma tipo de serviço encontrado para esse código: " + codTipoServico);
             }
@@ -100,13 +101,13 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     }
 
     @Override
-    public void alterarStatusTipoServicoRecapadora(@NotNull final String token,
-                                                   @NotNull final Long codEmpresa,
-                                                   @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+    public void alterarStatusPneuTipoServico(@NotNull final String token,
+                                             @NotNull final Long codEmpresa,
+                                             @NotNull final PneuTipoServico tipoServico) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            inativaTipoServico(conn, token, codEmpresa, tipoServico);
+            inativaPneuTipoServico(conn, token, codEmpresa, tipoServico);
         } finally {
             closeConnection(conn);
         }
@@ -116,7 +117,7 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     private Long insereTipoServico(@NotNull final Connection conn,
                                    @NotNull final String token,
                                    @NotNull final Long codEmpresa,
-                                   @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+                                   @NotNull final PneuTipoServico tipoServico) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -141,10 +142,10 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
         }
     }
 
-    private void inativaTipoServico(@NotNull final Connection conn,
-                                    @NotNull final String token,
-                                    @NotNull final Long codEmpresa,
-                                    @NotNull final TipoServicoRecapadora tipoServico) throws SQLException {
+    private void inativaPneuTipoServico(@NotNull final Connection conn,
+                                        @NotNull final String token,
+                                        @NotNull final Long codEmpresa,
+                                        @NotNull final PneuTipoServico tipoServico) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE RECAPADORA_TIPO_SERVICO SET " +
@@ -168,8 +169,8 @@ public class TipoServicoRecapadoraDaoImpl extends DatabaseConnection implements 
     }
 
     @NotNull
-    private TipoServicoRecapadora createTipoServicoRecapadora(@NotNull final ResultSet rSet) throws SQLException {
-        final TipoServicoRecapadora tipoServico = new TipoServicoRecapadora();
+    private PneuTipoServico createPneuTipoServico(@NotNull final ResultSet rSet) throws SQLException {
+        final PneuTipoServico tipoServico = new PneuTipoServico();
         tipoServico.setCodigo(rSet.getLong("CODIGO"));
         tipoServico.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         tipoServico.setNome(rSet.getString("NOME"));

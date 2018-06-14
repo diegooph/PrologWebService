@@ -45,10 +45,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.ServicoRealizadoRecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.ServicoRealizadoRecapadoraDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.TipoServicoRecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.TipoServicoRecapadoraDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -342,13 +342,13 @@ public final class Injection {
     }
 
     @NotNull
-    public static TipoServicoRecapadoraDao provideTipoServicoRecapadoraDao() {
-        return new TipoServicoRecapadoraDaoImpl();
+    public static PneuTipoServicoDao provideTipoServicoRecapadoraDao() {
+        return new PneuTipoServicoDaoImpl();
     }
 
     @NotNull
-    public static ServicoRealizadoRecapadoraDao provideTipoServicoRealizadoRecapadoraDao() {
-        return new ServicoRealizadoRecapadoraDaoImpl();
+    public static PneuServicoRealizadoDao provideTipoServicoRealizadoRecapadoraDao() {
+        return new PneuServicoRealizadoDaoImpl();
     }
 
     // ================================================

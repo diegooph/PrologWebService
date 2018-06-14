@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ServicoRealizadoRecapadora {
+public class PneuServicoRealizado {
 
     /**
      * Atributo que define o gatilho pelo qual este serviço foi necessário.
@@ -28,10 +28,10 @@ public class ServicoRealizadoRecapadora {
     public static final String FONTE_CADASTRO = "FONTE_CADASTRO";
 
     private Long codigo;
-    private Long codTipoServicoRecapadora;
+    private Long codPneuTipoServico;
     private Long codUnidade;
     private Long codPneu;
-    private BigDecimal valor;
+    private BigDecimal custo;
     private Integer vidaMomentoRealizacaoServico;
     /**
      * Precisamos utilizar o {@link Exclude} para a serialização/desserialização das subclasses
@@ -40,14 +40,14 @@ public class ServicoRealizadoRecapadora {
     @Exclude
     private String tipo;
 
-    public ServicoRealizadoRecapadora() {
+    public PneuServicoRealizado() {
     }
 
-    public static RuntimeTypeAdapterFactory<ServicoRealizadoRecapadora> provideTypeAdapterFactory() {
+    public static RuntimeTypeAdapterFactory<PneuServicoRealizado> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
-                .of(ServicoRealizadoRecapadora.class, "tipo")
-                .registerSubtype(ServicoRealizadoRecapagem.class,
-                        ServicoRealizadoRecapagem.TIPO_SERVICO_REALIZADO_RECAPAGEM);
+                .of(PneuServicoRealizado.class, "tipo")
+                .registerSubtype(PneuServicoRealizadoRecapagem.class,
+                        PneuServicoRealizadoRecapagem.TIPO_PNEU_SERVICO_REALIZADO_RECAPAGEM);
     }
 
     public Long getCodigo() {
@@ -58,12 +58,12 @@ public class ServicoRealizadoRecapadora {
         this.codigo = codigo;
     }
 
-    public Long getCodTipoServicoRecapadora() {
-        return codTipoServicoRecapadora;
+    public Long getCodPneuTipoServico() {
+        return codPneuTipoServico;
     }
 
-    public void setCodTipoServicoRecapadora(final Long codTipoServicoRecapadora) {
-        this.codTipoServicoRecapadora = codTipoServicoRecapadora;
+    public void setCodPneuTipoServico(final Long codPneuTipoServico) {
+        this.codPneuTipoServico = codPneuTipoServico;
     }
 
     public Long getCodUnidade() {
@@ -82,12 +82,12 @@ public class ServicoRealizadoRecapadora {
         this.codPneu = codPneu;
     }
 
-    public BigDecimal getValor() {
-        return valor;
+    public BigDecimal getCusto() {
+        return custo;
     }
 
-    public void setValor(final BigDecimal valor) {
-        this.valor = valor;
+    public void setCusto(final BigDecimal custo) {
+        this.custo = custo;
     }
 
     public Integer getVidaMomentoRealizacaoServico() {
@@ -108,12 +108,12 @@ public class ServicoRealizadoRecapadora {
 
     @Override
     public String toString() {
-        return "ServicoRealizadoRecapadora{" +
+        return "PneuServicoRealizado{" +
                 "codigo=" + codigo +
-                ", codTipoServicoRecapadora=" + codTipoServicoRecapadora +
+                ", codPneuTipoServico=" + codPneuTipoServico +
                 ", codUnidade=" + codUnidade +
                 ", codPneu=" + codPneu +
-                ", valor=" + valor +
+                ", custo=" + custo +
                 ", vidaMomentoRealizacaoServico=" + vidaMomentoRealizacaoServico +
                 ", tipo='" + tipo + '\'' +
                 '}';

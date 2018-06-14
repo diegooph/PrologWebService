@@ -13,8 +13,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.ServicoRealizadoRecapadoraDao;
-import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
@@ -311,17 +311,17 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final Movimentacao movimentacao) throws SQLException {
         final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
-        final List<ServicoRealizadoRecapadora> servicosRealizados = origemAnalise.getServicosRealizados();
+        final List<PneuServicoRealizado> servicosRealizados = origemAnalise.getServicosRealizados();
         if (servicosRealizados == null || servicosRealizados.isEmpty()) {
             return;
         }
 
-        final ServicoRealizadoRecapadoraDao servicoRealizadoRecapadoraDao =
+        final PneuServicoRealizadoDao pneuServicoRealizadoDao =
                 Injection.provideTipoServicoRealizadoRecapadoraDao();
         final Long codPneu = movimentacao.getPneu().getCodigo();
-        for (final ServicoRealizadoRecapadora servico : servicosRealizados) {
+        for (final PneuServicoRealizado servico : servicosRealizados) {
             final Long codServicoRealizado =
-                    servicoRealizadoRecapadoraDao.insertServicoByMovimentacao(conn, codUnidade, codPneu, servico);
+                    pneuServicoRealizadoDao.insertServicoByMovimentacao(conn, codUnidade, codPneu, servico);
             insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
             insertMovimentacaoServicoRealizadoRecapadora(
                     conn,

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico;
+package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,18 +19,17 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class TipoServicoRecapadoraService {
+public class PneuTipoServicoService {
 
-    private static final String TAG = TipoServicoRecapadoraService.class.getSimpleName();
+    private static final String TAG = PneuTipoServicoService.class.getSimpleName();
     @NotNull
-    private final TipoServicoRecapadoraDao dao = Injection.provideTipoServicoRecapadoraDao();
+    private final PneuTipoServicoDao dao = Injection.provideTipoServicoRecapadoraDao();
 
-    public AbstractResponse insertTipoServicoRecapadora(
-            @NotNull final String token,
-            @NotNull final TipoServicoRecapadora tipoServico) throws ProLogException {
+    public AbstractResponse insertPneuTipoServico(@NotNull final String token,
+                                                  @NotNull final PneuTipoServico tipoServico) throws ProLogException {
         try {
             return ResponseWithCod.ok("Tipo de Serviço inserido com sucesso",
-                    dao.insertTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), tipoServico));
+                    dao.insertPneuTipoServico(TokenCleaner.getOnlyToken(token), tipoServico));
         } catch (Exception e) {
             final String errorMessage = "Erro ao inserir o tipo de serviço";
             Log.e(TAG, errorMessage, e);
@@ -37,12 +37,11 @@ public class TipoServicoRecapadoraService {
         }
     }
 
-    public Response atualizaTipoServicoRecapadora(
-            @NotNull final String token,
-            @NotNull final Long codEmpresa,
-            @NotNull final TipoServicoRecapadora tipoServico) throws ProLogException {
+    public Response atualizaPneuTipoServico(@NotNull final String token,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final PneuTipoServico tipoServico) throws ProLogException {
         try {
-            dao.atualizaTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
+            dao.atualizaPneuTipoServico(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
             return Response.ok("Tipo de Serviço atualizado com sucesso");
         } catch (Exception e) {
             final String errorMessage = "Erro ao atualizar o tipo de serviço";
@@ -51,11 +50,10 @@ public class TipoServicoRecapadoraService {
         }
     }
 
-    public List<TipoServicoRecapadora> getTiposServicosRecapadora(
-            @NotNull final Long codEmpresa,
-            @Nullable final Boolean ativas) throws ProLogException {
+    public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
+                                                      @Nullable final Boolean ativas) throws ProLogException {
         try {
-            return dao.getTiposServicosRecapadora(codEmpresa, ativas);
+            return dao.getPneuTiposServicos(codEmpresa, ativas);
         } catch (Exception e) {
             final String errorMessage = "Erro ao buscar os tipos de serviços";
             Log.e(TAG, errorMessage, e);
@@ -63,10 +61,10 @@ public class TipoServicoRecapadoraService {
         }
     }
 
-    public TipoServicoRecapadora getTipoServicoRecapadora(@NotNull final Long codEmpresa,
-                                                          @NotNull final Long codTipoServico) throws ProLogException {
+    public PneuTipoServico getPneuTipoServico(@NotNull final Long codEmpresa,
+                                              @NotNull final Long codTipoServico) throws ProLogException {
         try {
-            return dao.getTipoServicoRecapadora(codEmpresa, codTipoServico);
+            return dao.getPneuTipoServico(codEmpresa, codTipoServico);
         } catch (Exception e) {
             final String errorMessage = "Erro ao buscar o tipo de serviço";
             Log.e(TAG, errorMessage, e);
@@ -74,12 +72,11 @@ public class TipoServicoRecapadoraService {
         }
     }
 
-    public Response alterarStatusTipoServicoRecapadora(
-            @NotNull final String token,
-            @NotNull final Long codEmpresa,
-            @NotNull final TipoServicoRecapadora tipoServico) throws ProLogException {
+    public Response alterarStatusPneuTipoServico(@NotNull final String token,
+                                                 @NotNull final Long codEmpresa,
+                                                 @NotNull final PneuTipoServico tipoServico) throws ProLogException {
         try {
-            dao.alterarStatusTipoServicoRecapadora(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
+            dao.alterarStatusPneuTipoServico(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
             return Response.ok("Status de serviço alterado com sucesso");
         } catch (Exception e) {
             final String errorMessage = "Erro ao alterar o status do serviço";
