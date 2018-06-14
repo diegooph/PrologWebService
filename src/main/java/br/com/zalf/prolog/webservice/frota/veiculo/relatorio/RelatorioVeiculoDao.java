@@ -11,5 +11,13 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public interface RelatorioVeiculoDao {
-    int getQtdVeiculosAtivosComPneuAplicado(@NotNull final List<Long> codUnidades) throws SQLException;
+
+    /**
+     * Método que busca a contagem de veículos ativos de uma listagem de unidades.
+     *
+     * @param codUnidades - Códigos das unidades que serão filtradas.
+     * @return - total de veículos ativos entre as unidades.
+     * @throws SQLException - Se algum erro ocorrer na filtragem.
+     */
+    int getQtdVeiculosAtivos(@NotNull final List<Long> codUnidades) throws SQLException;
 }
