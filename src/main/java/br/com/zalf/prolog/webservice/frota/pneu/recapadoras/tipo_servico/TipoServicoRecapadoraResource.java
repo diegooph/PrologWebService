@@ -25,7 +25,7 @@ public class TipoServicoRecapadoraResource {
     @Secured(permissions = {Pilares.Frota.Recapadora.TipoServico.CADASTRO})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public AbstractResponse insert(@HeaderParam("Authorization") @Required String token,
-                                   @Required TipoServicoRecapadora tipoServico) throws Exception {
+                                   @Required TipoServicoRecapadora tipoServico) throws Throwable {
         return service.insertTipoServicoRecapadora(token, tipoServico);
     }
 
@@ -35,7 +35,7 @@ public class TipoServicoRecapadoraResource {
     @Path("/{codEmpresa}")
     public Response atualizaTipoServicoRecapadora(@HeaderParam("Authorization") @Required String token,
                                                   @PathParam("codEmpresa") @Required Long codEmpresa,
-                                                  @Required TipoServicoRecapadora tipoServico) throws Exception {
+                                                  @Required TipoServicoRecapadora tipoServico) throws Throwable {
         return service.atualizaTipoServicoRecapadora(token, codEmpresa, tipoServico);
     }
 
@@ -45,7 +45,7 @@ public class TipoServicoRecapadoraResource {
     @Path("/{codEmpresa}")
     public List<TipoServicoRecapadora> getTiposServicosRecapadora(
             @PathParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("ativas") @Required Boolean ativas) throws Exception {
+            @QueryParam("ativas") @Required Boolean ativas) throws Throwable {
         return service.getTiposServicosRecapadora(codEmpresa, ativas);
     }
 
@@ -55,7 +55,7 @@ public class TipoServicoRecapadoraResource {
     @Path("/{codEmpresa}/{codTipoServico}")
     public TipoServicoRecapadora getTipoServicoRecapadora(
             @PathParam("codEmpresa") @Required Long codEmpresa,
-            @PathParam("codTipoServico") @Required Long codTipoServico) throws Exception {
+            @PathParam("codTipoServico") @Required Long codTipoServico) throws Throwable {
         return service.getTipoServicoRecapadora(codEmpresa, codTipoServico);
     }
 
@@ -65,7 +65,7 @@ public class TipoServicoRecapadoraResource {
     @Path("/{codEmpresa}/status")
     public Response alterarStatusTipoServicoRecapadoras(@HeaderParam("Authorization") @Required String token,
                                                         @PathParam("codEmpresa") @Required Long codEmpresa,
-                                                        @Required TipoServicoRecapadora tipoServico) throws Exception {
+                                                        @Required TipoServicoRecapadora tipoServico) throws Throwable {
         return service.alterarStatusTipoServicoRecapadora(token, codEmpresa, tipoServico);
     }
 }
