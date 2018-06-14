@@ -11,7 +11,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Desti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuService;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapadora;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.tipo_servico.model.ServicoRealizadoRecapagem;
@@ -32,6 +35,8 @@ import java.util.List;
  */
 public class MovimentacaoTest extends BaseTest {
 
+    private static final long COD_PNEU_TESTE = 2388L;
+
     private MovimentacaoService movimentacaoService;
     private PneuService pneuService;
     private PneuComum pneuComum;
@@ -40,7 +45,14 @@ public class MovimentacaoTest extends BaseTest {
     public void initialize() {
         movimentacaoService = new MovimentacaoService();
         pneuService = new PneuService();
-        pneuComum = pneuService.getPneuByCod(1795L, 5L);
+        pneuComum = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
+    }
+
+    @Test
+    public void test() {
+        final List<Pneu> pneusAnalise =
+                pneuService.getPneuByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
+        System.out.println(pneusAnalise);
     }
 
     @Test
@@ -51,6 +63,32 @@ public class MovimentacaoTest extends BaseTest {
 
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
+        Assert.assertEquals("OK", response.getStatus());
+
+        // Valida informações do pneu
+        final List<Pneu> pneusAnalise =
+                pneuService.getPneuByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
+
+        PneuAnalise pneuAnalise = null;
+        for (final Pneu pneu : pneusAnalise) {
+            if (pneu.getCodigo() == COD_PNEU_TESTE) {
+                 pneuAnalise = (PneuAnalise) pneu;
+                 break;
+            }
+        }
+        Assert.assertNotNull(pneuAnalise);
+        Assert.assertEquals(pneuAnalise.getStatus(), StatusPneu.ANALISE);
+
+        Assert.assertNotNull(pneuAnalise.getCodigoColeta());
+        Assert.assertNotNull(pneuAnalise.getRecapadora());
+        Assert.assertNotNull(pneuAnalise.getRecapadora().getNome());
+        Assert.assertNotNull(pneuAnalise.getRecapadora().getCodigo());
+        Assert.assertNotNull(pneuAnalise.getRecapadora().getCodEmpresa());
+
+        Assert.assertEquals("Luizsson", pneuAnalise.getCodigoColeta());
+        Assert.assertEquals("TESTE", pneuAnalise.getRecapadora().getNome());
+        Assert.assertEquals(new Long(3), pneuAnalise.getRecapadora().getCodigo());
+        Assert.assertEquals(new Long(3), pneuAnalise.getRecapadora().getCodEmpresa());
     }
 
     @Test
@@ -61,13 +99,20 @@ public class MovimentacaoTest extends BaseTest {
 
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
+        Assert.assertEquals("OK", response.getStatus());
+
+        final PneuComum pneuRetorno = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
+
+        Assert.assertNotNull(pneuRetorno);
+        Assert.assertEquals(pneuRetorno.getStatus(), StatusPneu.ESTOQUE);
     }
 
     @Test
     public void testInsertPneuCreateSegundaVida() throws Throwable {
-        final PneuComum pneu = pneuService.getPneuByCod(1795L, 5L);
+        final PneuComum pneu = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
         pneu.setCodigoCliente(pneu.getCodigoCliente().concat("1"));
         pneu.setDot("1310");
+        pneu.setValor(new BigDecimal(2250));
         pneu.getBanda().setValor(new BigDecimal(399));
         final AbstractResponse response = pneuService.insert(pneu, 5L);
         Assert.assertNotNull(response);
