@@ -92,7 +92,7 @@ public class PneuValidator {
     private static void validacaoBanda(Banda banda) {
         Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar uma marca de banda");
         Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar um modelo");
-        Preconditions.checkNotNull(banda.getValor(), "Vocẽ precisa fornecer o valor");
+        Preconditions.checkNotNull(banda.getValor(), "Você precisa fornecer o valor");
 
         validacaoMarcaDaBanda(banda.getMarca().getCodigo());
         validacaoModeloDaBanda(banda.getModelo().getCodigo());
