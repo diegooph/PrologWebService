@@ -65,8 +65,8 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO(" +
-                    "COD_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, VALOR, VIDA, FONTE_SERVICO_REALIZADO) " +
+            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO " +
+                    "(COD_PNEU_TIPO_SERVICO, COD_UNIDADE, COD_PNEU, CUSTO, VIDA, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, servicoRealizado.getCodPneuTipoServico());
             stmt.setLong(2, codUnidade);
@@ -92,8 +92,8 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
             @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO SERVICO_REALIZADO_RECAPAGEM(" +
-                    "COD_SERVICO_REALIZADO_RECAPADORA, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
+            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO_RECAPAGEM " +
+                    "(COD_PNEU_SERVICO_REALIZADO, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?);");
             stmt.setLong(1, codServicoRealizado);
             stmt.setLong(2, servicoRecapagem.getCodModeloBanda());
