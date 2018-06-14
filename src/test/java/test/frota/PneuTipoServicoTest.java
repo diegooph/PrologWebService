@@ -1,6 +1,7 @@
 package test.frota;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoService;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
@@ -13,7 +14,7 @@ import test.BaseTest;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class TestPneuTipoServico extends BaseTest {
+public class PneuTipoServicoTest extends BaseTest {
 
     private PneuTipoServicoService service;
 
@@ -26,10 +27,20 @@ public class TestPneuTipoServico extends BaseTest {
     public void testInsertMovimentacaoEstoqueToAnalise() throws ProLogException {
         final PneuTipoServico servicoRecapadora = createTipoServicoRecapadora();
         final AbstractResponse response =
-                service.insertPneuTipoServico("2uuik5td5710delsfn6u2mi3i8", servicoRecapadora);
+                service.insertPneuTipoServico("evshhe25lalkoesgi14ahdjv86", servicoRecapadora);
 
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
+        Assert.assertEquals("OK", response.getStatus());
+
+        final Long codServico = ((ResponseWithCod) response).getCodigo();
+        final PneuTipoServico servicoRetorno = service.getPneuTipoServico(3L, codServico);
+
+        Assert.assertNotNull(servicoRetorno);
+        Assert.assertNotNull(servicoRetorno.getCodigo());
+        Assert.assertEquals(codServico, servicoRetorno.getCodigo());
+        Assert.assertEquals(servicoRecapadora.getCodEmpresa(), servicoRetorno.getCodEmpresa());
+        Assert.assertEquals(servicoRecapadora.getNome(), servicoRetorno.getNome());
     }
 
     private PneuTipoServico createTipoServicoRecapadora() {

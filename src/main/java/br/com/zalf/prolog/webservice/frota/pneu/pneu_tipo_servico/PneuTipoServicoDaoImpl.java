@@ -56,7 +56,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RECAPADORA_TIPO_SERVICO " +
+            stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO " +
                     "WHERE (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) " +
                     "AND (? = 1 OR STATUS_ATIVO = ?)");
             stmt.setLong(1, codEmpresa);
@@ -85,7 +85,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM RECAPADORA_TIPO_SERVICO WHERE" +
+            stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO WHERE" +
                     " (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) AND CODIGO = ?");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codTipoServico);
