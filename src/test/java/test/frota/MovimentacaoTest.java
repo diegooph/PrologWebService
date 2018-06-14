@@ -40,7 +40,7 @@ public class MovimentacaoTest extends BaseTest {
     public void initialize() {
         movimentacaoService = new MovimentacaoService();
         pneuService = new PneuService();
-        pneuComum = pneuService.getPneuByCod(6525L, 5L);
+        pneuComum = pneuService.getPneuByCod(1795L, 5L);
     }
 
     @Test
@@ -65,8 +65,10 @@ public class MovimentacaoTest extends BaseTest {
 
     @Test
     public void testInsertPneuCreateSegundaVida() throws Throwable {
-        final PneuComum pneu = pneuService.getPneuByCod(6542L, 5L);
+        final PneuComum pneu = pneuService.getPneuByCod(1795L, 5L);
         pneu.setCodigoCliente(pneu.getCodigoCliente().concat("1"));
+        pneu.setDot("1310");
+        pneu.getBanda().setValor(new BigDecimal(399));
         final AbstractResponse response = pneuService.insert(pneu, 5L);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());

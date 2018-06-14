@@ -212,44 +212,16 @@ public class RelatoriosOrdemServicoDaoImpl extends DatabaseConnection implements
     @NotNull
     private PreparedStatement getEstratificacaoOs(Connection conn, Long codUnidade, String placa, Date dataInicial,
                                                   Date dataFinal, String statusOs, String statusItem) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT " +
-                "  cod_os                                                                    AS OS,\n" +
-                "  to_char(data_hora, 'DD/MM/YYYY HH24:MI')                                  AS \"ABERTURA OS\", " +
-                "  to_char(data_hora + (prazo || ' hour') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS \"DATA LIMITE CONSERTO\", " +
-                "  CASE WHEN status_os = 'A'\n" +
-                "    THEN 'ABERTA'\n" +
-                "  ELSE 'FECHADA' END                                                        AS \"STATUS OS\", " +
-                "  placa_veiculo                                                             AS \"PLACA\", " +
-                "  pergunta                                                                  AS \"PERGUNTA\", " +
-                "  alternativa                                                               AS \"ALTERNATIVA\", " +
-                "  prioridade                                                                AS \"PRIORIDADE\", " +
-                "  prazo                                                                     AS \"PRAZO EM HORAS\", " +
-                "  resposta                                                                  AS \"DESCRIÇÃO\", " +
-                "  CASE WHEN status_ITEM = 'P'\n" +
-                "    THEN 'PENDENTE'\n" +
-                "  ELSE 'RESOLVIDO' END                                                      AS \"STATUS ITEM\", " +
-                "  to_char(data_hora_conserto, 'DD/MM/YYYY HH24:MI')                           AS \"DATA CONSERTO\", " +
-                "  nome_mecanico                                                            AS \"MECÂNICO\",\n" +
-                "  feedback_conserto                                                         AS \"DESCRIÇÃO CONSERTO\", " +
-                // PASSAR PRA MINUTOS
-                "  tempo_realizacao / 60                                                     AS \"TEMPO DE CONSERTO\", " +
-                "  km                                                                        AS \"KM ABERTURA\", " +
-                "  km_fechamento                                                             AS \"KM FECHAMENTO\", " +
-                "  coalesce((km_fechamento - km) :: TEXT, '-')                               AS \"KM PERCORRIDO\" " +
-                "FROM estratificacao_os " +
-                "WHERE cod_unidade = ? AND placa_veiculo LIKE ? AND (data_hora::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?)) AND " +
-                "      status_os LIKE ? AND " +
-                "      status_item LIKE ? " +
-                "ORDER BY OS, \"PRAZO EM HORAS\";");
+        PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_estratificacao_os " +
+                "(?,?,?,?,?,?,?);");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placa);
         stmt.setDate(3, dataInicial);
-        stmt.setString(4, zoneId);
-        stmt.setDate(5, dataFinal);
-        stmt.setString(6, zoneId);
-        stmt.setString(7, statusOs);
-        stmt.setString(8, statusItem);
+        stmt.setDate(4, dataFinal);
+        stmt.setString(5, zoneId);
+        stmt.setString(6, statusOs);
+        stmt.setString(7, statusItem);
         return stmt;
     }
 
