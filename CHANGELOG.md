@@ -2,10 +2,15 @@ Change Log
 ==========
 
 <a name="v0.0.64"></a>
-## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (release-date) [unreleased]
+## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
 
 ### Refactor
 * Remove JOIN não necessário na busca de uma aferição por código
+* Deixa DOT opcional no cadastro do Pneu (`PneuValidator`)
+* Agrupa métodos em comum utilizados nos validators
+* Altera relatório de OS do checklist para function
+* Modifica validação da banda do Pneu (`PneuValidator`)
+* Melhora fluxo de lançamento de exceções e propagação nos services
 
 <a name="v0.0.63"></a>
 ## Version [v0.0.63](https://github.com/luizfp/PrologWeb/compare/v0.0.62...v0.0.63) (2018-06-05)
