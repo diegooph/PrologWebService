@@ -121,12 +121,12 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO RECAPADORA_TIPO_SERVICO(" +
-                    "COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
-                    "VALUES (?, ?, " +
-                    "(SELECT C.CODIGO FROM COLABORADOR AS C WHERE C.CPF = " +
-                    "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) " +
-                    "RETURNING CODIGO;");
+            stmt = conn.prepareStatement("INSERT INTO PNEU_TIPO_SERVICO " +
+                    "(COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
+                    "VALUES (?, ?,(SELECT C.CODIGO " +
+                    "FROM COLABORADOR AS C " +
+                    "WHERE C.CPF = (SELECT TA.CPF_COLABORADOR " +
+                    "FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, tipoServico.getNome());
             stmt.setString(3, token);
@@ -148,14 +148,12 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
                                         @NotNull final PneuTipoServico tipoServico) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RECAPADORA_TIPO_SERVICO SET " +
-                    "  STATUS_ATIVO = FALSE, " +
-                    "  COD_COLABORADOR_EDICAO = (SELECT C.CODIGO " +
-                    "                            FROM COLABORADOR AS C " +
-                    "                            WHERE C.CPF = (SELECT TA.CPF_COLABORADOR " +
-                    "                                           FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), " +
-                    "  DATA_HORA_EDICAO = ? " +
-                    "WHERE CODIGO = ? AND COD_EMPRESA = ?;");
+            stmt = conn.prepareStatement("UPDATE PNEU_TIPO_SERVICO SET " +
+                    "STATUS_ATIVO = FALSE, " +
+                    "COD_COLABORADOR_EDICAO = (SELECT C.CODIGO " +
+                    "FROM COLABORADOR AS C " +
+                    "WHERE C.CPF = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), " +
+                    "DATA_HORA_EDICAO = ? WHERE CODIGO = ? AND COD_EMPRESA = ?;");
             stmt.setString(1, token);
             stmt.setTimestamp(2, Now.timestampUtc());
             stmt.setLong(3, tipoServico.getCodigo());
