@@ -337,10 +337,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                                     @NotNull final Long codMovimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO " +
-                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
-                    "VALUES (?, ?, (SELECT SR.FONTE_SERVICO_REALIZADO " +
-                    "FROM SERVICO_REALIZADO AS SR WHERE CODIGO = ?));");
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO " +
+                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?, (SELECT PSR.FONTE_SERVICO_REALIZADO FROM PNEU_SERVICO_REALIZADO AS PSR " +
+                    "WHERE PSR.CODIGO = ?));");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
             stmt.setLong(3, codServicoRealizado);
@@ -361,15 +361,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             @NotNull final Long codMovimentacao) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_SERVICO_REALIZADO_RECAPADORA " +
-                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO, COD_RECAPADORA) " +
+            stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA " +
+                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO, COD_RECAPADORA) " +
                     "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
-                    " FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "   JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    " WHERE M.COD_UNIDADE = ? " +
-                    "       AND M.COD_PNEU = ? " +
-                    "       AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    " ORDER BY M.CODIGO DESC LIMIT 1));");
+                    "FROM MOVIMENTACAO_DESTINO AS MD " +
+                    "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                    "WHERE M.COD_UNIDADE = ? AND M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    "ORDER BY M.CODIGO DESC LIMIT 1));");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
             stmt.setLong(3, codUnidade);
