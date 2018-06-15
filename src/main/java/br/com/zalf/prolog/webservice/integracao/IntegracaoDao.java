@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.sun.istack.internal.NotNull;
@@ -24,15 +25,15 @@ public interface IntegracaoDao {
      * por exemplo, isso não quer dizer que a empresa integra todos os métodos do checklist com o ProLog, mas que pelo
      * menos um deles é integrado.
      *
-     * @param userToken token do usuário.
-     * @param recursoIntegrado o recurso para verificar se está integrado.
+     * @param userToken - Token do usuário.
+     * @param recursoIntegrado - {@link RecursoIntegrado} para verificar se está integrado.
      *
-     * @return identificador único de um {@link Sistema}.
-     * @throws SQLException caso aconteça algum erro na consulta.
+     * @return - Identificador único de um {@link Sistema}.
+     * @throws Exception - Caso aconteça algum erro na consulta ou na execução.
      */
     @Nullable
     SistemaKey getSistemaKey(@NotNull final String userToken, @NotNull final RecursoIntegrado recursoIntegrado)
-            throws SQLException;
+            throws Exception;
 
     /**
      * Esse método retorna o código da unidade utilizado no ERP do cliente equivalente a mesma unidade utilizada
@@ -42,9 +43,9 @@ public interface IntegracaoDao {
      * o número 3 (código da unidade de Santa Maria no ProLog) e ela irá retornar o código único utilizado pela Avilan
      * para representar Santa Maria em seu ERP.
      *
-     * @param codUnidadeProLog código da unidade utilizado no ProLog.
-     * @return código da unidade no ERP do cliente.
-     * @throws SQLException caso aconteça algum erro na consulta.
+     * @param codUnidadeProLog - Código da {@link Unidade} utilizado no ProLog.
+     * @return - Código da unidade no ERP do cliente.
+     * @throws SQLException - Caso aconteça algum erro na consulta.
      */
     @NotNull
     String getCodUnidadeErpClienteByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws SQLException;
