@@ -24,7 +24,7 @@ public class PneuTipoServicoTest extends BaseTest {
     }
 
     @Test
-    public void testInsertMovimentacaoEstoqueToAnalise() throws ProLogException {
+    public void testInsertPneuTipoServico() throws ProLogException {
         final PneuTipoServico servicoRecapadora = createTipoServicoRecapadora();
         final AbstractResponse response =
                 service.insertPneuTipoServico("evshhe25lalkoesgi14ahdjv86", servicoRecapadora);
@@ -46,7 +46,7 @@ public class PneuTipoServicoTest extends BaseTest {
     private PneuTipoServico createTipoServicoRecapadora() {
         final PneuTipoServico servico = new PneuTipoServico();
         servico.setCodEmpresa(3L);
-        servico.setNome("Teste");
+        servico.setNome("Vulcanização");
         return servico;
     }
 }
