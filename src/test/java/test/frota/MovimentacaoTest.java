@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class MovimentacaoTest extends BaseTest {
 
-    private static final long COD_PNEU_TESTE = 2388L;
+    private static final long COD_PNEU_TESTE = 2399L;
 
     private MovimentacaoService movimentacaoService;
     private PneuService pneuService;
@@ -46,13 +46,6 @@ public class MovimentacaoTest extends BaseTest {
         movimentacaoService = new MovimentacaoService();
         pneuService = new PneuService();
         pneuComum = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
-    }
-
-    @Test
-    public void test() {
-        final List<Pneu> pneusAnalise =
-                pneuService.getPneuByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
-        System.out.println(pneusAnalise);
     }
 
     @Test
@@ -87,7 +80,7 @@ public class MovimentacaoTest extends BaseTest {
 
         Assert.assertEquals("Luizsson", pneuAnalise.getCodigoColeta());
         Assert.assertEquals("TESTE", pneuAnalise.getRecapadora().getNome());
-        Assert.assertEquals(new Long(3), pneuAnalise.getRecapadora().getCodigo());
+        Assert.assertEquals(new Long(2), pneuAnalise.getRecapadora().getCodigo());
         Assert.assertEquals(new Long(3), pneuAnalise.getRecapadora().getCodEmpresa());
     }
 
@@ -166,7 +159,7 @@ public class MovimentacaoTest extends BaseTest {
 
     private PneuServicoRealizado createServicoVulcanizacao() {
         PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
-        vulcanizacao.setCodPneuTipoServico(4L);
+        vulcanizacao.setCodPneuTipoServico(2L);
         vulcanizacao.setCodUnidade(5L);
         vulcanizacao.setCodPneu(pneuComum.getCodigo());
         vulcanizacao.setCusto(new BigDecimal(150));
@@ -221,7 +214,7 @@ public class MovimentacaoTest extends BaseTest {
 
     private Recapadora createRecapadora() {
         final Recapadora recapadora = new Recapadora();
-        recapadora.setCodigo(3L);
+        recapadora.setCodigo(2L);
         recapadora.setCodEmpresa(3L);
         recapadora.setNome("TESTE");
         recapadora.setAtiva(true);
