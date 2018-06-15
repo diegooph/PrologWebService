@@ -46,10 +46,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
     public boolean insert(Veiculo veiculo, Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        veiculo.setPlaca(veiculo.getPlaca().replaceAll("\\-|\\s+", "").trim().toUpperCase());
-        if (veiculo.getPlaca().trim().isEmpty() || veiculo.getPlaca().length() != 7) {
-            throw new SQLException("Campo placa esta errado.");
-        }
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
@@ -64,11 +60,6 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o veículo");
             }
-        }catch (Throwable e){
-            if (conn != null){
-                conn.rollback();
-            }
-            throw e;
         } finally {
             closeConnection(conn, stmt, null);
         }
@@ -337,7 +328,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(1, codTipo);
             stmt.setLong(2, codUnidade);
             return stmt.executeUpdate() > 0;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, null);
         }
     }
@@ -480,7 +471,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
-            if(rSet.next()){
+            if (rSet.next()) {
                 ModeloVeiculo modelo = new ModeloVeiculo();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
@@ -505,7 +496,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(3, modelo.getCodigo());
             stmt.setLong(4, codUnidade);
             return stmt.executeUpdate() > 0;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, null);
         }
     }
@@ -521,7 +512,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codUnidade);
             return stmt.executeUpdate() > 0;
-        }finally {
+        } finally {
             closeConnection(conn, stmt, null);
         }
     }

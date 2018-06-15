@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public class VeiculoValidator {
 
     private static final int MAX_LENGTH_PLACA = 7;
+    private static final int QTD_NUMEROS_PLACA = 4;
+    private static final int QTD_LETRAS_PLACA = 3;
 
     private VeiculoValidator() {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
@@ -27,60 +29,59 @@ public class VeiculoValidator {
         }
     }
 
-    private static void validacaoPlaca(String placa) throws Exception {
-        Preconditions.checkNotNull(placa, "Você deve fornecer a Placa");
+    public static void validacaoPlaca(String placa) throws Exception {
+        Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
         if (placa.length() != MAX_LENGTH_PLACA) {
-            throw new GenericException("A placa deve conter 7 caracteres", null);
+            throw new GenericException("Placa inválida\nA placa deve conter sete caracteres", "Placa informada: " + placa);
         }
-
-        if (!StringUtils.stripAccents(placa).equals(placa)) {
-            throw new GenericException("Placa inválida\nA placa não pode conter acentos", null);
+        if (!verificaQuantidadeLetrasPlaca(placa)) {
+            throw new GenericException("Placa inválida\nA placa deve conter três letras", "Placa informada: " + placa);
         }
-
-        if (StringUtils.isAlpabetsValue(placa.substring(4, 5))) {
-            if (!verificaPlacaNova(placa)) {
-                throw new GenericException("Plava inválida", null);
-            }
-        } else {
-            if (!verificaPlacaAntiga(placa)) {
-                throw new GenericException("Placa inválida", null);
-            }
+        if (!verificaQuantidadeNumerosPlaca(placa)) {
+            throw new GenericException("Placa inválida\nA placa deve conter quatro números", "Placa informada: " + placa);
+        }
+        if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
+            throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
+        }
+        if (!(StringUtils.stripCharactersSpecials(placa)).equals(placa)) {
+            throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais", "Placa informada: " + placa);
         }
     }
 
-    private static boolean verificaPlacaNova(String placa) {
-        return StringUtils.isAlpabetsValue(placa.substring(0, 3)) && StringUtils.isIntegerValue(placa.substring(3, 4)) &&
-                StringUtils.isAlpabetsValue(placa.substring(4, 5)) && StringUtils.isIntegerValue(placa.substring(5, 7));
+    private static boolean verificaQuantidadeNumerosPlaca(String string) {
+        String placaNumeros = StringUtils.getOnlyNumbers(string);
+        return placaNumeros.length() == QTD_NUMEROS_PLACA;
     }
 
-    private static boolean verificaPlacaAntiga(String placa) {
-        return StringUtils.isAlpabetsValue(placa.substring(0, 3)) && StringUtils.isIntegerValue(placa.substring(3, 7));
+    private static boolean verificaQuantidadeLetrasPlaca(String placa) {
+        String placaLetras = StringUtils.getOnlyLetters(placa.trim().toUpperCase());
+        return placaLetras.length() == QTD_LETRAS_PLACA;
     }
 
     private static void validacaoKmAtual(Long kmAtual) {
-        Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o Km Atual");
-        Preconditions.checkArgument(kmAtual > 0, "Km Atual inválido\nA quilometragem não pode " +
+        Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o km atual");
+        Preconditions.checkArgument(kmAtual > 0, "Km atual inválido\nA quilometragem não deve " +
                 "ser negativa");
     }
 
     private static void validacaoMarca(Long codMarca) {
-        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a Marca");
+        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a marca");
         Preconditions.checkArgument(codMarca > 0, "Marca inválida");
     }
 
     private static void validacaoModelo(Long codModelo) {
-        Preconditions.checkNotNull(codModelo, "Você precisa selecionar o Modelo");
+        Preconditions.checkNotNull(codModelo, "Você precisa selecionar o modelo");
         Preconditions.checkArgument(codModelo > 0, "Modelo inválido");
     }
 
     private static void validacaoEixos(Long codEixos) {
-        Preconditions.checkNotNull(codEixos, "Você precisa selecionar os Eixos");
+        Preconditions.checkNotNull(codEixos, "Você precisa selecionar o tipo de eixos");
         Preconditions.checkArgument(codEixos > 0, "Eixos inválido");
     }
 
     private static void validacaoTipo(Long codTipo) {
-        Preconditions.checkNotNull(codTipo, "Você precisa selecionar o Tipo");
+        Preconditions.checkNotNull(codTipo, "Você precisa selecionar o tipo");
         Preconditions.checkArgument(codTipo > 0, "Tipo inválido");
     }
 }

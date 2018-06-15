@@ -44,7 +44,7 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoRegional(Long regional) {
-        Preconditions.checkNotNull(regional, "Você precisa selecionar a Regional");
+        Preconditions.checkNotNull(regional, "Você precisa selecionar a regional");
         Preconditions.checkArgument(regional > 0, "Regional inválida");
     }
 
@@ -53,21 +53,21 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
 
         if (!ValidationUtils.isValidCpf(String.format("%011d", cpf))) {
-            throw new GenericException("CPF inválido", null);
+            throw new GenericException("CPF inválido", "CPF informado: " + cpf);
         }
     }
 
     private static void validacaoMatriculaAmbev(Integer matriculaAmbev) {
         if (matriculaAmbev != null) {
             Preconditions.checkArgument(matriculaAmbev > 0, "Matrícula Ambev inválida." +
-                    "\nA Matrícula deve ser um número positivo");
+                    "\nA matrícula deve ser um número positivo");
         }
     }
 
     private static void validacaoMatriculaTrans(Integer matriculaTrans) {
         if (matriculaTrans != null) {
-            Preconditions.checkArgument(matriculaTrans > 0, "Matrícula Transportadora inválida." +
-                    "\nA Matrícula deve ser um número positivo");
+            Preconditions.checkArgument(matriculaTrans > 0, "Matrícula transportadora inválida." +
+                    "\nA matrícula deve ser um número positivo");
         }
     }
 
@@ -75,7 +75,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento\n");
 
         if (DateUtils.verificaAno(dataNascimento, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
-            throw new GenericException("Ano de Nascimento inválido", null);
+            throw new GenericException("Ano de nascimento inválido", "Data de nascimento informada: " + dataNascimento);
         }
     }
 
@@ -83,7 +83,7 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
         if (DateUtils.verificaAno(dataAdmissao, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
-            throw new GenericException("Ano de Admissão inválido", null);
+            throw new GenericException("Ano de admissão inválido", "Data de admissão informada: " + dataAdmissao);
         }
     }
 
@@ -91,39 +91,40 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(nome, "Você precisa fornecer o nome");
 
         if (!StringUtils.isAlpabetsValue(nome)) {
-            throw new GenericException("Nome inválido\nO Nome não pode conter números", "O campo 'nome' contém números");
+            throw new GenericException("Nome inválido\nO nome não pode conter números", "Nome informado: " + nome);
         }
     }
 
     private static void validacaoSetor(Setor setor) {
-        Preconditions.checkNotNull(setor, "Você precisa selecionar o Setor");
-        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o Setor");
+        Preconditions.checkNotNull(setor, "Você precisa selecionar o setor");
+        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o setor");
         Preconditions.checkArgument(setor.getCodigo() > 0, "Setor inválido");
     }
 
     private static void validacaoFuncao(Cargo funcao) {
-        Preconditions.checkNotNull(funcao, "Você precisa selecionar o Cargo");
-        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a Cargo");
+        Preconditions.checkNotNull(funcao, "Você precisa selecionar o cargo");
+        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a cargo");
         Preconditions.checkArgument(funcao.getCodigo() > 0, "Cargo inválido");
     }
 
     private static void validacaoUnidade(Unidade unidade) {
-        Preconditions.checkNotNull(unidade, "Você precisa selecionar a Unidade");
-        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Unidade");
+        Preconditions.checkNotNull(unidade, "Você precisa selecionar a unidade");
+        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a unidade");
         Preconditions.checkArgument(unidade.getCodigo() > 0, "Unidade inválida");
     }
 
     private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
-        Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o Nível de Acesso");
+        Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o nível de acesso");
 
         if (codPermissao < Permissao.LOCAL || codPermissao > Permissao.GERAL) {
-            throw new GenericException("Nível de Acesso inválido", "Cód menor que 0 ou maior que 3");
+            throw new GenericException("Nível de acesso inválido", "Nivel de acesso informado: " + codPermissao + "" +
+                    "\nO nivel de acesso deve ser um número maior ou igual a 0, ou menor ou igual 3");
         }
     }
 
     private static void validacaoEquipe(Equipe equipe) {
-        Preconditions.checkNotNull(equipe, "Você precisa selecionar a Equipe");
-        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a Equipe");
+        Preconditions.checkNotNull(equipe, "Você precisa selecionar a equipe");
+        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a equipe");
         Preconditions.checkArgument((int) equipe.getCodigo().intValue() > 0, "Equipe inválida");
     }
 
@@ -132,9 +133,9 @@ public class ColaboradorValidator {
             return;
 
         if (pis.length() < MAX_LENGTH_PIS) {
-            throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
+            throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", null);
         } else if (!ValidationUtils.validaPIS(pis)) {
-            throw new GenericException("PIS inválido", null);
+            throw new GenericException("PIS inválido", "PIS informado: " + pis);
         }
     }
 }
