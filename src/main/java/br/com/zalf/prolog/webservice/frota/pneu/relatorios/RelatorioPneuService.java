@@ -23,7 +23,7 @@ public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
 
-    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                                @NotNull final List<String> status) {
         try {
             return dao.getQtdPneusByFaixaSulco(codUnidades, status);

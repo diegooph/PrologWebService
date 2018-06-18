@@ -36,7 +36,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                                @NotNull final List<String> status) throws SQLException {
         final List<Double> valores = new ArrayList<>();
         Connection conn = null;
@@ -46,7 +46,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneus_by_faixa_sulco(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT ,status));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));

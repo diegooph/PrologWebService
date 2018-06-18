@@ -23,12 +23,12 @@ public interface RelatorioPneuDao {
     /**
      * Método utilizado para listar os pneus com base na faixa de Sulco em que se encontram.
      *
-     * @param codUnidades - Código da {@link Unidade}.
-     * @param status      - Status em que o {@link Pneu} se encontra.
-     * @return - {@link List<Faixa>} agrupando os {@link Pneu}s numa dada {@link Faixa}
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param status      - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
+     * @return - {@link List<Faixa>} agrupando os {@link Pneu}s numa dada {@link Faixa}.
      * @throws SQLException - Se ocorrer erro no banco de dados.
      */
-    List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+    List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                         @NotNull final List<String> status) throws SQLException;
 
     /**

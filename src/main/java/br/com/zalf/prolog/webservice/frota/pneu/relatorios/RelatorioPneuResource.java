@@ -45,7 +45,7 @@ public class RelatorioPneuResource {
     @GET
     @Path("/pneus-faixa-sulco")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<String> codUnidades,
+    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<Long> codUnidades,
                                                @QueryParam("status") final List<String> status) {
         return service.getQtdPneusByFaixaSulco(codUnidades, status);
     }
