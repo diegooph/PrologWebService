@@ -36,8 +36,8 @@ public class RelatorioPneuResource {
     @GET
     @Path("/resumoSulcos")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public List<Faixa> DEPRECATEDgetQtPneusByFaixaSulco(@QueryParam("codUnidades") List<String> codUnidades,
-                                                        @QueryParam("status") List<String> status) {
+    public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_SULCO(@QueryParam("codUnidades") List<String> codUnidades,
+                                                               @QueryParam("status") List<String> status) {
         //TODO - Lançar Exception
         return null;
     }
@@ -50,22 +50,48 @@ public class RelatorioPneuResource {
         return service.getQtdPneusByFaixaSulco(codUnidades, status);
     }
 
+    /**
+     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaCsv(List, String, String)} instead.
+     */
     @GET
     @Path("/previsao-trocas/{codUnidade}/csv")
     @Produces("application/csv")
-    public StreamingOutput getPrevisaoTrocaCsv(@PathParam("codUnidade") Long codUnidade,
-                                               @QueryParam("dataInicial") long dataInicial,
-                                               @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
+    public StreamingOutput DEPRECATED_GET_PREVISAO_TROCA_CSV(@PathParam("codUnidade") Long codUnidade,
+                                                             @QueryParam("dataInicial") long dataInicial,
+                                                             @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
+        //TODO - Lançar Exception
+        return null;
     }
 
+    /**
+     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaCsv(List, String, String)} instead.
+     */
     @GET
     @Path("/previsao-trocas/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaReport(@PathParam("codUnidade") Long codUnidade,
-                                         @QueryParam("dataInicial") long dataInicial,
-                                         @QueryParam("dataFinal") long dataFinal) {
-        return service.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
+    public Report DEPRECATED_GET_PREVISAO_TROCA_REPORT(@PathParam("codUnidade") Long codUnidade,
+                                                       @QueryParam("dataInicial") long dataInicial,
+                                                       @QueryParam("dataFinal") long dataFinal) {
+        //TODO - Lançar Exception
+        return null;
+    }
+
+    @GET
+    @Path("/previsao-trocas/csv")
+    @Produces("application/csv")
+    public StreamingOutput getPrevisaoTrocaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                               @QueryParam("dataInicial") final String dataInicial,
+                                               @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getPrevisaoTrocaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/previsao-trocas/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                         @QueryParam("dataInicial") final String dataInicial,
+                                         @QueryParam("dataFinal") final String dataFinal) {
+        return service.getPrevisaoTrocaReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET

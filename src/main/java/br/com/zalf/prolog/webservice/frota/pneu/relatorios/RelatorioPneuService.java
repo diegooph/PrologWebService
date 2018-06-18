@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
@@ -56,25 +57,36 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws RuntimeException {
+    public void getPrevisaoTrocaCsv(@NotNull final OutputStream outputStream,
+                                    @NotNull final List<Long> codUnidades,
+                                    @NotNull final String dataInicial,
+                                    @NotNull final String dataFinal) throws RuntimeException {
         try {
-            dao.getPrevisaoTrocaCsv(codUnidade, dataInicial, dataFinal, outputStream);
+            dao.getPrevisaoTrocaCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (CSV). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }
 
-    public Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) {
+    public Report getPrevisaoTrocaReport(@NotNull final List<Long> codUnidades,
+                                         @NotNull final String dataInicial,
+                                         @NotNull final String dataFinal) {
         try {
-            return dao.getPrevisaoTrocaReport(codUnidade, dataInicial, dataFinal);
+            return dao.getPrevisaoTrocaReport(
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (REPORT). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

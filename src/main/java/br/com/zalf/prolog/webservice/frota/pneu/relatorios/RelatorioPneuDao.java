@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,36 @@ public interface RelatorioPneuDao {
      */
     List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<Long> codUnidades,
                                         @NotNull final List<String> status) throws SQLException;
+
+    /**
+     * Método para gerar o relatório de previsão de troca de um pneu, com dados baseados no histórico de aferições.
+     * Para fins de exportação em CSV.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     */
+    void getPrevisaoTrocaCsv(@NotNull final OutputStream outputStream,
+                             @NotNull final List<Long> codUnidades,
+                             @NotNull final LocalDate dataInicial,
+                             @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+
+    /**
+     * Método para gerar o relatório de previsão de troca de um pneu, com dados baseados no histórico de aferições.
+     * Para fins de visualização na aplicação.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial - Data inicial do período de filtro.
+     * @param dataFinal   - Data final do período de filtro.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Report getPrevisaoTrocaReport(@NotNull final List<Long> codUnidades,
+                                  @NotNull final LocalDate dataInicial,
+                                  @NotNull final LocalDate dataFinal) throws SQLException;
 
     /**
      * busca uma lista de aderencias com base em um filtro
@@ -53,30 +84,6 @@ public interface RelatorioPneuDao {
      */
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
-
-    /**
-     * /**
-     * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
-     *
-     * @param codUnidade   código da unidade a ser buscada
-     * @param dataInicial  data inicial da troca
-     * @param dataFinal    data final da troca
-     * @param outputStream um OutputStream
-     * @throws IOException
-     * @throws SQLException
-     */
-    void getPrevisaoTrocaCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
-
-    /**
-     * Relatório que gera a previsão de troca de um pneu, dados baseados no histórico de aferições
-     *
-     * @param codUnidade  código da unidade
-     * @param dataInicial data inicial
-     * @param dataFinal   data final
-     * @return
-     * @throws SQLException
-     */
-    Report getPrevisaoTrocaReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
     void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
