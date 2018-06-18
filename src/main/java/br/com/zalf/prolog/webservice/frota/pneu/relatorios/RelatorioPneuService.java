@@ -125,25 +125,36 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws RuntimeException {
+    public void getAderenciaPlacasCsv(@NotNull final OutputStream outputStream,
+                                      @NotNull final List<Long> codUnidades,
+                                      @NotNull final String dataInicial,
+                                      @NotNull final String dataFinal) throws RuntimeException {
         try {
-            dao.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+            dao.getAderenciaPlacasCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (CSV). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }
 
-    public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) {
+    public Report getAderenciaPlacasReport(@NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
         try {
-            return dao.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+            return dao.getAderenciaPlacasReport(
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (REPORT). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

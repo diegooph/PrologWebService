@@ -136,6 +136,41 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getAderenciaPlacasCsv(@NotNull final OutputStream outputStream,
+                                      @NotNull final List<Long> codUnidades,
+                                      @NotNull final LocalDate dataInicial,
+                                      @NotNull final LocalDate dataFinal) throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAderenciaPlacasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getAderenciaPlacasReport(@NotNull final List<Long> codUnidades,
+                                           @NotNull final LocalDate dataInicial,
+                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getAderenciaPlacasStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -263,37 +298,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
         faixas.add(faixa);
         return faixas;
-    }
-
-    @Override
-    public void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getAderenciaPlacasReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getAderenciaPlacasStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -703,7 +707,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                         @NotNull final List<Long> codUnidades,
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_previsao_troca(?, ?,?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM func_relatorio_previsao_troca(?, ?,?, ?);");
         stmt.setObject(1, dataInicial);
         stmt.setObject(2, dataFinal);
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
@@ -716,10 +721,22 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                                    @NotNull final List<Long> codUnidades,
                                                                    @NotNull final LocalDate dataInicial,
                                                                    @NotNull final LocalDate dataFinal) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
                 "FROM func_relatorio_pneu_previsao_troca_consolidado(?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setString(2, Pneu.EM_USO);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getAderenciaPlacasStatement(@NotNull final Connection conn,
+                                                          @NotNull final List<Long> codUnidades,
+                                                          @NotNull final LocalDate dataInicial,
+                                                          @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         return stmt;
@@ -748,15 +765,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setLong(1, codUnidade);
         stmt.setString(2, status);
         stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-        return stmt;
-    }
-
-    private PreparedStatement getAderenciaPlacasStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, new Date(dataInicial));
-        stmt.setDate(3, new Date(dataFinal));
         return stmt;
     }
 

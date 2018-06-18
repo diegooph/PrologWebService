@@ -77,7 +77,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/csv")
+    @Path("/previsao-trocas/estratificado/csv")
     @Produces("application/csv")
     public StreamingOutput getPrevisaoTrocaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
                                                @QueryParam("dataInicial") final String dataInicial,
@@ -86,7 +86,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/report")
+    @Path("/previsao-trocas/estratificado/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
                                          @QueryParam("dataInicial") final String dataInicial,
@@ -145,20 +145,38 @@ public class RelatorioPneuResource {
     @GET
     @Path("/aderencias/placas/{codUnidade}/csv")
     @Produces("application/csv")
-    public StreamingOutput getAderenciaPlacasCsv(@PathParam("codUnidade") Long codUnidade,
-                                                 @QueryParam("dataInicial") long dataInicial,
-                                                 @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+    public StreamingOutput DEPRECATED_GET_ADERENCIA_PLACAS_CSV(@PathParam("codUnidade") Long codUnidade,
+                                                               @QueryParam("dataInicial") long dataInicial,
+                                                               @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
+        //TODO - Lançar Exception
+        return null;
     }
 
     @GET
     @Path("/aderencias/placas/{codUnidade}/report")
-    public Report getAderenciaPlacasReport(@PathParam("codUnidade") Long codUnidade,
-                                           @QueryParam("dataInicial") long dataInicial,
-                                           @QueryParam("dataFinal") long dataFinal) throws SQLException {
-        return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
+    public Report DEPRECATED_GET_ADERENCIA_PLACAS_REPORT(@PathParam("codUnidade") Long codUnidade,
+                                                         @QueryParam("dataInicial") long dataInicial,
+                                                         @QueryParam("dataFinal") long dataFinal) throws SQLException {
+        //TODO - Lançar Exception
+        return null;
     }
 
+    @GET
+    @Path("/aderencias-placas/csv")
+    @Produces("application/csv")
+    public StreamingOutput getAderenciaPlacasCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                 @QueryParam("dataInicial") final String dataInicial,
+                                                 @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/aderencias-placas/report")
+    public Report getAderenciaPlacasReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                           @QueryParam("dataInicial") final String dataInicial,
+                                           @QueryParam("dataFinal") final String dataFinal) {
+        return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
+    }
 
     @GET
     @Path("/pneus-descartados/{codUnidade}/report")
@@ -247,19 +265,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasReport(Long, long, long)} instead.
-     */
-    @GET
-    @Path("/aderencia/placas/{codUnidade}/report")
-    @Deprecated
-    public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") Long codUnidade,
-                                              @QueryParam("dataInicial") long dataInicial,
-                                              @QueryParam("dataFinal") long dataFinal) throws SQLException {
-        return service.getAderenciaPlacasReport(codUnidade, dataInicial, dataFinal);
-    }
-
-    /**
-     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(Long, long, long)} instead.
+     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(List, String, String)} instead.
      */
     @GET
     @Path("/aderencia/placas/{codUnidade}/csv")
@@ -268,6 +274,20 @@ public class RelatorioPneuResource {
     public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
                                                     @QueryParam("dataInicial") long dataInicial,
                                                     @QueryParam("dataFinal") long dataFinal) throws RuntimeException {
-        return outputStream -> service.getAderenciaPlacasCsv(codUnidade, dataInicial, dataFinal, outputStream);
+        //TODO - Lançar Exception
+        return null;
+    }
+
+    /**
+     * @deprecated in v0.0.11. Use {@link RelatorioPneuResource#getAderenciaPlacasReport(List, String, String)} instead.
+     */
+    @GET
+    @Path("/aderencia/placas/{codUnidade}/report")
+    @Deprecated
+    public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") Long codUnidade,
+                                              @QueryParam("dataInicial") long dataInicial,
+                                              @QueryParam("dataFinal") long dataFinal) throws SQLException {
+        //TODO - Lançar Exception
+        return null;
     }
 }
