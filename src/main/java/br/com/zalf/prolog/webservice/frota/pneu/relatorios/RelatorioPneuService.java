@@ -159,6 +159,42 @@ public class RelatorioPneuService {
         }
     }
 
+    public Report getPneusDescartadosReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal) {
+        try {
+            return dao.getPneusDescartadosReport(
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
+                    "Unidades: %s \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidades, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getPneusDescartadosCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final String dataInicial,
+                                       @NotNull final String dataFinal) {
+        try {
+            dao.getPneusDescartadosCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException | IOException e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
+                    "Unidades: %s \n" +
+                    "Data Inicial: %s \n" +
+                    "Data Final: %s", codUnidades, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws RuntimeException {
         try {
             dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
@@ -197,30 +233,6 @@ public class RelatorioPneuService {
             Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (REPORT). \n" +
                     "Unidade: %d\n" +
                     "Status: %s", codUnidade, status), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) {
-        try {
-            return dao.getPneusDescartadosReport(codUnidade, dataInicial, dataFinal);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %s \n" +
-                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial, Long dataFinal) {
-        try {
-            dao.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
-        } catch (SQLException | IOException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %s \n" +
-                    "Data Final: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
             throw new RuntimeException(e);
         }
     }

@@ -171,6 +171,41 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public Report getPneusDescartadosReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusDescartadosStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getPneusDescartadosCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final LocalDate dataInicial,
+                                       @NotNull final LocalDate dataFinal) throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPneusDescartadosStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -357,37 +392,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = getResumoGeralPneusStatement(conn, codUnidade, status);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getPneusDescartadosReport(Long codUnidade, Long dataInicial, Long dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getPneusDescartadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial, Long dataFinal)
-            throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getPneusDescartadosStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -742,12 +746,16 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-    private PreparedStatement getPneusDescartadosStatement(Connection conn, Long codUnidade, Long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneus_descartados(?,?,?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, new Date(dataInicial));
-        stmt.setDate(3, new Date(dataFinal));
+    @NotNull
+    private PreparedStatement getPneusDescartadosStatement(@NotNull final Connection conn,
+                                                           @NotNull final List<Long> codUnidades,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM func_relatorio_pneus_descartados(?,?,?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 

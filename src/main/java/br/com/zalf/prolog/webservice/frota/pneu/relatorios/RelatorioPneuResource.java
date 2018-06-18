@@ -142,6 +142,10 @@ public class RelatorioPneuResource {
         return service.getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
     }
 
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getAderenciaPlacasCsv(List, String, String)} instead.
+     */
     @GET
     @Path("/aderencias/placas/{codUnidade}/csv")
     @Produces("application/csv")
@@ -152,11 +156,15 @@ public class RelatorioPneuResource {
         return null;
     }
 
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getAderenciaPlacasReport(List, String, String)} instead.
+     */
     @GET
     @Path("/aderencias/placas/{codUnidade}/report")
     public Report DEPRECATED_GET_ADERENCIA_PLACAS_REPORT(@PathParam("codUnidade") Long codUnidade,
                                                          @QueryParam("dataInicial") long dataInicial,
-                                                         @QueryParam("dataFinal") long dataFinal) throws SQLException {
+                                                         @QueryParam("dataFinal") long dataFinal) {
         //TODO - Lançar Exception
         return null;
     }
@@ -178,21 +186,46 @@ public class RelatorioPneuResource {
         return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
     }
 
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getPneusDescartadosReport(List, String, String)} instead.
+     */
     @GET
     @Path("/pneus-descartados/{codUnidade}/report")
-    public Report getPneusDescartadosReport(@PathParam("codUnidade") @Required Long codUnidade,
-                                            @QueryParam("dataInicial") @Required Long dataInicial,
-                                            @QueryParam("dataFinal") @Required Long dataFinal) {
-        return service.getPneusDescartadosReport(codUnidade, dataInicial, dataFinal);
+    public Report DEPRECATED_GET_PNEUS_DESCARTADOS_REPORT(@PathParam("codUnidade") @Required Long codUnidade,
+                                                          @QueryParam("dataInicial") @Required Long dataInicial,
+                                                          @QueryParam("dataFinal") @Required Long dataFinal) {
+        //TODO - Lançar Exception
+        return null;
+    }
+
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getPneusDescartadosCsv(List, String, String)} instead.
+     */
+    @GET
+    @Path("/pneus-descartados/{codUnidade}/csv")
+    public StreamingOutput DEPRECATED_GET_PNEUS_DESCARTADOS_CSV(@PathParam("codUnidade") @Required Long codUnidade,
+                                                                @QueryParam("dataInicial") @Required Long dataInicial,
+                                                                @QueryParam("dataFinal") @Required Long dataFinal) throws RuntimeException {
+        //TODO - Lançar Exception
+        return null;
     }
 
     @GET
-    @Path("/pneus-descartados/{codUnidade}/csv")
-    public StreamingOutput getPneusDescartadosCsv(@PathParam("codUnidade") @Required Long codUnidade,
-                                                  @QueryParam("dataInicial") @Required Long dataInicial,
-                                                  @QueryParam("dataFinal") @Required Long dataFinal) throws
-            RuntimeException {
-        return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidade, dataInicial, dataFinal);
+    @Path("/pneus-descartados/report")
+    public Report getPneusDescartadosReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                            @QueryParam("dataInicial") final String dataInicial,
+                                            @QueryParam("dataFinal") final String dataFinal) {
+        return service.getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/pneus-descartados/csv")
+    public StreamingOutput getPneusDescartadosCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                  @QueryParam("dataInicial") final String dataInicial,
+                                                  @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET

@@ -123,6 +123,36 @@ public interface RelatorioPneuDao {
                                     @NotNull final LocalDate dataFinal) throws SQLException;
 
     /**
+     * Método que gera um relatório identificando os pneus que foram descartados nas unidades filtradas.
+     * Para fins de visualização na aplicação.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial - Data inicial do período de filtro.
+     * @param dataFinal   - Data final do período de filtro.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Report getPneusDescartadosReport(@NotNull final List<Long> codUnidades,
+                                     @NotNull final LocalDate dataInicial,
+                                     @NotNull final LocalDate dataFinal) throws SQLException;
+
+    /**
+     * Método que gera um relatório identificando os pneus que foram descartados nas unidades filtradas.
+     * Para fins de exportação em CSV.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    void getPneusDescartadosCsv(@NotNull final OutputStream outputStream,
+                                @NotNull final List<Long> codUnidades,
+                                @NotNull final LocalDate dataInicial,
+                                @NotNull final LocalDate dataFinal) throws IOException, SQLException;
+
+    /**
      * busca uma lista de aderencias com base em um filtro
      *
      * @param ano        ano à ser buscadp
@@ -152,13 +182,6 @@ public interface RelatorioPneuDao {
     void getResumoGeralPneus(Long codUnidade, String status, OutputStream outputStream) throws SQLException, IOException;
 
     Report getResumoGeralPneus(Long codUnidade, String status) throws SQLException;
-
-    Report getPneusDescartadosReport(Long codUnidade,
-                                     Long dataInicial,
-                                     Long dataFinal) throws SQLException;
-
-    void getPneusDescartadosCsv(OutputStream outputStream, Long codUnidade, Long dataInicial,
-                                Long dataFinal) throws IOException, SQLException;
 
     Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
