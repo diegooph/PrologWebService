@@ -91,25 +91,36 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws RuntimeException {
+    public void getPrevisaoTrocaConsolidadoCsv(@NotNull final OutputStream outputStream,
+                                               @NotNull final List<Long> codUnidades,
+                                               @NotNull final String dataInicial,
+                                               @NotNull final String dataFinal) throws RuntimeException {
         try {
-            dao.getPrevisaoTrocaConsolidadoCsv(codUnidade, dataInicial, dataFinal, outputStream);
+            dao.getPrevisaoTrocaConsolidadoCsv(
+                    outputStream,
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (CSV). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw new RuntimeException();
         }
     }
 
-    public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) {
+    public Report getPrevisaoTrocaConsolidadoReport(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final String dataInicial,
+                                                    @NotNull final String dataFinal) {
         try {
-            return dao.getPrevisaoTrocaConsolidadoReport(codUnidade, dataInicial, dataFinal);
+            return dao.getPrevisaoTrocaConsolidadoReport(
+                    codUnidades,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (REPORT). \n" +
-                    "Unidade: %d \n" +
-                    "Período: %s a %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "Unidades: %s \n" +
+                    "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }

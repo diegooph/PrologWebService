@@ -5,7 +5,10 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
@@ -90,6 +93,41 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         try {
             conn = getConnection();
             stmt = getPrevisaoTrocaStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getPrevisaoTrocaConsolidadoCsv(@NotNull final OutputStream outputStream,
+                                               @NotNull final List<Long> codUnidades,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal) throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPrevisaoTrocaConsolidadoStatement(conn, codUnidades, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getPrevisaoTrocaConsolidadoReport(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final LocalDate dataInicial,
+                                                    @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getPrevisaoTrocaConsolidadoStatement(conn, codUnidades, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -225,37 +263,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
         faixas.add(faixa);
         return faixas;
-    }
-
-    @Override
-    public void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream)
-            throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getPrevisaoTrocaConsolidadoStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getPrevisaoTrocaConsolidadoStatement(conn, codUnidade, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -691,16 +698,30 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return total;
     }
 
+    @NotNull
     private PreparedStatement getPrevisaoTrocaStatement(@NotNull final Connection conn,
                                                         @NotNull final List<Long> codUnidades,
                                                         @NotNull final LocalDate dataInicial,
-                                                        @NotNull final LocalDate dataFinal)
-            throws SQLException {
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_previsao_troca(?, ?,?, ?);");
         stmt.setObject(1, dataInicial);
         stmt.setObject(2, dataFinal);
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setString(4, Pneu.EM_USO);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getPrevisaoTrocaConsolidadoStatement(@NotNull final Connection conn,
+                                                                   @NotNull final List<Long> codUnidades,
+                                                                   @NotNull final LocalDate dataInicial,
+                                                                   @NotNull final LocalDate dataFinal) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM func_relatorio_pneu_previsao_troca_consolidado(?, ?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+        stmt.setString(2, Pneu.EM_USO);
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
@@ -710,27 +731,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, new Date(dataInicial));
         stmt.setDate(3, new Date(dataFinal));
-        return stmt;
-    }
-
-    private PreparedStatement getPrevisaoTrocaConsolidadoStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') AS \"DATA\",\n" +
-                "  VAP.\"MARCA\",\n" +
-                "  VAP.\"MODELO\",\n" +
-                "  VAP.\"MEDIDAS\",\n" +
-                "  COUNT(VAP.\"MODELO\") as \"QUANTIDADE\"\n" +
-                "FROM\n" +
-                "    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
-                "    VIEW_ANALISE_PNEUS VAP\n" +
-                "WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
-                "GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
-                "ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setString(4, Pneu.EM_USO);
         return stmt;
     }
 

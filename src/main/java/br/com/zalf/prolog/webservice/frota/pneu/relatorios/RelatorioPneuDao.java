@@ -63,6 +63,36 @@ public interface RelatorioPneuDao {
                                   @NotNull final LocalDate dataFinal) throws SQLException;
 
     /**
+     * Método que gera um relatório consolidado contendo a previsão de trocas de pneus, baseado no relatório
+     * estratificado. Para fins de exportação em CSV.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    void getPrevisaoTrocaConsolidadoCsv(@NotNull final OutputStream outputStream,
+                                        @NotNull final List<Long> codUnidades,
+                                        @NotNull final LocalDate dataInicial,
+                                        @NotNull final LocalDate dataFinal) throws IOException, SQLException;
+
+    /**
+     * Método que gera um relatório consolidado contendo a previsão de trocas de pneus, baseado no relatório
+     * estratificado. Para fins de visualização na aplicação.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial - Data inicial do período de filtro.
+     * @param dataFinal   - Data final do período de filtro.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Report getPrevisaoTrocaConsolidadoReport(@NotNull final List<Long> codUnidades,
+                                             @NotNull final LocalDate dataInicial,
+                                             @NotNull final LocalDate dataFinal) throws SQLException;
+
+    /**
      * busca uma lista de aderencias com base em um filtro
      *
      * @param ano        ano à ser buscadp
@@ -84,10 +114,6 @@ public interface RelatorioPneuDao {
      */
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
-
-    void getPrevisaoTrocaConsolidadoCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
-
-    Report getPrevisaoTrocaConsolidadoReport(Long codUnidade, long dataInicial, long dataFinal) throws SQLException;
 
     void getAderenciaPlacasCsv(Long codUnidade, long dataInicial, long dataFinal, OutputStream outputStream) throws IOException, SQLException;
 
