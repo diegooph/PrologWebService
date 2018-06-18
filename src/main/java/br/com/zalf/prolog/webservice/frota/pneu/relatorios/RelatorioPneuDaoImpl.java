@@ -1,15 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.Now;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -18,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,24 +32,21 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     private static final String TAG = RelatorioPneuDaoImpl.class.getSimpleName();
 
-    private static final String PNEUS_RESUMO_SULCOS = "SELECT COALESCE(ALTURA_SULCO_CENTRAL_INTERNO, ALTURA_SULCO_CENTRAL_INTERNO, -1) AS ALTURA_SULCO_CENTRAL FROM PNEU WHERE "
-            + "COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) ORDER BY 1 DESC";
-
     public RelatorioPneuDaoImpl() {
-
     }
 
     @Override
-    public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status) throws SQLException {
+    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+                                               @NotNull final List<String> status) throws SQLException {
         final List<Double> valores = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(PNEUS_RESUMO_SULCOS);
-            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtils.ListToArray(conn, status));
+            stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneus_by_faixa_sulco(?, ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT ,status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(rSet.getDouble("ALTURA_SULCO_CENTRAL"));
@@ -61,7 +56,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
         if (valores.isEmpty()) {
             return new ArrayList<>();
-
         } else {
             return getFaixas(valores);
         }
@@ -842,16 +836,16 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return faixas;
     }
 
-    private List<Faixa> getFaixas(List<Double> valores) {
+    @NotNull
+    private List<Faixa> getFaixas(@NotNull final List<Double> valores) {
         Double minimo = (double) 0;
         Double cota = (valores.get(0) / 5) + 1;
         Double maximo = cota;
         int totalPneus = valores.size();
-        List<Faixa> faixas = new ArrayList<>();
+        final List<Faixa> faixas = new ArrayList<>();
         //cria as faixas
-        Log.d("kk", valores.toString());
         while (minimo < valores.get(0)) {
-            Faixa faixa = new Faixa();
+            final Faixa faixa = new Faixa();
             faixa.setInicio(minimo);
             faixa.setFim(maximo);
             minimo = maximo;
@@ -870,7 +864,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             faixa.setPorcentagem((double) faixa.getTotalPneus() / totalPneus);
         }
         // cria a faixa de itens não aferidos, com o que sobrou da lista valores
-        Faixa faixa = new Faixa();
+        final Faixa faixa = new Faixa();
         faixa.setNaoAferidos(true);
         faixa.setTotalPneus(valores.size());
         faixa.setPorcentagem((double) valores.size() / totalPneus);

@@ -30,12 +30,24 @@ import java.util.List;
 public class RelatorioPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
+    /**
+     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getQtdPneusByFaixaSulco(List, List)} instead.
+     */
     @GET
     @Path("/resumoSulcos")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public List<Faixa> getQtPneusByFaixaSulco(@QueryParam("codUnidades") List<String> codUnidades,
-                                              @QueryParam("status") List<String> status) {
-        return service.getQtPneusByFaixaSulco(codUnidades, status);
+    public List<Faixa> DEPRECATEDgetQtPneusByFaixaSulco(@QueryParam("codUnidades") List<String> codUnidades,
+                                                        @QueryParam("status") List<String> status) {
+        //TODO - Lançar Exception
+        return null;
+    }
+
+    @GET
+    @Path("/pneus-faixa-sulco")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<String> codUnidades,
+                                               @QueryParam("status") final List<String> status) {
+        return service.getQtdPneusByFaixaSulco(codUnidades, status);
     }
 
     @GET

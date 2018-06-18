@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,9 +23,10 @@ public class RelatorioPneuService {
     private static final String TAG = RelatorioPneuService.class.getSimpleName();
     private final RelatorioPneuDao dao = Injection.provideRelatorioPneuDao();
 
-    public List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status) {
+    public List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+                                               @NotNull final List<String> status) {
         try {
-            return dao.getQtPneusByFaixaSulco(codUnidades, status);
+            return dao.getQtdPneusByFaixaSulco(codUnidades, status);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de sulco", e);
             throw new RuntimeException(e);

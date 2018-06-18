@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,14 +21,15 @@ import java.util.Map;
 public interface RelatorioPneuDao {
 
     /**
-     * seleciona pneus com base no sulco
+     * Método utilizado para listar os pneus com base na faixa de Sulco em que se encontram.
      *
-     * @param codUnidades código da unidade
-     * @param status      status do pneu
-     * @return lista de faixas
-     * @throws SQLException se ocorrer erro no banco de dados
+     * @param codUnidades - Código da {@link Unidade}.
+     * @param status      - Status em que o {@link Pneu} se encontra.
+     * @return - {@link List<Faixa>} agrupando os {@link Pneu}s numa dada {@link Faixa}
+     * @throws SQLException - Se ocorrer erro no banco de dados.
      */
-    List<Faixa> getQtPneusByFaixaSulco(List<String> codUnidades, List<String> status) throws SQLException;
+    List<Faixa> getQtdPneusByFaixaSulco(@NotNull final List<String> codUnidades,
+                                        @NotNull final List<String> status) throws SQLException;
 
     /**
      * busca uma lista de aderencias com base em um filtro
