@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ErrorMessageFactory;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
@@ -17,7 +18,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.color.ProfileDataException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class ColaboradorService {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao atualizar";
+            final String errorMessage = ErrorMessageFactory.create(e, "Erro ao inserir colaborador");
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
             throw ProLogExceptionHandler.map(e, errorMessage);
         }
