@@ -206,6 +206,37 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getDadosUltimaAfericaoCsv(@NotNull final OutputStream outputStream,
+                                          @NotNull final List<Long> codUnidades) throws IOException, SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosUltimaAfericaoStatement(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getDadosUltimaAfericaoStatement(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -333,37 +364,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
         faixas.add(faixa);
         return faixas;
-    }
-
-    @Override
-    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream)
-            throws IOException, SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getDadosUltimaAfericaoStatement(conn, codUnidade);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -759,11 +759,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-    private PreparedStatement getDadosUltimaAfericaoStatement(Connection conn, long codUnidade)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?, ?);");
-        stmt.setLong(1, codUnidade);
-        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+    @NotNull
+    private PreparedStatement getDadosUltimaAfericaoStatement(@NotNull final Connection conn,
+                                                              @NotNull final List<Long> codUnidades) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+        // TODO - Alterar function para não receber o TimeZone
+//        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 

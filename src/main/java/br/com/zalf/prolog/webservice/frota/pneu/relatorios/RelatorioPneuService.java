@@ -195,22 +195,23 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws RuntimeException {
+    public void getDadosUltimaAfericaoCsv(@NotNull final OutputStream outputStream,
+                                          @NotNull final List<Long> codUnidades) throws RuntimeException {
         try {
-            dao.getDadosUltimaAfericaoCsv(codUnidade, outputStream);
+            dao.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
         } catch (SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (CSV). \n" +
-                    "Unidade: %d", codUnidade), e);
+                    "Unidades: %s", codUnidades), e);
             throw new RuntimeException(e);
         }
     }
 
-    public Report getDadosUltimaAfericaoReport(Long codUnidade) {
+    public Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) {
         try {
-            return dao.getDadosUltimaAfericaoReport(codUnidade);
+            return dao.getDadosUltimaAfericaoReport(codUnidades);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (REPORT). \n" +
-                    "Unidade: %d", codUnidade), e);
+                    "Unidades: %s", codUnidades), e);
             throw new RuntimeException(e);
         }
     }

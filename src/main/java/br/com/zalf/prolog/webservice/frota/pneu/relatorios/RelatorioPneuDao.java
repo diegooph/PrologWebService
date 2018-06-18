@@ -153,6 +153,28 @@ public interface RelatorioPneuDao {
                                 @NotNull final LocalDate dataFinal) throws IOException, SQLException;
 
     /**
+     * Método que gera um relatório listando a última aferição de cada pneu presente na listagem.
+     * Para fins de exportação em CSV.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    void getDadosUltimaAfericaoCsv(@NotNull final OutputStream outputStream,
+                                   @NotNull final List<Long> codUnidades) throws SQLException, IOException;
+
+    /**
+     * Método que gera um relatório listando a última aferição de cada pneu presente na listagem.
+     * Para fins de visualização na aplicação.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) throws SQLException;
+
+    /**
      * busca uma lista de aderencias com base em um filtro
      *
      * @param ano        ano à ser buscadp
@@ -174,10 +196,6 @@ public interface RelatorioPneuDao {
      */
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
-
-    void getDadosUltimaAfericaoCsv(Long codUnidade, OutputStream outputStream) throws SQLException, IOException;
-
-    Report getDadosUltimaAfericaoReport(Long codUnidade) throws SQLException;
 
     void getResumoGeralPneus(Long codUnidade, String status, OutputStream outputStream) throws SQLException, IOException;
 
