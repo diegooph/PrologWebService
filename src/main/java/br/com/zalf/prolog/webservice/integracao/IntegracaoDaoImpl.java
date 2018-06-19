@@ -40,6 +40,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             if (rSet.next()) {
                 if (!rSet.getBoolean("TOKEN_EXISTE")) {
                     throw new Exception("Token não existe ou não é válido para a execução da funcionalidade");
+                } else if (rSet.getString("CHAVE_SISTEMA") == null) {
+                    return null;
                 }
                 return SistemaKey.fromString(rSet.getString("CHAVE_SISTEMA"));
             } else {
