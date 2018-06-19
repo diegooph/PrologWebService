@@ -765,10 +765,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private PreparedStatement getDadosUltimaAfericaoStatement(@NotNull final Connection conn,
                                                               @NotNull final List<Long> codUnidades) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-                "FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?, ?);");
+                "FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-        // TODO - Alterar function para não receber o TimeZone
-//        stmt.setString(2, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 
