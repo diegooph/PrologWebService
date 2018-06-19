@@ -10,6 +10,6 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 class ColaboradorDuplicadoException extends DuplicateKeyException {
 
     ColaboradorDuplicadoException() {
-        super("Colaborador já cadastrado");
+        super("Este colaborador já está cadastrado");
     }
 }

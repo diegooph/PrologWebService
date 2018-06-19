@@ -6,15 +6,20 @@ package br.com.zalf.prolog.webservice.errorhandling.sql;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public enum SqlErrorCodes {
-    DUPLICATE_KEY(23505);
+    UNIQUE_VIOLATION("23505");
 
-    private final int errorCode;
+    private final String errorCode;
 
-    SqlErrorCodes(final int errorCode) {
+    SqlErrorCodes(final String errorCode) {
         this.errorCode = errorCode;
     }
 
-    public int getErrorCode() {
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    @Override
+    public String toString() {
         return errorCode;
     }
 }

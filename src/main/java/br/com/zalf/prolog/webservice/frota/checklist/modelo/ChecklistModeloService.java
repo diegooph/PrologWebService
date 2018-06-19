@@ -95,8 +95,9 @@ public class ChecklistModeloService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao ativar/inativar o modelo de checklist: " + codModelo;
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+//            throw ProLogExceptionHandler.map(e, errorMessage);
         }
+        return null;
     }
 
     public List<ModeloChecklist> getModelosChecklistProLog() {

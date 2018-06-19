@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 
-import static br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes.DUPLICATE_KEY;
+import static br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes.UNIQUE_VIOLATION;
 
 /**
  * Created on 18/06/2018
@@ -25,7 +25,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
             return proLogException;
         }
 
-        if (sqlException.getErrorCode() == DUPLICATE_KEY.getErrorCode()) {
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
             return new DuplicateKeyException("Este recurso já existe no banco de dados");
         }
 

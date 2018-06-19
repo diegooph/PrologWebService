@@ -32,8 +32,9 @@ public class PneuService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o pneu";
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+//            throw exceptionHandler.map(e, errorMessage);
         }
+        return null;
     }
 
     public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
