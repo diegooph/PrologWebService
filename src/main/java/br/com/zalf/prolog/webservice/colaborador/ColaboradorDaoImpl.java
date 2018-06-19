@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;

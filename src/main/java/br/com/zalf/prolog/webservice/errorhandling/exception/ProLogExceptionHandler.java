@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
-import br.com.zalf.prolog.webservice.errorhandling.sql.ErrorMessageFactory;
 import br.com.zalf.prolog.webservice.errorhandling.sql.SqlExceptionTranslator;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,23 +10,24 @@ import java.sql.SQLException;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ProLogExceptionHandler {
+public class ProLogExceptionHandler {
+    @NotNull
+    private final SqlExceptionTranslator sqlTranslator;
 
-    private ProLogExceptionHandler() {
-        throw new IllegalStateException(ProLogExceptionHandler.class.getSimpleName() + " cannot be instantiated!");
+    public ProLogExceptionHandler(@NotNull final SqlExceptionTranslator sqlTranslator) {
+        this.sqlTranslator = sqlTranslator;
     }
 
-    public static ProLogException map(@NotNull Throwable throwable,
+    public ProLogException map(@NotNull final Throwable throwable,
                                       @NotNull final String fallBackErrorMessage) {
         if (throwable instanceof SQLException) {
-            throwable = SqlExceptionTranslator.doTranslate((SQLException) throwable);
+            return sqlTranslator.doTranslate((SQLException) throwable, fallBackErrorMessage);
         }
 
-        final String errorMessage = ErrorMessageFactory.create(throwable, fallBackErrorMessage);
         if (throwable instanceof ProLogException) {
             return (ProLogException) throwable;
         } else {
-            return new GenericException(errorMessage, null);
+            return new GenericException(fallBackErrorMessage, null);
         }
     }
 }

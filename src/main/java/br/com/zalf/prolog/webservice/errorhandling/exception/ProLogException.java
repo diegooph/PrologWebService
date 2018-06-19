@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.errorhandling.exception;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Classe para erros específicos do ProLog

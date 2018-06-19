@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.colaborador;
+package br.com.zalf.prolog.webservice.colaborador.error;
 
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 
 public class ColaboradorValidator {
-
     private static final int ANO_MINIMO_PERMITIDO = 1900;
     private static final int ANO_MAXIMO_PERMITIDO = 2050;
     private static final int MAX_LENGTH_PIS = 11;
