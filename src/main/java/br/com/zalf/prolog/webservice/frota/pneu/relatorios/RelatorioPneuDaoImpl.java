@@ -237,6 +237,39 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final String status) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getResumoGeralPneusStatement(conn, codUnidades, status);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final String status) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getResumoGeralPneusStatement(conn, codUnidades, status);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     @Deprecated
     public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -364,37 +397,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
         faixas.add(faixa);
         return faixas;
-    }
-
-    @Override
-    public void getResumoGeralPneus(final Long codUnidade, final String status, final OutputStream outputStream)
-            throws SQLException, IOException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getResumoGeralPneusStatement(conn, codUnidade, status);
-            rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, outputStream);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Report getResumoGeralPneus(final Long codUnidade, String status) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getResumoGeralPneusStatement(conn, codUnidade, status);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
     }
 
     @Override
@@ -770,12 +772,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-    private PreparedStatement getResumoGeralPneusStatement(Connection conn, Long codUnidade, String status)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?, ?);");
-        stmt.setLong(1, codUnidade);
+    @NotNull
+    private PreparedStatement getResumoGeralPneusStatement(@NotNull final Connection conn,
+                                                           @NotNull final List<Long> codUnidades,
+                                                           @NotNull final String status) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
+                "FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setString(2, status);
-        stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
         return stmt;
     }
 

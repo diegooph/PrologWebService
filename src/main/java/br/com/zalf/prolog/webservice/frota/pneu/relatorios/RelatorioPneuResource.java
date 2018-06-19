@@ -266,19 +266,45 @@ public class RelatorioPneuResource {
         return service.getDadosUltimaAfericaoReport(codUnidades);
     }
 
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getResumoGeralPneusCsv(List, String)} instead.
+     */
     @GET
     @Path("/resumo-geral-pneus/{codUnidade}/csv")
-    public StreamingOutput getResumoGeralPneusCsv(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                  @QueryParam("status-pneu") @Optional final String status) throws RuntimeException {
-        return outputStream -> service.getResumoGeralPneusCsv(codUnidade, status, outputStream);
+    public StreamingOutput DEPRECATED_GET_RESUMO_GERAL_PNEUS_CSV(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("status-pneu") @Optional final String status) throws RuntimeException {
+        //TODO - Lançar Exception
+        return null;
     }
 
+    /**
+     * @deprecated at 2018-06-18.
+     * Use {@link RelatorioPneuResource#getResumoGeralPneusReport(List, String)} instead.
+     */
     @GET
     @Path("/resumo-geral-pneus/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getResumoGeralPneusReport(@PathParam("codUnidade") @Required final Long codUnidade,
-                                            @QueryParam("status-pneu") @Optional final String status) {
-        return service.getResumoGeralPneusReport(codUnidade, status);
+    public Report DEPRECATED_GET_RESUMO_GERAL_PNEUS_REPORT(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                           @QueryParam("status-pneu") @Optional final String status) {
+        //TODO - Lançar Exception
+        return null;
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/csv")
+    public StreamingOutput getResumoGeralPneusCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                  @QueryParam("status-pneu") final String status) throws RuntimeException {
+        return outputStream -> service.getResumoGeralPneusCsv(outputStream, codUnidades, status);
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getResumoGeralPneusReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                            @QueryParam("status-pneu") final String status) {
+        return service.getResumoGeralPneusReport(codUnidades, status);
     }
 
     @GET

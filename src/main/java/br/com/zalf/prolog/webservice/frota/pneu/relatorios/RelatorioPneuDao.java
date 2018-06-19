@@ -175,6 +175,32 @@ public interface RelatorioPneuDao {
     Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
+     * Método que gera um relatório listando todos os dados dos pneus filtrados.
+     * Para fins de exportação em CSV.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param status       - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
+                                @NotNull final List<Long> codUnidades,
+                                @NotNull final String status) throws SQLException, IOException;
+
+    /**
+     * Método que gera um relatório listando todos os dados dos pneus filtrados.
+     * Para fins de visualização na aplicação.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param status      - {@link List<String>} de status em que o {@link Pneu} pode se encontrar.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades,
+                                     @NotNull final String status) throws SQLException;
+
+    /**
      * busca uma lista de aderencias com base em um filtro
      *
      * @param ano        ano à ser buscadp
@@ -196,10 +222,6 @@ public interface RelatorioPneuDao {
      */
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
-
-    void getResumoGeralPneus(Long codUnidade, String status, OutputStream outputStream) throws SQLException, IOException;
-
-    Report getResumoGeralPneus(Long codUnidade, String status) throws SQLException;
 
     Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
 
