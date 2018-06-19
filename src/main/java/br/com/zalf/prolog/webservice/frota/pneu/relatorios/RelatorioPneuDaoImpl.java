@@ -708,6 +708,35 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return total;
     }
 
+    @Override
+    public Map<String, Integer> getQuantidadePneusDescartadosPorMotivo(List<Long> codUnidades) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<String, Integer> motivosDescarte = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT\n" +
+                    "  MMD.motivo, COUNT(M.codigo) as quantidade\n" +
+                    "FROM MOVIMENTACAO M JOIN MOVIMENTACAO_DESTINO MD ON M.codigo = MD.cod_movimentacao\n" +
+                    "  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
+                    "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
+                    "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
+                    "GROUP BY MMD.motivo\n" +
+                    "ORDER BY 2 DESC");
+            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                motivosDescarte.put(
+                        rSet.getString("motivo"),
+                        rSet.getInt("quantidade"));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return motivosDescarte;
+    }
+
     @NotNull
     private PreparedStatement getPrevisaoTrocaStatement(@NotNull final Connection conn,
                                                         @NotNull final List<Long> codUnidades,
@@ -930,34 +959,5 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         public int compare(Faixa o1, Faixa o2) {
             return Double.compare(o1.getInicio(), o2.getInicio());
         }
-    }
-
-    @Override
-    public Map<String, Integer> getQuantidadePneusDescartadosPorMotivo(List<Long> codUnidades) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Map<String, Integer> motivosDescarte = new LinkedHashMap<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT\n" +
-                    "  MMD.motivo, COUNT(M.codigo) as quantidade\n" +
-                    "FROM MOVIMENTACAO M JOIN MOVIMENTACAO_DESTINO MD ON M.codigo = MD.cod_movimentacao\n" +
-                    "  JOIN UNIDADE U ON U.CODIGO = M.cod_unidade\n" +
-                    "  JOIN movimentacao_motivo_descarte_empresa MMD ON MMD.cod_empresa = U.cod_empresa AND md.cod_motivo_descarte = mmd.codigo\n" +
-                    "WHERE M.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND MD.tipo_destino LIKE 'DESCARTE'\n" +
-                    "GROUP BY MMD.motivo\n" +
-                    "ORDER BY 2 DESC");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                motivosDescarte.put(
-                        rSet.getString("motivo"),
-                        rSet.getInt("quantidade"));
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return motivosDescarte;
     }
 }
