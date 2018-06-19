@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.colaborador;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.permissao.Visao;
@@ -33,8 +33,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt = conn.prepareStatement("INSERT INTO COLABORADOR "
                     + "(CPF, MATRICULA_AMBEV, MATRICULA_TRANS, DATA_NASCIMENTO, "
                     + "DATA_ADMISSAO, DATA_DEMISSAO, STATUS_ATIVO, NOME, "
-                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE, PIS) VALUES "
-                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
+                    + "COD_SETOR, COD_FUNCAO, COD_UNIDADE, COD_PERMISSAO, COD_EMPRESA, COD_EQUIPE, PIS, COD_UNIDADE_CADASTRO) VALUES "
+                    + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ");
             stmt.setLong(1, colaborador.getCpf());
             if (colaborador.getMatriculaAmbev() == null || colaborador.getMatriculaAmbev().equals(0)) {
                 stmt.setNull(2, Types.INTEGER);
@@ -58,6 +58,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(13, colaborador.getCodEmpresa());
             stmt.setLong(14, colaborador.getEquipe().getCodigo());
             stmt.setString(15, colaborador.getPis());
+            stmt.setLong(16, colaborador.getCodUnidade());
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o colaborador");

@@ -8,7 +8,8 @@ public enum ProLogErrorCodes {
 	TIPO_AFERICAO_NAO_SUPORTADO(3),
 	ESCALA_DIARIA(4),
 	INTEGRACAO(5),
-	RECAPADORA_EXCEPTION(6);
+	RECAPADORA_EXCEPTION(6),
+	RECURSO_JA_EXISTE(7);
 
 	private final int errorCode;
 

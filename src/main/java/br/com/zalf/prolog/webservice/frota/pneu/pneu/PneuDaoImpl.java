@@ -89,8 +89,8 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("INSERT INTO pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, " +
                     "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
                     "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
-                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa)\n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO;");
+                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro)\n" +
+                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO,?;");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -118,6 +118,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 stmt.setBoolean(17, false);
             }
             stmt.setLong(18, codUnidade);
+            stmt.setLong(19, codUnidade);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -223,7 +224,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE PNEU SET " +
                     "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ?, " +
                     "ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, " +
-                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? "+
+                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? " +
                     "WHERE CODIGO = ? AND COD_UNIDADE = ? AND PNEU_NOVO_NUNCA_RODADO = FALSE;");
             stmt.setInt(1, pneu.getVidaAtual());
             if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
@@ -298,7 +299,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setString(1, status);
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
-            if(stmt.executeUpdate() == 0) {
+            if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao atualizar o status do pneu");
             }
         } finally {
@@ -665,7 +666,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 stmt.setLong(2, codUnidade);
                 stmt.setString(3, fotoCadastro.getUrlFoto());
                 if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Erro ao inserir URL de foto do pneu: "+ codPneu + " da unidade: " + codUnidade);
+                    throw new SQLException("Erro ao inserir URL de foto do pneu: " + codPneu + " da unidade: " + codUnidade);
                 }
             }
         } finally {

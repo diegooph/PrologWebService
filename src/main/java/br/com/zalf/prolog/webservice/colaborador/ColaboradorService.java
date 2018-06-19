@@ -2,13 +2,14 @@ package br.com.zalf.prolog.webservice.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorValidator;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginHolder;
 import br.com.zalf.prolog.webservice.colaborador.model.LoginRequest;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.AmazonCredentialsException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloService;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.IntervaloOfflineSupport;
@@ -17,7 +18,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDao;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.color.ProfileDataException;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +27,9 @@ import java.util.List;
  */
 public class ColaboradorService {
 
-    private final ColaboradorDao dao = Injection.provideColaboradorDao();
     private static final String TAG = ColaboradorService.class.getSimpleName();
+    private final ColaboradorDao dao = Injection.provideColaboradorDao();
+    private final ColaboradorExceptionHandler exceptionHandler = Injection.provideColaboradorExceptionHandler();
 
     public void insert(Colaborador colaborador) throws ProLogException {
         try {
@@ -37,7 +38,7 @@ public class ColaboradorService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o colaborador";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -46,9 +47,9 @@ public class ColaboradorService {
             ColaboradorValidator.validacaoAtributosColaborador(colaborador);
             dao.update(cpfAntigo, colaborador, Injection.provideDadosIntervaloChangedListener());
         } catch (Throwable e) {
-            final String errorMessage = "Erro ao atualizar";
+            final String errorMessage = "Erro ao inserir colaborador";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador com o cpfAntigo: %d", cpfAntigo), e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 

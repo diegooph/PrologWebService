@@ -48,7 +48,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO VEICULO VALUES (?,?,?,?,?,?,?,?)");
             stmt.setString(1, veiculo.getPlaca().toUpperCase());
             stmt.setLong(2, codUnidade);
             stmt.setLong(3, veiculo.getKmAtual());
@@ -56,6 +56,7 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             stmt.setLong(5, veiculo.getTipo().getCodigo());
             stmt.setLong(6, veiculo.getModelo().getCodigo());
             stmt.setLong(7, veiculo.getEixos().codigo);
+            stmt.setLong(8, codUnidade);
             int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o veículo");
