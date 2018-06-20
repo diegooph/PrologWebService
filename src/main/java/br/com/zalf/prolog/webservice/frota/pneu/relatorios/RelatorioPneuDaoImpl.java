@@ -492,18 +492,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException {
+    public Map<TipoServico, Integer> getServicosEmAbertoByTipo(@NotNull final List<Long> codUnidades)
+            throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final Map<TipoServico, Integer> servicosAbertos = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT am.tipo_servico, count(am.tipo_servico)\n" +
-                    "FROM afericao_manutencao am\n" +
-                    "WHERE am.cpf_mecanico IS NULL AND am.cod_unidade::TEXT LIKE ANY(ARRAY[?])\n" +
-                    "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT AM.TIPO_SERVICO, COUNT(AM.TIPO_SERVICO) " +
+                    "FROM AFERICAO_MANUTENCAO AM " +
+                    "WHERE AM.DATA_HORA_RESOLUCAO IS NULL AND AM.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
+                    "GROUP BY AM.TIPO_SERVICO;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 servicosAbertos.put(

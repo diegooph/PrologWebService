@@ -227,7 +227,14 @@ public interface RelatorioPneuDao {
 
     List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
 
-    Map<TipoServico, Integer> getServicosEmAbertoByTipo(List<Long> codUnidades) throws SQLException;
+    /**
+     * Busca a quantidade de serviços abertos para cada {@link TipoServico}.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo a quantidade de serviços abertos para cada {@link TipoServico}.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<TipoServico, Integer> getServicosEmAbertoByTipo(@NotNull final List<Long> codUnidades) throws SQLException;
 
     StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
 
