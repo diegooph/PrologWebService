@@ -7,7 +7,13 @@ Change Log
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos
 e não apenas os veículos com pneus vinculados;
-* Previne retornar valor null para integração para tokens inválidos;
+* Previne retornar valor null para integração para tokens inválidos
+* Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
+* Altera paths dos relatórios de pneus para seguir o padrão REST
+
+### Bug Fixes
+* Corrige query que busca a quantidade de serviços em aberto para mostrar na Dashboard
+* Corrige query que busca a quantidade de serviços em aberto na listagem de serviços
 
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
