@@ -497,6 +497,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT AM.TIPO_SERVICO, COUNT(AM.TIPO_SERVICO) " +
                     "FROM AFERICAO_MANUTENCAO AM " +
+                    "  JOIN VEICULO_PNEU VP " +
+                    "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                     "WHERE AM.DATA_HORA_RESOLUCAO IS NULL AND AM.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
                     "GROUP BY AM.TIPO_SERVICO;");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
@@ -531,7 +533,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "        COALESCE(INTERVALO_SULCO.INTERVALO, -1)::INTEGER   AS INTERVALO_SULCO, " +
                     "        ERP.PERIODO_AFERICAO_PRESSAO, " +
                     "        ERP.PERIODO_AFERICAO_SULCO " +
-                    "      FROM VEICULO " +
+                    "      FROM VEICULO V" +
                     "        JOIN PNEU_RESTRICAO_UNIDADE ERP ON ERP.COD_UNIDADE = V.COD_UNIDADE " +
                     "        LEFT JOIN (SELECT " +
                     "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
