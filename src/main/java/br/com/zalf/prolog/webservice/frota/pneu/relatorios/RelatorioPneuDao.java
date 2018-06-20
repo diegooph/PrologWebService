@@ -295,7 +295,14 @@ public interface RelatorioPneuDao {
      */
     Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
+    /**
+     * Método que busca a quantidade de pneus com pressão incorreta.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - A quantidade de pneus com pressão incorreta.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException;
 
     List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException;
 

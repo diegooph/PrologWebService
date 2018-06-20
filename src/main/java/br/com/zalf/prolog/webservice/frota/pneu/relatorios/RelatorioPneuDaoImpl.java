@@ -697,22 +697,26 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException {
+    public int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         int total = 0;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT count(am.cod_pneu) as total \n" +
-                    "FROM afericao_manutencao am JOIN veiculo_pneu vp on vp.cod_unidade = am.cod_unidade and am.cod_pneu = vp.cod_pneu\n" +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) and (am.tipo_servico = ? or am.tipo_servico = ?) and am.data_hora_resolucao is null;");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT COUNT(AM.COD_PNEU) AS TOTAL " +
+                    "FROM AFERICAO_MANUTENCAO AM " +
+                    "  JOIN VEICULO_PNEU VP " +
+                    "    ON VP.COD_UNIDADE = AM.COD_UNIDADE AND AM.COD_PNEU = VP.COD_PNEU " +
+                    "WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "      AND (AM.TIPO_SERVICO = ? OR AM.TIPO_SERVICO = ?) " +
+                    "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getInt("total");
+                return rSet.getInt("TOTAL");
             }
         } finally {
             closeConnection(conn, stmt, rSet);
