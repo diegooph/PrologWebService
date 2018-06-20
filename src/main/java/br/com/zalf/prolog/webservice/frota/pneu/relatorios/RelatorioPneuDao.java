@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -306,5 +307,13 @@ public interface RelatorioPneuDao {
 
     List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getQuantidadePneusDescartadosPorMotivo(List<Long> codUnidades) throws SQLException;
+    /**
+     * Método que busca a quantidade de pneus descartados devido ao mesmo {@link MotivoDescarte}.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo os {@link MotivoDescarte} e a quantidade de pneus descartados
+     * para cada motivo.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<String, Integer> getQtdPneusDescartadosPorMotivo(@NotNull final List<Long> codUnidades) throws SQLException;
 }
