@@ -67,8 +67,11 @@ final class ServicoQueryBinder {
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "FROM AFERICAO_MANUTENCAO AS AM " +
+                "  JOIN AFERICAO AS A " +
+                "    ON A.CODIGO = AM.COD_AFERICAO " +
+                "  JOIN VEICULO_PNEU AS VP " +
+                "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
                 "GROUP BY A.PLACA_VEICULO " +
