@@ -256,7 +256,16 @@ public interface RelatorioPneuDao {
      */
     Map<TipoServico, Integer> getServicosEmAbertoByTipo(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
+    /**
+     * Método que busca um consolidado sobre as placas que estão com a Aferição em dia e aquelas
+     * cujo estão com a Aferição fora do prazo.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um objeto{@link StatusPlacasAfericao} contendo a quantidade de placas com a aferição em dia
+     * e a quantidade de placas com a aferição fora do prazo.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    StatusPlacasAfericao getStatusPlacasAfericao(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
      * Busca a média de tempo, em HORAS, de conserto para cada {@link TipoServico}.

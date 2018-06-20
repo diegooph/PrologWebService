@@ -513,50 +513,49 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException {
+    public StatusPlacasAfericao getStatusPlacasAfericao(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT sum(\n" +
-                    "           case when (dados.intervalo_pressao > dados.periodo_afericao_pressao or dados.intervalo_pressao < 0) AND\n" +
-                    "                     (dados.intervalo_sulco > dados.periodo_afericao_sulco or dados.intervalo_sulco < 0) then 1 else 0 end\n" +
-                    "       ) as total_vencidas,\n" +
-                    "       count (dados.placa) as total_placas\n" +
-                    "FROM\n" +
-                    "       (SELECT\n" +
-                    "               V.placa,\n" +
-                    "               coalesce(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
-                    "               coalesce(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO,\n" +
-                    "               erp.periodo_afericao_pressao,\n" +
-                    "               erp.periodo_afericao_sulco\n" +
-                    "        FROM VEICULO V\n" +
-                    "               JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = v.cod_unidade\n" +
-                    "               LEFT JOIN\n" +
-                    "               (SELECT\n" +
-                    "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "                       EXTRACT(DAYS FROM ((? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(AF.cod_unidade)))\n" +
-                    "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
-                    "                FROM AFERICAO AF\n" +
-                    "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA\n" +
-                    "               LEFT JOIN\n" +
-                    "               (SELECT\n" +
-                    "                       PLACA_VEICULO                             AS PLACA_INTERVALO,\n" +
-                    "                       EXTRACT(DAYS FROM ((? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(AF.cod_unidade)))\n" +
-                    "                                          - MAX((DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(af.cod_unidade)))))) AS INTERVALO\n" +
-                    "                FROM AFERICAO AF\n" +
-                    "                WHERE tipo_afericao = ? OR tipo_afericao = ?\n" +
-                    "                GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA\n" +
-                    "        WHERE V.STATUS_ATIVO = TRUE AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS dados;");
+            stmt = conn.prepareStatement("SELECT SUM(CASE " +
+                    "           WHEN (DADOS.INTERVALO_PRESSAO > DADOS.PERIODO_AFERICAO_PRESSAO OR DADOS.INTERVALO_PRESSAO < 0) AND " +
+                    "                (DADOS.INTERVALO_SULCO > DADOS.PERIODO_AFERICAO_SULCO OR DADOS.INTERVALO_SULCO < 0) " +
+                    "             THEN 1 " +
+                    "           ELSE 0 END) AS TOTAL_VENCIDAS, " +
+                    "       COUNT(DADOS.PLACA) AS TOTAL_PLACAS " +
+                    "FROM (SELECT " +
+                    "        V.PLACA, " +
+                    "        COALESCE(INTERVALO_PRESSAO.INTERVALO, -1)::INTEGER AS INTERVALO_PRESSAO, " +
+                    "        COALESCE(INTERVALO_SULCO.INTERVALO, -1)::INTEGER   AS INTERVALO_SULCO, " +
+                    "        ERP.PERIODO_AFERICAO_PRESSAO, " +
+                    "        ERP.PERIODO_AFERICAO_SULCO " +
+                    "      FROM VEICULO " +
+                    "        JOIN PNEU_RESTRICAO_UNIDADE ERP ON ERP.COD_UNIDADE = V.COD_UNIDADE " +
+                    "        LEFT JOIN (SELECT " +
+                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
+                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
+                    "                   FROM AFERICAO AF " +
+                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
+                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_PRESSAO " +
+                    "          ON INTERVALO_PRESSAO.PLACA_INTERVALO = V.PLACA " +
+                    "        LEFT JOIN (SELECT " +
+                    "                     PLACA_VEICULO                             AS PLACA_INTERVALO, " +
+                    "                     EXTRACT(DAYS FROM ((?) - MAX((DATA_HORA)))) AS INTERVALO " +
+                    "                   FROM AFERICAO AF " +
+                    "                   WHERE TIPO_AFERICAO = ? OR TIPO_AFERICAO = ? " +
+                    "                   GROUP BY PLACA_VEICULO, AF.COD_UNIDADE) AS INTERVALO_SULCO " +
+                    "          ON INTERVALO_SULCO.PLACA_INTERVALO = V.PLACA " +
+                    "      WHERE V.STATUS_ATIVO = TRUE " +
+                    "            AND V.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])) AS DADOS;");
             stmt.setDate(1, new Date(Now.utcMillis()));
             stmt.setString(2, TipoAfericao.SULCO_PRESSAO.asString());
             stmt.setString(3, TipoAfericao.PRESSAO.asString());
             stmt.setDate(4, new Date(Now.utcMillis()));
             stmt.setString(5, TipoAfericao.SULCO_PRESSAO.asString());
             stmt.setString(6, TipoAfericao.SULCO.asString());
-            stmt.setArray(7, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt.setArray(7, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
