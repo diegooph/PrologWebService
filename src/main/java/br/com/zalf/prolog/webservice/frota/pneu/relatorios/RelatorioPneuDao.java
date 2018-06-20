@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
@@ -223,9 +224,28 @@ public interface RelatorioPneuDao {
     @Deprecated
     List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws SQLException;
 
-    Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException;
+    /**
+     * Busca a quantidade de pneus presentes em cada {@link StatusPneu}.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo quantidade de pneus presentes em cada {@link StatusPneu}.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<StatusPneu, Integer> getQtdPneusByStatus(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException;
+    /**
+     * Método para buscar a quantidade de aferições realizadas para cada {@link TipoAfericao},
+     * dado um período de filtragem e as unidades selecionadas.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @param dataInicial - Data inicial do período de filtro.
+     * @param dataFinal   - Data final do período de filtro.
+     * @return - Um {@link List} contendo a {@link QuantidadeAfericao} para cada dia do filtro aplicado.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
+                                                         @NotNull final Date dataInicial,
+                                                         @NotNull final Date dataFinal) throws SQLException;
 
     /**
      * Busca a quantidade de serviços abertos para cada {@link TipoServico}.
@@ -238,9 +258,24 @@ public interface RelatorioPneuDao {
 
     StatusPlacasAfericao getStatusPlacasAfericao(List<Long> codUnidades) throws SQLException;
 
-    Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException;
+    /**
+     * Busca a média de tempo, em HORAS, de conserto para cada {@link TipoServico}.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo a média de tempo de conserto para cada {@link TipoServico}.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException;
+    /**
+     * Busca a quantidade de quilometros rodados com serviços em abertos para cada cada placa.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo a quantidade de quilometros rodados com serviços em
+     * abertos para cada placa.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<String, Integer> getQtdKmRodadoComServicoEmAberto(@NotNull final List<Long> codUnidades) throws SQLException;
 
     Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException;
 

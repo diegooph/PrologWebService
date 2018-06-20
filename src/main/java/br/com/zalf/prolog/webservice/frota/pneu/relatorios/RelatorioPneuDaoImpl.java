@@ -400,19 +400,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<StatusPneu, Integer> getQtPneusByStatus(List<Long> codUnidades) throws SQLException {
+    public Map<StatusPneu, Integer> getQtdPneusByStatus(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final Map<StatusPneu, Integer> statusPneus = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT P.status, COUNT(P.CODIGO)\n" +
-                    "FROM PNEU P\n" +
-                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?])\n" +
-                    "GROUP BY P.status\n" +
-                    "ORDER BY 1");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT P.STATUS, COUNT(P.CODIGO) " +
+                    "FROM PNEU P " +
+                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "GROUP BY P.STATUS " +
+                    "ORDER BY 1;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 statusPneus.put(
@@ -426,11 +426,13 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public List<QuantidadeAfericao> getQtAfericoesByTipoByData(Date dataInicial, Date dataFinal, List<Long> codUnidades) throws SQLException {
+    public List<QuantidadeAfericao> getQtdAfericoesByTipoByData(@NotNull final List<Long> codUnidades,
+                                                                @NotNull final Date dataInicial,
+                                                                @NotNull final Date dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<QuantidadeAfericao> qtAfericoes = new ArrayList<>();
+        final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
@@ -438,46 +440,39 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "  DADOS.DATA_FORMATADA, " +
                     "  SUM(DADOS.QT_AFERICAO_PRESSAO) AS QT_AFERICAO_PRESSAO, " +
                     "  SUM(DADOS.QT_AFERICAO_SULCO) AS QT_AFERICAO_SULCO, " +
-                    "  SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QT_AFERICAO_SULCO_PRESSAO FROM ( " +
-                    "  SELECT " +
-                    "    (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE " +
-                    "                               FROM FUNC_GET_TIME_ZONE_UNIDADE(A.COD_UNIDADE))) :: DATE         " +
-                    "  AS DATA, " +
-                    "    TO_CHAR((A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE " +
-                    "                                       FROM FUNC_GET_TIME_ZONE_UNIDADE(A.COD_UNIDADE))), " +
-                    "'DD/MM') AS DATA_FORMATADA, " +
-                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
-                    "      THEN 1 " +
-                    "        ELSE 0 END)                                                                             " +
-                    "  AS QT_AFERICAO_PRESSAO, " +
-                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
-                    "      THEN 1 " +
-                    "        ELSE 0 END)                                                                             " +
-                    "  AS QT_AFERICAO_SULCO, " +
-                    "    SUM(CASE WHEN A.TIPO_AFERICAO = ? " +
-                    "      THEN 1 " +
-                    "        ELSE 0 END)                                                                             " +
-                    "  AS QT_AFERICAO_SULCO_PRESSAO " +
-                    "  FROM AFERICAO A " +
-                    "  WHERE A.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
-                    "        AND (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM FUNC_GET_TIME_ZONE_UNIDADE(A" +
-                    ".COD_UNIDADE))) :: DATE >= ? " +
-                    "        AND (A.DATA_HORA AT TIME ZONE (SELECT TIMEZONE FROM FUNC_GET_TIME_ZONE_UNIDADE(A" +
-                    ".COD_UNIDADE))) :: DATE <= ? " +
-                    "  GROUP BY A.DATA_HORA, DATA_FORMATADA, A.COD_UNIDADE " +
-                    "  ORDER BY A.DATA_HORA :: DATE ASC " +
-                    ") AS DADOS " +
+                    "  SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QT_AFERICAO_SULCO_PRESSAO " +
+                    "FROM (SELECT " +
+                    "        (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE AS DATA, " +
+                    "        TO_CHAR((A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE)), 'DD/MM') AS DATA_FORMATADA, " +
+                    "        SUM(CASE " +
+                    "            WHEN A.TIPO_AFERICAO = ? " +
+                    "              THEN 1 " +
+                    "            ELSE 0 END) AS QT_AFERICAO_PRESSAO, " +
+                    "        SUM(CASE " +
+                    "            WHEN A.TIPO_AFERICAO = ? " +
+                    "              THEN 1 " +
+                    "            ELSE 0 END) AS QT_AFERICAO_SULCO, " +
+                    "        SUM(CASE " +
+                    "            WHEN A.TIPO_AFERICAO = ? " +
+                    "              THEN 1 " +
+                    "            ELSE 0 END) AS QT_AFERICAO_SULCO_PRESSAO " +
+                    "      FROM AFERICAO A " +
+                    "      WHERE A.COD_UNIDADE::TEXT LIKE ANY(ARRAY[?]) " +
+                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE >= ? " +
+                    "            AND (A.DATA_HORA AT TIME ZONE tz_unidade(A.COD_UNIDADE))::DATE <= ? " +
+                    "      GROUP BY A.DATA_HORA, DATA_FORMATADA, A.COD_UNIDADE " +
+                    "      ORDER BY A.DATA_HORA::DATE ASC) AS DADOS " +
                     "GROUP BY DATA, DADOS.DATA_FORMATADA " +
                     "ORDER BY DATA ASC;");
             stmt.setString(1, TipoAfericao.PRESSAO.asString());
             stmt.setString(2, TipoAfericao.SULCO.asString());
             stmt.setString(3, TipoAfericao.SULCO_PRESSAO.asString());
-            stmt.setArray(4, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             stmt.setDate(5, dataInicial);
             stmt.setDate(6, dataFinal);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                qtAfericoes.add(
+                qtdAfericoes.add(
                         new QuantidadeAfericao(
                                 rSet.getDate("data"),
                                 rSet.getString("data_formatada"),
@@ -488,7 +483,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return qtAfericoes;
+        return qtdAfericoes;
     }
 
     @Override
@@ -575,7 +570,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(List<Long> codUnidades) throws SQLException {
+    public Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -587,7 +582,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
                     "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
                     "GROUP BY am.tipo_servico;");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 resultados.put(
@@ -601,22 +596,29 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Integer> getQtdKmRodadoComServicoEmAberto(List<Long> codUnidades) throws SQLException {
+    public Map<String, Integer> getQtdKmRodadoComServicoEmAberto(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM (SELECT " +
-                    "  a.placa_veiculo, sum(am.km_momento_conserto - a.km_veiculo)::INT as total_km " +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
-                    "  JOIN veiculo_pneu vp ON vp.placa = a.placa_veiculo and am.cod_pneu = vp.cod_pneu and am.cod_unidade = vp.cod_unidade " +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL AND " +
-                    "(am.tipo_servico LIKE ? OR am.tipo_servico like ?) " +
-                    "GROUP BY a.placa_veiculo " +
-                    "ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE total_km > 0;");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM (SELECT " +
+                    "        A.PLACA_VEICULO, " +
+                    "        SUM(AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO)::INT AS TOTAL_KM " +
+                    "      FROM AFERICAO_MANUTENCAO AM " +
+                    "        JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                    "        JOIN VEICULO_PNEU VP ON VP.PLACA = A.PLACA_VEICULO " +
+                    "                                AND AM.COD_PNEU = VP.COD_PNEU " +
+                    "                                AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
+                    "      WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "            AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
+                    "            AND (AM.TIPO_SERVICO LIKE ? " +
+                    "                 OR AM.TIPO_SERVICO LIKE ?) " +
+                    "      GROUP BY A.PLACA_VEICULO " +
+                    "      ORDER BY 2 DESC) AS PLACAS_TOTAL_KM WHERE TOTAL_KM > 0;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
