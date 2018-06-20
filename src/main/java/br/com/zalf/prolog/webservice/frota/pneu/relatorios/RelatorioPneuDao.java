@@ -277,7 +277,7 @@ public interface RelatorioPneuDao {
     Map<TipoServico, Integer> getMediaTempoConsertoServicoPorTipo(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
-     * Busca a quantidade de quilometros rodados com serviços em abertos para cada cada placa.
+     * Busca a quantidade de quilometros rodados com serviços em abertos para cada placa.
      *
      * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
      * @return - Um {@link Map} contendo a quantidade de quilometros rodados com serviços em
@@ -286,7 +286,14 @@ public interface RelatorioPneuDao {
      */
     Map<String, Integer> getQtdKmRodadoComServicoEmAberto(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException;
+    /**
+     * Método que busca a quantidade de pneus com algum problema presente em cada placa.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link Map} contendo a quantidade de pneus com problemas, presentes em cada placa.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final List<Long> codUnidades) throws SQLException;
 
     int getQtdPneusPressaoIncorreta(List<Long> codUnidades) throws SQLException;
 

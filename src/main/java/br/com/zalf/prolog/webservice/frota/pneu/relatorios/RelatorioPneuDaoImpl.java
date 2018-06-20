@@ -635,26 +635,34 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(List<Long> codUnidades) throws SQLException {
+    public Map<String, Integer> getPlacasComPneuAbaixoLimiteMilimetragem(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final Map<String, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM (SELECT vp.placa as placa_veiculo, " +
-                    "  sum(case when least(p.altura_sulco_interno, p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno) < erp.sulco_minimo_descarte " +
-                    "    then 1 else 0 end) as qt_pneus_abaixo_limite " +
-                    "FROM veiculo_pneu vp JOIN pneu p ON p.codigo = vp.cod_pneu AND vp.cod_unidade = p.cod_unidade " +
-                    "  JOIN PNEU_RESTRICAO_UNIDADE erp ON erp.cod_unidade = vp.cod_unidade " +
-                    "WHERE vp.cod_unidade::TEXT LIKE ANY (ARRAY[?]) " +
-                    "GROUP BY vp.placa " +
-                    "ORDER BY 2 DESC) AS PLACA_PNEUS WHERE qt_pneus_abaixo_limite > 0;");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM (SELECT " +
+                    "        VP.PLACA AS PLACA_VEICULO, " +
+                    "        SUM(CASE " +
+                    "            WHEN LEAST(P.ALTURA_SULCO_INTERNO, P.ALTURA_SULCO_EXTERNO, " +
+                    "                       P.ALTURA_SULCO_CENTRAL_EXTERNO, P.ALTURA_SULCO_CENTRAL_INTERNO) " +
+                    "                 < ERP.SULCO_MINIMO_DESCARTE " +
+                    "              THEN 1 " +
+                    "            ELSE 0 END) AS QT_PNEUS_ABAIXO_LIMITE " +
+                    "      FROM VEICULO_PNEU VP JOIN PNEU P " +
+                    "          ON P.CODIGO = VP.COD_PNEU AND VP.COD_UNIDADE = P.COD_UNIDADE " +
+                    "        JOIN PNEU_RESTRICAO_UNIDADE ERP " +
+                    "          ON ERP.COD_UNIDADE = VP.COD_UNIDADE " +
+                    "      WHERE VP.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "      GROUP BY VP.PLACA " +
+                    "      ORDER BY 2 DESC) AS PLACA_PNEUS WHERE QT_PNEUS_ABAIXO_LIMITE > 0;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                resultados.put(rSet.getString("placa_veiculo"),
-                        rSet.getInt("qt_pneus_abaixo_limite"));
+                resultados.put(rSet.getString("PLACA_VEICULO"),
+                        rSet.getInt("QT_PNEUS_ABAIXO_LIMITE"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
