@@ -416,8 +416,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 statusPneus.put(
-                        StatusPneu.fromString(rSet.getString("status")),
-                        rSet.getInt("count"));
+                        StatusPneu.fromString(rSet.getString("STATUS")),
+                        rSet.getInt("COUNT"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -474,11 +474,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             while (rSet.next()) {
                 qtdAfericoes.add(
                         new QuantidadeAfericao(
-                                rSet.getDate("data"),
-                                rSet.getString("data_formatada"),
-                                rSet.getInt("qt_afericao_pressao"),
-                                rSet.getInt("qt_afericao_sulco"),
-                                rSet.getInt("qt_afericao_sulco_pressao")));
+                                rSet.getDate("DATA"),
+                                rSet.getString("DATA_FORMATADA"),
+                                rSet.getInt("QT_AFERICAO_PRESSAO"),
+                                rSet.getInt("QT_AFERICAO_SULCO"),
+                                rSet.getInt("QT_AFERICAO_SULCO_PRESSAO")));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -503,8 +503,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 servicosAbertos.put(
-                        TipoServico.fromString(rSet.getString("tipo_servico")),
-                        rSet.getInt("count"));
+                        TipoServico.fromString(rSet.getString("TIPO_SERVICO")),
+                        rSet.getInt("COUNT"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -559,8 +559,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
-                        rSet.getInt("total_vencidas"),
-                        rSet.getInt("total_placas") - rSet.getInt("total_vencidas"));
+                        rSet.getInt("TOTAL_VENCIDAS"),
+                        rSet.getInt("TOTAL_PLACAS") - rSet.getInt("TOTAL_VENCIDAS"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -576,17 +576,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final Map<TipoServico, Integer> resultados = new LinkedHashMap<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT am.tipo_servico, " +
-                    "avg(extract(epoch from (am.data_hora_resolucao - a.data_hora)) / 3600)::INT as md_tempo_conserto_horas " +
-                    "FROM afericao_manutencao am JOIN afericao a ON a.codigo = am.cod_afericao " +
-                    "WHERE am.cod_unidade::TEXT LIKE ANY (ARRAY[?]) AND am.cpf_mecanico IS NOT NULL " +
-                    "GROUP BY am.tipo_servico;");
+            stmt = conn.prepareStatement("SELECT AM.TIPO_SERVICO, " +
+                    "  AVG(EXTRACT(EPOCH FROM (AM.DATA_HORA_RESOLUCAO - A.DATA_HORA)) / 3600)::INT AS MD_TEMPO_CONSERTO_HORAS " +
+                    "FROM AFERICAO_MANUTENCAO AM JOIN AFERICAO A " +
+                    "    ON A.CODIGO = AM.COD_AFERICAO " +
+                    "WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "      AND AM.CPF_MECANICO IS NOT NULL " +
+                    "GROUP BY AM.TIPO_SERVICO;");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 resultados.put(
-                        TipoServico.fromString(rSet.getString("tipo_servico")),
-                        rSet.getInt("md_tempo_conserto_horas"));
+                        TipoServico.fromString(rSet.getString("TIPO_SERVICO")),
+                        rSet.getInt("MD_TEMPO_CONSERTO_HORAS"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
@@ -623,8 +625,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 resultados.put(
-                        rSet.getString("placa_veiculo"),
-                        rSet.getInt("total_km"));
+                        rSet.getString("PLACA_VEICULO"),
+                        rSet.getInt("TOTAL_KM"));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
