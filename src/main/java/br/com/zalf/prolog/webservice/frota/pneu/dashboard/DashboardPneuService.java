@@ -173,7 +173,7 @@ public final class DashboardPneuService {
         try {
             return DashboardPneuComponentsCreator.createQuantidadePneusDescartadosPorMotivo(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQuantidadePneusDescartadosPorMotivo(codUnidades));
+                    relatorioDao.getQtdPneusDescartadosPorMotivo(codUnidades));
         } catch (SQLException ex) {
             Log.e(TAG,
                     "Erro ao buscar a quantidade de pneus descartados por motivo para as unidades: " + codUnidades,

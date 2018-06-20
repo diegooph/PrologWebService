@@ -671,24 +671,26 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException {
+    public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<SulcoPressao> valores = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT trunc(p.pressao_atual::numeric, 2) as pressao_atual, " +
-                    "trunc(least(p.altura_sulco_interno, p.altura_sulco_externo, p.altura_sulco_central_externo, p.altura_sulco_central_interno)::numeric, 2) as menor_sulco\n" +
-                    "FROM pneu p\n" +
-                    "WHERE p.cod_unidade::TEXT LIKE ANY (ARRAY[?])\n" +
-                    "ORDER BY menor_sulco ASC");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+            stmt = conn.prepareStatement("SELECT " +
+                    "  TRUNC(P.PRESSAO_ATUAL::NUMERIC, 2) AS PRESSAO_ATUAL, " +
+                    "  TRUNC(LEAST(P.ALTURA_SULCO_INTERNO, P.ALTURA_SULCO_EXTERNO, " +
+                    "              P.ALTURA_SULCO_CENTRAL_EXTERNO, P.ALTURA_SULCO_CENTRAL_INTERNO)::NUMERIC, 2) AS MENOR_SULCO " +
+                    "FROM PNEU P " +
+                    "WHERE P.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "ORDER BY MENOR_SULCO ASC;");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 valores.add(new SulcoPressao(
-                        rSet.getDouble("menor_sulco"),
-                        rSet.getDouble("pressao_atual")));
+                        rSet.getDouble("MENOR_SULCO"),
+                        rSet.getDouble("PRESSAO_ATUAL")));
             }
         } finally {
             closeConnection(conn, stmt, rSet);

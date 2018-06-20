@@ -305,7 +305,15 @@ public interface RelatorioPneuDao {
      */
     int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException;
 
-    List<SulcoPressao> getMenorSulcoEPressaoPneus(List<Long> codUnidades) throws SQLException;
+    /**
+     * Método que busca, para cada {@link Pneu}, o menor sulco e a menor pressão nele presente.
+     *
+     * @param codUnidades - {@link List<Long>} de códigos das {@link Unidade}s.
+     * @return - Um {@link List} de {@link SulcoPressao} contendo o menor sulco e a menor pressão
+     * de cada pneu.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws SQLException;
 
     /**
      * Método que busca a quantidade de pneus descartados devido ao mesmo {@link MotivoDescarte}.
