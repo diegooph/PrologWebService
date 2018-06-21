@@ -31,6 +31,114 @@ import java.util.List;
 public class RelatorioPneuResource {
     private final RelatorioPneuService service = new RelatorioPneuService();
 
+    @GET
+    @Path("/pneus-faixa-sulco")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                               @QueryParam("status") final List<String> status) {
+        return service.getQtdPneusByFaixaSulco(codUnidades, status);
+    }
+
+    @GET
+    @Path("/previsao-trocas/estratificado/csv")
+    @Produces("application/csv")
+    public StreamingOutput getPrevisaoTrocaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                               @QueryParam("dataInicial") final String dataInicial,
+                                               @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getPrevisaoTrocaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/previsao-trocas/estratificado/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                         @QueryParam("dataInicial") final String dataInicial,
+                                         @QueryParam("dataFinal") final String dataFinal) {
+        return service.getPrevisaoTrocaReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/previsao-trocas/consolidados/csv")
+    @Produces("application/csv")
+    public StreamingOutput getPrevisaoTrocaConsolidadoCsv(
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/previsao-trocas/consolidados/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") final String dataInicial,
+                                                    @QueryParam("dataFinal") final String dataFinal) {
+        return service.getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/aderencias-placas/csv")
+    @Produces("application/csv")
+    public StreamingOutput getAderenciaPlacasCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                 @QueryParam("dataInicial") final String dataInicial,
+                                                 @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/aderencias-placas/report")
+    public Report getAderenciaPlacasReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                           @QueryParam("dataInicial") final String dataInicial,
+                                           @QueryParam("dataFinal") final String dataFinal) {
+        return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/pneus-descartados/report")
+    public Report getPneusDescartadosReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                            @QueryParam("dataInicial") final String dataInicial,
+                                            @QueryParam("dataFinal") final String dataFinal) {
+        return service.getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/pneus-descartados/csv")
+    public StreamingOutput getPneusDescartadosCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                  @QueryParam("dataInicial") final String dataInicial,
+                                                  @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+        return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    }
+
+    @GET
+    @Path("/dados-ultima-afericao/csv")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public StreamingOutput getDadosUltimaAfericaoCsv(@QueryParam("codUnidades") final List<Long> codUnidades)
+            throws RuntimeException {
+        return outputStream -> service.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
+    }
+
+    @GET
+    @Path("/dados-ultima-afericao/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getDadosUltimaAfericaoReport(@QueryParam("codUnidades") final List<Long> codUnidades) {
+        return service.getDadosUltimaAfericaoReport(codUnidades);
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/csv")
+    public StreamingOutput getResumoGeralPneusCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                  @QueryParam("status-pneu") final String status) throws RuntimeException {
+        return outputStream -> service.getResumoGeralPneusCsv(outputStream, codUnidades, status);
+    }
+
+    @GET
+    @Path("/resumo-geral-pneus/report")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    public Report getResumoGeralPneusReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                            @QueryParam("status-pneu") final String status) {
+        return service.getResumoGeralPneusReport(codUnidades, status);
+    }
+
     /**
      * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getQtdPneusByFaixaSulco(List, List)} instead.
      */
@@ -42,14 +150,6 @@ public class RelatorioPneuResource {
             @QueryParam("status") List<String> status) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
-    }
-
-    @GET
-    @Path("/pneus-faixa-sulco")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                               @QueryParam("status") final List<String> status) {
-        return service.getQtdPneusByFaixaSulco(codUnidades, status);
     }
 
     /**
@@ -77,24 +177,6 @@ public class RelatorioPneuResource {
                                                        @QueryParam("dataFinal") long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
-    }
-
-    @GET
-    @Path("/previsao-trocas/estratificado/csv")
-    @Produces("application/csv")
-    public StreamingOutput getPrevisaoTrocaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                               @QueryParam("dataInicial") final String dataInicial,
-                                               @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaCsv(outputStream, codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/previsao-trocas/estratificado/report")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                         @QueryParam("dataInicial") final String dataInicial,
-                                         @QueryParam("dataFinal") final String dataFinal) {
-        return service.getPrevisaoTrocaReport(codUnidades, dataInicial, dataFinal);
     }
 
     /**
@@ -128,22 +210,22 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/consolidados/csv")
-    @Produces("application/csv")
-    public StreamingOutput getPrevisaoTrocaConsolidadoCsv(
-            @QueryParam("codUnidades") final List<Long> codUnidades,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
+    @Path("/resumoPressao")
+    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
+    @Deprecated
+    public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_PRESSAO(@QueryParam("codUnidades") List<String> codUnidades,
+                                                                 @QueryParam("status") List<String> status) {
+        return service.getQtPneusByFaixaPressao(codUnidades, status);
     }
 
     @GET
-    @Path("/previsao-trocas/consolidados/report")
+    @Path("/aderencia/{codUnidade}/{ano}/{mes}")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                    @QueryParam("dataInicial") final String dataInicial,
-                                                    @QueryParam("dataFinal") final String dataFinal) {
-        return service.getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
+    @Deprecated
+    public List<Aderencia> DEPRECATED_GET_ADERENCIA_BY_UNIDADE(@PathParam("ano") int ano,
+                                                               @PathParam("mes") int mes,
+                                                               @PathParam("codUnidade") Long codUnidade) {
+        return service.getAderenciaByUnidade(ano, mes, codUnidade);
     }
 
     /**
@@ -174,23 +256,6 @@ public class RelatorioPneuResource {
                 "\nPor favor, atualize sua aplicação");
     }
 
-    @GET
-    @Path("/aderencias-placas/csv")
-    @Produces("application/csv")
-    public StreamingOutput getAderenciaPlacasCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                 @QueryParam("dataInicial") final String dataInicial,
-                                                 @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/aderencias-placas/report")
-    public Report getAderenciaPlacasReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                           @QueryParam("dataInicial") final String dataInicial,
-                                           @QueryParam("dataFinal") final String dataFinal) {
-        return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
-    }
-
     /**
      * @deprecated at 2018-06-18.
      * Use {@link RelatorioPneuResource#getPneusDescartadosReport(List, String, String)} instead.
@@ -219,22 +284,6 @@ public class RelatorioPneuResource {
                 "\nPor favor, atualize sua aplicação");
     }
 
-    @GET
-    @Path("/pneus-descartados/report")
-    public Report getPneusDescartadosReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                            @QueryParam("dataInicial") final String dataInicial,
-                                            @QueryParam("dataFinal") final String dataFinal) {
-        return service.getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/pneus-descartados/csv")
-    public StreamingOutput getPneusDescartadosCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                  @QueryParam("dataInicial") final String dataInicial,
-                                                  @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
-    }
-
     /**
      * @deprecated at 2018-06-18.
      * Use {@link RelatorioPneuResource#getDadosUltimaAfericaoCsv(List)} instead.
@@ -258,21 +307,6 @@ public class RelatorioPneuResource {
             throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
-    }
-
-    @GET
-    @Path("/dados-ultima-afericao/csv")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public StreamingOutput getDadosUltimaAfericaoCsv(@QueryParam("codUnidades") final List<Long> codUnidades)
-            throws RuntimeException {
-        return outputStream -> service.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
-    }
-
-    @GET
-    @Path("/dados-ultima-afericao/report")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getDadosUltimaAfericaoReport(@QueryParam("codUnidades") final List<Long> codUnidades) {
-        return service.getDadosUltimaAfericaoReport(codUnidades);
     }
 
     /**
@@ -300,40 +334,6 @@ public class RelatorioPneuResource {
             @QueryParam("status-pneu") @Optional final String status) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
-    }
-
-    @GET
-    @Path("/resumo-geral-pneus/csv")
-    public StreamingOutput getResumoGeralPneusCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                  @QueryParam("status-pneu") final String status) throws RuntimeException {
-        return outputStream -> service.getResumoGeralPneusCsv(outputStream, codUnidades, status);
-    }
-
-    @GET
-    @Path("/resumo-geral-pneus/report")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getResumoGeralPneusReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                            @QueryParam("status-pneu") final String status) {
-        return service.getResumoGeralPneusReport(codUnidades, status);
-    }
-
-    @GET
-    @Path("/resumoPressao")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    @Deprecated
-    public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_PRESSAO(@QueryParam("codUnidades") List<String> codUnidades,
-                                                                 @QueryParam("status") List<String> status) {
-        return service.getQtPneusByFaixaPressao(codUnidades, status);
-    }
-
-    @GET
-    @Path("/aderencia/{codUnidade}/{ano}/{mes}")
-    @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    @Deprecated
-    public List<Aderencia> DEPRECATED_GET_ADERENCIA_BY_UNIDADE(@PathParam("ano") int ano,
-                                                               @PathParam("mes") int mes,
-                                                               @PathParam("codUnidade") Long codUnidade) {
-        return service.getAderenciaByUnidade(ano, mes, codUnidade);
     }
 
     /**
