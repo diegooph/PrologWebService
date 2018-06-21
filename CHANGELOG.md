@@ -5,9 +5,11 @@ Change Log
 ## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (release-date) [unreleased]
 
 ### Refactor
-* Altera componente da Dashboard para mostrar apenas os veículos ativos
-e não apenas os veículos com pneus vinculados;
+* Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados;
 * Previne retornar valor null para integração para tokens inválidos;
+
+### Bug Fixes
+* Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado
 
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
