@@ -19,6 +19,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -239,7 +240,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @Override
     public void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
-                                       @NotNull final String status) throws SQLException, IOException {
+                                       @Nullable final String status) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -255,7 +256,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     public Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final String status) throws SQLException {
+                                            @Nullable final String status) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -768,7 +769,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-                "FROM func_relatorio_previsao_troca(?, ?,?, ?);");
+                "FROM func_relatorio_previsao_troca(?, ?, ?, ?);");
         stmt.setObject(1, dataInicial);
         stmt.setObject(2, dataFinal);
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
@@ -827,11 +828,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @NotNull
     private PreparedStatement getResumoGeralPneusStatement(@NotNull final Connection conn,
                                                            @NotNull final List<Long> codUnidades,
-                                                           @NotNull final String status) throws SQLException {
+                                                           @Nullable final String status) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
                 "FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-        stmt.setString(2, status);
+        if (status != null) {
+            stmt.setString(2, status);
+        } else {
+            stmt.setNull(2, Types.VARCHAR);
+        }
         return stmt;
     }
 

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.TipoServico;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -188,7 +189,7 @@ public interface RelatorioPneuDao {
      */
     void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
-                                @NotNull final String status) throws SQLException, IOException;
+                                @Nullable final String status) throws SQLException, IOException;
 
     /**
      * Método que gera um relatório listando todos os dados dos pneus filtrados.
@@ -200,7 +201,7 @@ public interface RelatorioPneuDao {
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
     Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades,
-                                     @NotNull final String status) throws SQLException;
+                                     @Nullable final String status) throws SQLException;
 
     /**
      * busca uma lista de aderencias com base em um filtro

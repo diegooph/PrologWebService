@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.model.Faixa;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -214,7 +215,7 @@ public class RelatorioPneuService {
 
     public void getResumoGeralPneusCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
-                                       @NotNull final String status) throws RuntimeException {
+                                       @Nullable final String status) throws RuntimeException {
         try {
             dao.getResumoGeralPneusCsv(outputStream, codUnidades, status);
         } catch (SQLException | IOException e) {
@@ -225,7 +226,7 @@ public class RelatorioPneuService {
         }
     }
 
-    public Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades, @NotNull final String status) {
+    public Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades, @Nullable final String status) {
         try {
             return dao.getResumoGeralPneusReport(codUnidades, status);
         } catch (SQLException e) {

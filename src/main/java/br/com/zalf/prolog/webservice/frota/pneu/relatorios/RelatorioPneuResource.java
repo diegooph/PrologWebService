@@ -34,26 +34,27 @@ public class RelatorioPneuResource {
     @GET
     @Path("/pneus-faixa-sulco")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                               @QueryParam("status") final List<String> status) {
+    public List<Faixa> getQtdPneusByFaixaSulco(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                               @QueryParam("status") @Required final List<String> status) {
         return service.getQtdPneusByFaixaSulco(codUnidades, status);
     }
 
     @GET
     @Path("/previsao-trocas/estratificado/csv")
     @Produces("application/csv")
-    public StreamingOutput getPrevisaoTrocaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                               @QueryParam("dataInicial") final String dataInicial,
-                                               @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+    public StreamingOutput getPrevisaoTrocaCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
         return outputStream -> service.getPrevisaoTrocaCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/previsao-trocas/estratificado/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                         @QueryParam("dataInicial") final String dataInicial,
-                                         @QueryParam("dataFinal") final String dataFinal) {
+    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                         @QueryParam("dataInicial") @Required final String dataInicial,
+                                         @QueryParam("dataFinal") @Required final String dataFinal) {
         return service.getPrevisaoTrocaReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -61,58 +62,60 @@ public class RelatorioPneuResource {
     @Path("/previsao-trocas/consolidados/csv")
     @Produces("application/csv")
     public StreamingOutput getPrevisaoTrocaConsolidadoCsv(
-            @QueryParam("codUnidades") final List<Long> codUnidades,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
         return outputStream -> service.getPrevisaoTrocaConsolidadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/previsao-trocas/consolidados/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                    @QueryParam("dataInicial") final String dataInicial,
-                                                    @QueryParam("dataFinal") final String dataFinal) {
+    public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                    @QueryParam("dataInicial") @Required final String dataInicial,
+                                                    @QueryParam("dataFinal") @Required final String dataFinal) {
         return service.getPrevisaoTrocaConsolidadoReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/aderencias-placas/csv")
     @Produces("application/csv")
-    public StreamingOutput getAderenciaPlacasCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                 @QueryParam("dataInicial") final String dataInicial,
-                                                 @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+    public StreamingOutput getAderenciaPlacasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
         return outputStream -> service.getAderenciaPlacasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/aderencias-placas/report")
-    public Report getAderenciaPlacasReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                           @QueryParam("dataInicial") final String dataInicial,
-                                           @QueryParam("dataFinal") final String dataFinal) {
+    public Report getAderenciaPlacasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                           @QueryParam("dataInicial") @Required final String dataInicial,
+                                           @QueryParam("dataFinal") @Required final String dataFinal) {
         return service.getAderenciaPlacasReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/pneus-descartados/report")
-    public Report getPneusDescartadosReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                            @QueryParam("dataInicial") final String dataInicial,
-                                            @QueryParam("dataFinal") final String dataFinal) {
+    public Report getPneusDescartadosReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                            @QueryParam("dataInicial") @Required final String dataInicial,
+                                            @QueryParam("dataFinal") @Required final String dataFinal) {
         return service.getPneusDescartadosReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/pneus-descartados/csv")
-    public StreamingOutput getPneusDescartadosCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                  @QueryParam("dataInicial") final String dataInicial,
-                                                  @QueryParam("dataFinal") final String dataFinal) throws RuntimeException {
+    public StreamingOutput getPneusDescartadosCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
         return outputStream -> service.getPneusDescartadosCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
     @Path("/dados-ultima-afericao/csv")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public StreamingOutput getDadosUltimaAfericaoCsv(@QueryParam("codUnidades") final List<Long> codUnidades)
+    public StreamingOutput getDadosUltimaAfericaoCsv(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
             throws RuntimeException {
         return outputStream -> service.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
     }
@@ -120,22 +123,23 @@ public class RelatorioPneuResource {
     @GET
     @Path("/dados-ultima-afericao/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getDadosUltimaAfericaoReport(@QueryParam("codUnidades") final List<Long> codUnidades) {
+    public Report getDadosUltimaAfericaoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades) {
         return service.getDadosUltimaAfericaoReport(codUnidades);
     }
 
     @GET
     @Path("/resumo-geral-pneus/csv")
-    public StreamingOutput getResumoGeralPneusCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                  @QueryParam("status-pneu") final String status) throws RuntimeException {
+    public StreamingOutput getResumoGeralPneusCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("status-pneu") @Optional final String status) throws RuntimeException {
         return outputStream -> service.getResumoGeralPneusCsv(outputStream, codUnidades, status);
     }
 
     @GET
     @Path("/resumo-geral-pneus/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getResumoGeralPneusReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                            @QueryParam("status-pneu") final String status) {
+    public Report getResumoGeralPneusReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                            @QueryParam("status-pneu") @Optional final String status) {
         return service.getResumoGeralPneusReport(codUnidades, status);
     }
 
@@ -249,9 +253,10 @@ public class RelatorioPneuResource {
      */
     @GET
     @Path("/aderencias/placas/{codUnidade}/report")
-    public Report DEPRECATED_GET_ADERENCIA_PLACAS_REPORT(@PathParam("codUnidade") Long codUnidade,
-                                                         @QueryParam("dataInicial") long dataInicial,
-                                                         @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+    public Report DEPRECATED_GET_ADERENCIA_PLACAS_REPORT(
+            @PathParam("codUnidade") Long codUnidade,
+            @QueryParam("dataInicial") long dataInicial,
+            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
