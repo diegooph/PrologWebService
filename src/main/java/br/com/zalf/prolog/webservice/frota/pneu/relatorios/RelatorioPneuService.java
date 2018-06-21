@@ -54,12 +54,12 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getPrevisaoTrocaCsv(@NotNull final OutputStream outputStream,
-                                    @NotNull final List<Long> codUnidades,
-                                    @NotNull final String dataInicial,
-                                    @NotNull final String dataFinal) throws RuntimeException {
+    public void getPrevisaoTrocaEstratificadoCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final List<Long> codUnidades,
+                                                 @NotNull final String dataInicial,
+                                                 @NotNull final String dataFinal) throws RuntimeException {
         try {
-            dao.getPrevisaoTrocaCsv(
+            dao.getPrevisaoTrocaEstratificadoCsv(
                     outputStream,
                     codUnidades,
                     ProLogDateParser.validateAndParse(dataInicial),
@@ -72,11 +72,11 @@ public class RelatorioPneuService {
         }
     }
 
-    public Report getPrevisaoTrocaReport(@NotNull final List<Long> codUnidades,
-                                         @NotNull final String dataInicial,
-                                         @NotNull final String dataFinal) {
+    public Report getPrevisaoTrocaEstratificadoReport(@NotNull final List<Long> codUnidades,
+                                                      @NotNull final String dataInicial,
+                                                      @NotNull final String dataFinal) {
         try {
-            return dao.getPrevisaoTrocaReport(
+            return dao.getPrevisaoTrocaEstratificadoReport(
                     codUnidades,
                     ProLogDateParser.validateAndParse(dataInicial),
                     ProLogDateParser.validateAndParse(dataFinal));

@@ -40,22 +40,22 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/estratificado/csv")
+    @Path("/previsao-trocas/estratificados/csv")
     @Produces("application/csv")
-    public StreamingOutput getPrevisaoTrocaCsv(
+    public StreamingOutput getPrevisaoTrocaEstratificadoCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws RuntimeException {
-        return outputStream -> service.getPrevisaoTrocaCsv(outputStream, codUnidades, dataInicial, dataFinal);
+        return outputStream -> service.getPrevisaoTrocaEstratificadoCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/previsao-trocas/estratificado/report")
+    @Path("/previsao-trocas/estratificados/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report getPrevisaoTrocaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                         @QueryParam("dataInicial") @Required final String dataInicial,
-                                         @QueryParam("dataFinal") @Required final String dataFinal) {
-        return service.getPrevisaoTrocaReport(codUnidades, dataInicial, dataFinal);
+    public Report getPrevisaoTrocaEstratificadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                      @QueryParam("dataInicial") @Required final String dataInicial,
+                                                      @QueryParam("dataFinal") @Required final String dataFinal) {
+        return service.getPrevisaoTrocaEstratificadoReport(codUnidades, dataInicial, dataFinal);
     }
 
     @GET
@@ -157,7 +157,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaCsv(List, String, String)} instead.
+     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaEstratificadoCsv(List, String, String)} instead.
      */
     @GET
     @Path("/previsao-trocas/{codUnidade}/csv")
@@ -171,7 +171,7 @@ public class RelatorioPneuResource {
     }
 
     /**
-     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaReport(List, String, String)} instead.
+     * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getPrevisaoTrocaEstratificadoReport(List, String, String)} instead.
      */
     @GET
     @Path("/previsao-trocas/{codUnidade}/report")

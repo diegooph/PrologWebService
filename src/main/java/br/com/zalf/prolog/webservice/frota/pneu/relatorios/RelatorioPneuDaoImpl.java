@@ -67,10 +67,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getPrevisaoTrocaCsv(@NotNull final OutputStream outputStream,
-                                    @NotNull final List<Long> codUnidades,
-                                    @NotNull final LocalDate dataInicial,
-                                    @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+    public void getPrevisaoTrocaEstratificadoCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final List<Long> codUnidades,
+                                                 @NotNull final LocalDate dataInicial,
+                                                 @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -85,9 +85,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public Report getPrevisaoTrocaReport(@NotNull final List<Long> codUnidades,
-                                         @NotNull final LocalDate dataInicial,
-                                         @NotNull final LocalDate dataFinal) throws SQLException {
+    public Report getPrevisaoTrocaEstratificadoReport(@NotNull final List<Long> codUnidades,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

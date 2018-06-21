@@ -46,10 +46,10 @@ public interface RelatorioPneuDao {
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
      */
-    void getPrevisaoTrocaCsv(@NotNull final OutputStream outputStream,
-                             @NotNull final List<Long> codUnidades,
-                             @NotNull final LocalDate dataInicial,
-                             @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+    void getPrevisaoTrocaEstratificadoCsv(@NotNull final OutputStream outputStream,
+                                          @NotNull final List<Long> codUnidades,
+                                          @NotNull final LocalDate dataInicial,
+                                          @NotNull final LocalDate dataFinal) throws SQLException, IOException;
 
     /**
      * Método para gerar o relatório de previsão de troca de um pneu, com dados baseados no histórico de aferições.
@@ -61,9 +61,9 @@ public interface RelatorioPneuDao {
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
-    Report getPrevisaoTrocaReport(@NotNull final List<Long> codUnidades,
-                                  @NotNull final LocalDate dataInicial,
-                                  @NotNull final LocalDate dataFinal) throws SQLException;
+    Report getPrevisaoTrocaEstratificadoReport(@NotNull final List<Long> codUnidades,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal) throws SQLException;
 
     /**
      * Método que gera um relatório consolidado contendo a previsão de trocas de pneus, baseado no relatório
