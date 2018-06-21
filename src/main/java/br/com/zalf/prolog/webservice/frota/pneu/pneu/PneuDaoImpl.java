@@ -86,11 +86,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, " +
-                    "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
-                    "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, \n" +
-                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro)\n" +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO,?;");
+            stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
+                    + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
+                    + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
+                    + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, "
+                    + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?) RETURNING CODIGO");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);

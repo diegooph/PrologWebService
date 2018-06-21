@@ -6,7 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PneuService {
     private static final String TAG = PneuService.class.getSimpleName();
     private final PneuDao dao = Injection.providePneuDao();
+    private final PneuExceptionHandler exceptionHandler = Injection.providePneuExceptionHandler();
 
     public AbstractResponse insert(Pneu pneu, Long codUnidade) throws ProLogException {
         try {
@@ -32,9 +34,8 @@ public class PneuService {
         } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o pneu";
             Log.e(TAG, "Erro ao inserir pneu para unidade: " + codUnidade, e);
-//            throw exceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
-        return null;
     }
 
     public boolean update(Pneu pneu, Long codUnidade, Long codOriginal) {
