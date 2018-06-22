@@ -10,6 +10,6 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 public class VeiculoDuplicadoException extends DuplicateKeyException {
 
     VeiculoDuplicadoException() {
-        super("Este veículo já está cadastrado");
+        super("ERRO!\nEste veículo já está cadastrado");
     }
 }
