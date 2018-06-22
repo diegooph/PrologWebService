@@ -420,7 +420,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                         destinoVeiculo.getVeiculo().getPlaca());
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

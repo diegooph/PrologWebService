@@ -643,7 +643,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(7, codUnidade);
             stmt.executeQuery();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 }

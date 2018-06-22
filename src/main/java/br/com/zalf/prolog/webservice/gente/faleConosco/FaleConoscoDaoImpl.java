@@ -25,7 +25,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
     public Long insert(FaleConosco faleConosco, Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO FALE_CONOSCO "
@@ -44,7 +44,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                 throw new SQLException("Erro ao inserir o fale conosco");
             }
         } finally {
-            closeConnection(conn, stmt, null);
+            closeConnection(conn, stmt, rSet);
         }
     }
 
