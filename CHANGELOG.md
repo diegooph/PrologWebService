@@ -13,6 +13,7 @@ Change Log
 
 ### Bug Fixes
 * Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado
+* Permite que usuários com permissões de colaboradores (visualizar, inserir e editar) possam buscar as equipes
 
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
