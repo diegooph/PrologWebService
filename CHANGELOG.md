@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.65"></a>
 ## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (release-date) [unreleased]
 
+### Features
+* Cria back end para salvar mensagens de contato de possíveis clientes
+
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados;
 * Previne retornar valor null para integração para tokens inválidos;
