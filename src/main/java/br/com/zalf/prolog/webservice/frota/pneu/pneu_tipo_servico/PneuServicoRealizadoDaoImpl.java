@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoRecapagem;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -46,11 +46,11 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
                                 @NotNull final String fonteServicoRealizado) throws SQLException {
         final Long codServicoRealizado =
                 insertPneuServicoRealizado(conn, codUnidade, codPneu, servicoRealizado, fonteServicoRealizado);
-        if (servicoRealizado instanceof PneuServicoRealizadoRecapagem) {
-            insertPneuServicoRealizadoRecapagem(
+        if (servicoRealizado instanceof PneuServicoRealizadoIncrementaVida) {
+            insertPneuServicoRealizadoIncrementaVida(
                     conn,
                     codServicoRealizado,
-                    (PneuServicoRealizadoRecapagem) servicoRealizado,
+                    (PneuServicoRealizadoIncrementaVida) servicoRealizado,
                     fonteServicoRealizado);
         }
         return codServicoRealizado;
@@ -85,10 +85,10 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         }
     }
 
-    private void insertPneuServicoRealizadoRecapagem(
+    private void insertPneuServicoRealizadoIncrementaVida(
             @NotNull final Connection conn,
             @NotNull final Long codServicoRealizado,
-            @NotNull final PneuServicoRealizadoRecapagem servicoRecapagem,
+            @NotNull final PneuServicoRealizadoIncrementaVida servicoIncrementaVida,
             @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         try {
@@ -96,8 +96,8 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
                     "(COD_PNEU_SERVICO_REALIZADO, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?);");
             stmt.setLong(1, codServicoRealizado);
-            stmt.setLong(2, servicoRecapagem.getCodModeloBanda());
-            stmt.setInt(3, servicoRecapagem.getVidaNovaPneu());
+            stmt.setLong(2, servicoIncrementaVida.getCodModeloBanda());
+            stmt.setInt(3, servicoIncrementaVida.getVidaNovaPneu());
             stmt.setString(4, fonteServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir o servico de recapagem realizado no pneu: ");

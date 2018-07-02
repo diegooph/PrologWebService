@@ -46,8 +46,10 @@ public class PneuServicoRealizado {
     public static RuntimeTypeAdapterFactory<PneuServicoRealizado> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
                 .of(PneuServicoRealizado.class, "tipo")
-                .registerSubtype(PneuServicoRealizadoRecapagem.class,
-                        PneuServicoRealizadoRecapagem.TIPO_PNEU_SERVICO_REALIZADO_RECAPAGEM);
+                .registerSubtype(PneuServicoRealizadoIncrementaVida.class,
+                        PneuServicoRealizadoIncrementaVida.TIPO_SERVICO_REALIZADO_INCREMENTA_VIDA)
+                .registerSubtype(PneuServicoRealizadoNaoIncrementaVida.class,
+                        PneuServicoRealizadoNaoIncrementaVida.TIPO_SERVICO_REALIZADO_NAO_INCREMENTA_VIDA);
     }
 
     public Long getCodigo() {

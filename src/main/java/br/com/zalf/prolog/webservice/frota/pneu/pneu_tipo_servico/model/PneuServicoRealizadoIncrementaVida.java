@@ -5,14 +5,14 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class PneuServicoRealizadoRecapagem extends PneuServicoRealizado {
-    public static final String TIPO_PNEU_SERVICO_REALIZADO_RECAPAGEM = "PNEU_SERVICO_REALIZADO_RECAPAGEM";
+public class PneuServicoRealizadoIncrementaVida extends PneuServicoRealizado {
+    public static final String TIPO_SERVICO_REALIZADO_INCREMENTA_VIDA = "PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA";
 
     private Long codModeloBanda;
     private int vidaNovaPneu;
 
-    public PneuServicoRealizadoRecapagem() {
-        this.setTipo(TIPO_PNEU_SERVICO_REALIZADO_RECAPAGEM);
+    public PneuServicoRealizadoIncrementaVida() {
+        this.setTipo(TIPO_SERVICO_REALIZADO_INCREMENTA_VIDA);
     }
 
     public Long getCodModeloBanda() {
@@ -33,7 +33,7 @@ public class PneuServicoRealizadoRecapagem extends PneuServicoRealizado {
 
     @Override
     public String toString() {
-        return "PneuServicoRealizadoRecapagem{" +
+        return "PneuServicoRealizadoIncrementaVida{" +
                 "codModeloBanda=" + codModeloBanda +
                 ", vidaNovaPneu=" + vidaNovaPneu +
                 '}';

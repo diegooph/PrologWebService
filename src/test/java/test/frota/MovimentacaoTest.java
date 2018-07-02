@@ -15,9 +15,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoRecapagem;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
@@ -146,7 +146,7 @@ public class MovimentacaoTest extends BaseTest {
 
     private List<PneuServicoRealizado> createServicosRealizados() {
         final List<PneuServicoRealizado> servicos = new ArrayList<>();
-        final PneuServicoRealizadoRecapagem servicoRecapagem = createServicoRecapagem();
+        final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRecapagem();
         servicos.add(servicoRecapagem);
         trocarBandaPneu(servicoRecapagem.getCodModeloBanda());
         servicos.add(createServicoVulcanizacao());
@@ -167,8 +167,8 @@ public class MovimentacaoTest extends BaseTest {
         return vulcanizacao;
     }
 
-    private PneuServicoRealizadoRecapagem createServicoRecapagem() {
-        final PneuServicoRealizadoRecapagem recapagem = new PneuServicoRealizadoRecapagem();
+    private PneuServicoRealizadoIncrementaVida createServicoRecapagem() {
+        final PneuServicoRealizadoIncrementaVida recapagem = new PneuServicoRealizadoIncrementaVida();
         recapagem.setCodPneuTipoServico(1L);
         recapagem.setCodUnidade(5L);
         recapagem.setCodPneu(pneuComum.getCodigo());

@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoRecapagem;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import com.google.common.base.Preconditions;
@@ -758,7 +758,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                                   @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            final PneuServicoRealizadoRecapagem servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
+            final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
             final Long codServicoRealizado = Injection
                     .provideTipoServicoRealizadoRecapadoraDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
@@ -778,9 +778,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private PneuServicoRealizadoRecapagem createServicoRealizadoRecapagem(@NotNull final Connection conn,
-                                                                          @NotNull final Long codUnidade,
-                                                                          @NotNull final Pneu pneu) throws SQLException {
+    private PneuServicoRealizadoIncrementaVida createServicoRealizadoRecapagem(@NotNull final Connection conn,
+                                                                               @NotNull final Long codUnidade,
+                                                                               @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -788,7 +788,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "WHERE PTS.COD_EMPRESA IS NULL AND PTS.STATUS_ATIVO = TRUE AND PTS.INCREMENTA_VIDA = TRUE;");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final PneuServicoRealizadoRecapagem servico = new PneuServicoRealizadoRecapagem();
+                final PneuServicoRealizadoIncrementaVida servico = new PneuServicoRealizadoIncrementaVida();
                 servico.setCodPneuTipoServico(rSet.getLong("CODIGO"));
                 servico.setCodUnidade(codUnidade);
                 servico.setCodPneu(pneu.getCodigo());
