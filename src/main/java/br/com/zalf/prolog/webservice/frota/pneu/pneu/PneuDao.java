@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -68,13 +67,13 @@ public interface PneuDao {
      * @param conn       conexão do banco
      * @throws SQLException caso ocorra erro no banco
      */
-    void updateStatus(PneuComum pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
 
     /**
      * Altera a vida atual de um determinado {@link PneuComum}. Sempre que um {@link PneuComum} tiver sua vida alterada,
      * é necessário aterar também seu código de {@link Banda}, pois significa que o mesmo foi recapado.
      */
-    void trocarVida(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException;
+    void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 

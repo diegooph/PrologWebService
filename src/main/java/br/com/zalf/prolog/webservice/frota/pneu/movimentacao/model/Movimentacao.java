@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.Destino;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,12 +11,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Movimentacao {
     private Long codigo;
-    private final PneuComum pneu;
+    private final Pneu pneu;
     private final Origem origem;
     private final Destino destino;
     private final String observacao;
 
-    public Movimentacao(@Nullable Long codigo, @NotNull PneuComum pneu, @NotNull Origem origem, @NotNull Destino destino,
+    public Movimentacao(@Nullable Long codigo, @NotNull Pneu pneu, @NotNull Origem origem, @NotNull Destino destino,
                         @Nullable String observacao) {
         this.codigo = codigo;
         this.pneu = pneu;
@@ -33,7 +33,7 @@ public class Movimentacao {
         this.codigo = codigo;
     }
 
-    public PneuComum getPneu() {
+    public Pneu getPneu() {
         return pneu;
     }
 

@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
@@ -187,7 +188,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(1, processoMov.getCodigo());
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
-                final PneuComum pneu = mov.getPneu();
+                final Pneu pneu = mov.getPneu();
                 stmt.setLong(3, pneu.getCodigo());
                 stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
                 stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
@@ -268,7 +269,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         // Garantimos que não exista mais de uma movimentação para um mesmo pneu.
         for (final Movimentacao m1 : movimentacoes) {
             int numCount = 0;
-            final PneuComum pneuMovimentado = m1.getPneu();
+            final Pneu pneuMovimentado = m1.getPneu();
             for (final Movimentacao m2 : movimentacoes) {
                 if (pneuMovimentado.equals(m2.getPneu())) {
                     numCount++;

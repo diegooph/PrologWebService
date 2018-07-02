@@ -92,7 +92,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
             @NotNull final String fonteServicoRealizado) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO_RECAPAGEM " +
+            stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA " +
                     "(COD_PNEU_SERVICO_REALIZADO, COD_MODELO_BANDA, VIDA_NOVA_PNEU, FONTE_SERVICO_REALIZADO) " +
                     "VALUES (?, ?, ?, ?);");
             stmt.setLong(1, codServicoRealizado);

@@ -212,7 +212,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void trocarVida(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException {
+    public void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
         Preconditions.checkArgument(pneu.getVidaAtual() > 1, "Vida atual precisa ser maior que 1");
 
         PreparedStatement stmt = null;
@@ -288,7 +288,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void updateStatus(PneuComum pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException {
+    public void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE PNEU SET "
