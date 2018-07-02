@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.permissao.Permissao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
@@ -42,13 +43,13 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoRegional(Long regional) {
+    private static void validacaoRegional(@NotNull Long regional) {
         Preconditions.checkNotNull(regional, "Você precisa selecionar a regional");
         Preconditions.checkArgument(regional > 0, "Regional inválida");
     }
 
 
-    private static void validacaoCpf(Long cpf) throws Exception {
+    private static void validacaoCpf(@NotNull Long cpf) throws Exception {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
 
         if (!ValidationUtils.isValidCpf(String.format("%011d", cpf))) {
@@ -56,21 +57,21 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoMatriculaAmbev(Integer matriculaAmbev) {
+    private static void validacaoMatriculaAmbev(@Nullable Integer matriculaAmbev) {
         if (matriculaAmbev != null) {
             Preconditions.checkArgument(matriculaAmbev > 0, "Matrícula Ambev inválida." +
                     "\nA matrícula deve ser um número positivo");
         }
     }
 
-    private static void validacaoMatriculaTrans(Integer matriculaTrans) {
+    private static void validacaoMatriculaTrans(@Nullable Integer matriculaTrans) {
         if (matriculaTrans != null) {
             Preconditions.checkArgument(matriculaTrans > 0, "Matrícula transportadora inválida." +
                     "\nA matrícula deve ser um número positivo");
         }
     }
 
-    private static void validacaoDataNascimento(Date dataNascimento) throws Exception {
+    private static void validacaoDataNascimento(@NotNull Date dataNascimento) throws Exception {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento\n");
 
         if (DateUtils.verificaAno(dataNascimento, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
@@ -78,7 +79,7 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoDataAdmissao(Date dataAdmissao) throws Exception {
+    private static void validacaoDataAdmissao(@NotNull Date dataAdmissao) throws Exception {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
         if (DateUtils.verificaAno(dataAdmissao, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
@@ -86,7 +87,7 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoNome(String nome) throws Exception {
+    private static void validacaoNome(@NotNull String nome) throws Exception {
         Preconditions.checkNotNull(nome, "Você precisa fornecer o nome");
 
         if (!StringUtils.isAlpabetsValue(nome)) {
@@ -94,25 +95,25 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoSetor(Setor setor) {
+    private static void validacaoSetor(@NotNull Setor setor) {
         Preconditions.checkNotNull(setor, "Você precisa selecionar o setor");
         Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o setor");
         Preconditions.checkArgument(setor.getCodigo() > 0, "Setor inválido");
     }
 
-    private static void validacaoFuncao(Cargo funcao) {
+    private static void validacaoFuncao(@NotNull Cargo funcao) {
         Preconditions.checkNotNull(funcao, "Você precisa selecionar o cargo");
         Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a cargo");
         Preconditions.checkArgument(funcao.getCodigo() > 0, "Cargo inválido");
     }
 
-    private static void validacaoUnidade(Unidade unidade) {
+    private static void validacaoUnidade(@NotNull Unidade unidade) {
         Preconditions.checkNotNull(unidade, "Você precisa selecionar a unidade");
         Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a unidade");
         Preconditions.checkArgument(unidade.getCodigo() > 0, "Unidade inválida");
     }
 
-    private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
+    private static void validacaoNivelPermissao(@NotNull Integer codPermissao) throws Exception {
         Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o nível de acesso");
 
         if (codPermissao < Permissao.LOCAL || codPermissao > Permissao.GERAL) {
@@ -121,13 +122,13 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoEquipe(Equipe equipe) {
+    private static void validacaoEquipe(@NotNull Equipe equipe) {
         Preconditions.checkNotNull(equipe, "Você precisa selecionar a equipe");
         Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a equipe");
         Preconditions.checkArgument((int) equipe.getCodigo().intValue() > 0, "Equipe inválida");
     }
 
-    private static void validacaoPis(String pis) throws Exception {
+    private static void validacaoPis(@Nullable String pis) throws Exception {
         if (pis == null || pis.isEmpty())
             return;
 
