@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
+* Ativa método de listagem de marcações de um colaborador
 
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados;
