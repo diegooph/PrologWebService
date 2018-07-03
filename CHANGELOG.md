@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.65"></a>
-## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (release-date) [unreleased]
+## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (2018-07-03)
 
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
