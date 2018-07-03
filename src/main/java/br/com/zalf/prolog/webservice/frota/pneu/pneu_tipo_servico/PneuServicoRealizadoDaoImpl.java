@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +25,11 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
     @Override
     public Long insertServicoByMovimentacao(
             @NotNull final Connection conn,
+            @NotNull final PneuDao pneuDao,
             @NotNull final Long codUnidade,
-            @NotNull final Long codPneu,
+            @NotNull final Pneu pneu,
             @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
-        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, PneuServicoRealizado.FONTE_MOVIMENTACAO);
+        return internalInsertByMovimentacao(conn, pneuDao, codUnidade, pneu, servicoRealizado);
     }
 
     @Override
@@ -35,23 +38,52 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
             @NotNull final Long codUnidade,
             @NotNull final Long codPneu,
             @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
-        return internalInsert(conn, codUnidade, codPneu, servicoRealizado, PneuServicoRealizado.FONTE_CADASTRO);
+        return internalInsertByCadastro(conn, codUnidade, codPneu, servicoRealizado);
     }
 
     @NotNull
-    private Long internalInsert(@NotNull final Connection conn,
-                                @NotNull final Long codUnidade,
-                                @NotNull final Long codPneu,
-                                @NotNull final PneuServicoRealizado servicoRealizado,
-                                @NotNull final String fonteServicoRealizado) throws SQLException {
-        final Long codServicoRealizado =
-                insertPneuServicoRealizado(conn, codUnidade, codPneu, servicoRealizado, fonteServicoRealizado);
+    private Long internalInsertByMovimentacao(@NotNull final Connection conn,
+                                              @NotNull final PneuDao pneuDao,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final Pneu pneu,
+                                              @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+        final Long codServicoRealizado = insertPneuServicoRealizado(
+                conn,
+                codUnidade,
+                pneu.getCodigo(),
+                servicoRealizado,
+                PneuServicoRealizado.FONTE_MOVIMENTACAO);
         if (servicoRealizado instanceof PneuServicoRealizadoIncrementaVida) {
             insertPneuServicoRealizadoIncrementaVida(
                     conn,
                     codServicoRealizado,
                     (PneuServicoRealizadoIncrementaVida) servicoRealizado,
-                    fonteServicoRealizado);
+                    PneuServicoRealizado.FONTE_MOVIMENTACAO);
+
+            // Ao realizar um serviço que incrementa a vida do Pneu, precisamos alterar essa
+            // mudança na Tabela Pneu para que seja refletida ao usuário.
+            trocaVidaPneu(conn, pneuDao, codUnidade, pneu);
+        }
+        return codServicoRealizado;
+    }
+
+    @NotNull
+    private Long internalInsertByCadastro(@NotNull final Connection conn,
+                                          @NotNull final Long codUnidade,
+                                          @NotNull final Long codPneu,
+                                          @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+        final Long codServicoRealizado = insertPneuServicoRealizado(
+                conn,
+                codUnidade,
+                codPneu,
+                servicoRealizado,
+                PneuServicoRealizado.FONTE_CADASTRO);
+        if (servicoRealizado instanceof PneuServicoRealizadoIncrementaVida) {
+            insertPneuServicoRealizadoIncrementaVida(
+                    conn,
+                    codServicoRealizado,
+                    (PneuServicoRealizadoIncrementaVida) servicoRealizado,
+                    PneuServicoRealizado.FONTE_CADASTRO);
         }
         return codServicoRealizado;
     }
@@ -105,5 +137,13 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         } finally {
             closeStatement(stmt);
         }
+    }
+
+    private void trocaVidaPneu(@NotNull final Connection conn,
+                               @NotNull final PneuDao pneuDao,
+                               @NotNull final Long codUnidade,
+                               @NotNull final Pneu pneu) throws SQLException {
+        pneu.setVidaAtual(pneu.getVidaAtual() + 1);
+        pneuDao.trocarVida(pneu, codUnidade, conn);
     }
 }

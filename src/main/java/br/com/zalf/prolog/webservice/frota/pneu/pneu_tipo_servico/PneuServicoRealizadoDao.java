@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import org.jetbrains.annotations.NotNull;
@@ -21,15 +22,17 @@ public interface PneuServicoRealizadoDao {
      * referentes ao serviço executado no {@link Pneu}.
      *
      * @param conn             - {@link Connection} que será utilizada para conectar ao banco de dados.
+     * @param pneuDao          - Obejto {@link PneuDao} utilizado para executar alterações no {@link Pneu}.
      * @param codUnidade       - Código da {@link Unidade} que o serviço foi realizado.
-     * @param codPneu          - Código do {@link Pneu} que o serviço foi realizado.
+     * @param pneu             - {@link Pneu} que teve o serviço foi realizado.
      * @param servicoRealizado - {@link PneuServicoRealizado} que foi realizado no {@link Pneu}.
      * @return - o código do {@link PneuServicoRealizado} inserido.
      * @throws SQLException - Se algum erro ocorrer na inserção.
      */
     Long insertServicoByMovimentacao(@NotNull final Connection conn,
+                                     @NotNull final PneuDao pneuDao,
                                      @NotNull final Long codUnidade,
-                                     @NotNull final Long codPneu,
+                                     @NotNull final Pneu pneu,
                                      @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException;
 
     /**

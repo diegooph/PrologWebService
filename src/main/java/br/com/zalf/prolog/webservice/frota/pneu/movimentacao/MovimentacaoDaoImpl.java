@@ -176,7 +176,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      boolean fecharServicosAutomaticamente) throws SQLException {
-        final PneuDao pneuDao = Injection.providePneuDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -198,11 +197,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 stmt.setString(9, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
+                    final PneuDao pneuDao = Injection.providePneuDao();
                     final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                     final PneuServicoRealizadoDao pneuServicoRealizadoDao =
                             Injection.provideTipoServicoRealizadoRecapadoraDao();
                     mov.setCodigo(rSet.getLong("CODIGO"));
-                    insertOrigem(conn, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
+                    insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, mov);
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(conn, servicoDao, codUnidade, processoMov.getCodigo(), mov);
@@ -210,12 +210,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
                     if (mov.getDestino().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
                         adicionaPneuVeiculo(conn, mov, codUnidade);
-                    }
-
-                    // Pneu voltou recapado, devemos incrementar a vida.
-                    if (mov.isFromDestinoToOrigem(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE)) {
-                        pneu.setVidaAtual(pneu.getVidaAtual() + 1);
-                        pneuDao.trocarVida(pneu, codUnidade, conn);
                     }
 
                     // Atualiza o status do pneu.
@@ -293,6 +287,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertOrigem(@NotNull final Connection conn,
+                              @NotNull final PneuDao pneuDao,
                               @NotNull final VeiculoDao veiculoDao,
                               @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
                               @NotNull final Long codUnidade,
@@ -306,7 +301,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 break;
             case ANALISE:
                 insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
-                insertServicosRealizadosRecapadoras(conn, pneuServicoRealizadoDao, codUnidade, movimentacao);
+                insertServicosRealizadosRecapadoras(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
                 break;
             case DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
@@ -314,6 +309,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertServicosRealizadosRecapadoras(@NotNull final Connection conn,
+                                                     @NotNull final PneuDao pneuDao,
                                                      @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final Movimentacao movimentacao) throws SQLException {
@@ -323,15 +319,15 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             return;
         }
 
-        final Long codPneu = movimentacao.getPneu().getCodigo();
+        final Pneu pneuMovimentacao = movimentacao.getPneu();
         for (final PneuServicoRealizado servico : servicosRealizados) {
             final Long codServicoRealizado =
-                    pneuServicoRealizadoDao.insertServicoByMovimentacao(conn, codUnidade, codPneu, servico);
+                    pneuServicoRealizadoDao.insertServicoByMovimentacao(conn, pneuDao, codUnidade, pneuMovimentacao, servico);
             insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
             insertMovimentacaoServicoRealizadoRecapadora(
                     conn,
                     codUnidade,
-                    codPneu,
+                    pneuMovimentacao.getCodigo(),
                     codServicoRealizado,
                     movimentacao.getCodigo());
         }
