@@ -119,26 +119,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         final List<Intervalo> intervalos = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  I.COD_UNIDADE AS COD_UNIDADE, " +
-                    "  I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
-                    "  IT.NOME AS NOME_TIPO_INTERVALO, " +
-                    "  I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
-                    "  I.DATA_HORA_INICIO AT TIME ZONE tz_unidade(I.COD_UNIDADE) AS DATA_HORA_INICIO, " +
-                    "  I.DATA_HORA_FIM AT TIME ZONE tz_unidade(I.COD_UNIDADE)  AS DATA_HORA_FIM, " +
-                    "  I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO, " +
-                    "  I.FONTE_DATA_HORA_FIM AS FONTE_DATA_HORA_FIM, " +
-                    "  I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-                    "  I.JUSTIFICATIVA_ESTOURO AS JUSTIFICATIVA_ESTOURO, " +
-                    "  I.LATITUDE_MARCACAO_INICIO AS LATITUDE_MARCACAO_INICIO, " +
-                    "  I.LATITUDE_MARCACAO_FIM AS LATITUDE_MARCACAO_FIM, " +
-                    "  I.LONGITUDE_MARCACAO_INICIO AS LONGITUDE_MARCACAO_INICIO, " +
-                    "  I.LONGITUDE_MARCACAO_FIM AS LONGITUDE_MARCACAO_FIM " +
-                    "FROM FUNC_INTERVALOS_AGRUPADOS(?, ?, ?) AS I " +
-                    "  JOIN INTERVALO_TIPO AS IT " +
-                    "    ON I.COD_TIPO_INTERVALO = IT.CODIGO " +
-                    "ORDER BY COALESCE(DATA_HORA_INICIO, DATA_HORA_FIM) DESC " +
-                    "LIMIT ? OFFSET ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, cpf);
             if (codTipo.equals("%")) {
