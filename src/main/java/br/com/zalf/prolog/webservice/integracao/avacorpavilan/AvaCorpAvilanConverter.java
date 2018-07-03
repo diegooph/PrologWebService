@@ -118,17 +118,21 @@ public final class AvaCorpAvilanConverter {
                 final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
                 placaAfericao.setPlaca(v.getPlaca());
                 placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
-                placaAfericao.setPodeAferirEstepe(false);
                 placaAfericao.setPodeAferirPressao(false);
                 placaAfericao.setPodeAferirSulco(false);
+                placaAfericao.setPodeAferirEstepe(true);
                 placaAfericao.setPodeAferirSulcoPressao(true);
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
-                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
-                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao
+                            .INTERVALO_INVALIDO);
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(ModeloPlacasAfericao.PlacaAfericao
+                            .INTERVALO_INVALIDO);
                 } else {
-                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
-                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v.getDtUltimaAfericao(), dataHoraUnidade));
+                    placaAfericao.setIntervaloUltimaAfericaoPressao(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow
+                            (v.getDtUltimaAfericao(), dataHoraUnidade));
+                    placaAfericao.setIntervaloUltimaAfericaoSulco(AvaCorpAvilanUtils.calculateDaysBetweenDateAndNow(v
+                            .getDtUltimaAfericao(), dataHoraUnidade));
                 }
                 placas.add(placaAfericao);
             }
@@ -164,18 +168,14 @@ public final class AvaCorpAvilanConverter {
 
         final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
         for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
-            // Envia medidas apenas de pneus que não sejam estepes. Atualmente estepes não tem aferição permitida no
-            // ProLog.
-            if (!pneu.isEstepe()) {
-                final MedidaPneu medidaPneu = new MedidaPneu();
-                medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
-                medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
-                medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
-                medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
-                medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
-                medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
-                medidas.getMedidaPneu().add(medidaPneu);
-            }
+            final MedidaPneu medidaPneu = new MedidaPneu();
+            medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
+            medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
+            medidaPneu.setTriangulo1PrimeiroSulco(pneu.getSulcosAtuais().getExterno());
+            medidaPneu.setTriangulo1SegundoSulco(pneu.getSulcosAtuais().getCentralExterno());
+            medidaPneu.setTriangulo1TerceiroSulco(pneu.getSulcosAtuais().getCentralInterno());
+            medidaPneu.setTriangulo1QuartoSulco(pneu.getSulcosAtuais().getInterno());
+            medidas.getMedidaPneu().add(medidaPneu);
         }
         incluirMedida2.setMedidas(medidas);
 
@@ -520,7 +520,6 @@ public final class AvaCorpAvilanConverter {
     }
 
 
-
     @Nonnull
     @VisibleForTesting
     public static Afericao convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
@@ -615,7 +614,8 @@ public final class AvaCorpAvilanConverter {
     }
 
     @Nonnull
-    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws ParseException {
+    private static List<Checklist> convertToChecklists(@NotNull final List<Avaliacao> avaliacoes) throws
+            ParseException {
         checkNotNull(avaliacoes, "avaliacoes não pode ser null!");
 
         final List<Checklist> checklists = new ArrayList<>();
@@ -646,7 +646,7 @@ public final class AvaCorpAvilanConverter {
             if (c.getTipo() == tipoChecklist) {
                 if (checklist == null) {
                     checklist = c;
-                } else if (c.getData().isAfter(checklist.getData())){
+                } else if (c.getData().isAfter(checklist.getData())) {
                     checklist = c;
                 }
             }

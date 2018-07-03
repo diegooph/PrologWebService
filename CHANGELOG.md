@@ -10,6 +10,7 @@ Change Log
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados;
 * Previne retornar valor null para integração para tokens inválidos;
+* Permite aferições de estepe na integração com Avilan
 
 ### Bug Fixes
 * Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado
