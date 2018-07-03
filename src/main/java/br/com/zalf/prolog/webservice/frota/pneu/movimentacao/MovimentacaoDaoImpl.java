@@ -177,6 +177,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      boolean fecharServicosAutomaticamente) throws SQLException {
         final PneuDao pneuDao = Injection.providePneuDao();
+        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -199,7 +200,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));
-                    insertOrigem(conn, codUnidade, mov);
+                    insertOrigem(conn, veiculoDao, codUnidade, mov);
                     insertDestino(conn, mov);
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(conn, servicoDao, codUnidade, processoMov.getCodigo(), mov);
@@ -290,11 +291,12 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertOrigem(@NotNull final Connection conn,
+                              @NotNull final VeiculoDao veiculoDao,
                               @NotNull final Long codUnidade,
                               @NotNull final Movimentacao movimentacao) throws SQLException {
         switch (movimentacao.getOrigem().getTipo()) {
             case VEICULO:
-                insertMovimentacaoOrigemVeiculo(conn, codUnidade, movimentacao);
+                insertMovimentacaoOrigemVeiculo(conn, veiculoDao, codUnidade, movimentacao);
                 break;
             case ESTOQUE:
                 insertMovimentacaoOrigemEstoque(conn, codUnidade, movimentacao);
@@ -436,6 +438,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertMovimentacaoOrigemVeiculo(@NotNull final Connection conn,
+                                                 @NotNull final VeiculoDao veiculoDao,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final Movimentacao movimentacao) throws SQLException {
         PreparedStatement stmt = null;
@@ -453,7 +456,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(5, codUnidade);
             stmt.setLong(6, movimentacao.getCodigo());
             final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             veiculoDao.updateKmByPlaca(
                     origemVeiculo.getVeiculo().getPlaca(),
                     origemVeiculo.getVeiculo().getKmAtual(),
