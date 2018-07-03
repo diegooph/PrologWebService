@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+<a name="v0.0.65"></a>
+## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (2018-07-03)
+
+### Features
+* Cria back end para salvar mensagens de contato de possíveis clientes
+
+### Refactor
+* Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados
+* Previne retornar valor null para integração para tokens inválidos
+* Permite aferições de estepe na integração com Avilan
+* Adiciona a coluna cod_unidade_cadastro nas tabelas: colaborador, pneu e veiculo
+* Remove o atributo setor da tabela colaborador
+* Padroniza as mensagens de erro para cadastro de colaboradores, veículos e pneus
+* Altera busca dos cargos por unidade para sempre buscar todos os cargos da empresa que essa unidade pertence
+* Altera import do prontuário do contudor para se adequar ao novo colunamento da planilha base
+
+### Bug Fixes
+* Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado
+* Permite que usuários com permissões de colaboradores (visualizar, inserir e editar) possam buscar as equipes
+* Remove o default do atributo cod_empresa da tabela colaborador
+
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
 

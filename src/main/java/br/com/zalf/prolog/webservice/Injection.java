@@ -6,12 +6,20 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.colaborador.ColaboradorDaoImpl;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
+import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.empresa.EmpresaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
+import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDao;
+import br.com.zalf.prolog.webservice.entrega.mapa.MapaDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDao;
 import br.com.zalf.prolog.webservice.entrega.metas.MetasDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeDao;
@@ -20,6 +28,10 @@ import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.Produtivida
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioEntregaDao;
 import br.com.zalf.prolog.webservice.entrega.relatorio.RelatorioEntregaDaoImpl;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDao;
+import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDaoImpl;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDaoImpl;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
@@ -37,6 +49,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
@@ -47,6 +61,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelator
 import br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio.ServicoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.RelatorioVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
@@ -79,12 +95,6 @@ import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
-import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.mapa.MapaDao;
-import br.com.zalf.prolog.webservice.entrega.mapa.MapaDaoImpl;
-import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDao;
-import br.com.zalf.prolog.webservice.entrega.tracking.TrackingDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -337,6 +347,11 @@ public final class Injection {
         return new RecapadoraDaoImpl();
     }
 
+    @NotNull
+    public static EntreEmContatoDao provideEntreEmContatoDao() {
+        return new EntreEmContatoDaoImpl();
+    }
+
     // ================================================
     // OUTROS
     // ================================================
@@ -344,4 +359,44 @@ public final class Injection {
     public static DadosIntervaloChangedListener provideDadosIntervaloChangedListener() {
         return new VersaoDadosIntervaloAtualizador();
     }
+
+    @NotNull
+    public static ProLogExceptionHandler provideProLogExceptionHandler() {
+        return new ProLogExceptionHandler(provideProLogSqlExceptionTranslator());
+    }
+
+    @NotNull
+    private static ProLogSqlExceptionTranslator provideProLogSqlExceptionTranslator() {
+        return new ProLogSqlExceptionTranslator();
+    }
+
+    @NotNull
+    public static ColaboradorExceptionHandler provideColaboradorExceptionHandler() {
+        return new ColaboradorExceptionHandler(provideColaboradorSqlExceptionTranslator());
+    }
+
+    @NotNull
+    private static ColaboradorSqlExceptionTranslator provideColaboradorSqlExceptionTranslator() {
+        return new ColaboradorSqlExceptionTranslator();
+    }
+
+    @NotNull
+    public static VeiculoExceptionHandler provideVeiculoExceptionHandler(){
+        return new VeiculoExceptionHandler(provideVeiculoSqlExceptionTranslator());
+    }
+
+    @NotNull
+    private static VeiculoSqlExceptionTranslator provideVeiculoSqlExceptionTranslator(){
+        return new VeiculoSqlExceptionTranslator();
+    }
+
+    @NotNull
+    public static PneuExceptionHandler providePneuExceptionHandler() {
+        return new PneuExceptionHandler(provideṔneuSqlExceptionTranslator());
+    }
+
+    private static PneuSqlExceptionTranslator provideṔneuSqlExceptionTranslator() {
+        return new PneuSqlExceptionTranslator();
+    }
+
 }

@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class VeiculoService {
     private static final String TAG = VeiculoService.class.getSimpleName();
     private final VeiculoDao dao = Injection.provideVeiculoDao();
+    private final VeiculoExceptionHandler exceptionHandler = Injection.provideVeiculoExceptionHandler();
 
     public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
         try {
@@ -124,9 +127,10 @@ public class VeiculoService {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             dao.insert(veiculo, codUnidade);
         } catch (Throwable e) {
+            final String errorMessage = "Erro ao inserir o veículo";
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                     "Unidade: %d", codUnidade), e);
-            throw ProLogExceptionHandler.map(e, "Erro ao inserir veículo");
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 

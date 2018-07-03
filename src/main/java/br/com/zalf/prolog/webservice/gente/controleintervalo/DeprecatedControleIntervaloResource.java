@@ -100,7 +100,8 @@ public class DeprecatedControleIntervaloResource {
     @Secured(permissions = {
             Pilares.Gente.Intervalo.MARCAR_INTERVALO,
             Pilares.Gente.Intervalo.ATIVAR_INATIVAR_TIPO_INTERVALO,
-            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO})
+            Pilares.Gente.Intervalo.CRIAR_TIPO_INTERVALO,
+            Pilares.Gente.Relatorios.INTERVALOS})
     @Path("/tipos/{codUnidade}/completos")
     public List<TipoIntervalo> getTiposIntervalosCompletos(@PathParam("codUnidade") Long codUnidade) {
         return service.getTiposIntervalos(codUnidade, true);

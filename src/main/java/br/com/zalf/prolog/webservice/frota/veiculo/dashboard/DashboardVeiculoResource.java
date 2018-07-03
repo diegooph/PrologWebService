@@ -21,9 +21,9 @@ public class DashboardVeiculoResource {
     private final DashboardVeiculoService service = new DashboardVeiculoService();
 
     @GET
-    @Path("/quantidade-veiculos-ativos-com-pneus-aplicados/{codComponente}")
-    public QuantidadeItemComponent getQtdPneusByStatus(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                       @PathParam("codComponente") Integer codComponente) {
-        return service.getQtdVeiculosAtivosComPneuAplicado(codUnidades, codComponente);
+    @Path("/quantidade-veiculos-ativos/{codComponente}")
+    public QuantidadeItemComponent getQtdVeiculosAtivos(@PathParam("codComponente") Integer codComponente,
+                                                       @QueryParam("codUnidades") List<Long> codUnidades) {
+        return service.getQtdVeiculosAtivosComPneuAplicado(codComponente, codUnidades);
     }
 }

@@ -16,18 +16,66 @@ public final class StringUtils {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    /**
+     * Return string with only numbers
+     *
+     * @param string the string to test.
+     * @return String with only numbers.
+     */
     @NotNull
     public static String getOnlyNumbers(String string) {
         if (string != null && !string.isEmpty())
             return string.replaceAll("[^0-9]*", "");
-
         return "";
     }
 
+    /**
+     * Return string with only letters
+     *
+     * @param string the string to test.
+     * @return String with only letters.
+     */
+    public static String getOnlyLetters(String string) {
+        if (string != null && !string.isEmpty())
+            return stripAccents(string).replaceAll("[^A-Z]*", "");
+        return "";
+    }
+
+    /**
+     * Return whether the specified string contains only alpabets/special chars too.
+     *
+     * @param string the string to test.
+     * @return true if the string contains only alpabets/special chars, false if it has numbers.
+     */
+    @NotNull
+    public static String stripCharactersSpecials(String string) {
+        String stringFormatada = string.replaceAll("\\-|\\s+", "");
+        return stringFormatada;
+    }
+
+    /**
+     * Remove accent.
+     *
+     * @param string the string to test.
+     * @return String without accents.
+     */
     @NotNull
     public static String stripAccents(@NotNull String string) {
         string = Normalizer.normalize(string, Normalizer.Form.NFD);
-        return string.replaceAll("[^\\p{ASCII}]", "");
+        String stringFormatada = string.replaceAll("[^\\p{ASCII}]", "");
+        return stringFormatada;
+    }
+
+    /**
+     * Remove letters that contain accent.
+     *
+     * @param string the string to test.
+     * @return String without letters that contain accents.
+     */
+    @NotNull
+    public static String stripCharactersWithAccents(@NotNull String string) {
+        String stringFormatada = string.replaceAll("[^\\p{ASCII}]", "");
+        return stringFormatada;
     }
 
     /**

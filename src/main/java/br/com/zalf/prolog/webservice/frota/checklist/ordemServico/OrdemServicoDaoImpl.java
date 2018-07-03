@@ -382,7 +382,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao inserir o serviço");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -426,7 +426,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
                 throw new SQLException("Erro ao incrementar a quantidade de apontamentos");
             }
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
@@ -594,7 +594,7 @@ public class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServ
             stmt.setString(7, ItemOrdemServico.Status.PENDENTE.asString());
             stmt.execute();
         } finally {
-            closeConnection(null, stmt, null);
+            closeStatement(stmt);
         }
     }
 
