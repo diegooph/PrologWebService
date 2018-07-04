@@ -341,15 +341,19 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT MD.COD_RECAPADORA_DESTINO " +
-                    "FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "  JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "WHERE M.COD_UNIDADE = ? AND M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    "ORDER BY M.CODIGO DESC LIMIT 1;");
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT MD.COD_RECAPADORA_DESTINO " +
+                    "              FROM MOVIMENTACAO_DESTINO AS MD " +
+                    "                JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                    "              WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    "              ORDER BY M.CODIGO DESC LIMIT 1) AS TEM_RECAPADORA;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codPneu);
             rSet = stmt.executeQuery();
-            return rSet.next();
+            if (rSet.next()) {
+                return rSet.getBoolean("TEM_RECAPADORA");
+            } else {
+                throw new SQLException("Não foi possível descobrir se o pneu: " + codPneu+ " tem recapadora associada");
+            }
         } finally {
             closeConnection(null, stmt, rSet);
         }
