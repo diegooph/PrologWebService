@@ -324,10 +324,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             final Long codServicoRealizado =
                     pneuServicoRealizadoDao.insertServicoByMovimentacao(conn, pneuDao, codUnidade, pneuMovimentacao, servico);
             insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
-            if (pneuTemRecapadora(conn, codUnidade, pneuMovimentacao.getCodigo())) {
+            if (pneuTemRecapadora(conn, pneuMovimentacao.getCodigo())) {
                 insertMovimentacaoServicoRealizadoRecapadora(
                         conn,
-                        codUnidade,
                         pneuMovimentacao.getCodigo(),
                         codServicoRealizado,
                         movimentacao.getCodigo());
@@ -336,18 +335,21 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private boolean pneuTemRecapadora(@NotNull final Connection conn,
-                                      @NotNull final Long codUnidade,
                                       @NotNull final Long codPneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT MD.COD_RECAPADORA_DESTINO " +
-                    "              FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "                JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "              WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    "              ORDER BY M.CODIGO DESC LIMIT 1) AS TEM_RECAPADORA;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codPneu);
+            stmt = conn.prepareStatement("SELECT " +
+                    "  CASE " +
+                    "  WHEN (SELECT MD.COD_RECAPADORA_DESTINO " +
+                    "        FROM MOVIMENTACAO_DESTINO AS MD " +
+                    "          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                    "        WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    "        ORDER BY M.CODIGO DESC LIMIT 1) IS NULL " +
+                    "    THEN FALSE " +
+                    "  ELSE TRUE " +
+                    "  END AS TEM_RECAPADORA;");
+            stmt.setLong(1, codPneu);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getBoolean("TEM_RECAPADORA");
@@ -381,7 +383,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void insertMovimentacaoServicoRealizadoRecapadora(@NotNull final Connection conn,
-                                                              @NotNull final Long codUnidade,
                                                               @NotNull final Long codPneu,
                                                               @NotNull final Long codServicoRealizado,
                                                               @NotNull final Long codMovimentacao) throws SQLException {
@@ -392,12 +393,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
                     "FROM MOVIMENTACAO_DESTINO AS MD " +
                     "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "WHERE M.COD_UNIDADE = ? AND M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                    "WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
                     "ORDER BY M.CODIGO DESC LIMIT 1));");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
-            stmt.setLong(3, codUnidade);
-            stmt.setLong(4, codPneu);
+            stmt.setLong(3, codPneu);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir vinculo da movimentacao com o serviço realizado " +
                         "na tabale MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA");
