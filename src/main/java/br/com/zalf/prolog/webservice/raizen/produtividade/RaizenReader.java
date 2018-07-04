@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
+import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -22,10 +23,10 @@ public class RaizenReader {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyy");
 
     private RaizenReader() {
-        throw new IllegalStateException(Raizen.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(RaizenItem.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<Raizen> readListFromCsvFilePath(@NotNull final File file) {
+    static List<RaizenItem> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {
@@ -41,24 +42,24 @@ public class RaizenReader {
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
 
-        final List<Raizen> raizenItens = new ArrayList<>();
-/*        for (final String[] row : rows) {
-            final Raizen item = read(row);
+        final List<RaizenItem> raizenItensItens = new ArrayList<>();
+        for (final String[] row : rows) {
+            final RaizenItem item = read(row);
             if (item != null) {
-                raizenItens.add(item);
+                raizenItensItens.add(item);
             }
-        }*/
-        return raizenItens;
+        }
+        return raizenItensItens;
     }
-/*
-    private static Raizen read(@NotNull final String[] linha) {
+
+    private static RaizenItem read(@NotNull final String[] linha) {
         if (linha[0].isEmpty()) {
             return null;
         }
-        final Raizen item = new Raizen();
+        final RaizenItem item = new RaizenItem();
         // CPF MOTORISTA
-        if (!linha[3].trim().replaceAll("[^\\d]", "").isEmpty()) {
-            item.setCpf(Long.parseLong(linha[3].trim().replaceAll("[^\\d]", "")));
+        if (!linha[0].trim().replaceAll("[^\\d]", "").isEmpty()) {
+            item.setCpf(linha[0].trim().replaceAll("[^\\d]", ""));
         }
         // PLACA
         if (!linha[1].trim().replaceAll(" ", "").isEmpty()) {
@@ -66,9 +67,28 @@ public class RaizenReader {
         }
         // DATA DA VIAGEM
         if (!linha[2].trim().isEmpty()) {
-            item.setDataViagem(DateUtils.validateAndParse(linha[0].trim(), DATE_FORMAT));
+            item.setDataViagem(DateUtils.validateAndParse(linha[2].trim(), DATE_FORMAT));
         }
-
+        // VALOR
+        if (!linha[3].trim().isEmpty()) {
+            item.setValor(Double.parseDouble(linha[3].trim().replaceAll(",", ".")));
+        }
+        //USINA
+        if (!linha[4].trim().isEmpty()) {
+            item.setUsina(linha[4]);
+        }
+        //FAZENDA
+        if (!linha[5].trim().isEmpty()) {
+            item.setFazenda(linha[5]);
+        }
+        //RAIO
+        if (!linha[6].trim().isEmpty()) {
+            item.setRaio(Double.parseDouble(linha[6].trim().replaceAll(",", ".")));
+        }
+        //TONELADA
+        if (!linha[7].trim().isEmpty()) {
+            item.setTonelada(Double.parseDouble(linha[7].trim().replaceAll(",", ".")));
+        }
         return item;
-    }*/
+    }
 }
