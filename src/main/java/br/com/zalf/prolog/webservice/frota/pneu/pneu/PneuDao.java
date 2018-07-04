@@ -70,10 +70,19 @@ public interface PneuDao {
     void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
 
     /**
-     * Altera a vida atual de um determinado {@link PneuComum}. Sempre que um {@link PneuComum} tiver sua vida alterada,
+     * Altera a vida atual de um determinado {@link Pneu}. Sempre que um {@link Pneu} tiver sua vida alterada,
      * é necessário aterar também seu código de {@link Banda}, pois significa que o mesmo foi recapado.
+     *
+     * @param conn           - {@link Connection} pela qual a troca de vida do pneu será realizada.
+     * @param codPneu        - Código do {@link Pneu} que sofreu a troca de vida.
+     * @param codModeloBanda - Código do {@link ModeloBanda} que será aplicado no {@link Pneu}.
+     * @param novaVidaPneu   - Valor inteiro que representa a nova vida que o {@link Pneu} terá.
+     * @throws SQLException - Se algum erro ocorrer na execução da troca de vida.
      */
-    void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void trocarVida(@NotNull final Connection conn,
+                    @NotNull final Long codPneu,
+                    @NotNull final Long codModeloBanda,
+                    final int novaVidaPneu) throws SQLException;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 

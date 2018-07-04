@@ -62,7 +62,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
 
             // Ao realizar um serviço que incrementa a vida do Pneu, precisamos alterar essa
             // mudança na Tabela Pneu para que seja refletida ao usuário.
-            trocaVidaPneu(conn, pneuDao, codUnidade, pneu);
+            trocaVidaPneu(conn, pneuDao, pneu, (PneuServicoRealizadoIncrementaVida) servicoRealizado);
         }
         return codServicoRealizado;
     }
@@ -141,9 +141,13 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
 
     private void trocaVidaPneu(@NotNull final Connection conn,
                                @NotNull final PneuDao pneuDao,
-                               @NotNull final Long codUnidade,
-                               @NotNull final Pneu pneu) throws SQLException {
-        pneu.setVidaAtual(pneu.getVidaAtual() + 1);
-        pneuDao.trocarVida(pneu, codUnidade, conn);
+                               @NotNull final Pneu pneu,
+                               @NotNull final PneuServicoRealizadoIncrementaVida servicoIncrementaVida) throws SQLException {
+        pneu.setVidaAtual(servicoIncrementaVida.getVidaNovaPneu());
+        pneuDao.trocarVida(
+                conn,
+                pneu.getCodigo(),
+                servicoIncrementaVida.getCodModeloBanda(),
+                servicoIncrementaVida.getVidaNovaPneu());
     }
 }

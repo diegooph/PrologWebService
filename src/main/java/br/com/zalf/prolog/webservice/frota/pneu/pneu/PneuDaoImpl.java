@@ -212,40 +212,28 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
-        Preconditions.checkArgument(pneu.getVidaAtual() > 1, "Vida atual precisa ser maior que 1");
-
+    public void trocarVida(@NotNull final Connection conn,
+                           @NotNull final Long codPneu,
+                           @NotNull final Long codModeloBanda,
+                           final int novaVidaPneu) throws SQLException {
+        Preconditions.checkArgument(novaVidaPneu > 1, "Vida Nova precisa ser maior que 1");
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            // Atualiza a vidao, o código do modelo de banda e a altura dos sulcos do pneu.
-            // É preciso atualizar os sulcos pois para trocar de vida o pneu foi recapado, logo, ele tem novos sulcos.
-            stmt = conn.prepareStatement("UPDATE PNEU SET " +
-                    "VIDA_ATUAL = ?, VIDA_TOTAL = ?, COD_MODELO_BANDA = ?, " +
-                    "ALTURA_SULCO_INTERNO = ?, ALTURA_SULCO_EXTERNO = ?, " +
-                    "ALTURA_SULCO_CENTRAL_INTERNO = ?, ALTURA_SULCO_CENTRAL_EXTERNO = ? " +
-                    "WHERE CODIGO = ? AND COD_UNIDADE = ? AND PNEU_NOVO_NUNCA_RODADO = FALSE;");
-            stmt.setInt(1, pneu.getVidaAtual());
-            if (pneu.getVidaAtual() > pneu.getVidasTotal()) {
-                stmt.setLong(2, pneu.getVidaAtual());
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?, ?)");
+            stmt.setLong(1, codPneu);
+            stmt.setLong(2, codModeloBanda);
+            stmt.setInt(3, novaVidaPneu);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
+                }
             } else {
-                stmt.setLong(2, pneu.getVidasTotal());
-            }
-            stmt.setLong(3, pneu.getCodModeloBanda());
-
-            // Atualiza os sulcos do pneu.
-            stmt.setDouble(4, pneu.getAlturaSulcoBandaPneu());
-            stmt.setDouble(5, pneu.getAlturaSulcoBandaPneu());
-            stmt.setDouble(6, pneu.getAlturaSulcoBandaPneu());
-            stmt.setDouble(7, pneu.getAlturaSulcoBandaPneu());
-
-            stmt.setLong(8, pneu.getCodigo());
-            stmt.setLong(9, codUnidade);
-
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao trocar a vida do pneu " + pneu.getCodigo() + " da unidade " + codUnidade);
+                throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            closeConnection(null, stmt, rSet);
         }
     }
 
