@@ -40,7 +40,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/estratificados/csv")
+    @Path("/previsao-trocas-estratificados/csv")
     @Produces("application/csv")
     public StreamingOutput getPrevisaoTrocaEstratificadoCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
@@ -50,7 +50,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/estratificados/report")
+    @Path("/previsao-trocas-estratificados/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report getPrevisaoTrocaEstratificadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                       @QueryParam("dataInicial") @Required final String dataInicial,
@@ -59,7 +59,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/consolidados/csv")
+    @Path("/previsao-trocas-consolidados/csv")
     @Produces("application/csv")
     public StreamingOutput getPrevisaoTrocaConsolidadoCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
@@ -69,7 +69,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/previsao-trocas/consolidados/report")
+    @Path("/previsao-trocas-consolidados/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report getPrevisaoTrocaConsolidadoReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                     @QueryParam("dataInicial") @Required final String dataInicial,
@@ -78,7 +78,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/aderencias-placas/csv")
+    @Path("/aderencias-placas-afericao/csv")
     @Produces("application/csv")
     public StreamingOutput getAderenciaPlacasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
@@ -88,7 +88,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/aderencias-placas/report")
+    @Path("/aderencias-placas-afericao/report")
     public Report getAderenciaPlacasReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                            @QueryParam("dataInicial") @Required final String dataInicial,
                                            @QueryParam("dataFinal") @Required final String dataFinal) {
