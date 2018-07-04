@@ -79,10 +79,10 @@ public interface PneuDao {
      * @param novaVidaPneu   - Valor inteiro que representa a nova vida que o {@link Pneu} terá.
      * @throws SQLException - Se algum erro ocorrer na execução da troca de vida.
      */
-    void trocarVida(@NotNull final Connection conn,
-                    @NotNull final Long codPneu,
-                    @NotNull final Long codModeloBanda,
-                    final int novaVidaPneu) throws SQLException;
+    void incrementaVidaPneu(@NotNull final Connection conn,
+                            @NotNull final Long codPneu,
+                            @NotNull final Long codModeloBanda,
+                            final int novaVidaPneu) throws SQLException;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 

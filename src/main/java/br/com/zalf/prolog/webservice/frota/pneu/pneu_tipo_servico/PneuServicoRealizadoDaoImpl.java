@@ -144,7 +144,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
                                @NotNull final Pneu pneu,
                                @NotNull final PneuServicoRealizadoIncrementaVida servicoIncrementaVida) throws SQLException {
         pneu.setVidaAtual(servicoIncrementaVida.getVidaNovaPneu());
-        pneuDao.trocarVida(
+        pneuDao.incrementaVidaPneu(
                 conn,
                 pneu.getCodigo(),
                 servicoIncrementaVida.getCodModeloBanda(),

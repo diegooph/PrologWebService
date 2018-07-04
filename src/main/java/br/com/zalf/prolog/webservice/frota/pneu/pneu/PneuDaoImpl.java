@@ -212,10 +212,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void trocarVida(@NotNull final Connection conn,
-                           @NotNull final Long codPneu,
-                           @NotNull final Long codModeloBanda,
-                           final int novaVidaPneu) throws SQLException {
+    public void incrementaVidaPneu(@NotNull final Connection conn,
+                                   @NotNull final Long codPneu,
+                                   @NotNull final Long codModeloBanda,
+                                   final int novaVidaPneu) throws SQLException {
         Preconditions.checkArgument(novaVidaPneu > 1, "Vida Nova precisa ser maior que 1");
         PreparedStatement stmt = null;
         ResultSet rSet = null;
