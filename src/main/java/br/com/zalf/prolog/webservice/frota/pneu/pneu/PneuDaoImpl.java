@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -214,16 +213,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     @Override
     public void incrementaVidaPneu(@NotNull final Connection conn,
                                    @NotNull final Long codPneu,
-                                   @NotNull final Long codModeloBanda,
-                                   final int novaVidaPneu) throws SQLException {
-        Preconditions.checkArgument(novaVidaPneu > 1, "Vida Nova precisa ser maior que 1");
+                                   @NotNull final Long codModeloBanda) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?, ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?)");
             stmt.setLong(1, codPneu);
             stmt.setLong(2, codModeloBanda);
-            stmt.setInt(3, novaVidaPneu);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (!rSet.getBoolean(1)) {

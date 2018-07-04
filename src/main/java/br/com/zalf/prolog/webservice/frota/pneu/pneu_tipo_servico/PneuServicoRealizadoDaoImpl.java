@@ -147,7 +147,6 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         pneuDao.incrementaVidaPneu(
                 conn,
                 pneu.getCodigo(),
-                servicoIncrementaVida.getCodModeloBanda(),
-                servicoIncrementaVida.getVidaNovaPneu());
+                servicoIncrementaVida.getCodModeloBanda());
     }
 }
