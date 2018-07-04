@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.66"></a>
 ## Version [v0.0.66](https://github.com/luizfp/PrologWeb/compare/v0.0.65...v0.0.66) (release-date) [unreleased]
 
+### Refactors
+* Remove utilização da tabela UNIDADE_FUNCAO do servidor
+
 ### Bug Fixes
 * Lida com novo status no prontuário do condutor
 
