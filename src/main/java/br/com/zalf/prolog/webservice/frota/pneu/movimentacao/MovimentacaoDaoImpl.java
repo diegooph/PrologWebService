@@ -176,6 +176,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      boolean fecharServicosAutomaticamente) throws SQLException {
+        final PneuDao pneuDao = Injection.providePneuDao();
+        final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+        final PneuServicoRealizadoDao pneuServicoRealizadoDao =
+                Injection.provideTipoServicoRealizadoRecapadoraDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -197,10 +201,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 stmt.setString(9, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
-                    final PneuDao pneuDao = Injection.providePneuDao();
-                    final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                    final PneuServicoRealizadoDao pneuServicoRealizadoDao =
-                            Injection.provideTipoServicoRealizadoRecapadoraDao();
                     mov.setCodigo(rSet.getLong("CODIGO"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, mov);
