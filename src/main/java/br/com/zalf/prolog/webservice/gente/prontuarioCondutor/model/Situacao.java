@@ -30,7 +30,7 @@ public class Situacao {
     }
 
     public void setStatus(String status) {
-        // Primeira normalizamos o status.
+        // Primeiro normalizamos o status.
         status = normalizaStatus(status);
         // Depois verificamos se é um status válido.
         Preconditions.checkArgument(
@@ -49,6 +49,6 @@ public class Situacao {
     }
 
     private String normalizaStatus(@NotNull final String status) {
-        return StringUtils.stripAccents(status.trim()).replace(" ", "_");
+        return StringUtils.stripAccents(status.trim()).replace(" ", "_").toUpperCase();
     }
 }
