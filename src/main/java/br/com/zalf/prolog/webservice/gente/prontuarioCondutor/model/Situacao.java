@@ -20,7 +20,7 @@ public class Situacao {
 
     }
 
-    public Situacao(String status, String motivo) {
+    public Situacao(@NotNull final String status, @NotNull final String motivo) {
         setStatus(status);
         setMotivo(motivo);
     }
@@ -29,12 +29,12 @@ public class Situacao {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(@NotNull String status) {
         // Primeiro normalizamos o status.
         status = normalizaStatus(status);
         // Depois verificamos se é um status válido.
         Preconditions.checkArgument(
-                status.equals(BLOQUEADO)  || status.equals(BLOQUEADO_INTEGRACAO) || status.equals(LIBERADO),
+                status.equals(BLOQUEADO) || status.equals(BLOQUEADO_INTEGRACAO) || status.equals(LIBERADO),
                 "status precisa ser " + BLOQUEADO  + " ou " + BLOQUEADO_INTEGRACAO + " ou " + LIBERADO);
 
         this.status = status;
@@ -44,11 +44,11 @@ public class Situacao {
         return motivo;
     }
 
-    public void setMotivo(String motivo) {
+    public void setMotivo(@NotNull final String motivo) {
         this.motivo = motivo;
     }
 
     private String normalizaStatus(@NotNull final String status) {
-        return StringUtils.stripAccents(status.trim()).replace(" ", "_").toUpperCase();
+        return StringUtils.stripAccents(status.trim()).replaceAll("\\s+", "_").toUpperCase();
     }
 }
