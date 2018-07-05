@@ -7,24 +7,24 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class Raizen {
+public class RaizenProdutividade {
 
-    private List<RaizenItem> raizenItens;
+    private List<RaizenProdutividadeItem> raizenItens;
 
-    public Raizen() {
+    public RaizenProdutividade() {
     }
 
-    public List<RaizenItem> getItensRaizen() {
+    public List<RaizenProdutividadeItem> getItensRaizen() {
         return raizenItens;
     }
 
-    public void setRaizenItens(final List<RaizenItem> raizenItens) {
+    public void setRaizenItens(final List<RaizenProdutividadeItem> raizenItens) {
         this.raizenItens = raizenItens;
     }
 
     @Override
     public String toString() {
-        return "Raizen{" +
+        return "RaizenProdutividade{" +
                 "raizenItens=" + raizenItens +
                 "}";
     }

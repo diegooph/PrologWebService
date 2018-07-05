@@ -19,14 +19,14 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenReader {
+public class RaizenProdutividadeReader {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyy");
 
-    private RaizenReader() {
-        throw new IllegalStateException(RaizenItem.class.getSimpleName() + " cannot be instantiated!");
+    private RaizenProdutividadeReader() {
+        throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<RaizenItem> readListFromCsvFilePath(@NotNull final File file) {
+    static List<RaizenProdutividadeItem> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {
@@ -42,9 +42,9 @@ public class RaizenReader {
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
 
-        final List<RaizenItem> raizenItensItens = new ArrayList<>();
+        final List<RaizenProdutividadeItem> raizenItensItens = new ArrayList<>();
         for (final String[] row : rows) {
-            final RaizenItem item = read(row);
+            final RaizenProdutividadeItem item = read(row);
             if (item != null) {
                 raizenItensItens.add(item);
             }
@@ -52,14 +52,14 @@ public class RaizenReader {
         return raizenItensItens;
     }
 
-    private static RaizenItem read(@NotNull final String[] linha) {
+    private static RaizenProdutividadeItem read(@NotNull final String[] linha) {
         if (linha[0].isEmpty()) {
             return null;
         }
-        final RaizenItem item = new RaizenItem();
+        final RaizenProdutividadeItem item = new RaizenProdutividadeItem();
         // CPF MOTORISTA
         if (!linha[0].trim().replaceAll("[^\\d]", "").isEmpty()) {
-            item.setCpf(linha[0].trim().replaceAll("[^\\d]", ""));
+            item.setCpfMotorista(Long.parseLong(linha[0].trim().replaceAll("[^\\d]", "")));
         }
         // PLACA
         if (!linha[1].trim().replaceAll(" ", "").isEmpty()) {

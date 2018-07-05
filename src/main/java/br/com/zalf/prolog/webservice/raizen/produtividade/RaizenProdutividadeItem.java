@@ -1,17 +1,17 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Created on 03/07/18.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenItem {
+public class RaizenProdutividadeItem {
 
-    private Long codigo;
-    private String cpf;
+    private Long codigoColaboradorCadastro;
+    private Long codColaboradorAlteracao;
+    private Long cpfMotorista;
     private String placa;
     private LocalDate dataViagem;
     private double valor;
@@ -20,23 +20,31 @@ public class RaizenItem {
     private double raio;
     private double tonelada;
 
-    public RaizenItem() {
+    public RaizenProdutividadeItem() {
     }
 
-    public Long getCodigo() {
-        return codigo;
+    public Long getCodigoColaboradorCadastro() {
+        return codigoColaboradorCadastro;
     }
 
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
+    public void setCodigoColaboradorCadastro(Long codigoColaboradorCadastro) {
+        this.codigoColaboradorCadastro = codigoColaboradorCadastro;
     }
 
-    public String getCpf() {
-        return cpf;
+    public Long getCodColaboradorAlteracao() {
+        return codColaboradorAlteracao;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setCodColaboradorAlteracao(Long codColaboradorAlteracao) {
+        this.codColaboradorAlteracao = codColaboradorAlteracao;
+    }
+
+    public Long getCpfMotorista() {
+        return cpfMotorista;
+    }
+
+    public void setCpfMotorista(Long cpfMotorista) {
+        this.cpfMotorista = cpfMotorista;
     }
 
     public String getPlaca() {
@@ -97,9 +105,9 @@ public class RaizenItem {
 
     @Override
     public String toString() {
-        return "RaizenItem{" +
-                "codigo=" + codigo +
-                ", cpf=" + cpf +
+        return "RaizenProdutividadeItem{" +
+                "codigoColaboradorCadastro=" + codigoColaboradorCadastro +
+                ", cpfMotorista=" + cpfMotorista +
                 ", placa=" + placa +
                 ", dataViagem=" + dataViagem +
                 ", valor=" + valor +
