@@ -832,10 +832,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
                 "FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-        if (status != null) {
-            stmt.setString(2, status);
-        } else {
+        if (status == null || status.isEmpty()) {
             stmt.setNull(2, Types.VARCHAR);
+        } else {
+            stmt.setString(2, status);
         }
         return stmt;
     }
