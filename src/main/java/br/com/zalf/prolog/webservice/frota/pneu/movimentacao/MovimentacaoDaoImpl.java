@@ -367,12 +367,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO " +
-                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
-                    "VALUES (?, ?, (SELECT PSR.FONTE_SERVICO_REALIZADO FROM PNEU_SERVICO_REALIZADO AS PSR " +
-                    "WHERE PSR.CODIGO = ?));");
+                    "(COD_MOVIMENTACAO, COD_PNEU_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?);");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
-            stmt.setLong(3, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir o Serviço Realizado " +
                         "na tabela de vínculo com a Movimentação na tabela movimentacao_servico_realizado");

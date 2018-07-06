@@ -749,11 +749,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     .provideTipoServicoRealizadoRecapadoraDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO " +
-                    "(COD_PNEU, COD_PNEU_SERVICO_REALIZADO, FONTE_SERVICO_REALIZADO) " +
-                    "VALUES (?, ?, (SELECT PSR.FONTE_SERVICO_REALIZADO FROM PNEU_SERVICO_REALIZADO AS PSR WHERE PSR.CODIGO = ?));");
+                    "(COD_PNEU, COD_PNEU_SERVICO_REALIZADO) " +
+                    "VALUES (?, ?);");
             stmt.setLong(1, pneu.getCodigo());
             stmt.setLong(2, codServicoRealizado);
-            stmt.setLong(3, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir o valor da banda do pneu "
                         + pneu.getCodigo() + " da unidade " + codUnidade);
