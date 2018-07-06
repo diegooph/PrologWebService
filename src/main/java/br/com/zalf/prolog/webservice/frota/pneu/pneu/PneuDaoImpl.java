@@ -87,11 +87,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, " +
-                    "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, " +
-                    "altura_sulco_central_externo, altura_sulco_externo, cod_unidade, status, " +
-                    "                 vida_atual, vida_total, cod_modelo_banda, dot, valor, pneu_novo_nunca_rodado, cod_empresa) " +
-                    "    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, (SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?)) RETURNING CODIGO;");
+            stmt = conn.prepareStatement("INSERT INTO pneu (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, "
+                    + "pressao_atual, altura_sulco_interno, altura_sulco_central_interno, altura_sulco_central_externo, "
+                    + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, dot, valor, "
+                    + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, "
+                    + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?) RETURNING CODIGO");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -119,6 +119,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                 stmt.setBoolean(17, false);
             }
             stmt.setLong(18, codUnidade);
+            stmt.setLong(19, codUnidade);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -217,13 +218,14 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?)");
-            stmt.setLong(1, codPneu);
-            stmt.setLong(2, codModeloBanda);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (!rSet.getBoolean(1)) {
-                    throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
+
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?) " );
+                    stmt.setLong(1, codPneu);
+                    stmt.setLong(2, codModeloBanda);
+                    rSet = stmt.executeQuery();
+                    if (rSet.next()) {
+            if (!rSet.getBoolean(1)){
+            throw new SQLException("Erro ao trocar a vida dopneu: " + codPneu);
                 }
             } else {
                 throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);

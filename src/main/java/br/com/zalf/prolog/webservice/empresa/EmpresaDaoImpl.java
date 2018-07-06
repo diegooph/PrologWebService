@@ -247,11 +247,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT f.codigo, f.nome\n" +
-                    "FROM colaborador c JOIN unidade u ON u.codigo = c.cod_unidade\n" +
-                    "  JOIN funcao f on f.cod_empresa = u.cod_empresa and f.codigo = c.cod_funcao\n" +
-                    "WHERE c.cod_unidade = ?\n" +
-                    "ORDER BY f.nome");
+            stmt = conn.prepareStatement("SELECT DISTINCT F.CODIGO, F.NOME\n" +
+                    "FROM FUNCAO F JOIN UNIDADE U ON U.cod_empresa = F.cod_empresa\n" +
+                    "WHERE U.codigo = ?\n" +
+                    "ORDER BY 2;");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.colaborador;
+package br.com.zalf.prolog.webservice.colaborador.error;
 
 import br.com.zalf.prolog.webservice.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -8,11 +8,11 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.permissao.Permissao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
 public class ColaboradorValidator {
-
     private static final int ANO_MINIMO_PERMITIDO = 1900;
     private static final int ANO_MAXIMO_PERMITIDO = 2050;
     private static final int MAX_LENGTH_PIS = 11;
@@ -43,98 +43,99 @@ public class ColaboradorValidator {
         }
     }
 
-    private static void validacaoRegional(Long regional) {
-        Preconditions.checkNotNull(regional, "Você precisa selecionar a Regional");
+    private static void validacaoRegional(@NotNull final Long regional) {
+        Preconditions.checkNotNull(regional, "Você precisa selecionar a regional");
         Preconditions.checkArgument(regional > 0, "Regional inválida");
     }
 
 
-    private static void validacaoCpf(Long cpf) throws Exception {
+    private static void validacaoCpf(@NotNull final Long cpf) throws Exception {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
 
         if (!ValidationUtils.isValidCpf(String.format("%011d", cpf))) {
-            throw new GenericException("CPF inválido", null);
+            throw new GenericException("CPF inválido", "CPF informado: " + cpf);
         }
     }
 
-    private static void validacaoMatriculaAmbev(Integer matriculaAmbev) {
+    private static void validacaoMatriculaAmbev(@Nullable final Integer matriculaAmbev) {
         if (matriculaAmbev != null) {
             Preconditions.checkArgument(matriculaAmbev > 0, "Matrícula Ambev inválida." +
-                    "\nA Matrícula deve ser um número positivo");
+                    "\nA matrícula deve ser um número positivo");
         }
     }
 
-    private static void validacaoMatriculaTrans(Integer matriculaTrans) {
+    private static void validacaoMatriculaTrans(@Nullable final Integer matriculaTrans) {
         if (matriculaTrans != null) {
-            Preconditions.checkArgument(matriculaTrans > 0, "Matrícula Transportadora inválida." +
-                    "\nA Matrícula deve ser um número positivo");
+            Preconditions.checkArgument(matriculaTrans > 0, "Matrícula transportadora inválida." +
+                    "\nA matrícula deve ser um número positivo");
         }
     }
 
-    private static void validacaoDataNascimento(Date dataNascimento) throws Exception {
+    private static void validacaoDataNascimento(@NotNull final Date dataNascimento) throws Exception {
         Preconditions.checkNotNull(dataNascimento, "Você precisa fornecer a data de nascimento\n");
 
         if (DateUtils.verificaAno(dataNascimento, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
-            throw new GenericException("Ano de Nascimento inválido", null);
+            throw new GenericException("Ano de nascimento inválido", "Data de nascimento informada: " + dataNascimento);
         }
     }
 
-    private static void validacaoDataAdmissao(Date dataAdmissao) throws Exception {
+    private static void validacaoDataAdmissao(@NotNull final Date dataAdmissao) throws Exception {
         Preconditions.checkNotNull(dataAdmissao, "Você precisa fornecer a data da admissão");
 
         if (DateUtils.verificaAno(dataAdmissao, ANO_MAXIMO_PERMITIDO, ANO_MINIMO_PERMITIDO)) {
-            throw new GenericException("Ano de Admissão inválido", null);
+            throw new GenericException("Ano de admissão inválido", "Data de admissão informada: " + dataAdmissao);
         }
     }
 
-    private static void validacaoNome(String nome) throws Exception {
+    private static void validacaoNome(@NotNull final String nome) throws Exception {
         Preconditions.checkNotNull(nome, "Você precisa fornecer o nome");
 
         if (!StringUtils.isAlpabetsValue(nome)) {
-            throw new GenericException("Nome inválido\nO Nome não pode conter números", "O campo 'nome' contém números");
+            throw new GenericException("Nome inválido\nO nome não pode conter números", "Nome informado: " + nome);
         }
     }
 
-    private static void validacaoSetor(Setor setor) {
-        Preconditions.checkNotNull(setor, "Você precisa selecionar o Setor");
-        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o Setor");
+    private static void validacaoSetor(@NotNull final Setor setor) {
+        Preconditions.checkNotNull(setor, "Você precisa selecionar o setor");
+        Preconditions.checkNotNull(setor.getCodigo(), "Você precisa selecionar o setor");
         Preconditions.checkArgument(setor.getCodigo() > 0, "Setor inválido");
     }
 
-    private static void validacaoFuncao(Cargo funcao) {
-        Preconditions.checkNotNull(funcao, "Você precisa selecionar o Cargo");
-        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a Cargo");
+    private static void validacaoFuncao(@NotNull final Cargo funcao) {
+        Preconditions.checkNotNull(funcao, "Você precisa selecionar o cargo");
+        Preconditions.checkNotNull(funcao.getCodigo(), "Você precisa selecionar a cargo");
         Preconditions.checkArgument(funcao.getCodigo() > 0, "Cargo inválido");
     }
 
-    private static void validacaoUnidade(Unidade unidade) {
-        Preconditions.checkNotNull(unidade, "Você precisa selecionar a Unidade");
-        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a Unidade");
+    private static void validacaoUnidade(@NotNull final Unidade unidade) {
+        Preconditions.checkNotNull(unidade, "Você precisa selecionar a unidade");
+        Preconditions.checkNotNull(unidade.getCodigo(), "Você precisa fornecer a unidade");
         Preconditions.checkArgument(unidade.getCodigo() > 0, "Unidade inválida");
     }
 
-    private static void validacaoNivelPermissao(Integer codPermissao) throws Exception {
-        Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o Nível de Acesso");
+    private static void validacaoNivelPermissao(@NotNull final Integer codPermissao) throws Exception {
+        Preconditions.checkNotNull(codPermissao, "Você precisa selecionar o nível de acesso");
 
         if (codPermissao < Permissao.LOCAL || codPermissao > Permissao.GERAL) {
-            throw new GenericException("Nível de Acesso inválido", "Cód menor que 0 ou maior que 3");
+            throw new GenericException("Nível de acesso inválido", "Nivel de acesso informado: " + codPermissao + "" +
+                    "\nO nivel de acesso deve ser um número maior ou igual a 0, ou menor ou igual 3");
         }
     }
 
-    private static void validacaoEquipe(Equipe equipe) {
-        Preconditions.checkNotNull(equipe, "Você precisa selecionar a Equipe");
-        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a Equipe");
+    private static void validacaoEquipe(@NotNull final Equipe equipe) {
+        Preconditions.checkNotNull(equipe, "Você precisa selecionar a equipe");
+        Preconditions.checkNotNull(equipe.getCodigo(), "Você precisa selecionar a equipe");
         Preconditions.checkArgument((int) equipe.getCodigo().intValue() > 0, "Equipe inválida");
     }
 
-    private static void validacaoPis(String pis) throws Exception {
+    private static void validacaoPis(@Nullable final String pis) throws Exception {
         if (pis == null || pis.isEmpty())
             return;
 
         if (pis.length() < MAX_LENGTH_PIS) {
-            throw new GenericException("PIS inválido\nO PIS deve conter 11 dígitos", null);
+            throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", "PIS informado:" + pis);
         } else if (!ValidationUtils.validaPIS(pis)) {
-            throw new GenericException("PIS inválido", null);
+            throw new GenericException("PIS inválido", "PIS informado: " + pis);
         }
     }
 }

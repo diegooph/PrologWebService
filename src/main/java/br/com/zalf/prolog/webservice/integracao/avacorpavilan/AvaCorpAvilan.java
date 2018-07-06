@@ -322,8 +322,7 @@ public final class AvaCorpAvilan extends Sistema {
         novaAfericao.setVeiculo(veiculo);
         novaAfericao.setRestricao(restricao);
         novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
-        novaAfericao.setDeveAferirEstepes(false);
-        veiculo.removeEstepes();
+        novaAfericao.setDeveAferirEstepes(true);
         return novaAfericao;
     }
 

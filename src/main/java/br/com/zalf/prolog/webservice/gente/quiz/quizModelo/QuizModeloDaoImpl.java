@@ -230,23 +230,17 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
     private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Cargo> funcoes = new ArrayList<>();
+        final List<Cargo> funcoes = new ArrayList<>();
         try {
-            stmt = conn.prepareStatement("SELECT F.* FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
-                    "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
-                    "  AND QM.CODIGO = QMF.COD_MODELO " +
-                    "    JOIN UNIDADE_FUNCAO UF ON UF.COD_FUNCAO = QMF.COD_FUNCAO_COLABORADOR AND UF.COD_UNIDADE = QMF.COD_UNIDADE " +
-                    "    JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO " +
-                    "WHERE QMF.COD_UNIDADE = ? " +
-                    "  AND QMF.COD_MODELO = ?;");
+            stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME " +
+                    "FROM FUNCAO F\n" +
+                    "  JOIN QUIZ_MODELO_FUNCAO QMF ON F.CODIGO = QMF.COD_FUNCAO_COLABORADOR " +
+                    "WHERE QMF.COD_UNIDADE = ? AND QMF.COD_MODELO = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloQuiz);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final Cargo cargo = new Cargo();
-                cargo.setCodigo(rSet.getLong("CODIGO"));
-                cargo.setNome(rSet.getString("NOME"));
-                funcoes.add(cargo);
+                funcoes.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
             }
         } finally {
             closeConnection(null, stmt, rSet);
