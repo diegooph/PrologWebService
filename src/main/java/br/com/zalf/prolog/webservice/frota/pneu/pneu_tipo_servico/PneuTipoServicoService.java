@@ -24,6 +24,8 @@ public class PneuTipoServicoService {
     private static final String TAG = PneuTipoServicoService.class.getSimpleName();
     @NotNull
     private final PneuTipoServicoDao dao = Injection.provideTipoServicoRecapadoraDao();
+    @NotNull
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public AbstractResponse insertPneuTipoServico(@NotNull final String token,
                                                   @NotNull final PneuTipoServico tipoServico) throws ProLogException {
@@ -33,7 +35,7 @@ public class PneuTipoServicoService {
         } catch (Exception e) {
             final String errorMessage = "Erro ao inserir o tipo de serviço";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -46,7 +48,7 @@ public class PneuTipoServicoService {
         } catch (Exception e) {
             final String errorMessage = "Erro ao atualizar o tipo de serviço";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -57,7 +59,7 @@ public class PneuTipoServicoService {
         } catch (Exception e) {
             final String errorMessage = "Erro ao buscar os tipos de serviços";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -68,7 +70,7 @@ public class PneuTipoServicoService {
         } catch (Exception e) {
             final String errorMessage = "Erro ao buscar o tipo de serviço";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -81,7 +83,7 @@ public class PneuTipoServicoService {
         } catch (Exception e) {
             final String errorMessage = "Erro ao alterar o status do serviço";
             Log.e(TAG, errorMessage, e);
-            throw ProLogExceptionHandler.map(e, errorMessage);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 }

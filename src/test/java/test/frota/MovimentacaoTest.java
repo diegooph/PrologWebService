@@ -3,6 +3,7 @@ package test.frota;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoService;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
@@ -49,7 +50,7 @@ public class MovimentacaoTest extends BaseTest {
     }
 
     @Test
-    public void testInsertMovimentacaoEstoqueToAnalise() {
+    public void testInsertMovimentacaoEstoqueToAnalise() throws ProLogException {
         // Move pneu ESTOQUE --> ANALISE
         final ProcessoMovimentacao processoMovimentacaoAnalise = createProcessoMovimentacaoAnalise();
         final AbstractResponse response = movimentacaoService.insert(processoMovimentacaoAnalise);
@@ -85,7 +86,7 @@ public class MovimentacaoTest extends BaseTest {
     }
 
     @Test
-    public void testInsertMovimentacaoAnaliseToEstoque() {
+    public void testInsertMovimentacaoAnaliseToEstoque() throws ProLogException {
         // Move o mesmo pneu ANALISE --> ESTOQUE
         final ProcessoMovimentacao processoMovimentacaoEstoque = createProcessoMovimentacaoEstoque();
         final AbstractResponse response = movimentacaoService.insert(processoMovimentacaoEstoque);
