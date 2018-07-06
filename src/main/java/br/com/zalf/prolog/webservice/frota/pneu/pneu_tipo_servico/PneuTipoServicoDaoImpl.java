@@ -128,7 +128,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
                     "WHERE C.CPF = (SELECT TA.CPF_COLABORADOR " +
                     "FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
             stmt.setLong(1, codEmpresa);
-            stmt.setString(2, tipoServico.getNome());
+            stmt.setString(2, tipoServico.getNome().toUpperCase());
             stmt.setString(3, token);
             stmt.setTimestamp(4, Now.timestampUtc());
             rSet = stmt.executeQuery();
