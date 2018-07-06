@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
@@ -17,16 +19,18 @@ import java.util.List;
  * Created by Zart on 03/03/17.
  */
 public class MovimentacaoService {
-    private final MovimentacaoDao dao = Injection.provideMovimentacaoDao();
     private static final String TAG = MovimentacaoService.class.getSimpleName();
+    private final MovimentacaoDao dao = Injection.provideMovimentacaoDao();
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
-    public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) {
+    public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) throws ProLogException {
         try {
             final Long codigo = dao.insert(Injection.provideServicoDao(), movimentacao, true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (SQLException | OrigemDestinoInvalidaException e) {
-            Log.e(TAG, "Erro ao inserir uma movimentação", e);
-            return Response.error("Erro ao realizar as movimentações");
+            final String errorMessage = "Erro ao realizar as movimentações";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
