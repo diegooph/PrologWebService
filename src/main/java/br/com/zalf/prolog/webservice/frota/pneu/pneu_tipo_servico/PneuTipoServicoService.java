@@ -53,9 +53,9 @@ public class PneuTipoServicoService {
     }
 
     public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
-                                                      @Nullable final Boolean ativas) throws ProLogException {
+                                                      @Nullable final Boolean ativos) throws ProLogException {
         try {
-            return dao.getPneuTiposServicos(codEmpresa, ativas);
+            return dao.getPneuTiposServicos(codEmpresa, ativos);
         } catch (Exception e) {
             final String errorMessage = "Erro ao buscar os tipos de serviços";
             Log.e(TAG, errorMessage, e);

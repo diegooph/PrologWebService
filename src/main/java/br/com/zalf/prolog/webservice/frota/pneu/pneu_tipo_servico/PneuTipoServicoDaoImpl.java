@@ -49,7 +49,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     @SuppressWarnings("Duplicates")
     @Override
     public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
-                                                      @Nullable final Boolean ativas) throws SQLException {
+                                                      @Nullable final Boolean ativos) throws SQLException {
         final List<PneuTipoServico> tiposServicos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -60,12 +60,12 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
                     "WHERE (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) " +
                     "AND (? = 1 OR STATUS_ATIVO = ?)");
             stmt.setLong(1, codEmpresa);
-            if (ativas == null) {
+            if (ativos == null) {
                 stmt.setInt(2, 1);
                 stmt.setBoolean(3, true);
             } else {
                 stmt.setInt(2, 0);
-                stmt.setBoolean(3, ativas);
+                stmt.setBoolean(3, ativos);
             }
             rSet = stmt.executeQuery();
             while (rSet.next()) {

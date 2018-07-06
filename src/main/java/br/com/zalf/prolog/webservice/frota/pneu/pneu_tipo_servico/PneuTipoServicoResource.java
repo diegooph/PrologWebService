@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -46,8 +47,8 @@ public class PneuTipoServicoResource {
     @Path("/{codEmpresa}")
     public List<PneuTipoServico> getPneuTiposServicos(
             @PathParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("ativas") @Required Boolean ativas) throws Throwable {
-        return service.getPneuTiposServicos(codEmpresa, ativas);
+            @QueryParam("ativos") @Optional Boolean ativos) throws Throwable {
+        return service.getPneuTiposServicos(codEmpresa, ativos);
     }
 
     @GET

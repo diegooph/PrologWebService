@@ -43,12 +43,12 @@ public interface PneuTipoServicoDao {
      * Busca todos os {@link PneuTipoServico} vinculados à {@link Empresa}.
      *
      * @param codEmpresa - Código da {@link Empresa}.
-     * @param ativas     - {@link Boolean} para saber se buscaremos todos os tipos ou apenas os ativos.
+     * @param ativos     - {@link Boolean} para saber se buscaremos todos os tipos ou apenas os ativos.
      * @return - Um {@link List<PneuTipoServico>} com os tipos da empresa.
      * @throws SQLException - Se algum erro ocorrer na execução da função.
      */
     List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
-                                               @Nullable final Boolean ativas) throws SQLException;
+                                               @Nullable final Boolean ativos) throws SQLException;
 
     /**
      * Busca um {@link PneuTipoServico} específico através do {@link PneuTipoServico#codigo}.
