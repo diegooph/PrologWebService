@@ -22,52 +22,65 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @Override
-    public void insertOrUpdateProdutividadeRaizen(@NotNull String token,
-                                                  @NotNull List<RaizenProdutividadeItem> raizenItens) throws SQLException {
+    public void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
+                                                  @NotNull final Long codEmpresa,
+                                                  @NotNull final List<RaizenProdutividadeItem> raizenItens) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
             for (final RaizenProdutividadeItem item : raizenItens) {
-                if(!updateRaizenUpload(conn, token, item)){
-                   internalInsertRaizenItem(conn, token, item);
+                if (!updateRaizenProdutividadeUpload(conn, token, codEmpresa, item)) {
+                    internalInsertRaizenProdutividadeItem(conn, token, codEmpresa, item);
                 }
             }
-        }finally {
-            closeConnection(conn);
-        }
-    }
-
-    @Override
-    public void insertRaizenItem(@NotNull String token,
-                                       @NotNull RaizenProdutividadeItem item) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            internalInsertRaizenItem(conn, token, item);
         } finally {
             closeConnection(conn);
         }
     }
 
     @Override
-    public void updateRaizenProdutividadeItem(@NotNull String token, @NotNull Long codUnidade, @NotNull RaizenProdutividadeItem item) throws SQLException {
+    public void insertRaizenProdutividadeItem(@NotNull final String token,
+                                              @NotNull final Long codEmpresa,
+                                              @NotNull final RaizenProdutividadeItem item) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            internalInsertRaizenProdutividadeItem(conn, token, codEmpresa, item);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    @Override
+    public void updateRaizenProdutividadeItem(@NotNull final String token,
+                                              @NotNull final Long codEmpresa,
+                                              @NotNull final RaizenProdutividadeItem item) throws SQLException {
 
     }
 
     @Override
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull LocalDate dataInicial, @NotNull LocalDate dataFinal) throws SQLException {
+    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal) throws SQLException {
         return null;
     }
 
     @Override
-    public void deleteRaizenProdutividadeItens(@NotNull List<Long> codRaizenProdutividade) throws SQLException {
+    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+                                                            @NotNull final Long cpfMotorista) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void deleteRaizenProdutividadeItens(@NotNull final List<Long> codRaizenProdutividade) throws SQLException {
 
     }
 
 
-    private void internalInsertRaizenItem(@NotNull final Connection conn,
-                                          @NotNull final String token,
-                                          @NotNull final RaizenProdutividadeItem item) throws SQLException {
+    private void internalInsertRaizenProdutividadeItem(@NotNull final Connection conn,
+                                                       @NotNull final String token,
+                                                       @NotNull final Long codEmpresa,
+                                                       @NotNull final RaizenProdutividadeItem item) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF," +
@@ -87,17 +100,18 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setString(6, item.getFazenda());
             stmt.setDouble(7, item.getRaio());
             stmt.setDouble(8, item.getTonelada());
-            if(stmt.executeUpdate() == 0){
+            if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir item na tabela produtividade");
             }
-        }finally {
+        } finally {
             closeStatement(stmt);
         }
     }
 
-    private boolean updateRaizenUpload(Connection conn, String token, RaizenProdutividadeItem item) {
+    private boolean updateRaizenProdutividadeUpload(@NotNull final Connection conn,
+                                                    @NotNull final String token,
+                                                    @NotNull final Long codEmpresa,
+                                                    @NotNull final RaizenProdutividadeItem item) {
         return true;
     }
-
-
 }

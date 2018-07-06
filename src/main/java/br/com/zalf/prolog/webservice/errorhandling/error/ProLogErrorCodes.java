@@ -9,7 +9,8 @@ public enum ProLogErrorCodes {
 	ESCALA_DIARIA(4),
 	INTEGRACAO(5),
 	RECAPADORA_EXCEPTION(6),
-	RECURSO_JA_EXISTE(7);
+	RECURSO_JA_EXISTE(7),
+	RAIZEN_PRODUTIVIDADE(8);
 
 	private final int errorCode;
 

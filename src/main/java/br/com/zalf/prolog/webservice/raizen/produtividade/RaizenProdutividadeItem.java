@@ -9,8 +9,7 @@ import java.time.LocalDate;
  */
 public class RaizenProdutividadeItem {
 
-    private Long codigoColaboradorCadastro;
-    private Long codColaboradorAlteracao;
+    private Long codigo;
     private Long cpfMotorista;
     private String placa;
     private LocalDate dataViagem;
@@ -19,24 +18,19 @@ public class RaizenProdutividadeItem {
     private String fazenda;
     private double raio;
     private double tonelada;
+    private Long codigoColaboradorCadastro;
+    private Long codColaboradorAlteracao;
+    private Long codEmpresa;
 
     public RaizenProdutividadeItem() {
     }
 
-    public Long getCodigoColaboradorCadastro() {
-        return codigoColaboradorCadastro;
+    public Long getCodigo() {
+        return codigo;
     }
 
-    public void setCodigoColaboradorCadastro(Long codigoColaboradorCadastro) {
-        this.codigoColaboradorCadastro = codigoColaboradorCadastro;
-    }
-
-    public Long getCodColaboradorAlteracao() {
-        return codColaboradorAlteracao;
-    }
-
-    public void setCodColaboradorAlteracao(Long codColaboradorAlteracao) {
-        this.codColaboradorAlteracao = codColaboradorAlteracao;
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
     }
 
     public Long getCpfMotorista() {
@@ -101,6 +95,30 @@ public class RaizenProdutividadeItem {
 
     public void setTonelada(double tonelada) {
         this.tonelada = tonelada;
+    }
+
+    public Long getCodigoColaboradorCadastro() {
+        return codigoColaboradorCadastro;
+    }
+
+    public void setCodigoColaboradorCadastro(Long codigoColaboradorCadastro) {
+        this.codigoColaboradorCadastro = codigoColaboradorCadastro;
+    }
+
+    public Long getCodColaboradorAlteracao() {
+        return codColaboradorAlteracao;
+    }
+
+    public void setCodColaboradorAlteracao(Long codColaboradorAlteracao) {
+        this.codColaboradorAlteracao = codColaboradorAlteracao;
+    }
+
+    public Long getCodEmpresa() {
+        return codEmpresa;
+    }
+
+    public void setCodEmpresa(Long codEmpresa) {
+        this.codEmpresa = codEmpresa;
     }
 
     @Override

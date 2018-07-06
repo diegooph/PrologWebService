@@ -18,10 +18,12 @@ public interface RaizenProdutividadeDao {
      *
      * @param token       - Token recebido no request.
      *                    Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
+     * @param codEmpresa - Código da empresa do colaborador.
      * @param raizenItens -
      * @throws SQLException - Erro ao executar consulta no Banco de Dados.
      */
     void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
+                                           @NotNull final Long codEmpresa,
                                            @NotNull final List<RaizenProdutividadeItem> raizenItens) throws SQLException;
 
     /**
@@ -29,35 +31,53 @@ public interface RaizenProdutividadeDao {
      *
      * @param token - Token recebido no request.
      *              Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
+     * @param codEmpresa - Código da empresa do colaborador.
      * @param item  - Item que será inserido.
      * @throws SQLException - Erro na execução do insert.
      */
-    void insertRaizenItem(@NotNull final String token,
-                          @NotNull final RaizenProdutividadeItem item) throws SQLException;
+    void insertRaizenProdutividadeItem(@NotNull final String token,
+                                       @NotNull final Long codEmpresa,
+                                       @NotNull final RaizenProdutividadeItem item) throws SQLException;
 
     /**
      * Atualiza uma {@link RaizenProdutividadeItem} específica.
      *
      * @param token - Token recebido no request.
      *              Será utilizado para inserir o cpf do colaborador que está requisitando esta ação.
+     * @param codEmpresa - Código da empresa do colaborador.
      * @param item  - Item que será inserido.
      * @throws SQLException - Erro na execução do insert.
      */
     void updateRaizenProdutividadeItem(@NotNull final String token,
-                                       @NotNull final Long codUnidade,
+                                       @NotNull final Long codEmpresa,
                                        @NotNull final RaizenProdutividadeItem item) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador por um período de tempo.
      *
+     * @param codEmpresa - Código da empresa do colaborador.
      * @param dataInicial - Data inicial do filtro de busca.
      * @param dataFinal   - Data final do filtro de busca.
      * @return - Um {@link List< RaizenProdutividade >} contendo a
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
-    List<RaizenProdutividade> getRaizenProdutividade(@NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws SQLException;
+    List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal) throws SQLException;
+
+    /**
+     * Busca as produtividades de um colaborador pelo nome.
+     *
+     * @param codEmpresa - Código da empresa do colaborador.
+     * @param cpfMotorista - CPF para a busca.
+     * @return - Um {@link List< RaizenProdutividade >} contendo a
+     * {@link RaizenProdutividadeItem} de cada colaborador.
+     * @throws SQLException - Erro na execução da busca dos dados no Banco.
+     */
+    List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+                                                     @NotNull final Long cpfMotorista) throws SQLException;
+
 
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.
