@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,7 @@ public class MovimentacaoService {
         try {
             final Long codigo = dao.insert(Injection.provideServicoDao(), movimentacao, true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
-        } catch (SQLException | OrigemDestinoInvalidaException e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao realizar as movimentações";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
