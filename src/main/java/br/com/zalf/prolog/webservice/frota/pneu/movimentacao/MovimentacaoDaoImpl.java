@@ -13,7 +13,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -188,7 +187,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            removePneusComOrigemVeiculo(conn, processoMov);
+            removePneusComOrigemVeiculo(conn, veiculoDao, processoMov);
             final Long codUnidade = processoMov.getUnidade().getCodigo();
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
@@ -229,40 +228,21 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     /**
      * Antes de o {@link ProcessoMovimentacao} começar a ser processado. Todos os pneus movimentados com origem no
      * veículo são antes desvinculados do mesmo. Com isso, removemos a dependência temporal no processamento das
-     * movimentações, pois podemos primeiro movimentar um {@link PneuComum} do estoque para o veículo mesmo que na posição
+     * movimentações, pois podemos primeiro movimentar um {@link Pneu} do estoque para o veículo mesmo que na posição
      * de destino dele já existisse um pneu.
      */
     private void removePneusComOrigemVeiculo(@NotNull final Connection conn,
+                                             @NotNull final VeiculoDao veiculoDao,
                                              @NotNull final ProcessoMovimentacao processoMovimentacao) throws Throwable {
         for (final Movimentacao mov : processoMovimentacao.getMovimentacoes()) {
             if (mov.getOrigem().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
                 final OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
-                removePneuVeiculo(
+                veiculoDao.removePneuVeiculo(
                         conn,
                         processoMovimentacao.getUnidade().getCodigo(),
                         origem.getVeiculo().getPlaca(),
                         mov.getPneu().getCodigo());
             }
-        }
-    }
-
-    private void removePneuVeiculo(@NotNull final Connection conn,
-                                   @NotNull final Long codUnidade,
-                                   @NotNull final String placa,
-                                   @NotNull final Long codPneu) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
-                    "COD_PNEU = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, placa);
-            stmt.setLong(3, codPneu);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao deletar o pneu do veículo");
-            }
-        } finally {
-            closeStatement(stmt);
         }
     }
 
