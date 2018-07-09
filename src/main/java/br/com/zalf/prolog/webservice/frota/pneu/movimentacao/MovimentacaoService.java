@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -11,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovim
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -22,6 +20,7 @@ public class MovimentacaoService {
     private final MovimentacaoDao dao = Injection.provideMovimentacaoDao();
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
+    @NotNull
     public AbstractResponse insert(@NotNull final ProcessoMovimentacao movimentacao) throws ProLogException {
         try {
             final Long codigo = dao.insert(Injection.provideServicoDao(), movimentacao, true);
@@ -33,36 +32,41 @@ public class MovimentacaoService {
         }
     }
 
-    public AbstractResponse insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) {
+    @NotNull
+    public AbstractResponse insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa)
+            throws ProLogException {
         try {
             return ResponseWithCod.ok(
                     "Motivo de descarte inserido com sucesso",
                     dao.insertMotivo(motivo, codEmpresa));
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao inserir um novo motivo de descarte", e);
-            return Response.error("Erro ao inserir um novo motivo de descarte");
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao inserir um novo motivo de descarte";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
-    public boolean updateMotivoStatus(@NotNull final Long codEmpresa,
-                                      @NotNull final Long codMotivo,
-                                      @NotNull final Motivo motivo) {
+    public void updateMotivoStatus(@NotNull final Long codEmpresa,
+                                   @NotNull final Long codMotivo,
+                                   @NotNull final Motivo motivo) throws ProLogException {
         try {
             dao.updateMotivoStatus(codEmpresa, codMotivo, motivo);
-            return true;
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao atualizar Motivo: %d", codMotivo), e);
-            return false;
+        } catch (Throwable e) {
+            final String errorMessage = String.format("Erro ao atualizar motivo de descarte: %d", codMotivo);
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
+    @NotNull
     public List<Motivo> getMotivos(@NotNull final Long codEmpresa,
-                                   final boolean onlyAtivos) {
+                                   final boolean onlyAtivos) throws ProLogException {
         try {
             return dao.getMotivos(codEmpresa, onlyAtivos);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar lista de Motivos", e);
-            return null;
+        } catch (Throwable e) {
+            final String errorMessage = "Erro ao buscar lista de motivos de descarte";
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 }

@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
@@ -180,7 +179,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void fechaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
+    public void fechaServico(Servico servico, Long codUnidade) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -239,8 +238,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             closeConnection(conn, null, null);

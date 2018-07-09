@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
@@ -32,7 +31,7 @@ public interface ServicoDao {
 
 	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
-	void fechaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
+	void fechaServico(Servico servico, Long codUnidade) throws Throwable;
 
 	Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
 

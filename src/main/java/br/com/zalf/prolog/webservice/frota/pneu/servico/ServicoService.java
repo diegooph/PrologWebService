@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +59,7 @@ public class ServicoService {
         try {
             dao.fechaServico(servico, codUnidade);
             return true;
-        } catch (SQLException | OrigemDestinoInvalidaException e) {
+        } catch (Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item. \n," +
                     "Unidade: %d \n", codUnidade), e);
             return false;
