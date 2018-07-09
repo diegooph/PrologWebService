@@ -288,7 +288,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 break;
             case ANALISE:
                 insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
-                insertServicosRealizadosRecapadoras(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
+                insertServicosRealizadosPneu(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
                 break;
             case DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
@@ -314,21 +314,26 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
     }
 
-    private void insertServicosRealizadosRecapadoras(@NotNull final Connection conn,
-                                                     @NotNull final PneuDao pneuDao,
-                                                     @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
-                                                     @NotNull final Long codUnidade,
-                                                     @NotNull final Movimentacao movimentacao) throws Throwable {
+    private void insertServicosRealizadosPneu(@NotNull final Connection conn,
+                                              @NotNull final PneuDao pneuDao,
+                                              @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
+                                              @NotNull final Long codUnidade,
+                                              @NotNull final Movimentacao movimentacao) throws Throwable {
         final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
         final List<PneuServicoRealizado> servicosRealizados = origemAnalise.getServicosRealizados();
-        if (servicosRealizados == null || servicosRealizados.isEmpty()) {
-            return;
+        if (servicosRealizados.isEmpty()) {
+            throw new IllegalStateException("O pneu " + movimentacao.getPneu().getCodigo() + " foi movido dá análise e " +
+                    "não teve nenhum serviço aplicado!");
         }
 
         final Pneu pneuMovimentacao = movimentacao.getPneu();
         for (final PneuServicoRealizado servico : servicosRealizados) {
-            final Long codServicoRealizado =
-                    pneuServicoRealizadoDao.insertServicoByMovimentacao(conn, pneuDao, codUnidade, pneuMovimentacao, servico);
+            final Long codServicoRealizado = pneuServicoRealizadoDao.insertServicoByMovimentacao(
+                    conn,
+                    pneuDao,
+                    codUnidade,
+                    pneuMovimentacao,
+                    servico);
             insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
             if (pneuTemRecapadora(conn, pneuMovimentacao.getCodigo())) {
                 insertMovimentacaoServicoRealizadoRecapadora(
