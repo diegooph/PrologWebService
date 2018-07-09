@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -10,10 +11,9 @@ import java.time.LocalDate;
 public class RaizenProdutividadeItem {
 
     private Long codigo;
-    private Long cpfMotorista;
     private String placa;
     private LocalDate dataViagem;
-    private double valor;
+    private BigDecimal valor;
     private String usina;
     private String fazenda;
     private double raio;
@@ -33,14 +33,6 @@ public class RaizenProdutividadeItem {
         this.codigo = codigo;
     }
 
-    public Long getCpfMotorista() {
-        return cpfMotorista;
-    }
-
-    public void setCpfMotorista(Long cpfMotorista) {
-        this.cpfMotorista = cpfMotorista;
-    }
-
     public String getPlaca() {
         return placa;
     }
@@ -57,11 +49,11 @@ public class RaizenProdutividadeItem {
         this.dataViagem = dataViagem;
     }
 
-    public double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
@@ -125,7 +117,6 @@ public class RaizenProdutividadeItem {
     public String toString() {
         return "RaizenProdutividadeItem{" +
                 "codigoColaboradorCadastro=" + codigoColaboradorCadastro +
-                ", cpfMotorista=" + cpfMotorista +
                 ", placa=" + placa +
                 ", dataViagem=" + dataViagem +
                 ", valor=" + valor +

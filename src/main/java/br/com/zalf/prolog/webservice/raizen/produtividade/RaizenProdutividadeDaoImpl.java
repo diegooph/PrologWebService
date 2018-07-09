@@ -92,10 +92,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "                           RAIO," +
                     "                           TONELADA)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?,)");
-            stmt.setLong(1, item.getCpfMotorista());
+//            stmt.setLong(1, item.getCpfMotorista());
             stmt.setString(2, item.getPlaca());
             stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
-            stmt.setDouble(4, item.getValor());
+            stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
             stmt.setString(6, item.getFazenda());
             stmt.setDouble(7, item.getRaio());
