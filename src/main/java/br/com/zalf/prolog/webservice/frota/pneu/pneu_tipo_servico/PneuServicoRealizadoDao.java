@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
@@ -17,9 +18,9 @@ import java.sql.SQLException;
 public interface PneuServicoRealizadoDao {
 
     /**
-     * Processo de inserção de um {@link PneuServicoRealizado} disparado através de uma movimentação.
-     * Insere no banco de dados um {@link PneuServicoRealizado} contendo os dados
-     * referentes ao serviço executado no {@link Pneu}.
+     * Processo de inserção de um {@link PneuServicoRealizado} disparado através de uma {@link Movimentacao}.
+     * Insere no banco de dados um {@link PneuServicoRealizado} contendo os dados referentes ao serviço
+     * executado no {@link Pneu}.
      *
      * @param conn             - {@link Connection} que será utilizada para conectar ao banco de dados.
      * @param pneuDao          - Obejto {@link PneuDao} utilizado para executar alterações no {@link Pneu}.
@@ -36,10 +37,10 @@ public interface PneuServicoRealizadoDao {
                                      @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException;
 
     /**
-     * Processo de inserção de um {@link PneuServicoRealizado} disparado através do cadastro
-     * de um {@link Pneu} cujo não está na primeira vida.
-     * Insere no banco de dados um {@link PneuServicoRealizado} contendo os dados
-     * referentes ao serviço executado no {@link Pneu}.
+     * Processo de inserção de um {@link PneuServicoRealizado} disparado através do cadastro de um {@link Pneu}
+     * que não está na primeira vida.
+     * Insere no banco de dados um {@link PneuServicoRealizado} contendo os dados referentes ao serviço executado
+     * no {@link Pneu}.
      *
      * @param conn             - {@link Connection} que será utilizada para conectar ao banco de dados.
      * @param codUnidade       - Código da {@link Unidade} que o serviço foi realizado.
