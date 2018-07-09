@@ -23,7 +23,7 @@ public class PneuTipoServicoService {
 
     private static final String TAG = PneuTipoServicoService.class.getSimpleName();
     @NotNull
-    private final PneuTipoServicoDao dao = Injection.provideTipoServicoRecapadoraDao();
+    private final PneuTipoServicoDao dao = Injection.providePneuTipoServicoDao();
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 

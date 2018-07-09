@@ -746,7 +746,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
             final Long codServicoRealizado = Injection
-                    .provideTipoServicoRealizadoRecapadoraDao()
+                    .providePneuServicoRealizadoDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
             stmt = conn.prepareStatement("INSERT INTO PNEU_SERVICO_CADASTRO " +
                     "(COD_PNEU, COD_PNEU_SERVICO_REALIZADO) " +

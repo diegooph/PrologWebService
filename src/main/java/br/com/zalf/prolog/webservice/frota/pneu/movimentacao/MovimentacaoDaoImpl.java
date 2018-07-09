@@ -184,8 +184,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-        final PneuServicoRealizadoDao pneuServicoRealizadoDao =
-                Injection.provideTipoServicoRealizadoRecapadoraDao();
+        final PneuServicoRealizadoDao pneuServicoRealizadoDao = Injection.providePneuServicoRealizadoDao();
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {

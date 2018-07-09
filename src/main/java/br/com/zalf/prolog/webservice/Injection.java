@@ -352,12 +352,12 @@ public final class Injection {
     }
 
     @NotNull
-    public static PneuTipoServicoDao provideTipoServicoRecapadoraDao() {
+    public static PneuTipoServicoDao providePneuTipoServicoDao() {
         return new PneuTipoServicoDaoImpl();
     }
 
     @NotNull
-    public static PneuServicoRealizadoDao provideTipoServicoRealizadoRecapadoraDao() {
+    public static PneuServicoRealizadoDao providePneuServicoRealizadoDao() {
         return new PneuServicoRealizadoDaoImpl();
     }
 
