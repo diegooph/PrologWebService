@@ -20,9 +20,10 @@ import java.util.List;
  */
 public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTipoServicoDao {
 
+    @NotNull
     @Override
     public Long insertPneuTipoServico(@NotNull final String token,
-                                      @NotNull final PneuTipoServico tipoServico) throws SQLException {
+                                      @NotNull final PneuTipoServico tipoServico) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -35,7 +36,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     @Override
     public void atualizaPneuTipoServico(@NotNull final String token,
                                         @NotNull final Long codEmpresa,
-                                        @NotNull final PneuTipoServico tipoServico) throws SQLException {
+                                        @NotNull final PneuTipoServico tipoServico) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -49,7 +50,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     @SuppressWarnings("Duplicates")
     @Override
     public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
-                                                      @Nullable final Boolean ativos) throws SQLException {
+                                                      @Nullable final Boolean ativos) throws Throwable {
         final List<PneuTipoServico> tiposServicos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -57,7 +58,8 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO " +
-                    "WHERE (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) " +
+                    "WHERE COD_EMPRESA = ? " +
+                    "AND UTILIZADO_CADASTRO_PNEU = FALSE " +
                     "AND (? = 1 OR STATUS_ATIVO = ?)");
             stmt.setLong(1, codEmpresa);
             if (ativos == null) {
@@ -79,14 +81,14 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
 
     @Override
     public PneuTipoServico getPneuTipoServico(@NotNull final Long codEmpresa,
-                                              @NotNull final Long codTipoServico) throws SQLException {
+                                              @NotNull final Long codTipoServico) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO WHERE" +
-                    " (COD_EMPRESA = ? OR COD_EMPRESA IS NULL) AND CODIGO = ?");
+            stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO WHERE " +
+                    "COD_EMPRESA = ? AND CODIGO = ? AND UTILIZADO_CADASTRO_PNEU = FALSE;");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codTipoServico);
             rSet = stmt.executeQuery();
@@ -103,7 +105,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     @Override
     public void alterarStatusPneuTipoServico(@NotNull final String token,
                                              @NotNull final Long codEmpresa,
-                                             @NotNull final PneuTipoServico tipoServico) throws SQLException {
+                                             @NotNull final PneuTipoServico tipoServico) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -117,20 +119,21 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     private Long insereTipoServico(@NotNull final Connection conn,
                                    @NotNull final String token,
                                    @NotNull final Long codEmpresa,
-                                   @NotNull final PneuTipoServico tipoServico) throws SQLException {
+                                   @NotNull final PneuTipoServico tipoServico) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO PNEU_TIPO_SERVICO " +
-                    "(COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, DATA_HORA_CRIACAO) " +
+                    "(COD_EMPRESA, NOME, COD_COLABORADOR_CRIACAO, INCREMENTA_VIDA, DATA_HORA_CRIACAO) " +
                     "VALUES (?, ?,(SELECT C.CODIGO " +
                     "FROM COLABORADOR AS C " +
                     "WHERE C.CPF = (SELECT TA.CPF_COLABORADOR " +
-                    "FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?) RETURNING CODIGO;");
+                    "FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), ?, ?) RETURNING CODIGO;");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, tipoServico.getNome().toUpperCase());
             stmt.setString(3, token);
-            stmt.setTimestamp(4, Now.timestampUtc());
+            stmt.setBoolean(4, tipoServico.isIncrementaVida());
+            stmt.setTimestamp(5, Now.timestampUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -145,7 +148,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     private void inativaPneuTipoServico(@NotNull final Connection conn,
                                         @NotNull final String token,
                                         @NotNull final Long codEmpresa,
-                                        @NotNull final PneuTipoServico tipoServico) throws SQLException {
+                                        @NotNull final PneuTipoServico tipoServico) throws Throwable {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE PNEU_TIPO_SERVICO SET " +
@@ -167,7 +170,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     }
 
     @NotNull
-    private PneuTipoServico createPneuTipoServico(@NotNull final ResultSet rSet) throws SQLException {
+    private PneuTipoServico createPneuTipoServico(@NotNull final ResultSet rSet) throws Throwable {
         final PneuTipoServico tipoServico = new PneuTipoServico();
         tipoServico.setCodigo(rSet.getLong("CODIGO"));
         tipoServico.setCodEmpresa(rSet.getLong("COD_EMPRESA"));

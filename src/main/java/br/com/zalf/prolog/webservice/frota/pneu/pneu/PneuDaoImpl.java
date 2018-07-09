@@ -770,7 +770,10 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT PTS.CODIGO AS CODIGO FROM PNEU_TIPO_SERVICO AS PTS " +
-                    "WHERE PTS.COD_EMPRESA IS NULL AND PTS.STATUS_ATIVO = TRUE AND PTS.INCREMENTA_VIDA = TRUE;");
+                    "WHERE PTS.COD_EMPRESA IS NULL " +
+                    "AND PTS.STATUS_ATIVO = TRUE " +
+                    "AND PTS.INCREMENTA_VIDA = TRUE " +
+                    "AND PTS.UTILIZADO_CADASTRO_PNEU = TRUE;");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final PneuServicoRealizadoIncrementaVida servico = new PneuServicoRealizadoIncrementaVida();

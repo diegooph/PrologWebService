@@ -32,7 +32,7 @@ public class PneuTipoServicoService {
         try {
             return ResponseWithCod.ok("Tipo de Serviço inserido com sucesso",
                     dao.insertPneuTipoServico(TokenCleaner.getOnlyToken(token), tipoServico));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao inserir o tipo de serviço";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -45,7 +45,7 @@ public class PneuTipoServicoService {
         try {
             dao.atualizaPneuTipoServico(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
             return Response.ok("Tipo de Serviço atualizado com sucesso");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao atualizar o tipo de serviço";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -56,7 +56,7 @@ public class PneuTipoServicoService {
                                                       @Nullable final Boolean ativos) throws ProLogException {
         try {
             return dao.getPneuTiposServicos(codEmpresa, ativos);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao buscar os tipos de serviços";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -67,7 +67,7 @@ public class PneuTipoServicoService {
                                               @NotNull final Long codTipoServico) throws ProLogException {
         try {
             return dao.getPneuTipoServico(codEmpresa, codTipoServico);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao buscar o tipo de serviço";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -80,7 +80,7 @@ public class PneuTipoServicoService {
         try {
             dao.alterarStatusPneuTipoServico(TokenCleaner.getOnlyToken(token), codEmpresa, tipoServico);
             return Response.ok("Status de serviço alterado com sucesso");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             final String errorMessage = "Erro ao alterar o status do serviço";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
