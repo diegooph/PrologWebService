@@ -551,14 +551,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             final DestinoAnalise destinoAnalise = (DestinoAnalise) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoAnalise.getTipo().asString());
-            if (destinoAnalise.getRecapadoraDestino() != null) {
-                stmt.setLong(3, destinoAnalise.getRecapadoraDestino().getCodigo());
-            } else {
-                stmt.setNull(3, Types.BIGINT);
-            }
+            stmt.setLong(3, destinoAnalise.getRecapadoraDestino().getCodigo());
             stmt.setString(4, destinoAnalise.getCodigoColeta());
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir o destino analise da movimentação");
+                throw new SQLException("Erro ao inserir o destino análise da movimentação");
             }
         } finally {
             closeStatement(stmt);
