@@ -584,8 +584,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         c.setPis(rSet.getString("PIS"));
         c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
         c.setNome(rSet.getString("NOME_COLABORADOR"));
-        c.setMatriculaAmbev(rSet.getInt("MATRICULA_AMBEV"));
-        c.setMatriculaTrans(rSet.getInt("MATRICULA_TRANS"));
+        final int matriculaAmbev = rSet.getInt("MATRICULA_AMBEV");
+        if (!rSet.wasNull()) {
+            c.setMatriculaAmbev(matriculaAmbev);
+        }
+        final int matriculaTrans = rSet.getInt("MATRICULA_TRANS");
+        if (!rSet.wasNull()) {
+            c.setMatriculaTrans(matriculaTrans);
+        }
         c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
         c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
         c.setCodPermissao(rSet.getInt("PERMISSAO"));

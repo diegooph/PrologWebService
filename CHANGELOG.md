@@ -6,6 +6,7 @@ Change Log
 
 ### Bug Fixes
 * Remove uso de anotação @NotNull da developerMessage na ProLogException
+* Verifica se matrícula ambev ou da transportadora são nulas antes de setar no objeto Colaborador
 
 <a name="v0.0.66"></a>
 ## Version [v0.0.66](https://github.com/luizfp/PrologWeb/compare/v0.0.65...v0.0.66) (2018-07-04)
