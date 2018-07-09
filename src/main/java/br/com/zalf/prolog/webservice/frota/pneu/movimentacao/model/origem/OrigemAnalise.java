@@ -14,6 +14,10 @@ public final class OrigemAnalise extends Origem {
     @NotNull
     private List<PneuServicoRealizado> servicosRealizados;
 
+    public OrigemAnalise() {
+        super(OrigemDestinoEnum.ANALISE);
+    }
+
     public OrigemAnalise(@NotNull final List<PneuServicoRealizado> servicosRealizados) {
         super(OrigemDestinoEnum.ANALISE);
         this.servicosRealizados = servicosRealizados;

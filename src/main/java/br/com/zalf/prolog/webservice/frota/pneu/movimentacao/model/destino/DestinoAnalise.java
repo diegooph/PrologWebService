@@ -14,6 +14,10 @@ public final class DestinoAnalise extends Destino {
     @Nullable
     private String codigoColeta;
 
+    public DestinoAnalise() {
+        super(OrigemDestinoEnum.ANALISE);
+    }
+
     public DestinoAnalise(@NotNull final Recapadora recapadoraDestino, @Nullable final String codigoColeta) {
         super(OrigemDestinoEnum.ANALISE);
         this.recapadoraDestino = recapadoraDestino;
