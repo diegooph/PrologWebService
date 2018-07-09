@@ -223,6 +223,22 @@ public interface VeiculoDao {
     TipoVeiculo getTipoVeiculo(Long codTipo, Long codUnidade) throws SQLException;
 
     /**
+     * Aplica um pneu à uma posição específico do veículo.
+     *
+     * @param conn               - {@link Connection} que será utilizada para conectar ao banco de dados.
+     * @param codUnidade         - Código da {@link Unidade} em que veículo e pneu estão alocados.
+     * @param placa              - A placa do veículo no qual o pneu será aplicado.
+     * @param codPneu            - O código do pneu que deve ser aplicado.
+     * @param posicaoPneuVeiculo - A posição na qual o pneu será aplicado no {@link Veiculo}.
+     * @throws Throwable - Se algum erro ocorrer.
+     */
+    void adicionaPneuVeiculo(@NotNull final Connection conn,
+                             @NotNull final Long codUnidade,
+                             @NotNull final String placa,
+                             @NotNull final Long codPneu,
+                             final int posicaoPneuVeiculo) throws Throwable;
+
+    /**
      * Remove um pneu do veículo no qual ele está aplicado.
      *
      * @param conn       - {@link Connection} que será utilizada para conectar ao banco de dados.

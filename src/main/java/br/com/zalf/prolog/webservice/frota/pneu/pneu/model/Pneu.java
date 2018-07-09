@@ -49,7 +49,7 @@ public abstract class Pneu {
     /**
      * O código único (autoincrement) do pneu no sistema.
      */
-    public Long codigo;
+    private Long codigo;
 
     private Marca marca;
     private ModeloPneu modelo;

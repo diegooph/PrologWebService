@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -623,6 +623,28 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             closeConnection(conn, stmt, rSet);
         }
         return diagramas;
+    }
+
+    @Override
+    public void adicionaPneuVeiculo(@NotNull final Connection conn,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final String placa,
+                                    @NotNull final Long codPneu,
+                                    final int posicaoPneuVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
+                    "VALUES (?, ?, ?, ?)");
+            stmt.setString(1, placa);
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            stmt.setInt(4, posicaoPneuVeiculo);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
+            }
+        } finally {
+            closeStatement(stmt);
+        }
     }
 
     @Override

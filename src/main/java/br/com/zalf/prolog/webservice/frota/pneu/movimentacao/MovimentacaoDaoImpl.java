@@ -209,13 +209,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("CODIGO"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
-                    insertDestino(conn, veiculoDao, mov);
+                    insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(conn, servicoDao, codUnidade, processoMov.getCodigo(), mov);
-                    }
-
-                    if (mov.getDestino().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
-                        adicionaPneuVeiculo(conn, mov, codUnidade);
                     }
 
                     // Atualiza o status do pneu.
@@ -297,10 +293,11 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     private void insertDestino(@NotNull final Connection conn,
                                @NotNull final VeiculoDao veiculoDao,
+                               @NotNull final Long codUnidade,
                                @NotNull final Movimentacao movimentacao) throws Throwable {
         switch (movimentacao.getDestino().getTipo()) {
             case VEICULO:
-                insertMovimentacaoDestinoVeiculo(conn, veiculoDao, movimentacao);
+                insertMovimentacaoDestinoVeiculo(conn, veiculoDao, codUnidade, movimentacao);
                 break;
             case ESTOQUE:
                 insertMovimentacaoDestinoEstoque(conn, movimentacao);
@@ -508,19 +505,27 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     private void insertMovimentacaoDestinoVeiculo(@NotNull final Connection conn,
                                                   @NotNull final VeiculoDao veiculoDao,
+                                                  @NotNull final Long codUnidade,
                                                   @NotNull final Movimentacao movimentacao) throws Throwable {
+        final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
+        // Primeiro aplicamos o pneu ao veículo e também atualizamos o KM do veículo.
+        veiculoDao.adicionaPneuVeiculo(
+                conn,
+                codUnidade,
+                destinoVeiculo.getVeiculo().getPlaca(),
+                movimentacao.getPneu().getCodigo(),
+                destinoVeiculo.getPosicaoDestinoPneu());
+        veiculoDao.updateKmByPlaca(
+                destinoVeiculo.getVeiculo().getPlaca(),
+                destinoVeiculo.getVeiculo().getKmAtual(),
+                conn);
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
                     "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, PLACA, KM_VEICULO, POSICAO_PNEU_DESTINO) " +
                     "VALUES (?, ?, ?, ?, ?);");
-            final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
-            veiculoDao.updateKmByPlaca(
-                    destinoVeiculo.getVeiculo().getPlaca(),
-                    destinoVeiculo.getVeiculo().getKmAtual(),
-                    conn);
             stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
             stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
             stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
@@ -628,27 +633,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             }
         } else {
             Log.d(TAG, "Não existem serviços em aberto para o pneu: " + codPneu);
-        }
-    }
-
-    private void adicionaPneuVeiculo(@NotNull final Connection conn,
-                                     @NotNull final Movimentacao movimentacao,
-                                     @NotNull final Long codUnidade) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
-                    "VALUES (?, ?, ?, ?)");
-            final DestinoVeiculo destinoVeiculo = (DestinoVeiculo) movimentacao.getDestino();
-            stmt.setString(1, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(2, movimentacao.getPneu().getCodigo());
-            stmt.setLong(3, codUnidade);
-            stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao vincular o pneu " + movimentacao.getPneu() + " ao veículo " +
-                        destinoVeiculo.getVeiculo().getPlaca());
-            }
-        } finally {
-            closeStatement(stmt);
         }
     }
 }
