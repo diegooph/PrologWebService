@@ -24,17 +24,6 @@ public final class DestinoDescarte extends Destino {
         super(OrigemDestinoEnum.DESCARTE);
     }
 
-    public DestinoDescarte(@NotNull MotivoDescarte motivoDescarte,
-                           @Nullable String urlImagemDescarte1,
-                           @Nullable String urlImagemDescarte2,
-                           @Nullable String urlImagemDescarte3) {
-        super(OrigemDestinoEnum.DESCARTE);
-        this.motivoDescarte = motivoDescarte;
-        this.urlImagemDescarte1 = urlImagemDescarte1;
-        this.urlImagemDescarte2 = urlImagemDescarte2;
-        this.urlImagemDescarte3 = urlImagemDescarte3;
-    }
-
     @NotNull
     public MotivoDescarte getMotivoDescarte() {
         return motivoDescarte;

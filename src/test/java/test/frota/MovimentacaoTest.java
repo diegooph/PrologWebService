@@ -130,8 +130,7 @@ public class MovimentacaoTest extends BaseTest {
     private List<Movimentacao> createMovimentacoesEstoque() {
         final List<Movimentacao> movimentacoes = new ArrayList<>();
 
-        final OrigemAnalise analise = new OrigemAnalise();
-        analise.setServicosRealizados(createServicosRealizados());
+        final OrigemAnalise analise = new OrigemAnalise(createServicosRealizados());
         final DestinoEstoque estoque = new DestinoEstoque();
 
         final Movimentacao movimentacao = new Movimentacao(
@@ -198,9 +197,7 @@ public class MovimentacaoTest extends BaseTest {
         final List<Movimentacao> movimentacoes = new ArrayList<>();
 
         final OrigemEstoque estoque = new OrigemEstoque();
-        final DestinoAnalise analise = new DestinoAnalise();
-        analise.setCodigoColeta("Luizsson");
-        analise.setRecapadoraDestino(createRecapadora());
+        final DestinoAnalise analise = new DestinoAnalise(createRecapadora(), "Luizsson");
 
         final Movimentacao movimentacao = new Movimentacao(
                 null,

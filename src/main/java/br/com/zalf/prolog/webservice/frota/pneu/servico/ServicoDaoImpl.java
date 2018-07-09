@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
@@ -462,7 +463,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 unidade,
                 movimentacoes,
                 colaborador,
-                null,
+                Now.timestampUtc(),
                 "Fechamento de serviço");
     }
 
