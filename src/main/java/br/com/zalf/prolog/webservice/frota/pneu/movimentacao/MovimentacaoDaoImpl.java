@@ -335,6 +335,9 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     pneuMovimentacao,
                     servico);
             insertMovimentacaoServicoRealizado(conn, codServicoRealizado, movimentacao.getCodigo());
+            // Como não foi modelado desde o começo do sistema o conceito de recapadoras, existem pneus em análise que
+            // não possuem nenhuma recapadora vinculada. Para esses pneus, nós não podemos inserir na tabela de vínculo
+            // que liga uma movimentação a uma recapadora.
             if (pneuTemRecapadora(conn, pneuMovimentacao.getCodigo())) {
                 insertMovimentacaoServicoRealizadoRecapadora(
                         conn,
@@ -365,7 +368,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             if (rSet.next()) {
                 return rSet.getBoolean("TEM_RECAPADORA");
             } else {
-                throw new SQLException("Não foi possível descobrir se o pneu: " + codPneu+ " tem recapadora associada");
+                throw new SQLException("Não foi possível descobrir se o pneu " + codPneu+ " tem recapadora associada");
             }
         } finally {
             closeConnection(null, stmt, rSet);
@@ -384,7 +387,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt.setLong(2, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir o Serviço Realizado " +
-                        "na tabela de vínculo com a Movimentação na tabela movimentacao_servico_realizado");
+                        "na tabela de vínculo com a Movimentação (movimentacao_servico_realizado)");
             }
         } finally {
             closeStatement(stmt);
