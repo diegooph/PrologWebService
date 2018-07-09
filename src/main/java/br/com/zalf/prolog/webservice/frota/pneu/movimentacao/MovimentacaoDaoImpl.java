@@ -192,6 +192,8 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
                     "observacao) VALUES (?,?,?,?,?,?,?,?,?) RETURNING codigo;");
+            // Podemos realizar o suppress pois neste ponto já temos que possuir um código não nulo.
+            //noinspection ConstantConditions
             stmt.setLong(1, processoMov.getCodigo());
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
@@ -290,6 +292,25 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 break;
             case DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
+        }
+    }
+
+    private void insertDestino(@NotNull final Connection conn,
+                               @NotNull final VeiculoDao veiculoDao,
+                               @NotNull final Movimentacao movimentacao) throws Throwable {
+        switch (movimentacao.getDestino().getTipo()) {
+            case VEICULO:
+                insertMovimentacaoDestinoVeiculo(conn, veiculoDao, movimentacao);
+                break;
+            case ESTOQUE:
+                insertMovimentacaoDestinoEstoque(conn, movimentacao);
+                break;
+            case ANALISE:
+                insertMovimentacaoDestinoAnalise(conn, movimentacao);
+                break;
+            case DESCARTE:
+                insertMovimentacaoDestinoDescarte(conn, movimentacao);
+                break;
         }
     }
 
@@ -474,25 +495,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             }
         } finally {
             closeStatement(stmt);
-        }
-    }
-
-    private void insertDestino(@NotNull final Connection conn,
-                               @NotNull final VeiculoDao veiculoDao,
-                               @NotNull final Movimentacao movimentacao) throws Throwable {
-        switch (movimentacao.getDestino().getTipo()) {
-            case VEICULO:
-                insertMovimentacaoDestinoVeiculo(conn, veiculoDao, movimentacao);
-                break;
-            case ESTOQUE:
-                insertMovimentacaoDestinoEstoque(conn, movimentacao);
-                break;
-            case ANALISE:
-                insertMovimentacaoDestinoAnalise(conn, movimentacao);
-                break;
-            case DESCARTE:
-                insertMovimentacaoDestinoDescarte(conn, movimentacao);
-                break;
         }
     }
 
