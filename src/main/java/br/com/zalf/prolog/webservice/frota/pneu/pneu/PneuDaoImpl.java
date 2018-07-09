@@ -71,7 +71,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @Override
     @NotNull
-    public Long insert(Pneu pneu, Long codUnidade) throws SQLException {
+    public Long insert(Pneu pneu, Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -214,7 +214,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     @Override
     public void incrementaVidaPneu(@NotNull final Connection conn,
                                    @NotNull final Long codPneu,
-                                   @NotNull final Long codModeloBanda) throws SQLException {
+                                   @NotNull final Long codModeloBanda) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -741,7 +741,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     private void criaServicoRecapagemCadastroPneu(@NotNull final Connection conn,
                                                   @NotNull final Long codUnidade,
-                                                  @NotNull final Pneu pneu) throws SQLException {
+                                                  @NotNull final Pneu pneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
             final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);

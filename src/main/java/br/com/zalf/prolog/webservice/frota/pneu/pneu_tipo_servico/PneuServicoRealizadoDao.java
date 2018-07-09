@@ -30,11 +30,12 @@ public interface PneuServicoRealizadoDao {
      * @return - o código do {@link PneuServicoRealizado} inserido.
      * @throws SQLException - Se algum erro ocorrer na inserção.
      */
+    @NotNull
     Long insertServicoByMovimentacao(@NotNull final Connection conn,
                                      @NotNull final PneuDao pneuDao,
                                      @NotNull final Long codUnidade,
                                      @NotNull final Pneu pneu,
-                                     @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException;
+                                     @NotNull final PneuServicoRealizado servicoRealizado) throws Throwable;
 
     /**
      * Processo de inserção de um {@link PneuServicoRealizado} disparado através do cadastro de um {@link Pneu}
@@ -49,8 +50,9 @@ public interface PneuServicoRealizadoDao {
      * @return - o código do {@link PneuServicoRealizado} inserido.
      * @throws SQLException - Se algum erro ocorrer na inserção.
      */
+    @NotNull
     Long insertServicoByPneuCadastro(@NotNull final Connection conn,
                                      @NotNull final Long codUnidade,
                                      @NotNull final Long codPneu,
-                                     @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException;
+                                     @NotNull final PneuServicoRealizado servicoRealizado) throws Throwable;
 }

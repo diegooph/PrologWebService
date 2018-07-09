@@ -22,31 +22,14 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
     public PneuServicoRealizadoDaoImpl() {
     }
 
+    @NotNull
     @Override
     public Long insertServicoByMovimentacao(
             @NotNull final Connection conn,
             @NotNull final PneuDao pneuDao,
             @NotNull final Long codUnidade,
             @NotNull final Pneu pneu,
-            @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
-        return internalInsertByMovimentacao(conn, pneuDao, codUnidade, pneu, servicoRealizado);
-    }
-
-    @Override
-    public Long insertServicoByPneuCadastro(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final Long codPneu,
-            @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
-        return internalInsertByCadastro(conn, codUnidade, codPneu, servicoRealizado);
-    }
-
-    @NotNull
-    private Long internalInsertByMovimentacao(@NotNull final Connection conn,
-                                              @NotNull final PneuDao pneuDao,
-                                              @NotNull final Long codUnidade,
-                                              @NotNull final Pneu pneu,
-                                              @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+            @NotNull final PneuServicoRealizado servicoRealizado) throws Throwable {
         final Long codServicoRealizado = insertPneuServicoRealizado(
                 conn,
                 codUnidade,
@@ -61,17 +44,19 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
                     PneuServicoRealizado.FONTE_MOVIMENTACAO);
 
             // Ao realizar um serviço que incrementa a vida do Pneu, precisamos alterar essa
-            // mudança na Tabela Pneu para que seja refletida ao usuário.
-            trocaVidaPneu(conn, pneuDao, pneu, (PneuServicoRealizadoIncrementaVida) servicoRealizado);
+            // mudança na Tabela PNEU para que seja refletida em banco.
+            incrementaVidaPneu(conn, pneuDao, pneu, (PneuServicoRealizadoIncrementaVida) servicoRealizado);
         }
         return codServicoRealizado;
     }
 
     @NotNull
-    private Long internalInsertByCadastro(@NotNull final Connection conn,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final Long codPneu,
-                                          @NotNull final PneuServicoRealizado servicoRealizado) throws SQLException {
+    @Override
+    public Long insertServicoByPneuCadastro(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final PneuServicoRealizado servicoRealizado) throws Throwable {
         final Long codServicoRealizado = insertPneuServicoRealizado(
                 conn,
                 codUnidade,
@@ -110,7 +95,7 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             } else {
-                throw new SQLException("Não foi possível inserir o servico realizado no pneu: " + codPneu);
+                throw new SQLException("Não foi possível inserir o serviço realizado no pneu: " + codPneu);
             }
         } finally {
             closeConnection(null, stmt, rSet);
@@ -139,14 +124,16 @@ public class PneuServicoRealizadoDaoImpl extends DatabaseConnection implements P
         }
     }
 
-    private void trocaVidaPneu(@NotNull final Connection conn,
-                               @NotNull final PneuDao pneuDao,
-                               @NotNull final Pneu pneu,
-                               @NotNull final PneuServicoRealizadoIncrementaVida servicoIncrementaVida) throws SQLException {
-        pneu.setVidaAtual(servicoIncrementaVida.getVidaNovaPneu());
+    private void incrementaVidaPneu(@NotNull final Connection conn,
+                                    @NotNull final PneuDao pneuDao,
+                                    @NotNull final Pneu pneu,
+                                    @NotNull final PneuServicoRealizadoIncrementaVida servicoIncrementaVida)
+            throws Throwable {
         pneuDao.incrementaVidaPneu(
                 conn,
                 pneu.getCodigo(),
                 servicoIncrementaVida.getCodModeloBanda());
+        // Desse modo garantimos que o objeto Pneu reflete o estado do pneu em banco.
+        pneu.incrementaVida();
     }
 }

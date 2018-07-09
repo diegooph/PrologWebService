@@ -80,7 +80,7 @@ public interface PneuDao {
      */
     void incrementaVidaPneu(@NotNull final Connection conn,
                             @NotNull final Long codPneu,
-                            @NotNull final Long codModeloBanda) throws SQLException;
+                            @NotNull final Long codModeloBanda) throws Throwable;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 

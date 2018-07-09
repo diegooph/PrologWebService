@@ -363,6 +363,14 @@ public abstract class Pneu {
         return getQuantidadeSulcos() % 2 != 0;
     }
 
+    public void incrementaVida() {
+        pneuNovoNuncaRodado = false;
+        vidaAtual++;
+        if (vidaAtual > vidasTotal) {
+            vidasTotal = vidaAtual;
+        }
+    }
+
     public static final Comparator<PneuComum> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
