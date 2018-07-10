@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
+import br.com.zalf.prolog.webservice.commons.OrderByClause;
 import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
@@ -48,8 +49,10 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
     }
 
     @SuppressWarnings("Duplicates")
+    @NotNull
     @Override
     public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
+                                                      @NotNull final List<OrderByClause> orderBy,
                                                       @Nullable final Boolean ativos) throws Throwable {
         final List<PneuTipoServico> tiposServicos = new ArrayList<>();
         Connection conn = null;
@@ -57,10 +60,23 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PNEU_TIPO_SERVICO " +
+            String sql = "SELECT * FROM PNEU_TIPO_SERVICO " +
                     "WHERE COD_EMPRESA = ? " +
                     "AND UTILIZADO_CADASTRO_PNEU = FALSE " +
-                    "AND (? = 1 OR STATUS_ATIVO = ?)");
+                    "AND (? = 1 OR STATUS_ATIVO = ?) ORDER BY ";
+            final StringBuilder builder = new StringBuilder();
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < orderBy.size(); i++) {
+                final OrderByClause order = orderBy.get(i);
+                if (order.getPropertyName().equals("nome") || order.getPropertyName().equals("incrementaVida")) {
+                    if (builder.length() == 0) {
+                        builder.append(order.toSqlString());
+                    } else {
+                        builder.append(",").append(order.toSqlString());
+                    }
+                }
+            }
+            stmt = conn.prepareStatement(sql.concat(builder.toString()));
             stmt.setLong(1, codEmpresa);
             if (ativos == null) {
                 stmt.setInt(2, 1);
@@ -79,6 +95,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         return tiposServicos;
     }
 
+    @NotNull
     @Override
     public PneuTipoServico getPneuTipoServico(@NotNull final Long codEmpresa,
                                               @NotNull final Long codTipoServico) throws Throwable {

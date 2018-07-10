@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.OrderByCreator;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
@@ -53,9 +54,10 @@ public class PneuTipoServicoService {
     }
 
     public List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
+                                                      @NotNull final List<String> orderBy,
                                                       @Nullable final Boolean ativos) throws ProLogException {
         try {
-            return dao.getPneuTiposServicos(codEmpresa, ativos);
+            return dao.getPneuTiposServicos(codEmpresa, OrderByCreator.createFrom(orderBy), ativos);
         } catch (Throwable e) {
             final String errorMessage = "Erro ao buscar os tipos de serviços";
             Log.e(TAG, errorMessage, e);

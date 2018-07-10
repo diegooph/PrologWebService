@@ -48,8 +48,9 @@ public class PneuTipoServicoResource {
     @Path("/{codEmpresa}")
     public List<PneuTipoServico> getPneuTiposServicos(
             @PathParam("codEmpresa") @Required Long codEmpresa,
-            @QueryParam("ativos") @Optional Boolean ativos) throws ProLogException {
-        return service.getPneuTiposServicos(codEmpresa, ativos);
+            @QueryParam("ativos") @Optional Boolean ativos,
+            @QueryParam("orderBy") @DefaultValue("nome") @Required List<String> orderBy) throws ProLogException {
+        return service.getPneuTiposServicos(codEmpresa, orderBy, ativos);
     }
 
     @GET

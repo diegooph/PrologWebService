@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.commons.OrderByClause;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuTipoServico;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +44,14 @@ public interface PneuTipoServicoDao {
      * Busca todos os {@link PneuTipoServico} vinculados à {@link Empresa}.
      *
      * @param codEmpresa - Código da {@link Empresa}.
+     * @param orderBy    - os ordenamentos que serão aplicados nessa busca.
      * @param ativos     - {@link Boolean} para saber se buscaremos todos os tipos ou apenas os ativos.
      * @return - Um {@link List<PneuTipoServico>} com os tipos da empresa.
      * @throws Throwable - Se algum erro ocorrer na execução da função.
      */
+    @NotNull
     List<PneuTipoServico> getPneuTiposServicos(@NotNull final Long codEmpresa,
+                                               @NotNull final List<OrderByClause> orderBy,
                                                @Nullable final Boolean ativos) throws Throwable;
 
     /**
@@ -58,6 +62,7 @@ public interface PneuTipoServicoDao {
      * @return - Um {@link PneuTipoServico} específico.
      * @throws Throwable - Se algum erro ocorrer na execução da função.
      */
+    @NotNull
     PneuTipoServico getPneuTipoServico(@NotNull final Long codEmpresa,
                                        @NotNull final Long codTipoServico) throws Throwable;
 
