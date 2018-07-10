@@ -2,6 +2,9 @@ Change Log
 ==========
 
 <a name="v0.0.67"></a>
+## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (release-date) [unreleased]
+
+<a name="v0.0.67"></a>
 ## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (2018-07-09)
 
 ### Bug Fixes
