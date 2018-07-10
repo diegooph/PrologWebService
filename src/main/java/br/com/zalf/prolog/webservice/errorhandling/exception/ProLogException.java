@@ -51,7 +51,7 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage) {
+						   @Nullable String developerMessage) {
 		super();
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
@@ -62,7 +62,7 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage,
+						   @Nullable String developerMessage,
 						   @NotNull Exception parentException) {
 		super(parentException);
 		this.httpStatusCode = httpStatusCode;
@@ -75,7 +75,7 @@ public abstract class ProLogException extends Exception {
 	public ProLogException(int httpStatusCode,
 						   int proLogErrorCode,
 						   @NotNull String message,
-						   @NotNull String developerMessage,
+						   @Nullable String developerMessage,
 						   @NotNull String moreInfoLink) {
 		super();
 		this.httpStatusCode = httpStatusCode;
