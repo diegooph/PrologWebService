@@ -23,6 +23,31 @@ public interface Permissao {
     long GERAL = 3;
 
     /**
+     * VISUALIZAR_TODOS = visualização das produtividades de todos os colaboradores
+     */
+    long VISUALIZAR_TODOS = 4;
+
+    /**
+     * VISUALIZAR_PROPRIOS = visualização de suas próprias produtividades
+     */
+    long VISUALIZAR_PROPRIOS = 5;
+
+    /**
+     * EDITAR = edição de produtividades
+     */
+    long EDITAR = 6;
+
+    /**
+     * UPLOAD = enviar produtividades
+     */
+    long UPLOAD = 7;
+
+    /**
+     * DELETAR = deleção de produtividades
+     */
+    long DELETAR = 8;
+
+    /**
      * Constantes destinadas ao controle de permissão do setor operacional
      */
     final class Operacional {
