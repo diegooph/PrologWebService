@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class RaizenProdutividadeReader {
         throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<RaizenProdutividadeItem> readListFromCsvFilePath(@NotNull final File file) {
+    static List<RaizenProdutividadeItemInsert> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {
@@ -42,9 +43,9 @@ public class RaizenProdutividadeReader {
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
 
-        final List<RaizenProdutividadeItem> raizenItensItens = new ArrayList<>();
+        final List<RaizenProdutividadeItemInsert> raizenItensItens = new ArrayList<>();
         for (final String[] row : rows) {
-            final RaizenProdutividadeItem item = read(row);
+            final RaizenProdutividadeItemInsert item = read(row);
             if (item != null) {
                 raizenItensItens.add(item);
             }
@@ -52,11 +53,11 @@ public class RaizenProdutividadeReader {
         return raizenItensItens;
     }
 
-    private static RaizenProdutividadeItem read(@NotNull final String[] linha) {
+    private static RaizenProdutividadeItemInsert read(@NotNull final String[] linha) {
         if (linha[0].isEmpty()) {
             return null;
         }
-        final RaizenProdutividadeItem item = new RaizenProdutividadeItem();
+        final RaizenProdutividadeItemInsert item = new RaizenProdutividadeItemInsert();
         // CPF MOTORISTA
         if (!linha[0].trim().replaceAll("[^\\d]", "").isEmpty()) {
             item.setCpfMotorista(Long.parseLong(linha[0].trim().replaceAll("[^\\d]", "")));
@@ -71,7 +72,7 @@ public class RaizenProdutividadeReader {
         }
         // VALOR
         if (!linha[3].trim().isEmpty()) {
-            item.setValor(Double.parseDouble(linha[3].trim().replaceAll(",", ".")));
+            item.setValor(new BigDecimal(linha[3].trim().replaceAll(",", ".")));
         }
         //USINA
         if (!linha[4].trim().isEmpty()) {

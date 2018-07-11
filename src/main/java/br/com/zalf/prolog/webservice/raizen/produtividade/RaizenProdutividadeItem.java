@@ -18,7 +18,7 @@ public class RaizenProdutividadeItem {
     private String fazenda;
     private double raio;
     private double tonelada;
-    private Long codigoColaboradorCadastro;
+    private Long codColaboradorCadastro;
     private Long codColaboradorAlteracao;
     private Long codEmpresa;
 
@@ -89,12 +89,12 @@ public class RaizenProdutividadeItem {
         this.tonelada = tonelada;
     }
 
-    public Long getCodigoColaboradorCadastro() {
-        return codigoColaboradorCadastro;
+    public Long getCodColaboradorCadastro() {
+        return codColaboradorCadastro;
     }
 
-    public void setCodigoColaboradorCadastro(Long codigoColaboradorCadastro) {
-        this.codigoColaboradorCadastro = codigoColaboradorCadastro;
+    public void setCodColaboradorCadastro(Long codColaboradorCadastro) {
+        this.codColaboradorCadastro = codColaboradorCadastro;
     }
 
     public Long getCodColaboradorAlteracao() {
@@ -116,7 +116,7 @@ public class RaizenProdutividadeItem {
     @Override
     public String toString() {
         return "RaizenProdutividadeItem{" +
-                "codigoColaboradorCadastro=" + codigoColaboradorCadastro +
+                "codigoColaboradorCadastro=" + codColaboradorCadastro +
                 ", placa=" + placa +
                 ", dataViagem=" + dataViagem +
                 ", valor=" + valor +
