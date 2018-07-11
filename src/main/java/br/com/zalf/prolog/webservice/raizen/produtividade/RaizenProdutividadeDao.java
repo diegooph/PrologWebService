@@ -24,7 +24,7 @@ public interface RaizenProdutividadeDao {
      */
     void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
                                            @NotNull final Long codEmpresa,
-                                           @NotNull final List<RaizenProdutividadeItem> raizenItens) throws SQLException;
+                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws SQLException;
 
     /**
      * Insere uma {@link RaizenProdutividadeItem} específica.
@@ -37,7 +37,7 @@ public interface RaizenProdutividadeDao {
      */
     void insertRaizenProdutividadeItem(@NotNull final String token,
                                        @NotNull final Long codEmpresa,
-                                       @NotNull final RaizenProdutividadeItem item) throws SQLException;
+                                       @NotNull final RaizenProdutividadeItemInsert item) throws SQLException;
 
     /**
      * Atualiza uma {@link RaizenProdutividadeItem} específica.
@@ -50,21 +50,19 @@ public interface RaizenProdutividadeDao {
      */
     void updateRaizenProdutividadeItem(@NotNull final String token,
                                        @NotNull final Long codEmpresa,
-                                       @NotNull final RaizenProdutividadeItem item) throws SQLException;
+                                       @NotNull final RaizenProdutividadeItemInsert item) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador por um período de tempo.
      *
      * @param codEmpresa - Código da empresa do colaborador.
-     * @param dataInicial - Data inicial do filtro de busca.
-     * @param dataFinal   - Data final do filtro de busca.
+     * @param data - Data do filtro de busca.
      * @return - Um {@link List< RaizenProdutividade >} contendo a
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
     List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException;
+                                                     @NotNull final LocalDate data) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador pelo nome.
@@ -82,8 +80,9 @@ public interface RaizenProdutividadeDao {
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.
      *
-     * @param codRaizenProdutividade - {@link List<Long>} contendo os códigos das escalas que deverão ser deletaddas.
+     * @param codRaizenProdutividades - {@link List<Long>} contendo os códigos produtividades que deverão ser deletadas.
      * @throws SQLException - Erro na execução do delete.
      */
-    void deleteRaizenProdutividadeItens(@NotNull final List<Long> codRaizenProdutividade) throws SQLException;
+    void deleteRaizenProdutividadeItens(@NotNull final Long codEmpresa,
+                                        @NotNull final List<Long> codRaizenProdutividades) throws SQLException;
 }
