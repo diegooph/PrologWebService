@@ -284,7 +284,10 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                 break;
             case ANALISE:
                 insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
-                insertServicosRealizadosPneu(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
+                // Apenas movimentações da ANALISE para o ESTOQUE possuem serviços realizados no pneu
+                if (movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.ESTOQUE)) {
+                    insertServicosRealizadosPneu(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
+                }
                 break;
             case DESCARTE:
                 throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
