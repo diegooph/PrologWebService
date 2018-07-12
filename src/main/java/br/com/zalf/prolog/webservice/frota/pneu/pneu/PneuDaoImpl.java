@@ -131,7 +131,7 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
             // Verifica se precisamos inserir informações de valor da banda para a vida atual.
             if (pneu.getVidaAtual() > 1) {
-                criaServicoRecapagemCadastroPneu(conn, codUnidade, pneu);
+                criaServicoIncrementaVidaCadastroPneu(conn, codUnidade, pneu);
             }
 
             final List<PneuFotoCadastro> fotosCadastro = pneu.getFotosCadastro();
@@ -739,12 +739,12 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         }
     }
 
-    private void criaServicoRecapagemCadastroPneu(@NotNull final Connection conn,
-                                                  @NotNull final Long codUnidade,
-                                                  @NotNull final Pneu pneu) throws Throwable {
+    private void criaServicoIncrementaVidaCadastroPneu(@NotNull final Connection conn,
+                                                       @NotNull final Long codUnidade,
+                                                       @NotNull final Pneu pneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoRecapagem(conn, codUnidade, pneu);
+            final PneuServicoRealizadoIncrementaVida servicoRecapagem = createServicoRealizadoIncrementaVidaCadastro(conn, codUnidade, pneu);
             final Long codServicoRealizado = Injection
                     .providePneuServicoRealizadoDao()
                     .insertServicoByPneuCadastro(conn, codUnidade, pneu.getCodigo(), servicoRecapagem);
@@ -763,9 +763,9 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private PneuServicoRealizadoIncrementaVida createServicoRealizadoRecapagem(@NotNull final Connection conn,
-                                                                               @NotNull final Long codUnidade,
-                                                                               @NotNull final Pneu pneu) throws SQLException {
+    private PneuServicoRealizadoIncrementaVida createServicoRealizadoIncrementaVidaCadastro(@NotNull final Connection conn,
+                                                                                            @NotNull final Long codUnidade,
+                                                                                            @NotNull final Pneu pneu) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
