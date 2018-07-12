@@ -56,6 +56,13 @@ public class Movimentacao {
         return this.origem.getTipo().equals(origem);
     }
 
+    /**
+     * Verifica se a movimentação é para o destino fornecido.
+     */
+    public boolean isTo(@NotNull final OrigemDestinoEnum destino) {
+        return this.destino.getTipo().equals(destino);
+    }
+
     public boolean isFromDestinoToOrigem(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
         return getOrigem().getTipo().equals(origem) && getDestino().getTipo().equals(destino);
     }

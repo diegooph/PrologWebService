@@ -285,7 +285,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             case ANALISE:
                 insertMovimentacaoOrigemAnalise(conn, codUnidade, movimentacao);
                 // Apenas movimentações da ANALISE para o ESTOQUE possuem serviços realizados no pneu
-                if (movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.ESTOQUE)) {
+                if (movimentacao.isTo(OrigemDestinoEnum.ESTOQUE)) {
                     insertServicosRealizadosPneu(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, movimentacao);
                 }
                 break;
