@@ -95,7 +95,7 @@ public class RaizenProdutividadeService {
                                               @NotNull final List<Long> codRaizenProdutividades) throws RaizenProdutividadeException {
         try {
             dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
-            return Response.ok("Escalas deletadas com sucesso!");
+            return Response.ok("Produtividades deletadas com sucesso!");
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao deletar os itens da produtividade", e);
             throw new RaizenProdutividadeException(

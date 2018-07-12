@@ -12,7 +12,6 @@ public class RaizenProdutividade {
     private int totalCPFNOK;
     private int totalPlacaNOK;
     private RaizenProdutividadeAgrupamento tipoAgrupamento;
-    private List<RaizenProdutividadeItem> raizenItens;
 
     public RaizenProdutividade() {
     }
@@ -40,24 +39,4 @@ public class RaizenProdutividade {
     public void setTipoAgrupamento(RaizenProdutividadeAgrupamento tipoAgrupamento) {
         this.tipoAgrupamento = tipoAgrupamento;
     }
-
-    public List<RaizenProdutividadeItem> getRaizenItens() {
-        return raizenItens;
-    }
-
-    public List<RaizenProdutividadeItem> getItensRaizen() {
-        return raizenItens;
-    }
-
-    public void setRaizenItens(final List<RaizenProdutividadeItem> raizenItens) {
-        this.raizenItens = raizenItens;
-    }
-
-    @Override
-    public String toString() {
-        return "RaizenProdutividade{" +
-                "raizenItens=" + raizenItens +
-                "}";
-    }
-
 }
