@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
@@ -321,11 +322,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                               @NotNull final Movimentacao movimentacao) throws Throwable {
         final OrigemAnalise origemAnalise = (OrigemAnalise) movimentacao.getOrigem();
         final List<PneuServicoRealizado> servicosRealizados = origemAnalise.getServicosRealizados();
-        if (servicosRealizados.isEmpty()) {
-            throw new IllegalStateException("O pneu " + movimentacao.getPneu().getCodigo() + " foi movido dá análise e " +
-                    "não teve nenhum serviço aplicado!");
-        }
-
+        validaServicosRealizados(movimentacao.getPneu().getCodigo(), servicosRealizados);
         final Pneu pneuMovimentacao = movimentacao.getPneu();
         for (final PneuServicoRealizado servico : servicosRealizados) {
             final Long codServicoRealizado = pneuServicoRealizadoDao.insertServicoByMovimentacao(
@@ -344,6 +341,28 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                         pneuMovimentacao.getCodigo(),
                         codServicoRealizado,
                         movimentacao.getCodigo());
+            }
+        }
+    }
+
+    private void validaServicosRealizados(@NotNull final Long codPneu,
+                                          @NotNull final List<PneuServicoRealizado> servicosRealizados) {
+        if (servicosRealizados.isEmpty()) {
+            throw new IllegalStateException("O pneu " + codPneu + " foi movido dá análise " +
+                    "para o estoque e " +
+                    "não teve nenhum serviço aplicado!");
+        }
+
+        boolean temIncrementaVida = false;
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < servicosRealizados.size(); i++) {
+            final PneuServicoRealizado servico = servicosRealizados.get(i);
+            if (servico instanceof PneuServicoRealizadoIncrementaVida) {
+                if (temIncrementaVida) {
+                    throw new IllegalStateException("Não é possível realizar dois serviços de incremento de vida na " +
+                            "mesma movimentação");
+                }
+                temIncrementaVida = true;
             }
         }
     }
