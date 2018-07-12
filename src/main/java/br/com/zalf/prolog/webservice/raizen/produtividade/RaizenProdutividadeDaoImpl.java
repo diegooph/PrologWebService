@@ -1,13 +1,16 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +19,27 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements RaizenProdutividadeDao {
+
+    private static final String BASE_QUERY = "SELECT RP.CODIGO," +
+            "   RP.CPF_MOTORISTA," +
+            "   CM.NOME AS NOME_MOTORISTA, " +
+            "   RP.PLACA," +
+            "   RP.DATA_VIAGEM," +
+            "   RP.VALOR," +
+            "   RP.USINA," +
+            "   RP.FAZENDA," +
+            "   RP.RAIO," +
+            "   RP.TONELADAS," +
+            "   RP.COD_COLABORADOR_CADASTRO," +
+            "   CC.NOME AS NOME_COLABORADOR_CADSTRO," +
+            "   RP.COD_COLABORADOR_ALTERACAO," +
+            "   CA.NOME AS NOME_COLABORADOR_ALTERACAO," +
+            "   RP.COD_EMPRESA" +
+            "FROM RAIZEN.PRODUTIVIDADE RP" +
+            "   LEFT JOIN COLABORADOR AS CM ON CM.CPF = RP.CPF_MOTORISTA" +
+            "   LEFT JOIN COLABORADOR AS CC ON CC.CODIGO = RP.COD_COLABORADOR_CADASTRO" +
+            "   LEFT JOIN COLABORADOR AS CA ON CA.CODIGO = RP.COD_COLABORADOR_ALTERACAO";
+
 
     public RaizenProdutividadeDaoImpl() {
 
@@ -61,8 +85,50 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @Override
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                            @NotNull final LocalDate dataInicial) throws SQLException {
-        return null;
+                                                            @NotNull final LocalDate data) throws SQLException {
+        final List<RaizenProdutividade> raizenProdutividades = new ArrayList<>();
+        RaizenProdutividadeColaborador raizenProdutividade = new RaizenProdutividadeColaborador();
+        List<RaizenProdutividadeItemColaborador> itens = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(BASE_QUERY +
+                    "WHERE RP.COD_EMPRESA = ? AND RP.DATA_VIAGEM = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setObject(2, data);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                raizenProdutividade.setItensRaizen(itens);
+                raizenProdutividades.add(raizenProdutividade);
+                raizenProdutividade = new RaizenProdutividadeColaborador();
+                itens = new ArrayList<>();
+            }
+            itens.add(creatRaizenProdutividadeItemColaborador(rSet));
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        raizenProdutividade.setItensRaizen(itens);
+        raizenProdutividades.add(raizenProdutividade);
+        return raizenProdutividades;
+    }
+
+    private RaizenProdutividadeItemColaborador creatRaizenProdutividadeItemColaborador(ResultSet rSet) throws SQLException {
+        final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador();
+
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setTonelada(rSet.getDouble("TONELADA"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
     }
 
     @Override
@@ -74,9 +140,24 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public void deleteRaizenProdutividadeItens(@NotNull final Long codEmpresa,
                                                @NotNull final List<Long> codRaizenProdutividade) throws SQLException {
+        if (codRaizenProdutividade.isEmpty())
+            return;
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM RAIZEN.PRODUTIVIDADE " +
+                    "WHERE COD_EMPRESA = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
+            stmt.setLong(1, codEmpresa);
+            stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codRaizenProdutividade));
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao deletar Escala");
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
     }
-
 
     private void internalInsertRaizenProdutividadeItem(@NotNull final Connection conn,
                                                        @NotNull final String token,
@@ -143,12 +224,12 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());
-            stmt.setString (6, item.getFazenda());
+            stmt.setString(6, item.getFazenda());
             stmt.setDouble(7, item.getRaio());
             stmt.setDouble(8, item.getTonelada());
             stmt.setString(9, token);
 
-            if(stmt.executeUpdate() == 0){
+            if (stmt.executeUpdate() == 0) {
                 //nenhum item atualizado
                 return false;
             }
