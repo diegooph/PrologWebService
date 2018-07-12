@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoDescarte;
@@ -346,7 +347,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     }
 
     private void validaServicosRealizados(@NotNull final Long codPneu,
-                                          @NotNull final List<PneuServicoRealizado> servicosRealizados) {
+                                          @NotNull final List<PneuServicoRealizado> servicosRealizados) throws Throwable {
         if (servicosRealizados.isEmpty()) {
             throw new IllegalStateException("O pneu " + codPneu + " foi movido dá análise " +
                     "para o estoque e " +
@@ -359,7 +360,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             final PneuServicoRealizado servico = servicosRealizados.get(i);
             if (servico instanceof PneuServicoRealizadoIncrementaVida) {
                 if (temIncrementaVida) {
-                    throw new IllegalStateException("Não é possível realizar dois serviços de incremento de vida na " +
+                    throw new GenericException("Não é possível realizar dois serviços de troca de banda na " +
                             "mesma movimentação");
                 }
                 temIncrementaVida = true;
