@@ -1,4 +1,4 @@
-package test;
+package test.frota;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoService;
 import junit.framework.TestCase;

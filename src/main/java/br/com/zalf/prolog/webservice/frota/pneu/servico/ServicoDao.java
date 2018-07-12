@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,11 +27,11 @@ public interface ServicoDao {
 
 	ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
-	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException;
+	ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Throwable;
 
 	List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException;
 
-	void fechaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException;
+	void fechaServico(Servico servico, Long codUnidade) throws Throwable;
 
 	Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException;
 
@@ -71,7 +70,7 @@ public interface ServicoDao {
 
 	/**
 	 *
-	 * Fecha automaticamente os serviços de um {@link Pneu}. Apenas através desse método é possível fechar serviços
+	 * Fecha automaticamente os serviços de um {@link PneuComum}. Apenas através desse método é possível fechar serviços
 	 * deixando campos como CPF de quem realizou o fechamento em branco. O único modo de fechar automaticamente
 	 * serviços é através de uma {@link Movimentacao}, por isso o código do {@link ProcessoMovimentacao} é obrigatório,
 	 * já que ele deve estar acontecendo para este método ser usado.
@@ -88,7 +87,7 @@ public interface ServicoDao {
 
 	/**
 	 * Remonta um veículo como ele estava na época da abertura do {@link Servico}. Com todos os seus pneus
-	 * ({@link Pneu}) na posição onde estavam na época e com os valores de sulco e pressão setados.
+	 * ({@link PneuComum}) na posição onde estavam na época e com os valores de sulco e pressão setados.
 	 */
 	@NotNull
 	VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)

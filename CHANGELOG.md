@@ -41,6 +41,14 @@ Change Log
 * Permite que usuários com permissões de colaboradores (visualizar, inserir e editar) possam buscar as equipes
 * Remove o default do atributo cod_empresa da tabela colaborador
 
+### Features
+* Permite cadastro de tipos de serviços;
+
+### Refactor
+* Altera movimentação para inserir serviços realizados na análise;
+* Altera cadastro para inserir um serviço de recapagem para os cadastros 
+de pneus que não estão na primeira vida;
+
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
 

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public abstract class Servico {
     private Long codUnidade;
     private LocalDateTime dataHoraAbertura;
     private LocalDateTime dataHoraFechamento;
-    private Pneu pneuComProblema;
+    private PneuComum pneuComProblema;
     private Colaborador colaboradorResponsavelFechamento;
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
@@ -111,11 +111,11 @@ public abstract class Servico {
         this.dataHoraFechamento = dataHoraFechamento;
     }
 
-    public Pneu getPneuComProblema() {
+    public PneuComum getPneuComProblema() {
         return pneuComProblema;
     }
 
-    public void setPneuComProblema(Pneu pneuComProblema) {
+    public void setPneuComProblema(PneuComum pneuComProblema) {
         this.pneuComProblema = pneuComProblema;
     }
 

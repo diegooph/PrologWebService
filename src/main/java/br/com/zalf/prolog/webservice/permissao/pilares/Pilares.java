@@ -99,6 +99,14 @@ public final class Pilares {
             public static final int CADASTRO = 130;
             public static final int VISUALIZACAO = 131;
             public static final int EDICAO = 132;
+
+            public final class TipoServico {
+                private TipoServico() {}
+
+                public static final int CADASTRO = 133;
+                public static final int VISUALIZACAO = 134;
+                public static final int EDICAO = 135;
+            }
         }
     }
 

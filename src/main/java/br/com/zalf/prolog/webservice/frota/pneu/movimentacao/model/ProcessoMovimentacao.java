@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -25,12 +25,12 @@ public class ProcessoMovimentacao {
     @Nullable
     private final String observacao;
 
-    public ProcessoMovimentacao(Long codigo,
-                                Unidade unidade,
-                                List<Movimentacao> movimentacoes,
-                                Colaborador colaborador,
-                                Date data,
-                                String observacao) {
+    public ProcessoMovimentacao(@Nullable Long codigo,
+                                @NotNull Unidade unidade,
+                                @NotNull List<Movimentacao> movimentacoes,
+                                @NotNull Colaborador colaborador,
+                                @NotNull Date data,
+                                @Nullable String observacao) {
         this.codigo = codigo;
         this.unidade = unidade;
         this.movimentacoes = movimentacoes;

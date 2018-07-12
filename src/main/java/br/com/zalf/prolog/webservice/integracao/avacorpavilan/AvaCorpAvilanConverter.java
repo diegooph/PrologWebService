@@ -167,7 +167,7 @@ public final class AvaCorpAvilanConverter {
         // seja aferida, então a placa dela será setada em .setVeiculo().
 
         final ArrayOfMedidaPneu medidas = new ArrayOfMedidaPneu();
-        for (final Pneu pneu : afericao.getVeiculo().getListPneus()) {
+        for (final PneuComum pneu : afericao.getVeiculo().getListPneus()) {
             final MedidaPneu medidaPneu = new MedidaPneu();
             medidaPneu.setCalibragem(pneu.getPressaoAtualAsInt());
             medidaPneu.setNumeroFogoPneu(pneu.getCodigoCliente());
@@ -307,11 +307,11 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static List<Pneu> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
-                                     @Nonnull final ArrayOfPneu arrayOfPneu) {
+    public static List<PneuComum> convert(@Nonnull final PosicaoPneuMapper posicaoPneuMapper,
+                                          @Nonnull final ArrayOfPneu arrayOfPneu) {
         checkNotNull(posicaoPneuMapper, "posicaoPneuMapper não pode ser null!");
         checkNotNull(arrayOfPneu, "arrayOfPneu não pode ser null!");
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
 
         // Modelo de Pneu e Banda serão iguais para todos os pneus. Pneus sempre terão 4 sulcos.
         final ModeloPneu modeloPneu = new ModeloPneu();
@@ -323,7 +323,7 @@ public final class AvaCorpAvilanConverter {
 
         for (int i = 0; i < arrayOfPneu.getPneu().size(); i++) {
             final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu p = arrayOfPneu.getPneu().get(i);
-            final Pneu pneu = new Pneu();
+            final PneuComum pneu = new PneuComum();
             pneu.setCodigo((long) i);
             pneu.setCodigoCliente(p.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(p.getPosicao()));
@@ -343,7 +343,7 @@ public final class AvaCorpAvilanConverter {
         }
 
         // Ordena lista pelas posições do ProLog.
-        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
+        pneus.sort(PneuComum.POSICAO_PNEU_COMPARATOR);
 
         return pneus;
     }
@@ -531,11 +531,11 @@ public final class AvaCorpAvilanConverter {
         final Afericao afericao = convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao);
 
         // Pneus - Medidas.
-        final List<Pneu> pneus = new ArrayList<>();
+        final List<PneuComum> pneus = new ArrayList<>();
         final List<PneuFiltro> pneusAvilan = afericaoFiltro.getPneus().getPneuFiltro();
         for (int i = 0; i < pneusAvilan.size(); i++) {
             final PneuFiltro pneuFiltro = pneusAvilan.get(i);
-            final Pneu pneu = new Pneu();
+            final PneuComum pneu = new PneuComum();
             pneu.setCodigo((long) i);
             pneu.setCodigoCliente(pneuFiltro.getNumeroFogo());
             pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuFiltro.getPosicao()));

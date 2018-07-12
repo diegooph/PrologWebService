@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -20,7 +20,7 @@ public class NovaAfericao {
      * Os estepes de um {@link Veiculo} não são aferíveis, por isso eles vêm separada em uma lista
      * e não junto dos {@link Veiculo#listPneus} do {@link Veiculo}
      */
-    private List<Pneu> estepesVeiculo;
+    private List<PneuComum> estepesVeiculo;
 
     /**
      * A afreição de estepes é uma opção de cada {@link Unidade}. Cada Unidade define quais {@link TipoVeiculo}
@@ -49,11 +49,11 @@ public class NovaAfericao {
         this.veiculo = veiculo;
     }
 
-    public List<Pneu> getEstepesVeiculo() {
+    public List<PneuComum> getEstepesVeiculo() {
         return estepesVeiculo;
     }
 
-    public void setEstepesVeiculo(List<Pneu> estepesVeiculo) {
+    public void setEstepesVeiculo(List<PneuComum> estepesVeiculo) {
         this.estepesVeiculo = estepesVeiculo;
     }
 

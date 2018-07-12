@@ -52,11 +52,11 @@ public class Movimentacao {
     /**
      * Verifica se a movimentação é da origem fornecida.
      */
-    public boolean isFrom(@NotNull final String origem) {
+    public boolean isFrom(@NotNull final OrigemDestinoEnum origem) {
         return this.origem.getTipo().equals(origem);
     }
 
-    public boolean isFromDestinoToOrigem(@NotNull final String origem, @NotNull final String destino) {
+    public boolean isFromDestinoToOrigem(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
         return getOrigem().getTipo().equals(origem) && getDestino().getTipo().equals(destino);
     }
 }

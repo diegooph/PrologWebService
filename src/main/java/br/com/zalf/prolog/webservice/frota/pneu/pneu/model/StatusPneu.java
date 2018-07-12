@@ -76,6 +76,11 @@ public enum StatusPneu implements PieSlice {
         return stringRepresentation;
     }
 
+    @Override
+    public String toString() {
+        return asString();
+    }
+
     public static StatusPneu fromString(String text) throws IllegalArgumentException {
         if (text != null) {
             for (final StatusPneu statusPneu : StatusPneu.values()) {
