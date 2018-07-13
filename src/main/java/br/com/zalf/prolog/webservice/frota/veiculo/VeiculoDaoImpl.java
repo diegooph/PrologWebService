@@ -390,10 +390,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
+                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
                     + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
                     + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (marcas.size() == 0 && modelos.size() == 0) { //primeiro resultado do rset

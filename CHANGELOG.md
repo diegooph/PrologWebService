@@ -7,6 +7,7 @@ Change Log
 ### Refactor
 * Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
 * Altera paths dos relatórios de pneus para seguir o padrão REST
+* Altera busca das marcas/modelos de veículos para retornar mesmo as marcas das quais a empresa ainda não tenha modelos
 
 ### Bug Fixes
 * Corrige query que busca a quantidade de serviços em aberto para mostrar na Dashboard
