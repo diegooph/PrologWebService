@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria error code específico para versão do app bloqueada
+* Permite setar uma mensagem de erro quando bloquear uma versão do app
 
 ### Refactor
 * Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade

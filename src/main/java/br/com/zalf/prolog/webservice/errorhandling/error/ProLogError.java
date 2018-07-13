@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProLogError {
 	/** contains the same HTTP Status code returned by the server */
@@ -23,8 +24,18 @@ public class ProLogError {
 	@Nullable
 	private String developerMessage;
 	
-	public ProLogError() {
+	private ProLogError() {
 		
+	}
+
+	public static ProLogError createFrom(@NotNull final ProLogException ex) {
+		final ProLogError proLogError = new ProLogError();
+		proLogError.setDeveloperMessage(ex.getDeveloperMessage());
+		proLogError.setMessage(ex.getMessage());
+		proLogError.setProLogErrorCode(ex.getProLogErrorCode());
+		proLogError.setHttpStatusCode(ex.getHttpStatusCode());
+		proLogError.setMoreInfoLink(ex.getMoreInfoLink());
+		return proLogError;
 	}
 
 	public int getHttpStatusCode() {

@@ -20,4 +20,5 @@ public @interface AppVersionCodeHandler {
     int targetVersionCode();
     VersionCodeHandlerMode versionCodeHandlerMode();
     VersionNotPresentAction actionIfVersionNotPresent();
+    String appBlockedMessage() default "Uma nova versão do aplicativo está disponível, atualize para utilizar essa função";
 }
