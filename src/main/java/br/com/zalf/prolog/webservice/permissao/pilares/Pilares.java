@@ -261,17 +261,6 @@ public final class Pilares {
             public static final int REALIZAR = 314;
             public static final int FEEDBACK = 315;
         }
-
-        public final class RaizenProdutividade {
-            private RaizenProdutividade() {
-            }
-
-            private static final int VISUALIZAR_TODOS = 344;
-            private static final int VISUALIZAR_PROPRIOS = 345;
-            private static final int EDITAR = 346;
-            private static final int UPLOAD = 347;
-            private static final int DELETAR = 348;
-        }
     }
 
     public static final int ENTREGA = 4;
@@ -325,6 +314,17 @@ public final class Pilares {
 
             public static final int INDIVIDUAL = 45;
             public static final int CONSOLIDADO = 46;
+        }
+
+        public final class RaizenProdutividade {
+            private RaizenProdutividade() {
+            }
+
+            public static final int VISUALIZAR_TODOS = 414;
+            public static final int VISUALIZAR_PROPRIOS = 415;
+            public static final int EDITAR = 416;
+            public static final int UPLOAD = 417;
+            public static final int DELETAR = 418;
         }
     }
 }

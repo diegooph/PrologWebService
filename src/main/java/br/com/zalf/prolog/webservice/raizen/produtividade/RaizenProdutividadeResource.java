@@ -30,7 +30,7 @@ public class RaizenProdutividadeResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Gente.RaizenProdutividade.UPLOAD)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
     @Path("/upload/{codEmpresa}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadEscala(@HeaderParam("Authorization") String token,
@@ -42,7 +42,7 @@ public class RaizenProdutividadeResource {
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Gente.RaizenProdutividade.EDITAR)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
     @Path("/{codEmpresa}")
     public Response insertEscalaDiaria(@HeaderParam("Authorization") String token,
                                        @PathParam("codEmpresa") Long codEmpresa,
@@ -52,7 +52,7 @@ public class RaizenProdutividadeResource {
 
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Gente.RaizenProdutividade.EDITAR)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
     @Path("/{codEmpresa}")
     public Response updateRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
@@ -62,7 +62,7 @@ public class RaizenProdutividadeResource {
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    @Secured(permissions = {Pilares.Gente.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Gente.RaizenProdutividade.EDITAR})
+    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
     @Path("/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("data") String data)
@@ -81,10 +81,10 @@ public class RaizenProdutividadeResource {
 
     @DELETE
     @UsedBy(platforms = Platform.WEBSITE)
-    @Secured(permissions = Pilares.Gente.RaizenProdutividade.DELETAR)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
     @Path("/{codEmpresa}")
     public Response deleteRaizenProdutividadeItens(@PathParam("codEmpresa") Long codEmpresa,
-                                            List<Long> codRaizenProdutividades) throws Exception {
+                                                   List<Long> codRaizenProdutividades) throws Exception {
         return service.deleteRaizenProdutividade(codEmpresa, codRaizenProdutividades);
     }
 }
