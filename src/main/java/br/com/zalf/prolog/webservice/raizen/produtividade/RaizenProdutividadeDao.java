@@ -59,20 +59,22 @@ public interface RaizenProdutividadeDao {
      * Busca as produtividades de um colaborador por um período de tempo.
      *
      * @param codEmpresa - Código da empresa do colaborador.
-     * @param data - Data do filtro de busca.
-     * @return - Um {@link List<  RaizenProdutividade  >} contendo a
+     * @param dataInicial - Data inicial do filtro de busca.
+     * @param dataFinal - Data final do filtro de busca.
+     * @return - Um {@link List<RaizenProdutividade>} contendo a
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
     List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                     @NotNull final LocalDate data) throws SQLException;
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador pelo nome.
      *
      * @param codEmpresa - Código da empresa do colaborador.
      * @param cpfMotorista - CPF para a busca.
-     * @return - Um {@link List< RaizenProdutividade >} contendo a
+     * @return - Um {@link List<RaizenProdutividade>} contendo a
      * {@link RaizenProdutividadeItem} de cada colaborador.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
