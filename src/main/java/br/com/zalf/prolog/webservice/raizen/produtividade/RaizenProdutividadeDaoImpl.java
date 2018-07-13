@@ -4,11 +4,10 @@ import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.transform.Result;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,8 @@ import java.util.List;
 public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements RaizenProdutividadeDao {
 
     private static final String BASE_QUERY = "SELECT RP.CODIGO," +
-            "   RP.CPF_MOTORISTA," +
             "   CM.NOME AS NOME_MOTORISTA, " +
             "   RP.PLACA," +
-            "   RP.DATA_VIAGEM," +
             "   RP.VALOR," +
             "   RP.USINA," +
             "   RP.FAZENDA," +
@@ -80,7 +77,36 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     public void updateRaizenProdutividadeItem(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
                                               @NotNull final RaizenProdutividadeItemInsert item) throws SQLException {
-
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIDADE SET CPF_MOTORISTA = ?," +
+                    "   DATA_VIAGEM = ?," +
+                    "   PLACA = ?, " +
+                    "   VALOR = ?," +
+                    "   USINA = ?," +
+                    "   FAZENDA = ?," +
+                    "   RAIO = ?," +
+                    "   TONELADA = ?," +
+                    "   COD_COLABORADOR_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
+                    "WHERE CODIGO = ?");
+            stmt.setLong(1, item.getCpfMotorista());
+            stmt.setDate(2, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setString(3, item.getPlaca().toUpperCase());
+            stmt.setBigDecimal(4, item.getValor());
+            stmt.setString(5, item.getUsina());
+            stmt.setString(6, item.getFazenda());
+            stmt.setDouble(7, item.getRaio());
+            stmt.setDouble(8, item.getTonelada());
+            stmt.setString(9, token);
+            if (stmt.executeUpdate() == 0) {
+                // nenhum para item atualizado
+                throw new SQLDataException("Não foi possível atualizar o item de código: " + item.getCodigo());
+            }
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
     }
 
     @Override
@@ -94,7 +120,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(BASE_QUERY +
+            stmt = conn.prepareStatement("SELECT RP.CPF_MOTORISTA" +
+                    "FROM RAIZEN.PRODUTIVIDADE RP UNION" + BASE_QUERY +
                     "WHERE RP.COD_EMPRESA = ? AND RP.DATA_VIAGEM = ?;");
             stmt.setLong(1, codEmpresa);
             stmt.setObject(2, data);
@@ -116,10 +143,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     private RaizenProdutividadeItemColaborador creatRaizenProdutividadeItemColaborador(ResultSet rSet) throws SQLException {
         final RaizenProdutividadeItemColaborador item = new RaizenProdutividadeItemColaborador();
-
         item.setCodigo(rSet.getLong("CODIGO"));
-        item.setPlaca(rSet.getString("PLACA"));
-        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setPlaca(rSet.getString("PLACA"));;
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
@@ -134,7 +159,48 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final Long cpfMotorista) throws SQLException {
-        return null;
+        final List<RaizenProdutividade> raizenProdutividades = new ArrayList<>();
+        RaizenProdutividadeData raizenProdutividade = new RaizenProdutividadeData();
+        List<RaizenProdutividadeItemData> itens = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(BASE_QUERY +
+                    "WHERE RP.COD_EMPRESA = ? AND RP.CPF_MOTORISTA = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setObject(2, cpfMotorista);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                raizenProdutividade.setItensRaizen(itens);
+                raizenProdutividades.add(raizenProdutividade);
+                raizenProdutividade = new RaizenProdutividadeData();
+                itens = new ArrayList<>();
+            }
+            itens.add(creatRaizenProdutividadeItemData(rSet));
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        raizenProdutividade.setItensRaizen(itens);
+        raizenProdutividades.add(raizenProdutividade);
+        return raizenProdutividades;
+    }
+
+    private RaizenProdutividadeItemData creatRaizenProdutividadeItemData(ResultSet rSet) throws SQLException  {
+        final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setTonelada(rSet.getDouble("TONELADA"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
     }
 
     @Override
@@ -181,7 +247,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)," +
                     "   ?)");
             stmt.setLong(1, item.getCpfMotorista());
-            stmt.setString(2, item.getPlaca());
+            stmt.setString(2, item.getPlaca().toUpperCase());
             stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
             stmt.setBigDecimal(4, item.getValor());
             stmt.setString(5, item.getUsina());

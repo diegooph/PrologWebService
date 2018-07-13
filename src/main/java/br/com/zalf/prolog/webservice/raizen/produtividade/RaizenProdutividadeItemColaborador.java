@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 
+import java.time.LocalDate;
+
 /**
  * Created on 09/07/18.
  *

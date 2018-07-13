@@ -12,7 +12,6 @@ public class RaizenProdutividadeItem {
 
     private Long codigo;
     private String placa;
-    private LocalDate dataViagem;
     private BigDecimal valor;
     private String usina;
     private String fazenda;
@@ -39,14 +38,6 @@ public class RaizenProdutividadeItem {
 
     public void setPlaca(String placa) {
         this.placa = placa;
-    }
-
-    public LocalDate getDataViagem() {
-        return dataViagem;
-    }
-
-    public void setDataViagem(LocalDate dataViagem) {
-        this.dataViagem = dataViagem;
     }
 
     public BigDecimal getValor() {
@@ -118,7 +109,6 @@ public class RaizenProdutividadeItem {
         return "RaizenProdutividadeItem{" +
                 "codigoColaboradorCadastro=" + codColaboradorCadastro +
                 ", placa=" + placa +
-                ", dataViagem=" + dataViagem +
                 ", valor=" + valor +
                 ", usina=" + usina +
                 ", fazenda=" + fazenda +

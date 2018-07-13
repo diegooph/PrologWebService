@@ -9,13 +9,13 @@ import java.time.LocalDate;
  */
 public class RaizenProdutividadeItemData extends RaizenProdutividadeItem {
 
-    private LocalDate data;
+    private LocalDate dataViagem;
 
-    public LocalDate getData() {
-        return data;
+    public LocalDate getDataViagem() {
+        return dataViagem;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
+    public void setDataViagem(LocalDate dataViagem) {
+        this.dataViagem = dataViagem;
     }
 }
