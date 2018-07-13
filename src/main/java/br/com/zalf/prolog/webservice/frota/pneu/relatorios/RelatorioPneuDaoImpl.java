@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.commons.util.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.model.TipoAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Restricao;
@@ -773,13 +772,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setObject(1, dataInicial);
         stmt.setObject(2, dataFinal);
         stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-        stmt.setString(4, Pneu.EM_USO);
-    private PreparedStatement getPrevisaoTrocaStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_previsao_troca(?,?,?,?);");
-        stmt.setDate(1, new Date(dataInicial));
-        stmt.setDate(2, new Date(dataFinal));
-        stmt.setLong(3, codUnidade);
         stmt.setString(4, StatusPneu.EM_USO.asString());
         return stmt;
     }
@@ -792,7 +784,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
                 "FROM func_relatorio_pneu_previsao_troca_consolidado(?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
-        stmt.setString(2, Pneu.EM_USO);
+        stmt.setString(2, StatusPneu.EM_USO.asString());
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
         return stmt;
@@ -803,28 +795,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                           @NotNull final List<Long> codUnidades,
                                                           @NotNull final LocalDate dataInicial,
                                                           @NotNull final LocalDate dataFinal) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
+        final PreparedStatement stmt = conn.prepareStatement("" +
+                "SELECT * FROM func_relatorio_pneu_aderencia_afericao(?,?,?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-    private PreparedStatement getPrevisaoTrocaConsolidadoStatement(Connection conn, long codUnidade, long dataInicial, Long dataFinal)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT\n" +
-                "  to_char(VAP.\"PREVISÃO DE TROCA\", 'DD/MM/YYYY') AS \"DATA\",\n" +
-                "  VAP.\"MARCA\",\n" +
-                "  VAP.\"MODELO\",\n" +
-                "  VAP.\"MEDIDAS\",\n" +
-                "  COUNT(VAP.\"MODELO\") as \"QUANTIDADE\"\n" +
-                "FROM\n" +
-                "    -- Dentro dessa view uso as variáveis criadas no select interno para fazer as contas e formatação dos valores\n" +
-                "    VIEW_ANALISE_PNEUS VAP\n" +
-                "WHERE VAP.cod_unidade = ? and VAP.\"PREVISÃO DE TROCA\" BETWEEN ? AND ? AND VAP.\"STATUS PNEU\" = ?\n" +
-                "GROUP BY VAP.\"PREVISÃO DE TROCA\", VAP.\"MARCA\",  VAP.\"MODELO\",  VAP.\"MEDIDAS\"\n" +
-                "ORDER BY VAP.\"PREVISÃO DE TROCA\" ASC, 5 DESC;");
-        stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(new Date(dataInicial)));
-        stmt.setDate(3, DateUtils.toSqlDate(new Date(dataFinal)));
-        stmt.setString(4, StatusPneu.EM_USO.asString());
         return stmt;
     }
 
@@ -833,8 +808,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                            @NotNull final List<Long> codUnidades,
                                                            @NotNull final LocalDate dataInicial,
                                                            @NotNull final LocalDate dataFinal) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-                "FROM func_relatorio_pneus_descartados(?,?,?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_pneus_descartados(?,?,?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
@@ -844,8 +819,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @NotNull
     private PreparedStatement getDadosUltimaAfericaoStatement(@NotNull final Connection conn,
                                                               @NotNull final List<Long> codUnidades) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-                "FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         return stmt;
     }
@@ -854,8 +829,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     private PreparedStatement getResumoGeralPneusStatement(@NotNull final Connection conn,
                                                            @NotNull final List<Long> codUnidades,
                                                            @Nullable final String status) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-                "FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         if (status == null || status.isEmpty()) {
             stmt.setNull(2, Types.VARCHAR);
