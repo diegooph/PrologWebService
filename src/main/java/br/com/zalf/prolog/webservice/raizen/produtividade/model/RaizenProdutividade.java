@@ -1,6 +1,4 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
-
-import java.util.List;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
 /**
  * Created on 04/07/18.

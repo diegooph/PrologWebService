@@ -1,4 +1,6 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
+
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
 
 import java.time.LocalDate;
 
@@ -7,7 +9,7 @@ import java.time.LocalDate;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenProdutividadeItemInsert extends RaizenProdutividadeItem{
+public class RaizenProdutividadeItemInsert extends RaizenProdutividadeItem {
 
     private Long cpfMotorista;
     private LocalDate dataViagem;

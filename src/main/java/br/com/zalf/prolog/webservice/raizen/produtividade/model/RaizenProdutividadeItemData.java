@@ -1,4 +1,6 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
+
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
 
 import java.time.LocalDate;
 

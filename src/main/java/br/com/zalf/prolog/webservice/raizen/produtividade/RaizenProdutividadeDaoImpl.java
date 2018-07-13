@@ -3,6 +3,10 @@ package br.com.zalf.prolog.webservice.raizen.produtividade;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemColaborador;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemInsert;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

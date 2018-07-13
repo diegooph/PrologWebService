@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
@@ -27,7 +27,7 @@ public class RaizenProdutividadeReader {
         throw new IllegalStateException(RaizenProdutividadeReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static List<RaizenProdutividadeItemInsert> readListFromCsvFilePath(@NotNull final File file) {
+    public static List<RaizenProdutividadeItemInsert> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {

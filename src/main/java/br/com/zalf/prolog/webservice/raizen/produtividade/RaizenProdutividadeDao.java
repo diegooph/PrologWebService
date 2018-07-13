@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemInsert;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -57,7 +60,7 @@ public interface RaizenProdutividadeDao {
      *
      * @param codEmpresa - Código da empresa do colaborador.
      * @param data - Data do filtro de busca.
-     * @return - Um {@link List< RaizenProdutividade >} contendo a
+     * @return - Um {@link List<  RaizenProdutividade  >} contendo a
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */

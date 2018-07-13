@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

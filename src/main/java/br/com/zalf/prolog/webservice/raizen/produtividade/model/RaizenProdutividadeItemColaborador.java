@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
 
 /**
  * Created on 09/07/18.

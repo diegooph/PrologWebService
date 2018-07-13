@@ -1,12 +1,9 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
-import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-
-import static com.sun.corba.se.impl.util.Version.asString;
 
 /**
  * Created on 09/07/18.
