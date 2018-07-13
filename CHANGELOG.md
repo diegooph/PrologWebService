@@ -4,6 +4,9 @@ Change Log
 <a name="v0.0.67"></a>
 ## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (release-date) [unreleased]
 
+### Features
+* Cria error code específico para versão do app bloqueada
+
 ### Refactor
 * Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
 * Altera paths dos relatórios de pneus para seguir o padrão REST
