@@ -22,12 +22,10 @@ public class RaizenProdutividadeItemInsert extends RaizenProdutividadeItem {
         this.cpfMotorista = cpfMotorista;
     }
 
-    @Override
     public LocalDate getDataViagem() {
         return dataViagem;
     }
 
-    @Override
     public void setDataViagem(LocalDate dataViagem) {
         this.dataViagem = dataViagem;
     }
