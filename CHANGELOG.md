@@ -33,6 +33,9 @@ Change Log
 
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
+* Ativa método de listagem de marcações de um colaborador
+* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo
+por cada colaborador
 
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados

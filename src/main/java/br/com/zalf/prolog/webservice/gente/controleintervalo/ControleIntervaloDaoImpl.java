@@ -117,41 +117,25 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Intervalo> intervalos = new ArrayList<>();
-//        try {
-//            conn = getConnection();
-//            stmt = conn.prepareStatement("SELECT " +
-//                    "I.COD_UNIDADE AS COD_UNIDADE, " +
-//                    "I.COD_TIPO_INTERVALO AS COD_TIPO_INTERVALO, " +
-//                    "I.CPF_COLABORADOR AS CPF_COLABORADOR, " +
-//                    "I.DATA_HORA_INICIO AT TIME ZONE ? AS DATA_HORA_INICIO, " +
-//                    "I.DATA_HORA_FIM AT TIME ZONE ?  AS DATA_HORA_FIM, " +
-//                    "I.FONTE_DATA_HORA_INICIO AS FONTE_DATA_HORA_INICIO, " +
-//                    "I.FONTE_DATA_HORA_FIM AS FONTE_DATA_HORA_FIM, " +
-//                    "I.JUSTIFICATIVA_TEMPO_RECOMENDADO AS JUSTIFICATIVA_TEMPO_RECOMENDADO, " +
-//                    "I.JUSTIFICATIVA_ESTOURO AS JUSTIFICATIVA_ESTOURO, " +
-//                    "I.LATITUDE_MARCACAO_INICIO AS LATITUDE_MARCACAO_INICIO, " +
-//                    "I.LATITUDE_MARCACAO_FIM AS LATITUDE_MARCACAO_FIM, " +
-//                    "I.LONGITUDE_MARCACAO_INICIO AS LONGITUDE_MARCACAO_INICIO, " +
-//                    "I.LONGITUDE_MARCACAO_FIM AS LONGITUDE_MARCACAO_FIM " +
-//                    "FROM FUNC_INTERVALOS_AGRUPADOS(NULL, ?, ?) I LIMIT ? OFFSET ?;");
-//            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-//            stmt.setString(1, zoneId.getId());
-//            stmt.setString(2, zoneId.getId());
-//            stmt.setLong(3, cpf);
-//            if (codTipo.equals("%")) {
-//                stmt.setNull(4, Types.BIGINT);
-//            } else {
-//                stmt.setLong(4, Long.valueOf(codTipo));
-//            }
-//            stmt.setLong(5, limit);
-//            stmt.setLong(6, offset);
-//            rSet = stmt.executeQuery();
-//            while (rSet.next()){
-//                intervalos.add(createIntervaloAgrupado(rSet));
-//            }
-//        } finally {
-//            closeConnection(conn, stmt, rSet);
-//        }
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_MARCACOES_COLABORADOR(?, ?, ?, ?, ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, cpf);
+            if (codTipo.equals("%")) {
+                stmt.setNull(3, Types.BIGINT);
+            } else {
+                stmt.setLong(3, Long.valueOf(codTipo));
+            }
+            stmt.setLong(4, limit);
+            stmt.setLong(5, offset);
+            rSet = stmt.executeQuery();
+            while (rSet.next()){
+                intervalos.add(createIntervaloAgrupado(rSet));
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
         return intervalos;
     }
 
@@ -431,6 +415,7 @@ public final class ControleIntervaloDaoImpl extends DatabaseConnection implement
         // TODO: Recuperar nome do tipo de intervalo.
         final TipoIntervalo tipoIntervalo = new TipoIntervalo();
         tipoIntervalo.setCodigo(rSet.getLong("COD_TIPO_INTERVALO"));
+        tipoIntervalo.setNome(rSet.getString("NOME_TIPO_INTERVALO"));
         intervalo.setTipo(tipoIntervalo);
 
         intervalo.setDataHoraInicio(rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class));

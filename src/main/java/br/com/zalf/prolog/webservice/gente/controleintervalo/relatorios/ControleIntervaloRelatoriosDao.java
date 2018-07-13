@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
+import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -144,13 +146,49 @@ public interface ControleIntervaloRelatoriosDao {
     Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
                                                     @NotNull final Long codTipoIntervalo,
                                                     @NotNull final LocalDate dataInicial,
-                                                    @NotNull final LocalDate dataFinal)
-            throws SQLException;
+                                                    @NotNull final LocalDate dataFinal) throws SQLException;
 
     void getMarcacoesComparandoEscalaDiariaCsv(@NotNull final OutputStream out,
                                                @NotNull final Long codUnidade,
                                                @NotNull final Long codTipoIntervalo,
                                                @NotNull final LocalDate dataInicial,
-                                               @NotNull final LocalDate dataFinal)
-            throws SQLException, IOException;
+                                               @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+
+    /**
+     * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
+     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoIntervalo}s o atributo
+     * {@code codTipoIntervalo} deve ser "%". Este método gera um arquivo CSV para fins de exportação.
+     *
+     * @param out              - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
+     * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
+     * @param dataInicial      - Data inicial do período de filtro.
+     * @param dataFinal        - Data final do período de filtro.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
+     */
+    void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
+                                         @NotNull final Long codUnidade,
+                                         @NotNull final String codTipoIntervalo,
+                                         @NotNull final LocalDate dataInicial,
+                                         @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+
+    /**
+     * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
+     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoIntervalo}s o atributo
+     * {@code codTipoIntervalo} deve ser "%". Este método gera um objeto {@link Report} para fins de visualização
+     * dos dados na aplicação.
+     *
+     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
+     * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
+     * @param dataInicial      - Data inicial do período de filtro.
+     * @param dataFinal        - Data final do período de filtro.
+     * @return - Um objeto {@link Report} com os dados filtrados.
+     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
+     */
+    @NotNull
+    Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
+                                              @NotNull final String codTipoIntervalo,
+                                              @NotNull final LocalDate dataInicial,
+                                              @NotNull final LocalDate dataFinal) throws SQLException;
 }
