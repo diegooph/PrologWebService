@@ -32,7 +32,7 @@ public final class DashboardPneuService {
         try {
             return DashboardPneuComponentsCreator.createQtdPneusByStatus(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtPneusByStatus(codUnidades));
+                    relatorioDao.getQtdPneusByStatus(codUnidades));
         } catch (SQLException ex) {
             Log.e(TAG,
                     "Erro ao buscar a quantidade de pneus por status para as unidades: " + codUnidades,
@@ -59,7 +59,7 @@ public final class DashboardPneuService {
         try {
             return DashboardPneuComponentsCreator.createQtdPneusCadastrados(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtPneusByStatus(codUnidades));
+                    relatorioDao.getQtdPneusByStatus(codUnidades));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de pneus cadastrados. \n" +
                     "Unidades: %s", codUnidades), e);
@@ -80,7 +80,7 @@ public final class DashboardPneuService {
         try {
             return DashboardPneuComponentsCreator.createQtdAfericoesUltimaSemana(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQtAfericoesByTipoByData(dataInicial, dataFinal, codUnidades));
+                    relatorioDao.getQtdAfericoesByTipoByData(codUnidades, dataInicial, dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a quantidade de aferições realizadas por data, agrupadas por tipo. \n" +
                     "dataInicial: %s \n" +
@@ -173,7 +173,7 @@ public final class DashboardPneuService {
         try {
             return DashboardPneuComponentsCreator.createQuantidadePneusDescartadosPorMotivo(
                     dashDao.getComponenteByCodigo(codComponente),
-                    relatorioDao.getQuantidadePneusDescartadosPorMotivo(codUnidades));
+                    relatorioDao.getQtdPneusDescartadosPorMotivo(codUnidades));
         } catch (SQLException ex) {
             Log.e(TAG,
                     "Erro ao buscar a quantidade de pneus descartados por motivo para as unidades: " + codUnidades,

@@ -4,6 +4,14 @@ Change Log
 <a name="v0.0.67"></a>
 ## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (release-date) [unreleased]
 
+### Refactor
+* Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
+* Altera paths dos relatórios de pneus para seguir o padrão REST
+
+### Bug Fixes
+* Corrige query que busca a quantidade de serviços em aberto para mostrar na Dashboard
+* Corrige query que busca a quantidade de serviços em aberto na listagem de serviços
+
 <a name="v0.0.67"></a>
 ## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (2018-07-09)
 
@@ -46,7 +54,7 @@ Change Log
 
 ### Refactor
 * Altera movimentação para inserir serviços realizados na análise;
-* Altera cadastro para inserir um serviço de recapagem para os cadastros 
+* Altera cadastro para inserir um serviço de recapagem para os cadastros
 de pneus que não estão na primeira vida;
 
 <a name="v0.0.64"></a>
