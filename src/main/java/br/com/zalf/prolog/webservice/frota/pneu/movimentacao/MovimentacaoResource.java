@@ -29,7 +29,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 51,
+        targetVersionCode = 55,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class MovimentacaoResource {
