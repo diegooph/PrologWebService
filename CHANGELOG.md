@@ -12,6 +12,8 @@ Change Log
 * Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
 * Altera paths dos relatórios de pneus para seguir o padrão REST
 * Altera busca das marcas/modelos de veículos para retornar mesmo as marcas das quais a empresa ainda não tenha modelos
+* Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
+* Aumenta para 6 min timeout até uma connection ser considerada abandonada
 
 ### Bug Fixes
 * Corrige query que busca a quantidade de serviços em aberto para mostrar na Dashboard
@@ -145,14 +147,12 @@ de pneus que não estão na primeira vida;
 * Seta código de unidade na busca dos modelos de checklist de uma unidade
 * Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
 * Bloqueia resources ligados a pneu para os apps com version code menor ou igual a 51
-* Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
 * Altera insert do pneu para retornar um `AbstractResponse`
 
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
 * Corrige busca dos modelos de checklist disponíveis
 * Lida com caso de alternativas nulas na inserção do modelo de checklist
-* Aumenta para 5 min timeout até uma connection ser considerada abandonada
 * Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
 
 <a name="v0.0.57"></a>
