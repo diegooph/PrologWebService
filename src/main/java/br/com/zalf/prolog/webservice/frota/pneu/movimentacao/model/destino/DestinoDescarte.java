@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,18 +21,7 @@ public final class DestinoDescarte extends Destino {
     private String urlImagemDescarte3;
 
     public DestinoDescarte() {
-        super(OrigemDestinoConstants.DESCARTE);
-    }
-
-    public DestinoDescarte(@NotNull MotivoDescarte motivoDescarte,
-                           @Nullable String urlImagemDescarte1,
-                           @Nullable String urlImagemDescarte2,
-                           @Nullable String urlImagemDescarte3) {
-        super(OrigemDestinoConstants.DESCARTE);
-        this.motivoDescarte = motivoDescarte;
-        this.urlImagemDescarte1 = urlImagemDescarte1;
-        this.urlImagemDescarte2 = urlImagemDescarte2;
-        this.urlImagemDescarte3 = urlImagemDescarte3;
+        super(OrigemDestinoEnum.DESCARTE);
     }
 
     @NotNull

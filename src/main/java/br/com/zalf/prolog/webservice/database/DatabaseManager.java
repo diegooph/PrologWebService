@@ -34,8 +34,8 @@ public final class DatabaseManager {
             + EnvironmentHelper.PROLOG_RDS_DB_NAME;
 
     // Informações de acesso ao BD de testes
-//	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prolog_abril_pneu_2";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/bd_local";
+	private static final String TESTE_URL = "jdbc:postgresql://192.168.1.180:5432/prolog_mov_julho_2";
+//    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/bd_local";
     private static final String TESTE_USUARIO = "postgres";
     private static final String TESTE_SENHA = "postgres";
 
@@ -111,7 +111,8 @@ public final class DatabaseManager {
         poolProperties.setValidationInterval(30000);
         poolProperties.setTimeBetweenEvictionRunsMillis(30000);
         poolProperties.setMaxWait(10000);
-        poolProperties.setRemoveAbandonedTimeout(60);
+        // Tempo em segundos até uma connection ser bruscamente encerrada.
+        poolProperties.setRemoveAbandonedTimeout(60 * 6);
         // The number of milliseconds a connection must be idle to be eligible for eviction.
         poolProperties.setMinEvictableIdleTimeMillis(60000);
         poolProperties.setLogAbandoned(true);
@@ -123,7 +124,8 @@ public final class DatabaseManager {
         poolProperties.setDefaultAutoCommit(true);
         poolProperties.setJdbcInterceptors(
                 "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;" +
-                        "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+                        "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;" +
+                        "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer");
         return poolProperties;
     }
 }

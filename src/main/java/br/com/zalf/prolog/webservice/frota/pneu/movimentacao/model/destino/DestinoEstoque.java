@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 
 /**
  * Created by Zart on 02/03/17.
@@ -8,6 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestino
 public final class DestinoEstoque extends Destino {
 
     public DestinoEstoque() {
-        super(OrigemDestinoConstants.ESTOQUE);
+        super(OrigemDestinoEnum.ESTOQUE);
     }
 }

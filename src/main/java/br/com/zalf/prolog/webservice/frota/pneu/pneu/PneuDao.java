@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.pneu;
 
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -19,7 +18,7 @@ public interface PneuDao {
      * @return lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneusByPlaca(String placa) throws SQLException;
+    List<PneuComum> getPneusByPlaca(String placa) throws SQLException;
 
     /**
      * insere um pneu
@@ -41,7 +40,7 @@ public interface PneuDao {
      * @return valor da operação
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean updateMedicoes(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    boolean updateMedicoes(PneuComum pneu, Long codUnidade, Connection conn) throws SQLException;
 
     /**
      * atualiza valores do pneu
@@ -68,13 +67,20 @@ public interface PneuDao {
      * @param conn       conexão do banco
      * @throws SQLException caso ocorra erro no banco
      */
-    void updateStatus(Pneu pneu, Long codUnidade, String status, Connection conn) throws SQLException;
+    void updateStatus(Pneu pneu, Long codUnidade, StatusPneu status, Connection conn) throws SQLException;
 
     /**
      * Altera a vida atual de um determinado {@link Pneu}. Sempre que um {@link Pneu} tiver sua vida alterada,
      * é necessário aterar também seu código de {@link Banda}, pois significa que o mesmo foi recapado.
+     *
+     * @param conn           - {@link Connection} pela qual a troca de vida do pneu será realizada.
+     * @param codPneu        - Código do {@link Pneu} que sofreu a troca de vida.
+     * @param codModeloBanda - Código do {@link ModeloBanda} que será aplicado no {@link Pneu}.
+     * @throws SQLException - Se algum erro ocorrer na execução da troca de vida.
      */
-    void trocarVida(Pneu pneu, Long codUnidade, Connection conn) throws SQLException;
+    void incrementaVidaPneu(@NotNull final Connection conn,
+                            @NotNull final Long codPneu,
+                            @NotNull final Long codModeloBanda) throws Throwable;
 
     void updateSulcos(Long codPneu, Sulcos novosSulcos, Long codUnidade, Connection conn) throws SQLException;
 
@@ -86,7 +92,14 @@ public interface PneuDao {
      * @return uma lista de pneus
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, String status) throws SQLException;
+    @NotNull
+    List<Pneu> getPneusByCodUnidadeByStatus(Long codUnidade, StatusPneu status) throws Throwable;
+
+    @NotNull
+    List<Pneu> getTodosPneus(@NotNull Long codUnidade) throws Throwable;
+
+    @NotNull
+    List<Pneu> getPneusAnalise(@NotNull Long codUnidade) throws Throwable;
 
     /**
      * retorna uma lista de marcas de pneus da empresa
@@ -103,7 +116,7 @@ public interface PneuDao {
      * @return uma lista com todas as dimensões
      * @throws SQLException caso ocorra erro no banco
      */
-    List<Pneu.Dimensao> getDimensoes() throws SQLException;
+    List<PneuComum.Dimensao> getDimensoes() throws SQLException;
 
     /**
      * insere um modelo de pneu
@@ -124,7 +137,7 @@ public interface PneuDao {
      * @return true se deu certo; caso contrário false
      * @throws SQLException caso ocorra erro no banco
      */
-    boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) throws SQLException;
+    boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) throws SQLException;
 
     /**
      * Busca as marcas e modelos de bandas de uma empresa
@@ -183,7 +196,7 @@ public interface PneuDao {
      * @return
      * @throws SQLException
      */
-    Pneu getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
+    PneuComum getPneuByCod(Long codPneu, Long codUnidade) throws SQLException;
 
     /**
      * Busca um modelo de pneu a partir de seu código único

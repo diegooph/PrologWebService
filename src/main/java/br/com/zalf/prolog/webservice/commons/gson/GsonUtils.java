@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ResponseImagemChecklist;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.MotivoDescarte;
@@ -16,8 +16,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.Origem
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.QuantidadeServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.Servico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -34,82 +36,84 @@ import java.time.LocalDateTime;
 
 public final class GsonUtils {
 
-	private static final Gson sGson;
+    private static final Gson sGson;
 
-	private GsonUtils() {
+    private GsonUtils() {
 
-	}
+    }
 
     static {
-		GsonBuilder builder = new GsonBuilder()
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-				.serializeSpecialFloatingPointValues()
-				.registerTypeAdapter(Duration.class, new DurationDeserializer())
-				.registerTypeAdapter(Duration.class, new DurationSerializer())
-				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-				.registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-				.registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-				.registerTypeAdapter(Color.class, new ColorSerializer())
-				.setExclusionStrategies(new AnnotationExclusionStrategy())
-				.enableComplexMapKeySerialization();
+        GsonBuilder builder = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .serializeSpecialFloatingPointValues()
+                .registerTypeAdapter(Duration.class, new DurationDeserializer())
+                .registerTypeAdapter(Duration.class, new DurationSerializer())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+                .registerTypeAdapter(Color.class, new ColorSerializer())
+                .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .enableComplexMapKeySerialization();
 
-		if (BuildConfig.DEBUG) {
-			builder.setPrettyPrinting();
-		}
+        if (BuildConfig.DEBUG) {
+            builder.setPrettyPrinting();
+        }
 
-		RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
-				.of(Origem.class, "tipo")
-				.registerSubtype(OrigemEstoque.class, OrigemDestinoConstants.ESTOQUE)
-				.registerSubtype(OrigemAnalise.class, OrigemDestinoConstants.ANALISE)
-				.registerSubtype(OrigemVeiculo.class, OrigemDestinoConstants.VEICULO);
+        RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
+                .of(Origem.class, "tipo")
+                .registerSubtype(OrigemEstoque.class, OrigemDestinoEnum.ESTOQUE.asString())
+                .registerSubtype(OrigemAnalise.class, OrigemDestinoEnum.ANALISE.asString())
+                .registerSubtype(OrigemVeiculo.class, OrigemDestinoEnum.VEICULO.asString());
 
-		RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
-				.of(Destino.class, "tipo")
-				.registerSubtype(DestinoDescarte.class, OrigemDestinoConstants.DESCARTE)
-				.registerSubtype(DestinoAnalise.class, OrigemDestinoConstants.ANALISE)
-				.registerSubtype(DestinoVeiculo.class, OrigemDestinoConstants.VEICULO)
-				.registerSubtype(DestinoEstoque.class, OrigemDestinoConstants.ESTOQUE);
+        RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
+                .of(Destino.class, "tipo")
+                .registerSubtype(DestinoDescarte.class, OrigemDestinoEnum.DESCARTE.asString())
+                .registerSubtype(DestinoAnalise.class, OrigemDestinoEnum.ANALISE.asString())
+                .registerSubtype(DestinoVeiculo.class, OrigemDestinoEnum.VEICULO.asString())
+                .registerSubtype(DestinoEstoque.class, OrigemDestinoEnum.ESTOQUE.asString());
 
-		RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
-				.of(Modelo.class, "tipo")
-				.registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
-				.registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA)
-				.registerSubtype(ModeloVeiculo.class, ModeloVeiculo.TIPO_MODELO_VEICULO);
+        RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
+                .of(Modelo.class, "tipo")
+                .registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
+                .registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA)
+                .registerSubtype(ModeloVeiculo.class, ModeloVeiculo.TIPO_MODELO_VEICULO);
 
-		RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
-				.of(Alternativa.class)
-				.registerSubtype(AlternativaEscolhaQuiz.class)
-				.registerSubtype(AlternativaOrdenamentoQuiz.class)
-				.registerSubtype(AlternativaChecklist.class)
-				/* Como Alternativa não é abstrato e nós iremos instancia-la, a mesma foi adicionada como subtipo de si
-				* própria. */
-				.registerSubtype(Alternativa.class);
+        RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
+                .of(Alternativa.class)
+                .registerSubtype(AlternativaEscolhaQuiz.class)
+                .registerSubtype(AlternativaOrdenamentoQuiz.class)
+                .registerSubtype(AlternativaChecklist.class)
+                /* Como Alternativa não é abstrato e nós iremos instancia-la, a mesma foi adicionada como subtipo de si
+                 * própria. */
+                .registerSubtype(Alternativa.class);
 
-		RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
+        RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
                 .of(AbstractResponse.class)
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class)
-				.registerSubtype(ResponseIntervalo.class)
-				.registerSubtype(ResponseImagemChecklist.class);
+                .registerSubtype(ResponseIntervalo.class)
+                .registerSubtype(ResponseImagemChecklist.class);
 
-		RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
-				.of(Motivo.class, "tipo")
-				.registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
+        RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
+                .of(Motivo.class, "tipo")
+                .registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
 
-		builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
-		builder.registerTypeAdapterFactory(adapterAlternativa);
-		builder.registerTypeAdapterFactory(adapterResponse);
-		builder.registerTypeAdapterFactory(adapterOrigem);
-		builder.registerTypeAdapterFactory(adapterDestino);
-		builder.registerTypeAdapterFactory(adapterModelo);
-		builder.registerTypeAdapterFactory(adapterMotivo);
-		builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(Servico.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(adapterAlternativa);
+        builder.registerTypeAdapterFactory(adapterResponse);
+        builder.registerTypeAdapterFactory(adapterOrigem);
+        builder.registerTypeAdapterFactory(adapterDestino);
+        builder.registerTypeAdapterFactory(adapterModelo);
+        builder.registerTypeAdapterFactory(adapterMotivo);
+        builder.registerTypeAdapterFactory(Pneu.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
+        builder.registerTypeAdapterFactory(PneuServicoRealizado.provideTypeAdapterFactory());
 
-		sGson = builder.create();
-	}
+        sGson = builder.create();
+    }
 
-	public static Gson getGson()  {
-		return sGson;
-	}
+    public static Gson getGson() {
+        return sGson;
+    }
 }

@@ -10,18 +10,18 @@ import java.util.List;
  * Created by Zart on 03/03/17.
  */
 public enum OrigemDestinoRegras {
-    ONE(OrigemDestinoConstants.VEICULO, OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.DESCARTE, OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.VEICULO),
-    TWO(OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.VEICULO, OrigemDestinoConstants.DESCARTE, OrigemDestinoConstants.ANALISE),
-    THREE(OrigemDestinoConstants.ANALISE, OrigemDestinoConstants.ESTOQUE, OrigemDestinoConstants.DESCARTE),
+    ONE(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE, OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.VEICULO),
+    TWO(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.DESCARTE, OrigemDestinoEnum.ANALISE),
+    THREE(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE),
     // Cast utilizado para remover alerta de parâmetro varargs.
-    FOUR(OrigemDestinoConstants.DESCARTE, (String) null);
+    FOUR(OrigemDestinoEnum.DESCARTE, (OrigemDestinoEnum) null);
 
     @NotNull
-    private final String origem;
+    private final OrigemDestinoEnum origem;
     @Nullable
-    private final List<String> destinos;
+    private final List<OrigemDestinoEnum> destinos;
 
-    OrigemDestinoRegras(@NotNull String origem, @Nullable String... destinos) {
+    OrigemDestinoRegras(@NotNull OrigemDestinoEnum origem, @Nullable OrigemDestinoEnum... destinos) {
         this.origem = origem;
 
         if (destinos != null) {
@@ -31,11 +31,11 @@ public enum OrigemDestinoRegras {
         }
     }
 
-    public String getOrigem() {
+    public OrigemDestinoEnum getOrigem() {
         return origem;
     }
 
-    public List<String> getDestinos() {
+    public List<OrigemDestinoEnum> getDestinos() {
         return destinos;
     }
 }

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.versioncodebarrier;
 
+import br.com.zalf.prolog.webservice.errorhandling.error.VersaoAppBloqueadaException;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,5 +15,6 @@ public interface AppVersionCodeBarrier {
 
    void stopIfNeeded(final long versionCodeReceived,
                      final long targetVersionCode,
-                     @NotNull final VersionCodeHandlerMode mode);
+                     @NotNull final VersionCodeHandlerMode mode,
+                     @NotNull final String appBlockedMessage) throws VersaoAppBloqueadaException;
 }

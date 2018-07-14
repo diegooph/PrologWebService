@@ -27,4 +27,10 @@ public class GenericException extends ProLogException {
                 developerMessage);
     }
 
+    public GenericException(@NotNull final String message) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                ProLogErrorCodes.GENERIC.errorCode(),
+                message,
+                null);
+    }
 }

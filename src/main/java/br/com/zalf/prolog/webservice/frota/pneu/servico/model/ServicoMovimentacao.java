@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Sulcos;
 
 /**
@@ -14,10 +14,10 @@ public final class ServicoMovimentacao extends Servico {
      * fechado, ele possuirá um código de processo diferente de {@code null}.
      */
     private Long codProcessoMovimentacao;
-    private Pneu pneuNovo;
+    private PneuComum pneuNovo;
     private Sulcos sulcosColetadosFechamento;
 
-    public ServicoMovimentacao(Pneu pneuNovo) {
+    public ServicoMovimentacao(PneuComum pneuNovo) {
         this.pneuNovo = pneuNovo;
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
@@ -26,11 +26,11 @@ public final class ServicoMovimentacao extends Servico {
         setTipoServico(TipoServico.MOVIMENTACAO);
     }
 
-    public Pneu getPneuNovo() {
+    public PneuComum getPneuNovo() {
         return pneuNovo;
     }
 
-    public void setPneuNovo(Pneu pneuNovo) {
+    public void setPneuNovo(PneuComum pneuNovo) {
         this.pneuNovo = pneuNovo;
     }
 

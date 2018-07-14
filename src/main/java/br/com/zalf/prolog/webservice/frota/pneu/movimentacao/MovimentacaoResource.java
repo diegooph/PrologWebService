@@ -5,9 +5,11 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -21,12 +23,13 @@ import java.util.List;
 /**
  * Created by Zart on 03/03/17.
  */
+@DebugLog
 @Path("/movimentacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 51,
+        targetVersionCode = 55,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class MovimentacaoResource {
@@ -37,7 +40,7 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public AbstractResponse insert(ProcessoMovimentacao movimentacao) {
+    public AbstractResponse insert(@Required final ProcessoMovimentacao movimentacao) throws ProLogException {
         return service.insert(movimentacao);
     }
 
@@ -45,7 +48,8 @@ public class MovimentacaoResource {
     @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE)
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos-descarte/{codEmpresa}")
-    public AbstractResponse insert(@Required Motivo motivo, @PathParam("codEmpresa") @Required Long codEmpresa) {
+    public AbstractResponse insert(@Required final Motivo motivo,
+                                   @PathParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
         return service.insertMotivo(motivo, codEmpresa);
     }
 
@@ -53,14 +57,11 @@ public class MovimentacaoResource {
     @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE)
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos-descarte/{codEmpresa}/{codMotivo}/status")
-    public Response updateMotivoStatus(@PathParam("codEmpresa") @Required Long codEmpresa,
-                                       @PathParam("codMotivo") @Required Long codMotivo,
-                                       final Motivo motivo) {
-        if (service.updateMotivoStatus(codEmpresa, codMotivo, motivo)) {
-            return Response.ok("Motivo atualizado com sucesso");
-        } else {
-            return Response.error("Erro ao atualizar motivo");
-        }
+    public Response updateMotivoStatus(@PathParam("codEmpresa") @Required final Long codEmpresa,
+                                       @PathParam("codMotivo") @Required final Long codMotivo,
+                                       final Motivo motivo) throws ProLogException {
+        service.updateMotivoStatus(codEmpresa, codMotivo, motivo);
+        return Response.ok("Motivo atualizado com sucesso");
     }
 
     @GET
@@ -69,8 +70,9 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE_TO_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/motivos-descarte/{codEmpresa}")
-    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required Long codEmpresa,
-                                         @QueryParam("apenasAtivos") @Required Boolean apenasAtivos) {
+    public List<Motivo> getMotivosAtivos(@PathParam("codEmpresa") @Required final Long codEmpresa,
+                                         @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos)
+            throws ProLogException {
         return service.getMotivos(codEmpresa, apenasAtivos);
     }
 }

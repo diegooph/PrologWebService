@@ -53,6 +53,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDao;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.RecapadoraDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuServicoRealizadoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu_tipo_servico.PneuTipoServicoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios.RelatorioPneuDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -345,6 +349,16 @@ public final class Injection {
     @NotNull
     public static RecapadoraDao provideRecapadoraDao() {
         return new RecapadoraDaoImpl();
+    }
+
+    @NotNull
+    public static PneuTipoServicoDao providePneuTipoServicoDao() {
+        return new PneuTipoServicoDaoImpl();
+    }
+
+    @NotNull
+    public static PneuServicoRealizadoDao providePneuServicoRealizadoDao() {
+        return new PneuServicoRealizadoDaoImpl();
     }
 
     @NotNull

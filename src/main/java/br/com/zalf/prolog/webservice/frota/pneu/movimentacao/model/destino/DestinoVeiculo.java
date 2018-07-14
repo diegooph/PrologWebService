@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoConstants;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -17,13 +17,13 @@ public final class DestinoVeiculo extends Destino {
      * o tipo também seja setado
      */
     public DestinoVeiculo() {
-        super(OrigemDestinoConstants.VEICULO);
+        super(OrigemDestinoEnum.VEICULO);
         this.veiculo = null;
         this.posicaoDestinoPneu = 0;
     }
 
     public DestinoVeiculo(@NotNull Veiculo veiculo,  int posicaoDestinoPneu) {
-        super(OrigemDestinoConstants.VEICULO);
+        super(OrigemDestinoEnum.VEICULO);
         this.veiculo = veiculo;
         this.posicaoDestinoPneu = posicaoDestinoPneu;
     }
