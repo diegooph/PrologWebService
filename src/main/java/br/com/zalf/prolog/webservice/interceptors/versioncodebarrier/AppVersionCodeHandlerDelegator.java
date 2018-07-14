@@ -83,6 +83,7 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
                         .entity(ProLogError.createFrom(ex))
                         .build();
                 requestContext.abortWith(response);
+                return;
             }
             throw new RuntimeException(throwable);
         }
