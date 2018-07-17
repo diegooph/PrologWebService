@@ -101,6 +101,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setDouble(7, item.getRaio());
             stmt.setDouble(8, item.getTonelada());
             stmt.setString(9, token);
+            stmt.setLong(10, item.getCodigo());
             if (stmt.executeUpdate() == 0) {
                 // nenhum para item atualizado
                 throw new SQLDataException("Não foi possível atualizar o item de código: " + item.getCodigo());
@@ -197,6 +198,29 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         return raizenProdutividades;
     }
 
+    @Override
+    public RaizenProdutividadeItem getRaizenProdutividadeItem(@NotNull Long codEmpresa,
+                                                              @NotNull Long codProdutividade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(BASE_QUERY +
+                    "WHERE RP.COD_EMPRESA = ? AND RP.CODIGO = ?");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codProdutividade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return creatRaizenProdutividadeItemColaborador(rSet);
+            } else {
+                throw new SQLDataException("Nenhuma produtividade para o código : " + codEmpresa);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
     private RaizenProdutividadeItemData creatRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
         final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
         item.setCodigo(rSet.getLong("CODIGO"));
@@ -228,7 +252,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codRaizenProdutividade));
             if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao deletar Escala");
+                throw new SQLException("Erro ao deletar produtividade");
             }
         } finally {
             closeConnection(conn, stmt, null);
@@ -281,7 +305,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                                                     @NotNull final RaizenProdutividadeItemInsert item) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF," +
+            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF = ?," +
                     "   PLACA = ?," +
                     "   DATA_VIAGEM = ?," +
                     "   VALOR = ?," +
@@ -294,7 +318,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "WHERE CPF = ?" +
                     "AND PLACA = ?" +
                     "AND DATA_VIAGEM = ?" +
-                    "AND COD_EMPRESA = codEmpresa ");
+                    "AND COD_EMPRESA = ?");
             stmt.setLong(1, item.getCpfMotorista());
             stmt.setString(2, item.getPlaca());
             stmt.setDate(3, DateUtils.toSqlDate(item.getDataViagem()));
@@ -304,6 +328,10 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setDouble(7, item.getRaio());
             stmt.setDouble(8, item.getTonelada());
             stmt.setString(9, token);
+            stmt.setLong(10, item.getCpfMotorista());
+            stmt.setString(11, item.getPlaca());
+            stmt.setDate(12, DateUtils.toSqlDate(item.getDataViagem()));
+            stmt.setLong(13, codEmpresa);
 
             if (stmt.executeUpdate() == 0) {
                 //nenhum item atualizado

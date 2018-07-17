@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemInsert;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -67,19 +68,20 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
     @Path("/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
-                                                            @QueryParam("data") String data)
+                                                            @QueryParam("dataInicial") String dataIncial,
+                                                            @QueryParam("dataFinal") String dataFinal)
             throws RaizenProdutividadeException {
-        return service.getRaizenProdutividade(codEmpresa, data);
+        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal);
     }
 
-/*    @GET
+    @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.EscalaDiaria.VISUALIZAR, Pilares.Entrega.EscalaDiaria.EDITAR})
-    @Path("/{codUnidade}/{codEscala}")
-    public EscalaDiariaItem getEscalaDiariaItem(@PathParam("codUnidade") Long codUnidade,
-                                                @PathParam("codEscala") Long codEscala) throws EscalaDiariaException {
-        return service.getEscalaDiariaItem(codUnidade, codEscala);
-    }*/
+    @Path("/{codEmpresa}/{codProdutividade}")
+    public RaizenProdutividadeItem getEscalaDiariaItem(@PathParam("codEmpresa") Long codEmpresa,
+                                                       @PathParam("codProdutividade") Long codProdutividade) throws RaizenProdutividadeException{
+        return service.getRaizenProdutividadeItem(codEmpresa, codProdutividade);
+    }
 
     @DELETE
     @UsedBy(platforms = Platform.WEBSITE)

@@ -11,6 +11,7 @@ import java.time.LocalDate;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeItemColaborador extends RaizenProdutividadeItem {
+
     private Colaborador colaborador;
 
     public Colaborador getColaborador() {

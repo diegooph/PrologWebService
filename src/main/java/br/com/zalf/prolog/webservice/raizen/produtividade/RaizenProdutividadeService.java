@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RaizenProdutividadeException;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeReader;
 import com.google.common.base.Preconditions;
@@ -78,16 +79,31 @@ public class RaizenProdutividadeService {
     }
 
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                            @NotNull final String data) throws RaizenProdutividadeException {
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal) throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(
                     codEmpresa,
-                    ProLogDateParser.validateAndParse(data));
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar produtividade", e);
             throw new RaizenProdutividadeException(
                     "Não foi possível buscar a produtividade, tente novamente",
                     "Erro ao buscar produtividade",
+                    e);
+        }
+    }
+
+    public RaizenProdutividadeItem getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
+                                                              @NotNull final Long codProdutividade) throws RaizenProdutividadeException {
+        try {
+            return dao.getRaizenProdutividadeItem(codEmpresa, codProdutividade);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar produtividade de codigo: " + codProdutividade, e);
+            throw new RaizenProdutividadeException(
+                    "Não foi possível recuperrar este item, tente novamente",
+                    "Erro ao buscar o item",
                     e);
         }
     }
