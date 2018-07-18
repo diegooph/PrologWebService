@@ -168,7 +168,7 @@ final class QuizModeloValidator {
 
     private static void validaPorcentagemAprovacao(final double porcentagemAprovacao) throws Throwable {
         if (porcentagemAprovacao < 0.01 || porcentagemAprovacao > 1) {
-            throw new GenericException("Insira uma porcentagem (%) de aprovação entre 1 à 100");
+            throw new GenericException("Insira uma porcentagem (%) de aprovação entre 1 a 100");
         }
     }
 }
