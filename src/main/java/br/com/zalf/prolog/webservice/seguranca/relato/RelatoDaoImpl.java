@@ -378,7 +378,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "  LEFT JOIN COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF " +
                     "WHERE R.COD_UNIDADE = ? " +
                     "      AND R.STATUS LIKE ? " +
-                    "      AND E.NOME LIKE ? " +
+                    "      AND E.CODIGO::TEXT LIKE ? " +
                     "      AND R.DATA_HORA_DATABASE::DATE >= (? AT TIME ZONE ?) AND R.DATA_HORA_DATABASE::DATE <= (? AT TIME ZONE ?) " +
                     "ORDER BY DATA_HORA_DATABASE DESC " +
                     "LIMIT ? OFFSET ?");
@@ -398,8 +398,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
             stmt.setLong(13, offset);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Relato relato = createRelato(rSet);
-                relatos.add(relato);
+                relatos.add(createRelato(rSet));
             }
         } finally {
             closeConnection(conn, stmt, rSet);
