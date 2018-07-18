@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+<a name="v0.0.69"></a>
+## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (release-date) [unreleased]
+
 <a name="v0.0.68"></a>
 ## Version [v0.0.68](https://github.com/luizfp/PrologWeb/compare/v0.0.67...v0.0.68) (2018-07-14)
 
@@ -41,8 +44,7 @@ Change Log
 ### Features
 * Cria back end para salvar mensagens de contato de possíveis clientes
 * Ativa método de listagem de marcações de um colaborador
-* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo
-por cada colaborador
+* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo por cada colaborador
 
 ### Refactor
 * Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados
