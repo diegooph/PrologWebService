@@ -31,7 +31,7 @@ public class ModeloQuiz {
 
     /**
      * Contém a porcentagem do total de perguntas do quiz que devem ser acertadas para considerarmos que o colaborador
-     * foi aprovado na realização do mesmo. Deve conter um valor entre 0.0 e 1.0.
+     * foi aprovado na realização do mesmo. Deve conter um valor entre 0.01 e 1.0.
      */
     private double porcentagemAprovacao;
 
