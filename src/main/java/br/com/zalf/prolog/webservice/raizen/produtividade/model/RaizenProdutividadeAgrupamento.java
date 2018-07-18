@@ -11,19 +11,14 @@ import javax.annotation.Nonnull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public enum RaizenProdutividadeAgrupamento {
-    POR_COLABORADOR("por_colaborador"),
-    POR_DATA("por_data");
+    POR_COLABORADOR("por-colaborador"),
+    POR_DATA("por-data");
 
     @NotNull
     private final String identificador;
 
     RaizenProdutividadeAgrupamento(String identificador) {
         this.identificador = identificador;
-    }
-
-    @Override
-    public String toString() {
-        return asString();
     }
 
     @NotNull
@@ -34,9 +29,9 @@ public enum RaizenProdutividadeAgrupamento {
     public static RaizenProdutividadeAgrupamento fromString(@Nonnull final String string) {
         Preconditions.checkNotNull(string, "string cannot be null!");
 
-        for (final RaizenProdutividadeAgrupamento tipo : RaizenProdutividadeAgrupamento.values()) {
-            if (string.equals(tipo.identificador)) {
-                return tipo;
+        for (final RaizenProdutividadeAgrupamento agrupamento : RaizenProdutividadeAgrupamento.values()) {
+            if (string.equals(agrupamento.identificador)) {
+                return agrupamento;
             }
         }
         throw new IllegalArgumentException("Nenhum tipo de componente encontrado para a string: " + string);

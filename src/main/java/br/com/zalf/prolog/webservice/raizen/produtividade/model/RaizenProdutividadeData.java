@@ -14,6 +14,10 @@ public class RaizenProdutividadeData extends RaizenProdutividade {
     private Colaborador colaborador;
     private List<RaizenProdutividadeItemData> itensRaizen;
 
+    public RaizenProdutividadeData() {
+        setTipoAgrupamento(RaizenProdutividadeAgrupamento.POR_DATA);
+    }
+
     public Colaborador getColaborador() {
         return colaborador;
     }

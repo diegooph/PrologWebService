@@ -40,7 +40,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
 
     public RaizenProdutividadeDaoImpl() {
-
     }
 
     @Override

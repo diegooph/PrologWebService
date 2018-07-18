@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+
 /**
  * Created on 04/07/18.
  *
@@ -28,6 +30,13 @@ public class RaizenProdutividade {
 
     public void setTotalPlacaNOK(int totalPlacaNOK) {
         this.totalPlacaNOK = totalPlacaNOK;
+    }
+
+    public static RuntimeTypeAdapterFactory<RaizenProdutividade> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(RaizenProdutividade.class, "agrupamento")
+                .registerSubtype(RaizenProdutividadeColaborador.class, RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())
+                .registerSubtype(RaizenProdutividadeData.class, RaizenProdutividadeAgrupamento.POR_DATA.asString());
     }
 
     public RaizenProdutividadeAgrupamento getTipoAgrupamento() {
