@@ -87,10 +87,10 @@ import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutor
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDao;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.QuizDaoImpl;
-import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloDao;
-import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloDaoImpl;
-import br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios.QuizRelatorioDao;
-import br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios.QuizRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;
+import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDaoImpl;
+import br.com.zalf.prolog.webservice.gente.quiz.relatorios.QuizRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.quiz.relatorios.QuizRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDao;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.SolicitacaoFolgaDaoImpl;
 import br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios.SolicitacaoFolgaRelatorioDao;

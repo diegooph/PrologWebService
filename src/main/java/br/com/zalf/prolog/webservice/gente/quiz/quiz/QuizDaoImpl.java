@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQui
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.Quiz;
-import br.com.zalf.prolog.webservice.gente.quiz.quizModelo.QuizModeloConverter;
+import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloConverter;
 
 import java.sql.*;
 import java.time.Clock;
