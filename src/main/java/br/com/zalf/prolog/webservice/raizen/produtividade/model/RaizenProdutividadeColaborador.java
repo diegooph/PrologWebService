@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
-import java.time.LocalDate;
-import java.util.List;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
+import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 09/07/18.
@@ -9,47 +11,41 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeColaborador extends RaizenProdutividade {
+    @NotNull
+    private final String cpf;
+    @Nullable
+    private final String nome;
+    private final boolean colaboradorCadastrado;
 
-    private LocalDate data;
-    private List<RaizenProdutividadeItemColaborador> itensRaizen;
-
-    public RaizenProdutividadeColaborador() {
-        setTipoAgrupamento(RaizenProdutividadeAgrupamento.POR_COLABORADOR);
+    public RaizenProdutividadeColaborador(@NotNull final String cpf,
+                                          @Nullable final String nome) {
+        super(RaizenProdutividadeAgrupamento.POR_COLABORADOR);
+        this.cpf = cpf;
+        this.nome = nome;
+        this.colaboradorCadastrado = nome != null;
     }
 
-    public LocalDate getData() {
-        return data;
+    @NotNull
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
+    @Nullable
+    public String getNome() {
+        return nome;
     }
 
-    public List<RaizenProdutividadeItemColaborador> getItensRaizen() {
-        return itensRaizen;
+    public boolean isColaboradorCadastrado() {
+        return colaboradorCadastrado;
     }
 
-    public void setItensRaizen(List<RaizenProdutividadeItemColaborador> itensRaizen) {
-        this.itensRaizen = itensRaizen;
-//        calculaItensErrados();
-    }
-
-/*    private void calculaItensErrados() {
-        Preconditions.checkNotNull(itensRaizen, "itensRaizen não pode ser null!");
-        int qtdColaboradoresErrados = 0;
-        int qtdPlacasErradas = 0;
-        int qtdMapasErrados = 0;
-        for (final RaizenProdutividadeItemColaborador item : itensRaizen) {
-            if (!item.isCpfMotoristaOk() || !item.isCpfAjudante1Ok() || !item.isCpfAjudante2Ok()) {
-                qtdColaboradoresErrados++;
+    @Override
+    protected void calculaItensNaoCadastrados() {
+        Preconditions.checkState(getItensRaizen() != null, "itensRaizen não pode ser null!");
+        for (final RaizenProdutividadeItem item : getItensRaizen()) {
+            if (!item.isPlacaCadastrada()) {
+                setTotalPlacaNaoCadastradas(getTotalPlacaNaoCadastradas() + 1);
             }
-            if (!item.isPlacaOk()) {
-                qtdPlacasErradas++;
-            }
-
         }
-        this.qtdColaboradoresErrados = qtdColaboradoresErrados;
-        this.qtdPlacasErradas = qtdPlacasErradas;
-    }    */
-//    }
+    }
 }

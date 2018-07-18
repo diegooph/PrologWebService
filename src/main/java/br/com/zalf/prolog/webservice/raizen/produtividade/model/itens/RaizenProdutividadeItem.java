@@ -1,17 +1,16 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade.model;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * Created on 03/07/18.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenProdutividadeItem {
-
+public abstract class RaizenProdutividadeItem {
     private Long codigo;
     private String placa;
+    private boolean placaCadastrada;
     private BigDecimal valor;
     private String usina;
     private String fazenda;
@@ -22,6 +21,14 @@ public class RaizenProdutividadeItem {
     private Long codEmpresa;
 
     public RaizenProdutividadeItem() {
+    }
+
+    public boolean isPlacaCadastrada() {
+        return placaCadastrada;
+    }
+
+    public void setPlacaCadastrada(final boolean placaCadastrada) {
+        this.placaCadastrada = placaCadastrada;
     }
 
     public Long getCodigo() {

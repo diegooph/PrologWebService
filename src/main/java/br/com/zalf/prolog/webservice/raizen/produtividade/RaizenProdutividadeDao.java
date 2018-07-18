@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItem;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeItemInsert;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;

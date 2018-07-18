@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.raizen.produtividade.model;
+package br.com.zalf.prolog.webservice.raizen.produtividade.model.insert;
 
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
