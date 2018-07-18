@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
@@ -133,8 +134,9 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                     "DATA_HORA_FECHAMENTO, PORCENTAGEM_APROVACAO) VALUES (?,?,?,?,?,?) RETURNING CODIGO;");
             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, modeloQuiz.getNome());
-            stmt.setString(3, modeloQuiz.getDescricao());
+            stmt.setString(2, modeloQuiz.getNome().trim());
+            final String descricao = modeloQuiz.getDescricao();
+            stmt.setString(3, StringUtils.isNullOrEmpty(descricao) ? null : descricao.trim());
             stmt.setObject(4, modeloQuiz.getDataHoraAbertura().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setObject(5, modeloQuiz.getDataHoraFechamento().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setDouble(6, modeloQuiz.getPorcentagemAprovacao());
