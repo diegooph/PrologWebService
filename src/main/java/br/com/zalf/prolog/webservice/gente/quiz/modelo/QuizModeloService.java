@@ -27,7 +27,7 @@ public class QuizModeloService {
         try {
             QuizModeloValidator.validaQuizModelo(modeloQuiz, codUnidade);
             return ResponseWithCod.ok(
-                    "Modelo de Quiz inserido com sucesso",
+                    "Quiz criado com sucesso",
                     dao.insertModeloQuiz(modeloQuiz, codUnidade));
         } catch (final Throwable e) {
             final String errorMessage = "Erro ao inserir o modelo de quiz";
