@@ -406,11 +406,11 @@ public final class Injection {
 
     @NotNull
     public static PneuExceptionHandler providePneuExceptionHandler() {
-        return new PneuExceptionHandler(provideṔneuSqlExceptionTranslator());
+        return new PneuExceptionHandler(providePneuSqlExceptionTranslator());
     }
 
-    private static PneuSqlExceptionTranslator provideṔneuSqlExceptionTranslator() {
+    @NotNull
+    private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
     }
-
 }
