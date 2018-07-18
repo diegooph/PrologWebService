@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,7 +20,7 @@ public interface QuizModeloDao {
      * @return lista de ModeloQuiz completos, com perguntas e alternativas
      * @throws SQLException caso não seja possível realizar as buscas
      */
-    public List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
+    List<ModeloQuiz> getModelosQuizDisponiveis(Long codUnidade, Long codFuncaoColaborador) throws SQLException;
 
     /**
      * Busca um único modelo de quiz
@@ -28,7 +29,7 @@ public interface QuizModeloDao {
      * @return um modelo de quiz completo
      * @throws SQLException caso não seja possível realizar a busca
      */
-    public ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException;
+    ModeloQuiz getModeloQuiz(Long codUnidade, Long codModeloQuiz) throws SQLException;
 
     /**
      * Busca apenas o nome dos modelos de quiz cadastrados para determinada unidade
@@ -37,17 +38,13 @@ public interface QuizModeloDao {
      * @return lista de strings
      * @throws SQLException caso não seja possível
      */
-    public List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException;
+    List<ModeloQuiz> getModelosQuizByCodUnidade(Long codUnidade) throws SQLException;
 
     /**
      * Insere um modelo de Quiz
-     *
-     * @param modeloQuiz
-     * @param codUnidade
-     * @return
-     * @throws SQLException
      */
-    public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
+    @NotNull
+    Long insertModeloQuiz(@NotNull final ModeloQuiz modeloQuiz, @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Atualiza dados gerais de um modelo de Quiz
@@ -57,7 +54,7 @@ public interface QuizModeloDao {
      * @return
      * @throws SQLException
      */
-    public boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
+    boolean updateModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException;
 
     /**
      * Atualiza os cargos associados a um modelo de quiz
@@ -68,5 +65,5 @@ public interface QuizModeloDao {
      * @return
      * @throws SQLException
      */
-    public boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException;
+    boolean updateCargosModeloQuiz(List<Cargo> funcoes, Long codModeloQuiz, Long codUnidade) throws SQLException;
 }

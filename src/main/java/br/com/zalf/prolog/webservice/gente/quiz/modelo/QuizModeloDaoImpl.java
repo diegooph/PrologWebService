@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQui
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.Clock;
@@ -119,8 +120,9 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelo;
     }
 
+    @NotNull
     @Override
-    public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
+    public Long insertModeloQuiz(@NotNull final ModeloQuiz modeloQuiz, @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -155,14 +157,17 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 }
                 conn.commit();
                 return codModeloQuiz;
+            } else {
+                throw new SQLException("Erro ao inserir modelo de quiz");
             }
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Override
