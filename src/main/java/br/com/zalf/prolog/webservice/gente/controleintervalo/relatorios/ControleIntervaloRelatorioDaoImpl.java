@@ -185,8 +185,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
-                                                            @NotNull final LocalDate dataInicial,
-                                                            @NotNull final LocalDate dataFinal) throws SQLException {
+                                                            @NotNull final LocalDateTime dataHoraInicial,
+                                                            @NotNull final LocalDateTime dataHoraFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -204,8 +204,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             } else {
                 stmt.setLong(3, Long.parseLong(cpf));
             }
-            stmt.setObject(4, dataInicial);
-            stmt.setObject(5, dataFinal);
+            stmt.setObject(4, dataHoraInicial);
+            stmt.setObject(5, dataHoraFinal);
             stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
 
@@ -213,6 +213,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
             final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao
                     .getTiposIntervalosByUnidade(codUnidade, false));
+
+            // Map para irmos somando o tempo sem segundos que o colaborador passou em cada tipo de intervalo dado
+            // o período filtrado.
             final Map<Long, Long> segundosTipoIntervalo = new HashMap<>();
             Long cpfAnterior = null;
             String nomeAnterior = null;

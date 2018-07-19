@@ -45,7 +45,7 @@ public class AutenticacaoService {
 		try {
 			return dao.verifyIfUserExists(
 					cpf,
-					ProLogDateParser.validateAndParse(dataNascimento),
+					ProLogDateParser.toLocalDate(dataNascimento),
 					apenasUsuariosAtivos);
 		} catch (SQLException e) {
 			Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
@@ -71,7 +71,7 @@ public class AutenticacaoService {
 		try {
 			return dao.userHasPermission(
 					cpf,
-					ProLogDateParser.validateAndParse(dataNascimento),
+					ProLogDateParser.toLocalDate(dataNascimento),
 					permissions,
 					needsToHaveAllPermissions,
 					apenasUsuariosAtivos);

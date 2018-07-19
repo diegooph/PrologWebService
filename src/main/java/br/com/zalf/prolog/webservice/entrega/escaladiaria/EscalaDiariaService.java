@@ -78,8 +78,8 @@ public class EscalaDiariaService {
         try {
             return dao.getEscalasDiarias(
                     codUnidade,
-                    ProLogDateParser.validateAndParse(dataInicial),
-                    ProLogDateParser.validateAndParse(dataFinal));
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar Escalas Diarias para a Unidade: " + codUnidade, e);
             throw new EscalaDiariaException(
