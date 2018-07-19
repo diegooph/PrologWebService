@@ -43,7 +43,11 @@ public class PneuTipoServicoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO})
+    @Secured(permissions = {
+            Pilares.Frota.Recapadora.TipoServico.CADASTRO,
+            Pilares.Frota.Recapadora.TipoServico.EDICAO,
+            Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codEmpresa}")
     public List<PneuTipoServico> getPneuTiposServicos(
@@ -54,7 +58,11 @@ public class PneuTipoServicoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO})
+    @Secured(permissions = {
+            Pilares.Frota.Recapadora.TipoServico.CADASTRO,
+            Pilares.Frota.Recapadora.TipoServico.EDICAO,
+            Pilares.Frota.Recapadora.TipoServico.VISUALIZACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @UsedBy(platforms = {Platform.WEBSITE})
     @Path("/{codEmpresa}/{codTipoServico}")
     public PneuTipoServico getPneuTipoServico(
