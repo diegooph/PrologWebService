@@ -278,13 +278,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                 // Calcula a diferença de tempo entre início e fim, se ambos existirem.
                 if (dataHoraInicio != null && dataHoraFim != null) {
                     final long segundos = ChronoUnit.SECONDS.between(dataHoraInicio, dataHoraFim);
-                    if (segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) != null) {
-                        segundosTipoIntervalo.put(
-                                intervalo.getCodTipoIntervalo(),
-                                segundosTipoIntervalo.get(intervalo.getCodTipoIntervalo()) + segundos);
-                    } else {
-                        segundosTipoIntervalo.put(intervalo.getCodTipoIntervalo(), segundos);
-                    }
+                    segundosTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
                 } else {
                     // Se a marcação de início ou fim não existirem, nós não temos como calcular o tempo total nesse
                     // tipo de intervalo. Porém, caso o colaborador tenha marcado apenas INÍCIOS para um tipo de
