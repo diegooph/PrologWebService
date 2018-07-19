@@ -9,6 +9,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige busca dos relatos para utilizar o código da equipe na filtragem ao invés do nome
+* Adiciona permissão de movimentação na busca dos tipos dos serviços dos pneus
 
 <a name="v0.0.68"></a>
 ## Version [v0.0.68](https://github.com/luizfp/PrologWeb/compare/v0.0.67...v0.0.68) (2018-07-14)
