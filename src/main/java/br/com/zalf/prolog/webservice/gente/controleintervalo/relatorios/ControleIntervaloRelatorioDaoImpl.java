@@ -339,8 +339,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                       @NotNull final Long codUnidade,
                                                       @NotNull final Long codTipoIntervalo,
                                                       @NotNull final LocalDate dataInicial,
-                                                      @NotNull final LocalDate dataFinal) throws SQLException,
-            IOException {
+                                                      @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -423,7 +422,6 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private Set<FolhaPontoTipoIntervalo> createTiposIntervalosMarcados(
             @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
             @NotNull final Map<Long, Long> segundosTipoIntervalo) {
-
         final Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados = new HashSet<>();
         segundosTipoIntervalo.forEach((codTipoIntervalo, segundosTotal) -> {
             final TipoIntervalo tipoIntervalo = tiposIntervalosUnidade.get(codTipoIntervalo);
@@ -434,10 +432,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date
-            dataFinal, Connection conn, String cpf)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador" +
-                "(?,?,?,?)");
+            dataFinal, Connection conn, String cpf) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -453,8 +450,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                  @NotNull final LocalDate dataFinal,
                                                                  @NotNull final Connection conn) throws SQLException {
         Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codTipoIntervalo);
         if (!cpf.equals("%")) {
@@ -470,10 +467,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal,
-                                                               Connection conn)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias" +
-                "(?,?,?)");
+                                                               Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -482,10 +478,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
-                                                Connection conn)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
-                "(?, ?, ?, ?);");
+                                                Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -494,8 +489,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
+    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
@@ -508,8 +502,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                      @NotNull final Long codTipoIntervalo,
                                                                      @NotNull final LocalDate dataInicial,
                                                                      @NotNull final LocalDate dataFinal,
-                                                                     @NotNull final Connection conn) throws
-            SQLException {
+                                                                     @NotNull final Connection conn) throws SQLException {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(?, ?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
