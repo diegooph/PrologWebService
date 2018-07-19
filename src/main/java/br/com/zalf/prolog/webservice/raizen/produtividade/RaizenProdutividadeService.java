@@ -95,15 +95,17 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public RaizenProdutividadeItem getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
-                                                              @NotNull final Long codProdutividade) throws RaizenProdutividadeException {
+    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
+                                                            @NotNull final Long cpfMotorista) throws RaizenProdutividadeException {
         try {
-            return dao.getRaizenProdutividadeItem(codEmpresa, codProdutividade);
+            return dao.getRaizenProdutividade(
+                    codEmpresa,
+                    cpfMotorista);
         } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar produtividade de codigo: " + codProdutividade, e);
+            Log.e(TAG, "Erro ao buscar produtividade", e);
             throw new RaizenProdutividadeException(
-                    "Não foi possível recuperrar este item, tente novamente",
-                    "Erro ao buscar o item",
+                    "Não foi possível buscar a produtividade, tente novamente",
+                    "Erro ao buscar produtividade",
                     e);
         }
     }

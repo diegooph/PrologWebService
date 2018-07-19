@@ -81,18 +81,6 @@ public interface RaizenProdutividadeDao {
     List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                      @NotNull final Long cpfMotorista) throws SQLException;
 
-
-    /**
-     * Busca um item específico da produtividade Raizen.
-     *
-     * @param codEmpresa       - Código da empresa para a busca.
-     * @param codProdutividade - Código do {@link RaizenProdutividadeItem} que será buscado.
-     * @return - Um {@link RaizenProdutividadeItem}.
-     * @throws SQLException - Caso algum erro na query ocorrer ou o código ser inválido.
-     */
-    RaizenProdutividadeItem getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
-                                                @NotNull final Long codProdutividade) throws SQLException;
-
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.
      *

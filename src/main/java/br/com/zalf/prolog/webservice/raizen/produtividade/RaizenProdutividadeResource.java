@@ -36,10 +36,10 @@ public class RaizenProdutividadeResource {
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
     @Path("/upload/{codEmpresa}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response uploadEscala(@HeaderParam("Authorization") String token,
-                                 @PathParam("codEmpresa") Long codEmpresa,
-                                 @FormDataParam("file") InputStream fileInputStream,
-                                 @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+    public Response uploadRaizenProdutividade(@HeaderParam("Authorization") String token,
+                                              @PathParam("codEmpresa") Long codEmpresa,
+                                              @FormDataParam("file") InputStream fileInputStream,
+                                              @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
         return service.uploadRaizenProdutividade(token, codEmpresa, fileInputStream, fileDetail);
     }
 
@@ -47,9 +47,9 @@ public class RaizenProdutividadeResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
     @Path("/{codEmpresa}")
-    public Response insertEscalaDiaria(@HeaderParam("Authorization") String token,
-                                       @PathParam("codEmpresa") Long codEmpresa,
-                                       RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
+    public Response insertRaizenProdutividade(@HeaderParam("Authorization") String token,
+                                              @PathParam("codEmpresa") Long codEmpresa,
+                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
         return service.insertRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -76,11 +76,13 @@ public class RaizenProdutividadeResource {
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    @Secured(permissions = {Pilares.Entrega.EscalaDiaria.VISUALIZAR, Pilares.Entrega.EscalaDiaria.EDITAR})
-    @Path("/{codEmpresa}/{codProdutividade}")
-    public RaizenProdutividadeItem getEscalaDiariaItem(@PathParam("codEmpresa") Long codEmpresa,
-                                                       @PathParam("codProdutividade") Long codProdutividade) throws RaizenProdutividadeException{
-        return service.getRaizenProdutividadeItem(codEmpresa, codProdutividade);
+    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
+    @Path("/{codEmpresa}")
+    public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
+                                                            @QueryParam("cpfMotorista") Long cpfMotorista)
+
+            throws RaizenProdutividadeException {
+        return service.getRaizenProdutividade(codEmpresa, cpfMotorista);
     }
 
     @DELETE
