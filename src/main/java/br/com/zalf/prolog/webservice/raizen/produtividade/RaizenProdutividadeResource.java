@@ -85,6 +85,17 @@ public class RaizenProdutividadeResource {
         return service.getRaizenProdutividade(codEmpresa, cpfMotorista);
     }
 
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
+    @Path("/{codColaborador}")
+    public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
+                                                            @QueryParam("mes") int mes,
+                                                            @QueryParam("ano") int ano)
+            throws RaizenProdutividadeException{
+        return service.getRaizenProdutividade(codColaborador, mes, ano);
+    }
+
     @DELETE
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)

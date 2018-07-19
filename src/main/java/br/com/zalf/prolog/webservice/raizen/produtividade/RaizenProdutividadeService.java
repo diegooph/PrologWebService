@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenPro
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
@@ -110,6 +111,23 @@ public class RaizenProdutividadeService {
         }
     }
 
+    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                            @NotNull final int mes,
+                                                            @NotNull final int ano) throws RaizenProdutividadeException {
+        try {
+            return dao.getRaizenProdutividade(
+                    codColaborador,
+                    mes,
+                    ano);
+        } catch (SQLException e) {
+            Log.e(TAG, "Erro ao buscar produtividade", e);
+            throw new RaizenProdutividadeException(
+                    "Não foi possível buscar a produtividade, tente novamente",
+                    "Erro ao buscar produtividade",
+                    e);
+        }
+    }
+
     public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
                                               @NotNull final List<Long> codRaizenProdutividades) throws RaizenProdutividadeException {
         try {
@@ -127,7 +145,7 @@ public class RaizenProdutividadeService {
 
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,
-                                      @NotNull final FormDataContentDisposition fileDetail)
+                                      @NotNull final ContentDisposition fileDetail)
             throws RaizenProdutividadeException {
         try {
             final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa
