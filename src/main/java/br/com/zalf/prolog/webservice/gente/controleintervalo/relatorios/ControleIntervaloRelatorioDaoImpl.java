@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -321,8 +321,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                       @NotNull final Long codUnidade,
                                                       @NotNull final Long codTipoIntervalo,
                                                       @NotNull final LocalDate dataInicial,
-                                                      @NotNull final LocalDate dataFinal) throws SQLException,
-            IOException {
+                                                      @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -340,8 +339,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
-                                                @NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+                                                @NotNull final LocalDateTime dataInicial,
+                                                @NotNull final LocalDateTime dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -349,7 +348,11 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, out);
+            new CsvWriter
+                    .Builder(rSet, out)
+                    .withTransposer(new IntervaloTransposer(rSet))
+                    .build()
+                    .write();
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -359,8 +362,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException {
+                                                     @NotNull final LocalDateTime dataInicial,
+                                                     @NotNull final LocalDateTime dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -377,10 +380,10 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final String codTipoIntervalo,
-                                                               @NotNull final LocalDate dataInicial,
-                                                               @NotNull final LocalDate dataFinal) throws SQLException {
-        final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
+                                                               @NotNull final LocalDateTime dataInicial,
+                                                               @NotNull final LocalDateTime dataFinal) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
         if (codTipoIntervalo.equals("%")) {
             stmt.setNull(2, Types.BIGINT);
@@ -403,10 +406,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date
-            dataFinal, Connection conn, String cpf)
-            throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_colaborador" +
-                "(?,?,?,?)");
+            dataFinal, Connection conn, String cpf) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -422,8 +424,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                  @NotNull final LocalDate dataFinal,
                                                                  @NotNull final Connection conn) throws SQLException {
         Preconditions.checkNotNull(codUnidade);
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_intervalo_portaria_1510_tipo_3(?, ?, ?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codTipoIntervalo);
         if (!cpf.equals("%")) {
@@ -439,10 +441,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal,
-                                                               Connection conn)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_aderencia_intervalo_dias" +
-                "(?,?,?)");
+                                                               Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -451,10 +452,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
 
     @NotNull
     private PreparedStatement getIntervalosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
-                                                Connection conn)
-            throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS" +
-                "(?, ?, ?, ?);");
+                                                Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_RELATORIO_MARCACAO_PONTO_REALIZADOS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
@@ -463,8 +463,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     }
 
     @NotNull
-    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn)
-            throws SQLException {
+    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
@@ -477,8 +476,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                      @NotNull final Long codTipoIntervalo,
                                                                      @NotNull final LocalDate dataInicial,
                                                                      @NotNull final LocalDate dataFinal,
-                                                                     @NotNull final Connection conn) throws
-            SQLException {
+                                                                     @NotNull final Connection conn) throws SQLException {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(?, ?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);

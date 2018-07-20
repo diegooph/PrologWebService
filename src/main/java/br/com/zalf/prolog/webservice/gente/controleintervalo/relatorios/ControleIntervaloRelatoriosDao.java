@@ -171,8 +171,8 @@ public interface ControleIntervaloRelatoriosDao {
     void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                          @NotNull final Long codUnidade,
                                          @NotNull final String codTipoIntervalo,
-                                         @NotNull final LocalDate dataInicial,
-                                         @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+                                         @NotNull final LocalDateTime dataInicial,
+                                         @NotNull final LocalDateTime dataFinal) throws SQLException, IOException;
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
@@ -190,6 +190,6 @@ public interface ControleIntervaloRelatoriosDao {
     @NotNull
     Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                               @NotNull final String codTipoIntervalo,
-                                              @NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws SQLException;
+                                              @NotNull final LocalDateTime dataInicial,
+                                              @NotNull final LocalDateTime dataFinal) throws SQLException;
 }
