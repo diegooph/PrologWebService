@@ -52,7 +52,10 @@ public class RecapadoraResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Recapadora.VISUALIZACAO, Pilares.Frota.Recapadora.EDICAO})
+    @Secured(permissions = {
+            Pilares.Frota.Recapadora.VISUALIZACAO,
+            Pilares.Frota.Recapadora.EDICAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_GERAL})
     @UsedBy(platforms = {Platform.WEBSITE})
     @Path("/{codEmpresa}/{codRecapadora}")
     public Recapadora getRecapadora(@PathParam("codEmpresa") Long codEmpresa,

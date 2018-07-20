@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +167,11 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(3, pneu.getDimensao().codigo);
             if (pneu.jaFoiRecapado()) {
                 stmt.setLong(4, pneu.getBanda().getModelo().getCodigo());
-                updateTrocaVidaPneu(pneu, codUnidade, conn);
+                updateBandaPneu(
+                        conn,
+                        pneu.getCodigo(),
+                        pneu.getBanda().getModelo().getCodigo(),
+                        pneu.getBanda().getValor());
             } else {
                 stmt.setNull(4, Types.BIGINT);
             }
@@ -218,14 +223,13 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?) " );
-                    stmt.setLong(1, codPneu);
-                    stmt.setLong(2, codModeloBanda);
-                    rSet = stmt.executeQuery();
-                    if (rSet.next()) {
-            if (!rSet.getBoolean(1)){
-            throw new SQLException("Erro ao trocar a vida dopneu: " + codPneu);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEUS_INCREMENTA_VIDA_PNEU(?, ?) ");
+            stmt.setLong(1, codPneu);
+            stmt.setLong(2, codModeloBanda);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new SQLException("Erro ao trocar a vida dopneu: " + codPneu);
                 }
             } else {
                 throw new SQLException("Erro ao trocar a vida do pneu: " + codPneu);
@@ -828,22 +832,27 @@ public class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         return modelo;
     }
 
-    private void updateTrocaVidaPneu(Pneu pneu, Long codUnidade, Connection conn) throws SQLException {
+    private void updateBandaPneu(@NotNull final Connection conn,
+                                 @NotNull final Long codPneu,
+                                 @NotNull final Long codModeloBanda,
+                                 @NotNull final BigDecimal valorBanda) throws SQLException {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("UPDATE pneu_valor_vida set cod_modelo_banda = ?, valor = ? WHERE " +
-                    "cod_unidade = ? AND cod_pneu = ? " +
-                    "AND vida = ?");
-            stmt.setLong(1, pneu.getBanda().getModelo().getCodigo());
-            stmt.setBigDecimal(2, pneu.getBanda().getValor());
-            stmt.setLong(3, codUnidade);
-            stmt.setLong(4, pneu.getCodigo());
-            stmt.setLong(5, pneu.getVidaAtual());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao atualizar a relação vida x banda");
+            stmt = conn.prepareStatement("SELECT * FROM func_pneus_update_banda_pneu(?, ?, ?)");
+            stmt.setLong(1, codPneu);
+            stmt.setLong(2, codModeloBanda);
+            stmt.setBigDecimal(3, valorBanda);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new SQLException("Erro ao atualizar as informações de banda do pneu: " + codPneu);
+                }
+            } else {
+                throw new SQLException("Erro ao atualizar as informações de banda do pneu: " + codPneu);
             }
         } finally {
-            closeStatement(stmt);
+            closeConnection(null, stmt, rSet);
         }
     }
 

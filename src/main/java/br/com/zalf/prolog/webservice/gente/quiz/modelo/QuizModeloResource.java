@@ -1,8 +1,10 @@
-package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
+package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
@@ -45,7 +47,8 @@ public class QuizModeloResource {
     @POST
     @Secured
     @Path("/{codUnidade}")
-    public AbstractResponse insertModeloQuiz(ModeloQuiz modeloQuiz, @PathParam("codUnidade") Long codUnidade) {
+    public AbstractResponse insertModeloQuiz(@Required ModeloQuiz modeloQuiz,
+                                             @PathParam("codUnidade") @Required Long codUnidade) throws ProLogException {
         return service.insertModeloQuiz(modeloQuiz, codUnidade);
     }
 
