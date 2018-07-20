@@ -15,10 +15,10 @@ import java.util.List;
 /**
  * Created by Zart on 28/08/2017.
  */
-public class ControleIntervalosRelatorioService {
+public class ControleIntervaloRelatorioService {
 
     private ControleIntervaloRelatoriosDao dao = Injection.provideControleIntervaloRelatoriosDao();
-    private static final String TAG = ControleIntervalosRelatorioService.class.getSimpleName();
+    private static final String TAG = ControleIntervaloRelatorioService.class.getSimpleName();
 
     public void getIntervalosCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {

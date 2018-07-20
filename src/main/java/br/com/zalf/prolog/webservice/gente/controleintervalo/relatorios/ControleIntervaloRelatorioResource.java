@@ -17,7 +17,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleIntervaloRelatorioResource {
 
-    private ControleIntervalosRelatorioService service = new ControleIntervalosRelatorioService();
+    private ControleIntervaloRelatorioService service = new ControleIntervaloRelatorioService();
 
     @GET
     @Secured
