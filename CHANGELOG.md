@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria validator para o insert do Modelo de Quiz
 
+### Refactors
+* Adiciona permissão de movimentação na busca de uma recapadora específica
+
 ### Bug Fixes
 * Corrige busca dos relatos para utilizar o código da equipe na filtragem ao invés do nome
 * Adiciona permissão de movimentação na busca dos tipos dos serviços dos pneus
