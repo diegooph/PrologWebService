@@ -15,14 +15,13 @@ public final class RaizenProdutividadeIndividualHolder {
     private BigDecimal valorTotal;
 
     public RaizenProdutividadeIndividualHolder() {
-
     }
 
     public List<RaizenprodutividadeItemIndividual> getProdutividadeItens() {
         return produtividadeItens;
     }
 
-    public void setProdutividadeItens(final List<RaizenprodutividadeItemIndividual> produtividadeItens) {
+    public void setProdutividadeItens(List<RaizenprodutividadeItemIndividual> produtividadeItens) {
         this.produtividadeItens = produtividadeItens;
     }
 
@@ -30,7 +29,7 @@ public final class RaizenProdutividadeIndividualHolder {
         return valorTotal;
     }
 
-    public void setValorTotal(final BigDecimal valorTotal) {
+    public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 }

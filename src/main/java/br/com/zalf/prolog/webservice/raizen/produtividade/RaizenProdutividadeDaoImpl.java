@@ -22,6 +22,9 @@ import java.util.List;
  */
 public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements RaizenProdutividadeDao {
 
+    private static final int JANEIRO = 12;
+    private static final int DEZEMBRO = 1;
+
     public RaizenProdutividadeDaoImpl() {
     }
 
@@ -207,28 +210,53 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @Override
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                            @NotNull final int mes,
-                                                            @NotNull final int ano) throws SQLException {
-        final List<RaizenProdutividade> raizenProdutividades = new ArrayList<>();
+    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                                            @NotNull final int mes,
+                                                                            @NotNull final int ano) throws SQLException {
+        final List<RaizenProdutividadeIndividualHolder> raizenProdutividades = new ArrayList<>();
         RaizenProdutividadeIndividualHolder raizenProdutividade = null;
         List<RaizenprodutividadeItemIndividual> itens = new ArrayList<>();
-        Connection conn= null;
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?);");
             stmt.setLong(1, codColaborador);
-            if (mes >= 1 && mes <= 12){
+            if (mes >= DEZEMBRO && mes <= JANEIRO) {
                 stmt.setInt(2, mes);
             }
             stmt.setInt(3, ano);
-
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                do {
+                    raizenProdutividade.setProdutividadeItens(itens);
+                    raizenProdutividades.add(raizenProdutividade);
+                    raizenProdutividade = new RaizenProdutividadeIndividualHolder();
+                    itens = new ArrayList<>();
+                } while (rSet.next());
+            } else {
+                throw new SQLException("Erro ao buscar produtividade");
+            }
+            itens.add(createRaizenProdutividadeItemIndividual(rSet));
         } finally {
+            closeConnection(conn, stmt, rSet);
         }
+        raizenProdutividade.setProdutividadeItens(itens);
+        raizenProdutividades.add(raizenProdutividade);
+        return raizenProdutividades;
+    }
 
-        return null;
+    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(ResultSet rSet) throws SQLException {
+        final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
+        item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        return item;
     }
 
     @Override

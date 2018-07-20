@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class RaizenprodutividadeItemIndividual {
-    private Date data;
+    private Date dataViagem;
     private BigDecimal valor;
     private String placa;
     private String usina;
@@ -17,12 +17,12 @@ public final class RaizenprodutividadeItemIndividual {
     private double raio;
     private double toneladas;
 
-    public Date getData() {
-        return data;
+    public Date getDataViagem() {
+        return dataViagem;
     }
 
-    public void setData(final Date data) {
-        this.data = data;
+    public void setDataViagem(final Date data) {
+        this.dataViagem = data;
     }
 
     public BigDecimal getValor() {
