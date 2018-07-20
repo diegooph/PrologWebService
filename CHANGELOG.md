@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v0.0.69"></a>
-## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (release-date) [unreleased]
+## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (2018-07-19)
 
 ### Features
 * Cria validator para o insert do Modelo de Quiz
