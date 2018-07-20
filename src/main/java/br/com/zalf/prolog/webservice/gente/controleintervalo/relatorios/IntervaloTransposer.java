@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,11 +39,5 @@ public class IntervaloTransposer extends Transposer {
     }
 
     private void processResultSet() throws SQLException {
-        final List<List<String>> table = new ArrayList<>();
-        final List<String> lines = new ArrayList<>();
-        String cpfAtual = null;
-        while (rSet.next()) {
-
-        }
     }
 }

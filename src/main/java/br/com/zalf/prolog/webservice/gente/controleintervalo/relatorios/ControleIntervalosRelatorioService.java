@@ -217,8 +217,8 @@ public class ControleIntervalosRelatorioService {
                     out,
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDateTime(dataInicial),
+                    ProLogDateParser.toLocalDateTime(dataFinal));
         } catch (IOException | SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de total de tempo para cada tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
@@ -238,8 +238,8 @@ public class ControleIntervalosRelatorioService {
             return dao.getTotalTempoByTipoIntervaloReport(
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDateTime(dataInicial),
+                    ProLogDateParser.toLocalDateTime(dataFinal));
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar report do relatório de total de tempo para cada tipo de intervalo. \n" +
                     "codUnidade: %d \n" +

@@ -354,8 +354,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
-                                                @NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+                                                @NotNull final LocalDateTime dataInicial,
+                                                @NotNull final LocalDateTime dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -377,8 +377,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException {
+                                                     @NotNull final LocalDateTime dataInicial,
+                                                     @NotNull final LocalDateTime dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -395,8 +395,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final String codTipoIntervalo,
-                                                               @NotNull final LocalDate dataInicial,
-                                                               @NotNull final LocalDate dataFinal) throws SQLException {
+                                                               @NotNull final LocalDateTime dataInicial,
+                                                               @NotNull final LocalDateTime dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
