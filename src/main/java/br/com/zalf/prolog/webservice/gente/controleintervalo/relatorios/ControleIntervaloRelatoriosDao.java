@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -139,8 +140,8 @@ public interface ControleIntervaloRelatoriosDao {
     List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
                                                      @NotNull final String cpf,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException;
+                                                     @NotNull final LocalDateTime dataHoraInicial,
+                                                     @NotNull final LocalDateTime dataHoraFinal) throws SQLException;
 
     @NotNull
     Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,

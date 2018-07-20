@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -35,5 +37,13 @@ public final class FolhaPontoRelatorio {
     @NotNull
     public List<FolhaPontoDia> getMarcacoesDias() {
         return marcacoesDias;
+    }
+
+    public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDateTime dataHoraInicial,
+                                                @NotNull final LocalDateTime dataHoraFinal) {
+        //noinspection ConstantConditions
+        Preconditions.checkState(marcacoesDias != null);
+
+
     }
 }

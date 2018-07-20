@@ -30,8 +30,8 @@ public class TreinamentoRelatorioService {
                         .getRelatorioEstratificadoPorColaboradorCsv(
                                 outputStream,
                                 codUnidade,
-                                ProLogDateParser.validateAndParse(dataInicial),
-                                ProLogDateParser.validateAndParse(dataFinal));
+                                ProLogDateParser.toLocalDate(dataInicial),
+                                ProLogDateParser.toLocalDate(dataFinal));
             } catch (SQLException | IOException e) {
                 Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de visualização do treinamento (CSV). \n" +
                                 "codUnidade: %d \n" +
