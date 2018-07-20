@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
@@ -363,7 +363,11 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
-            new CsvWriter().write(rSet, out);
+            new CsvWriter
+                    .Builder(rSet, out)
+                    .withTransposer(new IntervaloTransposer(rSet))
+                    .build()
+                    .write();
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -393,8 +397,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                                @NotNull final String codTipoIntervalo,
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal) throws SQLException {
-        final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
         if (codTipoIntervalo.equals("%")) {
             stmt.setNull(2, Types.BIGINT);

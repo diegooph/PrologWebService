@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio;
 
-import br.com.zalf.prolog.webservice.commons.CsvWriter;
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.Now;
