@@ -34,7 +34,7 @@ public class RaizenProdutividadeResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.UPLOAD)
-    @Path("/upload/{codEmpresa}")
+    @Path("raizen/produtividades/upload/{codEmpresa}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response uploadRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
@@ -46,7 +46,7 @@ public class RaizenProdutividadeResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codEmpresa}")
+    @Path("raizen/produtividades/insert/{codEmpresa}")
     public Response insertRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
@@ -56,7 +56,7 @@ public class RaizenProdutividadeResource {
     @PUT
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.EDITAR)
-    @Path("/{codEmpresa}")
+    @Path("raizen/produtividades/update/{codEmpresa}")
     public Response updateRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
@@ -66,7 +66,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("/{codEmpresa}")
+    @Path("raizen/produtividades/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
                                                             @QueryParam("dataFinal") String dataFinal)
@@ -77,7 +77,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("/{codEmpresa}")
+    @Path("raizen/produtividades/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("cpfMotorista") Long cpfMotorista)
 
@@ -88,7 +88,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
-    @Path("/{codColaborador}")
+    @Path("raizen/produtividades/colaboradores/{codColaborador}")
     public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
                                                                             @QueryParam("mes") int mes,
                                                                             @QueryParam("ano") int ano)
@@ -99,7 +99,7 @@ public class RaizenProdutividadeResource {
     @DELETE
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
-    @Path("/{codEmpresa}")
+    @Path("raizen/produtividades/{codEmpresa}")
     public Response deleteRaizenProdutividadeItens(@PathParam("codEmpresa") Long codEmpresa,
                                                    List<Long> codRaizenProdutividades) throws Exception {
         return service.deleteRaizenProdutividade(codEmpresa, codRaizenProdutividades);
