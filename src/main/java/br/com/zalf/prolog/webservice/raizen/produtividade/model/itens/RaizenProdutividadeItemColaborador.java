@@ -16,6 +16,7 @@ public class RaizenProdutividadeItemColaborador extends RaizenProdutividadeItem 
     private final boolean colaboradorCadastrado;
 
     public RaizenProdutividadeItemColaborador(@NotNull final String cpf, @Nullable final String nome) {
+        super(RaizenProdutividadeItemTipo.ITEM_COLABORADOR);
         this.cpf = cpf;
         this.nome = nome;
         this.colaboradorCadastrado = nome != null;

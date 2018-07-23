@@ -1,5 +1,10 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 
 /**
@@ -20,7 +25,11 @@ public abstract class RaizenProdutividadeItem {
     private Long codColaboradorAlteracao;
     private Long codEmpresa;
 
-    public RaizenProdutividadeItem() {
+    @Exclude
+    private final RaizenProdutividadeItemTipo tipo;
+
+    public RaizenProdutividadeItem(@NotNull final RaizenProdutividadeItemTipo tipo) {
+        this.tipo = tipo;
     }
 
     public boolean isPlacaCadastrada() {
@@ -122,5 +131,13 @@ public abstract class RaizenProdutividadeItem {
                 ", raio=" + raio +
                 ", tonelada=" + tonelada +
                 "}";
+    }
+
+    @NotNull
+    public static RuntimeTypeAdapterFactory<RaizenProdutividadeItem> provideTypeAdapterFactory() {
+        return RuntimeTypeAdapterFactory
+                .of(RaizenProdutividadeItem.class, "tipoAgrupamento")
+                .registerSubtype(RaizenProdutividadeItemData.class, RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())
+                .registerSubtype(RaizenProdutividadeItemColaborador.class, RaizenProdutividadeAgrupamento.POR_DATA.asString());
     }
 }

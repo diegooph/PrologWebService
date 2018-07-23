@@ -47,7 +47,7 @@ public abstract class RaizenProdutividade {
     @NotNull
     public static RuntimeTypeAdapterFactory<RaizenProdutividade> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
-                .of(RaizenProdutividade.class, "agrupamento")
+                .of(RaizenProdutividade.class, "tipoAgrupamento")
                 .registerSubtype(RaizenProdutividadeData.class, RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())
                 .registerSubtype(RaizenProdutividadeColaborador.class, RaizenProdutividadeAgrupamento.POR_DATA.asString());
     }

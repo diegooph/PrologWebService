@@ -8,8 +8,11 @@ import java.time.LocalDate;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeItemData extends RaizenProdutividadeItem {
-
     private LocalDate dataViagem;
+
+    public RaizenProdutividadeItemData() {
+        super(RaizenProdutividadeItemTipo.ITEM_DATA);
+    }
 
     public LocalDate getDataViagem() {
         return dataViagem;

@@ -25,6 +25,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.ModeloVeiculo;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -105,6 +106,7 @@ public final class GsonUtils {
 		builder.registerTypeAdapterFactory(adapterModelo);
 		builder.registerTypeAdapterFactory(adapterMotivo);
 		builder.registerTypeAdapterFactory(QuantidadeServicos.provideTypeAdapterFactory());
+		builder.registerTypeAdapterFactory(RaizenProdutividadeItem.provideTypeAdapterFactory());
 
 		sGson = builder.create();
 	}

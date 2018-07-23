@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.insert;
 
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -9,16 +8,91 @@ import java.time.LocalDate;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenProdutividadeItemInsert extends RaizenProdutividadeItem {
-
+public class RaizenProdutividadeItemInsert {
+    private Long codigo;
+    private String placa;
+    private BigDecimal valor;
+    private String usina;
+    private String fazenda;
+    private double raio;
+    private double tonelada;
+    private Long codEmpresa;
     private Long cpfMotorista;
     private LocalDate dataViagem;
+
+    public RaizenProdutividadeItemInsert() {
+
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(final String placa) {
+        this.placa = placa;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(final BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    public String getUsina() {
+        return usina;
+    }
+
+    public void setUsina(final String usina) {
+        this.usina = usina;
+    }
+
+    public String getFazenda() {
+        return fazenda;
+    }
+
+    public void setFazenda(final String fazenda) {
+        this.fazenda = fazenda;
+    }
+
+    public double getRaio() {
+        return raio;
+    }
+
+    public void setRaio(final double raio) {
+        this.raio = raio;
+    }
+
+    public double getTonelada() {
+        return tonelada;
+    }
+
+    public void setTonelada(final double tonelada) {
+        this.tonelada = tonelada;
+    }
+
+    public Long getCodEmpresa() {
+        return codEmpresa;
+    }
+
+    public void setCodEmpresa(final Long codEmpresa) {
+        this.codEmpresa = codEmpresa;
+    }
 
     public Long getCpfMotorista() {
         return cpfMotorista;
     }
 
-    public void setCpfMotorista(Long cpfMotorista) {
+    public void setCpfMotorista(final Long cpfMotorista) {
         this.cpfMotorista = cpfMotorista;
     }
 
@@ -26,7 +100,7 @@ public class RaizenProdutividadeItemInsert extends RaizenProdutividadeItem {
         return dataViagem;
     }
 
-    public void setDataViagem(LocalDate dataViagem) {
+    public void setDataViagem(final LocalDate dataViagem) {
         this.dataViagem = dataViagem;
     }
 }
