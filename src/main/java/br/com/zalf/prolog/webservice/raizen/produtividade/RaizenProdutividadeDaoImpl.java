@@ -128,11 +128,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                         itens = new ArrayList<>();
                         ultimaData = dataAtual;
                     }
+                    itens.add(createRaizenProdutividadeItemColaborador(rSet));
                 } while (rSet.next());
             } else {
                 throw new SQLException("Erro ao buscar produtividade");
             }
-            itens.add(createRaizenProdutividadeItemColaborador(rSet));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -181,11 +181,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     raizenProdutividade.setItensRaizen(itens);
                     raizenProdutividades.add(raizenProdutividade);
                     itens = new ArrayList<>();
+                    itens.add(createRaizenProdutividadeItemData(rSet));
                 } while (rSet.next());
             } else {
                 throw new SQLException("Erro ao buscar produtividade");
             }
-            itens.add(createRaizenProdutividadeItemData(rSet));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
@@ -235,11 +235,11 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     raizenProdutividades.add(raizenProdutividade);
                     raizenProdutividade = new RaizenProdutividadeIndividualHolder();
                     itens = new ArrayList<>();
+                    itens.add(createRaizenProdutividadeItemIndividual(rSet));
                 } while (rSet.next());
             } else {
                 throw new SQLException("Erro ao buscar produtividade");
             }
-            itens.add(createRaizenProdutividadeItemIndividual(rSet));
             raizenProdutividade.setValorTotal(valorTotal(conn));
         } finally {
             closeConnection(conn, stmt, rSet);
