@@ -66,7 +66,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("raizen/produtividades/{codEmpresa}")
+    @Path("raizen/produtividades/data/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
                                                             @QueryParam("dataFinal") String dataFinal)
@@ -77,7 +77,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("raizen/produtividades/{codEmpresa}")
+    @Path("raizen/produtividades/colaborador/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("cpfMotorista") Long cpfMotorista)
 
@@ -88,7 +88,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
-    @Path("raizen/produtividades/colaboradores/{codColaborador}")
+    @Path("raizen/produtividades/individual/{codColaborador}")
     public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
                                                                             @QueryParam("mes") int mes,
                                                                             @QueryParam("ano") int ano)
