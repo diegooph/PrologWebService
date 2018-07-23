@@ -99,7 +99,7 @@ public class RaizenProdutividadeResource {
     @DELETE
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.DELETAR)
-    @Path("raizen/produtividades/{codEmpresa}")
+    @Path("raizen/produtividades/delete/{codEmpresa}")
     public Response deleteRaizenProdutividadeItens(@PathParam("codEmpresa") Long codEmpresa,
                                                    List<Long> codRaizenProdutividades) throws Exception {
         return service.deleteRaizenProdutividade(codEmpresa, codRaizenProdutividades);
