@@ -185,10 +185,11 @@ public class ControleIntervaloRelatorioResource {
     @GET
     @Secured
     @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/report")
-    public Report getTotalTempoByTipoIntervaloReport(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                     @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-                                                     @QueryParam("dataInicial") @Required final String dataInicial,
-                                                     @QueryParam("dataFinal") @Required final String dataFinal) {
+    public Report getTotalTempoByTipoIntervaloReport(
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) throws Throwable {
         return service.getTotalTempoByTipoIntervaloReport(
                 codUnidade,
                 codTipoIntervalo,
