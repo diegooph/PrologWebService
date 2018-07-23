@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -89,9 +89,9 @@ public class RaizenProdutividadeResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
     @Path("/{codColaborador}")
-    public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
-                                                            @QueryParam("mes") int mes,
-                                                            @QueryParam("ano") int ano)
+    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
+                                                                            @QueryParam("mes") int mes,
+                                                                            @QueryParam("ano") int ano)
             throws RaizenProdutividadeException{
         return service.getRaizenProdutividade(codColaborador, mes, ano);
     }

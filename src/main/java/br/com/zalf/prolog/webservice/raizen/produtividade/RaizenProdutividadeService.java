@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RaizenProdutividadeException;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
 import com.google.common.base.Preconditions;
@@ -111,9 +111,9 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                            @NotNull final int mes,
-                                                            @NotNull final int ano) throws RaizenProdutividadeException {
+    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                                            @NotNull final int mes,
+                                                                            @NotNull final int ano) throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(
                     codColaborador,

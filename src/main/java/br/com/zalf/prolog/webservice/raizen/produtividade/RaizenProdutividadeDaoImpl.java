@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProd
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenprodutividadeItemIndividual;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -239,12 +240,27 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                 throw new SQLException("Erro ao buscar produtividade");
             }
             itens.add(createRaizenProdutividadeItemIndividual(rSet));
+            raizenProdutividade.setValorTotal(valorTotal(conn));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
         raizenProdutividade.setProdutividadeItens(itens);
         raizenProdutividades.add(raizenProdutividade);
         return raizenProdutividades;
+    }
+
+    private BigDecimal valorTotal(Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final BigDecimal valorTotal;
+        try {
+            stmt = conn.prepareStatement("SELECT SUM(VALOR) AS valor_total FROM RAIZEN.produtividade;");
+            rSet = stmt.executeQuery();
+            valorTotal = rSet.getBigDecimal("valor_total");
+        }finally {
+            closeConnection(null, stmt, rSet);
+        }
+        return valorTotal;
     }
 
     private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(ResultSet rSet) throws SQLException {
