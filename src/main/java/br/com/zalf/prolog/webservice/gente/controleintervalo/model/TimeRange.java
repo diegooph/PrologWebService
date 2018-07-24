@@ -1,45 +1,56 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.model;
 
-/**
- * Created on 24/07/2018
- *
- * @author Luiz Felipe (https://github.com/luizfp)
- */
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalTime;
 
 /**
  * A TimeRange is the range between two times.
+ *
+ * Created on 24/07/2018
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class TimeRange {
+    @NotNull
     private final LocalTime start;
+    @NotNull
     private final LocalTime end;
 
+    @NotNull
     public static TimeRange of(final int startHour, final int endHour) {
         final LocalTime startTime = LocalTime.of(startHour % 24, 0);
         final LocalTime endTime = LocalTime.of(endHour % 24, 0);
         return new TimeRange(startTime, endTime);
     }
 
-    public TimeRange(final LocalTime start, final Duration length) {
-        this(start, start.plus(length));
+    @NotNull
+    public static TimeRange of(@NotNull final LocalTime start, @NotNull final LocalTime end) {
+        return new TimeRange(start, end);
     }
 
-    public TimeRange(final LocalTime start, final LocalTime end) {
+    @NotNull
+    public static TimeRange of(@NotNull final LocalTime start, @NotNull final Duration length) {
+        return new TimeRange(start, start.plus(length));
+    }
+
+    private TimeRange(@NotNull final LocalTime start, @NotNull final LocalTime end) {
         this.start = start;
         this.end = end;
     }
 
+    @NotNull
     public LocalTime getStart() {
         return start;
     }
 
+    @NotNull
     public LocalTime getEnd() {
         return end;
     }
 
-    public boolean overlaps(final TimeRange other) {
+    public boolean overlaps(@NotNull final TimeRange other) {
         if (endsNextDay()) {
             return overlapsDayEnd(other);
         }
@@ -51,7 +62,7 @@ public class TimeRange {
         return !start.isAfter(other.end) && !end.isBefore(other.start);
     }
 
-    private boolean overlapsDayEnd(final TimeRange other) {
+    private boolean overlapsDayEnd(@NotNull final TimeRange other) {
         // check rest of this day and start of next day separately
         final TimeRange firstPart = new TimeRange(start, LocalTime.MAX);
         final TimeRange secondPart = new TimeRange(LocalTime.MIN, end);
@@ -65,6 +76,7 @@ public class TimeRange {
         return start.isAfter(end);
     }
 
+    @NotNull
     public Duration getDuration() {
         final Duration duration = Duration.between(start, end);
         if (duration.isNegative()) {
@@ -81,6 +93,7 @@ public class TimeRange {
         return (int) getDuration().toMinutes();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -90,20 +103,28 @@ public class TimeRange {
         return result;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        TimeRange other = (TimeRange) obj;
+        }
+
+        final TimeRange other = (TimeRange) obj;
         if (end == null) {
-            if (other.end != null)
+            if (other.end != null) {
                 return false;
-        } else if (!end.equals(other.end))
+            }
+        } else if (!end.equals(other.end)) {
             return false;
+        }
+
         if (start == null) {
             return other.start == null;
         } else {

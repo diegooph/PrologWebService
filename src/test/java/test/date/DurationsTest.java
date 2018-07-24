@@ -556,7 +556,7 @@ public class DurationsTest {
 
     protected static Duration getSumOfHoursOnDays(ZonedDateTime dateTimeFrom, ZonedDateTime dateTimeTo, LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
         ZoneId zone = dateTimeFrom.getZone();
-        return Durations.getSumOfHoursInRangeOnDays(zone, dateTimeFrom.toLocalDateTime(), dateTimeTo.toLocalDateTime(), new TimeRange(dailyTimeFrom, dailyTimeTo));
+        return Durations.getSumOfHoursInRangeOnDays(zone, dateTimeFrom.toLocalDateTime(), dateTimeTo.toLocalDateTime(), TimeRange.of(dailyTimeFrom, dailyTimeTo));
     }
 
     protected static Duration getHoursOnFirstDay(ZonedDateTime dateTimeFrom, ZonedDateTime dateTimeTo, LocalTime dailyTimeFrom, LocalTime dailyTimeTo) {
