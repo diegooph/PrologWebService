@@ -65,7 +65,8 @@ public final class FolhaPontoRelatorio {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
                 final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
                 final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
-                somaTempoDecorrido(segundosTotaisTipoIntervalo, segundosTotaisHorasNoturnas, intervalo, dataHoraInicio, dataHoraFim, filtroInicio, filtroFim, zoneId);
+                somaTempoDecorrido(segundosTotaisTipoIntervalo, segundosTotaisHorasNoturnas, intervalo,
+                        dataHoraInicio, dataHoraFim, filtroInicio, filtroFim, zoneId);
             }
         }
 
@@ -85,21 +86,33 @@ public final class FolhaPontoRelatorio {
                                     @NotNull final ZoneId zoneId) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
+            // Precisamos cobrir 4 diferentes casos:
+            // 1 - Uma marcação com início ANTES do período do filtro e fim DENTRO do período.
+            // 2 - Uma marcação com início DENTRO do período do filtro e fim DENTRO do período.
+            // 3 - Uma marcação com início DENTRO do período do filtro e fim DEPOIS do período.
+            // 4 - Uma marcação com início ANTES do período do filtro e fim DEPOIS do período.
             LocalDateTime inicio, fim;
+            // Caso 1) ANTES -> DENTRO
             if (dataHoraInicio.isBefore(filtroInicio)
                     && filtroInicio.isBefore(dataHoraFim)
                     && dataHoraFim.isBefore(filtroFim)) {
                 inicio = filtroInicio;
                 fim = dataHoraFim;
+
+                // Caso 2) DENTRO -> DENTRO
+            } else if (filtroInicio.isBefore(dataHoraInicio)
+                    && filtroFim.isAfter(dataHoraFim)) {
+                inicio = dataHoraInicio;
+                fim = dataHoraFim;
+
+                // Caso 3) DENTRO -> DEPOIS
             } else if (dataHoraInicio.isAfter(filtroInicio)
                     && filtroFim.isAfter(dataHoraInicio)
                     && dataHoraFim.isAfter(filtroFim)) {
                 inicio = dataHoraInicio;
                 fim = filtroFim;
-            } else if (filtroInicio.isBefore(dataHoraInicio)
-                    && filtroFim.isAfter(dataHoraFim)) {
-                inicio = dataHoraInicio;
-                fim = dataHoraFim;
+
+                // Caso 4) ANTES -> DEPOIS
             } else if (dataHoraInicio.isBefore(filtroInicio)
                     && dataHoraFim.isAfter(filtroFim)) {
                 inicio = filtroInicio;
