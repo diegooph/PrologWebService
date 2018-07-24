@@ -69,20 +69,10 @@ public class RaizenProdutividadeResource {
     @Path("/by-data/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
-                                                            @QueryParam("dataFinal") String dataFinal)
+                                                            @QueryParam("dataFinal") String dataFinal,
+                                                            @QueryParam("tipoAgrupamento") String tipoAgrupamento)
             throws RaizenProdutividadeException {
-        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal);
-    }
-
-    @GET
-    @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("/by-colaborador/{codEmpresa}")
-    public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
-                                                            @QueryParam("cpfMotorista") Long cpfMotorista)
-
-            throws RaizenProdutividadeException {
-        return service.getRaizenProdutividade(codEmpresa, cpfMotorista);
+        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, tipoAgrupamento);
     }
 
     @GET
@@ -92,7 +82,7 @@ public class RaizenProdutividadeResource {
     public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
                                                                             @QueryParam("mes") int mes,
                                                                             @QueryParam("ano") int ano)
-            throws RaizenProdutividadeException{
+            throws RaizenProdutividadeException {
         return service.getRaizenProdutividade(codColaborador, mes, ano);
     }
 

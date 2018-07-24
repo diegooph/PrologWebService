@@ -68,31 +68,20 @@ public interface RaizenProdutividadeDao {
      */
     List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                      @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException;
-
-    /**
-     * Busca as produtividades de um colaborador pelo cpf.
-     *
-     * @param codEmpresa   - Código da empresa do colaborador.
-     * @param cpfMotorista - CPF para a busca.
-     * @return - Um {@link List<RaizenProdutividade>} contendo a
-     * {@link RaizenProdutividadeItem} de cada colaborador.
-     * @throws SQLException - Erro na execução da busca dos dados no Banco.
-     */
-    List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                     @NotNull final Long cpfMotorista) throws SQLException;
+                                                     @NotNull final LocalDate dataFinal,
+                                                     @NotNull final String tipoAgrupamento) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador individualmente.
      *
      * @param codColaborador - Código do colaborador.
-     * @param mes - mes para a busca.
-     * @param ano - ano para a busca.
+     * @param mes            - mes para a busca.
+     * @param ano            - ano para a busca.
      * @return - Um {@link List<RaizenProdutividade>} contendo a
      * {@link RaizenProdutividadeItem} do colaborador.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
-    List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(Long codColaborador, int mes, int ano) throws  SQLException;
+    List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(Long codColaborador, int mes, int ano) throws SQLException;
 
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.

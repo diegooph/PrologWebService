@@ -81,27 +81,14 @@ public class RaizenProdutividadeService {
 
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final String dataInicial,
-                                                            @NotNull final String dataFinal) throws RaizenProdutividadeException {
+                                                            @NotNull final String dataFinal,
+                                                            @NotNull final String tipoAgrupamento) throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(
                     codEmpresa,
                     ProLogDateParser.validateAndParse(dataInicial),
-                    ProLogDateParser.validateAndParse(dataFinal));
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível buscar a produtividade, tente novamente",
-                    "Erro ao buscar produtividade",
-                    e);
-        }
-    }
-
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                            @NotNull final Long cpfMotorista) throws RaizenProdutividadeException {
-        try {
-            return dao.getRaizenProdutividade(
-                    codEmpresa,
-                    cpfMotorista);
+                    ProLogDateParser.validateAndParse(dataFinal),
+                    tipoAgrupamento);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao buscar produtividade", e);
             throw new RaizenProdutividadeException(
@@ -141,7 +128,6 @@ public class RaizenProdutividadeService {
                     e);
         }
     }
-
 
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,
@@ -186,6 +172,4 @@ public class RaizenProdutividadeService {
                     e);
         }
     }
-
-
 }

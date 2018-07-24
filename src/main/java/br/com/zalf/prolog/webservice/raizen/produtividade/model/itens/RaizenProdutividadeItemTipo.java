@@ -3,10 +3,8 @@ package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-
 /**
- * Created on 23/07/2018
+ * Created on 23/07/2018.
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
@@ -17,7 +15,7 @@ public enum RaizenProdutividadeItemTipo {
     @NotNull
     private final String identificador;
 
-    RaizenProdutividadeItemTipo(@NotNull final String identificador) {
+    RaizenProdutividadeItemTipo(@NotNull String identificador) {
         this.identificador = identificador;
     }
 
@@ -26,14 +24,14 @@ public enum RaizenProdutividadeItemTipo {
         return identificador;
     }
 
-    public static RaizenProdutividadeItemTipo fromString(@Nonnull final String string) {
-        Preconditions.checkNotNull(string, "string cannot be null!");
+    public static RaizenProdutividadeItemTipo fromString(@NotNull final String string) {
+        Preconditions.checkNotNull(string, "string cannot be null");
 
         for (final RaizenProdutividadeItemTipo agrupamento : RaizenProdutividadeItemTipo.values()) {
             if (string.equals(agrupamento.identificador)) {
                 return agrupamento;
             }
         }
-        throw new IllegalArgumentException("Nenhum tipo de componente encontrado para a string: " + string);
+        throw new IllegalArgumentException("Nenhum tipo de coponente encontrado para a string: " + string);
     }
 }

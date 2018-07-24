@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.*;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenprodutividadeItemIndividual;
@@ -101,10 +102,13 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final LocalDate dataInicial,
-                                                            @NotNull final LocalDate dataFinal) throws SQLException {
+                                                            @NotNull final LocalDate dataFinal,
+                                                            @NotNull final String tipoAgrupamento) throws SQLException {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
-        RaizenProdutividadeData raizenProdutividade = null;
-        List<RaizenProdutividadeItemColaborador> itens = new ArrayList<>();
+        RaizenProdutividadeData raizenProdutividadeData = null;
+        RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
+        List<RaizenProdutividadeItemColaborador> itensColaborador = new ArrayList<>();
+        List<RaizenProdutividadeItemData> itensData = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -116,26 +120,42 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setObject(3, dataFinal);
             rSet = stmt.executeQuery();
             LocalDate ultimaData = null;
-            // TODO: Este método ainda está incorreto, ele foi alterado apenas para conseguirmos avançar nos testes
-            // no front-end
-            while (rSet.next()) {
-                final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
-                if (ultimaData == null) {
-                    ultimaData = dataAtual;
-                } else if (!dataAtual.equals(ultimaData)) {
-                    raizenProdutividade = new RaizenProdutividadeData(
-                            rSet.getObject("DATA_VIAGEM", LocalDate.class));
-                    raizenProdutividade.setItensRaizen(itens);
-                    produtividades.add(raizenProdutividade);
-                    itens = new ArrayList<>();
-                    ultimaData = dataAtual;
+            if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_DATA.asString())) {
+                while (rSet.next()) {
+                    final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
+                    if (ultimaData == null) {
+                        ultimaData = dataAtual;
+                    } else if (!dataAtual.equals(ultimaData)) {
+                        raizenProdutividadeData = new RaizenProdutividadeData(
+                                rSet.getObject("DATA_VIAGEM", LocalDate.class));
+                        raizenProdutividadeData.setItensRaizen(itensData);
+                        produtividades.add(raizenProdutividadeData);
+                        itensData = new ArrayList<>();
+                        itensData.add(createRaizenProdutividadeItemData(rSet));
+                        ultimaData = dataAtual;
+                    }
                 }
-                itens.add(createRaizenProdutividadeItemColaborador(rSet));
+            } else if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())) {
+                while (rSet.next()) {
+                    final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
+                    if (ultimaData == null) {
+                        ultimaData = dataAtual;
+                    } else if (!dataAtual.equals(ultimaData)) {
+                        raizenProdutividadeColaborador = new RaizenProdutividadeColaborador(
+                                rSet.getString("CPF_MOTORISTA"),
+                                rSet.getString("NOME"));
+                        raizenProdutividadeColaborador.setItensRaizen(itensColaborador);
+                        produtividades.add(raizenProdutividadeColaborador);
+                        itensColaborador = new ArrayList<>();
+                        itensColaborador.add(createRaizenProdutividadeItemColaborador(rSet));
+                        ultimaData = dataAtual;
+                    }
+                }
             }
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        produtividades.add(raizenProdutividade);
+        produtividades.add(raizenProdutividadeData);
         return produtividades;
     }
 
@@ -155,42 +175,6 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
         return item;
-    }
-
-    @Override
-    public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
-                                                            @NotNull final Long cpfMotorista) throws SQLException {
-        final List<RaizenProdutividade> raizenProdutividades = new ArrayList<>();
-        RaizenProdutividadeColaborador raizenProdutividade = null;
-        List<RaizenProdutividadeItemData> itens = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_POR_COLABORADOR(?, ?);");
-            stmt.setLong(1, codEmpresa);
-            stmt.setObject(2, cpfMotorista);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                do {
-                    raizenProdutividade = new RaizenProdutividadeColaborador(
-                            rSet.getString("CPF_MOTORISTA"),
-                            rSet.getString("NOME"));
-                    raizenProdutividade.setItensRaizen(itens);
-                    raizenProdutividades.add(raizenProdutividade);
-                    itens = new ArrayList<>();
-                    itens.add(createRaizenProdutividadeItemData(rSet));
-                } while (rSet.next());
-            } else {
-                throw new SQLException("Erro ao buscar produtividade");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        raizenProdutividade.setItensRaizen(itens);
-        raizenProdutividades.add(raizenProdutividade);
-        return raizenProdutividades;
     }
 
     private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
@@ -301,8 +285,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     private void internalInsertRaizenProdutividadeItem(@NotNull final Connection conn,
                                                        @NotNull final String token,
                                                        @NotNull final Long codEmpresa,
-                                                       @NotNull final RaizenProdutividadeItemInsert item) throws
-            SQLException {
+                                                       @NotNull final RaizenProdutividadeItemInsert item)
+            throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF," +
