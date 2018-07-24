@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ocorrencia;
 
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import com.google.common.base.Preconditions;
 
 import java.time.LocalDate;

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.Date;
 
@@ -205,7 +206,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             }
             stmt.setObject(4, filtroInicio);
             stmt.setObject(5, filtroFim);
-            stmt.setString(6, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
             final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
@@ -240,7 +242,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                     //noinspection ConstantConditions
                     final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                             nomeAnterior, diaAnterior, dias, intervalosDia);
-                    folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade);
+                    folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade, zoneId);
                     relatorios.add(folhaPontoRelatorio);
                     dias = new ArrayList<>();
                     intervalosDia = new ArrayList<>();
@@ -275,7 +277,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             if (diaAnterior != null) {
                 final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                         nomeAnterior, diaAnterior, dias, intervalosDia);
-                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade);
+                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade, zoneId);
                 relatorios.add(folhaPontoRelatorio);
             }
             return relatorios;

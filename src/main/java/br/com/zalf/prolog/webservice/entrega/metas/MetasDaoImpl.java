@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.metas;
 
-import br.com.zalf.prolog.webservice.commons.util.TimeUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.TimeUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 
 import java.sql.*;

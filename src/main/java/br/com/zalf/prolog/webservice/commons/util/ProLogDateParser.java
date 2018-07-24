@@ -45,7 +45,9 @@ public final class ProLogDateParser {
     public static LocalDateTime toLocalDateTime(@NotNull final String date) {
         Preconditions.checkNotNull(date);
 
-        if (date.length() != DEFAULT_DATE_TIME_FORMAT.length()) {
+        // - 2 para descontar as duas aspas simples ao redor do T. Elas NÃO devem ser enviadas nas datas em formato
+        // String.
+        if (date.length() != (DEFAULT_DATE_TIME_FORMAT.length() - 2)) {
             throw new IllegalArgumentException(String.format(
                     "The provided date-time %s is not in the expected format: %s",
                     date,

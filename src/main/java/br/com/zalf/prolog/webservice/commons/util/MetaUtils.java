@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
 
+import br.com.zalf.prolog.webservice.commons.util.date.TimeUtils;
+
 import java.sql.Time;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;

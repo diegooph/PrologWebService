@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.date;
 
 import java.sql.Time;
 import java.sql.Timestamp;

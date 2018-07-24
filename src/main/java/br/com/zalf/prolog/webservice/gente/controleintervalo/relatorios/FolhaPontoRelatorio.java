@@ -1,16 +1,21 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.date.Durations;
+import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public final class FolhaPontoRelatorio {
+    private static final String TAG = FolhaPontoRelatorio.class.getSimpleName();
     @NotNull
     private final Colaborador colaborador;
     @NotNull
@@ -41,7 +46,8 @@ public final class FolhaPontoRelatorio {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDateTime filtroInicio,
                                                 @NotNull final LocalDateTime filtroFim,
-                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade) {
+                                                @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
+                                                @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
 
@@ -59,7 +65,7 @@ public final class FolhaPontoRelatorio {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
                 final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
                 final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
-                somaTempoDecorrido(segundosTotaisTipoIntervalo, segundosTotaisHorasNoturnas, intervalo, dataHoraInicio, dataHoraFim, filtroInicio, filtroFim);
+                somaTempoDecorrido(segundosTotaisTipoIntervalo, segundosTotaisHorasNoturnas, intervalo, dataHoraInicio, dataHoraFim, filtroInicio, filtroFim, zoneId);
             }
         }
 
@@ -75,29 +81,40 @@ public final class FolhaPontoRelatorio {
                                     @Nullable final LocalDateTime dataHoraInicio,
                                     @Nullable final LocalDateTime dataHoraFim,
                                     @NotNull final LocalDateTime filtroInicio,
-                                    @NotNull final LocalDateTime filtroFim) {
+                                    @NotNull final LocalDateTime filtroFim,
+                                    @NotNull final ZoneId zoneId) {
         // Calcula a diferença de tempo entre início e fim, se ambos existirem.
         if (dataHoraInicio != null && dataHoraFim != null) {
-            final long segundos;
-            final long segundosNoturnos;
+            LocalDateTime inicio, fim;
             if (dataHoraInicio.isBefore(filtroInicio)
                     && filtroInicio.isBefore(dataHoraFim)
                     && dataHoraFim.isBefore(filtroFim)) {
-                segundos = ChronoUnit.SECONDS.between(filtroInicio, dataHoraFim);
+                inicio = filtroInicio;
+                fim = dataHoraFim;
             } else if (dataHoraInicio.isAfter(filtroInicio)
                     && filtroFim.isAfter(dataHoraInicio)
                     && dataHoraFim.isAfter(filtroFim)) {
-                segundos = ChronoUnit.SECONDS.between(dataHoraInicio, filtroFim);
+                inicio = dataHoraInicio;
+                fim = filtroFim;
             } else if (filtroInicio.isBefore(dataHoraInicio)
                     && filtroFim.isAfter(dataHoraFim)) {
-                segundos = ChronoUnit.SECONDS.between(dataHoraInicio, dataHoraFim);
+                inicio = dataHoraInicio;
+                fim = dataHoraFim;
             } else if (dataHoraInicio.isBefore(filtroInicio)
                     && dataHoraFim.isAfter(filtroFim)) {
-                segundos = ChronoUnit.SECONDS.between(filtroInicio, filtroFim);
+                inicio = filtroInicio;
+                fim = filtroFim;
             } else {
                 throw new IllegalStateException("Condição não mapeada! :(");
             }
+            final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
+            final long segundosNoturnos = Durations
+                    .getSumOfMinutesInRangeOnDays(zoneId, inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
+                    .toMinutes();
+            Log.d(TAG, "Segundos totais: " + segundos);
+            Log.d(TAG, "Segundos noturnos: " + segundosNoturnos);
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
+            segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
         } else {
             // Se a marcação de início ou fim não existirem, nós não temos como calcular o tempo total nesse
             // tipo de intervalo. Porém, caso o colaborador tenha marcado apenas INÍCIOS para um tipo de
@@ -105,6 +122,7 @@ public final class FolhaPontoRelatorio {
             // esse tipo de intervalo nos intervalos marcados pelo colaborador. Pois ele não estará no Map
             // segundosTotais. Esse putIfAbsent garante que cobrimos esse caso.
             segundosTotaisTipoIntervalo.putIfAbsent(intervalo.getCodTipoIntervalo(), 0L);
+            segundosTotaisHorasNoturnas.putIfAbsent(intervalo.getCodTipoIntervalo(), 0L);
         }
     }
 
