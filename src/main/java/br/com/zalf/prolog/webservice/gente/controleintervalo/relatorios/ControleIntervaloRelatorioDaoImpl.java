@@ -341,14 +341,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
-                                                @NotNull final LocalDateTime dataInicial,
-                                                @NotNull final LocalDateTime dataFinal) throws SQLException, IOException {
+                                                @NotNull final LocalDateTime dataHoraInicial,
+                                                @NotNull final LocalDateTime dataHoraFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(rSet, out)
@@ -364,14 +364,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
-                                                     @NotNull final LocalDateTime dataInicial,
-                                                     @NotNull final LocalDateTime dataFinal) throws SQLException {
+                                                     @NotNull final LocalDateTime dataHoraInicial,
+                                                     @NotNull final LocalDateTime dataHoraFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -382,8 +382,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final String codTipoIntervalo,
-                                                               @NotNull final LocalDateTime dataInicial,
-                                                               @NotNull final LocalDateTime dataFinal) throws SQLException {
+                                                               @NotNull final LocalDateTime dataHoraInicial,
+                                                               @NotNull final LocalDateTime dataHoraFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
@@ -392,8 +392,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));
         }
-        stmt.setObject(3, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setObject(3, dataHoraInicial);
+        stmt.setObject(4, dataHoraFinal);
         return stmt;
     }
 

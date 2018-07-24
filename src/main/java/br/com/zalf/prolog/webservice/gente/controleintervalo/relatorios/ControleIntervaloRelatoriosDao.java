@@ -163,16 +163,16 @@ public interface ControleIntervaloRelatoriosDao {
      * @param out              - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataInicial      - Data inicial do período de filtro.
-     * @param dataFinal        - Data final do período de filtro.
+     * @param dataHoraInicial  - Data e Hora inicial do período de filtro.
+     * @param dataHoraFinal    - Data e Hora final do período de filtro.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
      */
     void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                          @NotNull final Long codUnidade,
                                          @NotNull final String codTipoIntervalo,
-                                         @NotNull final LocalDateTime dataInicial,
-                                         @NotNull final LocalDateTime dataFinal) throws SQLException, IOException;
+                                         @NotNull final LocalDateTime dataHoraInicial,
+                                         @NotNull final LocalDateTime dataHoraFinal) throws SQLException, IOException;
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
@@ -182,14 +182,14 @@ public interface ControleIntervaloRelatoriosDao {
      *
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataInicial      - Data inicial do período de filtro.
-     * @param dataFinal        - Data final do período de filtro.
+     * @param dataHoraInicial  - Data e Hora inicial do período de filtro.
+     * @param dataHoraFinal    - Data e Hora final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
     @NotNull
     Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                               @NotNull final String codTipoIntervalo,
-                                              @NotNull final LocalDateTime dataInicial,
-                                              @NotNull final LocalDateTime dataFinal) throws SQLException;
+                                              @NotNull final LocalDateTime dataHoraInicial,
+                                              @NotNull final LocalDateTime dataHoraFinal) throws SQLException;
 }
