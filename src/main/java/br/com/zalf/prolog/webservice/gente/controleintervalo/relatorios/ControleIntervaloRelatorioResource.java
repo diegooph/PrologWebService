@@ -172,14 +172,14 @@ public class ControleIntervaloRelatorioResource {
     @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/csv")
     public StreamingOutput getTotalTempoByTipoIntervaloCsv(@PathParam("codUnidade") @Required final Long codUnidade,
                                                            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-                                                           @QueryParam("dataInicial") @Required final String dataInicial,
-                                                           @QueryParam("dataFinal") @Required final String dataFinal) {
+                                                           @QueryParam("dataHoraInicial") @Required final String dataHoraInicial,
+                                                           @QueryParam("dataHoraFinal") @Required final String dataHoraFinal) {
         return outputStream -> service.getTotalTempoByTipoIntervaloCsv(
                 outputStream,
                 codUnidade,
                 codTipoIntervalo,
-                dataInicial,
-                dataFinal);
+                dataHoraInicial,
+                dataHoraFinal);
     }
 
     @GET
@@ -188,12 +188,12 @@ public class ControleIntervaloRelatorioResource {
     public Report getTotalTempoByTipoIntervaloReport(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws Throwable {
+            @QueryParam("dataHoraInicial") @Required final String dataHoraInicial,
+            @QueryParam("dataHoraFinal") @Required final String dataHoraFinal) throws Throwable {
         return service.getTotalTempoByTipoIntervaloReport(
                 codUnidade,
                 codTipoIntervalo,
-                dataInicial,
-                dataFinal);
+                dataHoraInicial,
+                dataHoraFinal);
     }
 }
