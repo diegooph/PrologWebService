@@ -110,7 +110,7 @@ public final class FolhaPontoRelatorio {
             final long segundos = ChronoUnit.SECONDS.between(inicio, fim);
             final long segundosNoturnos = Durations
                     .getSumOfMinutesInRangeOnDays(zoneId, inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
-                    .toMinutes();
+                    .toMinutes() * 60;
             Log.d(TAG, "Segundos totais: " + segundos);
             Log.d(TAG, "Segundos noturnos: " + segundosNoturnos);
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
