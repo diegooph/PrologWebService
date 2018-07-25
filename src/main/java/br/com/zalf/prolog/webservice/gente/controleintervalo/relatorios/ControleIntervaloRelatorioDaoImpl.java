@@ -354,6 +354,62 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @Override
+    public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
+                                                @NotNull final Long codUnidade,
+                                                @NotNull final String codTipoIntervalo,
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, out);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
+                                                     @NotNull final String codTipoIntervalo,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade,
+                                                               @NotNull final String codTipoIntervalo,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
+        stmt.setLong(1, codUnidade);
+        if (codTipoIntervalo.equals("%")) {
+            stmt.setNull(2, Types.BIGINT);
+        } else {
+            stmt.setLong(2, Long.parseLong(codTipoIntervalo));
+        }
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
+        return stmt;
+    }
+
     @NotNull
     private Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
         final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();

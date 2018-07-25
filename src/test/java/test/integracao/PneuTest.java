@@ -1,6 +1,6 @@
 package test.integracao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,7 @@ public class PneuTest {
 
     @Test
     public void testCastPressaoAtualToInt() {
-        final Pneu pneu = new Pneu();
+        final PneuComum pneu = new PneuComum();
         pneu.setPressaoAtual(0);
         assertTrue(pneu.getPressaoAtualAsInt() == 0);
 

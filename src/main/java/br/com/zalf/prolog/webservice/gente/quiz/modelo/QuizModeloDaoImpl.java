@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.gente.quiz.quizModelo;
+package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
@@ -9,6 +10,7 @@ import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQui
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
 import br.com.zalf.prolog.webservice.gente.treinamento.TreinamentoDao;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.Clock;
@@ -119,8 +121,9 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
         return modelo;
     }
 
+    @NotNull
     @Override
-    public Long insertModeloQuiz(ModeloQuiz modeloQuiz, Long codUnidade) throws SQLException {
+    public Long insertModeloQuiz(@NotNull final ModeloQuiz modeloQuiz, @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -131,8 +134,9 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                     "DATA_HORA_FECHAMENTO, PORCENTAGEM_APROVACAO) VALUES (?,?,?,?,?,?) RETURNING CODIGO;");
             final ZoneId unidadeZoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, modeloQuiz.getNome());
-            stmt.setString(3, modeloQuiz.getDescricao());
+            stmt.setString(2, modeloQuiz.getNome().trim());
+            final String descricao = modeloQuiz.getDescricao();
+            stmt.setString(3, StringUtils.isNullOrEmpty(descricao) ? null : descricao.trim());
             stmt.setObject(4, modeloQuiz.getDataHoraAbertura().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setObject(5, modeloQuiz.getDataHoraFechamento().atZone(unidadeZoneId).toOffsetDateTime());
             stmt.setDouble(6, modeloQuiz.getPorcentagemAprovacao());
@@ -155,14 +159,17 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
                 }
                 conn.commit();
                 return codModeloQuiz;
+            } else {
+                throw new SQLException("Erro ao inserir modelo de quiz");
             }
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        return null;
     }
 
     @Override
@@ -230,23 +237,17 @@ public class QuizModeloDaoImpl extends DatabaseConnection implements QuizModeloD
     private List<Cargo> getFuncoesLiberadas(Long codModeloQuiz, Long codUnidade, Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Cargo> funcoes = new ArrayList<>();
+        final List<Cargo> funcoes = new ArrayList<>();
         try {
-            stmt = conn.prepareStatement("SELECT F.* FROM QUIZ_MODELO QM JOIN QUIZ_MODELO_FUNCAO QMF " +
-                    "  ON QM.COD_UNIDADE = QMF.COD_UNIDADE " +
-                    "  AND QM.CODIGO = QMF.COD_MODELO " +
-                    "    JOIN UNIDADE_FUNCAO UF ON UF.COD_FUNCAO = QMF.COD_FUNCAO_COLABORADOR AND UF.COD_UNIDADE = QMF.COD_UNIDADE " +
-                    "    JOIN FUNCAO F ON F.CODIGO = UF.COD_FUNCAO " +
-                    "WHERE QMF.COD_UNIDADE = ? " +
-                    "  AND QMF.COD_MODELO = ?;");
+            stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME " +
+                    "FROM FUNCAO F\n" +
+                    "  JOIN QUIZ_MODELO_FUNCAO QMF ON F.CODIGO = QMF.COD_FUNCAO_COLABORADOR " +
+                    "WHERE QMF.COD_UNIDADE = ? AND QMF.COD_MODELO = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloQuiz);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final Cargo cargo = new Cargo();
-                cargo.setCodigo(rSet.getLong("CODIGO"));
-                cargo.setNome(rSet.getString("NOME"));
-                funcoes.add(cargo);
+                funcoes.add(new Cargo(rSet.getLong("CODIGO"), rSet.getString("NOME")));
             }
         } finally {
             closeConnection(null, stmt, rSet);

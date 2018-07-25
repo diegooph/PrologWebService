@@ -603,10 +603,10 @@ public class ChecklistModeloDaoImpl extends DatabaseConnection implements Checkl
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 if (!rSet.getBoolean(1)) {
-                    throw new SQLException("Erro ao atualziar as informações gerais do modelo de checklist");
+                    throw new SQLException("Erro ao atualizar as informações gerais do modelo de checklist");
                 }
             } else {
-                throw new SQLException("Erro ao atualziar as informações gerais do modelo de checklist");
+                throw new SQLException("Erro ao atualizar as informações gerais do modelo de checklist");
             }
         } finally {
             closeConnection(null, stmt, rSet);

@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -24,7 +25,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
         implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 51,
+        targetVersionCode = 55,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class PneuResource {
@@ -65,8 +66,8 @@ public class PneuResource {
             Pilares.Frota.Pneu.ALTERAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/{codUnidade}/{status}")
-    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade, @PathParam("status")
-            String status) {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
+                                                  @PathParam("status") String status) {
         return service.getPneuByCodUnidadeByStatus(codUnidade, status);
     }
 
@@ -87,14 +88,14 @@ public class PneuResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     @Path("/dimensao")
-    public List<Pneu.Dimensao> getDimensoes() {
+    public List<PneuComum.Dimensao> getDimensoes() {
         return service.getDimensoes();
     }
 
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.VINCULAR_VEICULO)
     @Path("/vincular/{placa}")
-    public Response vinculaPneuVeiculo(@PathParam("placa") String placa, List<Pneu> pneus) {
+    public Response vinculaPneuVeiculo(@PathParam("placa") String placa, List<PneuComum> pneus) {
         if (service.vinculaPneuVeiculo(placa, pneus)) {
             return Response.ok("Pneus vinculados com sucesso.");
         } else {
@@ -159,7 +160,7 @@ public class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
+    public PneuComum getPneuByCod(@PathParam("codPneu") Long codPneu, @PathParam("codUnidade") Long codUnidade) {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 

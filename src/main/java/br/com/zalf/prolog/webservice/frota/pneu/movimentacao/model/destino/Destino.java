@@ -1,22 +1,24 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoEnum;
+
 /**
  * Created by Zart on 23/02/17.
  */
 public abstract class Destino {
 
-    private final String tipo;
+    private final OrigemDestinoEnum tipo;
 
-    protected Destino(String tipo) {
+    protected Destino(OrigemDestinoEnum tipo) {
         this.tipo = tipo;
     }
 
-    public String getTipo() {
+    public OrigemDestinoEnum getTipo() {
         return tipo;
     }
 
     @Override
     public String toString() {
-        return tipo;
+        return tipo.asString();
     }
 }

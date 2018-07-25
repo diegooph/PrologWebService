@@ -1,4 +1,4 @@
-package test;
+package test.frota;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ModeloChecklistListag
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import org.junit.Assert;
 import org.junit.Test;
+import test.BaseTest;
 
 import java.sql.SQLException;
 import java.util.List;

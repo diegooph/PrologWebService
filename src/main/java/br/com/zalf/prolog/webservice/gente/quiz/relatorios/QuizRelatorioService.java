@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.quiz.quizRelatorios;
+package br.com.zalf.prolog.webservice.gente.quiz.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;

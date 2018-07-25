@@ -8,9 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.error.PneuValidator;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -57,12 +55,26 @@ public class PneuService {
         }
     }
 
-    public List<Pneu> getPneuByCodUnidadeByStatus(Long codUnidade, String status) {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status) {
         try {
-            return dao.getPneusByCodUnidadeByStatus(codUnidade, status);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, e);
-            return null;
+            if (status.equals("%")) {
+                return dao.getTodosPneus(codUnidade);
+            } else {
+                final StatusPneu statusPneu = StatusPneu.fromString(status);
+                switch (statusPneu) {
+                    case ANALISE:
+                        return dao.getPneusAnalise(codUnidade);
+                    case EM_USO:
+                    case ESTOQUE:
+                    case DESCARTE:
+                        return dao.getPneusByCodUnidadeByStatus(codUnidade, statusPneu);
+                    default:
+                        throw new IllegalArgumentException("Status de Pneu não existente: " + status);
+                }
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, t);
+            throw new RuntimeException(t);
         }
     }
 
@@ -84,7 +96,7 @@ public class PneuService {
         }
     }
 
-    public boolean vinculaPneuVeiculo(String placaVeiculo, List<Pneu> pneus) {
+    public boolean vinculaPneuVeiculo(String placaVeiculo, List<PneuComum> pneus) {
         try {
             return dao.vinculaPneuVeiculo(placaVeiculo, pneus);
         } catch (SQLException e) {
@@ -139,7 +151,7 @@ public class PneuService {
         }
     }
 
-    public Pneu getPneuByCod(Long codPneu, Long codUnidade) {
+    public PneuComum getPneuByCod(Long codPneu, Long codUnidade) {
         try {
             return dao.getPneuByCod(codPneu, codUnidade);
         } catch (SQLException e) {

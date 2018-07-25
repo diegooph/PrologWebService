@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -390,10 +390,11 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA "
+                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
                     + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
                     + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (marcas.size() == 0 && modelos.size() == 0) { //primeiro resultado do rset
@@ -623,6 +624,49 @@ public class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
             closeConnection(conn, stmt, rSet);
         }
         return diagramas;
+    }
+
+    @Override
+    public void adicionaPneuVeiculo(@NotNull final Connection conn,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final String placa,
+                                    @NotNull final Long codPneu,
+                                    final int posicaoPneuVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
+                    "VALUES (?, ?, ?, ?)");
+            stmt.setString(1, placa);
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            stmt.setInt(4, posicaoPneuVeiculo);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
+            }
+        } finally {
+            closeStatement(stmt);
+        }
+    }
+
+    @Override
+    public void removePneuVeiculo(@NotNull final Connection conn,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final String placa,
+                                  @NotNull final Long codPneu) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
+                    "COD_PNEU = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placa);
+            stmt.setLong(3, codPneu);
+            final int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + placa);
+            }
+        } finally {
+            closeStatement(stmt);
+        }
     }
 
     private Optional<DiagramaVeiculo> createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {

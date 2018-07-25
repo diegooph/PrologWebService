@@ -1,24 +1,87 @@
 Change Log
 ==========
 
-<a name="v0.0.65"></a>
-## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (release-date) [unreleased]
+<a name="v0.0.70"></a>
+## Version [v0.0.70](https://github.com/luizfp/PrologWeb/compare/v0.0.69...v0.0.70) (release-date) [unreleased]
+
+<a name="v0.0.69"></a>
+## Version [v0.0.69](https://github.com/luizfp/PrologWeb/compare/v0.0.68...v0.0.69) (2018-07-19)
 
 ### Features
-* Cria back end para salvar mensagens de contato de possíveis clientes.
+* Cria validator para o insert do Modelo de Quiz
 
-### Refactor
-* Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados;
-* Previne retornar valor null para integração para tokens inválidos;
-* Permite aferições de estepe na integração com Avilan;
-* Adiciona a coluna cod_unidade_cadastro nas tabelas: colaborador, pneu e veiculo;
-* Remove o atributo setor da tabela colaborador;
-* Padroniza as mensagens de erro para cadastro de colaboradores, veículos e pneus.
+### Refactors
+* Adiciona permissão de movimentação na busca de uma recapadora específica
 
 ### Bug Fixes
-* Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado;
-* Permite que usuários com permissões de colaboradores (visualizar, inserir e editar) possam buscar as equipes;
-* Remove o default do atributo cod_empresa da tabela colaborador.
+* Corrige busca dos relatos para utilizar o código da equipe na filtragem ao invés do nome
+* Adiciona permissão de movimentação na busca dos tipos dos serviços dos pneus
+* Corrige update da banda de um pneu
+
+<a name="v0.0.68"></a>
+## Version [v0.0.68](https://github.com/luizfp/PrologWeb/compare/v0.0.67...v0.0.68) (2018-07-14)
+
+### Features
+* Cria error code específico para versão do app bloqueada
+* Permite setar uma mensagem de erro quando bloquear uma versão do app
+
+### Refactor
+* Altera realtórios de pneus para possibilitar o filtro por mais de uma unidade
+* Altera paths dos relatórios de pneus para seguir o padrão REST
+* Altera busca das marcas/modelos de veículos para retornar mesmo as marcas das quais a empresa ainda não tenha modelos
+* Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
+* Aumenta para 6 min timeout até uma connection ser considerada abandonada
+
+### Bug Fixes
+* Corrige query que busca a quantidade de serviços em aberto para mostrar na Dashboard
+* Corrige query que busca a quantidade de serviços em aberto na listagem de serviços
+
+<a name="v0.0.67"></a>
+## Version [v0.0.67](https://github.com/luizfp/PrologWeb/compare/v0.0.66...v0.0.67) (2018-07-09)
+
+### Bug Fixes
+* Remove uso de anotação @NotNull da developerMessage na ProLogException
+* Verifica se matrícula ambev ou da transportadora são nulas antes de setar no objeto Colaborador
+
+<a name="v0.0.66"></a>
+## Version [v0.0.66](https://github.com/luizfp/PrologWeb/compare/v0.0.65...v0.0.66) (2018-07-04)
+
+### Refactors
+* Remove utilização da tabela UNIDADE_FUNCAO do servidor
+
+### Bug Fixes
+* Lida com novo status no prontuário do condutor
+
+<a name="v0.0.65"></a>
+## Version [v0.0.65](https://github.com/luizfp/PrologWeb/compare/v0.0.64...v0.0.65) (2018-07-03)
+
+### Features
+* Cria back end para salvar mensagens de contato de possíveis clientes
+* Ativa método de listagem de marcações de um colaborador
+* Cria relatório para mostrar o total de tempo gasto em cada tipo de intervalo por cada colaborador
+
+### Refactor
+* Altera componente da Dashboard para mostrar apenas os veículos ativos e não apenas os veículos com pneus vinculados
+* Previne retornar valor null para integração para tokens inválidos
+* Permite aferições de estepe na integração com Avilan
+* Adiciona a coluna cod_unidade_cadastro nas tabelas: colaborador, pneu e veiculo
+* Remove o atributo setor da tabela colaborador
+* Padroniza as mensagens de erro para cadastro de colaboradores, veículos e pneus
+* Altera busca dos cargos por unidade para sempre buscar todos os cargos da empresa que essa unidade pertence
+* Altera import do prontuário do contudor para se adequar ao novo colunamento da planilha base
+
+### Bug Fixes
+* Insere permissão de relatórios na busca dos tipos de intervalo no resource já depreciado
+* Permite que usuários com permissões de colaboradores (visualizar, inserir e editar) possam buscar as equipes
+* Remove o default do atributo cod_empresa da tabela colaborador
+
+### Features
+* Permite cadastro de tipos de serviços;
+
+### Refactor
+* Altera movimentação para inserir serviços realizados na análise;
+* Altera cadastro para inserir um serviço de recapagem para os cadastros
+de pneus que não estão na primeira vida;
 
 <a name="v0.0.64"></a>
 ## Version [v0.0.64](https://github.com/luizfp/PrologWeb/compare/v0.0.63...v0.0.64) (2018-06-13)
@@ -100,14 +163,12 @@ Change Log
 * Seta código de unidade na busca dos modelos de checklist de uma unidade
 * Refatora o sistema para lidar com o novo código único do pneu e com o código do cliente
 * Bloqueia resources ligados a pneu para os apps com version code menor ou igual a 51
-* Seta `ResetAbandonedTimer` para resetar timer de abandono de uma connection
 * Altera insert do pneu para retornar um `AbstractResponse`
 
 ### Bug Fixes
 * Aprimora fluxo de inserção de um modelo de checklist
 * Corrige busca dos modelos de checklist disponíveis
 * Lida com caso de alternativas nulas na inserção do modelo de checklist
-* Aumenta para 5 min timeout até uma connection ser considerada abandonada
 * Altera busca dos prontuários dos condutores para levar em conta apenas colaboradores ativos
 
 <a name="v0.0.57"></a>

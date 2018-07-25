@@ -66,6 +66,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
     }
 
 
+    @SuppressWarnings("Duplicates")
     @Override
     public List<Recapadora> getRecapadoras(@NotNull final Long codEmpresa, final Boolean ativas) throws SQLException {
         final List<Recapadora> recapadoras = new ArrayList<>();
@@ -80,7 +81,6 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
                     "AND (? = 1 OR R.ATIVA = ?) " +
                     "ORDER BY R.ATIVA DESC, R.CODIGO;");
             stmt.setLong(1, codEmpresa);
-
             if (ativas == null) {
                 stmt.setInt(2, 1);
                 stmt.setBoolean(3, true);
@@ -152,7 +152,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
                                     @NotNull final Recapadora recapadora) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RECAPADORA SET ATIVA = ?,\n" +
+            stmt = conn.prepareStatement("UPDATE RECAPADORA SET ATIVA = ?, " +
                     "  CPF_ALTERACAO_STATUS = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
                     "WHERE CODIGO = ? AND COD_EMPRESA = ?");
             stmt.setBoolean(1, recapadora.isAtiva());

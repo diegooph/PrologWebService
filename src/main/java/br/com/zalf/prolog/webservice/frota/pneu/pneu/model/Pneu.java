@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.pneu.model;
 import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.commons.gson.Exclude;
+import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -19,20 +21,17 @@ import java.util.List;
 import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
- * Created by jean on 04/04/16.
+ * Created on 31/05/2018
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class Pneu {
-
-    public static final String ESTOQUE = "ESTOQUE";
-    public static final String EM_USO = "EM_USO";
-    public static final String DESCARTE = "DESCARTE";
-    public static final String ANALISE = "ANALISE";
-    private static final String TAG = Pneu.class.getSimpleName();
-    public static final int DOT_LENGTH = 4;
-
+public abstract class Pneu {
     public enum Problema {
         NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
     }
+
+    private static final String TAG = Pneu.class.getSimpleName();
+    public static final int DOT_LENGTH = 4;
 
     @Nullable
     private List<Problema> problemas;
@@ -45,12 +44,12 @@ public class Pneu {
      * O código único do pneu a nível de {@link Empresa} que o cliente escolhe ao cadastrar um pneu.
      * Esse código é equivalente ao número de fogo do pneu.
      */
-    public String codigoCliente;
+    private String codigoCliente;
 
     /**
      * O código único (autoincrement) do pneu no sistema.
      */
-    public Long codigo;
+    private Long codigo;
 
     private Marca marca;
     private ModeloPneu modelo;
@@ -66,6 +65,10 @@ public class Pneu {
     private Sulcos sulcosAtuais;
     private int vidaAtual;
     private int vidasTotal;
+
+    /**
+     * O status do pneu define onde ele se encontra no momento.
+     */
     private StatusPneu status;
 
     /**
@@ -112,8 +115,32 @@ public class Pneu {
     @Nullable
     private List<PneuFotoCadastro> fotosCadastro;
 
-    public Pneu() {
+    @Exclude
+    @NotNull
+    private PneuTipo tipo;
 
+    Pneu(@NotNull final PneuTipo pneuTipo) {
+        this.tipo = pneuTipo;
+    }
+
+    public static RuntimeTypeAdapterFactory<Pneu> provideTypeAdapterFactory() {
+        final RuntimeTypeAdapterFactory<Pneu> factory = RuntimeTypeAdapterFactory
+                .of(Pneu.class, "tipo");
+        final PneuTipo[] values = PneuTipo.values();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < values.length; i++) {
+            factory.registerSubtype(values[i].getClazz(), values[i].asString());
+        }
+        return factory;
+    }
+
+    @NotNull
+    public PneuTipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(@NotNull final PneuTipo tipo) {
+        this.tipo = tipo;
     }
 
     public String getCodigoCliente() {
@@ -336,14 +363,23 @@ public class Pneu {
         return getQuantidadeSulcos() % 2 != 0;
     }
 
-    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
+    public void incrementaVida() {
+        pneuNovoNuncaRodado = false;
+        vidaAtual++;
+        if (vidaAtual > vidasTotal) {
+            vidasTotal = vidaAtual;
+        }
+    }
+
+    public static final Comparator<PneuComum> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
 
     @Override
     public String toString() {
         return "Pneu{" +
                 "problemas=" + problemas +
                 ", codPneuProblema='" + codPneuProblema + '\'' +
-                ", codigo='" + codigo + '\'' +
+                ", codigoCliente='" + codigoCliente + '\'' +
+                ", codigo=" + codigo +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", valor=" + valor +
@@ -354,9 +390,13 @@ public class Pneu {
                 ", sulcosAtuais=" + sulcosAtuais +
                 ", vidaAtual=" + vidaAtual +
                 ", vidasTotal=" + vidasTotal +
-                ", status='" + status + '\'' +
+                ", status=" + status +
+                ", codRegionalAlocado=" + codRegionalAlocado +
+                ", codUnidadeAlocado=" + codUnidadeAlocado +
                 ", dot='" + dot + '\'' +
                 ", posicao=" + posicao +
+                ", pneuNovoNuncaRodado=" + pneuNovoNuncaRodado +
+                ", fotosCadastro=" + fotosCadastro +
                 '}';
     }
 

@@ -207,4 +207,47 @@ public class ControleIntervalosRelatorioService {
             throw new RuntimeException(e);
         }
     }
+
+    public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
+                                                @NotNull final Long codUnidade,
+                                                @NotNull final String codTipoIntervalo,
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) {
+        try {
+            dao.getTotalTempoByTipoIntervaloCsv(
+                    out,
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (IOException | SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar csv do relatório de total de tempo para cada tipo de intervalo. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
+                                                     @NotNull final String codTipoIntervalo,
+                                                     @NotNull final String dataInicial,
+                                                     @NotNull final String dataFinal) {
+        try {
+            return dao.getTotalTempoByTipoIntervaloReport(
+                    codUnidade,
+                    codTipoIntervalo,
+                    ProLogDateParser.validateAndParse(dataInicial),
+                    ProLogDateParser.validateAndParse(dataFinal));
+        } catch (SQLException e) {
+            Log.e(TAG, String.format("Erro ao buscar report do relatório de total de tempo para cada tipo de intervalo. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipoIntervalo: %s \n" +
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
+        }
+    }
 }

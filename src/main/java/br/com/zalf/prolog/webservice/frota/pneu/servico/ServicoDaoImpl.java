@@ -1,23 +1,23 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.Movimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.OrigemDestinoInvalidaException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.pneu.model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -137,7 +137,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws SQLException {
+    public ServicoHolder getServicoHolder(String placa, Long codUnidade) throws Throwable {
         final ServicoHolder holder = new ServicoHolder();
         holder.setPlacaVeiculo(placa);
 
@@ -156,7 +156,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             if (contains(servicos, TipoServico.MOVIMENTACAO)) {
                 Log.d(TAG, "Contém movimentação");
                 final PneuDao pneuDao = Injection.providePneuDao();
-                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, Pneu.ESTOQUE));
+                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, StatusPneu.ESTOQUE));
             }
         }
 
@@ -179,7 +179,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void fechaServico(Servico servico, Long codUnidade) throws SQLException, OrigemDestinoInvalidaException {
+    public void fechaServico(Servico servico, Long codUnidade) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -201,10 +201,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(movimentacao, codUnidade);
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
-                            processoMovimentacao,
+                            conn,
                             this,
-                            false,
-                            conn);
+                            processoMovimentacao,
+                            false);
                     movimentacao.setCodProcessoMovimentacao(codProcessoMovimentacao);
 
                     // Como impedimos o processo de movimentação de fechar automaticamente todos os serviços,
@@ -238,8 +238,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
-        } catch (SQLException e) {
-            conn.rollback();
+        } catch (Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
             throw e;
         } finally {
             closeConnection(conn, null, null);
@@ -462,7 +464,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 unidade,
                 movimentacoes,
                 colaborador,
-                null,
+                Now.timestampUtc(),
                 "Fechamento de serviço");
     }
 

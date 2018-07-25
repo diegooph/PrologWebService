@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
 public enum ProLogErrorCodes {
-
 	GENERIC(0),
 	AMAZON_CREDENTIALS(1),
 	VERSAO_DADOS_INTERVALO_DESATUALIZADA(2),
@@ -10,7 +9,8 @@ public enum ProLogErrorCodes {
 	INTEGRACAO(5),
 	RECAPADORA_EXCEPTION(6),
 	RECURSO_JA_EXISTE(7),
-	RAIZEN_PRODUTIVIDADE(8);
+	VERSAO_APP_BLOQUEADA(8),
+	RAIZEN_PRODUTIVIDADE(9);
 
 	private final int errorCode;
 
