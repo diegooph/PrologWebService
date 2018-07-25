@@ -74,12 +74,12 @@ final class ControleIntervaloRelatorioConverter {
                 Log.d(TAG, "Mesmo colaborador. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
                 if (!diaAnterior.equals(diaAtual)) {
                     // Trocou o dia.
-                    Log.d(TAG, "Mesmo dia. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
+                    Log.d(TAG, "Dia alterado. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
                     dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
                     intervalosDia = new ArrayList<>();
                 } else {
                     // Mesmo dia.
-                    Log.d(TAG, "Dia alterado. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
+                    Log.d(TAG, "Mesmo dia. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
                 }
             }
 
@@ -100,7 +100,8 @@ final class ControleIntervaloRelatorioConverter {
         if (diaAnterior != null) {
             final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                     nomeAnterior, diaAnterior, dias, intervalosDia);
-            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade, zoneIdUnidade);
+            folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(dataInicial, dataFinal, tiposIntervalosUnidade,
+                    zoneIdUnidade);
             relatorios.add(folhaPontoRelatorio);
         }
         return relatorios;
@@ -108,10 +109,10 @@ final class ControleIntervaloRelatorioConverter {
 
     @NotNull
     private static FolhaPontoRelatorio createFolhaPontoRelatorio(@NotNull final Long cpfAnterior,
-                                                          @NotNull final String nomeAnterior,
-                                                          @NotNull final LocalDate diaAnterior,
-                                                          @NotNull final List<FolhaPontoDia> dias,
-                                                          @NotNull final List<FolhaPontoIntervalo> intervalosDia) {
+                                                                 @NotNull final String nomeAnterior,
+                                                                 @NotNull final LocalDate diaAnterior,
+                                                                 @NotNull final List<FolhaPontoDia> dias,
+                                                                 @NotNull final List<FolhaPontoIntervalo> intervalosDia) {
         dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(cpfAnterior);
