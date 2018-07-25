@@ -2,15 +2,12 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.ControleIntervaloDao;
-import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,10 +15,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Zart on 28/08/2017.
@@ -185,8 +181,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
-                                                            @NotNull final LocalDateTime filtroInicio,
-                                                            @NotNull final LocalDateTime filtroFim) throws SQLException {
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -204,99 +200,22 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             } else {
                 stmt.setLong(3, Long.parseLong(cpf));
             }
-            stmt.setObject(4, filtroInicio);
-            stmt.setObject(5, filtroFim);
+            stmt.setObject(4, dataInicial);
+            stmt.setObject(5, dataFinal);
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(6, zoneId.getId());
             rSet = stmt.executeQuery();
 
-            final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
             final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
-            final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(dao
-                    .getTiposIntervalosByUnidade(codUnidade, false));
-            Long cpfAnterior = null;
-            String nomeAnterior = null;
-            LocalDate diaAnterior = null;
-            List<FolhaPontoDia> dias = new ArrayList<>();
-            List<FolhaPontoIntervalo> intervalosDia = new ArrayList<>();
-            while (rSet.next()) {
-                final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
-                final LocalDateTime dataHoraInicio = rSet.getObject("DATA_HORA_INICIO", LocalDateTime.class);
-                // A data/hora de início pode ser nula ou a de fim, mas nunca ambas. Para utilizar o dia atual, devemos
-                // priorizar a data/hora de início.
-                final LocalDate diaAtual = dataHoraInicio != null
-                        ? dataHoraInicio.toLocalDate()
-                        : rSet.getObject("DATA_HORA_FIM", LocalDateTime.class).toLocalDate();
-
-                // Se for na primeira iteração, devemos deixar dia e cpf anterior como sendo igual aos atuais.
-                if (cpfAnterior == null) {
-                    cpfAnterior = cpfAtual;
-                }
-                if (diaAnterior == null) {
-                    diaAnterior = diaAtual;
-                }
-
-                if (!cpfAnterior.equals(cpfAtual)) {
-                    // Trocou de colaborador.
-                    Log.d(TAG, "Colaborador alterado. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-                    //noinspection ConstantConditions
-                    final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
-                            nomeAnterior, diaAnterior, dias, intervalosDia);
-                    folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade, zoneId);
-                    relatorios.add(folhaPontoRelatorio);
-                    dias = new ArrayList<>();
-                    intervalosDia = new ArrayList<>();
-                } else {
-                    // Mesmo colaborador.
-                    Log.d(TAG, "Mesmo colaborador. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-                    if (!diaAnterior.equals(diaAtual)) {
-                        // Trocou o dia.
-                        Log.d(TAG, "Mesmo dia. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
-                        dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
-                        intervalosDia = new ArrayList<>();
-                    } else {
-                        // Mesmo dia.
-                        Log.d(TAG, "Dia alterado. Anterior: " + diaAnterior + " - Atual: " + diaAtual);
-                    }
-                }
-
-                final LocalDateTime dataHoraFim = rSet.getObject("DATA_HORA_FIM", LocalDateTime.class);
-                final Long codTipoIntervaloLong = rSet.getLong("COD_TIPO_INTERVALO");
-                final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(
-                        dataHoraInicio,
-                        dataHoraFim,
-                        codTipoIntervaloLong,
-                        rSet.getLong("COD_TIPO_INTERVALO_POR_UNIDADE"),
-                        rSet.getBoolean("TROCOU_DIA"));
-                intervalosDia.add(intervalo);
-
-                cpfAnterior = cpfAtual;
-                diaAnterior = diaAtual;
-                nomeAnterior = rSet.getString("NOME_COLABORADOR");
-            }
-            if (diaAnterior != null) {
-                final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
-                        nomeAnterior, diaAnterior, dias, intervalosDia);
-                folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(filtroInicio, filtroFim, tiposIntervalosUnidade, zoneId);
-                relatorios.add(folhaPontoRelatorio);
-            }
-            return relatorios;
+            return ControleIntervaloRelatorioConverter.createFolhaPontoRelatorio(
+                    rSet,
+                    dao.getTiposIntervalosByUnidade(codUnidade, false),
+                    dataInicial,
+                    dataFinal,
+                    zoneId);
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-    }
-
-    @NotNull
-    private FolhaPontoRelatorio createFolhaPontoRelatorio(@NotNull final Long cpfAnterior,
-                                                          @NotNull final String nomeAnterior,
-                                                          @NotNull final LocalDate diaAnterior,
-                                                          @NotNull final List<FolhaPontoDia> dias,
-                                                          @NotNull final List<FolhaPontoIntervalo> intervalosDia) {
-        dias.add(new FolhaPontoDia(diaAnterior, intervalosDia));
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(cpfAnterior);
-        colaborador.setNome(nomeAnterior);
-        return new FolhaPontoRelatorio(colaborador, dias);
     }
 
     @NotNull
@@ -341,14 +260,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
-                                                @NotNull final LocalDateTime dataHoraInicial,
-                                                @NotNull final LocalDateTime dataHoraFinal) throws SQLException, IOException {
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal);
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(rSet, out)
@@ -364,14 +283,14 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     @Override
     public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
-                                                     @NotNull final LocalDateTime dataHoraInicial,
-                                                     @NotNull final LocalDateTime dataHoraFinal) throws SQLException {
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal);
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -382,8 +301,8 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final String codTipoIntervalo,
-                                                               @NotNull final LocalDateTime dataHoraInicial,
-                                                               @NotNull final LocalDateTime dataHoraFinal) throws SQLException {
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_INTERVALOS_GET_TOTAL_TEMPO_POR_TIPO_INTERVALO(?, ?, ?, ?)");
         stmt.setLong(1, codUnidade);
@@ -392,18 +311,9 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         } else {
             stmt.setLong(2, Long.parseLong(codTipoIntervalo));
         }
-        stmt.setObject(3, dataHoraInicial);
-        stmt.setObject(4, dataHoraFinal);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
-    }
-
-    @NotNull
-    private Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
-        final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
-        tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(
-                tipoIntervalo.getCodigo(),
-                tipoIntervalo));
-        return tiposIntervalosMap;
     }
 
     @NotNull

@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.error.ColaboradorExceptionHandler;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class ControleIntervaloRelatorioService {
 
     private static final String TAG = ControleIntervaloRelatorioService.class.getSimpleName();
     private ControleIntervaloRelatoriosDao dao = Injection.provideControleIntervaloRelatoriosDao();
-    private final ColaboradorExceptionHandler exceptionHandler = Injection.provideColaboradorExceptionHandler();
+    private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     public void getIntervalosCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
         try {
@@ -147,23 +147,24 @@ public class ControleIntervaloRelatorioService {
     public List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                             @NotNull final String codTipoIntervalo,
                                                             @NotNull final String cpf,
-                                                            @NotNull final String dataHoraInicial,
-                                                            @NotNull final String dataHoraFinal) {
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getFolhaPontoRelatorio(
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
-                    ProLogDateParser.toLocalDateTime(dataHoraInicial),
-                    ProLogDateParser.toLocalDateTime(dataHoraFinal));
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório de folha de ponto. \n" +
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %s \n" +
                     "cpf: %s \n" +
-                    "dataHoraInicial: %s \n" +
-                    "dataHoraFinal: %s", codUnidade, codTipoIntervalo, cpf, dataHoraInicial, dataHoraFinal), e);
-            throw new RuntimeException(e);
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, cpf, dataInicial, dataFinal);
+            Log.e(TAG, errorMessage, e);
+            throw exceptionHandler.map(e, errorMessage);
         }
     }
 
@@ -213,21 +214,21 @@ public class ControleIntervaloRelatorioService {
     public void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
-                                                @NotNull final String dataHoraInicial,
-                                                @NotNull final String dataHoraFinal) {
+                                                @NotNull final String dataInicial,
+                                                @NotNull final String dataFinal) {
         try {
             dao.getTotalTempoByTipoIntervaloCsv(
                     out,
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDateTime(dataHoraInicial),
-                    ProLogDateParser.toLocalDateTime(dataHoraFinal));
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (IOException | SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de total de tempo para cada tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %s \n" +
-                    "dataHoraInicial: %s \n" +
-                    "dataHoraFinal: %s", codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal), e);
+                    "dataInicial: %s \n" +
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
             throw new RuntimeException(e);
         }
     }
@@ -235,21 +236,21 @@ public class ControleIntervaloRelatorioService {
     @NotNull
     public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
-                                                     @NotNull final String dataHoraInicial,
-                                                     @NotNull final String dataHoraFinal) throws ProLogException {
+                                                     @NotNull final String dataInicial,
+                                                     @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getTotalTempoByTipoIntervaloReport(
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDateTime(dataHoraInicial),
-                    ProLogDateParser.toLocalDateTime(dataHoraFinal));
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (Throwable e) {
             final String errorMessage = String.format(
                     "Erro ao buscar report do relatório de total de tempo para cada tipo de intervalo. \n" +
                             "codUnidade: %d \n" +
                             "codTipoIntervalo: %s \n" +
-                            "dataHoraInicial: %s \n" +
-                            "dataHoraFinal: %s", codUnidade, codTipoIntervalo, dataHoraInicial, dataHoraFinal);
+                            "dataInicial: %s \n" +
+                            "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
         }

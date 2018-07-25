@@ -9,7 +9,9 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -44,12 +46,16 @@ public final class FolhaPontoRelatorio {
     }
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
-    public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDateTime filtroInicio,
-                                                @NotNull final LocalDateTime filtroFim,
+    public void calculaTempoEmCadaTipoIntervalo(@NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal,
                                                 @NotNull final Map<Long, TipoIntervalo> tiposIntervalosUnidade,
                                                 @NotNull final ZoneId zoneId) {
         //noinspection ConstantConditions
         Preconditions.checkState(marcacoesDias != null);
+
+        // TODO: hardcoded aqui as horas iniciais e finais?
+        final LocalDateTime filtroInicio = dataInicial.atTime(LocalTime.of(0, 0, 0));
+        final LocalDateTime filtroFim = dataFinal.atTime(LocalTime.of(23, 59, 59));
 
         // Map para irmos somando o tempo em segundos que o colaborador passou em cada tipo de intervalo dado
         // o período filtrado.

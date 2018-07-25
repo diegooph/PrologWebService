@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -140,8 +139,8 @@ public interface ControleIntervaloRelatoriosDao {
     List<FolhaPontoRelatorio> getFolhaPontoRelatorio(@NotNull final Long codUnidade,
                                                      @NotNull final String codTipoIntervalo,
                                                      @NotNull final String cpf,
-                                                     @NotNull final LocalDateTime dataHoraInicial,
-                                                     @NotNull final LocalDateTime dataHoraFinal) throws SQLException;
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getMarcacoesComparandoEscalaDiariaReport(@NotNull final Long codUnidade,
@@ -163,16 +162,16 @@ public interface ControleIntervaloRelatoriosDao {
      * @param out              - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataHoraInicial  - Data e Hora inicial do período de filtro.
-     * @param dataHoraFinal    - Data e Hora final do período de filtro.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      * @throws IOException  - Se algum erro na escrita dos dados ocorrer.
      */
     void getTotalTempoByTipoIntervaloCsv(@NotNull final OutputStream out,
                                          @NotNull final Long codUnidade,
                                          @NotNull final String codTipoIntervalo,
-                                         @NotNull final LocalDateTime dataHoraInicial,
-                                         @NotNull final LocalDateTime dataHoraFinal) throws SQLException, IOException;
+                                         @NotNull final LocalDate dataInicial,
+                                         @NotNull final LocalDate dataFinal) throws SQLException, IOException;
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
@@ -182,14 +181,14 @@ public interface ControleIntervaloRelatoriosDao {
      *
      * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
      * @param codTipoIntervalo - Código do {@link TipoIntervalo} que os dados serão filtrados
-     * @param dataHoraInicial  - Data e Hora inicial do período de filtro.
-     * @param dataHoraFinal    - Data e Hora final do período de filtro.
+     * @param dataInicial  - Data inicial do período de filtro.
+     * @param dataFinal    - Data final do período de filtro.
      * @return - Um objeto {@link Report} com os dados filtrados.
      * @throws SQLException - Se algum erro na busca dos dados ocorrer.
      */
     @NotNull
     Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
                                               @NotNull final String codTipoIntervalo,
-                                              @NotNull final LocalDateTime dataHoraInicial,
-                                              @NotNull final LocalDateTime dataHoraFinal) throws SQLException;
+                                              @NotNull final LocalDate dataInicial,
+                                              @NotNull final LocalDate dataFinal) throws SQLException;
 }

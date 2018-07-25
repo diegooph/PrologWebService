@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 
 import javax.ws.rs.*;
@@ -125,7 +126,8 @@ public class ControleIntervaloRelatorioResource {
                                                             @PathParam("cpf") @Required String cpf,
                                                             @PathParam("codTipoIntervalo") @Required String codTipoIntervalo,
                                                             @QueryParam("dataHoraInicial") @Required String dataHoraInicial,
-                                                            @QueryParam("dataHoraFinal") @Required String dataHoraFinal) {
+                                                            @QueryParam("dataHoraFinal") @Required String dataHoraFinal)
+            throws ProLogException {
         return service.getFolhaPontoRelatorio(
                 codUnidade,
                 codTipoIntervalo,
@@ -172,14 +174,14 @@ public class ControleIntervaloRelatorioResource {
     @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/csv")
     public StreamingOutput getTotalTempoByTipoIntervaloCsv(@PathParam("codUnidade") @Required final Long codUnidade,
                                                            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-                                                           @QueryParam("dataHoraInicial") @Required final String dataHoraInicial,
-                                                           @QueryParam("dataHoraFinal") @Required final String dataHoraFinal) {
+                                                           @QueryParam("dataInicial") @Required String dataInicial,
+                                                           @QueryParam("dataFinal") @Required String dataFinal) {
         return outputStream -> service.getTotalTempoByTipoIntervaloCsv(
                 outputStream,
                 codUnidade,
                 codTipoIntervalo,
-                dataHoraInicial,
-                dataHoraFinal);
+                dataInicial,
+                dataFinal);
     }
 
     @GET
@@ -188,12 +190,12 @@ public class ControleIntervaloRelatorioResource {
     public Report getTotalTempoByTipoIntervaloReport(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-            @QueryParam("dataHoraInicial") @Required final String dataHoraInicial,
-            @QueryParam("dataHoraFinal") @Required final String dataHoraFinal) throws Throwable {
+            @QueryParam("dataInicial") @Required String dataInicial,
+            @QueryParam("dataFinal") @Required String dataFinal) throws Throwable {
         return service.getTotalTempoByTipoIntervaloReport(
                 codUnidade,
                 codTipoIntervalo,
-                dataHoraInicial,
-                dataHoraFinal);
+                dataInicial,
+                dataFinal);
     }
 }
