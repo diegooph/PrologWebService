@@ -65,8 +65,8 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
         assertNotNull(tipoIntervalo);
 
-        final String inicioFiltro = "2018-01-05T00:00:00";
-        final String fimFiltro = "2018-01-10T23:59:00";
+        final String inicioFiltro = "2018-01-05";
+        final String fimFiltro = "2018-01-10";
         // Precisamos inserir marcações que cubram 4 diferentes casos:
         // 1 - Uma marcação com início ANTES do período do filtro e fim DENTRO do período.
         // 2 - Uma marcação com início DENTRO do período do filtro e fim DENTRO do período.
@@ -95,12 +95,7 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
         intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
 
-        // Caso 4) ANTES -> DEPOIS
-        // Total: 8639 minutos (fim filtro - início filtro)
-        marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 5, 9, 0, 0), MARCACAO_INICIO);
-        marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 10, 23, 59, 1), MARCACAO_FIM);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
-        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
+        // Caso 4) Tem um teste específico.
 
         final List<FolhaPontoRelatorio> relatorios = service.getFolhaPontoRelatorio(
                 COD_UNIDADE,
@@ -133,8 +128,8 @@ public class ControleJornadaRelatorioTest extends BaseTest {
         final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
         assertNotNull(tipoIntervalo);
 
-        final String inicioFiltro = "2018-01-10T00:00:00";
-        final String fimFiltro = "2018-01-11T23:59:00";
+        final String inicioFiltro = "2018-01-10";
+        final String fimFiltro = "2018-01-11";
         // Esse método cobre um caso específico:
         // 4 - Uma marcação com início ANTES do período do filtro e fim DEPOIS do período.
 
