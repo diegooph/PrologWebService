@@ -123,6 +123,50 @@ public class ControleJornadaRelatorioTest extends BaseTest {
     }
 
     @Test
+    public void testCalculoHorasPorTipoMarcacao_InicoAntesFiltroFimDepoisFiltro() throws Throwable {
+        final ControleIntervaloService intervaloService = new ControleIntervaloService();
+
+        // Escolhemos o tipo de intervalo que iremos realizar.
+        final List<TipoIntervalo> tiposIntervalos = intervaloService.getTiposIntervalos(COD_UNIDADE, false);
+        assertNotNull(tiposIntervalos);
+        assertFalse(tiposIntervalos.isEmpty());
+        final TipoIntervalo tipoIntervalo = tiposIntervalos.get(0);
+        assertNotNull(tipoIntervalo);
+
+        final String inicioFiltro = "2018-01-10T00:00:00";
+        final String fimFiltro = "2018-01-11T23:59:00";
+        // Esse método cobre um caso específico:
+        // 4 - Uma marcação com início ANTES do período do filtro e fim DEPOIS do período.
+
+        IntervaloMarcacao marcacaoInicio, marcacaoFim;
+        // Caso 4) ANTES -> DEPOIS
+        // Total: 2879 minutos (fim filtro - início filtro)
+        marcacaoInicio = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 5, 21, 30, 30), MARCACAO_INICIO);
+        marcacaoFim = createIntervaloMarcacao(tipoIntervalo.getCodigo(), LocalDateTime.of(2018, 1, 12, 23, 59, 1), MARCACAO_FIM);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoInicio);
+        intervaloService.insertMarcacaoIntervalo(1, marcacaoFim);
+
+        final List<FolhaPontoRelatorio> relatorios = service.getFolhaPontoRelatorio(
+                COD_UNIDADE,
+                TODOS_TIPOS_INTERVALOS,
+                String.valueOf(CPF_COLABORADOR),
+                inicioFiltro,
+                fimFiltro);
+        assertNotNull(relatorios);
+        assertEquals(1, relatorios.size());
+        final FolhaPontoRelatorio folhaPontoRelatorio = relatorios.get(0);
+        assertNotNull(folhaPontoRelatorio);
+        assertEquals(1, folhaPontoRelatorio.getTiposIntervalosMarcados().size());
+        final List<FolhaPontoTipoIntervalo> tiposMarcados = new ArrayList<>(folhaPontoRelatorio.getTiposIntervalosMarcados());
+        final FolhaPontoTipoIntervalo tipoMarcado = tiposMarcados.get(0);
+        assertNotNull(tipoMarcado);
+        assertEquals(tipoIntervalo.getCodigo(), tipoMarcado.getCodigo());
+
+        // Tempo total: 2879.
+        assertEquals(2879, tipoMarcado.getTempoTotalTipoIntervalo().toMinutes());
+    }
+
+    @Test
     public void testCalculoHorasNoturnasPorTipoMarcacao() throws Throwable {
         final List<FolhaPontoRelatorio> folhaPontoRelatorio = service.getFolhaPontoRelatorio(
                 COD_UNIDADE,
