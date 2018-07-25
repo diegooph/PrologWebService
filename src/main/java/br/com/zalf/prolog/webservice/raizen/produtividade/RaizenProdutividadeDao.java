@@ -66,6 +66,7 @@ public interface RaizenProdutividadeDao {
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
+    @NotNull
     List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
                                                                 @NotNull final LocalDate dataInicial,
                                                                 @NotNull final LocalDate dataFinal) throws SQLException;
@@ -80,6 +81,7 @@ public interface RaizenProdutividadeDao {
      * {@link RaizenProdutividadeItem} de cada dia dentro do período buscado.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
+    @NotNull
     List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws SQLException;
@@ -94,6 +96,7 @@ public interface RaizenProdutividadeDao {
      * {@link RaizenProdutividadeItem} do colaborador.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
+    @NotNull
     List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(Long codColaborador, int mes, int ano) throws SQLException;
 
     /**

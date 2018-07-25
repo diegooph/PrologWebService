@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model;
 
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemData;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created on 09/07/18.
@@ -37,6 +40,11 @@ public class RaizenProdutividadeColaborador extends RaizenProdutividade {
 
     public boolean isColaboradorCadastrado() {
         return colaboradorCadastrado;
+    }
+
+    public List<RaizenProdutividadeItemData> getItensRaizen() {
+        //noinspection unchecked
+        return (List<RaizenProdutividadeItemData>) itensRaizen;
     }
 
     @Override

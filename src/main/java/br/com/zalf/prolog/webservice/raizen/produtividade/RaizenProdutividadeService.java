@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenPro
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,11 +47,13 @@ public class RaizenProdutividadeService {
 
     public Response insertRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert raizenProdutividadeItemInsert)
+                                              @NotNull final RaizenProdutividadeItemInsert
+                                                      raizenProdutividadeItemInsert)
             throws RaizenProdutividadeException {
         Preconditions.checkNotNull(raizenProdutividadeItemInsert, "raizenProdutividadeItemInsert não pode ser nulla!");
         try {
-            dao.insertRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa, raizenProdutividadeItemInsert);
+            dao.insertRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
+                    raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao cadastrar/alterar a produtividade", e);
@@ -65,11 +66,13 @@ public class RaizenProdutividadeService {
 
     public Response updateRaizenProdutividade(@NotNull final String token,
                                               @NotNull final Long codEmpresa,
-                                              @NotNull final RaizenProdutividadeItemInsert updateRaizenProdutividadeItemInsert)
+                                              @NotNull final RaizenProdutividadeItemInsert
+                                                      updateRaizenProdutividadeItemInsert)
             throws RaizenProdutividadeException {
         Preconditions.checkNotNull(updateRaizenProdutividadeItemInsert, "Produtividade não pode ser nulla!");
         try {
-            dao.updateRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa, updateRaizenProdutividadeItemInsert);
+            dao.updateRaizenProdutividadeItem(TokenCleaner.getOnlyToken(token), codEmpresa,
+                    updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao alterar a produtividade");
@@ -80,41 +83,35 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @NotNull
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
                                                             @NotNull final String agrupamento)
             throws RaizenProdutividadeException {
         final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
-        if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR)) {
-            try {
-                return dao.getRaizenProdutividadeColaborador(
-                        codEmpresa,
-                        ProLogDateParser.validateAndParse(dataInicial),
-                        ProLogDateParser.validateAndParse(dataFinal));
-            } catch (SQLException e) {
-                Log.e(TAG, "Erro ao buscar produtividade", e);
-                throw new RaizenProdutividadeException(
-                        "Não foi possível buscar a produtividade, tente novamente",
-                        "Erro ao buscar produtividade por colaborador",
-                        e);
+        try {
+            switch (tipoAgrupamento) {
+                case POR_COLABORADOR:
+                    return dao.getRaizenProdutividadeColaborador(
+                            codEmpresa,
+                            ProLogDateParser.validateAndParse(dataInicial),
+                            ProLogDateParser.validateAndParse(dataFinal));
+                case POR_DATA:
+                    return dao.getRaizenProdutividadeData(
+                            codEmpresa,
+                            ProLogDateParser.validateAndParse(dataInicial),
+                            ProLogDateParser.validateAndParse(dataFinal));
+                default:
+                    throw new IllegalStateException();
+
             }
-        } else if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_DATA)) {
-            try {
-                return dao.getRaizenProdutividadeData(
-                        codEmpresa,
-                        ProLogDateParser.validateAndParse(dataInicial),
-                        ProLogDateParser.validateAndParse(dataFinal));
-            } catch (SQLException e) {
-                Log.e(TAG, "Erro ao buscar produtividade", e);
-                throw new RaizenProdutividadeException(
-                        "Não foi possível buscar a produtividade, tente novamente",
-                        "Erro ao buscar produtividade por data",
-                        e);
-            }
-        } else {
-            throw new IllegalArgumentException("O único tipo de agrupamento suportado na busca dos serviços abertos é " +
-                    "por veículo. Agrupamento recebido: " + agrupamento);
+        } catch (final Exception e) {
+            Log.e(TAG, "Erro ao buscar produtividade", e);
+            throw new RaizenProdutividadeException(
+                    "Não foi possível buscar a produtividade, tente novamente",
+                    null,
+                    e);
         }
     }
 
@@ -178,8 +175,10 @@ public class RaizenProdutividadeService {
                                      @NotNull final Long codEmpresa,
                                      @NotNull final File file) throws RaizenProdutividadeException {
         try {
-            final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader.readListFromCsvFilePath(file);
-            dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa, raizenProdutividadeItens);
+            final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
+                    .readListFromCsvFilePath(file);
+            dao.insertOrUpdateProdutividadeRaizen(TokenCleaner.getOnlyToken(token), codEmpresa,
+                    raizenProdutividadeItens);
         } catch (SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new RaizenProdutividadeException(

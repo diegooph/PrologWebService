@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Created on 09/07/18.
@@ -25,6 +26,11 @@ public class RaizenProdutividadeData extends RaizenProdutividade {
     @NotNull
     public LocalDate getData() {
         return data;
+    }
+
+    public List<RaizenProdutividadeItemColaborador> getItensRaizen() {
+        //noinspection unchecked
+        return (List<RaizenProdutividadeItemColaborador>) itensRaizen;
     }
 
     @Override
