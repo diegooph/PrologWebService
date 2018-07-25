@@ -289,7 +289,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF," +
+            stmt = conn.prepareStatement("INSERT INTO RAIZEN.PRODUTIVIDADE (CPF_MOTORISTA," +
                     "                           PLACA," +
                     "                           DATA_VIAGEM," +
                     "                           VALOR," +
@@ -297,7 +297,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "                           FAZENDA," +
                     "                           RAIO," +
                     "                           TONELADAS, " +
-                    "                           COD_COLABORADOR_CADSTRO, " +
+                    "                           COD_COLABORADOR_CADASTRO, " +
                     "                           COD_COLABORADOR_ALTERACAO, " +
                     "                           COD_EMPRESA)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, " +
@@ -330,7 +330,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF = ?," +
+            stmt = conn.prepareStatement("UPDATE RAIZEN.PRODUTIVIDADE SET CPF_MOTORISTA = ?," +
                     "   PLACA = ?," +
                     "   DATA_VIAGEM = ?," +
                     "   VALOR = ?," +
@@ -340,7 +340,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   TONELADAS = ?, " +
                     "   COD_COLABORADOR_ALTERACAO = " +
                     "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
-                    "WHERE CPF = ?" +
+                    "WHERE CPF_MOTORISTA = ?" +
                     "AND PLACA = ?" +
                     "AND DATA_VIAGEM = ?" +
                     "AND COD_EMPRESA = ?");
