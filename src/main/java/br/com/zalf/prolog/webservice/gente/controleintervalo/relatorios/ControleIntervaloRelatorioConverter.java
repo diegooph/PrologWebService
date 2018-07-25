@@ -35,7 +35,7 @@ final class ControleIntervaloRelatorioConverter {
                                                                @NotNull final ZoneId zoneIdUnidade)
             throws Throwable {
         final List<FolhaPontoRelatorio> relatorios = new ArrayList<>();
-        final Map<Long, TipoIntervalo> tiposIntervalosUnidade = tiposIntervalosToMap(tiposIntervalos);
+        final Map<Long, TipoIntervalo> tiposIntervalosUnidade = toTiposIntervalosToMap(tiposIntervalos);
         Long cpfAnterior = null;
         String nomeAnterior = null;
         LocalDate diaAnterior = null;
@@ -121,7 +121,7 @@ final class ControleIntervaloRelatorioConverter {
     }
 
     @NotNull
-    private static Map<Long, TipoIntervalo> tiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
+    private static Map<Long, TipoIntervalo> toTiposIntervalosToMap(@NotNull final List<TipoIntervalo> tiposIntervalos) {
         final Map<Long, TipoIntervalo> tiposIntervalosMap = new HashMap<>();
         tiposIntervalos.forEach(tipoIntervalo -> tiposIntervalosMap.put(
                 tipoIntervalo.getCodigo(),

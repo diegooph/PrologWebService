@@ -73,6 +73,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @NotNull
     @Override
     public Report getIntervalosMapasReport(Long codUnidade, Date dataInicial, Date dataFinal)
             throws SQLException, IOException {
@@ -261,7 +262,7 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
                                                 @NotNull final Long codUnidade,
                                                 @NotNull final String codTipoIntervalo,
                                                 @NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal) throws SQLException, IOException {
+                                                @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -269,9 +270,13 @@ public class ControleIntervaloRelatorioDaoImpl extends DatabaseConnection implem
             conn = getConnection();
             stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
+            final ControleIntervaloDao dao = Injection.provideControleIntervaloDao();
             new CsvWriter
-                    .Builder(rSet, out)
-                    .withTransposer(new IntervaloTransposer(rSet))
+                    .Builder(out)
+                    .withCsvReport(new RelatorioTotaisPorTipoIntervalo(
+                            rSet,
+                            dao.getTiposIntervalosByUnidade(codUnidade, false),
+                            codTipoIntervalo.equals("%") ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
         } finally {

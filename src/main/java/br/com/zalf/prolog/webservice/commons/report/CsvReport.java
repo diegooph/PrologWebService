@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.report;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,7 +10,9 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public interface Transposable {
+public interface CsvReport {
+    @NotNull
     List<String> getHeader() throws SQLException;
-    Iterable<?> transpose() throws SQLException;
+    @NotNull
+    Iterable<?> getData() throws SQLException;
 }

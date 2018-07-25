@@ -4,8 +4,8 @@ package br.com.zalf.prolog.webservice.commons.report;
 import com.google.common.base.Preconditions;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -20,16 +20,17 @@ public class CsvWriter {
     private ResultSet rSet;
     private OutputStream outputStream;
     private char delimiter;
-    private Transposable transposer;
+    private CsvReport csvReport;
 
     public CsvWriter() {
+
     }
 
     private CsvWriter(@NotNull final Builder builder) {
         this.rSet = builder.rSet;
         this.outputStream = builder.outputStream;
         this.delimiter = builder.delimiter;
-        this.transposer = builder.transposer;
+        this.csvReport = builder.csvReport;
     }
 
     /**
@@ -40,18 +41,28 @@ public class CsvWriter {
      * @throws SQLException - se um erro de acesso ao banco de dados ocorrer.
      */
     public void write() throws SQLException, IOException {
-        Preconditions.checkNotNull(rSet, "rSet não pode ser null");
         Preconditions.checkNotNull(outputStream, "outputStream não pode ser null");
 
-        if (rSet.isClosed()) {
-            throw new IllegalArgumentException("ResultSet can't be closed!!!");
-        }
+        final Appendable out = new OutputStreamWriter(outputStream);
 
-        if (transposer == null) {
-            write(rSet, outputStream, delimiter);
+        final CSVPrinter printer;
+        if (rSet != null) {
+            if (rSet.isClosed()) {
+                throw new IllegalArgumentException("ResultSet can't be closed!!!");
+            }
+            printer = CSVFormat.DEFAULT
+                    .withDelimiter(delimiter)
+                    .withHeader(rSet)
+                    .print(out);
+            printer.printRecords(rSet);
         } else {
-            write(outputStream, transposer, delimiter);
+            printer = CSVFormat.DEFAULT
+                    .withDelimiter(delimiter)
+                    .withHeader(csvReport.getHeader().toArray(new String[0]))
+                    .print(out);
+            printer.printRecords(csvReport.getData());
         }
+        printer.flush();
     }
 
     /**
@@ -68,43 +79,19 @@ public class CsvWriter {
             throw new IllegalArgumentException("ResultSet can't be closed!!!");
         }
 
-        write(resultSet, outputStream, DEFAULT_DELIMITER);
-    }
-
-    private void write(@NotNull final ResultSet resultSet,
-                       @NotNull final OutputStream outputStream,
-                       final char delimiter) throws IOException, SQLException {
-        final Appendable out = new OutputStreamWriter(outputStream);
-        final CSVPrinter printer = CSVFormat.DEFAULT
-                .withDelimiter(delimiter)
-                .withHeader(resultSet)
-                .print(out);
-        printer.printRecords(resultSet);
-        printer.printRecord();
-        printer.flush();
-    }
-
-    private void write(@NotNull final OutputStream outputStream,
-                       @NotNull final Transposable transposer,
-                       final char delimiter) throws IOException, SQLException {
-        final Appendable out = new OutputStreamWriter(outputStream);
-        final CSVPrinter printer = CSVFormat.DEFAULT
-                .withDelimiter(delimiter)
-                .withHeader(transposer.getHeader().toArray(new String[0]))
-                .print(out);
-        printer.printRecords(transposer.transpose());
-        printer.printRecord();
-        printer.flush();
+        this.rSet = resultSet;
+        this.outputStream = outputStream;
+        this.delimiter = DEFAULT_DELIMITER;
+        write();
     }
 
     public static class Builder {
         private ResultSet rSet;
         private OutputStream outputStream;
         private char delimiter;
-        private Transposable transposer;
+        private CsvReport csvReport;
 
-        public Builder(@NotNull final ResultSet rSet, @NotNull final OutputStream outputStream) {
-            this.rSet = rSet;
+        public Builder(@NotNull final OutputStream outputStream) {
             this.outputStream = outputStream;
             this.delimiter = DEFAULT_DELIMITER;
         }
@@ -116,8 +103,14 @@ public class CsvWriter {
         }
 
         @NotNull
-        public Builder withTransposer(@NotNull final Transposable transposer) {
-            this.transposer = transposer;
+        public Builder withCsvReport(@NotNull final CsvReport csvReport) {
+            this.csvReport = csvReport;
+            return this;
+        }
+
+        @NotNull
+        public Builder withResultSet(@NotNull final ResultSet resultSet) {
+            rSet = resultSet;
             return this;
         }
 

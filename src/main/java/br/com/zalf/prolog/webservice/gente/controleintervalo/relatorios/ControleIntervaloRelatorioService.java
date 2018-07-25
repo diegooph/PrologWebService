@@ -223,13 +223,13 @@ public class ControleIntervaloRelatorioService {
                     codTipoIntervalo,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (IOException | SQLException e) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de total de tempo para cada tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %s \n" +
                     "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), e);
-            throw new RuntimeException(e);
+                    "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal), t);
+            throw new RuntimeException(t);
         }
     }
 

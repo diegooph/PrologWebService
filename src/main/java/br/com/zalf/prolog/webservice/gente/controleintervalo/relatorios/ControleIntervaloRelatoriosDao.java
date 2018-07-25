@@ -171,7 +171,7 @@ public interface ControleIntervaloRelatoriosDao {
                                          @NotNull final Long codUnidade,
                                          @NotNull final String codTipoIntervalo,
                                          @NotNull final LocalDate dataInicial,
-                                         @NotNull final LocalDate dataFinal) throws SQLException, IOException;
+                                         @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores

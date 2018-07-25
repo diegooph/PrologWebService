@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.commons.util.date;
 
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TimeRange;
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +15,16 @@ import java.util.function.Predicate;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class Durations {
+
+    @NotNull
+    public static String formatDuration(final long millis, @NotNull final String format) {
+        return DurationFormatUtils.formatDuration(millis, format);
+    }
+
+    @NotNull
+    public static String formatDuration(@NotNull final Duration duration, @NotNull final String format) {
+        return formatDuration(duration.toMillis(), format);
+    }
 
     public static Duration getSumOfHoursInRangeOnDays(ZoneId zoneId,
                                                       LocalDateTime dateTimeFrom,
