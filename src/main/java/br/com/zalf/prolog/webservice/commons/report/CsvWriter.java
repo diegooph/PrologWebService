@@ -90,7 +90,7 @@ public class CsvWriter {
         final Appendable out = new OutputStreamWriter(outputStream);
         final CSVPrinter printer = CSVFormat.DEFAULT
                 .withDelimiter(delimiter)
-                .withHeader(transposer.getHeader().toString())
+                .withHeader(transposer.getHeader().toArray(new String[0]))
                 .print(out);
         printer.printRecords(transposer.transpose());
         printer.printRecord();
