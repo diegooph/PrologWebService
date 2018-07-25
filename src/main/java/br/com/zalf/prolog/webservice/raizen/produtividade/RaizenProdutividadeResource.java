@@ -70,9 +70,9 @@ public class RaizenProdutividadeResource {
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
                                                             @QueryParam("dataFinal") String dataFinal,
-                                                            @QueryParam("tipoAgrupamento") String tipoAgrupamento)
+                                                            @QueryParam("tipoAgrupamento") String agrupamento)
             throws RaizenProdutividadeException {
-        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, tipoAgrupamento);
+        return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, agrupamento);
     }
 
     @GET

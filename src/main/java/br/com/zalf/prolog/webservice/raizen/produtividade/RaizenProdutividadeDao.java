@@ -69,7 +69,7 @@ public interface RaizenProdutividadeDao {
     List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal,
-                                                     @NotNull final String tipoAgrupamento) throws SQLException;
+                                                     @NotNull final String agrupamento) throws SQLException;
 
     /**
      * Busca as produtividades de um colaborador individualmente.

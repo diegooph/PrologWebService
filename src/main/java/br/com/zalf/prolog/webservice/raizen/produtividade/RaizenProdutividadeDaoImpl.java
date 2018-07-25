@@ -76,7 +76,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   USINA = ?," +
                     "   FAZENDA = ?," +
                     "   RAIO = ?," +
-                    "   TONELADA = ?," +
+                    "   TONELADAS = ?," +
                     "   COD_COLABORADOR_ALTERACAO = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA" +
                     ".TOKEN = ?) " +
                     "WHERE CODIGO = ?");
@@ -103,7 +103,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal,
-                                                            @NotNull final String tipoAgrupamento) throws SQLException {
+                                                            @NotNull final String agrupamento) throws SQLException {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeData raizenProdutividadeData = null;
         RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
@@ -120,7 +120,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
             stmt.setObject(3, dataFinal);
             rSet = stmt.executeQuery();
             LocalDate ultimaData = null;
-            if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_DATA.asString())) {
+            if (agrupamento.equals(RaizenProdutividadeAgrupamento.POR_DATA.asString())) {
                 while (rSet.next()) {
                     final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
                     if (ultimaData == null) {
@@ -135,7 +135,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                         ultimaData = dataAtual;
                     }
                 }
-            } else if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())) {
+            } else if (agrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())) {
                 while (rSet.next()) {
                     final LocalDate dataAtual = rSet.getObject("DATA_VIAGEM", LocalDate.class);
                     if (ultimaData == null) {
@@ -170,7 +170,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
         item.setRaio(rSet.getDouble("RAIO"));
-        item.setTonelada(rSet.getDouble("TONELADAS"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
@@ -186,7 +186,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));
         item.setRaio(rSet.getDouble("RAIO"));
-        item.setTonelada(rSet.getDouble("TONELADA"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
         item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
         item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
         item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
@@ -296,7 +296,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "                           USINA," +
                     "                           FAZENDA," +
                     "                           RAIO," +
-                    "                           TONELADA, " +
+                    "                           TONELADAS, " +
                     "                           COD_COLABORADOR_CADSTRO, " +
                     "                           COD_COLABORADOR_ALTERACAO, " +
                     "                           COD_EMPRESA)" +
@@ -337,7 +337,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
                     "   USINA = ?," +
                     "   FAZENDA = ?," +
                     "   RAIO = ?," +
-                    "   TONELADA = ?, " +
+                    "   TONELADAS = ?, " +
                     "   COD_COLABORADOR_ALTERACAO = " +
                     "(SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?) " +
                     "WHERE CPF = ?" +

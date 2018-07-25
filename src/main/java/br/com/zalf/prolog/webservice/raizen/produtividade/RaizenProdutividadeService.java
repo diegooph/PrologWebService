@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.RaizenProdutividadeException;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
@@ -82,20 +83,26 @@ public class RaizenProdutividadeService {
     public List<RaizenProdutividade> getRaizenProdutividade(@NotNull final Long codEmpresa,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
-                                                            @NotNull final String tipoAgrupamento) throws RaizenProdutividadeException {
-        try {
-            return dao.getRaizenProdutividade(
-                    codEmpresa,
-                    ProLogDateParser.validateAndParse(dataInicial),
-                    ProLogDateParser.validateAndParse(dataFinal),
-                    tipoAgrupamento);
-        } catch (SQLException e) {
-            Log.e(TAG, "Erro ao buscar produtividade", e);
-            throw new RaizenProdutividadeException(
-                    "Não foi possível buscar a produtividade, tente novamente",
-                    "Erro ao buscar produtividade",
-                    e);
+                                                            @NotNull final String agrupamento)
+            throws RaizenProdutividadeException {
+        final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
+        // TODO: 25/07/18 fazer a separação no service.
+        if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR)) {
+            try {
+                return dao.getRaizenProdutividade(
+                        codEmpresa,
+                        ProLogDateParser.validateAndParse(dataInicial),
+                        ProLogDateParser.validateAndParse(dataFinal),
+                        agrupamento);
+            } catch (SQLException e) {
+                Log.e(TAG, "Erro ao buscar produtividade", e);
+                throw new RaizenProdutividadeException(
+                        "Não foi possível buscar a produtividade, tente novamente",
+                        "Erro ao buscar produtividade",
+                        e);
+            }
         }
+        return null;
     }
 
     public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
@@ -131,7 +138,7 @@ public class RaizenProdutividadeService {
 
     private File createFileFromImport(@NotNull final Long codEmpresa,
                                       @NotNull final InputStream fileInputStream,
-                                      @NotNull final ContentDisposition fileDetail)
+                                      @NotNull final FormDataContentDisposition fileDetail)
             throws RaizenProdutividadeException {
         try {
             final String fileName = String.valueOf(Now.utcMillis()) + "_" + codEmpresa

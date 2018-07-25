@@ -20,7 +20,7 @@ public abstract class RaizenProdutividadeItem {
     private String usina;
     private String fazenda;
     private double raio;
-    private double tonelada;
+    private double toneladas;
     private Long codColaboradorCadastro;
     private Long codColaboradorAlteracao;
     private Long codEmpresa;
@@ -88,12 +88,12 @@ public abstract class RaizenProdutividadeItem {
         this.raio = raio;
     }
 
-    public double getTonelada() {
-        return tonelada;
+    public double getToneladas() {
+        return toneladas;
     }
 
-    public void setTonelada(double tonelada) {
-        this.tonelada = tonelada;
+    public void setToneladas(double toneladas) {
+        this.toneladas = toneladas;
     }
 
     public Long getCodColaboradorCadastro() {
@@ -129,7 +129,7 @@ public abstract class RaizenProdutividadeItem {
                 ", usina=" + usina +
                 ", fazenda=" + fazenda +
                 ", raio=" + raio +
-                ", tonelada=" + tonelada +
+                ", toneladas=" + toneladas +
                 "}";
     }
 
