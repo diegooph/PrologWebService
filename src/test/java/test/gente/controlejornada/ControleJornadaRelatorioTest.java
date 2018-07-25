@@ -22,6 +22,10 @@ import static br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoMa
 import static org.junit.Assert.*;
 
 /**
+ * Como alguns dos testes dessa classe inserem novos intervalos no banco e se baseiam em cálculos de tempo de duração
+ * desse intervalos, é EXTREMAMENTE RECOMENDADO que seja apagado da tabela INTERVALO todas as marcações da unidade
+ * escolhida para se realizar os testes.
+ *
  * Created on 24/07/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
