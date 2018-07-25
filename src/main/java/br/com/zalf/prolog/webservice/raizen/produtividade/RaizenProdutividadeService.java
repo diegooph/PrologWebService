@@ -86,28 +86,42 @@ public class RaizenProdutividadeService {
                                                             @NotNull final String agrupamento)
             throws RaizenProdutividadeException {
         final RaizenProdutividadeAgrupamento tipoAgrupamento = RaizenProdutividadeAgrupamento.fromString(agrupamento);
-        // TODO: 25/07/18 fazer a separação no service.
         if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_COLABORADOR)) {
             try {
-                return dao.getRaizenProdutividade(
+                return dao.getRaizenProdutividadeColaborador(
                         codEmpresa,
                         ProLogDateParser.validateAndParse(dataInicial),
-                        ProLogDateParser.validateAndParse(dataFinal),
-                        agrupamento);
+                        ProLogDateParser.validateAndParse(dataFinal));
             } catch (SQLException e) {
                 Log.e(TAG, "Erro ao buscar produtividade", e);
                 throw new RaizenProdutividadeException(
                         "Não foi possível buscar a produtividade, tente novamente",
-                        "Erro ao buscar produtividade",
+                        "Erro ao buscar produtividade por colaborador",
                         e);
             }
+        } else if (tipoAgrupamento.equals(RaizenProdutividadeAgrupamento.POR_DATA)) {
+            try {
+                return dao.getRaizenProdutividadeData(
+                        codEmpresa,
+                        ProLogDateParser.validateAndParse(dataInicial),
+                        ProLogDateParser.validateAndParse(dataFinal));
+            } catch (SQLException e) {
+                Log.e(TAG, "Erro ao buscar produtividade", e);
+                throw new RaizenProdutividadeException(
+                        "Não foi possível buscar a produtividade, tente novamente",
+                        "Erro ao buscar produtividade por data",
+                        e);
+            }
+        } else {
+            throw new IllegalArgumentException("O único tipo de agrupamento suportado na busca dos serviços abertos é " +
+                    "por veículo. Agrupamento recebido: " + agrupamento);
         }
-        return null;
     }
 
     public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
                                                                             @NotNull final int mes,
-                                                                            @NotNull final int ano) throws RaizenProdutividadeException {
+                                                                            @NotNull final int ano)
+            throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(
                     codColaborador,
@@ -123,7 +137,8 @@ public class RaizenProdutividadeService {
     }
 
     public Response deleteRaizenProdutividade(@NotNull final Long codEmpresa,
-                                              @NotNull final List<Long> codRaizenProdutividades) throws RaizenProdutividadeException {
+                                              @NotNull final List<Long> codRaizenProdutividades)
+            throws RaizenProdutividadeException {
         try {
             dao.deleteRaizenProdutividadeItens(codEmpresa, codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");

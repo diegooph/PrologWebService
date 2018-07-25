@@ -66,7 +66,7 @@ public class RaizenProdutividadeResource {
     @GET
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
-    @Path("/by-data/{codEmpresa}")
+    @Path("/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
                                                             @QueryParam("dataFinal") String dataFinal,
