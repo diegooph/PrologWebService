@@ -92,8 +92,9 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         if (linhaAtual != null) {
             final long tempoTotalMillis = rSet.getLong("TEMPO_TOTAL_MILLIS");
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
-            // A query retorna o tempo total em todos os tipos de intervalo, não só os que o colaborador marcou,
-            //
+            // A query retorna o tempo total em todos os tipos de intervalo, não só os que o colaborador marcou. Caso
+            // um filtro esteja aplicado, podemos não ter a coluna para um determinado tipo no relatório, por isso
+            // precisamos verificar se é diferente de null.
             final Integer coluna = tipoIntervaloIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
                 linhaAtual.set(coluna, tempoTotalMillis != 0 ? Durations.formatDuration(tempoTotalMillis, "HH:mm:ss") : ZERO_HORAS);
