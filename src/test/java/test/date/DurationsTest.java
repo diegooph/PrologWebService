@@ -53,7 +53,7 @@ public class DurationsTest {
         LocalTime timeFrom = LocalTime.of(22, 0);
         LocalTime timeTo = LocalTime.of(5, 0);
 
-        Duration hoursOnFirstDay = Durations.getDurationOnDaysWithPrecicion(ZoneId.systemDefault(), from, to, timeFrom, timeTo, ChronoUnit.MINUTES);
+        Duration hoursOnFirstDay = Durations.getDurationOnDaysWithPrecision(ZoneId.systemDefault(), from, to, timeFrom, timeTo, ChronoUnit.MINUTES);
         assertEquals(27, hoursOnFirstDay.toHours());
         assertEquals(30, hoursOnFirstDay.toMinutes() % ChronoUnit.HOURS.getDuration().toMinutes()); // 1650 % 60
     }

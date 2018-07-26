@@ -30,17 +30,17 @@ public class Durations {
                                                       LocalDateTime dateTimeFrom,
                                                       LocalDateTime dateTimeTo,
                                                       TimeRange timeRange) {
-        return getDurationOnDaysWithPrecicion(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.HOURS);
+        return getDurationOnDaysWithPrecision(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.HOURS);
     }
 
     public static Duration getSumOfMinutesInRangeOnDays(ZoneId zoneId,
                                                         LocalDateTime dateTimeFrom,
                                                         LocalDateTime dateTimeTo,
                                                         TimeRange timeRange) {
-        return getDurationOnDaysWithPrecicion(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.MINUTES);
+        return getDurationOnDaysWithPrecision(zoneId, dateTimeFrom, dateTimeTo, timeRange.getStart(), timeRange.getEnd(), ChronoUnit.MINUTES);
     }
 
-    public static Duration getDurationOnDaysWithPrecicion(ZoneId zoneId,
+    public static Duration getDurationOnDaysWithPrecision(ZoneId zoneId,
                                                           LocalDateTime dateTimeFrom,
                                                           LocalDateTime dateTimeTo,
                                                           TimeRange timeRange,
@@ -52,7 +52,7 @@ public class Durations {
         return Duration.of(count, precision);
     }
 
-    public static Duration getDurationOnDaysWithPrecicion(ZoneId zoneId,
+    public static Duration getDurationOnDaysWithPrecision(ZoneId zoneId,
                                                           LocalDateTime dateTimeFrom,
                                                           LocalDateTime dateTimeTo,
                                                           LocalTime dailyTimeFrom,
