@@ -28,7 +28,8 @@ public interface RaizenProdutividadeDao {
      */
     void insertOrUpdateProdutividadeRaizen(@NotNull final String token,
                                            @NotNull final Long codEmpresa,
-                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws SQLException;
+                                           @NotNull final List<RaizenProdutividadeItemInsert> raizenItens) throws
+            SQLException;
 
     /**
      * Insere uma {@link RaizenProdutividadeItem} específica.
@@ -92,12 +93,13 @@ public interface RaizenProdutividadeDao {
      * @param codColaborador - Código do colaborador.
      * @param mes            - mes para a busca.
      * @param ano            - ano para a busca.
-     * @return - Um {@link List<RaizenProdutividade>} contendo a
-     * {@link RaizenProdutividadeItem} do colaborador.
+     * @return - A produtividade do colaborador.
      * @throws SQLException - Erro na execução da busca dos dados no Banco.
      */
     @NotNull
-    List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(Long codColaborador, int mes, int ano) throws SQLException;
+    RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                               final int mes,
+                                                               final int ano) throws SQLException;
 
     /**
      * Deleta uma {@link List<RaizenProdutividadeItem>}.

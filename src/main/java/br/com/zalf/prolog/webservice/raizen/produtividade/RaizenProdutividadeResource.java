@@ -39,7 +39,8 @@ public class RaizenProdutividadeResource {
     public Response uploadRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
                                               @FormDataParam("file") InputStream fileInputStream,
-                                              @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {
+                                              @FormDataParam("file") FormDataContentDisposition fileDetail) throws
+            Exception {
         return service.uploadRaizenProdutividade(token, codEmpresa, fileInputStream, fileDetail);
     }
 
@@ -49,7 +50,8 @@ public class RaizenProdutividadeResource {
     @Path("/{codEmpresa}")
     public Response insertRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
-                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
+                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
+            Exception {
         return service.insertRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
@@ -59,13 +61,15 @@ public class RaizenProdutividadeResource {
     @Path("/{codEmpresa}")
     public Response updateRaizenProdutividade(@HeaderParam("Authorization") String token,
                                               @PathParam("codEmpresa") Long codEmpresa,
-                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws Exception {
+                                              RaizenProdutividadeItemInsert raizenProdutividadeItemInsert) throws
+            Exception {
         return service.updateRaizenProdutividade(token, codEmpresa, raizenProdutividadeItemInsert);
     }
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE})
-    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade.EDITAR})
+    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade
+            .EDITAR})
     @Path("/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
@@ -79,9 +83,9 @@ public class RaizenProdutividadeResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_PROPRIOS)
     @Path("/colaboradores/{codColaborador}")
-    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
-                                                                            @QueryParam("mes") int mes,
-                                                                            @QueryParam("ano") int ano)
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@PathParam("codColaborador") Long codColaborador,
+                                                                      @QueryParam("mes") int mes,
+                                                                      @QueryParam("ano") int ano)
             throws RaizenProdutividadeException {
         return service.getRaizenProdutividade(codColaborador, mes, ano);
     }

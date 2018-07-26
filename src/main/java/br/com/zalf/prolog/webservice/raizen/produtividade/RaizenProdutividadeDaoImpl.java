@@ -3,14 +3,16 @@ package br.com.zalf.prolog.webservice.raizen.produtividade;
 import br.com.zalf.prolog.webservice.commons.util.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.*;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeColaborador;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeData;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemData;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenprodutividadeItemIndividual;
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,10 +25,8 @@ import java.util.List;
  */
 public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements RaizenProdutividadeDao {
 
-    private static final int JANEIRO = 12;
-    private static final int DEZEMBRO = 1;
-
     public RaizenProdutividadeDaoImpl() {
+
     }
 
     @Override
@@ -102,7 +102,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividadeColaborador(@NotNull final Long codEmpresa,
                                                                        @NotNull final LocalDate dataInicial,
-                                                                       @NotNull final LocalDate dataFinal) throws SQLException {
+                                                                       @NotNull final LocalDate dataFinal) throws
+            SQLException {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeColaborador raizenProdutividadeColaborador = null;
         List<RaizenProdutividadeItemColaborador> itens = new ArrayList<>();
@@ -144,7 +145,8 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     @Override
     public List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
                                                                 @NotNull final LocalDate dataInicial,
-                                                                @NotNull final LocalDate dataFinal) throws SQLException {
+                                                                @NotNull final LocalDate dataFinal) throws
+            SQLException {
         final List<RaizenProdutividade> produtividades = new ArrayList<>();
         RaizenProdutividadeData raizenProdutividadeData = null;
         Connection conn = null;
@@ -226,59 +228,33 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     @NotNull
     @Override
-    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                                            @NotNull final int mes,
-                                                                            @NotNull final int ano) throws
-            SQLException {
-        final List<RaizenProdutividadeIndividualHolder> raizenProdutividades = new ArrayList<>();
-        RaizenProdutividadeIndividualHolder raizenProdutividade = null;
-        List<RaizenprodutividadeItemIndividual> itens = new ArrayList<>();
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                                      final int mes,
+                                                                      final int ano) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
+        List<RaizenprodutividadeItemIndividual> itens;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_RAIZEN_PRODUTIVIDADE_GET_ITENS_INDIVIDUAL(?, ?, ?);");
             stmt.setLong(1, codColaborador);
-            if (mes >= DEZEMBRO && mes <= JANEIRO) {
-                stmt.setInt(2, mes);
-            }
+            stmt.setInt(2, mes);
             stmt.setInt(3, ano);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                do {
-                    raizenProdutividade.setProdutividadeItens(itens);
-                    raizenProdutividades.add(raizenProdutividade);
-                    raizenProdutividade = new RaizenProdutividadeIndividualHolder();
-                    itens = new ArrayList<>();
-                    itens.add(createRaizenProdutividadeItemIndividual(rSet));
-                } while (rSet.next());
+            itens = new ArrayList<>();
+            while (rSet.next()) {
+                itens.add(createRaizenProdutividadeItemIndividual(rSet));
             }
-            raizenProdutividade.setValorTotal(valorTotal(conn));
         } finally {
             closeConnection(conn, stmt, rSet);
         }
-        raizenProdutividade.setProdutividadeItens(itens);
-        raizenProdutividades.add(raizenProdutividade);
-        return raizenProdutividades;
+        return new RaizenProdutividadeIndividualHolder(itens);
     }
 
-    private BigDecimal valorTotal(Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final BigDecimal valorTotal;
-        try {
-            stmt = conn.prepareStatement("SELECT SUM(VALOR) AS valor_total FROM RAIZEN.produtividade;");
-            rSet = stmt.executeQuery();
-            valorTotal = rSet.getBigDecimal("valor_total");
-        } finally {
-            closeConnection(null, stmt, rSet);
-        }
-        return valorTotal;
-    }
-
-    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(ResultSet rSet) throws
-            SQLException {
+    @NotNull
+    private RaizenprodutividadeItemIndividual createRaizenProdutividadeItemIndividual(@NotNull final ResultSet rSet)
+            throws SQLException {
         final RaizenprodutividadeItemIndividual item = new RaizenprodutividadeItemIndividual();
         item.setDataViagem(rSet.getDate("DATA_VIAGEM"));
         item.setValor(rSet.getBigDecimal("VALOR"));

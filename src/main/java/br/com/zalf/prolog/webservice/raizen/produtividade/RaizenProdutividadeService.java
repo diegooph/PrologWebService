@@ -31,7 +31,6 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class RaizenProdutividadeService {
-
     private static final String TAG = RaizenProdutividadeService.class.getSimpleName();
     private final RaizenProdutividadeDao dao = Injection.provideRaizenProdutividadeDao();
 
@@ -115,9 +114,9 @@ public class RaizenProdutividadeService {
         }
     }
 
-    public List<RaizenProdutividadeIndividualHolder> getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                                            @NotNull final int mes,
-                                                                            @NotNull final int ano)
+    public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
+                                                                      @NotNull final int mes,
+                                                                      @NotNull final int ano)
             throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(
