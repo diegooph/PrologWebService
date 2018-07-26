@@ -264,6 +264,7 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
         item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setCpfColaborador(rSet.getLong("CPF_MOTORISTA"));
         item.setValor(rSet.getBigDecimal("VALOR"));
         item.setUsina(rSet.getString("USINA"));
         item.setFazenda(rSet.getString("FAZENDA"));

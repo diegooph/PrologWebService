@@ -8,6 +8,8 @@ import java.time.LocalDate;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class RaizenProdutividadeItemVisualizacao extends RaizenProdutividadeItem {
+    private Long cpfColaborador;
+    private boolean colaboradorCadastrado;
     private LocalDate dataViagem;
 
     public RaizenProdutividadeItemVisualizacao() {
@@ -20,5 +22,22 @@ public class RaizenProdutividadeItemVisualizacao extends RaizenProdutividadeItem
 
     public void setDataViagem(LocalDate dataViagem) {
         this.dataViagem = dataViagem;
+    }
+
+
+    public Long getCpfColaborador() {
+        return cpfColaborador;
+    }
+
+    public void setCpfColaborador(final Long cpfColaborador) {
+        this.cpfColaborador = cpfColaborador;
+    }
+
+    public boolean isColaboradorCadastrado() {
+        return colaboradorCadastrado;
+    }
+
+    public void setColaboradorCadastrado(final boolean colaboradorCadastrado) {
+        this.colaboradorCadastrado = colaboradorCadastrado;
     }
 }
