@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -68,8 +69,11 @@ public class RaizenProdutividadeResource {
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE})
-    @Secured(permissions = {Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS, Pilares.Entrega.RaizenProdutividade
-            .EDITAR})
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
+            Pilares.Entrega.RaizenProdutividade.EDITAR,
+            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.DELETAR})
     @Path("/{codEmpresa}")
     public List<RaizenProdutividade> getRaizenProdutividade(@PathParam("codEmpresa") Long codEmpresa,
                                                             @QueryParam("dataInicial") String dataIncial,
@@ -77,6 +81,20 @@ public class RaizenProdutividadeResource {
                                                             @QueryParam("tipoAgrupamento") String agrupamento)
             throws RaizenProdutividadeException {
         return service.getRaizenProdutividade(codEmpresa, dataIncial, dataFinal, agrupamento);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions = {
+            Pilares.Entrega.RaizenProdutividade.VISUALIZAR_TODOS,
+            Pilares.Entrega.RaizenProdutividade.EDITAR,
+            Pilares.Entrega.RaizenProdutividade.UPLOAD,
+            Pilares.Entrega.RaizenProdutividade.DELETAR})
+    @Path("/{codEmpresa}/itens/{codItem}")
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@PathParam("codEmpresa") final Long codEmpresa,
+                                                                          @PathParam("codItem") final Long codItem)
+            throws RaizenProdutividadeException {
+        return service.getRaizenProdutividadeItem(codEmpresa, codItem);
     }
 
     @GET

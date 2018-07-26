@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemColaborador;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemData;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenprodutividadeItemIndividual;
 import org.jetbrains.annotations.NotNull;
 
@@ -187,6 +188,31 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
     }
 
     @NotNull
+    @Override
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                                      @NotNull final Long codItem)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM RAIZEN.PRODUTIVIDADE RP WHERE RP.CODIGO = ?" +
+                    " AND RP.COD_EMPRESA = ?;");
+            stmt.setLong(1, codItem);
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createRaizenProdutividadeItemVisualizacao(rSet);
+            } else {
+                throw new SQLException("Item não encontrado com código: " + codItem);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
     private RaizenProdutividadeData createRaizenProdutividadeData(
             @NotNull final ResultSet rSet,
             @NotNull final List<RaizenProdutividade> produtividades) throws SQLException {
@@ -219,6 +245,22 @@ public class RaizenProdutividadeDaoImpl extends DatabaseConnection implements Ra
 
     private RaizenProdutividadeItemData createRaizenProdutividadeItemData(ResultSet rSet) throws SQLException {
         final RaizenProdutividadeItemData item = new RaizenProdutividadeItemData();
+        item.setCodigo(rSet.getLong("CODIGO"));
+        item.setPlaca(rSet.getString("PLACA"));
+        item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));
+        item.setValor(rSet.getBigDecimal("VALOR"));
+        item.setUsina(rSet.getString("USINA"));
+        item.setFazenda(rSet.getString("FAZENDA"));
+        item.setRaio(rSet.getDouble("RAIO"));
+        item.setToneladas(rSet.getDouble("TONELADAS"));
+        item.setCodColaboradorCadastro(rSet.getLong("COD_COLABORADOR_CADASTRO"));
+        item.setCodColaboradorAlteracao(rSet.getLong("COD_COLABORADOR_ALTERACAO"));
+        item.setCodEmpresa(rSet.getLong("COD_EMPRESA"));
+        return item;
+    }
+
+    private RaizenProdutividadeItemVisualizacao createRaizenProdutividadeItemVisualizacao(ResultSet rSet) throws SQLException {
+        final RaizenProdutividadeItemVisualizacao item = new RaizenProdutividadeItemVisualizacao();
         item.setCodigo(rSet.getLong("CODIGO"));
         item.setPlaca(rSet.getString("PLACA"));
         item.setDataViagem(rSet.getObject("DATA_VIAGEM", LocalDate.class));

@@ -13,7 +13,7 @@ public class RaizenProdutividadeException extends ProLogException {
 
     public RaizenProdutividadeException(@NotNull final String message,
                                         @Nullable final String developerMessage,
-                                        @NotNull final Exception parentException) {
+                                        @NotNull final Throwable parentException) {
         super(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode(),
                 ProLogErrorCodes.RAIZEN_PRODUTIVIDADE.errorCode(),
                 message,

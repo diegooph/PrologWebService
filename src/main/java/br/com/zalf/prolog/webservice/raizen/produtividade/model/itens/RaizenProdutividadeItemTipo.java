@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum RaizenProdutividadeItemTipo {
     ITEM_COLABORADOR("ITEM_COLABORADOR"),
-    ITEM_DATA("ITEM_DATA");
+    ITEM_DATA("ITEM_DATA"),
+    ITEM_VISUALIZACAO("ITEM_VISUALIZACAO");
 
     @NotNull
     private final String identificador;
@@ -22,6 +23,11 @@ public enum RaizenProdutividadeItemTipo {
     @NotNull
     public String asString() {
         return identificador;
+    }
+
+    @Override
+    public String toString() {
+        return asString();
     }
 
     public static RaizenProdutividadeItemTipo fromString(@NotNull final String string) {

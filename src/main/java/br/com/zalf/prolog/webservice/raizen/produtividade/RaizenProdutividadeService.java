@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
@@ -114,9 +115,24 @@ public class RaizenProdutividadeService {
         }
     }
 
+    @NotNull
+    public RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItem(@NotNull final Long codEmpresa,
+                                                                          @NotNull final Long codItem)
+            throws RaizenProdutividadeException {
+        try {
+            return dao.getRaizenProdutividadeItemVisualizacao(codEmpresa, codItem);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar produtividade item", throwable);
+            throw new RaizenProdutividadeException(
+                    "Não foi possível buscar o item, tente novamente",
+                    "Erro ao buscar item produtividade",
+                    throwable);
+        }
+    }
+
     public RaizenProdutividadeIndividualHolder getRaizenProdutividade(@NotNull final Long codColaborador,
-                                                                      @NotNull final int mes,
-                                                                      @NotNull final int ano)
+                                                                      final int mes,
+                                                                      final int ano)
             throws RaizenProdutividadeException {
         try {
             return dao.getRaizenProdutividade(

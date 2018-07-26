@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
-import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeAgrupamento;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -136,8 +135,9 @@ public abstract class RaizenProdutividadeItem {
     @NotNull
     public static RuntimeTypeAdapterFactory<RaizenProdutividadeItem> provideTypeAdapterFactory() {
         return RuntimeTypeAdapterFactory
-                .of(RaizenProdutividadeItem.class, "tipoAgrupamento")
-                .registerSubtype(RaizenProdutividadeItemData.class, RaizenProdutividadeAgrupamento.POR_COLABORADOR.asString())
-                .registerSubtype(RaizenProdutividadeItemColaborador.class, RaizenProdutividadeAgrupamento.POR_DATA.asString());
+                .of(RaizenProdutividadeItem.class, "tipo")
+                .registerSubtype(RaizenProdutividadeItemData.class, RaizenProdutividadeItemTipo.ITEM_DATA.asString())
+                .registerSubtype(RaizenProdutividadeItemColaborador.class, RaizenProdutividadeItemTipo.ITEM_COLABORADOR.asString())
+                .registerSubtype(RaizenProdutividadeItemVisualizacao.class, RaizenProdutividadeItemTipo.ITEM_VISUALIZACAO.asString());
     }
 }

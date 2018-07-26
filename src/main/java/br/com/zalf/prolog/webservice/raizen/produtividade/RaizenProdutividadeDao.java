@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItem;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
+import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -86,6 +87,11 @@ public interface RaizenProdutividadeDao {
     List<RaizenProdutividade> getRaizenProdutividadeData(@NotNull final Long codEmpresa,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws SQLException;
+
+    @NotNull
+    RaizenProdutividadeItemVisualizacao getRaizenProdutividadeItemVisualizacao(@NotNull final Long codEmpresa,
+                                                                               @NotNull final Long codItem)
+    throws Throwable;
 
     /**
      * Busca as produtividades de um colaborador individualmente.
