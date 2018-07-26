@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controleintervalo.relatorios;
 
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Durations;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.Clt;
 import br.com.zalf.prolog.webservice.gente.controleintervalo.model.TipoIntervalo;
@@ -17,17 +16,21 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public final class FolhaPontoRelatorio {
-    private static final String TAG = FolhaPontoRelatorio.class.getSimpleName();
     @NotNull
     private final Colaborador colaborador;
     @NotNull
     private final List<FolhaPontoDia> marcacoesDias;
     private Set<FolhaPontoTipoIntervalo> tiposIntervalosMarcados;
 
-    public FolhaPontoRelatorio(@NotNull Colaborador colaborador,
-                               @NotNull List<FolhaPontoDia> marcacoesDias) {
+    @NotNull
+    private final LocalDateTime dataHoraGeracaoRelatorio;
+
+    public FolhaPontoRelatorio(@NotNull final Colaborador colaborador,
+                               @NotNull final List<FolhaPontoDia> marcacoesDias,
+                               @NotNull final LocalDateTime dataHoraGeracaoRelatorio) {
         this.colaborador = colaborador;
         this.marcacoesDias = marcacoesDias;
+        this.dataHoraGeracaoRelatorio = dataHoraGeracaoRelatorio;
     }
 
     @NotNull
@@ -71,8 +74,17 @@ public final class FolhaPontoRelatorio {
                 final FolhaPontoIntervalo intervalo = intervalosDia.get(j);
                 final LocalDateTime dataHoraInicio = intervalo.getDataHoraInicio();
                 final LocalDateTime dataHoraFim = intervalo.getDataHoraFim();
-                somaTempoDecorrido(segundosTotaisTipoIntervalo, segundosTotaisHorasNoturnas, intervalo,
-                        dataHoraInicio, dataHoraFim, filtroInicio, filtroFim, zoneId);
+                somaTempoDecorrido(
+                        segundosTotaisTipoIntervalo,
+                        segundosTotaisHorasNoturnas,
+                        intervalo,
+                        dataHoraInicio,
+                        dataHoraFim,
+                        filtroInicio,
+                        // Sem o filtro de fim for maior que o horário atual do sistema, precisamos garantir que os
+                        // cálculos utilizem o horário atual e não o filtro de fim.
+                        filtroFim.isBefore(dataHoraGeracaoRelatorio) ? filtroFim : dataHoraGeracaoRelatorio,
+                        zoneId);
             }
         }
 
@@ -130,8 +142,6 @@ public final class FolhaPontoRelatorio {
             final long segundosNoturnos = Durations
                     .getSumOfMinutesInRangeOnDays(zoneId, inicio, fim, Clt.RANGE_HORAS_NOTURNAS)
                     .toMinutes() * 60;
-            Log.d(TAG, "Segundos totais: " + segundos);
-            Log.d(TAG, "Segundos noturnos: " + segundosNoturnos);
             segundosTotaisTipoIntervalo.merge(intervalo.getCodTipoIntervalo(), segundos, (a, b) -> a + b);
             segundosTotaisHorasNoturnas.merge(intervalo.getCodTipoIntervalo(), segundosNoturnos, (a, b) -> a + b);
         } else {
